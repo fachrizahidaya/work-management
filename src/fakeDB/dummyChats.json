@@ -1,0 +1,36 @@
+[
+  { "id": 0, "alignSelf": "flex-end", "content": "Wanna hang out?", "color": "#176688" },
+  { "id": 1, "alignSelf": "flex-start", "content": "Hey what's up!", "color": "#FAFAFA" },
+  { "id": 2, "alignSelf": "flex-end", "content": "This task is killing me!", "color": "#176688", "read": true },
+  { "id": 3, "alignSelf": "flex-start", "content": "?", "color": "#FAFAFA" },
+  {
+    "id": 4,
+    "alignSelf": "flex-end",
+    "content": "Nulla faucibus facilisis dolor, vel rutrum risus pretium vel. In ut tellus dolor. Integer sit amet mollis ipsum. Curabitur vestibulum sapien felis, volutpat placerat mauris ultricies et. Cras dignissim sagittis augue sed bibendum. Nullam pellentesque odio non nisi maximus, sit amet posuere ex vulputate. Morbi pretium libero odio, at consequat risus venenatis eget.",
+    "color": "#176688",
+    "read": true
+  },
+  { "id": 5, "alignSelf": "flex-start", "content": "Hellow", "color": "#FAFAFA" },
+  { "id": 6, "alignSelf": "flex-start", "content": "Going to New York for meeting", "color": "#FAFAFA" },
+  { "id": 7, "alignSelf": "flex-start", "content": "What's your opinion", "color": "#FAFAFA" },
+  { "id": 8, "alignSelf": "flex-start", "content": "Im building this super app", "color": "#FAFAFA" },
+  {
+    "id": 9,
+    "alignSelf": "flex-start",
+    "content": "Nullam sit amet commodo nisl. Morbi id justo sed neque accumsan finibus. Curabitur eleifend, mauris eu porttitor posuere, mi est placerat tellus, sit amet condimentum libero magna quis erat. Quisque nec blandit arcu, at convallis elit. Donec lobortis mi magna, at finibus lorem sollicitudin ac.",
+    "color": "#FAFAFA"
+  },
+  {
+    "id": 10,
+    "alignSelf": "flex-start",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis ex, consequat nec magna a, imperdiet commodo sem. Donec quis enim purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mollis non justo sit amet euismod. In elementum urna sapien. Nullam quis consequat metus. Praesent id auctor ante. ",
+    "color": "#FAFAFA"
+  },
+  {
+    "id": 11,
+    "alignSelf": "flex-end",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "color": "#176688",
+    "read": true
+  }
+]

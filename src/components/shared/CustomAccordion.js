@@ -1,0 +1,32 @@
+import React, { useState } from "react";
+
+import { Flex, Icon, Pressable, Text } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <Flex gap={15}>
+      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+        <Flex flexDir="row" gap={1}>
+          <Pressable onPress={() => setIsOpen(!isOpen)}>
+            <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
+          </Pressable>
+          <Text>{title}</Text>
+          <Text color="#8A9099">({subTitle})</Text>
+        </Flex>
+
+        {hasAction && (
+          <Pressable>
+            <Icon as={<MaterialCommunityIcons name="dots-horizontal" />} size="md" />
+          </Pressable>
+        )}
+      </Flex>
+
+      {isOpen && children}
+    </Flex>
+  );
+};
+
+export default CustomAccordion;
