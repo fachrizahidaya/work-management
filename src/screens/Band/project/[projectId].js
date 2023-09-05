@@ -27,6 +27,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useFetch } from "../../../hooks/useFetch";
 import CustomSelect from "../../../components/shared/CustomSelect";
 import Tabs from "../../../components/shared/Tabs";
+import NewProjectSlider from "../../../components/Band/Project/NewProjectSlider/NewProjectSlider";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -36,6 +38,8 @@ const ProjectDetailScreen = ({ route }) => {
   const [value, setValue] = useState(projectData?.status);
   const [openSelect, setOpenSelect] = useState(false);
   const [tabValue, setTabValue] = useState("comments");
+  const [openEditForm, setOpenEditForm] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   const onChangeTab = (value) => {
     setTabValue(value);
@@ -49,6 +53,10 @@ const ProjectDetailScreen = ({ route }) => {
   const { data: comments, isLoading: commentLoading } = useFetch(`/pm/projects/${projectId}/comment`);
   const { data: activities, isLoading: activityLoading } = useFetch("/pm/logs/", [], { project_id: projectId });
 
+  const openEditFormHandler = () => {
+    setOpenEditForm(true);
+  };
+
   useEffect(() => {
     setProjectData(data?.data);
   }, [data]);
@@ -57,12 +65,41 @@ const ProjectDetailScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
         <Flex gap={15}>
-          <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-            <Pressable onPress={() => navigation.navigate("Project List")}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-            </Pressable>
+          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+            <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
+              <Pressable onPress={() => navigation.navigate("Project List")}>
+                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+              </Pressable>
 
-            {!isLoading ? <Text fontSize={16}>{projectData?.title}</Text> : <Skeleton h={8} w={200} />}
+              {!isLoading ? <Text fontSize={16}>{projectData?.title}</Text> : <Skeleton h={8} w={200} />}
+            </Flex>
+
+            <Menu
+              w="190"
+              trigger={(triggerProps) => {
+                return (
+                  <IconButton
+                    {...triggerProps}
+                    size="md"
+                    borderRadius="full"
+                    icon={<Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />}
+                  />
+                );
+              }}
+            >
+              <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
+              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>Delete</Menu.Item>
+            </Menu>
+
+            {/* Delete confirmation modal */}
+            <ConfirmationModal
+              isOpen={deleteModalIsOpen}
+              setIsOpen={setDeleteModalIsOpen}
+              apiUrl={`/pm/projects/${projectId}`}
+              color="red.600"
+              successMessage={`${projectData?.title} deleted`}
+              onSuccess={() => navigation.navigate("Project List")}
+            />
           </Flex>
 
           <CustomSelect
@@ -330,6 +367,8 @@ const ProjectDetailScreen = ({ route }) => {
           )}
         </Flex>
       </ScrollView>
+
+      <NewProjectSlider isOpen={openEditForm} setIsOpen={setOpenEditForm} projectData={projectData} />
     </SafeAreaView>
   );
 };
