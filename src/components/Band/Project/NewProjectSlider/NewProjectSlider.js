@@ -19,7 +19,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
 
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
-      if (projectData) {
+      if (!projectData) {
         // Create new project
         const res = await axiosInstance.post("/pm/projects", form);
         // Assign the creator as owner
