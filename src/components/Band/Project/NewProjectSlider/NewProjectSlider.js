@@ -11,11 +11,20 @@ import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useNavigation } from "@react-navigation/native";
+import { useFetch } from "../../../../hooks/useFetch";
 
 const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
   const navigation = useNavigation();
+  const fetchParams = {
+    page: 1,
+    search: "",
+    status: "Open",
+    archive: 0,
+    limit: 10,
+  };
+  const { refetch } = useFetch("/pm/projects", [], fetchParams);
 
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -31,6 +40,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
         // Edit existing project
         await axiosInstance.patch(`/pm/projects/${projectData.id}`, form);
       }
+      refetch();
       setSubmitting(false);
       setStatus("success");
       toast.show({
@@ -104,7 +114,6 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
             <FormControl.Label>Description</FormControl.Label>
             <Input
               value={formik.values.description}
-              multiline
               h={100}
               onChangeText={(value) => formik.setFieldValue("description", value)}
               placeholder="Create a mobile application on iOS and Android devices."
