@@ -40,5 +40,5 @@ export const useFetch = (url, dependencies = [], params = {}) => {
   }, dependencies);
 
   // Return loading and fetched data information
-  return { isLoading, isFetching, data };
+  return { isLoading, isFetching, data, refetch };
 };

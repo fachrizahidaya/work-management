@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import BandDashboard from "../../screens/Band/BandDashboard";
+
 import { Box, Icon, Image } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native";
+
+import BandDashboard from "../../screens/Band/BandDashboard";
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSlider";
 import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 import _ from "lodash";
 
@@ -15,6 +16,7 @@ const ProjectList = () => {
   const [status, setStatus] = useState("Open");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
+  const firstTimeRef = useRef(true);
 
   const dependencies = [status, currentPage, searchInput];
 
@@ -34,12 +36,22 @@ const ProjectList = () => {
     []
   );
 
-  const { data, isLoading } = useFetch("/pm/projects", dependencies, params);
+  const { data, isLoading, refetch } = useFetch("/pm/projects", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [status, searchInput]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+
+      refetch();
+    }, [refetch])
+  );
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
