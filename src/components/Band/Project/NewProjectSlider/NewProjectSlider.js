@@ -63,10 +63,10 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: projectData?.title || "",
+      title: projectData?.title?.toString() || "",
       priority: projectData?.priority || "",
       deadline: projectData?.deadline || "",
-      description: projectData?.description || "",
+      description: projectData?.description?.toString() || "",
     },
     validationSchema: yup.object().shape({
       title: yup.string().required("Project title is required"),
