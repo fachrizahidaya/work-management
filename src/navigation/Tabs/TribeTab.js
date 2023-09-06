@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import BandDashboard from "../../screens/Band/BandDashboard";
+import FeedScreen from "../../screens/Tribe/FeedScreen";
 import { Box, Icon, Image } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native";
-import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
-import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSlider";
-import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";
-import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
-import ProjectTaskScreen from "../../screens/Band/project/project-task";
+import TribeScreenSlider from "../../components/layout/ScreensSlider/TribeScreenSlider";
+import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeSlider";
+import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +15,7 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const BandTab = ({ setSelectedModule }) => {
+const TribeTab = ({ setSelectedModule }) => {
   const [moduleSelectIsOpen, setModuleSelectIsOpen] = useState(false);
   const [searchIsOpen, setSearchIsOpen] = useState(false);
   const [addIsOpen, setAddIsOpen] = useState(false);
@@ -60,7 +57,15 @@ const BandTab = ({ setSelectedModule }) => {
           tabBarShowLabel: false,
           tabBarStyle: { height: 100 },
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
+          tabBarButton: [
+            "My Attendance History",
+            "My Leave Request",
+            "My Reimbursement",
+            "My Payslip",
+            "My Key Performance Indicator",
+            "Calendar",
+            "Contact",
+          ].includes(route.name)
             ? () => {
                 return null;
               }
@@ -68,11 +73,11 @@ const BandTab = ({ setSelectedModule }) => {
         })}
       >
         <Tab.Screen
-          name="Dashboard"
-          component={BandDashboard}
+          name="Feed"
+          component={FeedScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="fbfbfb" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="menu" />} size={size} color="#186688" />
               </Box>
             ),
@@ -96,7 +101,7 @@ const BandTab = ({ setSelectedModule }) => {
               <TouchableOpacity
                 {...props}
                 onPress={() => {
-                  // handleStateToggle("settingSelectIsOpen");
+                  // handleStateToggle("searchIsOpen");
                 }}
               >
                 {props.children}
@@ -140,7 +145,8 @@ const BandTab = ({ setSelectedModule }) => {
           name="Module Selection"
           component={EmptyScreen}
           options={{
-            tabBarIcon: () => <Image source={require("../../assets/icons/band_logo.png")} size={35} alt="band logo" />,
+            tabBarIcon: () => 
+              <Image source={require("../../assets/icons/tribe_logo.png")} size={35} alt="tribe logo" />,
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
@@ -153,21 +159,23 @@ const BandTab = ({ setSelectedModule }) => {
             ),
           }}
         />
-        <Tab.Screen name="Project List" component={ProjectList} />
-
-        <Tab.Screen name="Project Detail" component={ProjectDetailScreen} />
-
-        <Tab.Screen name="Project Task" component={ProjectTaskScreen} />
+        <Tab.Screen name="My Attendance History" component={EmptyScreen} />
+        <Tab.Screen name="My Leave Request" component={EmptyScreen} />
+        <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
+        <Tab.Screen name="My Payslip" component={EmptyScreen} />
+        <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />
+        <Tab.Screen name="Calendar" component={EmptyScreen} />
+        <Tab.Screen name="Contact" component={EmptyScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
-      <BandScreensSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />
+      <TribeScreenSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />
 
-      <AddNewBandSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />
+      <AddNewTribeSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />
 
       <ModuleSelectSlider isOpen={moduleSelectIsOpen} setSelectedModule={setSelectedModule} />
     </>
   );
 };
 
-export default BandTab;
+export default TribeTab;
