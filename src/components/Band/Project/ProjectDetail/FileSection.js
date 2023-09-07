@@ -25,7 +25,7 @@ const rar = "../../../../assets/doc-icons/rar-format.png";
 const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
-const FileSection = ({ projectId }) => {
+const FileSection = ({ projectId, projectData }) => {
   const toast = useToast();
 
   const { data: attachments, refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);

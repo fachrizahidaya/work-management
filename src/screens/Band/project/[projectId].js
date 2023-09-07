@@ -81,7 +81,10 @@ const ProjectDetailScreen = ({ route }) => {
               apiUrl={`/pm/projects/${projectId}`}
               color="red.600"
               successMessage={`${projectData?.title} deleted`}
+              hasSuccessFunc={true}
               onSuccess={() => navigation.navigate("Project List")}
+              header="Delete Project"
+              description="Are you sure to delete this project?"
             />
           </Flex>
 
@@ -116,9 +119,9 @@ const ProjectDetailScreen = ({ route }) => {
             </Button>
           </Flex>
 
-          <FileSection projectId={projectId} />
+          <FileSection projectId={projectId} projectData={projectData} />
 
-          <MemberSection projectId={projectId} />
+          <MemberSection projectId={projectId} projectData={projectData} />
 
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
