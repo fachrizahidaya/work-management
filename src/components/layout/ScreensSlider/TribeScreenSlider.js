@@ -8,7 +8,7 @@ const TribeScreenSlider = ({ isOpen, setIsOpen }) => {
 
   const items = [
     { icons: "sticker-text-outline", title: "Feed", screen: "Feed" },
-    { icons: "update", title: "Attendance Log", screen: "" },
+    { icons: "clipboard-text-clock-outline", title: "Attendance Log", screen: "" },
     { icons: "exit-run", title: "Leave Request", screen: "" },
     { icons: "file-edit-outline", title: "Reimbursement", screen: "" },
     { icons: "signal-cellular-3", title: "My KPI", screen: "" },

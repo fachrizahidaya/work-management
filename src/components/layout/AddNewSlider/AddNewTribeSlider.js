@@ -9,17 +9,25 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
   const [newReimbursementIsOpen, setNewReimbursementIsOpen] = useState(false);
 
   const items = [
+    // {
+    //   icons: "clipboard-clock-outline",
+    //   title: "New Post",
+    // },
     {
-      icons: "plus",
-      title: "New Post",
-    },
-    {
-      icons: "plus",
+      icons: "clipboard-clock-outline",
       title: "New Leave Request",
     },
     {
-      icons: "plus",
+      icons: "clipboard-minus-outline",
       title: "New Reimbursement",
+    },
+    {
+      icons: "clock-outline",
+      title: "Clock in",
+    },
+    {
+      icons: "clock-outline",
+      title: "Clock out",
     },
   ];
 
@@ -33,11 +41,13 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
               <Pressable
                 onPress={() => {
                   setIsOpen(!isOpen);
-                  if (item.title === "New Post") {
-                    setNewFeedIsOpen(!newFeedIsOpen);
-                  } else if (item.title === "New Leave Request") {
+                  if (item.title === "New Leave Request") {
                     setNewLeaveIsOpen(!newLeaveIsOpen);
-                  } else {
+                  }
+                  // else if (item.title === "New Post") {
+                  //   setNewFeedIsOpen(!newFeedIsOpen);
+                  // }
+                  else {
                     setNewReimbursementIsOpen(!newReimbursementIsOpen);
                   }
                 }}
@@ -52,28 +62,47 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
                   borderBottomWidth={1}
                   borderTopWidth={item.icons === "home" ? 1 : 0}
                 >
-                  <Box
-                    bg="#f7f7f7"
-                    borderRadius={5}
-                    style={{ height: 32, width: 32 }}
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
-                  </Box>
-                  <Text key={item.title} fontWeight={700} color="black">
-                    {item.title}
-                  </Text>
+                  {item.title !== "Clock in" && item.title !== "Clock out" ? (
+                    <>
+                      <Box
+                        bg="#f7f7f7"
+                        borderRadius={5}
+                        style={{ height: 32, width: 32 }}
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                      </Box>
+                      <Text key={item.title} fontWeight={700} color="black">
+                        {item.title}
+                      </Text>
+                    </>
+                  ) : (
+                    <Flex
+                      bg="#f7f7f7"
+                      borderRadius={5}
+                      style={{ height: 32, width: "100%" }}
+                      flexDir="row"
+                      gap={25}
+                      alignItems="center"
+                    >
+                      <Box style={{ height: 32, width: 32 }} alignItems="center" justifyContent="center">
+                        <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                      </Box>
+                      <Text key={item.title} fontWeight={700} color="black">
+                        {item.title}
+                      </Text>
+                    </Flex>
+                  )}
                 </Flex>
               </Pressable>
             )}
           />
         </Box>
       </Slide>
-
-      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} />
+      {/* <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} /> */}
     </>
   );
 };
 
-export default AddNewTribeSlider
+export default AddNewTribeSlider;

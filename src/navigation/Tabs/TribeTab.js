@@ -135,7 +135,7 @@ const TribeTab = ({ setSelectedModule }) => {
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="#fbfbfb" borderRadius="full" padding={2} position="fixed">
                 <Icon as={<MaterialCommunityIcons name="cog-outline" />} size={size} color="#186688" />
               </Box>
             ),
@@ -145,8 +145,9 @@ const TribeTab = ({ setSelectedModule }) => {
           name="Module Selection"
           component={EmptyScreen}
           options={{
-            tabBarIcon: () => 
-              <Image source={require("../../assets/icons/tribe_logo.png")} size={35} alt="tribe logo" />,
+            tabBarIcon: () => (
+              <Image source={require("../../assets/icons/tribe_logo.png")} size={35} alt="tribe logo" />
+            ),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
