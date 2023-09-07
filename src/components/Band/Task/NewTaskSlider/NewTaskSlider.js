@@ -55,23 +55,13 @@ const NewTaskSlider = ({ isOpen, setIsOpen, task, submitHandler }) => {
           <Flex gap={17} mt={22}>
             <FormControl isInvalid={formik.errors.title}>
               <FormControl.Label>Task Title</FormControl.Label>
-              <Input
-                style={{ height: 40 }}
-                variant="unstyled"
-                borderWidth={1}
-                borderRadius={15}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
-                placeholder="Input task title..."
-              />
+              <Input onChangeText={(value) => formik.setFieldValue("title", value)} placeholder="Input task title..." />
               <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={formik.errors.description}>
               <FormControl.Label>Description</FormControl.Label>
               <Input
-                variant="unstyled"
-                borderWidth={1}
-                borderRadius={15}
                 multiline
                 h={100}
                 onChangeText={(value) => formik.setFieldValue("description", value)}

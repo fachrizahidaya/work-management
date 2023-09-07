@@ -16,6 +16,14 @@ export const customTheme = extendTheme({
         borderRadius: 15,
       },
     },
+    Input: {
+      baseStyle: {
+        height: 41,
+        borderWidth: 1,
+        borderRadius: 15,
+        variant: "unstyled",
+      },
+    },
   },
   colors: {
     primary: {

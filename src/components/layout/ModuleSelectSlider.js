@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 const ModuleSelectSlider = ({ isOpen, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
+
   return (
     <Slide in={isOpen} placement="bottom" duration={200}>
       <Box
