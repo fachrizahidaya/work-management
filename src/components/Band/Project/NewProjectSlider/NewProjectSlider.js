@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -10,12 +11,25 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
-import { useNavigation } from "@react-navigation/native";
+import { useFetch } from "../../../../hooks/useFetch";
 
 const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
   const { width, height } = Dimensions.get("window");
-  const toast = useToast();
   const navigation = useNavigation();
+  const toast = useToast();
+
+  // State to save editted or created project
+  const [projectId, setProjectId] = useState(null);
+
+  const fetchParams = {
+    page: 1,
+    search: "",
+    status: projectData?.status || "Open",
+    archive: 0,
+    limit: 10,
+  };
+  const { refetch: refetchAllProject } = useFetch("/pm/projects", [], fetchParams);
+  const { refetch: refetchSelectedProject } = useFetch(`/pm/projects/${projectData?.id}`);
 
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -27,10 +41,18 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
           project_id: res.data.data.id,
           user_id: res.data.data.owner_id,
         });
+        setProjectId(res.data.data.id);
       } else {
         // Edit existing project
         await axiosInstance.patch(`/pm/projects/${projectData.id}`, form);
+        setProjectId(projectData.id);
+
+        // Fetch current project's detail again
+        refetchSelectedProject();
       }
+
+      // Refetch all project (with current selected status)
+      refetchAllProject();
       setSubmitting(false);
       setStatus("success");
       toast.show({
@@ -53,10 +75,10 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: projectData?.title || "",
+      title: projectData?.title?.toString() || "",
       priority: projectData?.priority || "",
       deadline: projectData?.deadline || "",
-      description: projectData?.description || "",
+      description: projectData?.description?.toString() || "",
     },
     validationSchema: yup.object().shape({
       title: yup.string().required("Project title is required"),
@@ -73,7 +95,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       setIsOpen(!isOpen);
-      navigation.navigate("Project List");
+      navigation.navigate("Project Detail", { projectId: projectId });
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -104,7 +126,6 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
             <FormControl.Label>Description</FormControl.Label>
             <Input
               value={formik.values.description}
-              multiline
               h={100}
               onChangeText={(value) => formik.setFieldValue("description", value)}
               placeholder="Create a mobile application on iOS and Android devices."

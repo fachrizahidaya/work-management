@@ -42,6 +42,7 @@ const ProjectList = () => {
     setCurrentPage(1);
   }, [status, searchInput]);
 
+  // Refetch project list every time user re-enter the screen
   useFocusEffect(
     useCallback(() => {
       if (firstTimeRef.current) {
