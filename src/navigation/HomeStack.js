@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Header } from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
 import SettingTab from "./Tabs/SettingTab";
+import TribeTab from "./Tabs/TribeTab";
 import ChatRoom from "../screens/Chat/ChatRoom";
 import ChatListScreen from "../screens/Chat/ChatListScreen";
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -22,8 +23,8 @@ const HomeStack = () => {
             return <BandTab setSelectedModule={setSelectedModule} />;
           } else if (selectedModule === "SETTING") {
             return <SettingTab setSelectedModule={setSelectedModule} />;
-            // } else if (selectedModule === "TRIBE") {
-            //   return <TribeTab setSelectedModule={setSelectedModule} />;
+          } else if (selectedModule === "TRIBE") {
+            return <TribeTab setSelectedModule={setSelectedModule} />;
             // } else if (selectedModule === "PIPE") {
             //   return <PipeTab setSelectedModule={setSelectedModule} />;
             // } else if (selectedModule === "COIN") {
