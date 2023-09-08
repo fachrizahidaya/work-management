@@ -18,6 +18,7 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import MemberSection from "../../../components/Band/Project/ProjectDetail/MemberSection";
 import StatusSection from "../../../components/Band/Project/ProjectDetail/StatusSection";
 import FileSection from "../../../components/Band/Project/ProjectDetail/FileSection";
+import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -36,8 +37,16 @@ const ProjectDetailScreen = ({ route }) => {
     setOpenEditForm(true);
   };
 
+  const fetchParams = {
+    page: 1,
+    search: "",
+    status: projectData?.status,
+    archive: 0,
+    limit: 10,
+  };
+
+  const { refetch: refetchProjects } = useFetch("/pm/projects", [], fetchParams);
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
-  const { data: comments } = useFetch(`/pm/projects/${projectId}/comment`);
   const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
 
   useEffect(() => {
@@ -82,7 +91,10 @@ const ProjectDetailScreen = ({ route }) => {
               color="red.600"
               successMessage={`${projectData?.title} deleted`}
               hasSuccessFunc={true}
-              onSuccess={() => navigation.navigate("Project List")}
+              onSuccess={() => {
+                refetchProjects();
+                navigation.navigate("Project List");
+              }}
               header="Delete Project"
               description="Are you sure to delete this project?"
             />
@@ -126,61 +138,7 @@ const ProjectDetailScreen = ({ route }) => {
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
           {tabValue === "comments" ? (
-            <Flex gap={5}>
-              <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
-                <Input variant="unstyled" placeholder="Add comment..." multiline h={20} />
-
-                <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                  <Button>Comment</Button>
-
-                  <Flex flexDir="row" alignItems="center" gap={1}>
-                    <IconButton
-                      size="sm"
-                      borderRadius="full"
-                      icon={
-                        <Icon
-                          as={<MaterialCommunityIcons name="attachment" />}
-                          color="gray.500"
-                          size="lg"
-                          style={{ transform: [{ rotate: "-35deg" }] }}
-                        />
-                      }
-                    />
-                  </Flex>
-                </Flex>
-              </Box>
-
-              {/* Comment list */}
-              <ScrollView style={{ maxHeight: 400 }}>
-                <Box flex={1} minHeight={2}>
-                  <FlashList
-                    data={comments?.data}
-                    keyExtractor={(item) => item.id}
-                    onEndReachedThreshold={0.1}
-                    estimatedItemSize={200}
-                    renderItem={({ item }) => (
-                      <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                        <Avatar
-                          size="xs"
-                          source={{
-                            uri: `https://dev.kolabora-app.com/api-dev/image/${item?.comment_image}/thumb`,
-                          }}
-                        />
-
-                        <Box>
-                          <Flex flexDir="row" gap={1} alignItems="center">
-                            <Text>{item?.comment_name}</Text>
-                            <Text color="#8A9099">{dayjs(item?.comment_time).fromNow()}</Text>
-                          </Flex>
-
-                          <Text>{item?.comments}</Text>
-                        </Box>
-                      </Flex>
-                    )}
-                  />
-                </Box>
-              </ScrollView>
-            </Flex>
+            <CommentInput projectId={projectId} />
           ) : (
             <ScrollView style={{ maxHeight: 400 }}>
               <Box flex={1} minHeight={2}>

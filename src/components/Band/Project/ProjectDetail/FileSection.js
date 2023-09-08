@@ -29,6 +29,7 @@ const FileSection = ({ projectId, projectData }) => {
   const toast = useToast();
 
   const { data: attachments, refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);
+  const { refetch: refetchComments } = useFetch(`/pm/projects/${projectId}/comment`);
 
   /**
    * Handles downloading attachment
@@ -62,6 +63,11 @@ const FileSection = ({ projectId, projectData }) => {
     }
   };
 
+  /**
+   * Check permission (Android only)
+   * @returns {Boolean} - This function returns true or false
+   * after checking the android permission
+   */
   const checkPermissions = async () => {
     try {
       const result = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
@@ -182,6 +188,12 @@ const FileSection = ({ projectId, projectData }) => {
       }
       // Refetch attachments after deletion
       refetchAttachments();
+
+      // If the deleted attachment is from comment
+      // Then refetch comments
+      if (attachmentFrom === "Comment") {
+        refetchComments();
+      }
 
       toast.show({
         render: () => {
