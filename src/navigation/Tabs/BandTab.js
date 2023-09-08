@@ -167,7 +167,11 @@ const BandTab = ({ setSelectedModule }) => {
 
       <AddNewBandSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />
 
-      <ModuleSelectSlider isOpen={moduleSelectIsOpen} setSelectedModule={setSelectedModule} />
+      <ModuleSelectSlider
+        isOpen={moduleSelectIsOpen}
+        setIsOpen={setModuleSelectIsOpen}
+        setSelectedModule={setSelectedModule}
+      />
     </>
   );
 };

@@ -45,8 +45,10 @@ const BandScreensSlider = ({ isOpen, setIsOpen }) => {
   ];
   return (
     <Slide in={isOpen} placement="bottom" duration={200}>
+      <Pressable position="absolute" zIndex={2} width="100%" h="50%" onPress={() => setIsOpen(!isOpen)}></Pressable>
       <Box
         position="absolute"
+        zIndex={3}
         bottom={95} // Adjust this value to position the slide component
         width="100%"
         bgColor="white"

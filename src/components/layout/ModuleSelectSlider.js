@@ -7,17 +7,19 @@ import { useSelector } from "react-redux";
  * @param {boolean} isOpen - Whether the module selection slider is open or closed.
  * @param {function} setSelectedModule - Function to handle the selected module.
  */
-const ModuleSelectSlider = ({ isOpen, setSelectedModule }) => {
+const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
 
   return (
     <Slide in={isOpen} placement="bottom" duration={200}>
+      <Pressable position="absolute" zIndex={2} width="100%" h="70%" onPress={() => setIsOpen(!isOpen)}></Pressable>
       <Box
         position="absolute"
         bottom={95} // Adjust this value to position the slide component
         width="100%"
         bgColor="white"
+        zIndex={3}
       >
         {userSelector?.user_module &&
           userSelector.user_module.map((item, idx) => {
