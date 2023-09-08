@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Flex, Icon, IconButton, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

@@ -7,7 +7,7 @@ dayjs.extend(relativeTime);
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Button, Flex, Icon, IconButton, Input, Menu, Pressable, Skeleton, Text } from "native-base";
+import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -30,6 +30,10 @@ const ProjectDetailScreen = ({ route }) => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const tabs = [{ title: "comments" }, { title: "activity" }];
 
+  const { refetch: refetchProjects } = useFetch("/pm/projects", [], fetchParams);
+  const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
+  const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
+
   const onChangeTab = (value) => {
     setTabValue(value);
   };
@@ -46,13 +50,15 @@ const ProjectDetailScreen = ({ route }) => {
     limit: 10,
   };
 
-  const { refetch: refetchProjects } = useFetch("/pm/projects", [], fetchParams);
-  const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
-  const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
-
   useEffect(() => {
     setProjectData(data?.data);
   }, [data]);
+
+  useEffect(() => {
+    return () => {
+      setTabValue("comments");
+    };
+  }, [projectId]);
 
   return (
     <SafeAreaView style={styles.container}>
