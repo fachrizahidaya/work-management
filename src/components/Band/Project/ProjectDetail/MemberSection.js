@@ -12,6 +12,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const MemberSection = ({ projectId, projectData }) => {
   const toast = useToast();
@@ -97,12 +98,8 @@ const MemberSection = ({ projectId, projectData }) => {
                   style={{ marginBottom: 14 }}
                 >
                   <Flex flexDir="row" alignItems="center" style={{ gap: 14 }}>
-                    <Avatar
-                      source={{
-                        uri: `https://dev.kolabora-app.com/api-dev/image/${item?.member_image}/thumb`,
-                      }}
-                      size="sm"
-                    />
+                    <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
+
                     <Box>
                       <Text fontSize={12} fontWeight={400}>
                         {item?.member_name}

@@ -19,6 +19,7 @@ import MemberSection from "../../../components/Band/Project/ProjectDetail/Member
 import StatusSection from "../../../components/Band/Project/ProjectDetail/StatusSection";
 import FileSection from "../../../components/Band/Project/ProjectDetail/FileSection";
 import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -149,12 +150,7 @@ const ProjectDetailScreen = ({ route }) => {
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                      <Avatar
-                        size="xs"
-                        source={{
-                          uri: `https://dev.kolabora-app.com/api-dev/image/${item?.user_image}/thumb`,
-                        }}
-                      />
+                      <AvatarPlaceholder name={item.user_name} image={item.user_image} />
 
                       <Box>
                         <Flex flexDir="row" gap={1} alignItems="center">
