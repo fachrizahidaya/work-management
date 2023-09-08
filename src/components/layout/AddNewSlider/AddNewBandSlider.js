@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+
 import { Box, FlatList, Flex, Icon, Pressable, Slide, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlider";
 import NewTaskSlider from "../../Band/Task/NewTaskSlider/NewTaskSlider";
 import NewNoteSlider from "../../Band/Note/NewNoteSlider/NewNoteSlider";

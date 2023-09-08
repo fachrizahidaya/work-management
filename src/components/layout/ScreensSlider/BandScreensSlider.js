@@ -1,7 +1,8 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import { Box, FlatList, Flex, Icon, Pressable, Slide, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
 
 const BandScreensSlider = ({ isOpen, setIsOpen }) => {
   const navigation = useNavigation();
