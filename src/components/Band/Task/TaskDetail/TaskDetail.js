@@ -1,30 +1,17 @@
-import { SafeAreaView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Flex,
-  FormControl,
-  HStack,
-  Icon,
-  IconButton,
-  Input,
-  Menu,
-  Slider,
-  Text,
-} from "native-base";
+import { SafeAreaView, TouchableOpacity } from "react-native";
+import { Box, Button, Flex, FormControl, HStack, Icon, IconButton, Input, Menu, Slider, Text } from "native-base";
+import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../hooks/useFetch";
-import { FlashList } from "@shopify/flash-list";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -88,15 +75,11 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
             <FormControl flex={1}>
               <FormControl.Label>ASSIGNED TO</FormControl.Label>
               {selectedTask?.responsible_id ? (
-                <Avatar
-                  source={{
-                    uri: `https://dev.kolabora-app.com/api-dev/image/${selectedTask?.responsible_image}/thumb`,
-                  }}
+                <AvatarPlaceholder
+                  name={selectedTask?.responsible_name}
+                  image={selectedTask?.responsible_image}
                   size="sm"
-                  bgColor="primary.600"
-                >
-                  KSS
-                </Avatar>
+                />
               ) : (
                 <Text>Not assigned</Text>
               )}
@@ -105,15 +88,7 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
             <FormControl flex={1}>
               <FormControl.Label>CREATED BY</FormControl.Label>
               {selectedTask?.owner_id && (
-                <Avatar
-                  source={{
-                    uri: `https://dev.kolabora-app.com/api-dev/image/${selectedTask?.owner_image}/thumb`,
-                  }}
-                  size="sm"
-                  bgColor="primary.600"
-                >
-                  KSS
-                </Avatar>
+                <AvatarPlaceholder name={selectedTask?.owner_name} image={selectedTask?.owner_image} size="sm" />
               )}
             </FormControl>
           </Flex>
@@ -121,22 +96,19 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
           {/* Observers */}
           <FormControl>
             <FormControl.Label>OBSERVER</FormControl.Label>
-            <Center alignSelf="flex-start" pl={5}>
-              <Avatar.Group>
-                {observers?.data.length > 0 &&
-                  observers.data.map((observer) => {
-                    return (
-                      <Avatar
-                        key={observer?.id}
-                        size="sm"
-                        source={{
-                          uri: `https://dev.kolabora-app.com/api-dev/image/${observer?.observer_image}/thumb`,
-                        }}
-                      />
-                    );
-                  })}
-              </Avatar.Group>
-            </Center>
+            <Flex flexDir="row" gap={1}>
+              {observers?.data.length > 0 &&
+                observers.data.map((observer) => {
+                  return (
+                    <AvatarPlaceholder
+                      key={observer.id}
+                      image={observer.observer_image}
+                      name={observer.observer_name}
+                      size="sm"
+                    />
+                  );
+                })}
+            </Flex>
           </FormControl>
 
           {/* Labels */}

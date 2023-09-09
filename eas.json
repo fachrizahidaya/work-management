@@ -7,7 +7,16 @@
       "developmentClient": true,
       "distribution": "internal"
     },
-    "preview": {
+    "simulator": {
+      "ios": {
+        "simulator": true
+      },
+      "distribution": "internal"
+    },
+    "adhoc": {
+      "ios": {
+        "enterpriseProvisioning": "universal"
+      },
       "distribution": "internal"
     },
     "production": {}

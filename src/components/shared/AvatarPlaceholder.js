@@ -36,21 +36,17 @@ const AvatarPlaceholder = ({ image, name, size }) => {
     return alias;
   };
 
-  return (
-    <>
-      {image ? (
-        <Avatar
-          source={{
-            uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
-          }}
-          size={size || "xs"}
-        />
-      ) : (
-        <Avatar size={size || "xs"} bgColor={stringToColor(name)}>
-          {userInitialGenerator()}
-        </Avatar>
-      )}
-    </>
+  return image ? (
+    <Avatar
+      source={{
+        uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
+      }}
+      size={size || "xs"}
+    />
+  ) : (
+    <Avatar size={size || "xs"} bgColor={stringToColor(name)}>
+      {userInitialGenerator()}
+    </Avatar>
   );
 };
 

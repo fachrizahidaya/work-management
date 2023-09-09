@@ -227,7 +227,7 @@ const FileSection = ({ projectId, projectData }) => {
         </Pressable>
       </Flex>
 
-      <ScrollView style={{ maxHeight: 200 }}>
+      <ScrollView style={{ maxHeight: 100 }}>
         <Box flex={1} minHeight={2}>
           <FlashList
             data={attachments?.data}
