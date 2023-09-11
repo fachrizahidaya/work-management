@@ -39,15 +39,6 @@ const FeedScreen = () => {
     fetchPost();
   }, []);
 
-  const postSubmitHandler = async (data) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts`, data);
-      fetchPost();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
@@ -109,7 +100,7 @@ const FeedScreen = () => {
         </ScrollView>
       </SafeAreaView>
 
-      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} onSubmit={postSubmitHandler} />
+      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} />
     </>
   );
 };

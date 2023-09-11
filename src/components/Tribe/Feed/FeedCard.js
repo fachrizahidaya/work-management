@@ -8,8 +8,36 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
+import FeedComment from "./FeedComment/FeedComment";
 
 const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage, onToggleLike, postFetchDone }) => {
+  const [postEditOpen, setPostEditOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [postTotalComment, setPostTotalComment] = useState(0);
+  const [editedPost, setEditedPost] = useState(null);
+  const [postIsFetching, setPostIsFetching] = useState(false);
+  const [postId, setPostId] = useState(null);
+
+  const commentsOpenHandler = (post_id) => {
+    setCommentsOpen(false);
+    setPostId(post_id);
+    const togglePostComment = feeds.find((post) => post.id === post_id);
+    setPostTotalComment(togglePostComment.total_comment);
+  };
+
+  const commentsCloseHandler = () => {
+    setCommentsOpen(false);
+    setPostId(null);
+  };
+
+  const commentSubmitHandler = () => {
+    setPostTotalComment((prevState) => {
+      return prevState + 1;
+    });
+    const referenceIndex = feeds.findIndex((post) => post.id === postId);
+    feeds[referenceIndex]["total_comment"] += 1;
+  };
+
   return (
     <>
       {!feedIsLoading ? (
@@ -26,6 +54,7 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
                   loggedEmployeeId={loggedEmployeeId}
                   loggedEmployeeImage={loggedEmployeeImage}
                   onToggleLike={onToggleLike}
+                  onCommentToggle={commentsOpenHandler}
                   post={item}
                   id={item?.id}
                   employee_name={item?.employee_name}
@@ -35,8 +64,18 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
                   total_like={item?.total_like}
                   total_comment={item?.total_comment}
                   liked_by={item?.liked_by}
+                  attachment={item?.file_path}
                 />
               )}
+            />
+            <FeedComment
+              handleOpen={commentsOpen}
+              handleClose={commentsCloseHandler}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              postId={postId}
+              total_comment={postTotalComment}
+              onSubmit={commentSubmitHandler}
             />
           </ScrollView>
         </>

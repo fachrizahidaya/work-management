@@ -9,10 +9,10 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
   const [newReimbursementIsOpen, setNewReimbursementIsOpen] = useState(false);
 
   const items = [
-    // {
-    //   icons: "clipboard-clock-outline",
-    //   title: "New Post",
-    // },
+    {
+      icons: "clipboard-clock-outline",
+      title: "New Post",
+    },
     {
       icons: "clipboard-clock-outline",
       title: "New Leave Request",
@@ -43,11 +43,9 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
                   setIsOpen(!isOpen);
                   if (item.title === "New Leave Request") {
                     setNewLeaveIsOpen(!newLeaveIsOpen);
-                  }
-                  // else if (item.title === "New Post") {
-                  //   setNewFeedIsOpen(!newFeedIsOpen);
-                  // }
-                  else {
+                  } else if (item.title === "New Post") {
+                    setNewFeedIsOpen(!newFeedIsOpen);
+                  } else {
                     setNewReimbursementIsOpen(!newReimbursementIsOpen);
                   }
                 }}
@@ -100,7 +98,6 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
           />
         </Box>
       </Slide>
-      {/* <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} /> */}
     </>
   );
 };

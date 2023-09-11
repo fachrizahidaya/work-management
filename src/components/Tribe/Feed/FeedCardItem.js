@@ -10,6 +10,7 @@ const FeedCardItem = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
+  onCommentToggle,
   post,
   id,
   employee_name,
@@ -19,6 +20,7 @@ const FeedCardItem = ({
   total_like,
   total_comment,
   liked_by,
+  attachment,
 }) => {
   const [likeAction, setLikeAction] = useState("dislike");
   const [totalLike, setTotalLike] = useState(total_like);
@@ -63,7 +65,7 @@ const FeedCardItem = ({
             </Flex>
           </Box>
           <Image
-            source={require("../../../assets/elon.jpeg")}
+            source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
             borderRadius={15}
             height={200}
             alt="project chart"
@@ -85,7 +87,9 @@ const FeedCardItem = ({
               <Text>{totalLike}</Text>
             </Flex>
             <Flex direction="row" gap={2}>
-              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="black" />
+              <Pressable onPress={() => onCommentToggle(id)}>
+                <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="black" />
+              </Pressable>
               <Text>{total_comment}</Text>
             </Flex>
           </Flex>
