@@ -19,9 +19,14 @@ export const useFetch = (url, dependencies = [], params = {}) => {
    */
   const fetchData = async () => {
     try {
+      if (!url) {
+        return null; // No request should be made when there is no url
+      }
+
       const response = await axiosInstance.get(url, {
         params: params,
       });
+
       return response.data;
     } catch (error) {
       console.log(error);

@@ -41,6 +41,10 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
     if (projectData) {
       setValue(projectData.status);
     }
+
+    return () => {
+      setOpenSelect(false);
+    };
   }, [projectData]);
   return (
     <CustomSelect

@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem";
 
-const TaskList = ({ tasks, isLoading, openDetail }) => {
+const TaskList = ({ tasks, isLoading, openDetail, openEditForm }) => {
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
@@ -48,6 +48,7 @@ const TaskList = ({ tasks, isLoading, openDetail }) => {
                       status={item.status}
                       responsible={item.responsible_name}
                       onPress={openDetail}
+                      openEditForm={openEditForm}
                     />
                   )}
                 />
@@ -90,6 +91,7 @@ const TaskList = ({ tasks, isLoading, openDetail }) => {
                       status={item.status}
                       responsible={item.responsible_name}
                       onPress={openDetail}
+                      openEditForm={openEditForm}
                     />
                   )}
                 />
@@ -133,6 +135,7 @@ const TaskList = ({ tasks, isLoading, openDetail }) => {
                       status={item.status}
                       responsible={item.responsible_name}
                       onPress={openDetail}
+                      openEditForm={openEditForm}
                     />
                   )}
                 />

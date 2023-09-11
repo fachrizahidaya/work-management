@@ -5,19 +5,33 @@ import { Button, Modal, Text, useToast } from "native-base";
 import { ErrorToast, SuccessToast } from "./ToastDialog";
 import axiosInstance from "../../config/api";
 
-const ConfirmationModal = ({ isOpen, setIsOpen, apiUrl, successMessage, color, onSuccess }) => {
+const ConfirmationModal = ({
+  isOpen,
+  setIsOpen,
+  apiUrl,
+  successMessage,
+  color,
+  hasSuccessFunc = false,
+  onSuccess,
+  header,
+  description,
+}) => {
   const toast = useToast();
 
   const onPressHandler = async () => {
     try {
       await axiosInstance.delete(apiUrl);
       setIsOpen(false);
-      onSuccess();
       toast.show({
         render: () => {
           return <SuccessToast message={successMessage} />;
         },
       });
+
+      // If hasSuccessFunc passed then run the available onSuccess function
+      if (hasSuccessFunc) {
+        onSuccess();
+      }
     } catch (error) {
       console.log(error);
       toast.show({
@@ -31,14 +45,14 @@ const ConfirmationModal = ({ isOpen, setIsOpen, apiUrl, successMessage, color, o
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Modal.Content h={200}>
         <Modal.CloseButton />
-        <Modal.Header>Delete Project</Modal.Header>
+        <Modal.Header>{header}</Modal.Header>
         <Modal.Body>
-          <Text>Are you sure to delete this project?</Text>
+          <Text>{description}</Text>
         </Modal.Body>
 
         <Modal.Footer>
           <Button.Group space={2}>
-            <Button bgColor={color} onPress={onPressHandler}>
+            <Button bgColor={color || "red.600"} onPress={onPressHandler}>
               Confirm
             </Button>
 
