@@ -138,14 +138,19 @@ const FileSection = ({ projectId, projectData }) => {
         if (androidPermission) {
           const result = await DocumentPicker.getDocumentAsync({
             copyToCacheDirectory: false,
-            // type: "image/*",
           });
 
           // Check if there is selected file
           if (result) {
             // formData format
             const formData = new FormData();
-            formData.append("attachment", result.assets[0]);
+            formData.append("attachment", {
+              name: result.assets[0].name,
+              size: result.assets[0].size,
+              type: result.assets[0].mimeType,
+              uri: result.assets[0].uri,
+              webkitRelativePath: "",
+            });
             formData.append("project_id", projectId);
 
             // Call upload handler and send formData to the api
@@ -155,14 +160,19 @@ const FileSection = ({ projectId, projectData }) => {
       } else {
         const result = await DocumentPicker.getDocumentAsync({
           copyToCacheDirectory: false,
-          // type: "image/*",
         });
 
         // Check if there is selected file
         if (result) {
           // formData format
           const formData = new FormData();
-          formData.append("attachment", result.assets[0]);
+          formData.append("attachment", {
+            name: result.assets[0].name,
+            size: result.assets[0].size,
+            type: result.assets[0].mimeType,
+            uri: result.assets[0].uri,
+            webkitRelativePath: "",
+          });
           formData.append("project_id", projectId);
 
           // Call upload handler and send formData to the api
