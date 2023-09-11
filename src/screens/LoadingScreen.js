@@ -76,14 +76,14 @@ const LoadingScreen = ({ route }) => {
    */
   const setUserData = async () => {
     try {
-      // Dispatch a login action with the provided user data
-      dispatch(login(userData.userData));
-
       // Store user data in SecureStore
       await SecureStore.setItemAsync("user_data", JSON.stringify(userData.userData));
 
       // Store user token in SecureStore
       await SecureStore.setItemAsync("user_token", userData.userData.access_token);
+
+      // Dispatch a login action with the provided user data
+      dispatch(login(userData.userData));
     } catch (error) {
       // Handle any errors that occur during the process
       throw new Error("Failed to set user data: " + error.message);

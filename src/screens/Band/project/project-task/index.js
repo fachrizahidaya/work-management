@@ -3,35 +3,38 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, useSafeArea, useToast } from "native-base";
+import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import TaskList from "../../../../components/Band/Task/TaskList/TaskList";
 import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
-import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import CustomDrawer from "../../../../components/shared/CustomDrawer";
 import TaskDetail from "../../../../components/Band/Task/TaskDetail/TaskDetail";
 
 const ProjectTaskScreen = ({ route }) => {
   const { height } = Dimensions.get("window");
-  const toast = useToast();
   const { projectId } = route.params;
   const navigation = useNavigation();
   const [view, setView] = useState("Task List");
-  const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [taskFormIsOpen, setTaskFormIsOpen] = useState(false);
+  const [taskDetailIsOpen, setTaskDetailIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [taskToEdit, setTaskToEdit] = useState(null);
 
   const onPressHandler = (task) => {
-    setIsOpen(!isOpen);
+    setTaskDetailIsOpen(!taskDetailIsOpen);
     setSelectedTask(task);
   };
 
   const closeTaskDetailHandler = () => {
-    setIsOpen(!isOpen);
+    setTaskDetailIsOpen(!taskDetailIsOpen);
     setSelectedTask(null);
+  };
+
+  const openEditFormHandler = (task) => {
+    setTaskFormIsOpen(true);
+    setTaskToEdit(task);
   };
 
   const safeAreaProps = useSafeArea({
@@ -40,32 +43,6 @@ const ProjectTaskScreen = ({ route }) => {
 
   const changeView = (value) => {
     setView(value);
-  };
-
-  const submitHandler = async (form, task, status, setSubmitting, setStatus) => {
-    try {
-      await axiosInstance.post("/pm/tasks", {
-        project_id: projectId,
-        status: status,
-        ...form,
-      });
-      setSubmitting(false);
-      setStatus("success");
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`Task saved!`} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
-      });
-    }
   };
 
   const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
@@ -136,7 +113,7 @@ const ProjectTaskScreen = ({ route }) => {
               <Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />
             </Pressable>
 
-            <Button onPress={() => setNewTaskIsOpen(true)}>
+            <Button onPress={() => setTaskFormIsOpen(true)}>
               <Flex flexDir="row" gap={6} alignItems="center" px={2}>
                 <Text color="white">Add</Text>
 
@@ -148,12 +125,26 @@ const ProjectTaskScreen = ({ route }) => {
           </Flex>
         </Flex>
 
-        {view === "Task List" && <TaskList tasks={tasks?.data} isLoading={taskIsLoading} openDetail={onPressHandler} />}
+        {/* Task List view */}
+        {view === "Task List" && (
+          <TaskList
+            tasks={tasks?.data}
+            isLoading={taskIsLoading}
+            openDetail={onPressHandler}
+            openEditForm={openEditFormHandler}
+          />
+        )}
       </ScrollView>
 
-      <NewTaskSlider isOpen={newTaskIsOpen} setIsOpen={setNewTaskIsOpen} submitHandler={submitHandler} />
+      <NewTaskSlider
+        isOpen={taskFormIsOpen}
+        setIsOpen={setTaskFormIsOpen}
+        projectId={projectId}
+        taskData={taskToEdit}
+        setTaskData={setTaskToEdit}
+      />
 
-      <CustomDrawer isOpen={isOpen} height={height}>
+      <CustomDrawer isOpen={taskDetailIsOpen} height={height}>
         <TaskDetail safeAreaProps={safeAreaProps} onClick={closeTaskDetailHandler} selectedTask={selectedTask} />
       </CustomDrawer>
     </SafeAreaView>

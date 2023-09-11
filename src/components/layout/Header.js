@@ -3,8 +3,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { SafeAreaView } from "react-native";
-import { Avatar, Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AvatarPlaceholder from "../shared/AvatarPlaceholder";
 
 const Header = () => {
   const navigation = useNavigation();
@@ -23,15 +24,8 @@ const Header = () => {
         borderColor="#E8E9EB"
       >
         <Flex direction="row" alignItems="center" gap={2}>
-          <Avatar
-            source={{
-              uri: `https://dev.kolabora-app.com/api-dev/image/${userSelector.image}/thumb`,
-            }}
-            size="md"
-            bgColor="transparent"
-          >
-            KSS
-          </Avatar>
+          <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} />
+
           <Box>
             <Text fontWeight={700} fontSize={16} lineHeight={24}>
               {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}

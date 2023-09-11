@@ -15,6 +15,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   // State for the selected date and the displayed value
   const [date, setDate] = useState(new Date());
   const [value, setValue] = useState();
+  // console.log(defaultValue);
 
   // State to control the visibility of the date picker
   const [calendarIsOpen, setCalendarIsOpen] = useState(false);
@@ -65,6 +66,8 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   useEffect(() => {
     if (defaultValue) {
       setValue(defaultValue);
+    } else {
+      setValue();
     }
   }, [defaultValue]);
 

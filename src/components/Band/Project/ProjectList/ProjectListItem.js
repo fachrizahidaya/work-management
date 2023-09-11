@@ -5,9 +5,11 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
-import { Avatar, Box, Flex, Pressable, Text } from "native-base";
+import { Box, Flex, Pressable, Text } from "native-base";
 
-const ProjectListItem = ({ id, title, status, deadline, isArchive, image }) => {
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+
+const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName }) => {
   const navigation = useNavigation();
 
   return (
@@ -33,12 +35,7 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image }) => {
             {isArchive ? "Archived" : status}
           </Text>
 
-          <Avatar
-            source={{
-              uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
-            }}
-            size="xs"
-          />
+          <AvatarPlaceholder name={ownerName} image={image} />
         </Flex>
         <Box
           alignItems="center"
