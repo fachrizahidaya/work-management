@@ -25,10 +25,11 @@ const rar = "../../../../assets/doc-icons/rar-format.png";
 const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
-const FileSection = ({ projectId }) => {
+const FileSection = ({ projectId, projectData }) => {
   const toast = useToast();
 
   const { data: attachments, refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);
+  const { refetch: refetchComments } = useFetch(`/pm/projects/${projectId}/comment`);
 
   /**
    * Handles downloading attachment
@@ -62,6 +63,11 @@ const FileSection = ({ projectId }) => {
     }
   };
 
+  /**
+   * Check permission (Android only)
+   * @returns {Boolean} - This function returns true or false
+   * after checking the android permission
+   */
   const checkPermissions = async () => {
     try {
       const result = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
@@ -132,14 +138,19 @@ const FileSection = ({ projectId }) => {
         if (androidPermission) {
           const result = await DocumentPicker.getDocumentAsync({
             copyToCacheDirectory: false,
-            // type: "image/*",
           });
 
           // Check if there is selected file
           if (result) {
             // formData format
             const formData = new FormData();
-            formData.append("attachment", result.assets[0]);
+            formData.append("attachment", {
+              name: result.assets[0].name,
+              size: result.assets[0].size,
+              type: result.assets[0].mimeType,
+              uri: result.assets[0].uri,
+              webkitRelativePath: "",
+            });
             formData.append("project_id", projectId);
 
             // Call upload handler and send formData to the api
@@ -149,14 +160,19 @@ const FileSection = ({ projectId }) => {
       } else {
         const result = await DocumentPicker.getDocumentAsync({
           copyToCacheDirectory: false,
-          // type: "image/*",
         });
 
         // Check if there is selected file
         if (result) {
           // formData format
           const formData = new FormData();
-          formData.append("attachment", result.assets[0]);
+          formData.append("attachment", {
+            name: result.assets[0].name,
+            size: result.assets[0].size,
+            type: result.assets[0].mimeType,
+            uri: result.assets[0].uri,
+            webkitRelativePath: "",
+          });
           formData.append("project_id", projectId);
 
           // Call upload handler and send formData to the api
@@ -182,6 +198,12 @@ const FileSection = ({ projectId }) => {
       }
       // Refetch attachments after deletion
       refetchAttachments();
+
+      // If the deleted attachment is from comment
+      // Then refetch comments
+      if (attachmentFrom === "Comment") {
+        refetchComments();
+      }
 
       toast.show({
         render: () => {
@@ -215,7 +237,7 @@ const FileSection = ({ projectId }) => {
         </Pressable>
       </Flex>
 
-      <ScrollView style={{ maxHeight: 200 }}>
+      <ScrollView style={{ maxHeight: 100 }}>
         <Box flex={1} minHeight={2}>
           <FlashList
             data={attachments?.data}

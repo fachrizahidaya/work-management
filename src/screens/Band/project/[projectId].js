@@ -7,7 +7,7 @@ dayjs.extend(relativeTime);
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Button, Flex, Icon, IconButton, Input, Menu, Pressable, Skeleton, Text } from "native-base";
+import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -18,6 +18,8 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import MemberSection from "../../../components/Band/Project/ProjectDetail/MemberSection";
 import StatusSection from "../../../components/Band/Project/ProjectDetail/StatusSection";
 import FileSection from "../../../components/Band/Project/ProjectDetail/FileSection";
+import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -28,6 +30,10 @@ const ProjectDetailScreen = ({ route }) => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const tabs = [{ title: "comments" }, { title: "activity" }];
 
+  const { refetch: refetchProjects } = useFetch("/pm/projects", [], fetchParams);
+  const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
+  const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
+
   const onChangeTab = (value) => {
     setTabValue(value);
   };
@@ -36,13 +42,23 @@ const ProjectDetailScreen = ({ route }) => {
     setOpenEditForm(true);
   };
 
-  const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
-  const { data: comments } = useFetch(`/pm/projects/${projectId}/comment`);
-  const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
+  const fetchParams = {
+    page: 1,
+    search: "",
+    status: projectData?.status,
+    archive: 0,
+    limit: 10,
+  };
 
   useEffect(() => {
     setProjectData(data?.data);
   }, [data]);
+
+  useEffect(() => {
+    return () => {
+      setTabValue("comments");
+    };
+  }, [projectId]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,7 +97,13 @@ const ProjectDetailScreen = ({ route }) => {
               apiUrl={`/pm/projects/${projectId}`}
               color="red.600"
               successMessage={`${projectData?.title} deleted`}
-              onSuccess={() => navigation.navigate("Project List")}
+              hasSuccessFunc={true}
+              onSuccess={() => {
+                refetchProjects();
+                navigation.navigate("Project List");
+              }}
+              header="Delete Project"
+              description="Are you sure to delete this project?"
             />
           </Flex>
 
@@ -116,68 +138,14 @@ const ProjectDetailScreen = ({ route }) => {
             </Button>
           </Flex>
 
-          <FileSection projectId={projectId} />
+          <FileSection projectId={projectId} projectData={projectData} />
 
-          <MemberSection projectId={projectId} />
+          <MemberSection projectId={projectId} projectData={projectData} />
 
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
           {tabValue === "comments" ? (
-            <Flex gap={5}>
-              <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
-                <Input variant="unstyled" placeholder="Add comment..." multiline h={20} />
-
-                <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                  <Button>Comment</Button>
-
-                  <Flex flexDir="row" alignItems="center" gap={1}>
-                    <IconButton
-                      size="sm"
-                      borderRadius="full"
-                      icon={
-                        <Icon
-                          as={<MaterialCommunityIcons name="attachment" />}
-                          color="gray.500"
-                          size="lg"
-                          style={{ transform: [{ rotate: "-35deg" }] }}
-                        />
-                      }
-                    />
-                  </Flex>
-                </Flex>
-              </Box>
-
-              {/* Comment list */}
-              <ScrollView style={{ maxHeight: 400 }}>
-                <Box flex={1} minHeight={2}>
-                  <FlashList
-                    data={comments?.data}
-                    keyExtractor={(item) => item.id}
-                    onEndReachedThreshold={0.1}
-                    estimatedItemSize={200}
-                    renderItem={({ item }) => (
-                      <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                        <Avatar
-                          size="xs"
-                          source={{
-                            uri: `https://dev.kolabora-app.com/api-dev/image/${item?.comment_image}/thumb`,
-                          }}
-                        />
-
-                        <Box>
-                          <Flex flexDir="row" gap={1} alignItems="center">
-                            <Text>{item?.comment_name}</Text>
-                            <Text color="#8A9099">{dayjs(item?.comment_time).fromNow()}</Text>
-                          </Flex>
-
-                          <Text>{item?.comments}</Text>
-                        </Box>
-                      </Flex>
-                    )}
-                  />
-                </Box>
-              </ScrollView>
-            </Flex>
+            <CommentInput projectId={projectId} />
           ) : (
             <ScrollView style={{ maxHeight: 400 }}>
               <Box flex={1} minHeight={2}>
@@ -188,12 +156,7 @@ const ProjectDetailScreen = ({ route }) => {
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                      <Avatar
-                        size="xs"
-                        source={{
-                          uri: `https://dev.kolabora-app.com/api-dev/image/${item?.user_image}/thumb`,
-                        }}
-                      />
+                      <AvatarPlaceholder name={item.user_name} image={item.user_image} />
 
                       <Box>
                         <Flex flexDir="row" gap={1} alignItems="center">
