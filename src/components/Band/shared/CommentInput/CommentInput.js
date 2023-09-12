@@ -349,7 +349,9 @@ const CommentInput = ({ taskId, projectId }) => {
         </FormControl>
 
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <FormButton title="Comment" isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} />
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <Text color="white">Comment</Text>
+          </FormButton>
 
           <Flex flexDir="row" alignItems="center" gap={1}>
             <IconButton

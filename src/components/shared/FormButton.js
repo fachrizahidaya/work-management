@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Spinner } from "native-base";
 
-const FormButton = ({ title, color, isSubmitting, onPress, disabled, setLoadingIndicator }) => {
+const FormButton = ({ children, color, isSubmitting, onPress, disabled, setLoadingIndicator }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
   // Update the loading state when the 'isSubmitting' prop changes
@@ -20,7 +20,7 @@ const FormButton = ({ title, color, isSubmitting, onPress, disabled, setLoadingI
       disabled={disabled || isLoading}
       onPress={onPress}
     >
-      {isLoading ? <Spinner size="sm" color="white" /> : title}
+      {isLoading ? <Spinner size="sm" color="white" /> : children}
     </Button>
   );
 };
