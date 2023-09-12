@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -87,7 +87,7 @@ const MemberSection = ({ projectId, projectData }) => {
             <FlashList
               data={members?.data}
               keyExtractor={(item) => item?.id}
-              onEndReachedThreshold={0.1}
+              onEndReachedThreshold={0.2}
               estimatedItemSize={200}
               renderItem={({ item }) => (
                 <Flex
@@ -113,13 +113,28 @@ const MemberSection = ({ projectId, projectData }) => {
                   {userSelector.name === projectData?.owner_name && (
                     <>
                       {item?.member_name !== projectData?.owner_name && (
-                        <Pressable onPress={() => getSelectedMember(item?.id)}>
-                          <Icon
-                            as={<MaterialCommunityIcons name="account-remove-outline" />}
-                            size="md"
-                            color="red.500"
-                          />
-                        </Pressable>
+                        <Menu
+                          trigger={(triggerProps) => {
+                            return (
+                              <Pressable {...triggerProps}>
+                                <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                              </Pressable>
+                            );
+                          }}
+                        >
+                          {item?.member_name !== projectData?.owner_name && (
+                            <Menu.Item onPress={() => getSelectedMember(item.id)}>
+                              <Flex flexDir="row" alignItems="center" gap={2}>
+                                <Icon
+                                  as={<MaterialCommunityIcons name="account-remove-outline" />}
+                                  size="md"
+                                  color="red.600"
+                                />
+                                <Text color="red.600">Remove Member</Text>
+                              </Flex>
+                            </Menu.Item>
+                          )}
+                        </Menu>
                       )}
                     </>
                   )}

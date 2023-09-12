@@ -35,7 +35,7 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
             {isArchive ? "Archived" : status}
           </Text>
 
-          <AvatarPlaceholder name={ownerName} image={image} />
+          <AvatarPlaceholder name={ownerName || "Jason Tatum"} image={image} />
         </Flex>
         <Box
           alignItems="center"

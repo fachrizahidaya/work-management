@@ -4,20 +4,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions, Platform } from "react-native";
-import {
-  Box,
-  Flex,
-  Icon,
-  Slide,
-  Pressable,
-  Text,
-  FormControl,
-  Input,
-  Button,
-  Menu,
-  ScrollView,
-  useToast,
-} from "native-base";
+import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Menu, ScrollView, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -25,8 +12,9 @@ import CustomSelect from "../../../shared/CustomSelect";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
+import FormButton from "../../../shared/FormButton";
 
-const NewTaskSlider = ({ isOpen, setIsOpen, taskData, setTaskData, projectId }) => {
+const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = "Open" }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const [openSelect, setOpenSelect] = useState(false);
@@ -89,19 +77,13 @@ const NewTaskSlider = ({ isOpen, setIsOpen, taskData, setTaskData, projectId }) 
     validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
-      submitHandler(values, "Open", setSubmitting, setStatus);
+      submitHandler(values, selectedStatus, setSubmitting, setStatus);
     },
   });
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      setIsOpen(!isOpen);
-      formik.resetForm();
-
-      // Reset selected task to edit to null
-      if (taskData) {
-        setTaskData(null);
-      }
+      onClose(formik.resetForm);
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -110,18 +92,7 @@ const NewTaskSlider = ({ isOpen, setIsOpen, taskData, setTaskData, projectId }) 
       <Box w={width} height={height} bgColor="white" p={5}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable
-              onPress={() => {
-                setIsOpen(!isOpen);
-
-                // Reset selected task to edit to null
-                if (taskData) {
-                  setTaskData(null);
-                }
-
-                formik.resetForm();
-              }}
-            >
+            <Pressable onPress={() => onClose(formik.resetForm)}>
               <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
             </Pressable>
             <Text fontSize={16} fontWeight={500}>
@@ -198,9 +169,9 @@ const NewTaskSlider = ({ isOpen, setIsOpen, taskData, setTaskData, projectId }) 
               <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
             </FormControl>
 
-            <Button borderRadius={15} onPress={formik.handleSubmit}>
-              {taskData ? "Save" : "Create"}
-            </Button>
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              <Text color="white">{taskData ? "Save" : "Create"}</Text>
+            </FormButton>
           </Flex>
         </ScrollView>
       </Box>
