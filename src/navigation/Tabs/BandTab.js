@@ -9,7 +9,10 @@ import BandDashboard from "../../screens/Band/BandDashboard";
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSlider";
 import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";
+import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
+import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
+import ProjectTaskScreen from "../../screens/Band/project/project-task";
 
 const Tab = createBottomTabNavigator();
 
@@ -53,7 +56,19 @@ const BandTab = ({ setSelectedModule }) => {
 
   return (
     <>
-      <Tab.Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false, tabBarStyle: { height: 100 } }}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarStyle: { height: 100 },
+          // Hide these certain screens from bottom tab navigation
+          tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
+            ? () => {
+                return null;
+              }
+            : undefined,
+        })}
+      >
         <Tab.Screen
           name="Dashboard"
           component={BandDashboard}
@@ -140,6 +155,11 @@ const BandTab = ({ setSelectedModule }) => {
             ),
           }}
         />
+        <Tab.Screen name="Project List" component={ProjectList} />
+
+        <Tab.Screen name="Project Detail" component={ProjectDetailScreen} />
+
+        <Tab.Screen name="Project Task" component={ProjectTaskScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
