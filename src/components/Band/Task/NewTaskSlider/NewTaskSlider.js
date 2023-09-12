@@ -169,11 +169,9 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
               <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
             </FormControl>
 
-            <FormButton
-              title={taskData ? "Save" : "Create"}
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            />
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              <Text color="white">{taskData ? "Save" : "Create"}</Text>
+            </FormButton>
           </Flex>
         </ScrollView>
       </Box>

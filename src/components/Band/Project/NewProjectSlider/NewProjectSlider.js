@@ -144,11 +144,9 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
             <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
           </FormControl>
 
-          <FormButton
-            title={projectData ? "Save" : "Create"}
-            isSubmitting={formik.isSubmitting}
-            onPress={formik.handleSubmit}
-          />
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <Text color="white">{projectData ? "Save" : "Create"}</Text>
+          </FormButton>
         </Flex>
       </Box>
     </Slide>
