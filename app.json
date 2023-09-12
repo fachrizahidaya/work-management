@@ -30,8 +30,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "90191e6d-e247-4731-b2b4-6e9fa82568f4"
+        "projectId": "d6f15ca0-eae2-46de-af2d-b93edf31e91f"
       }
-    }
+    },
+    "owner": "dev.kss"
   }
 }

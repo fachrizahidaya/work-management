@@ -30,7 +30,6 @@ const ProjectDetailScreen = ({ route }) => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const tabs = [{ title: "comments" }, { title: "activity" }];
 
-  const { refetch: refetchProjects } = useFetch("/pm/projects", [], fetchParams);
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
   const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
 
@@ -40,14 +39,6 @@ const ProjectDetailScreen = ({ route }) => {
 
   const openEditFormHandler = () => {
     setOpenEditForm(true);
-  };
-
-  const fetchParams = {
-    page: 1,
-    search: "",
-    status: projectData?.status,
-    archive: 0,
-    limit: 10,
   };
 
   useEffect(() => {
@@ -87,7 +78,9 @@ const ProjectDetailScreen = ({ route }) => {
               }}
             >
               <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>Delete</Menu.Item>
+              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>
+                <Text color="red.600">Delete</Text>
+              </Menu.Item>
             </Menu>
 
             {/* Delete confirmation modal */}
@@ -98,10 +91,7 @@ const ProjectDetailScreen = ({ route }) => {
               color="red.600"
               successMessage={`${projectData?.title} deleted`}
               hasSuccessFunc={true}
-              onSuccess={() => {
-                refetchProjects();
-                navigation.navigate("Project List");
-              }}
+              onSuccess={() => navigation.navigate("Project List")}
               header="Delete Project"
               description="Are you sure to delete this project?"
             />
@@ -178,7 +168,12 @@ const ProjectDetailScreen = ({ route }) => {
         </Flex>
       </ScrollView>
 
-      <NewProjectSlider isOpen={openEditForm} setIsOpen={setOpenEditForm} projectData={projectData} />
+      <NewProjectSlider
+        isOpen={openEditForm}
+        setIsOpen={setOpenEditForm}
+        projectData={projectData}
+        refetchSelectedProject={refetch}
+      />
     </SafeAreaView>
   );
 };

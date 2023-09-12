@@ -6,21 +6,21 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, TouchableOpacity } from "react-native";
 import { Box, Button, Flex, FormControl, HStack, Icon, IconButton, Input, Menu, Slider, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../hooks/useFetch";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
-const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
+const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEditForm }) => {
   const userSelector = useSelector((state) => state.auth);
   const loggedUser = userSelector.id;
   const taskUserRights = [selectedTask?.project_owner_id, selectedTask?.owner_id, selectedTask?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
-  const { data: observers, isLoading: observerIsLoading } = useFetch(`/pm/tasks/${selectedTask?.id}/observer`);
-  const { data: attachments, isLoading: attachmentIsLoading } = useFetch(`/pm/tasks/${selectedTask?.id}/attachment`);
+  const { data: observers } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`);
+  const { data: attachments } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/attachment`);
 
   return (
     <SafeAreaView>
@@ -47,24 +47,36 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
 
               <Button size="sm" variant="outline">
                 <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialIcons name="visibility" />} size={6} mr={1} />
+                  <Icon as={<MaterialCommunityIcons name="eye" />} size={6} mr={1} />
                   <Text>Add Observer</Text>
                 </Flex>
               </Button>
             </HStack>
 
             <HStack space={2}>
-              <IconButton
-                size="lg"
-                borderRadius="full"
-                icon={<Icon as={<MaterialIcons name="keyboard-control" />} color="black" />}
-              />
+              <Menu
+                trigger={(triggerProps) => {
+                  return (
+                    <IconButton
+                      {...triggerProps}
+                      size="lg"
+                      borderRadius="full"
+                      icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
+                    />
+                  );
+                }}
+              >
+                <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
+                <Menu.Item>
+                  <Text color="red.600">Delete</Text>
+                </Menu.Item>
+              </Menu>
 
               <IconButton
+                onPress={onCloseDetail}
                 size="lg"
                 borderRadius="full"
-                icon={<Icon as={<MaterialIcons name="chevron-right" />} color="black" />}
-                onPress={onClick}
+                icon={<Icon as={<MaterialCommunityIcons name="chevron-right" />} color="black" />}
               />
             </HStack>
           </Flex>
@@ -117,7 +129,7 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
             <IconButton
               size="md"
               borderRadius="full"
-              icon={<Icon as={<MaterialIcons name="add" />} color="black" />}
+              icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
               alignSelf="flex-start"
             />
           </FormControl>
@@ -165,7 +177,7 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
 
             <TouchableOpacity>
               <Flex flexDir="row" alignItems="center" gap={3}>
-                <Icon as={<MaterialIcons name="add" />} color="blue.600" size="md" />
+                <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
                 <Text color="blue.600">Add checklist item</Text>
               </Flex>
             </TouchableOpacity>
@@ -197,7 +209,7 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
 
             <TouchableOpacity>
               <Flex flexDir="row" alignItems="center" gap={3}>
-                <Icon as={<MaterialIcons name="add" />} color="blue.600" size="md" />
+                <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
                 <Text color="blue.600">Add attachment</Text>
               </Flex>
             </TouchableOpacity>
@@ -216,7 +228,14 @@ const TaskDetail = ({ safeAreaProps, width, onClick, selectedTask }) => {
                   <IconButton
                     size="sm"
                     borderRadius="full"
-                    icon={<Icon as={<MaterialIcons name="attach-file" />} color="gray.500" size="lg" />}
+                    icon={
+                      <Icon
+                        as={<MaterialCommunityIcons name="attachment" />}
+                        color="gray.500"
+                        size="lg"
+                        style={{ transform: [{ rotate: "-35deg" }] }}
+                      />
+                    }
                   />
                 </Flex>
               </Flex>
