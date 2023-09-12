@@ -35,6 +35,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    // borderWidth: 1,
+    // borderColor: "red",
   },
 });
