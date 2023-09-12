@@ -11,25 +11,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
-import { useFetch } from "../../../../hooks/useFetch";
 
-const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
+const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
   const toast = useToast();
 
   // State to save editted or created project
   const [projectId, setProjectId] = useState(null);
-
-  const fetchParams = {
-    page: 1,
-    search: "",
-    status: projectData?.status || "Open",
-    archive: 0,
-    limit: 10,
-  };
-  const { refetch: refetchAllProject } = useFetch("/pm/projects", [], fetchParams);
-  const { refetch: refetchSelectedProject } = useFetch(`/pm/projects/${projectData?.id}`);
 
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -52,7 +41,6 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData }) => {
       }
 
       // Refetch all project (with current selected status)
-      refetchAllProject();
       setSubmitting(false);
       setStatus("success");
       toast.show({
