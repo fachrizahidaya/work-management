@@ -5,12 +5,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions, Platform } from "react-native";
-import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Select, Button, useToast } from "native-base";
+import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Select, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+import FormButton from "../../../shared/FormButton";
 
 const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
@@ -143,9 +144,11 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
             <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
           </FormControl>
 
-          <Button bgColor="primary.600" borderRadius={15} onPress={formik.handleSubmit}>
-            {projectData ? "Save" : "Create"}
-          </Button>
+          <FormButton
+            title={projectData ? "Save" : "Create"}
+            isSubmitting={formik.isSubmitting}
+            onPress={formik.handleSubmit}
+          />
         </Flex>
       </Box>
     </Slide>

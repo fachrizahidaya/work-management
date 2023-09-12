@@ -2,7 +2,7 @@ import React from "react";
 
 import dayjs from "dayjs";
 
-import { Box, Button, Flex, HStack, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { StyleSheet } from "react-native";
 
@@ -22,7 +22,6 @@ const TaskListItem = ({
   status,
   responsible,
   onPress,
-  openEditForm,
 }) => {
   return (
     <Pressable style={styles.wrapper} onPress={() => onPress(task)}>
@@ -87,17 +86,7 @@ const TaskListItem = ({
           </HStack>
 
           <Flex flexDir="row" alignItems="center" gap={2}>
-            {responsible ? (
-              <AvatarPlaceholder image={image} name={responsible} />
-            ) : (
-              <Button size="sm" variant="outline">
-                Take
-              </Button>
-            )}
-
-            <Pressable onPress={() => openEditForm(task)}>
-              <Icon as={<MaterialCommunityIcons name="pencil-outline" />} />
-            </Pressable>
+            {responsible && <AvatarPlaceholder image={image} name={responsible} />}
           </Flex>
         </Flex>
       </Flex>

@@ -11,26 +11,14 @@ import * as yup from "yup";
 
 import { PermissionsAndroid, Alert, Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Icon,
-  IconButton,
-  Image,
-  Input,
-  Pressable,
-  Text,
-  useToast,
-} from "native-base";
+import { Avatar, Box, Flex, FormControl, Icon, IconButton, Image, Input, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+import FormButton from "../../../shared/FormButton";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -53,7 +41,7 @@ const CommentInput = ({ taskId, projectId }) => {
    * Handle submission of comment for project or task
    * @param {FormData} form - FormData (comment and attachment)
    */
-  const submitComment = async (form) => {
+  const submitComment = async (form, setSubmitting, setStatus) => {
     try {
       // Checking current comment is from project or task
       let apiURL = "";
@@ -73,6 +61,8 @@ const CommentInput = ({ taskId, projectId }) => {
       refetchComments();
       refetchAttachments();
       setFiles([]);
+      setSubmitting(false);
+      setStatus("success");
 
       toast.show({
         render: () => {
@@ -81,6 +71,8 @@ const CommentInput = ({ taskId, projectId }) => {
       });
     } catch (error) {
       console.log(error);
+      setSubmitting(false);
+      setStatus("error");
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -100,7 +92,9 @@ const CommentInput = ({ taskId, projectId }) => {
       comments: yup.string().required("Comment can't be empty"),
     }),
     validateOnChange: true,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -110,8 +104,7 @@ const CommentInput = ({ taskId, projectId }) => {
         formData.append("attachment[]", val);
       });
 
-      submitComment(formData);
-      resetForm();
+      submitComment(formData, setSubmitting, setStatus);
     },
   });
 
@@ -284,6 +277,12 @@ const CommentInput = ({ taskId, projectId }) => {
     };
   }, [projectId]);
 
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+    }
+  }, [formik.isSubmitting, formik.status]);
+
   return (
     <Flex gap={5}>
       {/* Render selected attachments here */}
@@ -343,13 +342,14 @@ const CommentInput = ({ taskId, projectId }) => {
             placeholder="Add comment..."
             multiline
             h={20}
+            value={formik.values.comments}
             onChangeText={(value) => formik.setFieldValue("comments", value)}
           />
           <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
         </FormControl>
 
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <Button onPress={formik.handleSubmit}>Comment</Button>
+          <FormButton title="Comment" isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} />
 
           <Flex flexDir="row" alignItems="center" gap={1}>
             <IconButton

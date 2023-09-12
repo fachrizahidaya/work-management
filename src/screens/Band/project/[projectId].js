@@ -78,7 +78,9 @@ const ProjectDetailScreen = ({ route }) => {
               }}
             >
               <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>Delete</Menu.Item>
+              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>
+                <Text color="red.600">Delete</Text>
+              </Menu.Item>
             </Menu>
 
             {/* Delete confirmation modal */}

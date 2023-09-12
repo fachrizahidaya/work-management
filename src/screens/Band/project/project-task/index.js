@@ -21,20 +21,33 @@ const ProjectTaskScreen = ({ route }) => {
   const [taskDetailIsOpen, setTaskDetailIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("Open");
 
-  const onPressHandler = (task) => {
+  const onPressTaskItem = (task) => {
     setTaskDetailIsOpen(!taskDetailIsOpen);
     setSelectedTask(task);
   };
 
-  const closeTaskDetailHandler = () => {
+  const onCloseTaskDetail = () => {
     setTaskDetailIsOpen(!taskDetailIsOpen);
     setSelectedTask(null);
   };
 
-  const openEditFormHandler = (task) => {
+  const onOpenTaskForm = (task) => {
     setTaskFormIsOpen(true);
     setTaskToEdit(task);
+  };
+
+  const onCloseTaskForm = (resetForm) => {
+    setTaskFormIsOpen(false);
+    setTaskToEdit(null);
+    setSelectedStatus("Open");
+    resetForm();
+  };
+
+  const onOpenTaskFormWithStatus = (status) => {
+    setTaskFormIsOpen(true);
+    setSelectedStatus(status);
   };
 
   const safeAreaProps = useSafeArea({
@@ -130,22 +143,28 @@ const ProjectTaskScreen = ({ route }) => {
           <TaskList
             tasks={tasks?.data}
             isLoading={taskIsLoading}
-            openDetail={onPressHandler}
-            openEditForm={openEditFormHandler}
+            openDetail={onPressTaskItem}
+            openEditForm={onOpenTaskForm}
+            openNewTaskForm={onOpenTaskFormWithStatus}
           />
         )}
       </ScrollView>
 
       <NewTaskSlider
         isOpen={taskFormIsOpen}
-        setIsOpen={setTaskFormIsOpen}
         projectId={projectId}
         taskData={taskToEdit}
-        setTaskData={setTaskToEdit}
+        onClose={onCloseTaskForm}
+        selectedStatus={selectedStatus}
       />
 
       <CustomDrawer isOpen={taskDetailIsOpen} height={height}>
-        <TaskDetail safeAreaProps={safeAreaProps} onClick={closeTaskDetailHandler} selectedTask={selectedTask} />
+        <TaskDetail
+          safeAreaProps={safeAreaProps}
+          onCloseDetail={onCloseTaskDetail}
+          selectedTask={selectedTask}
+          openEditForm={onOpenTaskForm}
+        />
       </CustomDrawer>
     </SafeAreaView>
   );

@@ -12,6 +12,10 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
 
+  const onClose = () => {
+    setNewTaskIsOpen(false);
+  };
+
   const items = [
     {
       icons: "view-grid-outline",
@@ -82,7 +86,7 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
       </Slide>
 
       <NewProjectSlider isOpen={newProjectIsOpen} setIsOpen={setNewProjectIsOpen} />
-      <NewTaskSlider isOpen={newTaskIsOpen} setIsOpen={setNewTaskIsOpen} />
+      <NewTaskSlider isOpen={newTaskIsOpen} onClose={onClose} />
       <NewNoteSlider isOpen={newNoteIsOpen} setIsOpen={setNewNoteIsOpen} />
     </>
   );
