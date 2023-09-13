@@ -7,9 +7,6 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 const FeedCardItem = ({
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  onToggleLike,
   onCommentToggle,
   post,
   id,
@@ -21,6 +18,13 @@ const FeedCardItem = ({
   total_comment,
   liked_by,
   attachment,
+  loggedEmployeeId,
+  loggedEmployeeImage,
+  onToggleLike,
+  handleOpen,
+  handleClose,
+  postId,
+  onSubmit,
 }) => {
   const [likeAction, setLikeAction] = useState("dislike");
   const [totalLike, setTotalLike] = useState(total_like);

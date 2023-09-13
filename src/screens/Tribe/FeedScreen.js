@@ -17,7 +17,8 @@ const FeedScreen = () => {
 
   const fetchMyProfile = async () => {
     try {
-      setMyProfile(profile?.data);
+      const res = await axiosInstance.get("/hr/my-profile");
+      setMyProfile(res.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -25,7 +26,8 @@ const FeedScreen = () => {
 
   const fetchPost = async () => {
     try {
-      setPosts(feeds?.data);
+      const res = await axiosInstance.get("/hr/posts");
+      setPosts(res.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -43,7 +45,7 @@ const FeedScreen = () => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       setTimeout(() => {
-        console.log(posts);
+        console.log("selected post", posts);
       }, 500);
     } catch (err) {
       console.log(err);
@@ -91,10 +93,11 @@ const FeedScreen = () => {
             <FeedCard
               loggedEmployeeId={myProfile?.id}
               loggedEmployeeImage={myProfile?.image}
-              feeds={feeds?.data}
+              posts={posts}
               onToggleLike={postLikeToggleHandler}
               feedIsLoading={feedIsLoading}
               profileIsLoading={profileIsLoading}
+              fetchPost={fetchPost}
             />
           </Flex>
         </ScrollView>

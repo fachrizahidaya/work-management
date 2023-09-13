@@ -76,7 +76,7 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
         {/* Next page button */}
         <Pressable
           style={styles.page}
-          onPress={() => pagination.length > 1 && setCurrentPage(currentPage + 1)}
+          onPress={() => pagination?.length > 1 && setCurrentPage(currentPage + 1)}
           background="#176688"
         >
           <Icon as={<MaterialCommunityIcons name="chevron-right" />} color="white" size="md" />

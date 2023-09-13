@@ -44,8 +44,8 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "jeremy@kolabora.com",
-      password: "Password123!",
+      email: "fachriza@kolabora.com",
+      password: "Masganteng,1605",
     },
     validationSchema: yup.object().shape({
       email: yup.string().email("Please use correct email format").required("Email is required"),

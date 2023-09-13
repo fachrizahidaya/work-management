@@ -10,7 +10,15 @@ import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
 
-const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage, onToggleLike, postFetchDone }) => {
+const FeedCard = ({
+  feedIsLoading,
+  loggedEmployeeId,
+  loggedEmployeeImage,
+  onToggleLike,
+  postFetchDone,
+  fetchPost,
+  posts,
+}) => {
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [postTotalComment, setPostTotalComment] = useState(0);
@@ -19,9 +27,9 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
   const [postId, setPostId] = useState(null);
 
   const commentsOpenHandler = (post_id) => {
-    setCommentsOpen(false);
     setPostId(post_id);
-    const togglePostComment = feeds.find((post) => post.id === post_id);
+    setCommentsOpen(true);
+    const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
 
@@ -34,9 +42,19 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
-    const referenceIndex = feeds.findIndex((post) => post.id === postId);
-    feeds[referenceIndex]["total_comment"] += 1;
+    const referenceIndex = posts.findIndex((post) => post.id === postId);
+    posts[referenceIndex]["total_comment"] += 1;
   };
+
+  useEffect(() => {
+    if (!postFetchDone && postIsFetching && posts) {
+      fetchPost(posts.length, 20, true).then(() => {
+        setPostIsFetching(false);
+      });
+    } else {
+      setPostIsFetching(false);
+    }
+  }, [posts, postIsFetching, postFetchDone]);
 
   return (
     <>
@@ -44,17 +62,13 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
         <>
           <ScrollView flex={3} showsVerticalScrollIndicator={false} bounces={false}>
             <FlashList
-              data={feeds}
+              data={posts}
               onEndReachedThreshold={0.1}
               keyExtractor={(item) => item.id.toString()}
               estimatedItemSize={200}
               renderItem={({ item }) => (
                 <FeedCardItem
                   key={item?.id}
-                  loggedEmployeeId={loggedEmployeeId}
-                  loggedEmployeeImage={loggedEmployeeImage}
-                  onToggleLike={onToggleLike}
-                  onCommentToggle={commentsOpenHandler}
                   post={item}
                   id={item?.id}
                   employee_name={item?.employee_name}
@@ -65,16 +79,25 @@ const FeedCard = ({ feeds, feedIsLoading, loggedEmployeeId, loggedEmployeeImage,
                   total_comment={item?.total_comment}
                   liked_by={item?.liked_by}
                   attachment={item?.file_path}
+                  // like post
+                  loggedEmployeeId={loggedEmployeeId}
+                  loggedEmployeeImage={loggedEmployeeImage}
+                  onToggleLike={onToggleLike}
+                  onCommentToggle={commentsOpenHandler}
+                  // comment post
+                  handleOpen={commentsOpen}
+                  handleClose={commentsCloseHandler}
+                  postId={postId}
+                  total_comments={postTotalComment}
+                  onSubmit={commentSubmitHandler}
                 />
               )}
             />
             <FeedComment
               handleOpen={commentsOpen}
               handleClose={commentsCloseHandler}
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeImage={loggedEmployeeImage}
               postId={postId}
-              total_comment={postTotalComment}
+              total_comments={postTotalComment}
               onSubmit={commentSubmitHandler}
             />
           </ScrollView>

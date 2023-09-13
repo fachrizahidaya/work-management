@@ -43,6 +43,7 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
           "content-type": "multipart/form-data",
         },
       });
+      setIsOpen(!isOpen);
     } catch (err) {
       console.log(err);
     }
@@ -58,7 +59,7 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
     validationSchema: yup.object().shape({
       content: yup.string().required("Content is required"),
     }),
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -66,6 +67,7 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
 
       formData.append("file", image);
       submitHandler(formData);
+      resetForm();
     },
   });
 
