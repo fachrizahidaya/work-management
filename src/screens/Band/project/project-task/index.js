@@ -150,13 +150,15 @@ const ProjectTaskScreen = ({ route }) => {
         )}
       </ScrollView>
 
-      <NewTaskSlider
-        isOpen={taskFormIsOpen}
-        projectId={projectId}
-        taskData={taskToEdit}
-        onClose={onCloseTaskForm}
-        selectedStatus={selectedStatus}
-      />
+      {taskFormIsOpen && (
+        <NewTaskSlider
+          isOpen={taskFormIsOpen}
+          projectId={projectId}
+          taskData={taskToEdit}
+          onClose={onCloseTaskForm}
+          selectedStatus={selectedStatus}
+        />
+      )}
 
       <CustomDrawer isOpen={taskDetailIsOpen} height={height}>
         <TaskDetail

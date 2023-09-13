@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
+// import DocumentPicker from "react-native-document-picker";
 
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
@@ -9,7 +10,7 @@ dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { PermissionsAndroid, Alert, Platform } from "react-native";
+import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Avatar, Box, Flex, FormControl, Icon, IconButton, Image, Input, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -34,8 +35,12 @@ const CommentInput = ({ taskId, projectId }) => {
   const toast = useToast();
   const [files, setFiles] = useState([]);
 
-  const { data: comments, refetch: refetchComments } = useFetch(`/pm/projects/${projectId}/comment`);
-  const { refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);
+  const { data: comments, refetch: refetchComments } = useFetch(
+    projectId ? `/pm/projects/${projectId}/comment` : taskId ? `/pm/tasks/${taskId}/comment` : null
+  );
+  const { refetch: refetchAttachments } = useFetch(
+    projectId ? `/pm/projects/${projectId}/attachment` : taskId ? `/pm/tasks/${taskId}/attachment` : null
+  );
 
   /**
    * Handle submission of comment for project or task
@@ -92,7 +97,7 @@ const CommentInput = ({ taskId, projectId }) => {
       comments: yup.string().required("Comment can't be empty"),
     }),
     validateOnChange: true,
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+    onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
 
       const formData = new FormData();
@@ -114,7 +119,16 @@ const CommentInput = ({ taskId, projectId }) => {
    */
   const deleteComment = async (commentId) => {
     try {
-      await axiosInstance.delete(`/pm/projects/comment/${commentId}`);
+      let apiURL = "";
+
+      if (projectId) {
+        apiURL = `/pm/projects/comment/${commentId}`;
+      } else if (taskId) {
+        apiURL = `/pm/tasks/comment/${commentId}`;
+      }
+
+      await axiosInstance.delete(apiURL);
+
       refetchComments();
       refetchAttachments();
       toast.show({
@@ -133,100 +147,41 @@ const CommentInput = ({ taskId, projectId }) => {
   };
 
   /**
-   * Check permission (Android only)
-   * @returns {Boolean} - This function returns true or false
-   * after checking the android permission
-   */
-  const checkPermissions = async () => {
-    try {
-      const result = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-
-      if (!result) {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-          title: "You need to give storage permission to download and save the file",
-          message: "App needs access to your camera ",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        });
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("You can use the camera");
-          return true;
-        } else {
-          Alert.alert("Error", I18n.t("PERMISSION_ACCESS_FILE"));
-
-          console.log("Camera permission denied");
-          return false;
-        }
-      } else {
-        return true;
-      }
-    } catch (err) {
-      console.warn(err);
-      return false;
-    }
-  };
-
-  /**
    * Select file handler
    */
   const selectFile = async () => {
     try {
-      if (Platform.OS === "android") {
-        // Check permission first for android
-        const androidPermission = await checkPermissions();
+      const result = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
 
-        if (androidPermission) {
-          const result = await DocumentPicker.getDocumentAsync({
-            copyToCacheDirectory: false,
-          });
-
-          // Check if there is selected file
-          if (result) {
-            if (result.assets[0].size < 3000001) {
-              if (!files) {
-                setFiles([
-                  {
-                    name: result.assets[0].name,
-                    size: result.assets[0].size,
-                    type: result.assets[0].mimeType,
-                    uri: result.assets[0].uri,
-                    webkitRelativePath: "",
-                  },
-                ]);
-              } else {
-                setFiles([
-                  ...files,
-                  {
-                    name: result.assets[0].name,
-                    size: result.assets[0].size,
-                    type: result.assets[0].mimeType,
-                    uri: result.assets[0].uri,
-                    webkitRelativePath: "",
-                  },
-                ]);
-              }
-            } else {
-              Alert.alert("Max file size is 3MB");
-            }
-          }
-        }
-      } else {
-        const result = await DocumentPicker.getDocumentAsync({
-          copyToCacheDirectory: false,
-        });
-
-        // Check if there is selected file
-        if (result) {
-          if (result.assets[0].size < 3000001) {
-            if (!files) {
-              setFiles([result.assets[0]]);
-            } else {
-              setFiles([...files, result.assets[0]]);
-            }
+      // Check if there is selected file
+      if (result) {
+        if (result.assets[0].size < 3000001) {
+          if (!files) {
+            setFiles([
+              {
+                name: result.assets[0].name,
+                size: result.assets[0].size,
+                type: result.assets[0].mimeType,
+                uri: result.assets[0].uri,
+                webkitRelativePath: "",
+              },
+            ]);
           } else {
-            Alert.alert("Max file size is 3MB");
+            setFiles([
+              ...files,
+              {
+                name: result.assets[0].name,
+                size: result.assets[0].size,
+                type: result.assets[0].mimeType,
+                uri: result.assets[0].uri,
+                webkitRelativePath: "",
+              },
+            ]);
           }
+        } else {
+          Alert.alert("Max file size is 3MB");
         }
       }
     } catch (error) {

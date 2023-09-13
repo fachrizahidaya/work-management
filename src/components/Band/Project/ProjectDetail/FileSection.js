@@ -4,7 +4,7 @@ import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Alert, PermissionsAndroid, Platform } from "react-native";
+import { Alert } from "react-native";
 import { Box, Flex, Icon, Image, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -63,41 +63,6 @@ const FileSection = ({ projectId }) => {
     }
   };
 
-  /**
-   * Check permission (Android only)
-   * @returns {Boolean} - This function returns true or false
-   * after checking the android permission
-   */
-  const checkPermissions = async () => {
-    try {
-      const result = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-
-      if (!result) {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-          title: "You need to give storage permission to download and save the file",
-          message: "App needs access to your camera ",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        });
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("You can use the camera");
-          return true;
-        } else {
-          Alert.alert("Error", I18n.t("PERMISSION_ACCESS_FILE"));
-
-          console.log("Camera permission denied");
-          return false;
-        }
-      } else {
-        return true;
-      }
-    } catch (err) {
-      console.warn(err);
-      return false;
-    }
-  };
-
   const handleUploadFile = async (formData) => {
     try {
       // Sending the formData to backend
@@ -131,39 +96,13 @@ const FileSection = ({ projectId }) => {
    */
   const selectFile = async () => {
     try {
-      if (Platform.OS === "android") {
-        // Check permission first for android
-        const androidPermission = await checkPermissions();
+      const result = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
 
-        if (androidPermission) {
-          const result = await DocumentPicker.getDocumentAsync({
-            copyToCacheDirectory: false,
-          });
-
-          // Check if there is selected file
-          if (result) {
-            // formData format
-            const formData = new FormData();
-            formData.append("attachment", {
-              name: result.assets[0].name,
-              size: result.assets[0].size,
-              type: result.assets[0].mimeType,
-              uri: result.assets[0].uri,
-              webkitRelativePath: "",
-            });
-            formData.append("project_id", projectId);
-
-            // Call upload handler and send formData to the api
-            handleUploadFile(formData);
-          }
-        }
-      } else {
-        const result = await DocumentPicker.getDocumentAsync({
-          copyToCacheDirectory: false,
-        });
-
-        // Check if there is selected file
-        if (result) {
+      // Check if there is selected file
+      if (result) {
+        if (result.assets[0].size < 3000001) {
           // formData format
           const formData = new FormData();
           formData.append("attachment", {
@@ -177,6 +116,8 @@ const FileSection = ({ projectId }) => {
 
           // Call upload handler and send formData to the api
           handleUploadFile(formData);
+        } else {
+          Alert.alert("Max file size is 3MB");
         }
       }
     } catch (error) {

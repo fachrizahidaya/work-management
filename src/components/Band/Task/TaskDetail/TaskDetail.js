@@ -12,6 +12,7 @@ import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../hooks/useFetch";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import CommentInput from "../../shared/CommentInput/CommentInput";
 
 const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEditForm }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -218,28 +219,7 @@ const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEdi
           {/* Comments */}
           <FormControl>
             <FormControl.Label>COMMENTS</FormControl.Label>
-            <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
-              <Input variant="unstyled" placeholder="Add comment..." multiline h={20} />
-
-              <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                <Button>Comment</Button>
-
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <IconButton
-                    size="sm"
-                    borderRadius="full"
-                    icon={
-                      <Icon
-                        as={<MaterialCommunityIcons name="attachment" />}
-                        color="gray.500"
-                        size="lg"
-                        style={{ transform: [{ rotate: "-35deg" }] }}
-                      />
-                    }
-                  />
-                </Flex>
-              </Flex>
-            </Box>
+            <CommentInput taskId={selectedTask?.id} />
           </FormControl>
         </Flex>
       </ScrollView>
