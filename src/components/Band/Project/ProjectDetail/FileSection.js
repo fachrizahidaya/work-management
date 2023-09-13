@@ -25,7 +25,7 @@ const rar = "../../../../assets/doc-icons/rar-format.png";
 const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
-const FileSection = ({ projectId, projectData }) => {
+const FileSection = ({ projectId }) => {
   const toast = useToast();
 
   const { data: attachments, refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);
@@ -237,7 +237,7 @@ const FileSection = ({ projectId, projectData }) => {
         </Pressable>
       </Flex>
 
-      <ScrollView style={{ maxHeight: 100 }}>
+      <ScrollView style={{ maxHeight: 200 }}>
         <Box flex={1} minHeight={2}>
           <FlashList
             data={attachments?.data}

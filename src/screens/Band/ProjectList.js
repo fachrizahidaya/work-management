@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import _ from "lodash";
 
@@ -10,8 +10,10 @@ import { FlashList } from "@shopify/flash-list";
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProjectList = () => {
+  const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("Open");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
@@ -34,11 +36,21 @@ const ProjectList = () => {
     []
   );
 
-  const { data, isLoading } = useFetch("/pm/projects", dependencies, params);
+  const { data, isLoading, refetch } = useFetch("/pm/projects", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [status, searchInput]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetch();
+    }, [refetch])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
