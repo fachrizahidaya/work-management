@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
-// import DocumentPicker from "react-native-document-picker";
 
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
@@ -327,7 +326,7 @@ const CommentInput = ({ taskId, projectId }) => {
       </Box>
 
       {/* Comment list */}
-      <ScrollView style={{ maxHeight: 400 }}>
+      <ScrollView style={{ maxHeight: 300 }}>
         <Box flex={1} minHeight={2}>
           <FlashList
             data={comments?.data}
