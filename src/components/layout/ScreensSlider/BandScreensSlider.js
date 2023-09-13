@@ -1,11 +1,13 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, FlatList, Flex, Icon, Pressable, Slide, Text } from "native-base";
+import { Dimensions } from "react-native";
+import { Box, FlatList, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const BandScreensSlider = ({ isOpen, setIsOpen }) => {
   const navigation = useNavigation();
+  const { height } = Dimensions.get("window");
 
   const items = [
     {
@@ -45,15 +47,16 @@ const BandScreensSlider = ({ isOpen, setIsOpen }) => {
     },
   ];
   return (
-    <Slide in={isOpen} placement="bottom" duration={200}>
-      <Pressable position="absolute" zIndex={2} width="100%" h="50%" onPress={() => setIsOpen(!isOpen)}></Pressable>
-      <Box
+    <Box>
+      <Pressable
         position="absolute"
-        zIndex={3}
-        bottom={95} // Adjust this value to position the slide component
+        bottom={79}
+        height={height}
         width="100%"
-        bgColor="white"
-      >
+        zIndex={2}
+        onPress={() => setIsOpen(!isOpen)}
+      ></Pressable>
+      <Box position="absolute" zIndex={3} bottom={79} width="100%" bgColor="white">
         <FlatList
           data={items}
           renderItem={({ item }) => (
@@ -90,7 +93,7 @@ const BandScreensSlider = ({ isOpen, setIsOpen }) => {
           )}
         />
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

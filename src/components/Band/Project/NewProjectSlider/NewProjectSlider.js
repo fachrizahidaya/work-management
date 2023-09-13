@@ -89,7 +89,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <Flex flexDir="row" alignItems="center" gap={2}>
           <Pressable onPress={() => setIsOpen(!isOpen)}>
@@ -149,7 +149,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
           </FormButton>
         </Flex>
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

@@ -88,7 +88,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <Flex flexDir="row" alignItems="center" gap={2}>
@@ -175,7 +175,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
           </Flex>
         </ScrollView>
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

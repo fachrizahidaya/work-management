@@ -60,7 +60,7 @@ const BandTab = ({ setSelectedModule }) => {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarShowLabel: false,
-          tabBarStyle: { height: 100 },
+          tabBarStyle: { height: 80 },
           // Hide these certain screens from bottom tab navigation
           tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
             ? () => {
@@ -163,15 +163,17 @@ const BandTab = ({ setSelectedModule }) => {
       </Tab.Navigator>
 
       {/* Sliders */}
-      <BandScreensSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />
+      {screenSelectIsOpen && <BandScreensSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />}
 
-      <AddNewBandSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />
+      {addIsOpen && <AddNewBandSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />}
 
-      <ModuleSelectSlider
-        isOpen={moduleSelectIsOpen}
-        setIsOpen={setModuleSelectIsOpen}
-        setSelectedModule={setSelectedModule}
-      />
+      {moduleSelectIsOpen && (
+        <ModuleSelectSlider
+          isOpen={moduleSelectIsOpen}
+          setIsOpen={setModuleSelectIsOpen}
+          setSelectedModule={setSelectedModule}
+        />
+      )}
     </>
   );
 };

@@ -1,6 +1,9 @@
 import React from "react";
-import { Box, Flex, Image, Pressable, Slide, Text } from "native-base";
+
 import { useSelector } from "react-redux";
+
+import { Dimensions } from "react-native";
+import { Box, Flex, Image, Pressable, Text } from "native-base";
 
 /**
  * @function ModuleSelectSlider
@@ -10,17 +13,22 @@ import { useSelector } from "react-redux";
 const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
+  const { height } = Dimensions.get("window");
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200}>
-      <Pressable position="absolute" zIndex={2} width="100%" h="70%" onPress={() => setIsOpen(!isOpen)}></Pressable>
-      <Box
+    <Box>
+      {/* Invisible layout to close the menu below */}
+      <Pressable
         position="absolute"
-        bottom={95} // Adjust this value to position the slide component
+        bottom={79}
+        height={height}
         width="100%"
-        bgColor="white"
-        zIndex={3}
-      >
+        zIndex={2}
+        onPress={() => setIsOpen(!isOpen)}
+      ></Pressable>
+
+      {/* Menu selection */}
+      <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
         {userSelector?.user_module &&
           userSelector.user_module.map((item, idx) => {
             return (
@@ -53,7 +61,7 @@ const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
             );
           })}
       </Box>
-    </Slide>
+    </Box>
   );
 };
 
