@@ -1,7 +1,8 @@
-import { Avatar, Box, Flex, Text } from "native-base";
+import { Box, Flex, Text } from "native-base";
 import { useEffect } from "react";
 import { useState } from "react";
 import { card } from "../../../../styles/Card";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const FeedCommentReplyItem = ({
   key,
@@ -32,10 +33,10 @@ const FeedCommentReplyItem = ({
   }, [comments]);
 
   return (
-    <Flex flex={1} gap={5} style={card.card}>
+    <Flex pl={5} flex={1} gap={5} style={card.card}>
       <Box flex={1} minHeight={1}>
         <Flex direction="row" gap={4}>
-          <Avatar size="sm" source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${authorImage}/thumb` }} />
+          <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
           <Box>
             <Text fontSize={15} fontWeight={700}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}

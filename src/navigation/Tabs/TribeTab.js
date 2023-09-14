@@ -55,9 +55,10 @@ const TribeTab = ({ setSelectedModule }) => {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarShowLabel: false,
-          tabBarStyle: { height: 100 },
+          tabBarStyle: { height: 80 },
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
+            "My Information",
             "My Attendance History",
             "My Leave Request",
             "My Reimbursement",

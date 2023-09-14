@@ -6,6 +6,8 @@ import { Dimensions, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useEffect } from "react";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import CustomAccordion from "../../../shared/CustomAccordion";
 
 const FeedCommentItem = ({
   key,
@@ -41,7 +43,7 @@ const FeedCommentItem = ({
             }
           });
         }
-        console.log(commentReplies);
+        console.log("reply", commentReplies);
       } catch (err) {
         console.log(err);
       }
@@ -62,10 +64,10 @@ const FeedCommentItem = ({
   }, [comments]);
 
   return (
-    <Flex flex={1} gap={5} style={card.card}>
-      <Box flex={1} minHeight={1}>
+    <Flex mt={1} mb={5} flex={1} gap={3}>
+      <Box flex={1} mt={1} minHeight={1}>
         <Flex direction="row" gap={4}>
-          <Avatar size="sm" source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${authorImage}/thumb` }} />
+          <AvatarPlaceholder image={authorImage} name={author_name} size="sm" />
           <Box>
             <Text fontSize={15} fontWeight={700}>
               {author_name.length > 30 ? author_name.split(" ")[0] : author_name}
@@ -74,11 +76,34 @@ const FeedCommentItem = ({
         </Flex>
       </Box>
       <Text>{comments}</Text>
-      <Flex flexDir="row" gap={5}>
+      <Flex flexDir="row" ml={3} gap={5}>
         <Box>Reply</Box>
         <Pressable onPress={() => fetchReply()}>
-          <Box>View Reply</Box>
+          <Flex flexDir="row">View{total_replies ? ` ${total_replies}` : ""} Reply</Flex>
         </Pressable>
+        {/* <CustomAccordion title={"View Reply"} subTitle={total_replies} hasAction={fetchReply}>
+          <Box>
+            <FlatList
+              data={commentReplies}
+              renderItem={({ item }) => (
+                <FeedCommentReplyItem
+                  key={item.id}
+                  id={item.id}
+                  parent_id={item.parent_id ? item.parent_id : item.id}
+                  loggedEmployeeId={loggedEmployeeId}
+                  authorId={item?.emloyee_id}
+                  authorName={item?.employee_name}
+                  authorImage={item?.employee_image}
+                  author_username={item?.employee_username}
+                  comments={item?.comments}
+                  totalReplies={item?.total_replies}
+                  postId={postId}
+                  onReply={onReply}
+                  />
+                  )}
+                  />
+          </Box>
+        </CustomAccordion> */}
       </Flex>
       {total_replies > 0 && (
         <>
@@ -91,12 +116,12 @@ const FeedCommentItem = ({
                   id={item.id}
                   parent_id={item.parent_id ? item.parent_id : item.id}
                   loggedEmployeeId={loggedEmployeeId}
-                  authorId={item.emloyee_id}
-                  authorName={item.employee_name}
-                  authorImage={item.employee_image}
-                  author_username={item.employee_username}
-                  comments={item.comments}
-                  totalReplies={item.total_replies}
+                  authorId={item?.emloyee_id}
+                  authorName={item?.employee_name}
+                  authorImage={item?.employee_image}
+                  author_username={item?.employee_username}
+                  comments={item?.comments}
+                  totalReplies={item?.total_replies}
                   postId={postId}
                   onReply={onReply}
                 />

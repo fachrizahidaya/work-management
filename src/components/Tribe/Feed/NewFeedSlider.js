@@ -1,18 +1,5 @@
 import { useNavigation } from "@react-navigation/core";
-import {
-  Box,
-  Flex,
-  Icon,
-  Slide,
-  Pressable,
-  Text,
-  FormControl,
-  Input,
-  Select,
-  Button,
-  useToast,
-  Image,
-} from "native-base";
+import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, useToast, Image, Button } from "native-base";
 import { useEffect, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
@@ -23,20 +10,15 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { ErrorToast } from "../../shared/ToastDialog";
+import { SuccessToast } from "../../shared/ToastDialog";
 
-const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
-  const [postId, setPostId] = useState(null);
-  const [uploadedImagePreview, setUploadedImagePreview] = useState(null);
+const NewFeedSlider = ({ isOpen, setIsOpen, fetchPost }) => {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [image, setImage] = useState(null);
   const { width, height } = Dimensions.get("window");
-  const navigation = useNavigation();
   const toast = useToast();
 
-  const { refetch: refetchAllPost } = useFetch("/hr/posts");
-
-  const submitHandler = async (form) => {
+  const postSubmitHandler = async (form) => {
     try {
       await axiosInstance.post("/hr/posts", form, {
         headers: {
@@ -44,6 +26,12 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
         },
       });
       setIsOpen(!isOpen);
+      fetchPost();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Posted succesfuly!`} />;
+        },
+      });
     } catch (err) {
       console.log(err);
     }
@@ -66,12 +54,12 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
       }
 
       formData.append("file", image);
-      submitHandler(formData);
+      postSubmitHandler(formData);
       resetForm();
     },
   });
 
-  const pickImage = async () => {
+  const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -85,7 +73,7 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
       result.assets[0].uri.length
     );
 
-    // Handling for size
+    // Handling for file information
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
 
     if (result) {
@@ -100,10 +88,21 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
   };
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Slide
+      style={styles.container}
+      in={isOpen}
+      placement="bottom"
+      duration={200}
+      marginTop={Platform.OS === "android" ? 101 : 120}
+    >
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
         <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <Pressable
+            onPress={() => {
+              setIsOpen(!isOpen);
+              setImage(null);
+            }}
+          >
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
           </Pressable>
           <Text fontSize={16} fontWeight={500}>
@@ -111,51 +110,72 @@ const NewFeedSlider = ({ isOpen, setIsOpen, onSubmit }) => {
           </Text>
         </Flex>
       </Flex>
-      <Box w={width} h={height} p={5} style={styles.container}>
+      <Box w={width} h={height} p={5}>
         <Flex gap={17} mt={22}>
           <FormControl isInvalid={formik.errors.content}>
             <Input
+              minH={300}
+              maxH={600}
+              position="relative"
               backgroundColor="white"
               variant="unstyled"
               borderWidth={1}
               borderRadius={15}
-              // multiline
-              minH={200}
-              maxH={600}
-              onChangeText={(value) => formik.setFieldValue("content", value)}
               placeholder="Type something"
+              multiline
               textAlignVertical="top"
+              onChangeText={(value) => formik.setFieldValue("content", value)}
               value={formik.values.content}
             />
             <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
-            <Box alignItems="center">
-              {image && <Image source={{ uri: image.uri }} style={{ width: 200, height: 200 }} alt="image selected" />}
-            </Box>
-            <Flex flexDir="row-reverse">
+            {image ? (
+              <Box position="relative" mt={2} alignSelf="center">
+                <Image source={{ uri: image.uri }} style={{ width: 300, height: 250 }} alt="image selected" />
+                <Box
+                  background="#377893"
+                  borderWidth={2}
+                  borderColor="white"
+                  borderRadius="full"
+                  padding="13px"
+                  width={60}
+                  height={60}
+                >
+                  <Pressable bottom={0} right={0} position="absolute" onPress={() => setImage(null)}>
+                    <Icon as={<MaterialCommunityIcons name="trash-can-outline" />} size={10} color="white" />
+                  </Pressable>
+                </Box>
+              </Box>
+            ) : (
+              <Box mt={2} style={styles.containerPicture}>
+                <Text textAlign="center">No Preview Available</Text>
+              </Box>
+            )}
+
+            <Flex top={220} right={3} position="absolute" justifyContent="space-between" flexDir="row">
               <Box
-                bg="#377893"
+                background="#377893"
                 borderWidth={2}
                 borderColor="white"
                 borderRadius="full"
                 padding="13px"
-                width="60px"
-                height="60px"
+                width={60}
+                height={60}
               >
-                <Pressable onPress={formik.handleSubmit}>
-                  <Icon as={<SimpleLineIcons name="paper-plane" />} size={30} color="white" />
+                <Pressable onPress={pickImageHandler}>
+                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="white" />
                 </Pressable>
               </Box>
               <Box
-                bg="#377893"
+                background="#377893"
                 borderWidth={2}
                 borderColor="white"
                 borderRadius="full"
                 padding="13px"
-                width="60px"
-                height="60px"
+                width={60}
+                height={60}
               >
-                <Pressable onPress={pickImage}>
-                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="white" />
+                <Pressable onPress={formik.handleSubmit}>
+                  <Icon as={<SimpleLineIcons name="paper-plane" />} size={30} color="white" />
                 </Pressable>
               </Box>
             </Flex>
@@ -170,6 +190,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",
+  },
+  containerPicture: {
+    width: 300,
+    height: 300,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    alignSelf: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

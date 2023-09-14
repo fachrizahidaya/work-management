@@ -1,12 +1,12 @@
-import { Avatar, Box, Button, Flex, FormControl, Icon, Input, Pressable } from "native-base";
+import { Avatar, Button, FormControl, Input, Pressable } from "native-base";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import axiosInstance from "../../../../config/api";
 import { useEffect } from "react";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
-const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit }) => {
+const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
   const [employees, setEmployees] = useState([]);
 
   const formik = useFormik({
@@ -38,31 +38,33 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
   }, []);
 
   return (
-    <Flex flexDir="row" gap={0} mt={1}>
-      <Avatar size="sm" source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${loggedEmployeeImage}/thumb` }} />
-      <Box>
-        <FormControl isInvalid={formik.errors.comments}>
-          <Input
-            backgroundColor="white"
-            variant="unstyled"
-            borderWidth={1}
-            borderRadius={15}
-            // multiline
-            minH={100}
-            maxH={200}
-            width={300}
-            onChangeText={(value) => formik.setFieldValue("comments", value)}
-            placeholder="Type something"
-            textAlignVertical="top"
-            value={formik.values.comments}
-          />
-          <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
-          <Button alignSelf="flex-end" width={100} size="md" onPress={formik.handleSubmit}>
-            Send
+    <FormControl
+      alignItems="center"
+      pt={2}
+      pb={52}
+      borderTopWidth={1}
+      borderColor="#E8E9EB"
+      isInvalid={formik.errors.comments}
+    >
+      <Input
+        backgroundColor="white"
+        variant="unstyled"
+        multiline
+        minH={50}
+        maxH={100}
+        width={400}
+        onChangeText={(value) => formik.setFieldValue("comments", value)}
+        placeholder="Type something"
+        textAlignVertical="top"
+        value={formik.values.comments}
+        InputRightElement={
+          <Button size="md" onPress={formik.handleSubmit}>
+            Post
           </Button>
-        </FormControl>
-      </Box>
-    </Flex>
+        }
+      />
+      <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
+    </FormControl>
   );
 };
 

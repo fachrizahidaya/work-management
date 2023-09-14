@@ -1,11 +1,16 @@
-import { FlatList } from "native-base";
+import { Box, FlatList, ScrollView } from "native-base";
 import FeedCommentItem from "./FeedCommentItem";
+import { FlashList } from "@shopify/flash-list";
 
-const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestExpandedReply }) => {
+const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestExpandedReply, commentIsLoading }) => {
   return (
-    <>
-      <FlatList
+    <Box flex={1} minHeight={2}>
+      <FlashList
+        inverted
         data={comments}
+        keyExtractor={(item, index) => item.id}
+        onEndReachedThreshold={0.1}
+        estimatedItemSize={200}
         renderItem={({ item }) => (
           <FeedCommentItem
             key={item.id}
@@ -23,7 +28,7 @@ const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestEx
           />
         )}
       />
-    </>
+    </Box>
   );
 };
 

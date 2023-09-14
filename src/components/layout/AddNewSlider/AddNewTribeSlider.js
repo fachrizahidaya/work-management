@@ -1,18 +1,12 @@
 import { Box, FlatList, Flex, Icon, Slide, Pressable, Text } from "native-base";
 import { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import NewFeedSlider from "../../Tribe/Feed/NewFeedSlider";
 
 const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
-  const [newFeedIsOpen, setNewFeedIsOpen] = useState(false);
   const [newLeaveIsOpen, setNewLeaveIsOpen] = useState(false);
   const [newReimbursementIsOpen, setNewReimbursementIsOpen] = useState(false);
 
   const items = [
-    {
-      icons: "clipboard-clock-outline",
-      title: "New Post",
-    },
     {
       icons: "clipboard-clock-outline",
       title: "New Leave Request",
@@ -43,8 +37,6 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
                   setIsOpen(!isOpen);
                   if (item.title === "New Leave Request") {
                     setNewLeaveIsOpen(!newLeaveIsOpen);
-                  } else if (item.title === "New Post") {
-                    setNewFeedIsOpen(!newFeedIsOpen);
                   } else {
                     setNewReimbursementIsOpen(!newReimbursementIsOpen);
                   }

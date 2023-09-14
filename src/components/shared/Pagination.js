@@ -15,7 +15,7 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
 
   // Generate pagination array based on data and current page
   const paginationHandler = () => {
-    const totalPage = data.data.last_page;
+    const totalPage = data?.data?.last_page;
     let arrayPage = [];
 
     if (totalPage > 5) {

@@ -1,23 +1,20 @@
-import { Avatar, Box, Flex, Image, Text, ScrollView, Skeleton, Icon, Pressable } from "native-base";
-import { Dimensions } from "react-native";
-import { card } from "../../../styles/Card";
-import { useSelector } from "react-redux";
+import { ScrollView, Skeleton } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
+import { ActivityIndicator, View } from "react-native";
 
 const FeedCard = ({
-  feedIsLoading,
+  posts,
   loggedEmployeeId,
   loggedEmployeeImage,
+  loggedEmployeeName,
   onToggleLike,
   postFetchDone,
   fetchPost,
-  posts,
+  feedIsLoading,
+  handleEndReached,
 }) => {
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -36,6 +33,8 @@ const FeedCard = ({
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
+    // If return to feed screen, it will refetch Post
+    fetchPost();
   };
 
   const commentSubmitHandler = () => {
@@ -64,8 +63,9 @@ const FeedCard = ({
             <FlashList
               data={posts}
               onEndReachedThreshold={0.1}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item, index) => index}
               estimatedItemSize={200}
+              // onEndReached={() => handleEndReached()}
               renderItem={({ item }) => (
                 <FeedCardItem
                   key={item?.id}
@@ -84,23 +84,19 @@ const FeedCard = ({
                   loggedEmployeeImage={loggedEmployeeImage}
                   onToggleLike={onToggleLike}
                   onCommentToggle={commentsOpenHandler}
-                  // comment post
-                  handleOpen={commentsOpen}
-                  handleClose={commentsCloseHandler}
-                  postId={postId}
-                  total_comments={postTotalComment}
-                  onSubmit={commentSubmitHandler}
                 />
               )}
             />
-            <FeedComment
-              handleOpen={commentsOpen}
-              handleClose={commentsCloseHandler}
-              postId={postId}
-              total_comments={postTotalComment}
-              onSubmit={commentSubmitHandler}
-            />
           </ScrollView>
+          <FeedComment
+            handleOpen={commentsOpen}
+            handleClose={commentsCloseHandler}
+            postId={postId}
+            total_comments={postTotalComment}
+            onSubmit={commentSubmitHandler}
+            loggedEmployeeImage={loggedEmployeeImage}
+            loggedEmployeeName={loggedEmployeeName}
+          />
         </>
       ) : (
         <Skeleton h={40} />

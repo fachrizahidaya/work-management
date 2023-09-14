@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet } from "react-native";
+import { ActivityIndicator, SafeAreaView, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
@@ -14,6 +14,10 @@ const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [postFetchDone, setPostFetchDone] = useState(false);
+  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("post here", posts);
 
   const fetchMyProfile = async () => {
     try {
@@ -24,10 +28,55 @@ const FeedScreen = () => {
     }
   };
 
-  const fetchPost = async () => {
+  const fetchPost = async (offset = 0, limit = 10, fetchMore = false) => {
     try {
-      const res = await axiosInstance.get("/hr/posts");
-      setPosts(res.data.data);
+      const res = await axiosInstance.get(`/hr/posts`, {
+        params: {
+          offset: offset,
+          limit: limit,
+        },
+      });
+      if (!fetchMore) {
+        setPosts(res.data.data);
+        setPostFetchDone(false);
+      } else {
+        setPosts((prevState) => {
+          if (prevState.length !== prevState.length + res.data.data.length) {
+            return [...prevState, ...res.data.data];
+          } else {
+            setPostFetchDone(true);
+            return prevState;
+          }
+        });
+        // setPosts((prevState) => [...prevState, ...res.data.data]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // const fetchMorePosts = () => {
+  //   if (!isLoadingMorePosts && !postFetchDone) {
+  //     setIsLoadingMorePosts(true);
+  //     const nextOffset = currentOffset + 10;
+  //     fetchPost(nextOffset, 10, true)
+  //       .then(() => {
+  //         setIsLoadingMorePosts(false);
+  //         setCurrentOffset(nextOffset);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         setIsLoadingMorePosts(false);
+  //       });
+  //   }
+  // };
+
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      setTimeout(() => {
+        console.log(posts);
+      }, 500);
     } catch (err) {
       console.log(err);
     }
@@ -38,19 +87,16 @@ const FeedScreen = () => {
   }, []);
 
   useEffect(() => {
-    fetchPost();
-  }, []);
-
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      setTimeout(() => {
-        console.log("selected post", posts);
-      }, 500);
-    } catch (err) {
-      console.log(err);
+    if (!postFetchDone) {
+      fetchPost();
     }
-  };
+  }, [postFetchDone]);
+
+  // useEffect(() => {
+  //   if (currentOffset > 0) {
+  //     fetchMorePosts();
+  //   }
+  // }, [currentOffset]);
 
   return (
     <>
@@ -87,23 +133,24 @@ const FeedScreen = () => {
             <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
           </Pressable>
         </Box>
-        <ScrollView px={5} h="100%" showsVerticalScrollIndicator={false}>
-          <Flex flex={1} flexDir="column" gap={5} my={5}>
-            {/* Content here */}
-            <FeedCard
-              loggedEmployeeId={myProfile?.id}
-              loggedEmployeeImage={myProfile?.image}
-              posts={posts}
-              onToggleLike={postLikeToggleHandler}
-              feedIsLoading={feedIsLoading}
-              profileIsLoading={profileIsLoading}
-              fetchPost={fetchPost}
-            />
-          </Flex>
-        </ScrollView>
+
+        <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
+          {/* Content here */}
+          <FeedCard
+            loggedEmployeeId={myProfile?.id}
+            loggedEmployeeImage={myProfile?.image}
+            loggedEmployeeName={myProfile?.name}
+            posts={posts}
+            onToggleLike={postLikeToggleHandler}
+            feedIsLoading={feedIsLoading}
+            profileIsLoading={profileIsLoading}
+            fetchPost={fetchPost}
+            // handleEndReached={fetchMorePosts}
+          />
+        </Flex>
       </SafeAreaView>
 
-      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} />
+      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} fetchPost={fetchPost} />
     </>
   );
 };
