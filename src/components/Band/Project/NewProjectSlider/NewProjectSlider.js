@@ -13,7 +13,7 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 
-const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProject }) => {
+const NewProjectSlider = ({ onClose, isOpen, setIsOpen, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
   const toast = useToast();
@@ -83,16 +83,16 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      setIsOpen(!isOpen);
+      onClose(formik.resetForm);
       navigation.navigate("Project Detail", { projectId: projectId });
     }
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <Pressable onPress={() => onClose(formik.resetForm)}>
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
           </Pressable>
           <Text fontSize={16} fontWeight={500}>
@@ -149,7 +149,7 @@ const NewProjectSlider = ({ isOpen, setIsOpen, projectData, refetchSelectedProje
           </FormButton>
         </Flex>
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

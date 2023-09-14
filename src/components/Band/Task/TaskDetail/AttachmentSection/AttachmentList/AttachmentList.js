@@ -4,17 +4,17 @@ import { Box, Flex, Icon, IconButton, Image, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const AttachmentList = ({ title, size, time, type = "" }) => {
-  const doc = "../../../../../assets/doc-icons/doc-format.png";
-  const gif = "../../../../../assets/doc-icons/gif-format.png";
-  const jpg = "../../../../../assets/doc-icons/jpg-format.png";
-  const key = "../../../../../assets/doc-icons/key-format.png";
-  const other = "../../../../../assets/doc-icons/other-format.png";
-  const pdf = "../../../../../assets/doc-icons/pdf-format.png";
-  const png = "../../../../../assets/doc-icons/png-format.png";
-  const ppt = "../../../../../assets/doc-icons/ppt-format.png";
-  const rar = "../../../../../assets/doc-icons/rar-format.png";
-  const xls = "../../../../../assets/doc-icons/xls-format.png";
-  const zip = "../../../../../assets/doc-icons/zip-format.png";
+  const doc = "../../../../../../assets/doc-icons/doc-format.png";
+  const gif = "../../../../../../assets/doc-icons/gif-format.png";
+  const jpg = "../../../../../../assets/doc-icons/jpg-format.png";
+  const key = "../../../../../../assets/doc-icons/key-format.png";
+  const other = "../../../../../../assets/doc-icons/other-format.png";
+  const pdf = "../../../../../../assets/doc-icons/pdf-format.png";
+  const png = "../../../../../../assets/doc-icons/png-format.png";
+  const ppt = "../../../../../../assets/doc-icons/ppt-format.png";
+  const rar = "../../../../../../assets/doc-icons/rar-format.png";
+  const xls = "../../../../../../assets/doc-icons/xls-format.png";
+  const zip = "../../../../../../assets/doc-icons/zip-format.png";
   return (
     <Flex flexDir="row" justifyContent="space-between">
       <Flex flexDir="row" gap={3} alignItems="center">

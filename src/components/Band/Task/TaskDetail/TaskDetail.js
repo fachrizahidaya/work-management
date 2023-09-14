@@ -3,29 +3,36 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView, TouchableOpacity } from "react-native";
-import { Box, Button, Flex, FormControl, HStack, Icon, IconButton, Input, Menu, Slider, Text } from "native-base";
-import { FlashList } from "@shopify/flash-list";
+import { Dimensions } from "react-native";
+import { Button, Flex, FormControl, HStack, Icon, IconButton, KeyboardAvoidingView, Menu, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
-import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../hooks/useFetch";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
+import AttachmentSection from "./AttachmentSection/AttachmentSection";
+import ChecklistSection from "./ChecklistSection/ChecklistSection";
+import CostSection from "./CostSection/CostSection";
+import LabelSection from "./LabelSection/LabelSection";
+import CommentInput from "../../shared/CommentInput/CommentInput";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 
-const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEditForm }) => {
+const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }) => {
+  const { width } = Dimensions.get("window");
+  const { isKeyboardVisible } = useKeyboardChecker();
   const userSelector = useSelector((state) => state.auth);
   const loggedUser = userSelector.id;
   const taskUserRights = [selectedTask?.project_owner_id, selectedTask?.owner_id, selectedTask?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
-
+  const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
   const { data: observers } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`);
-  const { data: attachments } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/attachment`);
 
   return (
-    <SafeAreaView>
+    <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 100 : 21}>
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-        <Flex {...safeAreaProps} bgColor="white" h="100%" w={width} p={5} gap={5}>
+        <Flex {...safeAreaProps} bgColor="white" p={5} gap={5}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <HStack space={2}>
               <Menu
@@ -45,12 +52,16 @@ const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEdi
                 <Menu.Item>Finish</Menu.Item>
               </Menu>
 
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onPress={toggleMemberModal}>
                 <Flex flexDir="row" alignItems="center" gap={1}>
                   <Icon as={<MaterialCommunityIcons name="eye" />} size={6} mr={1} />
                   <Text>Add Observer</Text>
                 </Flex>
               </Button>
+
+              {memberModalIsOpen && (
+                <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={() => {}} />
+              )}
             </HStack>
 
             <HStack space={2}>
@@ -124,15 +135,7 @@ const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEdi
           </FormControl>
 
           {/* Labels */}
-          <FormControl>
-            <FormControl.Label>LABELS</FormControl.Label>
-            <IconButton
-              size="md"
-              borderRadius="full"
-              icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
-              alignSelf="flex-start"
-            />
-          </FormControl>
+          <LabelSection />
 
           {/* Due date and cost */}
           <Flex flexDir="column" justifyContent="space-between" gap={5}>
@@ -141,17 +144,7 @@ const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEdi
               <CustomDateTimePicker defaultValue={selectedTask?.deadline} disabled={inputIsDisabled} />
             </FormControl>
 
-            <FormControl>
-              <FormControl.Label>COST</FormControl.Label>
-              <Input
-                style={{ height: 40 }}
-                variant="unstyled"
-                borderWidth={1}
-                borderRadius={15}
-                placeholder="Task's cost"
-                editable={false}
-              />
-            </FormControl>
+            <CostSection />
           </Flex>
 
           {/* Description */}
@@ -161,89 +154,23 @@ const TaskDetail = ({ safeAreaProps, width, onCloseDetail, selectedTask, openEdi
           </FormControl>
 
           {/* Checklists */}
-          <FormControl>
-            <FormControl.Label>CHECKLIST ({selectedTask?.checklist_finish_percent})</FormControl.Label>
-            <Slider
-              defaultValue={(selectedTask?.total_checklist / selectedTask?.total_checklist_finish) * 100}
-              size="sm"
-              colorScheme="blue"
-              w="100%"
-            >
-              <Slider.Track bg="blue.100">
-                <Slider.FilledTrack bg="blue.600" />
-              </Slider.Track>
-              <Slider.Thumb borderWidth="0" bg="transparent" display="none"></Slider.Thumb>
-            </Slider>
-
-            <TouchableOpacity>
-              <Flex flexDir="row" alignItems="center" gap={3}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-                <Text color="blue.600">Add checklist item</Text>
-              </Flex>
-            </TouchableOpacity>
-          </FormControl>
+          <ChecklistSection
+            checklistFinishPercent={selectedTask?.checklist_finish_percent}
+            totalChecklist={selectedTask?.total_checklist}
+            totalChecklistFinish={selectedTask?.total_checklist_finish}
+          />
 
           {/* Attachments */}
-          <Flex gap={2}>
-            <FormControl>
-              <FormControl.Label>ATTACHMENTS</FormControl.Label>
-              <ScrollView style={{ maxHeight: 200 }}>
-                <Box flex={1} minHeight={2}>
-                  <FlashList
-                    data={attachments?.data}
-                    keyExtractor={(item) => item?.id}
-                    onEndReachedThreshold={0.1}
-                    estimatedItemSize={200}
-                    renderItem={({ item }) => (
-                      <AttachmentList
-                        title={item?.file_name}
-                        size={item?.file_size}
-                        time={item?.uploaded_at}
-                        type={item?.mime_type}
-                      />
-                    )}
-                  />
-                </Box>
-              </ScrollView>
-            </FormControl>
-
-            <TouchableOpacity>
-              <Flex flexDir="row" alignItems="center" gap={3}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-                <Text color="blue.600">Add attachment</Text>
-              </Flex>
-            </TouchableOpacity>
-          </Flex>
+          <AttachmentSection taskId={selectedTask?.id} />
 
           {/* Comments */}
           <FormControl>
             <FormControl.Label>COMMENTS</FormControl.Label>
-            <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
-              <Input variant="unstyled" placeholder="Add comment..." multiline h={20} />
-
-              <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                <Button>Comment</Button>
-
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <IconButton
-                    size="sm"
-                    borderRadius="full"
-                    icon={
-                      <Icon
-                        as={<MaterialCommunityIcons name="attachment" />}
-                        color="gray.500"
-                        size="lg"
-                        style={{ transform: [{ rotate: "-35deg" }] }}
-                      />
-                    }
-                  />
-                </Flex>
-              </Flex>
-            </Box>
+            <CommentInput taskId={selectedTask?.id} />
           </FormControl>
         </Flex>
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
