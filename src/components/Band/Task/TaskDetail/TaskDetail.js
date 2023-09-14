@@ -16,6 +16,8 @@ import ChecklistSection from "./ChecklistSection/ChecklistSection";
 import CostSection from "./CostSection/CostSection";
 import LabelSection from "./LabelSection/LabelSection";
 import CommentInput from "../../shared/CommentInput/CommentInput";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 
 const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }) => {
   const { width } = Dimensions.get("window");
@@ -24,7 +26,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
   const loggedUser = userSelector.id;
   const taskUserRights = [selectedTask?.project_owner_id, selectedTask?.owner_id, selectedTask?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
-
+  const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
   const { data: observers } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`);
 
   return (
@@ -50,12 +52,16 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
                 <Menu.Item>Finish</Menu.Item>
               </Menu>
 
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onPress={toggleMemberModal}>
                 <Flex flexDir="row" alignItems="center" gap={1}>
                   <Icon as={<MaterialCommunityIcons name="eye" />} size={6} mr={1} />
                   <Text>Add Observer</Text>
                 </Flex>
               </Button>
+
+              {memberModalIsOpen && (
+                <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={() => {}} />
+              )}
             </HStack>
 
             <HStack space={2}>

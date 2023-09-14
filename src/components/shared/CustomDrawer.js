@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingBottom: 105,
+    paddingBottom: Platform.OS === "android" ? 105 : 125,
   },
 });

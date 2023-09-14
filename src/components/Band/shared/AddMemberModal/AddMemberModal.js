@@ -6,7 +6,7 @@ import { Box, Modal } from "native-base";
 import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 
-const AddMemberModal = ({ isOpen, setIsOpen, onPressHandler }) => {
+const AddMemberModal = ({ isOpen, onClose, onPressHandler }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
   const userFetchParameters = {
@@ -32,7 +32,7 @@ const AddMemberModal = ({ isOpen, setIsOpen, onPressHandler }) => {
   }, [data?.data?.data]);
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>New Member</Modal.Header>
