@@ -41,6 +41,10 @@ const ProjectDetailScreen = ({ route }) => {
     setOpenEditForm(true);
   };
 
+  const onCloseEditForm = () => {
+    setOpenEditForm(false);
+  };
+
   useEffect(() => {
     setProjectData(data?.data);
   }, [data]);
@@ -171,9 +175,9 @@ const ProjectDetailScreen = ({ route }) => {
       {openEditForm && (
         <ProjectForm
           isOpen={openEditForm}
-          setIsOpen={setOpenEditForm}
           projectData={projectData}
           refetchSelectedProject={refetch}
+          onClose={onCloseEditForm}
         />
       )}
     </SafeAreaView>

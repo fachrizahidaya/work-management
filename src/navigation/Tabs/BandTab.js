@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { Box, Icon, Image } from "native-base";
@@ -13,6 +12,7 @@ import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../../screens/Band/project/project-task";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,36 +21,41 @@ function EmptyScreen() {
 }
 
 const BandTab = ({ setSelectedModule }) => {
-  const [moduleSelectIsOpen, setModuleSelectIsOpen] = useState(false);
-  const [searchIsOpen, setSearchIsOpen] = useState(false);
-  const [addIsOpen, setAddIsOpen] = useState(false);
-  const [screenSelectIsOpen, setScreenSelectIsOpen] = useState(false);
+  const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
+  const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
+  const {
+    isOpen: menuScreenSliderIsOpen,
+    close: closeMenuScreenSlider,
+    toggle: toggleMenuScreenSlider,
+  } = useDisclosure(false);
+  const { isOpen: searchSliderIsOpen, close: closeSearchSlider, toggle: toggleSearchSlider } = useDisclosure(false);
 
   /**
-   * Toggles the specified state and resets other states to false.
+   * Toggles the specified slider to open or close
+   * If one slider is open then the reset of sliders are closed
    * @param {string} stateToToggle - The state key to toggle.
    */
   const handleStateToggle = (stateToToggle) => {
     if (stateToToggle === "moduleSelectIsOpen") {
-      setModuleSelectIsOpen((prevState) => !prevState);
-      setSearchIsOpen(false);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen(false);
+      toggleModuleSlider();
+      closeSearchSlider();
+      closeAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "searchIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen((prevState) => !prevState);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen(false);
+      closeModuleSlider();
+      toggleSearchSlider();
+      closeAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "addIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen(false);
-      setAddIsOpen((prevState) => !prevState);
-      setScreenSelectIsOpen(false);
+      closeModuleSlider();
+      closeSearchSlider();
+      toggleAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "screenSelectIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen(false);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen((prevState) => !prevState);
+      closeModuleSlider();
+      closeSearchSlider();
+      closeAddSlider();
+      toggleMenuScreenSlider();
     }
   };
 
@@ -163,17 +168,11 @@ const BandTab = ({ setSelectedModule }) => {
       </Tab.Navigator>
 
       {/* Sliders */}
-      {screenSelectIsOpen && <BandScreensSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />}
+      {menuScreenSliderIsOpen && <BandScreensSlider toggle={toggleMenuScreenSlider} />}
 
-      {addIsOpen && <AddNewBandSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />}
+      {addSliderIsOpen && <AddNewBandSlider toggle={toggleAddSlider} />}
 
-      {moduleSelectIsOpen && (
-        <ModuleSelectSlider
-          isOpen={moduleSelectIsOpen}
-          setIsOpen={setModuleSelectIsOpen}
-          setSelectedModule={setSelectedModule}
-        />
-      )}
+      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
     </>
   );
 };

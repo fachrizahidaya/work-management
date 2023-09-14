@@ -5,7 +5,7 @@ import { Dimensions } from "react-native";
 import { Box, FlatList, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const BandScreensSlider = ({ isOpen, setIsOpen }) => {
+const BandScreensSlider = ({ toggle }) => {
   const navigation = useNavigation();
   const { height } = Dimensions.get("window");
 
@@ -48,14 +48,7 @@ const BandScreensSlider = ({ isOpen, setIsOpen }) => {
   ];
   return (
     <Box>
-      <Pressable
-        position="absolute"
-        bottom={79}
-        height={height}
-        width="100%"
-        zIndex={2}
-        onPress={() => setIsOpen(!isOpen)}
-      ></Pressable>
+      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
       <Box position="absolute" zIndex={3} bottom={79} width="100%" bgColor="white">
         <FlatList
           data={items}
@@ -63,7 +56,7 @@ const BandScreensSlider = ({ isOpen, setIsOpen }) => {
             <Pressable
               onPress={() => {
                 navigation.navigate(item.screen);
-                setIsOpen(!isOpen);
+                toggle();
               }}
             >
               <Flex

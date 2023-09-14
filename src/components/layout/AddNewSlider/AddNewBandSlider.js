@@ -8,14 +8,22 @@ import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlid
 import NewTaskSlider from "../../Band/Task/NewTaskSlider/NewTaskSlider";
 import NewNoteSlider from "../../Band/Note/NewNoteSlider/NewNoteSlider";
 
-const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
+const AddNewBandSlider = ({ toggle }) => {
   const { height } = Dimensions.get("window");
   const [newProjectIsOpen, setNewProjectIsOpen] = useState(false);
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
 
-  const onClose = () => {
+  const onCloseTaskForm = () => {
     setNewTaskIsOpen(false);
+  };
+
+  const onCloseProjectForm = () => {
+    setNewProjectIsOpen(false);
+  };
+
+  const onCloseNoteForm = () => {
+    setNewNoteIsOpen(false);
   };
 
   const items = [
@@ -35,21 +43,13 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
   return (
     <>
       <Box>
-        <Pressable
-          position="absolute"
-          bottom={79}
-          height={height}
-          width="100%"
-          zIndex={2}
-          onPress={() => setIsOpen(!isOpen)}
-        ></Pressable>
+        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
         <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
           <FlatList
             data={items}
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  // setIsOpen(!isOpen);
                   if (item.title === "New Project") {
                     setNewProjectIsOpen(!newProjectIsOpen);
                   } else if (item.title === "New Task | ad hoc") {
@@ -88,9 +88,9 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
         </Box>
       </Box>
 
-      {newProjectIsOpen && <NewProjectSlider isOpen={newProjectIsOpen} setIsOpen={setNewProjectIsOpen} />}
-      {newTaskIsOpen && <NewTaskSlider isOpen={newTaskIsOpen} onClose={onClose} />}
-      {newNoteIsOpen && <NewNoteSlider isOpen={newNoteIsOpen} setIsOpen={setNewNoteIsOpen} />}
+      {newProjectIsOpen && <NewProjectSlider onClose={onCloseProjectForm} />}
+      {newTaskIsOpen && <NewTaskSlider onClose={onCloseTaskForm} />}
+      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} />}
     </>
   );
 };

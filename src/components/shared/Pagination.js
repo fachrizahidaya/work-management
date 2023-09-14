@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { StyleSheet } from "react-native";
 import { Center, Flex, Icon, Pressable, Text } from "native-base";
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Pagination;
+export default memo(Pagination);

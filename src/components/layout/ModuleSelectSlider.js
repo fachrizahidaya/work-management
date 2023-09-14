@@ -10,7 +10,7 @@ import { Box, Flex, Image, Pressable, Text } from "native-base";
  * @param {boolean} isOpen - Whether the module selection slider is open or closed.
  * @param {function} setSelectedModule - Function to handle the selected module.
  */
-const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
+const ModuleSelectSlider = ({ toggle, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
   const { height } = Dimensions.get("window");
@@ -18,21 +18,19 @@ const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
   return (
     <Box>
       {/* Invisible layout to close the menu below */}
-      <Pressable
-        position="absolute"
-        bottom={79}
-        height={height}
-        width="100%"
-        zIndex={2}
-        onPress={() => setIsOpen(!isOpen)}
-      ></Pressable>
+      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
 
       {/* Menu selection */}
       <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
         {userSelector?.user_module &&
           userSelector.user_module.map((item, idx) => {
             return (
-              <Pressable key={idx} onPress={() => setSelectedModule(item.module_name)}>
+              <Pressable
+                key={idx}
+                onPress={() => {
+                  setSelectedModule(item.module_name);
+                }}
+              >
                 <Flex
                   flexDir="row"
                   alignItems="center"
