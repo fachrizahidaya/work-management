@@ -13,14 +13,14 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const MemberSection = ({ projectId, projectData }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
-  const [memberModalIsOpen, setMemberModalIsOpen] = useState(false);
   const [deleteMemberModalIsOpen, setDeleteMemberModalIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState({});
-
+  const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
   const { data: members, refetch: refetchMember } = useFetch(`/pm/projects/${projectId}/member`);
 
   const getSelectedMember = (id) => {
@@ -71,14 +71,14 @@ const MemberSection = ({ projectId, projectData }) => {
           justifyContent="center"
           p={2}
           borderRadius={10}
-          onPress={() => setMemberModalIsOpen(true)}
+          onPress={toggleMemberModal}
         >
           <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
         </Pressable>
       </Flex>
 
       {memberModalIsOpen && (
-        <AddMemberModal isOpen={memberModalIsOpen} setIsOpen={setMemberModalIsOpen} onPressHandler={addMember} />
+        <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={addMember} />
       )}
 
       {projectData && (

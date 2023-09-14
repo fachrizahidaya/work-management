@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Flex, Image, Skeleton, Text } from "native-base";
 import { card } from "../../../../styles/Card";
@@ -43,4 +43,4 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
   );
 };
 
-export default ProjectAndTaskCard;
+export default memo(ProjectAndTaskCard);

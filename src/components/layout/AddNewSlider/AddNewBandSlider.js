@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 
-import { Box, FlatList, Flex, Icon, Pressable, Slide, Text } from "native-base";
+import { Dimensions } from "react-native";
+import { Box, FlatList, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlider";
 import NewTaskSlider from "../../Band/Task/NewTaskSlider/NewTaskSlider";
 import NewNoteSlider from "../../Band/Note/NewNoteSlider/NewNoteSlider";
 
-const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
+const AddNewBandSlider = ({ toggle }) => {
+  const { height } = Dimensions.get("window");
   const [newProjectIsOpen, setNewProjectIsOpen] = useState(false);
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
 
-  const onClose = () => {
+  const onCloseTaskForm = () => {
     setNewTaskIsOpen(false);
+  };
+
+  const onCloseProjectForm = () => {
+    setNewProjectIsOpen(false);
+  };
+
+  const onCloseNoteForm = () => {
+    setNewNoteIsOpen(false);
   };
 
   const items = [
@@ -32,21 +42,14 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
   ];
   return (
     <>
-      <Slide in={isOpen} placement="bottom" duration={200}>
-        <Pressable position="absolute" zIndex={2} width="100%" h="80%" onPress={() => setIsOpen(!isOpen)}></Pressable>
-        <Box
-          position="absolute"
-          bottom={95} // Adjust this value to position the slide component
-          width="100%"
-          bgColor="white"
-          zIndex={3}
-        >
+      <Box>
+        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
+        <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
           <FlatList
             data={items}
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  setIsOpen(!isOpen);
                   if (item.title === "New Project") {
                     setNewProjectIsOpen(!newProjectIsOpen);
                   } else if (item.title === "New Task | ad hoc") {
@@ -83,11 +86,11 @@ const AddNewBandSlider = ({ isOpen, setIsOpen }) => {
             )}
           />
         </Box>
-      </Slide>
+      </Box>
 
-      <NewProjectSlider isOpen={newProjectIsOpen} setIsOpen={setNewProjectIsOpen} />
-      <NewTaskSlider isOpen={newTaskIsOpen} onClose={onClose} />
-      <NewNoteSlider isOpen={newNoteIsOpen} setIsOpen={setNewNoteIsOpen} />
+      {newProjectIsOpen && <NewProjectSlider onClose={onCloseProjectForm} />}
+      {newTaskIsOpen && <NewTaskSlider onClose={onCloseTaskForm} />}
+      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} />}
     </>
   );
 };

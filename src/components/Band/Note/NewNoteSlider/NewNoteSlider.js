@@ -1,18 +1,20 @@
 import React from "react";
-import { Dimensions, Platform } from "react-native";
-import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Select, Button } from "native-base";
+
+import { Dimensions } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, Button } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import CustomSelect from "../../../shared/CustomSelect";
 
-const NewNoteSlider = ({ isOpen, setIsOpen }) => {
+const NewNoteSlider = ({ onClose }) => {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <Pressable onPress={() => onClose()}>
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
           </Pressable>
           <Text fontSize={16} fontWeight={500}>
@@ -44,8 +46,7 @@ const NewNoteSlider = ({ isOpen, setIsOpen }) => {
               borderWidth={1}
               borderRadius={15}
               multiline
-              minH={200}
-              maxH={400}
+              h={200}
               // onChangeText={(value) => formik.setFieldValue("email", value)}
               placeholder="Create a mobile application on iOS and Android devices."
             />
@@ -57,7 +58,7 @@ const NewNoteSlider = ({ isOpen, setIsOpen }) => {
           </Button>
         </Flex>
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

@@ -13,7 +13,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
-import NewProjectSlider from "../../../components/Band/Project/NewProjectSlider/NewProjectSlider";
+import ProjectForm from "../../../components/Band/Project/NewProjectSlider/NewProjectSlider";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import MemberSection from "../../../components/Band/Project/ProjectDetail/MemberSection";
 import StatusSection from "../../../components/Band/Project/ProjectDetail/StatusSection";
@@ -39,6 +39,10 @@ const ProjectDetailScreen = ({ route }) => {
 
   const openEditFormHandler = () => {
     setOpenEditForm(true);
+  };
+
+  const onCloseEditForm = () => {
+    setOpenEditForm(false);
   };
 
   useEffect(() => {
@@ -168,12 +172,14 @@ const ProjectDetailScreen = ({ route }) => {
         </Flex>
       </ScrollView>
 
-      <NewProjectSlider
-        isOpen={openEditForm}
-        setIsOpen={setOpenEditForm}
-        projectData={projectData}
-        refetchSelectedProject={refetch}
-      />
+      {openEditForm && (
+        <ProjectForm
+          isOpen={openEditForm}
+          projectData={projectData}
+          refetchSelectedProject={refetch}
+          onClose={onCloseEditForm}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -21,14 +21,10 @@ const BandDashboard = () => {
   const data = {
     labels: ["Open", "On Progress", "Finish"],
     // total tasks divided by task on that status length
-    data: [openTasks / sumAllTasks, onProgressTasks / sumAllTasks, finishTasks / sumAllTasks],
-    colors: ["#176688", "#fcd241", "#FF965D"],
-  };
-
-  const emptyData = {
-    labels: ["Open", "On Progress", "Finish"],
-    // total tasks divided by task on that status length
-    data: [0, 0, 0],
+    data:
+      sumAllTasks !== 0
+        ? [openTasks / sumAllTasks, onProgressTasks / sumAllTasks, finishTasks / sumAllTasks]
+        : [0, 0, 0],
     colors: ["#176688", "#fcd241", "#FF965D"],
   };
 
@@ -57,12 +53,7 @@ const BandDashboard = () => {
           />
 
           {!tasksThisYearIsLoading ? (
-            <ProgressChartCard
-              data={sumAllTasks !== 0 ? data : emptyData}
-              open={openTasks}
-              onProgress={onProgressTasks}
-              finish={finishTasks}
-            />
+            <ProgressChartCard data={data} open={openTasks} onProgress={onProgressTasks} finish={finishTasks} />
           ) : (
             <Skeleton height={300} />
           )}

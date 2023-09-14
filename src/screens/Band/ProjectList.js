@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import _ from "lodash";
 
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
@@ -13,13 +13,13 @@ import Pagination from "../../components/shared/Pagination";
 import { useFocusEffect } from "@react-navigation/native";
 
 const ProjectList = () => {
+  const { height } = Dimensions.get("window");
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("Open");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
 
   const dependencies = [status, currentPage, searchInput];
-
   const params = {
     page: currentPage,
     search: searchInput,
@@ -105,7 +105,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={Platform.OS === "ios" ? 400 : 250}>
+            <Box h={Platform.OS === "ios" ? 400 : height - 465}>
               <FlashList
                 data={data?.data.data}
                 keyExtractor={(item) => item.id}
