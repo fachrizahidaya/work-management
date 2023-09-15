@@ -36,7 +36,7 @@ const MemberSection = ({ projectId, projectData }) => {
 
   /**
    * Add member to project handler
-   * @param {Object} user - selected user to add to project
+   * @param {string} userId - selected user id to add to project
    */
   const addMember = async (userId) => {
     try {
