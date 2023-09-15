@@ -9,8 +9,10 @@ import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { SuccessToast } from "../../shared/ToastDialog";
+import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 
 const NewFeedSlider = ({ isOpen, setIsOpen, fetchPost }) => {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
@@ -54,10 +56,36 @@ const NewFeedSlider = ({ isOpen, setIsOpen, fetchPost }) => {
       }
 
       formData.append("file", image);
-      postSubmitHandler(formData);
-      resetForm();
+      if (values.type === "Public") {
+        postSubmitHandler(formData);
+        resetForm();
+      } else {
+        if (values.end_date) {
+          postSubmitHandler(formData);
+          resetForm();
+        } else {
+          throw new Error("For Announcement type, end date is required");
+        }
+      }
     },
   });
+
+  const announcementToggleHandler = () => {
+    if (formik.values.type === "Public") {
+      formik.setFieldValue("type", "Announcement");
+    } else {
+      formik.setFieldValue("type", "Public");
+      formik.setFieldValue("end_date", "");
+    }
+  };
+
+  const dateDialogOpenHandler = () => {
+    setDateDialogOpen(true);
+  };
+
+  const dateDialogCloseHandler = () => {
+    setDateDialogOpen(false);
+  };
 
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -152,6 +180,32 @@ const NewFeedSlider = ({ isOpen, setIsOpen, fetchPost }) => {
             )}
 
             <Flex top={220} right={3} position="absolute" justifyContent="space-between" flexDir="row">
+              <Box
+                background="#377893"
+                borderWidth={2}
+                borderColor="white"
+                borderRadius="full"
+                padding="13px"
+                width={60}
+                height={60}
+              >
+                <Pressable onPress={pickImageHandler}>
+                  <Icon as={<MaterialIcons name="campaign" />} size={30} color="white" />
+                </Pressable>
+              </Box>
+              <Box
+                background="#377893"
+                borderWidth={2}
+                borderColor="white"
+                borderRadius="full"
+                padding="13px"
+                width={60}
+                height={60}
+              >
+                <Pressable onPress={pickImageHandler}>
+                  <Icon as={<MaterialCommunityIcons name="calendar-month-outline" />} size={30} color="white" />
+                </Pressable>
+              </Box>
               <Box
                 background="#377893"
                 borderWidth={2}
