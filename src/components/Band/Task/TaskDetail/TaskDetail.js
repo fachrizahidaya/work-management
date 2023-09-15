@@ -4,7 +4,18 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
-import { Button, Flex, FormControl, HStack, Icon, IconButton, KeyboardAvoidingView, Menu, Text } from "native-base";
+import {
+  Button,
+  Flex,
+  FormControl,
+  HStack,
+  Icon,
+  IconButton,
+  KeyboardAvoidingView,
+  Menu,
+  Text,
+  useToast,
+} from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -18,17 +29,47 @@ import LabelSection from "./LabelSection/LabelSection";
 import CommentInput from "../../shared/CommentInput/CommentInput";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
+import axiosInstance from "../../../../config/api";
+import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 
 const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }) => {
   const { width } = Dimensions.get("window");
+  const toast = useToast();
   const { isKeyboardVisible } = useKeyboardChecker();
   const userSelector = useSelector((state) => state.auth);
   const loggedUser = userSelector.id;
   const taskUserRights = [selectedTask?.project_owner_id, selectedTask?.owner_id, selectedTask?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
   const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
-  const { data: observers } = useFetch(selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`);
+  const { data: observers, refetch: refetchObservers } = useFetch(
+    selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`
+  );
 
+  /**
+   * Handle assign observer to selected task
+   * @param {*} userId - selected user id to add as observer
+   */
+  const addObserverToTask = async (userId) => {
+    try {
+      await axiosInstance.post("/pm/tasks/observer", {
+        task_id: selectedTask?.id,
+        user_id: userId,
+      });
+      refetchObservers();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`New member added`} />;
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
   return (
     <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 100 : 21}>
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
@@ -60,7 +101,11 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
               </Button>
 
               {memberModalIsOpen && (
-                <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={() => {}} />
+                <AddMemberModal
+                  isOpen={memberModalIsOpen}
+                  onClose={closeMemberModal}
+                  onPressHandler={addObserverToTask}
+                />
               )}
             </HStack>
 
@@ -77,6 +122,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
                   );
                 }}
               >
+                <Menu.Item>Take task</Menu.Item>
                 <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
                 <Menu.Item>
                   <Text color="red.600">Delete</Text>
