@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -31,8 +31,9 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+import TaskMenuSection from "./TaskMenuSection/TaskMenuSection";
 
-const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }) => {
+const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, refetch }) => {
   const { width } = Dimensions.get("window");
   const toast = useToast();
   const { isKeyboardVisible } = useKeyboardChecker();
@@ -41,8 +42,13 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
   const taskUserRights = [selectedTask?.project_owner_id, selectedTask?.owner_id, selectedTask?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
   const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
+
   const { data: observers, refetch: refetchObservers } = useFetch(
     selectedTask?.id && `/pm/tasks/${selectedTask?.id}/observer`
+  );
+
+  const { data: responsible, refetch: refetchResponsible } = useFetch(
+    selectedTask?.id && `/pm/tasks/${selectedTask?.id}/responsible`
   );
 
   /**
@@ -52,7 +58,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
   const addObserverToTask = async (userId) => {
     try {
       await axiosInstance.post("/pm/tasks/observer", {
-        task_id: selectedTask?.id,
+        task_id: selectedTask.id,
         user_id: userId,
       });
       refetchObservers();
@@ -70,6 +76,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
       });
     }
   };
+
   return (
     <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 100 : 21}>
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
@@ -109,33 +116,14 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
               )}
             </HStack>
 
-            <HStack space={2}>
-              <Menu
-                trigger={(triggerProps) => {
-                  return (
-                    <IconButton
-                      {...triggerProps}
-                      size="lg"
-                      borderRadius="full"
-                      icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
-                    />
-                  );
-                }}
-              >
-                <Menu.Item>Take task</Menu.Item>
-                <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
-                <Menu.Item>
-                  <Text color="red.600">Delete</Text>
-                </Menu.Item>
-              </Menu>
-
-              <IconButton
-                onPress={onCloseDetail}
-                size="lg"
-                borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="chevron-right" />} color="black" />}
-              />
-            </HStack>
+            <TaskMenuSection
+              selectedTask={selectedTask}
+              onCloseDetail={onCloseDetail}
+              openEditForm={openEditForm}
+              refetchAllTasks={refetch}
+              responsible={responsible}
+              refetchResponsible={refetchResponsible}
+            />
           </Flex>
           <Text fontSize={20}>{selectedTask?.title}</Text>
 
@@ -143,10 +131,10 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
           <Flex flexDir="row">
             <FormControl flex={1}>
               <FormControl.Label>ASSIGNED TO</FormControl.Label>
-              {selectedTask?.responsible_id ? (
+              {responsible?.data?.length > 0 ? (
                 <AvatarPlaceholder
-                  name={selectedTask?.responsible_name}
-                  image={selectedTask?.responsible_image}
+                  name={responsible?.data[0]?.responsible_name}
+                  image={responsible?.data[0]?.responsible_image}
                   size="sm"
                 />
               ) : (
@@ -220,4 +208,4 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm }
   );
 };
 
-export default TaskDetail;
+export default memo(TaskDetail);

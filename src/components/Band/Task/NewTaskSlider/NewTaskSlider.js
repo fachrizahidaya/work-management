@@ -14,7 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
 
-const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }) => {
+const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", setSelectedTask }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const [openSelect, setOpenSelect] = useState(false);
@@ -35,12 +35,15 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
         });
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
+        const res = await refetchCurrentTask();
+        setSelectedTask(res.data.data);
       }
       setSubmitting(false);
       setStatus("success");
 
       // Refetch tasks
       refetchAllTasks();
+
       toast.show({
         render: () => {
           return <SuccessToast message={`Task saved!`} />;

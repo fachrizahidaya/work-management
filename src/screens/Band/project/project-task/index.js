@@ -59,7 +59,7 @@ const ProjectTaskScreen = ({ route }) => {
   };
 
   const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
-  const { data: tasks, isLoading: taskIsLoading } = useFetch(`/pm/tasks/project/${projectId}`);
+  const { data: tasks, isLoading: taskIsLoading, refetch: refetchTasks } = useFetch(`/pm/tasks/project/${projectId}`);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -155,8 +155,9 @@ const ProjectTaskScreen = ({ route }) => {
           isOpen={taskFormIsOpen}
           projectId={projectId}
           taskData={taskToEdit}
-          onClose={onCloseTaskForm}
           selectedStatus={selectedStatus}
+          onClose={onCloseTaskForm}
+          setSelectedTask={setSelectedTask}
         />
       )}
 
@@ -166,6 +167,7 @@ const ProjectTaskScreen = ({ route }) => {
           onCloseDetail={onCloseTaskDetail}
           selectedTask={selectedTask}
           openEditForm={onOpenTaskForm}
+          refetch={refetchTasks}
         />
       </CustomDrawer>
     </SafeAreaView>
