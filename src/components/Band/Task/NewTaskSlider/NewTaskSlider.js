@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Dimensions, Platform } from "react-native";
-import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Menu, ScrollView, useToast } from "native-base";
+import { Dimensions } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Menu, ScrollView, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -14,7 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
 
-const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = "Open" }) => {
+const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const [openSelect, setOpenSelect] = useState(false);
@@ -88,7 +88,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <Flex flexDir="row" alignItems="center" gap={2}>
@@ -175,7 +175,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
           </Flex>
         </ScrollView>
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

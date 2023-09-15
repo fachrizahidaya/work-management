@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Dimensions } from "react-native";
 import { Box, Divider, Flex, Text } from "native-base";
 import { ProgressChart } from "react-native-chart-kit";
@@ -19,6 +19,7 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false, // optional
   };
+
   return (
     <Flex flexDir="column" style={card.card}>
       <Text fontSize={20}>This Year Tasks</Text>
@@ -69,4 +70,4 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   );
 };
 
-export default ProgressChartCard;
+export default memo(ProgressChartCard);

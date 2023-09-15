@@ -49,9 +49,9 @@ const SettingScreen = () => {
   ];
 
   return (
-    <Box w={width} style={{ height: Platform.OS === "android" ? height - 178 : height - 220 }}>
+    <Box w={width} style={{ height: Platform.OS === "android" ? height - 130 : height - 220 }}>
       <ScrollView flex={1} showsVerticalScrollIndicator={false} bounces={false}>
-        <Flex bgColor="white" p={5} gap={33}>
+        <Flex bgColor="white" p={5} pb={10} gap={33}>
           <Text fontSize={16} fontWeight={500}>
             Settings
           </Text>

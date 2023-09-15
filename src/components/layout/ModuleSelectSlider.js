@@ -1,30 +1,36 @@
 import React from "react";
-import { Box, Flex, Image, Pressable, Slide, Text } from "native-base";
+
 import { useSelector } from "react-redux";
+
+import { Dimensions } from "react-native";
+import { Box, Flex, Image, Pressable, Text } from "native-base";
 
 /**
  * @function ModuleSelectSlider
  * @param {boolean} isOpen - Whether the module selection slider is open or closed.
  * @param {function} setSelectedModule - Function to handle the selected module.
  */
-const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
+const ModuleSelectSlider = ({ toggle, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
+  const { height } = Dimensions.get("window");
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200}>
-      <Pressable position="absolute" zIndex={2} width="100%" h="70%" onPress={() => setIsOpen(!isOpen)}></Pressable>
-      <Box
-        position="absolute"
-        bottom={95} // Adjust this value to position the slide component
-        width="100%"
-        bgColor="white"
-        zIndex={3}
-      >
+    <Box>
+      {/* Invisible layout to close the menu below */}
+      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
+
+      {/* Menu selection */}
+      <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
         {userSelector?.user_module &&
           userSelector.user_module.map((item, idx) => {
             return (
-              <Pressable key={idx} onPress={() => setSelectedModule(item.module_name)}>
+              <Pressable
+                key={idx}
+                onPress={() => {
+                  setSelectedModule(item.module_name);
+                }}
+              >
                 <Flex
                   flexDir="row"
                   alignItems="center"
@@ -53,7 +59,7 @@ const ModuleSelectSlider = ({ isOpen, setIsOpen, setSelectedModule }) => {
             );
           })}
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

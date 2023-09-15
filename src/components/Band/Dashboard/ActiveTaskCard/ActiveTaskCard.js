@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 
 import { Button, Flex, Text } from "native-base";
 
@@ -51,4 +51,4 @@ const ActiveTaskCard = () => {
   );
 };
 
-export default ActiveTaskCard;
+export default memo(ActiveTaskCard);
