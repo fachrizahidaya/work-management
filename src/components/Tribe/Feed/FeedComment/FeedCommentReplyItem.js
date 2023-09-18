@@ -19,6 +19,7 @@ const FeedCommentReplyItem = ({
   authorImage,
 }) => {
   const [filteredComment, setFilteredComment] = useState();
+
   const filterComment = () => {
     const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     setFilteredComment(() => {

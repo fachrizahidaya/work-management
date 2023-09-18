@@ -6,18 +6,19 @@ import axiosInstance from "../../config/api";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import FeedCard from "../../components/Tribe/Feed/FeedCard";
 import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const FeedScreen = () => {
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
   const { data: feeds, isLoading: feedIsLoading } = useFetch("/hr/posts");
-  const [newFeedIsOpen, setNewFeedIsOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [postFetchDone, setPostFetchDone] = useState(false);
   const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  console.log("post here", posts);
+  const [fetchIsDone, setFetchIsDone] = useState(false);
 
   const fetchMyProfile = async () => {
     try {
@@ -38,7 +39,7 @@ const FeedScreen = () => {
       });
       if (!fetchMore) {
         setPosts(res.data.data);
-        setPostFetchDone(false);
+        setPostFetchDone(true);
       } else {
         setPosts((prevState) => {
           if (prevState.length !== prevState.length + res.data.data.length) {
@@ -48,28 +49,12 @@ const FeedScreen = () => {
             return prevState;
           }
         });
-        // setPosts((prevState) => [...prevState, ...res.data.data]);
       }
+      return res.data.data;
     } catch (err) {
       console.log(err);
     }
   };
-
-  // const fetchMorePosts = () => {
-  //   if (!isLoadingMorePosts && !postFetchDone) {
-  //     setIsLoadingMorePosts(true);
-  //     const nextOffset = currentOffset + 10;
-  //     fetchPost(nextOffset, 10, true)
-  //       .then(() => {
-  //         setIsLoadingMorePosts(false);
-  //         setCurrentOffset(nextOffset);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         setIsLoadingMorePosts(false);
-  //       });
-  //   }
-  // };
 
   const postLikeToggleHandler = async (post_id, action) => {
     try {
@@ -91,12 +76,6 @@ const FeedScreen = () => {
       fetchPost();
     }
   }, [postFetchDone]);
-
-  // useEffect(() => {
-  //   if (currentOffset > 0) {
-  //     fetchMorePosts();
-  //   }
-  // }, [currentOffset]);
 
   return (
     <>
@@ -127,7 +106,7 @@ const FeedScreen = () => {
         >
           <Pressable
             onPress={() => {
-              setNewFeedIsOpen(!newFeedIsOpen);
+              toggleNewFeed();
             }}
           >
             <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
@@ -145,12 +124,12 @@ const FeedScreen = () => {
             feedIsLoading={feedIsLoading}
             profileIsLoading={profileIsLoading}
             fetchPost={fetchPost}
-            // handleEndReached={fetchMorePosts}
+            // handleEndReached={fetchPost}
           />
         </Flex>
       </SafeAreaView>
 
-      <NewFeedSlider isOpen={newFeedIsOpen} setIsOpen={setNewFeedIsOpen} fetchPost={fetchPost} />
+      {newFeedIsOpen && <NewFeedSlider toggle={toggleNewFeed} fetchPost={fetchPost} />}
     </>
   );
 };

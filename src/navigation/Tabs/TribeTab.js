@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDisclosure } from "../../hooks/useDisclosure";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FeedScreen from "../../screens/Tribe/FeedScreen";
 import { Box, Icon, Image } from "native-base";
@@ -16,10 +17,14 @@ function EmptyScreen() {
 }
 
 const TribeTab = ({ setSelectedModule }) => {
-  const [moduleSelectIsOpen, setModuleSelectIsOpen] = useState(false);
-  const [searchIsOpen, setSearchIsOpen] = useState(false);
-  const [addIsOpen, setAddIsOpen] = useState(false);
-  const [screenSelectIsOpen, setScreenSelectIsOpen] = useState(false);
+  const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
+  const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
+  const { isOpen: searchSliderIsOpen, close: closeSearchSlider, toggle: toggleSearchSlider } = useDisclosure(false);
+  const {
+    isOpen: menuScreenSliderIsOpen,
+    close: closeMenuScreenSlider,
+    toggle: toggleMenuScreenSlider,
+  } = useDisclosure(false);
 
   /**
    * Toggles the specified state and resets other states to false.
@@ -27,25 +32,25 @@ const TribeTab = ({ setSelectedModule }) => {
    */
   const handleStateToggle = (stateToToggle) => {
     if (stateToToggle === "moduleSelectIsOpen") {
-      setModuleSelectIsOpen((prevState) => !prevState);
-      setSearchIsOpen(false);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen(false);
+      toggleModuleSlider();
+      closeSearchSlider();
+      closeAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "searchIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen((prevState) => !prevState);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen(false);
+      closeModuleSlider();
+      toggleSearchSlider();
+      closeAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "addIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen(false);
-      setAddIsOpen((prevState) => !prevState);
-      setScreenSelectIsOpen(false);
+      closeModuleSlider();
+      closeSearchSlider();
+      toggleAddSlider();
+      closeMenuScreenSlider();
     } else if (stateToToggle === "screenSelectIsOpen") {
-      setModuleSelectIsOpen(false);
-      setSearchIsOpen(false);
-      setAddIsOpen(false);
-      setScreenSelectIsOpen((prevState) => !prevState);
+      closeModuleSlider();
+      closeSearchSlider();
+      closeAddSlider();
+      toggleMenuScreenSlider();
     }
   };
 
@@ -161,6 +166,7 @@ const TribeTab = ({ setSelectedModule }) => {
             ),
           }}
         />
+        <Tab.Screen name="My Information" component={EmptyScreen} />
         <Tab.Screen name="My Attendance History" component={EmptyScreen} />
         <Tab.Screen name="My Leave Request" component={EmptyScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
@@ -171,11 +177,11 @@ const TribeTab = ({ setSelectedModule }) => {
       </Tab.Navigator>
 
       {/* Sliders */}
-      <TribeScreenSlider isOpen={screenSelectIsOpen} setIsOpen={setScreenSelectIsOpen} />
+      {menuScreenSliderIsOpen && <TribeScreenSlider toggle={toggleMenuScreenSlider} />}
 
-      <AddNewTribeSlider isOpen={addIsOpen} setIsOpen={setAddIsOpen} />
+      {addSliderIsOpen && <AddNewTribeSlider toggle={toggleAddSlider} />}
 
-      <ModuleSelectSlider isOpen={moduleSelectIsOpen} setSelectedModule={setSelectedModule} />
+      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
     </>
   );
 };

@@ -43,7 +43,6 @@ const FeedCommentItem = ({
             }
           });
         }
-        console.log("reply", commentReplies);
       } catch (err) {
         console.log(err);
       }
@@ -77,33 +76,12 @@ const FeedCommentItem = ({
       </Box>
       <Text>{comments}</Text>
       <Flex flexDir="row" ml={3} gap={5}>
-        <Box>Reply</Box>
+        <Pressable onPress={() => onReply(parent_id)}>
+          <Box>Reply</Box>
+        </Pressable>
         <Pressable onPress={() => fetchReply()}>
           <Flex flexDir="row">View{total_replies ? ` ${total_replies}` : ""} Reply</Flex>
         </Pressable>
-        {/* <CustomAccordion title={"View Reply"} subTitle={total_replies} hasAction={fetchReply}>
-          <Box>
-            <FlatList
-              data={commentReplies}
-              renderItem={({ item }) => (
-                <FeedCommentReplyItem
-                  key={item.id}
-                  id={item.id}
-                  parent_id={item.parent_id ? item.parent_id : item.id}
-                  loggedEmployeeId={loggedEmployeeId}
-                  authorId={item?.emloyee_id}
-                  authorName={item?.employee_name}
-                  authorImage={item?.employee_image}
-                  author_username={item?.employee_username}
-                  comments={item?.comments}
-                  totalReplies={item?.total_replies}
-                  postId={postId}
-                  onReply={onReply}
-                  />
-                  )}
-                  />
-          </Box>
-        </CustomAccordion> */}
       </Flex>
       {total_replies > 0 && (
         <>

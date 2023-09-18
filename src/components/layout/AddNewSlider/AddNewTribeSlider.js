@@ -1,10 +1,20 @@
 import { Box, FlatList, Flex, Icon, Slide, Pressable, Text } from "native-base";
 import { useState } from "react";
+import { Dimensions } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
+const AddNewTribeSlider = ({ toggle }) => {
+  const { height } = Dimensions.get("window");
   const [newLeaveIsOpen, setNewLeaveIsOpen] = useState(false);
   const [newReimbursementIsOpen, setNewReimbursementIsOpen] = useState(false);
+
+  const onCloseLeaveRequestForm = () => {
+    setNewLeaveIsOpen(false);
+  };
+
+  const onCloseReimbursementForm = () => {
+    setNewReimbursementIsOpen(false);
+  };
 
   const items = [
     {
@@ -27,8 +37,9 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
 
   return (
     <>
-      <Slide in={isOpen} placement="bottom" duration={200}>
-        <Box position="absolute" bottom={95} width="100%" bgColor="white">
+      <Box>
+        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
+        <Box position="absolute" bottom={79} width="100%" bgColor="white">
           <FlatList
             data={items}
             renderItem={({ item }) => (
@@ -89,7 +100,7 @@ const AddNewTribeSlider = ({ isOpen, setIsOpen }) => {
             )}
           />
         </Box>
-      </Slide>
+      </Box>
     </>
   );
 };

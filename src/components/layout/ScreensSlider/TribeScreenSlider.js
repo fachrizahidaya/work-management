@@ -1,15 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, FlatList, Flex, Icon, Slide, Pressable, Text } from "native-base";
+import { Dimensions } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const TribeScreenSlider = ({ isOpen, setIsOpen }) => {
+const TribeScreenSlider = ({ toggle }) => {
   const navigation = useNavigation();
+  const { height } = Dimensions.get("window");
 
   const items = [
     { icons: "sticker-text-outline", title: "Feed", screen: "Feed" },
-    { icons: "sticker-text-outline", title: "My Information", screen: "My Information" },
+    { icons: "account-outline", title: "My Information", screen: "My Information" },
     { icons: "clipboard-text-clock-outline", title: "Attendance Log", screen: "" },
-    { icons: "exit-run", title: "Leave Request", screen: "" },
+    { icons: "car-outline", title: "Leave Request", screen: "" },
     { icons: "file-edit-outline", title: "Reimbursement", screen: "" },
     { icons: "signal-cellular-3", title: "My KPI", screen: "" },
     { icons: "file-document-outline", title: "My Payslip", screen: "" },
@@ -18,10 +20,11 @@ const TribeScreenSlider = ({ isOpen, setIsOpen }) => {
   ];
 
   return (
-    <Slide in={isOpen} placement="bottom" duration={200}>
+    <Box>
+      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
       <Box
         position="absolute"
-        bottom={95} // Adjust this value to position the slide component
+        bottom={79} // Adjust this value to position the slide component
         width="100%"
         bgColor="white"
         zIndex={3}
@@ -32,7 +35,7 @@ const TribeScreenSlider = ({ isOpen, setIsOpen }) => {
             <Pressable
               onPress={() => {
                 navigation.navigate(item.screen);
-                setIsOpen(!isOpen);
+                toggle();
               }}
             >
               <Flex
@@ -62,7 +65,7 @@ const TribeScreenSlider = ({ isOpen, setIsOpen }) => {
           )}
         />
       </Box>
-    </Slide>
+    </Box>
   );
 };
 

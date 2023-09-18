@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
 import { ActivityIndicator, View } from "react-native";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCard = ({
   posts,
@@ -16,6 +17,7 @@ const FeedCard = ({
   feedIsLoading,
   handleEndReached,
 }) => {
+  const { isOpen: commentIsOpen, open: openComment, close: closeComment, toggle: toggleComment } = useDisclosure();
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [postTotalComment, setPostTotalComment] = useState(0);
@@ -47,7 +49,7 @@ const FeedCard = ({
 
   useEffect(() => {
     if (!postFetchDone && postIsFetching && posts) {
-      fetchPost(posts.length, 20, true).then(() => {
+      fetchPost(posts.length, 10, true).then(() => {
         setPostIsFetching(false);
       });
     } else {
@@ -65,7 +67,6 @@ const FeedCard = ({
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
               estimatedItemSize={200}
-              // onEndReached={() => handleEndReached()}
               renderItem={({ item }) => (
                 <FeedCardItem
                   key={item?.id}

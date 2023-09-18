@@ -1,4 +1,4 @@
-import { Flex, Icon, Pressable, ScrollView, Slide, Text } from "native-base";
+import { Flex, Icon, Pressable, ScrollView, Slide, Text, Actionsheet } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
@@ -53,7 +53,7 @@ const FeedComment = ({
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
-    inputRef.current.focus();
+    // inputRef.current.focus();
   };
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const FeedComment = ({
   }, [handleOpen]);
 
   return (
-    <Slide in={handleOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 101 : 120}>
+    <Slide in={handleOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 90 : 120}>
       <Flex flexDir="column" flexGrow={1} bgColor="white" position="relative">
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
           <Flex flexDir="row" alignItems="center" gap={2}>
@@ -104,12 +104,5 @@ const FeedComment = ({
     </Slide>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-});
 
 export default FeedComment;
