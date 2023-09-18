@@ -1,4 +1,4 @@
-import { ScrollView, Skeleton } from "native-base";
+import { Box, ScrollView, Skeleton } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
@@ -13,9 +13,10 @@ const FeedCard = ({
   loggedEmployeeName,
   onToggleLike,
   postFetchDone,
-  fetchPost,
+  refetch,
   feedIsLoading,
   handleEndReached,
+  setPosts,
 }) => {
   const { isOpen: commentIsOpen, open: openComment, close: closeComment, toggle: toggleComment } = useDisclosure();
   const [postEditOpen, setPostEditOpen] = useState(false);
@@ -36,7 +37,6 @@ const FeedCard = ({
     setCommentsOpen(false);
     setPostId(null);
     // If return to feed screen, it will refetch Post
-    fetchPost();
   };
 
   const commentSubmitHandler = () => {
@@ -47,61 +47,58 @@ const FeedCard = ({
     posts[referenceIndex]["total_comment"] += 1;
   };
 
-  useEffect(() => {
-    if (!postFetchDone && postIsFetching && posts) {
-      fetchPost(posts.length, 10, true).then(() => {
-        setPostIsFetching(false);
-      });
-    } else {
-      setPostIsFetching(false);
-    }
-  }, [posts, postIsFetching, postFetchDone]);
+  // useEffect(() => {
+  //   if (!postFetchDone && postIsFetching && posts) {
+  //     fetchPost(posts.length, 10, true).then(() => {
+  //       setPostIsFetching(false);
+  //     });
+  //   } else {
+  //     setPostIsFetching(false);
+  //   }
+  // }, [posts, postIsFetching, postFetchDone]);
 
   return (
     <>
-      {!feedIsLoading ? (
-        <>
-          <ScrollView flex={3} showsVerticalScrollIndicator={false} bounces={false}>
-            <FlashList
-              data={posts}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              estimatedItemSize={200}
-              renderItem={({ item }) => (
-                <FeedCardItem
-                  key={item?.id}
-                  post={item}
-                  id={item?.id}
-                  employee_name={item?.employee_name}
-                  created_at={item?.created_at}
-                  employee_image={item?.employee_image}
-                  content={item?.content}
-                  total_like={item?.total_like}
-                  total_comment={item?.total_comment}
-                  liked_by={item?.liked_by}
-                  attachment={item?.file_path}
-                  // like post
-                  loggedEmployeeId={loggedEmployeeId}
-                  loggedEmployeeImage={loggedEmployeeImage}
-                  onToggleLike={onToggleLike}
-                  onCommentToggle={commentsOpenHandler}
-                />
-              )}
+      <Box height={600}>
+        <FlashList
+          data={posts}
+          onEndReachedThreshold={0.1}
+          onEndReached={posts.length ? handleEndReached : null}
+          keyExtractor={(item, index) => index}
+          estimatedItemSize={200}
+          renderItem={({ item }) => (
+            <FeedCardItem
+              key={item?.id}
+              post={item}
+              id={item?.id}
+              employee_name={item?.employee_name}
+              created_at={item?.created_at}
+              employee_image={item?.employee_image}
+              content={item?.content}
+              total_like={item?.total_like}
+              total_comment={item?.total_comment}
+              liked_by={item?.liked_by}
+              attachment={item?.file_path}
+              // like post
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              onToggleLike={onToggleLike}
+              onCommentToggle={commentsOpenHandler}
             />
-          </ScrollView>
-          <FeedComment
-            handleOpen={commentsOpen}
-            handleClose={commentsCloseHandler}
-            postId={postId}
-            total_comments={postTotalComment}
-            onSubmit={commentSubmitHandler}
-            loggedEmployeeImage={loggedEmployeeImage}
-            loggedEmployeeName={loggedEmployeeName}
-          />
-        </>
-      ) : (
-        <Skeleton h={40} />
-      )}
+          )}
+        />
+      </Box>
+      <FeedComment
+        handleOpen={commentsOpen}
+        handleClose={commentsCloseHandler}
+        postId={postId}
+        total_comments={postTotalComment}
+        onSubmit={commentSubmitHandler}
+        loggedEmployeeImage={loggedEmployeeImage}
+        loggedEmployeeName={loggedEmployeeName}
+        refetch={refetch}
+        setPosts={setPosts}
+      />
     </>
   );
 };

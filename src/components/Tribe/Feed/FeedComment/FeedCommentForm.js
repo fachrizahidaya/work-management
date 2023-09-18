@@ -48,13 +48,13 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
       isInvalid={formik.errors.comments}
     >
       <Input
+        height={60}
         variant="unstyled"
         multiline
         onChangeText={(value) => formik.setFieldValue("comments", value)}
         placeholder={parentId ? "Add a reply" : "Add a comment"}
         textAlignVertical="top"
         value={formik.values.comments}
-        style={styles.input}
         InputRightElement={
           <Button size="md" onPress={formik.handleSubmit}>
             Send

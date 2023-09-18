@@ -1,5 +1,5 @@
-import { ActivityIndicator, SafeAreaView, StyleSheet, View } from "react-native";
-import { useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 import axiosInstance from "../../config/api";
@@ -10,15 +10,23 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 
 const FeedScreen = () => {
   const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
-  const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
-  const { data: feeds, isLoading: feedIsLoading } = useFetch("/hr/posts");
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [postFetchDone, setPostFetchDone] = useState(false);
-  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const firstTimeRef = useRef(true);
+  const postFetchParameters = {
+    offset: currentOffset,
+    limit: 10,
+  };
+  const {
+    data: feeds,
+    isLoading: feedIsLoading,
+    refetch,
+  } = useFetch("/hr/posts", [currentOffset], postFetchParameters);
+  const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
 
   const fetchMyProfile = async () => {
     try {
@@ -29,31 +37,16 @@ const FeedScreen = () => {
     }
   };
 
-  const fetchPost = async (offset = 0, limit = 10, fetchMore = false) => {
-    try {
-      const res = await axiosInstance.get(`/hr/posts`, {
-        params: {
-          offset: offset,
-          limit: limit,
-        },
-      });
-      if (!fetchMore) {
-        setPosts(res.data.data);
-        setPostFetchDone(true);
-      } else {
-        setPosts((prevState) => {
-          if (prevState.length !== prevState.length + res.data.data.length) {
-            return [...prevState, ...res.data.data];
-          } else {
-            setPostFetchDone(true);
-            return prevState;
-          }
-        });
-      }
-      return res.data.data;
-    } catch (err) {
-      console.log(err);
+  const fetchMorePosts = () => {
+    if (posts.length !== posts.length + feeds?.data.length) {
+      setCurrentOffset(currentOffset + 10);
     }
+  };
+
+  const postRefetchHandler = async () => {
+    await refetch();
+    setPosts(feeds?.data);
+    setCurrentOffset(0);
   };
 
   const postLikeToggleHandler = async (post_id, action) => {
@@ -72,10 +65,10 @@ const FeedScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (!postFetchDone) {
-      fetchPost();
+    if (feeds?.data) {
+      setPosts((prevData) => [...prevData, ...feeds?.data]);
     }
-  }, [postFetchDone]);
+  }, [feeds?.data]);
 
   return (
     <>
@@ -123,13 +116,14 @@ const FeedScreen = () => {
             onToggleLike={postLikeToggleHandler}
             feedIsLoading={feedIsLoading}
             profileIsLoading={profileIsLoading}
-            fetchPost={fetchPost}
-            // handleEndReached={fetchPost}
+            refetch={postRefetchHandler}
+            handleEndReached={fetchMorePosts}
+            setPosts={setPosts}
           />
         </Flex>
       </SafeAreaView>
 
-      {newFeedIsOpen && <NewFeedSlider toggle={toggleNewFeed} fetchPost={fetchPost} />}
+      {newFeedIsOpen && <NewFeedSlider toggle={toggleNewFeed} refetch={postRefetchHandler} />}
     </>
   );
 };

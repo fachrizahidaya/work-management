@@ -1,10 +1,11 @@
-import { Avatar, Box, Flex, Image, Text, ScrollView, Skeleton, Icon, Pressable } from "native-base";
+import { Avatar, Box, Flex, Image, Text, ScrollView, Skeleton, Icon, Pressable, Modal } from "native-base";
 import { useEffect, useState } from "react";
 import { card } from "../../../styles/Card";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import dayjs from "dayjs";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 
 const FeedCardItem = ({
   id,
@@ -24,6 +25,7 @@ const FeedCardItem = ({
   const [likeAction, setLikeAction] = useState("dislike");
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
@@ -34,6 +36,10 @@ const FeedCardItem = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
+  };
+
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
   };
 
   useEffect(() => {
@@ -60,13 +66,31 @@ const FeedCardItem = ({
         </Box>
         {/* if picture not available, it will not show alt props */}
         {attachment ? (
-          <Image
-            source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
-            borderRadius={15}
-            height={200}
-            alt="Feed Image"
-            resizeMode="contain"
-          />
+          <>
+            <TouchableOpacity key={id} onPress={toggleFullScreen}>
+              <Image
+                source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                borderRadius={15}
+                height={200}
+                alt="Feed Image"
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <Modal backgroundColor="black" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+              <Modal.Content backgroundColor="black">
+                <Modal.CloseButton />
+                <Modal.Body alignContent="center">
+                  <Image
+                    source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                    height={500}
+                    width={500}
+                    alt="Feed Image"
+                    resizeMode="contain"
+                  />
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+          </>
         ) : null}
         <Text color="muted.500">{content}</Text>
         <Flex direction="row" gap={4}>
@@ -94,5 +118,9 @@ const FeedCardItem = ({
     </Flex>
   );
 };
+
+const styles = StyleSheet.create({
+  modalContainer: { flex: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center" },
+});
 
 export default FeedCardItem;

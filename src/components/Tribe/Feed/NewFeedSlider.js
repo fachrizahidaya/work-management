@@ -1,4 +1,17 @@
-import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, useToast, Image, Button } from "native-base";
+import {
+  Box,
+  Flex,
+  Icon,
+  Slide,
+  Pressable,
+  Text,
+  FormControl,
+  Input,
+  useToast,
+  Image,
+  Button,
+  Switch,
+} from "native-base";
 import { useEffect, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
@@ -14,9 +27,10 @@ import { SuccessToast } from "../../shared/ToastDialog";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
 
-const NewFeedSlider = ({ fetchPost, toggle }) => {
+const NewFeedSlider = ({ refetch, toggle }) => {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [image, setImage] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("Public");
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
 
@@ -28,7 +42,7 @@ const NewFeedSlider = ({ fetchPost, toggle }) => {
         },
       });
       toggle();
-      fetchPost();
+      refetch();
       toast.show({
         render: () => {
           return <SuccessToast message={`Posted succesfuly!`} />;
@@ -43,8 +57,8 @@ const NewFeedSlider = ({ fetchPost, toggle }) => {
     enableReinitialize: true,
     initialValues: {
       content: "",
-      type: "Public",
-      end_date: "",
+      type: selectedOption || "Public",
+      end_date: "2023-11-30" || "",
     },
     validationSchema: yup.object().shape({
       content: yup.string().required("Content is required"),
@@ -72,6 +86,7 @@ const NewFeedSlider = ({ fetchPost, toggle }) => {
 
   const announcementToggleHandler = () => {
     if (formik.values.type === "Public") {
+      setSelectedOption("Announcement");
       formik.setFieldValue("type", "Announcement");
     } else {
       formik.setFieldValue("type", "Public");
@@ -176,6 +191,7 @@ const NewFeedSlider = ({ fetchPost, toggle }) => {
               justifyContent="space-between"
             >
               <Flex gap={1} flexDir="row">
+                <Switch onValueChange={announcementToggleHandler} value={selectedOption === "Announcement"} size="md" />
                 <Box background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
                   <Pressable>
                     <Icon as={<MaterialIcons name="campaign" />} size={30} color="white" />
