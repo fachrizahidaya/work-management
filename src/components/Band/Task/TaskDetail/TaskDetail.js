@@ -169,7 +169,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, 
           </FormControl>
 
           {/* Labels */}
-          <LabelSection />
+          <LabelSection projectId={selectedTask?.project_id} taskId={selectedTask?.id} />
 
           {/* Due date and cost */}
           <Flex flexDir="column" justifyContent="space-between" gap={5}>

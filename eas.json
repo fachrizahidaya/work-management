@@ -15,7 +15,7 @@
     },
     "internal-testing": {
       "ios": {
-        "enterpriseProvisioning": "universal"
+        "enterpriseProvisioning": "adhoc"
       },
       "android": {
         "buildType": "apk"
