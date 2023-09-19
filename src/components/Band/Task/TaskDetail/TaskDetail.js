@@ -36,7 +36,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, 
 
   return (
     <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 100 : 21}>
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Flex {...safeAreaProps} bgColor="white" p={5} gap={5}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <ControlSection

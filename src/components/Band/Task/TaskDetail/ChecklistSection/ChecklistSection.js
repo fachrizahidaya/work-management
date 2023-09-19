@@ -18,8 +18,8 @@ import ConfirmationModal from "../../../../shared/ConfirmationModal";
 
 const ChecklistSection = ({ taskId }) => {
   const toast = useToast();
-  const { isKeyboardVisible } = useKeyboardChecker();
   const [selectedChecklist, setSelectedChecklist] = useState({});
+  const { isKeyboardVisible } = useKeyboardChecker();
   const { isOpen, toggle } = useDisclosure(false);
   const { isOpen: deleteChecklistModalIsOpen, toggle: toggleDeleteChecklist } = useDisclosure(false);
   const { data: checklists, refetch: refetchChecklists } = useFetch(`/pm/tasks/${taskId}/checklist`);
@@ -100,7 +100,7 @@ const ChecklistSection = ({ taskId }) => {
       title: "",
     },
     validationSchema: yup.object().shape({
-      title: yup.string().required("Checklist title is required"),
+      title: yup.string().required("Checklist title is required").max(30, "30 characters max!"),
     }),
     onSubmit: (values, { setStatus, setSubmitting }) => {
       setStatus("processing");
@@ -117,15 +117,17 @@ const ChecklistSection = ({ taskId }) => {
   return (
     <>
       <FormControl>
-        <FormControl.Label>CHECKLIST ({(finishChecklists.length / checklists?.data?.length) * 100}%)</FormControl.Label>
+        <FormControl.Label>
+          CHECKLIST ({(finishChecklists?.length / checklists?.data?.length) * 100}%)
+        </FormControl.Label>
         <Slider
-          value={(finishChecklists.length / checklists?.data?.length) * 100}
+          value={(finishChecklists?.length / checklists?.data?.length) * 100}
           size="sm"
           colorScheme="blue"
           w="100%"
         >
           <Slider.Track bg="blue.100">
-            <Slider.FilledTrack bg="blue.600" />
+            <Slider.FilledTrack bg="primary.600" />
           </Slider.Track>
           <Slider.Thumb borderWidth="0" bg="transparent" display="none"></Slider.Thumb>
         </Slider>

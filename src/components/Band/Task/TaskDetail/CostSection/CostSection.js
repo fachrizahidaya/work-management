@@ -1,9 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet, Divider, FormControl, HStack, Input, Text, VStack, useToast } from "native-base";
+import {
+  Actionsheet,
+  Divider,
+  Flex,
+  FormControl,
+  HStack,
+  Icon,
+  IconButton,
+  Input,
+  Text,
+  VStack,
+  useToast,
+} from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -11,16 +24,29 @@ import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
+import ConfirmationModal from "../../../../shared/ConfirmationModal";
 
 const CostSection = ({ taskId, disabled }) => {
   const toast = useToast();
+  const [selectedCost, setSelectedChecklist] = useState({});
   const { isOpen, toggle } = useDisclosure(false);
+  const { isOpen: deleteCostModalisOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isKeyboardVisible } = useKeyboardChecker();
   const { data: costs, refetch: refechCosts } = useFetch(`/pm/tasks/${taskId}/cost`);
 
   const onCloseActionSheet = (resetForm) => {
     toggle();
     resetForm();
+  };
+
+  const openDeleteModal = (id) => {
+    toggleDeleteModal();
+
+    const filteredCost = costs?.data.filter((item) => {
+      return item.id === id;
+    });
+
+    setSelectedChecklist(filteredCost[0]);
   };
 
   /**
@@ -98,10 +124,18 @@ const CostSection = ({ taskId, disabled }) => {
             {costs?.data?.length > 0 ? (
               costs?.data.map((cost) => {
                 return (
-                  <HStack key={cost.id}>
-                    <Text fontSize={16}>{cost.cost_name} - </Text>
-                    <Text fontSize={16}>Rp {cost.cost_amount.toLocaleString()}</Text>
-                  </HStack>
+                  <Flex key={cost.id} flexDir="row" justifyContent="space-between" alignItems="center">
+                    <HStack>
+                      <Text fontSize={16}>{cost.cost_name} - </Text>
+                      <Text fontSize={16}>Rp {cost.cost_amount.toLocaleString()}</Text>
+                    </HStack>
+
+                    <IconButton
+                      onPress={() => openDeleteModal(cost.id)}
+                      rounded="full"
+                      icon={<Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />}
+                    />
+                  </Flex>
                 );
               })
             ) : (
@@ -140,6 +174,17 @@ const CostSection = ({ taskId, disabled }) => {
           </VStack>
         </Actionsheet.Content>
       </Actionsheet>
+
+      <ConfirmationModal
+        isOpen={deleteCostModalisOpen}
+        toggle={toggleDeleteModal}
+        apiUrl={`/pm/tasks/cost/${selectedCost?.id}`}
+        successMessage="Cost deleted"
+        header="Delete Cost"
+        description={`Are you sure to delete ${selectedCost?.title}?`}
+        hasSuccessFunc={true}
+        onSuccess={refechCosts}
+      />
     </>
   );
 };
