@@ -29,10 +29,10 @@ const AddNewTribeSlider = ({ toggle }) => {
       icons: "clock-outline",
       title: "Clock in",
     },
-    {
-      icons: "clock-outline",
-      title: "Clock out",
-    },
+    // {
+    //   icons: "clock-outline",
+    //   title: "Clock out",
+    // },
   ];
 
   return (
