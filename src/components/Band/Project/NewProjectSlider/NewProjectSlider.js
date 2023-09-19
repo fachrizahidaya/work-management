@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Dimensions, Platform } from "react-native";
-import { Box, Flex, Icon, Slide, Pressable, Text, FormControl, Input, Select, useToast } from "native-base";
+import { Dimensions } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -13,7 +13,7 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 
-const NewProjectSlider = ({ onClose, isOpen, setIsOpen, projectData, refetchSelectedProject }) => {
+const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
   const toast = useToast();
@@ -81,6 +81,10 @@ const NewProjectSlider = ({ onClose, isOpen, setIsOpen, projectData, refetchSele
     },
   });
 
+  const onChangeDeadline = (value) => {
+    formik.setFieldValue("deadline", value);
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       onClose(formik.resetForm);
@@ -124,7 +128,7 @@ const NewProjectSlider = ({ onClose, isOpen, setIsOpen, projectData, refetchSele
 
           <FormControl isInvalid={formik.errors.deadline}>
             <FormControl.Label>End Date</FormControl.Label>
-            <CustomDateTimePicker defaultValue={formik.values.deadline} formik={formik} fieldName="deadline" />
+            <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
             <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
           </FormControl>
 

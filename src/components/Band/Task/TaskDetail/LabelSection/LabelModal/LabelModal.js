@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Box, Button, Flex, FormControl, Input, Modal, Text, useToast } from "native-base";
+import { Button, Flex, FormControl, Input, Modal, Text, useToast } from "native-base";
 import ColorPicker from "react-native-wheel-color-picker";
 
 import LabelItem from "../LabelItem/LabelItem";
@@ -11,9 +11,12 @@ import FormButton from "../../../../../shared/FormButton";
 import { useDisclosure } from "../../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../../shared/ToastDialog";
+import { useLoading } from "../../../../../../hooks/useLoading";
 
 const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetch, refetchTaskLabels }) => {
   const toast = useToast();
+  const { isLoading, start, stop } = useLoading(false);
+
   const { isOpen: colorPickerIsOpen, toggle: toggleColorPicker } = useDisclosure(false);
 
   const addNewLabelFromInput = async (form, setSubmitting, setStatus) => {
@@ -57,12 +60,14 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
 
   const assignLabelToTaskOnPress = async (labelId) => {
     try {
+      start();
       // Associate the label with the selected task
       await axiosInstance.post("/pm/tasks/label", {
         task_id: taskId,
         label_id: labelId,
       });
       refetchTaskLabels();
+      stop();
       toast.show({
         render: () => {
           return <SuccessToast message={"Label added"} />;
@@ -70,6 +75,7 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       });
     } catch (error) {
       console.log(error);
+      stop();
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -121,6 +127,7 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
                 {allLabels.map((label) => {
                   return (
                     <LabelItem
+                      disabled={isLoading}
                       key={label.id}
                       id={label.label_id}
                       name={label.label_name}

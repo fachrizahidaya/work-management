@@ -20,6 +20,7 @@ import StatusSection from "../../../components/Band/Project/ProjectDetail/Status
 import FileSection from "../../../components/Band/Project/ProjectDetail/FileSection";
 import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -27,7 +28,7 @@ const ProjectDetailScreen = ({ route }) => {
   const [projectData, setProjectData] = useState({});
   const [tabValue, setTabValue] = useState("comments");
   const [openEditForm, setOpenEditForm] = useState(false);
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const tabs = [{ title: "comments" }, { title: "activity" }];
 
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
@@ -82,7 +83,7 @@ const ProjectDetailScreen = ({ route }) => {
               }}
             >
               <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>
+              <Menu.Item onPress={toggle}>
                 <Text color="red.600">Delete</Text>
               </Menu.Item>
             </Menu>
@@ -90,7 +91,7 @@ const ProjectDetailScreen = ({ route }) => {
             {/* Delete confirmation modal */}
             <ConfirmationModal
               isOpen={deleteModalIsOpen}
-              setIsOpen={setDeleteModalIsOpen}
+              toggle={toggle}
               apiUrl={`/pm/projects/${projectId}`}
               color="red.600"
               successMessage={`${projectData?.title} deleted`}

@@ -84,6 +84,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
     },
   });
 
+  const onChangeDeadline = (value) => {
+    formik.setFieldValue("deadline", value);
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       onClose(formik.resetForm);
@@ -128,7 +132,7 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
 
             <FormControl isInvalid={formik.errors.deadline}>
               <FormControl.Label>End Date</FormControl.Label>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} formik={formik} fieldName="deadline" />
+              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
             </FormControl>
 

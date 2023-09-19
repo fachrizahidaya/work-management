@@ -11,6 +11,7 @@ import TaskList from "../../../../components/Band/Task/TaskList/TaskList";
 import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import CustomDrawer from "../../../../components/shared/CustomDrawer";
 import TaskDetail from "../../../../components/Band/Task/TaskDetail/TaskDetail";
+import TaskViewSection from "../../../../components/Band/Project/ProjectTask/TaskViewSection";
 
 const ProjectTaskScreen = ({ route }) => {
   const { height } = Dimensions.get("window");
@@ -73,53 +74,7 @@ const ProjectTaskScreen = ({ route }) => {
             {!isLoading ? <Text fontSize={16}>{data?.data.title}</Text> : <Skeleton h={8} w={200} />}
           </Flex>
 
-          <Flex flexDir="row" style={{ gap: 8 }}>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Task List" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Task List")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="format-list-bulleted" />}
-                  color={view === "Task List" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Task List" ? "primary.600" : "#3F434A"}>Task List</Text>
-              </Flex>
-            </Button>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Kanban" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Kanban")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="map-outline" />}
-                  color={view === "Kanban" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Kanban" ? "primary.600" : "#3F434A"}>Kanban</Text>
-              </Flex>
-            </Button>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Gantt Chart" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Gantt Chart")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="chart-gantt" />}
-                  color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}>Gantt Chart</Text>
-              </Flex>
-            </Button>
-          </Flex>
+          <TaskViewSection changeView={changeView} view={view} />
 
           <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
             <Pressable>

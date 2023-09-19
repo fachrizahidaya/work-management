@@ -10,9 +10,11 @@ import LabelItem from "./LabelItem/LabelItem";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
+import { useLoading } from "../../../../../hooks/useLoading";
 
-const LabelSection = ({ projectId, taskId }) => {
+const LabelSection = ({ projectId, taskId, disabled }) => {
   const toast = useToast();
+  const { isLoading, start, stop } = useLoading(false);
 
   // Handles label modal
   const { isOpen: modalIsOpen, open: openModal, close: closeModal } = useDisclosure(false);
@@ -48,8 +50,10 @@ const LabelSection = ({ projectId, taskId }) => {
    */
   const removeLabel = async (labelId) => {
     try {
+      start();
       await axiosInstance.delete(`/pm/tasks/label/${labelId}`);
       refetchTaskLabels();
+      stop();
       toast.show({
         render: () => {
           return <SuccessToast message={"Label removed"} />;
@@ -57,6 +61,7 @@ const LabelSection = ({ projectId, taskId }) => {
       });
     } catch (error) {
       console.log(error);
+      stop();
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -74,6 +79,7 @@ const LabelSection = ({ projectId, taskId }) => {
             <Flex flexDir="row" alignItems="center" gap={1}>
               {taskLabels.data.map((label) => (
                 <LabelItem
+                  disabled={isLoading || disabled}
                   key={label.id}
                   id={label.id}
                   color={label.label_color}
@@ -83,6 +89,7 @@ const LabelSection = ({ projectId, taskId }) => {
               ))}
 
               <IconButton
+                disabled={disabled}
                 onPress={openModal}
                 size="md"
                 borderRadius="full"
@@ -96,6 +103,7 @@ const LabelSection = ({ projectId, taskId }) => {
           </>
         ) : (
           <IconButton
+            disabled={disabled}
             onPress={openModal}
             size="md"
             borderRadius="full"
