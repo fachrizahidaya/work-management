@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FeedScreen from "../../screens/Tribe/FeedScreen";
+import InformationScreen from "../../screens/Tribe/InformationScreen";
 import { Box, Icon, Image } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native";
@@ -166,7 +167,7 @@ const TribeTab = ({ setSelectedModule }) => {
             ),
           }}
         />
-        <Tab.Screen name="My Information" component={EmptyScreen} />
+        <Tab.Screen name="My Information" component={InformationScreen} />
         <Tab.Screen name="My Attendance History" component={EmptyScreen} />
         <Tab.Screen name="My Leave Request" component={EmptyScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
