@@ -3,15 +3,19 @@ import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet, Divider, FormControl, HStack, Input, Text, VStack } from "native-base";
+import { Actionsheet, Divider, FormControl, HStack, Input, Text, VStack, useToast } from "native-base";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
+import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
+import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
 
 const CostSection = ({ taskId, disabled }) => {
+  const toast = useToast();
   const { isOpen, toggle } = useDisclosure(false);
+  const { isKeyboardVisible } = useKeyboardChecker();
   const { data: costs, refetch: refechCosts } = useFetch(`/pm/tasks/${taskId}/cost`);
 
   const onCloseActionSheet = (resetForm) => {
@@ -29,10 +33,20 @@ const CostSection = ({ taskId, disabled }) => {
       setStatus("success");
       setSubmitting(false);
       refechCosts();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={"New cost added"} />;
+        },
+      });
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
     }
   };
 
@@ -80,7 +94,7 @@ const CostSection = ({ taskId, disabled }) => {
 
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>
-          <VStack w="95%" space={3}>
+          <VStack w="95%" space={3} pb={isKeyboardVisible ? 580 : 0}>
             {costs?.data?.length > 0 ? (
               costs?.data.map((cost) => {
                 return (

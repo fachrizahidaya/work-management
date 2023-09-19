@@ -90,11 +90,7 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, 
           </FormControl>
 
           {/* Checklists */}
-          <ChecklistSection
-            checklistFinishPercent={selectedTask?.checklist_finish_percent}
-            totalChecklist={selectedTask?.total_checklist}
-            totalChecklistFinish={selectedTask?.total_checklist_finish}
-          />
+          <ChecklistSection taskId={selectedTask?.id} />
 
           {/* Attachments */}
           <AttachmentSection taskId={selectedTask?.id} />
