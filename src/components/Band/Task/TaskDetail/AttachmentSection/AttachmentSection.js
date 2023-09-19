@@ -21,7 +21,6 @@ const AttachmentSection = ({ taskId }) => {
             <FlashList
               data={attachments?.data}
               keyExtractor={(item) => item?.id}
-              onEndReachedThreshold={0.1}
               estimatedItemSize={200}
               renderItem={({ item }) => (
                 <AttachmentList

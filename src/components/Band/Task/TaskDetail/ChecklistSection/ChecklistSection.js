@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet, Flex, FormControl, Icon, Input, Slider, Text, VStack, useToast } from "native-base";
+import { ScrollView } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
+import { Actionsheet, Box, Flex, FormControl, Icon, Input, Slider, Spinner, Text, VStack, useToast } from "native-base";
 import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -15,12 +17,14 @@ import FormButton from "../../../../shared/FormButton";
 import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
 import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
+import { useLoading } from "../../../../../hooks/useLoading";
 
 const ChecklistSection = ({ taskId }) => {
   const toast = useToast();
   const [selectedChecklist, setSelectedChecklist] = useState({});
   const { isKeyboardVisible } = useKeyboardChecker();
   const { isOpen, toggle } = useDisclosure(false);
+  const { isLoading, start, stop } = useLoading(false);
   const { isOpen: deleteChecklistModalIsOpen, toggle: toggleDeleteChecklist } = useDisclosure(false);
   const { data: checklists, refetch: refetchChecklists } = useFetch(`/pm/tasks/${taskId}/checklist`);
 
@@ -75,10 +79,12 @@ const ChecklistSection = ({ taskId }) => {
 
   const checkAndUncheckChecklist = async (checklistId, currentStatus) => {
     try {
+      start();
       await axiosInstance.patch(`/pm/tasks/checklist/${checklistId}`, {
         status: currentStatus === "Open" ? "Finish" : "Open",
       });
       refetchChecklists();
+      stop();
       toast.show({
         render: () => {
           return <SuccessToast message={currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked"} />;
@@ -86,6 +92,7 @@ const ChecklistSection = ({ taskId }) => {
       });
     } catch (error) {
       console.log(error);
+      stop();
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -132,19 +139,29 @@ const ChecklistSection = ({ taskId }) => {
           <Slider.Thumb borderWidth="0" bg="transparent" display="none"></Slider.Thumb>
         </Slider>
 
-        {checklists?.data?.length > 0 &&
-          checklists.data.map((checklist) => {
-            return (
-              <CheckListItem
-                key={checklist.id}
-                id={checklist.id}
-                title={checklist.title}
-                status={checklist.status}
-                onPress={checkAndUncheckChecklist}
-                onPressDelete={openDeleteModal}
+        {!isLoading ? (
+          <ScrollView style={{ maxHeight: 200 }}>
+            <Box flex={1} minHeight={2}>
+              <FlashList
+                data={checklists?.data}
+                keyExtractor={(item) => item?.id}
+                estimatedItemSize={200}
+                renderItem={({ item }) => (
+                  <CheckListItem
+                    id={item.id}
+                    title={item.title}
+                    status={item.status}
+                    isLoading={isLoading}
+                    onPress={checkAndUncheckChecklist}
+                    onPressDelete={openDeleteModal}
+                  />
+                )}
               />
-            );
-          })}
+            </Box>
+          </ScrollView>
+        ) : (
+          <Spinner size="sm" />
+        )}
 
         <TouchableOpacity onPress={toggle}>
           <Flex flexDir="row" alignItems="center" gap={3}>
