@@ -7,7 +7,7 @@ import axiosInstance from "../../config/api";
 
 const ConfirmationModal = ({
   isOpen,
-  setIsOpen,
+  toggle,
   apiUrl,
   successMessage,
   color,
@@ -21,7 +21,7 @@ const ConfirmationModal = ({
   const onPressHandler = async () => {
     try {
       await axiosInstance.delete(apiUrl);
-      setIsOpen(false);
+      toggle();
       toast.show({
         render: () => {
           return <SuccessToast message={successMessage} />;
@@ -42,7 +42,7 @@ const ConfirmationModal = ({
     }
   };
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal isOpen={isOpen} onClose={toggle}>
       <Modal.Content h={200}>
         <Modal.CloseButton />
         <Modal.Header>{header}</Modal.Header>
@@ -56,7 +56,7 @@ const ConfirmationModal = ({
               Confirm
             </Button>
 
-            <Button onPress={() => setIsOpen(false)}>Cancel</Button>
+            <Button onPress={toggle}>Cancel</Button>
           </Button.Group>
         </Modal.Footer>
       </Modal.Content>

@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
@@ -20,6 +21,7 @@ import StatusSection from "../../../components/Band/Project/ProjectDetail/Status
 import FileSection from "../../../components/Band/Project/ProjectDetail/FileSection";
 import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -27,7 +29,7 @@ const ProjectDetailScreen = ({ route }) => {
   const [projectData, setProjectData] = useState({});
   const [tabValue, setTabValue] = useState("comments");
   const [openEditForm, setOpenEditForm] = useState(false);
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const tabs = [{ title: "comments" }, { title: "activity" }];
 
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
@@ -57,7 +59,11 @@ const ProjectDetailScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: 16, marginVertical: 13 }}
+        extraHeight={200}
+      >
         <Flex gap={15}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
@@ -82,7 +88,7 @@ const ProjectDetailScreen = ({ route }) => {
               }}
             >
               <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-              <Menu.Item onPress={() => setDeleteModalIsOpen(true)}>
+              <Menu.Item onPress={toggle}>
                 <Text color="red.600">Delete</Text>
               </Menu.Item>
             </Menu>
@@ -90,7 +96,7 @@ const ProjectDetailScreen = ({ route }) => {
             {/* Delete confirmation modal */}
             <ConfirmationModal
               isOpen={deleteModalIsOpen}
-              setIsOpen={setDeleteModalIsOpen}
+              toggle={toggle}
               apiUrl={`/pm/projects/${projectId}`}
               color="red.600"
               successMessage={`${projectData?.title} deleted`}
@@ -170,7 +176,7 @@ const ProjectDetailScreen = ({ route }) => {
             </ScrollView>
           )}
         </Flex>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       {openEditForm && (
         <ProjectForm

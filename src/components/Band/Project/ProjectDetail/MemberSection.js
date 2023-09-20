@@ -18,13 +18,13 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 const MemberSection = ({ projectId, projectData }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
-  const [deleteMemberModalIsOpen, setDeleteMemberModalIsOpen] = useState(false);
+  const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
   const [selectedMember, setSelectedMember] = useState({});
   const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
   const { data: members, refetch: refetchMember } = useFetch(`/pm/projects/${projectId}/member`);
 
   const getSelectedMember = (id) => {
-    setDeleteMemberModalIsOpen(true);
+    toggle();
 
     // Filter team members which has the same id value of the selected member
     const filteredMember = members?.data.filter((member) => {
@@ -147,7 +147,7 @@ const MemberSection = ({ projectId, projectData }) => {
 
       <ConfirmationModal
         isOpen={deleteMemberModalIsOpen}
-        setIsOpen={setDeleteMemberModalIsOpen}
+        toggleIsOpen={toggle}
         apiUrl={`/pm/projects/member/${selectedMember?.id}`}
         successMessage="Member removed"
         header="Remove Member"

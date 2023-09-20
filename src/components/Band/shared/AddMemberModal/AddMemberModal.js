@@ -9,11 +9,13 @@ import MemberListItem from "./MemberListItem";
 const AddMemberModal = ({ isOpen, onClose, onPressHandler }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
+
   const userFetchParameters = {
     page: currentPage,
     limit: 10,
   };
-  const { data, isLoading } = useFetch("/setting/users", [currentPage], userFetchParameters);
+
+  const { data } = useFetch("/setting/users", [currentPage], userFetchParameters);
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
