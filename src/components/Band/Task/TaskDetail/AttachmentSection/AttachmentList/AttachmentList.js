@@ -1,9 +1,20 @@
 import React from "react";
 
-import { Box, Flex, Icon, IconButton, Image, Text } from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Box, Flex, Icon, Image, Menu, Pressable, Text } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const AttachmentList = ({ title, size, time, type = "" }) => {
+const AttachmentList = ({
+  id,
+  title,
+  from,
+  size,
+  time,
+  type = "",
+  downloadFileHandler,
+  deleteFileHandler,
+  iconHeight,
+  iconWidth,
+}) => {
   const doc = "../../../../../../assets/doc-icons/doc-format.png";
   const gif = "../../../../../../assets/doc-icons/gif-format.png";
   const jpg = "../../../../../../assets/doc-icons/jpg-format.png";
@@ -16,12 +27,12 @@ const AttachmentList = ({ title, size, time, type = "" }) => {
   const xls = "../../../../../../assets/doc-icons/xls-format.png";
   const zip = "../../../../../../assets/doc-icons/zip-format.png";
   return (
-    <Flex flexDir="row" justifyContent="space-between">
+    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
       <Flex flexDir="row" gap={3} alignItems="center">
         <Image
           resizeMode="contain"
-          height={50}
-          w={50}
+          h={iconHeight || 50}
+          w={iconWidth || 50}
           source={
             type.includes("doc")
               ? require(doc)
@@ -50,26 +61,39 @@ const AttachmentList = ({ title, size, time, type = "" }) => {
 
         <Box>
           <Text>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
-          <Text opacity={0.5} maxW={150} numberOfLines={2} flexWrap="wrap">
-            {time}
-          </Text>
+
+          {time && (
+            <Text opacity={0.5} maxW={150} numberOfLines={2} flexWrap="wrap">
+              {time}
+            </Text>
+          )}
           <Text opacity={0.5}>{size}</Text>
         </Box>
       </Flex>
 
-      <Flex flexDir="row" alignItems="center">
-        <IconButton
-          size="md"
-          borderRadius="full"
-          icon={<Icon as={<MaterialIcons name="file-download" />} color="gray.600" />}
-        />
+      <Menu
+        trigger={(triggerProps) => {
+          return (
+            <Pressable {...triggerProps}>
+              <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
+            </Pressable>
+          );
+        }}
+      >
+        <Menu.Item onPress={() => downloadFileHandler(id, title, from)}>
+          <Flex flexDir="row" alignItems="center" gap={2}>
+            <Icon as={<MaterialCommunityIcons name="download-outline" />} size="md" />
+            <Text>Download</Text>
+          </Flex>
+        </Menu.Item>
 
-        <IconButton
-          size="md"
-          borderRadius="full"
-          icon={<Icon as={<MaterialIcons name="delete" />} color="gray.600" />}
-        />
-      </Flex>
+        <Menu.Item onPress={() => deleteFileHandler(id, from)}>
+          <Flex flexDir="row" alignItems="center" gap={2}>
+            <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
+            <Text color="red.500">Delete</Text>
+          </Flex>
+        </Menu.Item>
+      </Menu>
     </Flex>
   );
 };

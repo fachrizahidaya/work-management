@@ -5,25 +5,14 @@ import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Alert } from "react-native";
-import { Box, Flex, Icon, Image, Menu, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
-
-const doc = "../../../../assets/doc-icons/doc-format.png";
-const gif = "../../../../assets/doc-icons/gif-format.png";
-const jpg = "../../../../assets/doc-icons/jpg-format.png";
-const key = "../../../../assets/doc-icons/key-format.png";
-const other = "../../../../assets/doc-icons/other-format.png";
-const pdf = "../../../../assets/doc-icons/pdf-format.png";
-const png = "../../../../assets/doc-icons/png-format.png";
-const ppt = "../../../../assets/doc-icons/ppt-format.png";
-const rar = "../../../../assets/doc-icons/rar-format.png";
-const xls = "../../../../assets/doc-icons/xls-format.png";
-const zip = "../../../../assets/doc-icons/zip-format.png";
+import AttachmentList from "../../Task/TaskDetail/AttachmentSection/AttachmentList/AttachmentList";
 
 const FileSection = ({ projectId }) => {
   const toast = useToast();
@@ -186,76 +175,17 @@ const FileSection = ({ projectId }) => {
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}
             renderItem={({ item }) => (
-              <Flex
-                flexDir="row"
-                justifyContent="space-between"
-                alignItems="center"
-                pr={1.5}
-                style={{ marginBottom: 14 }}
-              >
-                <Flex flexDir="row" alignItems="center" style={{ gap: 21 }}>
-                  <Image
-                    resizeMode="contain"
-                    source={
-                      item?.mime_type.includes("doc")
-                        ? require(doc)
-                        : item?.mime_type.includes("gif")
-                        ? require(gif)
-                        : item?.mime_type.includes("jpg") || item?.mime_type.includes("jpeg")
-                        ? require(jpg)
-                        : item?.mime_type.includes("key")
-                        ? require(key)
-                        : item?.mime_type.includes("pdf")
-                        ? require(pdf)
-                        : item?.mime_type.includes("png")
-                        ? require(png)
-                        : item?.mime_type.includes("ppt") || item?.mime_type.includes("pptx")
-                        ? require(ppt)
-                        : item?.mime_type.includes("rar")
-                        ? require(rar)
-                        : item?.mime_type.includes("xls") || item?.mime_type.includes("xlsx")
-                        ? require(xls)
-                        : item?.mime_type.includes("zip")
-                        ? require(zip)
-                        : require(other)
-                    }
-                    alt="file_icon"
-                    style={{ height: 40, width: 31 }}
-                  />
-                  <Box>
-                    <Text fontSize={12} fontWeight={400}>
-                      {item?.file_name.length > 30 ? item?.file_name.slice(0, 30) + "..." : item?.file_name}
-                    </Text>
-                    <Text fontSize={11} fontWeight={400} color="#8A9099">
-                      {item?.file_size}
-                    </Text>
-                  </Box>
-                </Flex>
-
-                <Menu
-                  trigger={(triggerProps) => {
-                    return (
-                      <Pressable {...triggerProps}>
-                        <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
-                      </Pressable>
-                    );
-                  }}
-                >
-                  <Menu.Item onPress={() => downloadAttachment(item?.id, item?.file_name, item?.attachment_from)}>
-                    <Flex flexDir="row" alignItems="center" gap={2}>
-                      <Icon as={<MaterialCommunityIcons name="download-outline" />} size="md" />
-                      <Text>Download</Text>
-                    </Flex>
-                  </Menu.Item>
-
-                  <Menu.Item onPress={() => deleteFileHandler(item?.id, item?.attachment_from)}>
-                    <Flex flexDir="row" alignItems="center" gap={2}>
-                      <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
-                      <Text color="red.500">Delete</Text>
-                    </Flex>
-                  </Menu.Item>
-                </Menu>
-              </Flex>
+              <AttachmentList
+                deleteFileHandler={deleteFileHandler}
+                downloadFileHandler={downloadAttachment}
+                from={item?.attachment_from}
+                iconHeight={39}
+                iconWidth={31}
+                id={item?.id}
+                size={item?.file_size}
+                title={item?.file_name}
+                type={item?.mime_type}
+              />
             )}
           />
         </Box>
