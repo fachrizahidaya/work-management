@@ -8,9 +8,9 @@ import { useEffect } from "react";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import CustomAccordion from "../../../shared/CustomAccordion";
+import { FlashList } from "@shopify/flash-list";
 
 const FeedCommentItem = ({
-  key,
   id,
   parent_id,
   loggedEmployeeId,
@@ -86,8 +86,11 @@ const FeedCommentItem = ({
       {total_replies > 0 && (
         <>
           <Box>
-            <FlatList
+            <FlashList
               data={commentReplies}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              estimatedItemSize={100}
               renderItem={({ item }) => (
                 <FeedCommentReplyItem
                   key={item.id}

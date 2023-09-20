@@ -1,4 +1,4 @@
-import { Box, FlatList, ScrollView } from "native-base";
+import { Box, ScrollView } from "native-base";
 import FeedCommentItem from "./FeedCommentItem";
 import { FlashList } from "@shopify/flash-list";
 

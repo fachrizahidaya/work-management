@@ -12,6 +12,7 @@ import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeS
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
+import LeaveScreen from "../../screens/Tribe/LeaveScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -68,7 +69,7 @@ const TribeTab = ({ setSelectedModule }) => {
           tabBarButton: [
             "My Information",
             "My Attendance History",
-            "My Leave Request",
+            "Leave Request",
             "My Reimbursement",
             "My Payslip",
             "My Key Performance Indicator",
@@ -171,7 +172,7 @@ const TribeTab = ({ setSelectedModule }) => {
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
         <Tab.Screen name="My Attendance History" component={EmptyScreen} />
-        <Tab.Screen name="My Leave Request" component={EmptyScreen} />
+        <Tab.Screen name="Leave Request" component={LeaveScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />
         <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />
