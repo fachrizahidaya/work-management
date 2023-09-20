@@ -20,7 +20,9 @@ const CustomDrawer = ({ children, height, isOpen }) => {
 
   // Update the animation value based on the isOpen prop
   useEffect(() => {
-    translateX.value = withTiming(isOpen ? 0 : width);
+    translateX.value = withTiming(isOpen ? 0 : width, {
+      duration: 150,
+    });
   }, [isOpen]);
 
   // Create an animated style for the drawer

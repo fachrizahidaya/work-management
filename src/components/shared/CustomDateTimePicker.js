@@ -11,7 +11,7 @@ import { Button, Flex, Input } from "native-base";
  * @param {string} defaultValue - The default date value.
  * @param {boolean} disabled - Whether the component is disabled
  */
-const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled }) => {
+const CustomDateTimePicker = ({ width, onChange, defaultValue, disabled, maximumDate = null }) => {
   // State for the selected date and the displayed value
   const [date, setDate] = useState(new Date());
   const [value, setValue] = useState();
@@ -25,7 +25,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   };
 
   // Handle date change
-  const onChange = ({ type }, selectedDate) => {
+  const onChangeDate = ({ type }, selectedDate) => {
     if (type == "set") {
       const currentDate = selectedDate;
       setDate(currentDate);
@@ -33,7 +33,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
       if (Platform.OS === "android") {
         toggleDatePicker();
         setValue(formatDate(currentDate));
-        formik.setFieldValue(fieldName, formatDate(currentDate));
+        onChange(formatDate(currentDate));
       }
     } else {
       toggleDatePicker();
@@ -44,7 +44,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   const confirmIOSDate = () => {
     setValue(formatDate(date));
     toggleDatePicker();
-    formik.setFieldValue(fieldName, formatDate(date));
+    onChange(formatDate(date));
   };
 
   // Format date as "YYYY-MM-DD"
@@ -91,9 +91,10 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
           mode="date"
           value={date}
           display="spinner"
-          onChange={onChange}
+          onChange={onChangeDate}
           style={styles.datePicker}
           minimumDate={new Date(dayjs().format("YYYY-MM-DD"))}
+          maximumDate={new Date(maximumDate)}
         />
       )}
 

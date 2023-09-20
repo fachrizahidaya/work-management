@@ -14,7 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
 
-const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }) => {
+const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", setSelectedTask }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const [openSelect, setOpenSelect] = useState(false);
@@ -35,12 +35,15 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
         });
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
+        const res = await refetchCurrentTask();
+        setSelectedTask(res.data.data);
       }
       setSubmitting(false);
       setStatus("success");
 
       // Refetch tasks
       refetchAllTasks();
+
       toast.show({
         render: () => {
           return <SuccessToast message={`Task saved!`} />;
@@ -80,6 +83,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
       submitHandler(values, selectedStatus, setSubmitting, setStatus);
     },
   });
+
+  const onChangeDeadline = (value) => {
+    formik.setFieldValue("deadline", value);
+  };
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -125,7 +132,7 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
 
             <FormControl isInvalid={formik.errors.deadline}>
               <FormControl.Label>End Date</FormControl.Label>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} formik={formik} fieldName="deadline" />
+              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
             </FormControl>
 

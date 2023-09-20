@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 import _ from "lodash";
 
@@ -10,7 +11,6 @@ import { FlashList } from "@shopify/flash-list";
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
-import { useFocusEffect } from "@react-navigation/native";
 
 const ProjectList = () => {
   const { height } = Dimensions.get("window");
