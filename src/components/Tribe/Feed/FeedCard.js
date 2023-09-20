@@ -3,7 +3,6 @@ import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
-import { ActivityIndicator, View } from "react-native";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCard = ({

@@ -13,6 +13,7 @@ import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
 import LeaveScreen from "../../screens/Tribe/LeaveScreen";
+import CalendarScreen from "../../screens/Tribe/CalendarScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -176,7 +177,7 @@ const TribeTab = ({ setSelectedModule }) => {
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />
         <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />
-        <Tab.Screen name="Calendar" component={EmptyScreen} />
+        <Tab.Screen name="Calendar" component={CalendarScreen} />
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 

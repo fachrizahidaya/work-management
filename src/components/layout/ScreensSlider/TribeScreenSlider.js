@@ -15,7 +15,7 @@ const TribeScreenSlider = ({ toggle }) => {
     { icons: "file-edit-outline", title: "Reimbursement", screen: "" },
     { icons: "signal-cellular-3", title: "My KPI", screen: "" },
     { icons: "file-document-outline", title: "My Payslip", screen: "My Payslip" },
-    { icons: "calendar-clock", title: "Calendar", screen: "" },
+    { icons: "calendar-clock", title: "Calendar", screen: "Calendar" },
     { icons: "phone", title: "Contact", screen: "Contact" },
   ];
 

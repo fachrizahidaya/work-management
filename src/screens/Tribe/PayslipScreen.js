@@ -1,19 +1,53 @@
 import { Flex, Text } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
-import PayslipList from "../../components/Tribe/PayslipList";
 import { useFetch } from "../../hooks/useFetch";
 import { FlashList } from "@shopify/flash-list";
 import { useState } from "react";
+import PayslipList from "../../components/Tribe/Payslip/PayslipList";
+import dayjs from "dayjs";
+import axiosInstance from "../../config/api";
+import { useEffect } from "react";
 
 const PayslipScreen = () => {
-  const [myPayslip, setMyPayslip] = useState();
+  const [filter, setFilter] = useState({
+    month: dayjs().format("M"),
+    year: dayjs().format("YYYY"),
+  });
+  const [attendance, setAttendance] = useState([]);
+  const params = {
+    month: dayjs().format("M"),
+    year: dayjs().format("YYYY"),
+  };
   const { data: payslip } = useFetch("/hr/payslip");
+  const { data: listAttendance } = useFetch("/hr/timesheets/personal", [filter]);
 
-  const handlePayslip = () => {};
+  const fetchAttendance = async () => {
+    try {
+      const res = await axiosInstance.get("/hr/timesheets/personal", {
+        params: filter,
+      });
+      setAttendance(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [filter]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        bgColor="white"
+        py={14}
+        px={15}
+        borderBottomWidth={1}
+        borderBottomColor="#cbcbcb"
+      >
         <Flex flexDir="row" gap={1}>
           <Text fontSize={16}>My Payslip</Text>
         </Flex>

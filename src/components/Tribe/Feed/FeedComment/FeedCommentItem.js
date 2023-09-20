@@ -1,8 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Avatar, Box, FlatList, Flex, Pressable, Text } from "native-base";
+import { Box, Flex, Pressable, Text } from "native-base";
 import axiosInstance from "../../../../config/api";
 import { card } from "../../../../styles/Card";
-import { Dimensions, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useEffect } from "react";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";

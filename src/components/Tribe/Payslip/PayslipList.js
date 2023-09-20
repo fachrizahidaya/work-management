@@ -11,8 +11,6 @@ const PayslipList = ({ id, month, year }) => {
         justifyContent="space-between"
         alignItems="center"
         borderBottomColor="#cbcbcb"
-        borderTopWidth={1}
-        borderTopColor="#cbcbcb"
         borderBottomWidth={1}
         py={2}
         px={4}
