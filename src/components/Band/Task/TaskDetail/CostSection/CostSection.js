@@ -5,6 +5,7 @@ import * as yup from "yup";
 
 import {
   Actionsheet,
+  Box,
   Divider,
   Flex,
   FormControl,
@@ -12,11 +13,13 @@ import {
   Icon,
   IconButton,
   Input,
+  ScrollView,
   Text,
   VStack,
   useToast,
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -31,7 +34,7 @@ const CostSection = ({ taskId, disabled }) => {
   const [selectedCost, setSelectedChecklist] = useState({});
   const { isOpen, toggle } = useDisclosure(false);
   const { isOpen: deleteCostModalisOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isKeyboardVisible } = useKeyboardChecker();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const { data: costs, refetch: refechCosts } = useFetch(`/pm/tasks/${taskId}/cost`);
 
   const onCloseActionSheet = (resetForm) => {
@@ -120,28 +123,36 @@ const CostSection = ({ taskId, disabled }) => {
 
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>
-          <VStack w="95%" space={3} pb={isKeyboardVisible ? 580 : 0}>
-            {costs?.data?.length > 0 ? (
-              costs?.data.map((cost) => {
-                return (
-                  <Flex key={cost.id} flexDir="row" justifyContent="space-between" alignItems="center">
-                    <HStack>
-                      <Text fontSize={16}>{cost.cost_name} - </Text>
-                      <Text fontSize={16}>Rp {cost.cost_amount.toLocaleString()}</Text>
-                    </HStack>
+          <VStack w="95%" space={3} pb={keyboardHeight}>
+            {costs?.data.length > 0 ? (
+              <ScrollView style={{ maxHeight: 200 }}>
+                <Box flex={1} minHeight={2}>
+                  <FlashList
+                    data={costs?.data}
+                    keyExtractor={(item) => item?.id}
+                    estimatedItemSize={200}
+                    renderItem={({ item }) => (
+                      <Flex key={item.id} flexDir="row" justifyContent="space-between" alignItems="center">
+                        <HStack>
+                          <Text fontSize={16}>{item.cost_name} - </Text>
+                          <Text fontSize={16}>Rp {item.cost_amount.toLocaleString()}</Text>
+                        </HStack>
 
-                    <IconButton
-                      onPress={() => openDeleteModal(cost.id)}
-                      rounded="full"
-                      icon={<Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />}
-                    />
-                  </Flex>
-                );
-              })
+                        <IconButton
+                          onPress={() => openDeleteModal(item.id)}
+                          rounded="full"
+                          icon={
+                            <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />
+                          }
+                        />
+                      </Flex>
+                    )}
+                  />
+                </Box>
+              </ScrollView>
             ) : (
               <Actionsheet.Item isDisabled>This task has no cost yet.</Actionsheet.Item>
             )}
-
             {!disabled && (
               <>
                 <Divider orientation="horizontal" />

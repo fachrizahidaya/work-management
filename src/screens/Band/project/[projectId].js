@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
@@ -58,7 +59,11 @@ const ProjectDetailScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: 16, marginVertical: 13 }}
+        extraHeight={200}
+      >
         <Flex gap={15}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
@@ -171,7 +176,7 @@ const ProjectDetailScreen = ({ route }) => {
             </ScrollView>
           )}
         </Flex>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       {openEditForm && (
         <ProjectForm

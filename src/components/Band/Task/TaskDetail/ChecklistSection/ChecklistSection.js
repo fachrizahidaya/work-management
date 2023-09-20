@@ -22,7 +22,7 @@ import { useLoading } from "../../../../../hooks/useLoading";
 const ChecklistSection = ({ taskId }) => {
   const toast = useToast();
   const [selectedChecklist, setSelectedChecklist] = useState({});
-  const { isKeyboardVisible } = useKeyboardChecker();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const { isOpen, toggle } = useDisclosure(false);
   const { isLoading, start, stop } = useLoading(false);
   const { isOpen: deleteChecklistModalIsOpen, toggle: toggleDeleteChecklist } = useDisclosure(false);
@@ -173,7 +173,7 @@ const ChecklistSection = ({ taskId }) => {
 
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>
-          <VStack w="100%" pb={isKeyboardVisible ? 580 : 0} space={2}>
+          <VStack w="100%" pb={isKeyboardVisible ? keyboardHeight : 0} space={2}>
             <FormControl.Label justifyContent="center">Add New Checklist</FormControl.Label>
 
             <FormControl isInvalid={formik.errors.title}>
