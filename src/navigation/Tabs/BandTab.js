@@ -66,6 +66,7 @@ const BandTab = ({ setSelectedModule }) => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
           tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
             ? () => {

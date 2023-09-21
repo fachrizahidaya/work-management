@@ -8,7 +8,7 @@ export const customTheme = extendTheme({
       baseStyle: {
         color: "#3F434A",
         fontWeight: 500,
-        fontSize: 12,
+        fontSize: 14,
       },
     },
     Button: {

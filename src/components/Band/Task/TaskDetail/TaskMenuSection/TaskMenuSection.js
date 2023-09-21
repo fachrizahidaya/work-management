@@ -1,11 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { useSelector } from "react-redux";
 
 import { HStack, Icon, IconButton, Menu, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 
@@ -83,4 +82,4 @@ const TaskMenuSection = ({
   );
 };
 
-export default TaskMenuSection;
+export default memo(TaskMenuSection);

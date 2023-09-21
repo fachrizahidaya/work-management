@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { FormControl, IconButton, Icon, Flex, useToast, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -128,4 +128,4 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
   );
 };
 
-export default LabelSection;
+export default memo(LabelSection);

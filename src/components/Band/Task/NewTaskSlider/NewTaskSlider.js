@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Menu, ScrollView, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, ScrollView, useToast, Actionsheet } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -13,14 +13,15 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", setSelectedTask }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
-  const [openSelect, setOpenSelect] = useState(false);
-  const [openScore, setOpenScore] = useState(false);
   const statuses = ["Low", "Medium", "High"];
   const scores = [1, 2, 3, 4, 5];
+  const { isOpen: priorityMenuIsOpen, toggle: togglePriorityMenu } = useDisclosure(false);
+  const { isOpen: scoreMenuIsOpen, toggle: toggleScoreMenu } = useDisclosure(false);
 
   const { refetch: refetchAllTasks } = useFetch(projectId && `/pm/tasks/project/${projectId}`);
   const { refetch: refetchCurrentTask } = useFetch(taskData && `/pm/tasks/${taskData?.id}`);
@@ -138,18 +139,23 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
 
             <FormControl isInvalid={formik.errors.priority}>
               <FormControl.Label>Priority</FormControl.Label>
-              <CustomSelect value={formik.values?.priority} open={openSelect} setOpen={setOpenSelect} bgColor={"white"}>
+              <CustomSelect
+                value={formik.values?.priority}
+                isOpen={priorityMenuIsOpen}
+                toggle={togglePriorityMenu}
+                bgColor={"white"}
+              >
                 {statuses.map((status) => {
                   return (
-                    <Menu.Item
+                    <Actionsheet.Item
                       key={status}
                       onPress={() => {
-                        setOpenSelect(!openSelect);
+                        togglePriorityMenu();
                         formik.setFieldValue("priority", status);
                       }}
                     >
                       <Text>{status}</Text>
-                    </Menu.Item>
+                    </Actionsheet.Item>
                   );
                 })}
               </CustomSelect>
@@ -158,18 +164,23 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
 
             <FormControl isInvalid={formik.errors.score}>
               <FormControl.Label>Score</FormControl.Label>
-              <CustomSelect value={formik.values?.score} open={openScore} setOpen={setOpenScore} bgColor={"white"}>
+              <CustomSelect
+                value={formik.values?.score}
+                isOpen={scoreMenuIsOpen}
+                toggle={toggleScoreMenu}
+                bgColor={"white"}
+              >
                 {scores.map((score) => {
                   return (
-                    <Menu.Item
+                    <Actionsheet.Item
                       key={score}
                       onPress={() => {
-                        setOpenScore(!openScore);
+                        toggleScoreMenu();
                         formik.setFieldValue("priority", score);
                       }}
                     >
                       <Text>{score}</Text>
-                    </Menu.Item>
+                    </Actionsheet.Item>
                   );
                 })}
               </CustomSelect>

@@ -6,7 +6,7 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -63,6 +63,8 @@ const ProjectDetailScreen = ({ route }) => {
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: 16, marginVertical: 13 }}
         extraHeight={200}
+        enableOnAndroid={true}
+        enableAutomaticScroll={Platform.OS === "ios"}
       >
         <Flex gap={15}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">

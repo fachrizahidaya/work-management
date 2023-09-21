@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -206,4 +206,4 @@ const ChecklistSection = ({ taskId }) => {
   );
 };
 
-export default ChecklistSection;
+export default memo(ChecklistSection);
