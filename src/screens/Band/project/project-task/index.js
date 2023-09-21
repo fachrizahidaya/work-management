@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -24,6 +24,8 @@ const ProjectTaskScreen = ({ route }) => {
   const [taskToEdit, setTaskToEdit] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+
   const fetchTaskParameters = {
     label_id: selectedLabelId,
   };
@@ -35,6 +37,7 @@ const ProjectTaskScreen = ({ route }) => {
   const {
     data: tasks,
     isLoading: taskIsLoading,
+    isFetching: taskIsFetching,
     refetch: refetchTasks,
   } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
 
@@ -76,7 +79,11 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ marginHorizontal: 16, marginVertical: 13 }}
+          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+        >
           <Flex gap={15}>
             <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
               <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}>
@@ -94,6 +101,7 @@ const ProjectTaskScreen = ({ route }) => {
                 fetchMemberUrl={`/pm/projects/${projectId}/member`}
                 fetchLabelUrl={`/pm/projects/${projectId}/label`}
                 setSelectedLabelId={setSelectedLabelId}
+                setFilteredData={setFilteredData}
               />
 
               <Button onPress={toggleTaskForm}>
@@ -111,7 +119,7 @@ const ProjectTaskScreen = ({ route }) => {
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList
-              tasks={tasks?.data}
+              tasks={filteredData}
               isLoading={taskIsLoading}
               openDetail={onPressTaskItem}
               openEditForm={onOpenTaskForm}

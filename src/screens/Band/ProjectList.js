@@ -7,6 +7,7 @@ import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
@@ -36,7 +37,7 @@ const ProjectList = () => {
     []
   );
 
-  const { data, isLoading, refetch } = useFetch("/pm/projects", dependencies, params);
+  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -107,6 +108,7 @@ const ProjectList = () => {
           <>
             <Box h={Platform.OS === "ios" ? 400 : height - 465}>
               <FlashList
+                refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
                 keyExtractor={(item) => item.id}
                 onEndReachedThreshold={0.1}
