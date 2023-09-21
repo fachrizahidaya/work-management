@@ -15,12 +15,12 @@ const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestEx
           <FeedCommentItem
             key={item.id}
             id={item.id}
-            parent_id={item.parent_id ? item.parent_id : item.id}
+            parentId={item.parent_id ? item.parent_id : item.id}
             loggedEmployeeId={loggedEmployeeId}
             authorId={item.employee_id}
             authorImage={item.employee_image}
-            author_name={item.employee_name}
-            total_replies={item.total_replies}
+            authorName={item.employee_name}
+            totalReplies={item.total_replies}
             postId={postId}
             onReply={onReply}
             latestExpandedReply={latestExpandedReply}

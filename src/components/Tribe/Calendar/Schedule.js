@@ -4,91 +4,36 @@ import { Agenda } from "react-native-calendars";
 import { Text, Flex } from "native-base";
 import dayjs from "dayjs";
 import { useEffect } from "react";
-import testIDs from "./testIDs";
+import testIDs from "../testIDs";
 
 const Schedule = ({ attendance }) => {
-  console.log("att", attendance);
-  const [items, setItems] = useState({
+  const [items, setItems] = useState({});
+  const selectedDate = dayjs().format("YYYY-MM-DD");
+  /**
+     * The data should be like this
+     * 
     "2023-09-21": [
       { name: "Clock-in", time: "08:30" },
-      { name: "Break", time: "09:30" },
       { name: "Clock-out", time: "17:30" },
     ],
     "2023-09-22": [
       { name: "Clock-in", time: "09:00" },
       { name: "Clock-out", time: "17:30" },
     ],
-  });
-  const selectedDate = dayjs().format("YYYY-MM-DD");
+    */
 
-  // const loadItemsForMonth = (day) => {
-  //   const newItems = { ...items };
+  useEffect(() => {
+    let dateList = {};
 
-  //   setTimeout(() => {
-  //     for (let i = -15; i < 85; i++) {
-  //       const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-  //       const strTime = timeToString(time);
+    attendance.map((item) => {
+      dateList[item?.date] = [
+        { name: "Clock-in", time: item?.time_in },
+        { name: "Clock-out", time: item?.time_out },
+      ];
+    });
 
-  //       if (!newItems[strTime]) {
-  //         newItems[strTime] = [];
-
-  //         const numItems = Math.floor(Math.random() * 3 + 1);
-  //         for (let j = 0; j < numItems; j++) {
-  //           newItems[strTime].push({
-  //             name: "Item for " + strTime + " #" + j,
-  //             height: Math.max(50, Math.floor(Math.random() * 150)),
-  //             day: strTime,
-  //           });
-  //         }
-  //       }
-  //     }
-
-  //     setItems(newItems);
-  //   }, 1000);
-  // };
-
-  // useEffect(() => {
-  //   loadItemsForMonth(selectedDate);
-  // }, []);
-
-  // const timeToString = (time) => {
-  //   const date = dayjs(time);
-  //   return date.toISOString().split("T")[0];
-  // };
-
-  // const renderDay = (day) => {
-  //   if (day) {
-  //     return <Text style={styles.customDay}>{day.getDay()}</Text>;
-  //   }
-  //   return <Flex style={styles.dayItem} />;
-  // };
-
-  // const renderItem = (reservation, isFirst) => {
-  //   const fontSize = isFirst ? 16 : 14;
-  //   const color = isFirst ? "black" : "#43515c";
-
-  //   return (
-  //     <TouchableOpacity
-  //       testID={testIDs.agenda.ITEM}
-  //       style={[styles.item, { height: reservation.height }]}
-  //       onPress={() => Alert.alert(reservation.name)}
-  //     >
-  //       <Text style={{ fontSize, color }}>{reservation.name}</Text>
-  //     </TouchableOpacity>
-  //   );
-  // };
-
-  // const renderEmptyDate = () => {
-  //   return (
-  //     <Flex style={styles.emptyDate}>
-  //       <Text>This is an empty date!</Text>
-  //     </Flex>
-  //   );
-  // };
-
-  // const rowHasChanged = (r1, r2) => {
-  //   return r1.name !== r2.name;
-  // };
+    setItems(dateList);
+  }, [attendance]);
 
   return (
     <Agenda
@@ -98,7 +43,7 @@ const Schedule = ({ attendance }) => {
       renderItem={(item) => (
         <Flex>
           <Text>{item?.name}</Text>
-          <Text>{item?.time}</Text>
+          <Text>{!item?.time ? "No time" : item?.time}</Text>
         </Flex>
       )}
     />

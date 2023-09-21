@@ -11,12 +11,12 @@ import { FlashList } from "@shopify/flash-list";
 
 const FeedCommentItem = ({
   id,
-  parent_id,
+  parentId,
   loggedEmployeeId,
   authorId,
   authorImage,
-  author_name,
-  total_replies,
+  authorName,
+  totalReplies,
   postId,
   onReply,
   latestExpandedReply,
@@ -29,7 +29,7 @@ const FeedCommentItem = ({
   const fetchReply = async (fetchMore = false) => {
     if (!replyFetchDone) {
       try {
-        const res = await axiosInstance.get(`/hr/posts/${postId}/comment/${parent_id}/replies`);
+        const res = await axiosInstance.get(`/hr/posts/${postId}/comment/${parentId}/replies`);
         if (!fetchMore) {
           setCommentReplies(res.data.data);
         } else {
@@ -65,24 +65,24 @@ const FeedCommentItem = ({
     <Flex mt={1} mb={5} flex={1} gap={3}>
       <Box flex={1} mt={1} minHeight={1}>
         <Flex direction="row" gap={4}>
-          <AvatarPlaceholder image={authorImage} name={author_name} size="sm" />
+          <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
           <Box>
             <Text fontSize={15} fontWeight={700}>
-              {author_name.length > 30 ? author_name.split(" ")[0] : author_name}
+              {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
           </Box>
         </Flex>
       </Box>
       <Text>{comments}</Text>
       <Flex flexDir="row" ml={3} gap={5}>
-        <Pressable onPress={() => onReply(parent_id)}>
+        <Pressable onPress={() => onReply(parentId)}>
           <Box>Reply</Box>
         </Pressable>
         <Pressable onPress={() => fetchReply()}>
-          <Flex flexDir="row">View{total_replies ? ` ${total_replies}` : ""} Reply</Flex>
+          <Flex flexDir="row">View{totalReplies ? ` ${totalReplies}` : ""} Reply</Flex>
         </Pressable>
       </Flex>
-      {total_replies > 0 && (
+      {totalReplies > 0 && (
         <>
           <Box>
             <FlashList

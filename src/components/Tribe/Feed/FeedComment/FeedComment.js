@@ -8,6 +8,7 @@ import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
 import { useFetch } from "../../../../hooks/useFetch";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const FeedComment = ({
   handleOpen,
@@ -19,7 +20,6 @@ const FeedComment = ({
   total_comments,
   onSubmit,
   refetch,
-  setPosts,
 }) => {
   const { data: comment, isLoading: commentIsLoading } = useFetch(`/hr/posts/${postId}/comment`);
   const [commentParentId, setCommentParentId] = useState(null);
@@ -27,6 +27,7 @@ const FeedComment = ({
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
   const { width, height } = Dimensions.get("window");
   const inputRef = useRef();
+  const { isOpen, toggle } = useDisclosure();
   const { isKeyboardVisible } = useKeyboardChecker();
 
   const fetchComment = async (offset = 0, limit = 10, fetchMore = false) => {
@@ -61,6 +62,10 @@ const FeedComment = ({
     // inputRef.current.focus();
   };
 
+  const commentCloseHandler = () => {
+    toggle();
+  };
+
   useEffect(() => {
     if (!handleOpen) {
       setCommentParentId(null);
@@ -71,6 +76,7 @@ const FeedComment = ({
 
   return (
     <Slide in={handleOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 90 : 120}>
+      {/* <Actionsheet isOpen={handleOpen} onClose={() => commentCloseHandler()}> */}
       <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 85 : 21}>
         <Flex flexDir="column" flexGrow={1} bgColor="white" position="relative">
           <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
@@ -108,6 +114,7 @@ const FeedComment = ({
           />
         </Flex>
       </KeyboardAvoidingView>
+      {/* </Actionsheet> */}
     </Slide>
   );
 };

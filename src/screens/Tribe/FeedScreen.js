@@ -12,20 +12,15 @@ const FeedScreen = () => {
   const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
-  const [postFetchDone, setPostFetchDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const firstTimeRef = useRef(true);
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
-  const {
-    data: feeds,
-    isLoading: feedIsLoading,
-    refetch,
-  } = useFetch("/hr/posts", [currentOffset], postFetchParameters);
+
+  const { data: feeds, refetch } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
+
   const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
 
   const fetchMyProfile = async () => {
@@ -37,16 +32,20 @@ const FeedScreen = () => {
     }
   };
 
-  const fetchMorePosts = () => {
-    if (posts.length !== posts.length + feeds?.data.length) {
-      setCurrentOffset(currentOffset + 10);
+  const postEndReachedHandler = () => {
+    if (!fetchIsDone) {
+      if (posts.length !== posts.length + feeds?.data.length) {
+        setCurrentOffset(currentOffset + 10);
+      } else {
+        setFetchIsDone(true);
+      }
     }
   };
 
-  const postRefetchHandler = async () => {
-    await refetch();
-    setPosts(feeds?.data);
+  const postRefetchHandler = () => {
     setCurrentOffset(0);
+    setFetchIsDone(false);
+    // reset posisi scroll ke paling atas
   };
 
   const postLikeToggleHandler = async (post_id, action) => {
@@ -66,9 +65,17 @@ const FeedScreen = () => {
 
   useEffect(() => {
     if (feeds?.data) {
-      setPosts((prevData) => [...prevData, ...feeds?.data]);
+      if (currentOffset === 0) {
+        setPosts(feeds?.data);
+      } else {
+        setPosts((prevData) => [...prevData, ...feeds?.data]);
+      }
     }
   }, [feeds?.data]);
+
+  // useEffect(() => {
+  //   console.log(posts);
+  // }, [posts]);
 
   return (
     <>
@@ -114,11 +121,8 @@ const FeedScreen = () => {
             loggedEmployeeName={myProfile?.name}
             posts={posts}
             onToggleLike={postLikeToggleHandler}
-            feedIsLoading={feedIsLoading}
-            profileIsLoading={profileIsLoading}
             refetch={postRefetchHandler}
-            handleEndReached={fetchMorePosts}
-            setPosts={setPosts}
+            handleEndReached={postEndReachedHandler}
           />
         </Flex>
       </SafeAreaView>

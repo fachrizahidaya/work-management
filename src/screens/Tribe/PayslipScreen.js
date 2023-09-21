@@ -51,9 +51,6 @@ const PayslipScreen = () => {
         <Flex flexDir="row" gap={1}>
           <Text fontSize={16}>My Payslip</Text>
         </Flex>
-        <Text fontWeight={700} fontSize={12}>
-          PT Kolabora Group Indonesia
-        </Text>
       </Flex>
       <FlashList
         data={payslip?.data}

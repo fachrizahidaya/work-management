@@ -49,9 +49,6 @@ const ContactScreen = () => {
         <Flex flexDir="row" gap={1}>
           <Text fontSize={16}>Contact</Text>
         </Flex>
-        <Text fontWeight={700} fontSize={12}>
-          PT Kolabora Group Indonesia
-        </Text>
       </Flex>
       <Box backgroundColor="white" pt={4} px={4} pb={4}>
         <Input

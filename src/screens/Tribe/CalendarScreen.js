@@ -24,9 +24,7 @@ const CalendarScreen = () => {
       const res = await axiosInstance.get("/hr/timesheets/personal", {
         params: filter,
       });
-      console.log("ini", res);
       setAttendance(res?.data?.data);
-      const existingData = res?.data?.data;
     } catch (err) {
       console.log(err);
     }

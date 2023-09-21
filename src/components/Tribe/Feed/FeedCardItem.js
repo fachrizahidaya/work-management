@@ -1,22 +1,23 @@
-import { Avatar, Box, Flex, Image, Text, ScrollView, Skeleton, Icon, Pressable, Modal } from "native-base";
+import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
 import { useEffect, useState } from "react";
 import { card } from "../../../styles/Card";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import dayjs from "dayjs";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 const FeedCardItem = ({
   id,
-  employee_name,
-  created_at,
-  employee_image,
+  employeeName,
+  createdAt,
+  employeeImage,
   content,
   total_like,
-  total_comment,
-  liked_by,
+  totalComment,
+  likedBy,
   attachment,
+  type,
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
@@ -43,24 +44,29 @@ const FeedCardItem = ({
   };
 
   useEffect(() => {
-    if (liked_by && liked_by.includes("'" + String(loggedEmployeeId) + "'")) {
+    if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
       setLikeAction("dislike");
     } else {
       setLikeAction("like");
     }
-  }, [liked_by, loggedEmployeeId]);
+  }, [likedBy, loggedEmployeeId]);
 
   return (
     <Flex flexDir="column" style={card.card} my={5}>
       <Flex flex={1} gap={8} style={card.card}>
         <Box flex={1} minHeight={2}>
           <Flex direction="row" gap={4}>
-            <AvatarPlaceholder image={employee_image} name={employee_name} size="md" />
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size="md" />
             <Box>
-              <Text fontSize={18} fontWeight={700}>
-                {employee_name.length > 30 ? employee_name.split(" ")[0] : employee_name}
-              </Text>
-              <Text fontSize={12}>{dayjs(created_at).format("MMM DD, YYYY")}</Text>
+              <Flex gap={1} alignItems="center" justifyContent="center" flexDir="row">
+                <Text fontSize={18} fontWeight={700}>
+                  {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
+                </Text>
+                {type === "Announcement" ? <Icon as={<MaterialIcons name="campaign" />} color="black" /> : null}
+              </Flex>
+              <Flex flexDir="row">
+                <Text fontSize={12}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+              </Flex>
             </Box>
           </Flex>
         </Box>
@@ -111,7 +117,7 @@ const FeedCardItem = ({
             <Pressable onPress={() => onCommentToggle(id)}>
               <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="black" />
             </Pressable>
-            <Text>{total_comment}</Text>
+            <Text>{totalComment}</Text>
           </Flex>
         </Flex>
       </Flex>

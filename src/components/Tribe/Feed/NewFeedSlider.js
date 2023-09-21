@@ -1,22 +1,8 @@
-import {
-  Box,
-  Flex,
-  Icon,
-  Slide,
-  Pressable,
-  Text,
-  FormControl,
-  Input,
-  useToast,
-  Image,
-  Button,
-  Switch,
-} from "native-base";
-import { useEffect, useState } from "react";
-import { useFetch } from "../../../hooks/useFetch";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, useToast, Image } from "native-base";
+import { useState } from "react";
 import axiosInstance from "../../../config/api";
 import { useFormik } from "formik";
-import { Dimensions, Platform, SafeAreaView, StyleSheet, PermissionsAndroid, Alert } from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -28,8 +14,9 @@ import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
 
 const NewFeedSlider = ({ refetch, toggle }) => {
-  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [dateShown, setDateShown] = useState(false);
   const [image, setImage] = useState(null);
+  const [isPressed, setIsPressed] = useState();
   const [selectedOption, setSelectedOption] = useState("Public");
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
@@ -53,12 +40,16 @@ const NewFeedSlider = ({ refetch, toggle }) => {
     }
   };
 
+  const endDateAnnouncementHandler = (value) => {
+    formik.setFieldValue("end_date", value);
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       content: "",
       type: selectedOption || "Public",
-      end_date: "2023-11-30" || "",
+      end_date: "",
     },
     validationSchema: yup.object().shape({
       content: yup.string().required("Content is required"),
@@ -88,18 +79,16 @@ const NewFeedSlider = ({ refetch, toggle }) => {
     if (formik.values.type === "Public") {
       setSelectedOption("Announcement");
       formik.setFieldValue("type", "Announcement");
+      setIsPressed(true);
+      setDateShown(true);
+      toast.show({ description: "Set to Announcement" });
     } else {
       formik.setFieldValue("type", "Public");
       formik.setFieldValue("end_date", "");
+      setIsPressed(false);
+      setDateShown(false);
+      toast.show({ description: "Set to Public" });
     }
-  };
-
-  const dateDialogOpenHandler = () => {
-    setDateDialogOpen(true);
-  };
-
-  const dateDialogCloseHandler = () => {
-    setDateDialogOpen(false);
   };
 
   const pickImageHandler = async () => {
@@ -191,28 +180,50 @@ const NewFeedSlider = ({ refetch, toggle }) => {
               justifyContent="space-between"
             >
               <Flex gap={1} flexDir="row">
-                <Switch onValueChange={announcementToggleHandler} value={selectedOption === "Announcement"} size="md" />
-                <Box background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
-                  <Pressable>
-                    <Icon as={<MaterialIcons name="campaign" />} size={30} color="white" />
-                  </Pressable>
-                </Box>
-                <Box background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
-                  <Pressable>
-                    <Icon as={<MaterialCommunityIcons name="calendar-month-outline" />} size={30} color="white" />
-                  </Pressable>
-                </Box>
-                <Box background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
-                  <Pressable onPress={pickImageHandler}>
-                    <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="white" />
-                  </Pressable>
-                </Box>
-              </Flex>
-              <Box background="#377893" borderRadius="full" padding="10px" width={50} height={50}>
-                <Pressable onPress={formik.handleSubmit}>
-                  <Icon as={<SimpleLineIcons name="paper-plane" />} size={30} color="white" />
+                {/* <Switch onValueChange={announcementToggleHandler} value={selectedOption === "Announcement"} size="md" /> */}
+                <Pressable
+                  background="#377893"
+                  borderRadius="full"
+                  padding="11px"
+                  width={50}
+                  height={50}
+                  onPress={pickImageHandler}
+                >
+                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="white" />
                 </Pressable>
-              </Box>
+                <Pressable
+                  onPress={announcementToggleHandler}
+                  background={isPressed ? "orange.800" : "#377893"}
+                  borderRadius="full"
+                  padding="11px"
+                  width={50}
+                  height={50}
+                >
+                  <Icon as={<MaterialIcons name="campaign" />} size={30} color="white" />
+                </Pressable>
+                {dateShown ? (
+                  <Pressable background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
+                    <CustomDateTimePicker
+                      defaultValue={formik.values.end_date}
+                      onChange={endDateAnnouncementHandler}
+                      withIcon={true}
+                      iconName="calendar-month-outline"
+                      iconType={MaterialCommunityIcons}
+                    />
+                  </Pressable>
+                ) : null}
+              </Flex>
+
+              <Pressable
+                background="#377893"
+                borderRadius="full"
+                padding="10px"
+                width={50}
+                height={50}
+                onPress={formik.handleSubmit}
+              >
+                <Icon as={<SimpleLineIcons name="paper-plane" />} size={30} color="white" />
+              </Pressable>
             </Flex>
           </FormControl>
         </Flex>
