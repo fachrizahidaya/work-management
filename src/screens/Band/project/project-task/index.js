@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, useSafeArea } from "native-base";
+import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
@@ -12,42 +12,59 @@ import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTas
 import CustomDrawer from "../../../../components/shared/CustomDrawer";
 import TaskDetail from "../../../../components/Band/Task/TaskDetail/TaskDetail";
 import TaskViewSection from "../../../../components/Band/Project/ProjectTask/TaskViewSection";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 
 const ProjectTaskScreen = ({ route }) => {
   const { height } = Dimensions.get("window");
   const { projectId } = route.params;
   const navigation = useNavigation();
   const [view, setView] = useState("Task List");
-  const [taskFormIsOpen, setTaskFormIsOpen] = useState(false);
-  const [taskDetailIsOpen, setTaskDetailIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("Open");
+  const [selectedLabelId, setSelectedLabelId] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+
+  const fetchTaskParameters = {
+    label_id: selectedLabelId,
+  };
+
+  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
+  const { isOpen: taskDetailIsOpen, toggle: toggleTaskDetail } = useDisclosure(false);
+
+  const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
+  const {
+    data: tasks,
+    isLoading: taskIsLoading,
+    isFetching: taskIsFetching,
+    refetch: refetchTasks,
+  } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
 
   const onPressTaskItem = (task) => {
-    setTaskDetailIsOpen(!taskDetailIsOpen);
+    toggleTaskDetail();
     setSelectedTask(task);
   };
 
   const onCloseTaskDetail = () => {
-    setTaskDetailIsOpen(!taskDetailIsOpen);
+    toggleTaskDetail();
     setSelectedTask(null);
   };
 
   const onOpenTaskForm = (task) => {
-    setTaskFormIsOpen(true);
+    toggleTaskForm();
     setTaskToEdit(task);
   };
 
   const onCloseTaskForm = (resetForm) => {
-    setTaskFormIsOpen(false);
+    toggleTaskForm();
     setTaskToEdit(null);
     setSelectedStatus("Open");
     resetForm();
   };
 
   const onOpenTaskFormWithStatus = (status) => {
-    setTaskFormIsOpen(true);
+    toggleTaskForm();
     setSelectedStatus(status);
   };
 
@@ -59,73 +76,97 @@ const ProjectTaskScreen = ({ route }) => {
     setView(value);
   };
 
-  const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
-  const { data: tasks, isLoading: taskIsLoading, refetch: refetchTasks } = useFetch(`/pm/tasks/project/${projectId}`);
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
-        <Flex gap={15}>
-          <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-            <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-            </Pressable>
+    <>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ marginHorizontal: 16, marginVertical: 13 }}
+          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+        >
+          <Flex gap={15}>
+            <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
+              <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}>
+                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+              </Pressable>
 
-            {!isLoading ? <Text fontSize={16}>{data?.data.title}</Text> : <Skeleton h={8} w={200} />}
+              {!isLoading ? <Text fontSize={16}>{data?.data.title}</Text> : <Skeleton h={8} w={200} />}
+            </Flex>
+
+            <TaskViewSection changeView={changeView} view={view} />
+
+            <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+              <TaskFilter
+                data={tasks?.data}
+                fetchMemberUrl={`/pm/projects/${projectId}/member`}
+                fetchLabelUrl={`/pm/projects/${projectId}/label`}
+                setSelectedLabelId={setSelectedLabelId}
+                setFilteredData={setFilteredData}
+              />
+
+              <Button onPress={toggleTaskForm}>
+                <Flex flexDir="row" gap={6} alignItems="center" px={2}>
+                  <Text color="white">Add</Text>
+
+                  <Box alignItems="center" bgColor="#2d6076" borderRadius={10} p={2}>
+                    <Icon as={<MaterialCommunityIcons name="plus" />} color="white" />
+                  </Box>
+                </Flex>
+              </Button>
+            </Flex>
           </Flex>
 
-          <TaskViewSection changeView={changeView} view={view} />
+          {/* Task List view */}
+          {view === "Task List" && (
+            <TaskList
+              tasks={filteredData}
+              isLoading={taskIsLoading}
+              openDetail={onPressTaskItem}
+              openEditForm={onOpenTaskForm}
+              openNewTaskForm={onOpenTaskFormWithStatus}
+            />
+          )}
+        </ScrollView>
 
-          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
-            <Pressable>
-              <Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />
-            </Pressable>
-
-            <Button onPress={() => setTaskFormIsOpen(true)}>
-              <Flex flexDir="row" gap={6} alignItems="center" px={2}>
-                <Text color="white">Add</Text>
-
-                <Box alignItems="center" bgColor="#2d6076" borderRadius={10} p={2}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="white" />
-                </Box>
-              </Flex>
-            </Button>
-          </Flex>
-        </Flex>
-
-        {/* Task List view */}
-        {view === "Task List" && (
-          <TaskList
-            tasks={tasks?.data}
-            isLoading={taskIsLoading}
-            openDetail={onPressTaskItem}
-            openEditForm={onOpenTaskForm}
-            openNewTaskForm={onOpenTaskFormWithStatus}
+        {taskFormIsOpen && (
+          <NewTaskSlider
+            isOpen={taskFormIsOpen}
+            projectId={projectId}
+            taskData={taskToEdit}
+            selectedStatus={selectedStatus}
+            onClose={onCloseTaskForm}
+            setSelectedTask={setSelectedTask}
           />
         )}
-      </ScrollView>
+      </SafeAreaView>
 
-      {taskFormIsOpen && (
-        <NewTaskSlider
-          isOpen={taskFormIsOpen}
-          projectId={projectId}
-          taskData={taskToEdit}
-          selectedStatus={selectedStatus}
-          onClose={onCloseTaskForm}
-          setSelectedTask={setSelectedTask}
-        />
+      {/* Task Detail */}
+      {Platform.OS === "ios" ? (
+        <CustomDrawer isOpen={taskDetailIsOpen} height={height} isReady={selectedTask?.id}>
+          <TaskDetail
+            safeAreaProps={safeAreaProps}
+            onCloseDetail={onCloseTaskDetail}
+            selectedTask={selectedTask}
+            openEditForm={onOpenTaskForm}
+            refetch={refetchTasks}
+          />
+        </CustomDrawer>
+      ) : (
+        <>
+          {selectedTask && (
+            <View style={styles.taskDetailAndroid}>
+              <TaskDetail
+                safeAreaProps={safeAreaProps}
+                onCloseDetail={onCloseTaskDetail}
+                selectedTask={selectedTask}
+                openEditForm={onOpenTaskForm}
+                refetch={refetchTasks}
+              />
+            </View>
+          )}
+        </>
       )}
-
-      <CustomDrawer isOpen={taskDetailIsOpen} height={height}>
-        <TaskDetail
-          safeAreaProps={safeAreaProps}
-          onCloseDetail={onCloseTaskDetail}
-          selectedTask={selectedTask}
-          openEditForm={onOpenTaskForm}
-          refetch={refetchTasks}
-        />
-      </CustomDrawer>
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -135,5 +176,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  taskDetailAndroid: {
+    flex: 1,
+    backgroundColor: "white",
+    position: "absolute",
+    top: Platform.OS === "android" ? -20 : -40,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });

@@ -7,11 +7,33 @@ import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard
 import ProjectAndTaskCard from "../../components/Band/Dashboard/ProjectAndTaskCard/ProjectAndTaskCard";
 import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/ActiveTaskCard";
 import { useFetch } from "../../hooks/useFetch";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const BandDashboard = () => {
-  const { data: projects, isLoading: projectIsLoading } = useFetch("/pm/projects/total");
-  const { data: tasks, isLoading: taskIsLoading } = useFetch("/pm/tasks/total");
-  const { data: tasksThisYear, isLoading: tasksThisYearIsLoading } = useFetch("/pm/tasks/year-tasks");
+  const {
+    data: projects,
+    isLoading: projectIsLoading,
+    refetch: refetchProjects,
+    isFetching: projectIsFetching,
+  } = useFetch("/pm/projects/total");
+  const {
+    data: tasks,
+    isLoading: taskIsLoading,
+    refetch: refetchTasks,
+    isFetching: taskIsFetching,
+  } = useFetch("/pm/tasks/total");
+  const {
+    data: tasksThisYear,
+    isLoading: tasksThisYearIsLoading,
+    refetch: refetchTasksThisYear,
+    isFetching: tasksThisYearIsFetching,
+  } = useFetch("/pm/tasks/year-tasks");
+
+  const refetchEverything = () => {
+    refetchProjects();
+    refetchTasks();
+    refetchTasksThisYear();
+  };
 
   const openTasks = tasksThisYear?.data?.total_open || 0;
   const onProgressTasks = tasksThisYear?.data?.total_onprogress || 0;
@@ -42,7 +64,17 @@ const BandDashboard = () => {
           PT Kolabora Group Indonesia
         </Text>
       </Flex>
-      <ScrollView px={5} h="100%" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        px={5}
+        h="100%"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={projectIsFetching && taskIsFetching && tasksThisYearIsFetching}
+            onRefresh={refetchEverything}
+          />
+        }
+      >
         <Flex flex={1} flexDir="column" gap={5} my={5}>
           {/* Content here */}
           <ProjectAndTaskCard

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
@@ -387,4 +387,4 @@ const CommentInput = ({ taskId, projectId }) => {
   );
 };
 
-export default CommentInput;
+export default memo(CommentInput);

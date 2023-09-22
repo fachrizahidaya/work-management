@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -72,4 +72,4 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, refetchT
   );
 };
 
-export default DeadlineSection;
+export default memo(DeadlineSection);

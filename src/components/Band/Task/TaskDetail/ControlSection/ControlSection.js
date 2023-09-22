@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Button, Flex, HStack, Icon, Menu, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -71,4 +71,4 @@ const ControlSection = ({ taskStatus, taskId, refetchObservers }) => {
   );
 };
 
-export default ControlSection;
+export default memo(ControlSection);

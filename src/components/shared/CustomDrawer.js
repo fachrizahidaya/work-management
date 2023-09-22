@@ -1,5 +1,6 @@
-import { Dimensions, StyleSheet, Platform } from "react-native";
 import React, { useEffect } from "react";
+
+import { Dimensions, StyleSheet, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -53,6 +54,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingBottom: Platform.OS === "android" ? 105 : 125,
+    paddingBottom: Platform.OS === "android" ? 105 : 155,
   },
 });

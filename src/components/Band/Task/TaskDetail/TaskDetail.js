@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Flex, FormControl, Text } from "native-base";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import AttachmentSection from "./AttachmentSection/AttachmentSection";
@@ -31,73 +32,89 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, 
   );
 
   return (
-    <KeyboardAwareScrollView extraHeight={140}>
-      <Flex {...safeAreaProps} bgColor="white" p={5} gap={5}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-          <ControlSection
-            taskStatus={selectedTask?.status}
-            taskId={selectedTask?.id}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        extraHeight={200}
+        enableOnAndroid={true}
+        enableAutomaticScroll={Platform.OS === "ios"}
+      >
+        {/* <ScrollView> */}
+        <Flex {...safeAreaProps} bgColor="white" p={5} gap={5}>
+          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+            <ControlSection
+              taskStatus={selectedTask?.status}
+              taskId={selectedTask?.id}
+              refetchObservers={refetchObservers}
+            />
+
+            <TaskMenuSection
+              selectedTask={selectedTask}
+              onCloseDetail={onCloseDetail}
+              openEditForm={openEditForm}
+              refetchAllTasks={refetch}
+              responsible={responsible?.data[0]}
+              refetchResponsible={refetchResponsible}
+            />
+          </Flex>
+          <Text fontSize={20}>{selectedTask?.title}</Text>
+
+          {/* Reponsible, Creator and Observer section */}
+          <PeopleSection
+            observers={observers}
+            responsibleArr={responsible?.data}
+            ownerId={selectedTask?.owner_id}
+            ownerImage={selectedTask?.owner_image}
+            ownerName={selectedTask?.owner_name}
             refetchObservers={refetchObservers}
-          />
-
-          <TaskMenuSection
-            selectedTask={selectedTask}
-            onCloseDetail={onCloseDetail}
-            openEditForm={openEditForm}
-            refetchAllTasks={refetch}
-            responsible={responsible?.data[0]}
-            refetchResponsible={refetchResponsible}
-          />
-        </Flex>
-        <Text fontSize={20}>{selectedTask?.title}</Text>
-
-        {/* Reponsible, Creator and Observer section */}
-        <PeopleSection
-          observers={observers}
-          responsibleArr={responsible?.data}
-          ownerId={selectedTask?.owner_id}
-          ownerImage={selectedTask?.owner_image}
-          ownerName={selectedTask?.owner_name}
-          refetchObservers={refetchObservers}
-          disabled={inputIsDisabled}
-        />
-
-        {/* Labels */}
-        <LabelSection projectId={selectedTask?.project_id} taskId={selectedTask?.id} disabled={inputIsDisabled} />
-
-        {/* Due date and cost */}
-        <Flex flexDir="column" justifyContent="space-between" gap={5}>
-          <DeadlineSection
-            deadline={selectedTask?.deadline}
-            projectDeadline={selectedTask?.project_deadline}
             disabled={inputIsDisabled}
-            taskId={selectedTask?.id}
-            refetchTasks={refetch}
           />
 
-          <CostSection taskId={selectedTask?.id} disabled={inputIsDisabled} />
+          {/* Labels */}
+          <LabelSection projectId={selectedTask?.project_id} taskId={selectedTask?.id} disabled={inputIsDisabled} />
+
+          {/* Due date and cost */}
+          <Flex flexDir="column" justifyContent="space-between" gap={5}>
+            <DeadlineSection
+              deadline={selectedTask?.deadline}
+              projectDeadline={selectedTask?.project_deadline}
+              disabled={inputIsDisabled}
+              taskId={selectedTask?.id}
+              refetchTasks={refetch}
+            />
+
+            <CostSection taskId={selectedTask?.id} disabled={inputIsDisabled} />
+          </Flex>
+
+          {/* Description */}
+          <FormControl>
+            <FormControl.Label>DESCRIPTION</FormControl.Label>
+            <Text>{selectedTask?.description}</Text>
+          </FormControl>
+
+          {/* Checklists */}
+          <ChecklistSection taskId={selectedTask?.id} />
+
+          {/* Attachments */}
+          <AttachmentSection taskId={selectedTask?.id} />
+
+          {/* Comments */}
+          <FormControl>
+            <FormControl.Label>COMMENTS</FormControl.Label>
+            <CommentInput taskId={selectedTask?.id} />
+          </FormControl>
         </Flex>
-
-        {/* Description */}
-        <FormControl>
-          <FormControl.Label>DESCRIPTION</FormControl.Label>
-          <Text>{selectedTask?.description}</Text>
-        </FormControl>
-
-        {/* Checklists */}
-        <ChecklistSection taskId={selectedTask?.id} />
-
-        {/* Attachments */}
-        <AttachmentSection taskId={selectedTask?.id} />
-
-        {/* Comments */}
-        <FormControl>
-          <FormControl.Label>COMMENTS</FormControl.Label>
-          <CommentInput taskId={selectedTask?.id} />
-        </FormControl>
-      </Flex>
-    </KeyboardAwareScrollView>
+        {/* </ScrollView> */}
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+});
 
 export default memo(TaskDetail);

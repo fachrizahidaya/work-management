@@ -74,15 +74,7 @@ const CustomDateTimePicker = ({ width, onChange, defaultValue, disabled, maximum
     <>
       {!calendarIsOpen && (
         <Pressable onPress={toggleDatePicker} disabled={disabled}>
-          <Input
-            placeholder="DD/MM/YYYY"
-            editable={false}
-            value={value}
-            onPressIn={toggleDatePicker}
-            w={width}
-            borderRadius={15}
-            style={{ height: 40 }}
-          />
+          <Input placeholder="DD/MM/YYYY" editable={false} value={value} onPressIn={toggleDatePicker} w={width} />
         </Pressable>
       )}
 
@@ -94,7 +86,7 @@ const CustomDateTimePicker = ({ width, onChange, defaultValue, disabled, maximum
           onChange={onChangeDate}
           style={styles.datePicker}
           minimumDate={new Date(dayjs().format("YYYY-MM-DD"))}
-          maximumDate={new Date(maximumDate)}
+          maximumDate={maximumDate && new Date(maximumDate)}
         />
       )}
 
