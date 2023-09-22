@@ -14,12 +14,12 @@ const FeedCard = ({
   refetch,
   handleEndReached,
 }) => {
-  const [postEditOpen, setPostEditOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [postTotalComment, setPostTotalComment] = useState(0);
+  const [postId, setPostId] = useState(null);
+  const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
   const [postIsFetching, setPostIsFetching] = useState(false);
-  const [postId, setPostId] = useState(null);
 
   console.log(posts);
 

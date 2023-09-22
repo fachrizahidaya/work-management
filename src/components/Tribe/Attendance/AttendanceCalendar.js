@@ -4,12 +4,19 @@ import { Text, ScrollView } from "native-base";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import testIDs from "../testIDs";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
-const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
-
-const AttendanceCalendar = () => {
+const AttendanceCalendar = ({ attendance }) => {
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
+  const [items, setItems] = useState({});
+  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
+  const selectedDate = dayjs().format("YYYY-MM-DD");
+  const allGood = { key: "allGood", color: "#ededed" };
+  const reportRequired = { key: "reportRequired", color: "#fdc500" };
+  const submittedReport = { key: "submittedReport", color: "#186688" };
+  const dayOff = { key: "dayOff", color: "#3bc14a" };
+  const sick = { key: "sick", color: "black" };
 
   const getDate = (count) => {
     const date = dayjs(INITIAL_DATE);
@@ -36,66 +43,71 @@ const AttendanceCalendar = () => {
     };
   }, [selected]);
 
-  const renderCalendarWithMultiDotMarking = () => {
-    return (
-      <Fragment>
-        <Text style={styles.text}>Calendar with multi-dot marking</Text>
-        <Calendar
-          style={styles.calendar}
-          current={INITIAL_DATE}
-          markingType={"multi-dot"}
-          markedDates={{
-            [getDate(2)]: {
-              selected: true,
-              dots: [
-                { key: "vacation", color: "blue", selectedDotColor: "red" },
-                { key: "massage", color: "red", selectedDotColor: "white" },
-              ],
-            },
-            [getDate(3)]: {
-              disabled: true,
-              dots: [
-                { key: "vacation", color: "green", selectedDotColor: "red" },
-                { key: "massage", color: "red", selectedDotColor: "green" },
-              ],
-            },
-          }}
-        />
-      </Fragment>
-    );
-  };
+  useEffect(() => {
+    let dateList = {};
 
-  const renderCalendarWithMultiPeriodMarking = () => {
+    attendance.map((item) => {
+      dateList[item?.date] = [
+        {
+          attendanceReason: item?.att_reason,
+          attendanceType: item?.att_type,
+          timeIn: item?.time_in,
+          late: item?.late,
+          lateReason: item?.late_reason,
+          lateType: item?.late_type,
+          dayType: item?.day_type,
+          timeOut: item?.time_out,
+          early: item?.early,
+          earlyReason: item?.early_reason,
+          earlyType: item?.early_type,
+          confirmation: item?.confirm,
+        },
+      ];
+    });
+
+    setItems(dateList);
+  }, [attendance]);
+
+  const renderCalendarWithMultiDotMarking = () => {
+    const markedDates = {};
+    for (const date in items) {
+      if (items.hasOwnProperty(date)) {
+        const events = items[date];
+        const dots = [];
+        events.forEach((event) => {
+          let dotColor = "";
+
+          if (event.dayType === "Weekend") {
+            dotColor = dayOff.color;
+          } else if (
+            (event?.early && !event?.earlyReason && !event?.confirmation) ||
+            (event?.late && !event?.lateReason && !event?.confirmation) ||
+            (event?.attendanceType === "Alpa" && !event?.attendanceReason)
+          ) {
+            dotColor = reportRequired.color;
+          } else if (
+            (event?.early && event?.earlyReason && !event?.confirmation) ||
+            (event?.late && event?.lateReason && !event?.confirmation) ||
+            (event?.attendanceType !== "Alpa" && event?.attendanceReason)
+          ) {
+            dotColor = submittedReport.color;
+          } else if (event?.attendanceType === "Sick") {
+            dotColor = sick.color;
+          } else if (event?.confirmation && event?.dayType !== "Weekend") {
+            dotColor = allGood.color;
+          }
+          dots.push({
+            key: event.name,
+            color: dotColor,
+          });
+        });
+        markedDates[date] = { dots };
+      }
+    }
+
     return (
       <Fragment>
-        <Text style={styles.text}>Calendar with multi-period marking</Text>
-        <Calendar
-          style={styles.calendar}
-          current={INITIAL_DATE}
-          markingType={"multi-period"}
-          markedDates={{
-            [INITIAL_DATE]: {
-              periods: [
-                { startingDay: true, endingDay: false, color: "green" },
-                { startingDay: true, endingDay: false, color: "orange" },
-              ],
-            },
-            [getDate(1)]: {
-              periods: [
-                { startingDay: false, endingDay: true, color: "green" },
-                { startingDay: false, endingDay: true, color: "orange" },
-                { startingDay: true, endingDay: false, color: "pink" },
-              ],
-            },
-            [getDate(3)]: {
-              periods: [
-                { startingDay: true, endingDay: true, color: "orange" },
-                { color: "transparent" },
-                { startingDay: false, endingDay: false, color: "pink" },
-              ],
-            },
-          }}
-        />
+        <Calendar style={styles.calendar} current={INITIAL_DATE} markingType={"multi-dot"} markedDates={markedDates} />
       </Fragment>
     );
   };
@@ -119,10 +131,7 @@ const AttendanceCalendar = () => {
   return (
     <>
       <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
-        <Fragment>
-          {renderCalendarWithMultiDotMarking()}
-          {renderCalendarWithMultiPeriodMarking()}
-        </Fragment>
+        <Fragment>{renderCalendarWithMultiDotMarking()}</Fragment>
       </ScrollView>
     </>
   );

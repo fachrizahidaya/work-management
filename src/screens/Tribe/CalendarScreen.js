@@ -13,11 +13,6 @@ const CalendarScreen = () => {
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
   });
-  const params = {
-    month: dayjs().format("M"),
-    year: dayjs().format("YYYY"),
-  };
-  const { data: listAttendance } = useFetch("/hr/timesheets/personal", [filter], params);
 
   const fetchAttendance = async () => {
     try {

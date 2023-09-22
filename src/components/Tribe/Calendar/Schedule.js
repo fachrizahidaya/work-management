@@ -22,32 +22,7 @@ const Schedule = ({ attendance }) => {
     ],
     */
 
-  useEffect(() => {
-    let dateList = {};
-
-    attendance.map((item) => {
-      dateList[item?.date] = [
-        { name: "Clock-in", time: item?.time_in },
-        { name: "Clock-out", time: item?.time_out },
-      ];
-    });
-
-    setItems(dateList);
-  }, [attendance]);
-
-  return (
-    <Agenda
-      items={items}
-      selected={selectedDate}
-      showClosingKnob={true}
-      renderItem={(item) => (
-        <Flex>
-          <Text>{item?.name}</Text>
-          <Text>{!item?.time ? "No time" : item?.time}</Text>
-        </Flex>
-      )}
-    />
-  );
+  return <Agenda selected={selectedDate} showClosingKnob={true} />;
 };
 
 export default Schedule;

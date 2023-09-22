@@ -1,8 +1,34 @@
 import { Flex, Text } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
+import { useState } from "react";
+import axiosInstance from "../../config/api";
+import { useEffect } from "react";
+import dayjs from "dayjs";
+import Schedule from "../../components/Tribe/Calendar/Schedule";
 
 const AttendanceScreen = () => {
+  const [attendance, setAttendance] = useState([]);
+  const [filter, setFilter] = useState({
+    month: dayjs().format("M"),
+    year: dayjs().format("YYYY"),
+  });
+
+  const fetchAttendance = async () => {
+    try {
+      const res = await axiosInstance.get("/hr/timesheets/personal", {
+        params: filter,
+      });
+      setAttendance(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [filter]);
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -14,7 +40,8 @@ const AttendanceScreen = () => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-        <AttendanceCalendar />
+        <AttendanceCalendar attendance={attendance} />
+        {/* <Schedule/> */}
       </SafeAreaView>
     </>
   );

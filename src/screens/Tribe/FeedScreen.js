@@ -11,7 +11,6 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 const FeedScreen = () => {
   const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
-  const [myProfile, setMyProfile] = useState(null);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const postFetchParameters = {
@@ -19,18 +18,13 @@ const FeedScreen = () => {
     limit: 10,
   };
 
-  const { data: feeds, refetch } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
+  const {
+    data: feeds,
+    refetch,
+    isFetching,
+  } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
   const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
-
-  const fetchMyProfile = async () => {
-    try {
-      const res = await axiosInstance.get("/hr/my-profile");
-      setMyProfile(res.data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
@@ -58,10 +52,6 @@ const FeedScreen = () => {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    fetchMyProfile();
-  }, []);
 
   useEffect(() => {
     if (feeds?.data) {
@@ -116,9 +106,9 @@ const FeedScreen = () => {
         <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
           {/* Content here */}
           <FeedCard
-            loggedEmployeeId={myProfile?.id}
-            loggedEmployeeImage={myProfile?.image}
-            loggedEmployeeName={myProfile?.name}
+            loggedEmployeeId={profile?.data?.id}
+            loggedEmployeeImage={profile?.data?.image}
+            loggedEmployeeName={profile?.data?.name}
             posts={posts}
             onToggleLike={postLikeToggleHandler}
             refetch={postRefetchHandler}
