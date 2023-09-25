@@ -16,9 +16,10 @@ import Pagination from "../../components/shared/Pagination";
 const ProjectList = () => {
   const { height } = Dimensions.get("window");
   const firstTimeRef = useRef(true);
-  const [status, setStatus] = useState("Open");
+  const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
+  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const dependencies = [status, currentPage, searchInput];
   const params = {
@@ -36,8 +37,6 @@ const ProjectList = () => {
     }, 500),
     []
   );
-
-  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);

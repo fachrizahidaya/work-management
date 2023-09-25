@@ -13,6 +13,7 @@ import SettingScreen from "../../screens/Setting/SettingScreen";
 import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../../screens/Band/project/project-task";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import AdHocScreen from "../../screens/Band/AdHoc";
 
 const Tab = createBottomTabNavigator();
 
@@ -68,7 +69,7 @@ const BandTab = ({ setSelectedModule }) => {
           tabBarStyle: { height: 80 },
           tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
+          tabBarButton: ["Project List", "Project Detail", "Project Task", "Task List"].includes(route.name)
             ? () => {
                 return null;
               }
@@ -166,6 +167,8 @@ const BandTab = ({ setSelectedModule }) => {
         <Tab.Screen name="Project Detail" component={ProjectDetailScreen} />
 
         <Tab.Screen name="Project Task" component={ProjectTaskScreen} />
+
+        <Tab.Screen name="Task List" component={AdHocScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
