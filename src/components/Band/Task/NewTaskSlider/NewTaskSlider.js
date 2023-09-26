@@ -4,8 +4,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, ScrollView, useToast, Actionsheet } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Box, Flex, Text, FormControl, Input, ScrollView, useToast, Actionsheet, TextArea } from "native-base";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import CustomSelect from "../../../shared/CustomSelect";
@@ -14,6 +13,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import PageHeader from "../../../shared/PageHeader";
 
 const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", setSelectedTask }) => {
   const toast = useToast();
@@ -26,6 +26,13 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
   const { refetch: refetchAllTasks } = useFetch(projectId && `/pm/tasks/project/${projectId}`);
   const { refetch: refetchCurrentTask } = useFetch(taskData && `/pm/tasks/${taskData?.id}`);
 
+  /**
+   * Handles submission of task
+   * @param {*} form - form to submit
+   * @param {*} status - task status
+   * @param {*} setSubmitting - formik setSubmitting
+   * @param {*} setStatus - formik setStatus
+   */
   const submitHandler = async (form, status, setSubmitting, setStatus) => {
     try {
       if (!taskData) {
@@ -99,14 +106,7 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable onPress={() => onClose(formik.resetForm)}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-            </Pressable>
-            <Text fontSize={16} fontWeight={500}>
-              New Task
-            </Text>
-          </Flex>
+          <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
 
           <Flex gap={17} mt={22}>
             <FormControl isInvalid={formik.errors.title}>
@@ -121,13 +121,12 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
 
             <FormControl isInvalid={formik.errors.description}>
               <FormControl.Label>Description</FormControl.Label>
-              <Input
+              <TextArea
                 value={formik.values.description}
-                // multiline
-                h={100}
                 onChangeText={(value) => formik.setFieldValue("description", value)}
-                placeholder="Create a mobile application on iOS and Android devices."
+                placeholder="Input task description..."
               />
+
               <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
             </FormControl>
 

@@ -23,12 +23,12 @@ const BandScreensSlider = ({ toggle }) => {
     {
       icons: "format-list-bulleted",
       title: "Task list",
-      screen: "",
+      screen: "Task List",
     },
     {
       icons: "lightning-bolt",
       title: "My Team",
-      screen: "",
+      screen: "My Team",
     },
     {
       icons: "calendar-clock",

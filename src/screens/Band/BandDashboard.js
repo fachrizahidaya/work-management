@@ -1,13 +1,13 @@
 import React from "react";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, ScrollView, Skeleton, Text } from "native-base";
+import { Flex, Skeleton, Text } from "native-base";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard/ProgressChartCard";
 import ProjectAndTaskCard from "../../components/Band/Dashboard/ProjectAndTaskCard/ProjectAndTaskCard";
 import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/ActiveTaskCard";
 import { useFetch } from "../../hooks/useFetch";
-import { RefreshControl } from "react-native-gesture-handler";
 
 const BandDashboard = () => {
   const {
@@ -65,8 +65,7 @@ const BandDashboard = () => {
         </Text>
       </Flex>
       <ScrollView
-        px={5}
-        h="100%"
+        style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -103,5 +102,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",
+  },
+  scrollView: {
+    paddingHorizontal: 5,
   },
 });

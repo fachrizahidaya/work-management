@@ -5,13 +5,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast, TextArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
+import PageHeader from "../../../shared/PageHeader";
 
 const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
@@ -95,14 +96,7 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   return (
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => onClose(formik.resetForm)}>
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-          </Pressable>
-          <Text fontSize={16} fontWeight={500}>
-            New Project
-          </Text>
-        </Flex>
+        <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
 
         <Flex gap={17} mt={22}>
           <FormControl isInvalid={formik.errors.title}>
@@ -110,18 +104,17 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
             <Input
               value={formik.values.title}
               onChangeText={(value) => formik.setFieldValue("title", value)}
-              placeholder="App Development"
+              placeholder="Input project title..."
             />
             <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={formik.errors.description}>
             <FormControl.Label>Description</FormControl.Label>
-            <Input
+            <TextArea
               value={formik.values.description}
-              h={100}
               onChangeText={(value) => formik.setFieldValue("description", value)}
-              placeholder="Create a mobile application on iOS and Android devices."
+              placeholder="Input project description..."
             />
             <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
           </FormControl>

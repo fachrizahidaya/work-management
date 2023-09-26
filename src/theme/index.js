@@ -24,6 +24,12 @@ export const customTheme = extendTheme({
         variant: "unstyled",
       },
     },
+    Skeleton: {
+      baseStyle: {
+        borderRadius: 15,
+      },
+    },
+    Modal: { defaultProps: { _overlay: { useRNModalOnAndroid: false }, _backdrop: { _pressed: { opacity: 0.3 } } } },
   },
   colors: {
     primary: {
