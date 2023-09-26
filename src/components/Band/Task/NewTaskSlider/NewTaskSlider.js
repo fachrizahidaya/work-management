@@ -4,7 +4,19 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, ScrollView, useToast, Actionsheet } from "native-base";
+import {
+  Box,
+  Flex,
+  Icon,
+  Pressable,
+  Text,
+  FormControl,
+  Input,
+  ScrollView,
+  useToast,
+  Actionsheet,
+  TextArea,
+} from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -26,6 +38,13 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
   const { refetch: refetchAllTasks } = useFetch(projectId && `/pm/tasks/project/${projectId}`);
   const { refetch: refetchCurrentTask } = useFetch(taskData && `/pm/tasks/${taskData?.id}`);
 
+  /**
+   * Handles submission of task
+   * @param {*} form - form to submit
+   * @param {*} status - task status
+   * @param {*} setSubmitting - formik setSubmitting
+   * @param {*} setStatus - formik setStatus
+   */
   const submitHandler = async (form, status, setSubmitting, setStatus) => {
     try {
       if (!taskData) {
@@ -121,13 +140,12 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
 
             <FormControl isInvalid={formik.errors.description}>
               <FormControl.Label>Description</FormControl.Label>
-              <Input
+              <TextArea
                 value={formik.values.description}
-                // multiline
-                h={100}
                 onChangeText={(value) => formik.setFieldValue("description", value)}
-                placeholder="Create a mobile application on iOS and Android devices."
+                placeholder="Input task description..."
               />
+
               <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
             </FormControl>
 

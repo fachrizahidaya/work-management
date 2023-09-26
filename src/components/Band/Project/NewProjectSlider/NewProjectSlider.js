@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast, TextArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -110,18 +110,17 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
             <Input
               value={formik.values.title}
               onChangeText={(value) => formik.setFieldValue("title", value)}
-              placeholder="App Development"
+              placeholder="Input project title..."
             />
             <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={formik.errors.description}>
             <FormControl.Label>Description</FormControl.Label>
-            <Input
+            <TextArea
               value={formik.values.description}
-              h={100}
               onChangeText={(value) => formik.setFieldValue("description", value)}
-              placeholder="Create a mobile application on iOS and Android devices."
+              placeholder="Input project description..."
             />
             <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
           </FormControl>

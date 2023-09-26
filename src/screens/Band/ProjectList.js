@@ -19,9 +19,9 @@ const ProjectList = () => {
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
-  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const dependencies = [status, currentPage, searchInput];
+
   const params = {
     page: currentPage,
     search: searchInput,
@@ -29,6 +29,7 @@ const ProjectList = () => {
     archive: status !== "Archived" ? 0 : 1,
     limit: 10,
   };
+  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -51,6 +52,8 @@ const ProjectList = () => {
       refetch();
     }, [refetch])
   );
+
+  console.log(data);
 
   return (
     <SafeAreaView style={styles.container}>

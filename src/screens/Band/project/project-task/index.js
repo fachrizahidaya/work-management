@@ -110,14 +110,12 @@ const ProjectTaskScreen = ({ route }) => {
                 setFilteredData={setFilteredData}
               />
 
-              <Button onPress={toggleTaskForm}>
-                <Flex flexDir="row" gap={6} alignItems="center" px={2}>
-                  <Text color="white">Add</Text>
-
-                  <Box alignItems="center" bgColor="#2d6076" borderRadius={10} p={2}>
-                    <Icon as={<MaterialCommunityIcons name="plus" />} color="white" />
-                  </Box>
-                </Flex>
+              <Button
+                size="lg"
+                onPress={toggleTaskForm}
+                endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
+              >
+                Task
               </Button>
             </Flex>
           </Flex>
