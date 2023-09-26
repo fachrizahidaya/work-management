@@ -1,15 +1,17 @@
 import React from "react";
-import { Dimensions, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
+import { Dimensions } from "react-native";
 import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import PageHeader from "../../components/shared/PageHeader";
+
 const SettingScreen = () => {
   const navigation = useNavigation();
-  const { width, height } = Dimensions.get("window");
+  const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
 
   const first = [
@@ -52,9 +54,7 @@ const SettingScreen = () => {
     <Box bg="white" w={width} flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Flex bgColor="white" p={5} pb={10} gap={33}>
-          <Text fontSize={16} fontWeight={500}>
-            Settings
-          </Text>
+          <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
             <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">

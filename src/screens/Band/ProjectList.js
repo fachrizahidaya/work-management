@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, Text } from "native-base";
+import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -12,6 +12,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
+import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
   const { height } = Dimensions.get("window");
@@ -53,14 +54,10 @@ const ProjectList = () => {
     }, [refetch])
   );
 
-  console.log(data);
-
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-        <Text fontWeight={500} fontSize={16}>
-          My Project
-        </Text>
+        <PageHeader title="My Project" backButton={false} />
       </Flex>
 
       <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>

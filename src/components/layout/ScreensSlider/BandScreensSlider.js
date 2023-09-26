@@ -28,7 +28,7 @@ const BandScreensSlider = ({ toggle }) => {
     {
       icons: "lightning-bolt",
       title: "My Team",
-      screen: "",
+      screen: "My Team",
     },
     {
       icons: "calendar-clock",

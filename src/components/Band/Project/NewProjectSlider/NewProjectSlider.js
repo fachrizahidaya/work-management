@@ -12,6 +12,7 @@ import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
+import PageHeader from "../../../shared/PageHeader";
 
 const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   const { width, height } = Dimensions.get("window");
@@ -95,14 +96,7 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   return (
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={5}>
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => onClose(formik.resetForm)}>
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-          </Pressable>
-          <Text fontSize={16} fontWeight={500}>
-            New Project
-          </Text>
-        </Flex>
+        <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
 
         <Flex gap={17} mt={22}>
           <FormControl isInvalid={formik.errors.title}>
