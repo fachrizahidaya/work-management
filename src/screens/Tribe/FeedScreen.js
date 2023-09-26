@@ -9,10 +9,10 @@ import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
 import { useDisclosure } from "../../hooks/useDisclosure";
 
 const FeedScreen = () => {
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
@@ -80,29 +80,18 @@ const FeedScreen = () => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-        <Box
-          bg="#377893"
-          borderWidth={2}
-          borderColor="white"
-          borderRadius="full"
-          padding="13px"
-          width="60px"
-          height="60px"
-          position="absolute"
-          bottom={10}
-          right={10}
-          zIndex={2}
-        >
-          <Pressable
-            onPress={() => {
-              toggleNewFeed();
-            }}
-          >
-            <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
-          </Pressable>
-        </Box>
 
-        <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
+        <Pressable
+          style={styles.createIcon}
+          borderRadius="full"
+          onPress={() => {
+            toggleNewFeed();
+          }}
+        >
+          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
+        </Pressable>
+
+        <Flex px={4} my={1} flex={1} flexDir="column">
           {/* Content here */}
           <FeedCard
             loggedEmployeeId={profile?.data?.id}
@@ -128,5 +117,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F8F8",
     position: "relative",
+  },
+  createIcon: {
+    backgroundColor: "#377893",
+    padding: 15,
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 15,
+    right: 15,
+    zIndex: 2,
   },
 });

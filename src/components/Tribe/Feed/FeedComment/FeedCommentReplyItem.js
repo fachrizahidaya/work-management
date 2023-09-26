@@ -5,7 +5,6 @@ import { card } from "../../../../styles/Card";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const FeedCommentReplyItem = ({
-  key,
   id,
   parent_id,
   loggedEmployeeId,
@@ -34,20 +33,24 @@ const FeedCommentReplyItem = ({
   }, [comments]);
 
   return (
-    <Flex pl={5} flex={1} gap={5} style={card.card}>
-      <Box flex={1} minHeight={1}>
-        <Flex direction="row" gap={4}>
-          <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
-          <Box>
-            <Text fontSize={15} fontWeight={700}>
+    <Flex mx={10} gap={5} pb={5}>
+      <Flex minHeight={1}>
+        <Flex direction="row" gap={2}>
+          <Flex>
+            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
+          </Flex>
+          <Flex flex={1} gap={1}>
+            <Text fontSize={12} fontWeight={500}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-          </Box>
+            <Text fontSize={12} fontWeight={400}>
+              {comments}
+            </Text>
+            {/* <Flex>
+              <Text>Reply</Text>
+            </Flex> */}
+          </Flex>
         </Flex>
-      </Box>
-      <Text>{comments}</Text>
-      <Flex flexDir="row" gap={5}>
-        <Box>Reply</Box>
       </Flex>
       {totalReplies > 0 && (
         <>

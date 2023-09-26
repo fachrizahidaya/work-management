@@ -1,4 +1,4 @@
-import { Box } from "native-base";
+import { Actionsheet, Box, Button, Text, useDisclose } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { useState } from "react";
 import FeedCardItem from "./FeedCardItem";
@@ -14,22 +14,23 @@ const FeedCard = ({
   refetch,
   handleEndReached,
 }) => {
-  const [commentsOpen, setCommentsOpen] = useState(false);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
   const [postIsFetching, setPostIsFetching] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclose();
 
-  // console.log(posts);
-
+  /**
+   * Comment action sheet control
+   */
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
     setPostId(post_id);
     setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
-
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
@@ -45,36 +46,38 @@ const FeedCard = ({
 
   return (
     <>
-      <Box height={600}>
-        <FlashList
-          data={posts}
-          onEndReachedThreshold={0.1}
-          onEndReached={posts.length ? handleEndReached : null}
-          keyExtractor={(item, index) => index}
-          estimatedItemSize={200}
-          renderItem={({ item }) => (
-            <FeedCardItem
-              key={item?.id}
-              post={item}
-              id={item?.id}
-              employeeName={item?.employee_name}
-              createdAt={item?.created_at}
-              employeeImage={item?.employee_image}
-              content={item?.content}
-              total_like={item?.total_like}
-              totalComment={item?.total_comment}
-              likedBy={item?.liked_by}
-              attachment={item?.file_path}
-              type={item?.type}
-              // like post
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeImage={loggedEmployeeImage}
-              onToggleLike={onToggleLike}
-              onCommentToggle={commentsOpenHandler}
-            />
-          )}
-        />
-      </Box>
+      {/* <Box height={800}> */}
+      <FlashList
+        data={posts}
+        onEndReachedThreshold={0.1}
+        onEndReached={posts.length ? handleEndReached : null}
+        keyExtractor={(item, index) => index}
+        estimatedItemSize={200}
+        renderItem={({ item }) => (
+          <FeedCardItem
+            key={item?.id}
+            post={item}
+            id={item?.id}
+            employeeName={item?.employee_name}
+            createdAt={item?.created_at}
+            employeeImage={item?.employee_image}
+            content={item?.content}
+            total_like={item?.total_like}
+            totalComment={item?.total_comment}
+            likedBy={item?.liked_by}
+            attachment={item?.file_path}
+            type={item?.type}
+            // like post
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            onToggleLike={onToggleLike}
+            onCommentToggle={commentsOpenHandler}
+            onOpen={onOpen}
+          />
+        )}
+      />
+      {/* </Box> */}
+
       <FeedComment
         handleOpen={commentsOpen}
         handleClose={commentsCloseHandler}
@@ -84,6 +87,8 @@ const FeedCard = ({
         loggedEmployeeImage={loggedEmployeeImage}
         loggedEmployeeName={loggedEmployeeName}
         refetch={refetch}
+        isOpen={isOpen}
+        onClose={onClose}
       />
     </>
   );

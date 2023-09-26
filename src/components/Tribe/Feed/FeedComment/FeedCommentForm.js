@@ -1,13 +1,16 @@
-import { Button, FormControl, Input, Pressable } from "native-base";
+import { Button, FormControl, Input, KeyboardAvoidingView, Pressable } from "native-base";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axiosInstance from "../../../../config/api";
 import { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
   const [employees, setEmployees] = useState([]);
+  const { width, height } = Dimensions.get("window");
+  const { isKeyboardVisible } = useKeyboardChecker();
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -42,7 +45,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
     <FormControl
       alignItems="center"
       pt={2}
-      pb={52}
+      pb={5}
       borderTopWidth={1}
       borderColor="#E8E9EB"
       isInvalid={formik.errors.comments}
@@ -57,11 +60,11 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
         value={formik.values.comments}
         InputRightElement={
           <Button size="md" onPress={formik.handleSubmit}>
-            Send
+            {parentId ? "Reply" : "Post"}
           </Button>
         }
       />
-      <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
+      {/* <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage> */}
     </FormControl>
   );
 };

@@ -121,7 +121,7 @@ const NewFeedSlider = ({ refetch, toggle }) => {
 
   return (
     <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={5}>
+      <Box w={width} height={height} bgColor="#FAFAFA" p={5}>
         <Flex flexDir="row" alignItems="center" gap={2}>
           <Pressable
             onPress={() => {
@@ -135,23 +135,21 @@ const NewFeedSlider = ({ refetch, toggle }) => {
             New Post
           </Text>
         </Flex>
-        <Flex gap={17} mt={22}>
+        <Flex mt={22}>
           <FormControl isInvalid={formik.errors.content}>
             <Input
               minH={300}
               maxH={600}
               position="relative"
-              backgroundColor="white"
-              variant="unstyled"
-              borderWidth={1}
               borderRadius={15}
-              placeholder="Type something"
+              variant="unstyled"
+              placeholder="What's happening?"
               multiline
               textAlignVertical="top"
               onChangeText={(value) => formik.setFieldValue("content", value)}
               value={formik.values.content}
+              fontSize="lg"
             />
-            <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
             {image ? (
               <Box position="relative" mt={2} alignSelf="center">
                 <Image source={{ uri: image.uri }} style={{ width: 300, height: 250 }} alt="image selected" />
@@ -169,6 +167,8 @@ const NewFeedSlider = ({ refetch, toggle }) => {
                 </Box>
               </Box>
             ) : null}
+
+            {/* <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage> */}
 
             <Flex
               p={2}

@@ -6,7 +6,6 @@ const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestEx
   return (
     <Box flex={1} minHeight={2}>
       <FlashList
-        inverted
         data={comments}
         keyExtractor={(item, index) => item.id}
         onEndReachedThreshold={0.1}

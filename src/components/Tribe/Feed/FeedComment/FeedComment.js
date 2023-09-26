@@ -62,10 +62,6 @@ const FeedComment = ({
     // inputRef.current.focus();
   };
 
-  const commentCloseHandler = () => {
-    toggle();
-  };
-
   useEffect(() => {
     if (!handleOpen) {
       setCommentParentId(null);
@@ -75,25 +71,25 @@ const FeedComment = ({
   }, [handleOpen]);
 
   return (
-    <Slide in={handleOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 90 : 120}>
-      {/* <Actionsheet isOpen={handleOpen} onClose={() => commentCloseHandler()}> */}
-      <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 85 : 21}>
-        <Flex flexDir="column" flexGrow={1} bgColor="white" position="relative">
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-            <Flex flexDir="row" alignItems="center" gap={2}>
-              <Pressable onPress={handleClose}>
-                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-              </Pressable>
+    <Actionsheet isOpen={handleOpen} onClose={handleClose}>
+      {/* <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 85 : 21}> */}
+      <Actionsheet.Content>
+        <Flex flexDir="column" justifyContent="center" position="relative">
+          <Flex
+            flexDir="row"
+            alignItems="center"
+            justifyContent="center"
+            borderBottomWidth={1}
+            borderBottomColor="#DBDBDB"
+          >
+            <Flex alignItems="center">
               <Text fontSize={16} fontWeight={500}>
                 Comments
-              </Text>
-              <Text fontSize={16} fontWeight={400}>
-                {total_comments}
               </Text>
             </Flex>
           </Flex>
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
-            <Flex gap={1} mt={1} flex={2} paddingX={5}>
+            <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
                 onReply={replyHandler}
@@ -113,9 +109,9 @@ const FeedComment = ({
             onSubmit={commentSubmitHandler}
           />
         </Flex>
-      </KeyboardAvoidingView>
-      {/* </Actionsheet> */}
-    </Slide>
+      </Actionsheet.Content>
+      {/* </KeyboardAvoidingView> */}
+    </Actionsheet>
   );
 };
 

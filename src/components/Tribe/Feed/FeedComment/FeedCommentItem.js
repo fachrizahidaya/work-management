@@ -62,34 +62,42 @@ const FeedCommentItem = ({
   }, [comments]);
 
   return (
-    <Flex mt={1} mb={5} flex={1} gap={3}>
-      <Box flex={1} mt={1} minHeight={1}>
-        <Flex direction="row" gap={4}>
-          <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
-          <Box>
-            <Text fontSize={15} fontWeight={700}>
+    <Flex gap={3}>
+      <Flex mt={1} minHeight={1}>
+        <Flex direction="row" gap={2}>
+          <Flex>
+            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
+          </Flex>
+          <Flex flex={1} gap={1}>
+            <Text fontSize={12} fontWeight={500}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-          </Box>
+            <Text fontSize={12} fontWeight={400}>
+              {comments}
+            </Text>
+            <Pressable onPress={() => onReply(parentId)}>
+              <Text color="#8A7373">Reply</Text>
+            </Pressable>
+          </Flex>
         </Flex>
-      </Box>
-      <Text>{comments}</Text>
-      <Flex flexDir="row" ml={3} gap={5}>
-        <Pressable onPress={() => onReply(parentId)}>
-          <Box>Reply</Box>
-        </Pressable>
-        <Pressable onPress={() => fetchReply()}>
-          <Flex flexDir="row">View{totalReplies ? ` ${totalReplies}` : ""} Reply</Flex>
-        </Pressable>
-      </Flex>
-      {totalReplies > 0 && (
-        <>
-          <Box>
+        {!totalReplies ? (
+          ""
+        ) : (
+          <Box mx={10} my={5}>
+            <Pressable onPress={() => fetchReply()}>
+              <Flex flexDir="row">
+                View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
+              </Flex>
+            </Pressable>
+          </Box>
+        )}
+        {totalReplies > 0 && (
+          <Box flex={1} minHeight={2}>
             <FlashList
               data={commentReplies}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
-              estimatedItemSize={100}
+              estimatedItemSize={200}
               renderItem={({ item }) => (
                 <FeedCommentReplyItem
                   key={item.id}
@@ -108,8 +116,8 @@ const FeedCommentItem = ({
               )}
             />
           </Box>
-        </>
-      )}
+        )}
+      </Flex>
     </Flex>
   );
 };
