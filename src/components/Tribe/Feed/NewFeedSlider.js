@@ -206,9 +206,9 @@ const NewFeedSlider = ({ refetch, toggle }) => {
                     <CustomDateTimePicker
                       defaultValue={formik.values.end_date}
                       onChange={endDateAnnouncementHandler}
-                      withIcon={true}
-                      iconName="calendar-month-outline"
-                      iconType={MaterialCommunityIcons}
+                      // withIcon={true}
+                      // iconName="calendar-month-outline"
+                      // iconType={MaterialCommunityIcons}
                     />
                   </Pressable>
                 ) : null}
