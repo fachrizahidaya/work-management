@@ -1,41 +1,40 @@
-import dayjs from "dayjs";
-import { Box, FlatList, Flex, Icon, Slide, Pressable, Text, useToast } from "native-base";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dimensions } from "react-native";
-import { useFetch } from "../../../hooks/useFetch";
+import { Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useFetch } from "../../../hooks/useFetch";
+import dayjs from "dayjs";
+import { useEffect } from "react";
 import axiosInstance from "../../../config/api";
 import NewLeaveRequest from "../../Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
-import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlider";
+import NewReimbursement from "../../Tribe/Reimbursement/NewReimbursement.js/NewReimbursement";
 
 const AddNewTribeSlider = ({ toggle }) => {
-  const { height } = Dimensions.get("window");
-  const [newLeaveIsOpen, setNewLeaveIsOpen] = useState(false);
-  const [newReimbursementIsOpen, setNewReimbursementIsOpen] = useState(false);
+  const [newLeaveRequest, setNewLeaveRequest] = useState(false);
+  const [newReimbursement, setNewReimbursement] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [userIp, setUserIp] = useState(null);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
-  const [attendanceToday, setAttendanceToday] = useState(null);
-  const [isClockedIn, setIsClockedIn] = useState(false);
+  const { height } = Dimensions.get("window");
   const toast = useToast();
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
-  const { data: ipUser } = useFetch("https://jsonip.com/");
-  // console.log("ip", ipUser?.ip);
-  // console.log(attendance?.data);
-  const onCloseLeaveRequestForm = () => {
-    setNewLeaveIsOpen(false);
+  const { data: userIp } = useFetch("https://jsonip.com/");
+  const { data: profile } = useFetch("/hr/my-profile");
+  const { data: personalLeave, refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
+  console.log("pers", personalLeave?.data);
+
+  const onCloseLeaveRequest = () => {
+    setNewLeaveRequest(false);
   };
 
-  const onCloseReimbursementForm = () => {
-    setNewReimbursementIsOpen(false);
+  const onCloseReimbursement = () => {
+    setNewReimbursement(false);
   };
 
   const items = [
     {
       icons: "clipboard-clock-outline",
-      title: "Leave Request",
+      title: "New Leave Request",
     },
     {
       icons: "clipboard-minus-outline",
@@ -45,55 +44,40 @@ const AddNewTribeSlider = ({ toggle }) => {
       icons: "clock-outline",
       title: "Clock in",
     },
-    // {
-    //   icons: "clock-outline",
-    //   title: "Clock out",
-    // },
   ];
-
-  const clockButtonTitle = isClockedIn ? "Clock out" : "Clock in";
-
-  const fetchUserIp = () => {
-    if (!isLoading) {
-      fetch("https://jsonip.com/")
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setUserIp(ipUser?.ip);
-          setIsLoading(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
 
   const attendanceCheckHandler = async () => {
     try {
       if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance?.data) {
         const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
-          ip: userIp,
+          ip: userIp?.ip,
         });
-        console.log(res);
-        toast.show({ description: "Success" });
+        toast.show({
+          description:
+            attendance?.data?.time_in && attendance?.data?.time_out
+              ? `You've both Clocked in and out`
+              : !attendance?.data?.time_out
+              ? "Clock-in Success"
+              : "Clock-out Success",
+        });
+        toggle();
         refetch();
       } else {
+        toast.show({ description: "You already checked out at this time" });
         throw new Error(`You already checked out at this time`);
       }
     } catch (err) {
       console.log(err);
-      throw new Error(`You're not connected to the proper connection`);
     }
   };
 
   useEffect(() => {
-    if (userIp && isLoading) {
+    if (userIp?.ip && isLoading) {
       attendanceCheckHandler().then(() => {
         setIsLoading(false);
       });
     }
-  }, [userIp, isLoading]);
+  }, [userIp?.ip, isLoading]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -108,21 +92,19 @@ const AddNewTribeSlider = ({ toggle }) => {
     <>
       <Box>
         <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-        <Box position="absolute" bottom={79} width="100%" bgColor="white">
+        <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
           <FlatList
-            data={items.slice(0, 2)}
+            data={items}
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  if (item.title === "Leave Request") {
-                    setNewLeaveIsOpen(!newLeaveIsOpen);
-                    console.log(newLeaveIsOpen);
+                  if (item.title === "New Leave Request") {
+                    setNewLeaveRequest(!newLeaveRequest);
                   } else if (item.title === "New Reimbursement") {
-                    setNewReimbursementIsOpen(!newReimbursementIsOpen);
+                    setNewReimbursement(!newReimbursement);
+                  } else if (item.title === "Clock in") {
+                    attendanceCheckHandler();
                   }
-                  // else if (item.title === "Clock in") {
-                  //   attendanceCheckHandler();
-                  // }
                 }}
               >
                 <Flex
@@ -135,46 +117,47 @@ const AddNewTribeSlider = ({ toggle }) => {
                   borderBottomWidth={1}
                   borderTopWidth={item.icons === "home" ? 1 : 0}
                 >
-                  {/* {item.title !== "Clock in" ? ( */}
-                  <>
-                    <Box
-                      bg="#f7f7f7"
-                      borderRadius={5}
-                      style={{ height: 32, width: 32 }}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
-                    </Box>
-                    <Text key={item.title} fontWeight={700} color="black">
-                      {item.title}
-                    </Text>
-                  </>
-                  {/* ) : ( */}
-                  {/* <>
-                    <Flex
-                      bg="#f7f7f7"
-                      borderRadius={5}
-                      style={{ height: 32, width: "100%" }}
-                      flexDir="row"
-                      gap={25}
-                      alignItems="center"
-                    >
-                      <Box style={{ height: 32, width: 32 }} alignItems="center" justifyContent="center">
+                  {item.title !== "Clock in" ? (
+                    <>
+                      <Box
+                        bg="#f7f7f7"
+                        borderRadius={5}
+                        style={{ height: 32, width: 32 }}
+                        alignItems="center"
+                        justifyContent="center"
+                      >
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
-
                       <Text key={item.title} fontWeight={700} color="black">
-                        {attendance?.data?.time_in && attendance?.data?.time_out
-                          ? "You've attended"
-                          : attendance?.data?.time_in
-                          ? "Clock out"
-                          : "Clock in"}
+                        {item.title}
                       </Text>
-                      <Flex>{attendance?.data?.time_in && attendance?.data?.time_out ? "" : currentTime}</Flex>
-                    </Flex>
-                  </> */}
-                  {/* )} */}
+                    </>
+                  ) : (
+                    <>
+                      <Flex
+                        bg="#f7f7f7"
+                        borderRadius={5}
+                        style={{ height: 32, width: "100%" }}
+                        flexDir="row"
+                        gap={25}
+                        alignItems="center"
+                        justifyContent="space-around"
+                      >
+                        <Box style={{ height: 32, width: 32 }} alignItems="center" justifyContent="center">
+                          <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                        </Box>
+
+                        <Text key={item.title} fontWeight={700} color="black" mr={140}>
+                          {attendance?.data?.time_in && attendance?.data?.time_out
+                            ? "You've attended"
+                            : attendance?.data?.time_in
+                            ? "Clock out"
+                            : "Clock in"}
+                        </Text>
+                        <Text mr={2}>{currentTime}</Text>
+                      </Flex>
+                    </>
+                  )}
                 </Flex>
               </Pressable>
             )}
@@ -182,7 +165,19 @@ const AddNewTribeSlider = ({ toggle }) => {
         </Box>
       </Box>
 
-      {newLeaveIsOpen && <NewLeaveRequest onClose={onCloseLeaveRequestForm} />}
+      {newLeaveRequest && (
+        <NewLeaveRequest
+          onClose={onCloseLeaveRequest}
+          availableLeavePersonal={profile?.data?.leave_quota}
+          pendingApproval={profile?.data?.pending_leave_request}
+          approved={profile?.data?.approved_leave_request}
+          refetchPersonalLeave={refetchPersonalLeave}
+          approver={profile?.data?.supervisor_name}
+          approverImage={profile?.data?.supervisor_image}
+          employeeId={profile?.data?.id}
+        />
+      )}
+      {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />}
     </>
   );
 };

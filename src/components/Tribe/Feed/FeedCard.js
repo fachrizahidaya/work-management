@@ -21,7 +21,7 @@ const FeedCard = ({
   const [editedPost, setEditedPost] = useState(null);
   const [postIsFetching, setPostIsFetching] = useState(false);
 
-  console.log(posts);
+  // console.log(posts);
 
   const commentsOpenHandler = (post_id) => {
     setPostId(post_id);

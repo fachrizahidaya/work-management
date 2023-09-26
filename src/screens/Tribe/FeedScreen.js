@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 import axiosInstance from "../../config/api";
@@ -39,7 +39,6 @@ const FeedScreen = () => {
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
-    // reset posisi scroll ke paling atas
   };
 
   const postLikeToggleHandler = async (post_id, action) => {
@@ -127,7 +126,7 @@ export default FeedScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#F8F8F8",
     position: "relative",
   },
 });
