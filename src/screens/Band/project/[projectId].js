@@ -6,9 +6,9 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Skeleton, Text } from "native-base";
+import { Box, Button, Flex, Icon, IconButton, Menu, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,6 +22,7 @@ import FileSection from "../../../components/Band/Project/ProjectDetail/FileSect
 import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import PageHeader from "../../../components/shared/PageHeader";
 
 const ProjectDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -63,16 +64,17 @@ const ProjectDetailScreen = ({ route }) => {
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: 16, marginVertical: 13 }}
         extraHeight={200}
+        enableOnAndroid={true}
+        enableAutomaticScroll={Platform.OS === "ios"}
       >
         <Flex gap={15}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-            <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-              <Pressable onPress={() => navigation.navigate("Project List")}>
-                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-              </Pressable>
-
-              {!isLoading ? <Text fontSize={16}>{projectData?.title}</Text> : <Skeleton h={8} w={200} />}
-            </Flex>
+            <PageHeader
+              title={projectData?.title}
+              withLoading
+              isLoading={isLoading}
+              onPress={() => navigation.navigate("Project List")}
+            />
 
             <Menu
               w="190"

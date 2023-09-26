@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import {
   Icon,
   IconButton,
   Input,
+  Pressable,
   ScrollView,
   Text,
   VStack,
@@ -28,6 +29,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
+import { Platform } from "react-native";
 
 const CostSection = ({ taskId, disabled }) => {
   const toast = useToast();
@@ -112,13 +114,21 @@ const CostSection = ({ taskId, disabled }) => {
     <>
       <FormControl>
         <FormControl.Label>COST</FormControl.Label>
-        <Input
-          isReadOnly
-          value={`Rp ${totalCostCalculation?.toLocaleString()}`}
-          onPressOut={() => onCloseActionSheet(formik.resetForm)}
-          placeholder="Task's cost"
-          editable={false}
-        />
+        <Pressable
+          onPress={() => {
+            Platform.OS === "android" && onCloseActionSheet(formik.resetForm);
+          }}
+        >
+          <Input
+            onPressOut={() => {
+              Platform.OS === "ios" && onCloseActionSheet(formik.resetForm);
+            }}
+            isReadOnly
+            value={`Rp ${totalCostCalculation?.toLocaleString()}`}
+            placeholder="Task's cost"
+            editable={false}
+          />
+        </Pressable>
       </FormControl>
 
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
@@ -170,6 +180,7 @@ const CostSection = ({ taskId, disabled }) => {
 
                   <FormControl isInvalid={formik.errors.cost_amount}>
                     <Input
+                      keyboardType="numeric"
                       placeholder="Cost Amount"
                       value={formik.values.cost_amount}
                       onChangeText={(value) => formik.setFieldValue("cost_amount", value)}
@@ -200,4 +211,4 @@ const CostSection = ({ taskId, disabled }) => {
   );
 };
 
-export default CostSection;
+export default memo(CostSection);

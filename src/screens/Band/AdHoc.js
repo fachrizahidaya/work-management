@@ -1,25 +1,22 @@
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Button, Flex, Icon, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
-import { useFetch } from "../../../../hooks/useFetch";
-import TaskList from "../../../../components/Band/Task/TaskList/TaskList";
-import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
-import CustomDrawer from "../../../../components/shared/CustomDrawer";
-import TaskDetail from "../../../../components/Band/Task/TaskDetail/TaskDetail";
-import TaskViewSection from "../../../../components/Band/Project/ProjectTask/TaskViewSection";
-import { useDisclosure } from "../../../../hooks/useDisclosure";
-import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
-import PageHeader from "../../../../components/shared/PageHeader";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import { useFetch } from "../../hooks/useFetch";
+import TaskDetail from "../../components/Band/Task/TaskDetail/TaskDetail";
+import CustomDrawer from "../../components/shared/CustomDrawer";
+import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlider";
+import TaskList from "../../components/Band/Task/TaskList/TaskList";
+import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
+import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
+import PageHeader from "../../components/shared/PageHeader";
 
-const ProjectTaskScreen = ({ route }) => {
+const AdHocScreen = () => {
   const { height } = Dimensions.get("window");
-  const { projectId } = route.params;
-  const navigation = useNavigation();
   const [view, setView] = useState("Task List");
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);
@@ -34,13 +31,12 @@ const ProjectTaskScreen = ({ route }) => {
   const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
   const { isOpen: taskDetailIsOpen, toggle: toggleTaskDetail } = useDisclosure(false);
 
-  const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
   const {
     data: tasks,
     isLoading: taskIsLoading,
     isFetching: taskIsFetching,
     refetch: refetchTasks,
-  } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
+  } = useFetch(`/pm/tasks`, [selectedLabelId], fetchTaskParameters);
 
   const onPressTaskItem = (task) => {
     toggleTaskDetail();
@@ -82,7 +78,6 @@ const ProjectTaskScreen = ({ route }) => {
   const changeView = (value) => {
     setView(value);
   };
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -92,20 +87,15 @@ const ProjectTaskScreen = ({ route }) => {
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
         >
           <Flex gap={15}>
-            <PageHeader
-              title={data?.data.title}
-              withLoading
-              isLoading={isLoading}
-              onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
-            />
+            <PageHeader title="Ad Hoc" backButton={false} />
 
             <TaskViewSection changeView={changeView} view={view} />
 
             <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
               <TaskFilter
                 data={tasks?.data}
-                fetchMemberUrl={`/pm/projects/${projectId}/member`}
-                fetchLabelUrl={`/pm/projects/${projectId}/label`}
+                // fetchMemberUrl={`/pm/projects/${projectId}/member`}
+                // fetchLabelUrl={`/pm/projects/${projectId}/label`}
                 setSelectedLabelId={setSelectedLabelId}
                 setFilteredData={setFilteredData}
               />
@@ -135,7 +125,6 @@ const ProjectTaskScreen = ({ route }) => {
         {taskFormIsOpen && (
           <NewTaskSlider
             isOpen={taskFormIsOpen}
-            projectId={projectId}
             taskData={taskToEdit}
             selectedStatus={selectedStatus}
             onClose={onCloseTaskForm}
@@ -174,7 +163,7 @@ const ProjectTaskScreen = ({ route }) => {
   );
 };
 
-export default ProjectTaskScreen;
+export default AdHocScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -24,7 +24,9 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
         px={4}
       >
         <Flex gap={0.5}>
-          <Text>{title?.length > 24 ? title.slice(0, 24) + "..." : title}</Text>
+          <Text width={140} numberOfLines={2}>
+            {title}
+          </Text>
 
           <Text
             fontWeight={400}

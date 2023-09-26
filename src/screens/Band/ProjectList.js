@@ -4,22 +4,25 @@ import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, Text } from "native-base";
+import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
+import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
   const { height } = Dimensions.get("window");
   const firstTimeRef = useRef(true);
-  const [status, setStatus] = useState("Open");
+  const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
 
   const dependencies = [status, currentPage, searchInput];
+
   const params = {
     page: currentPage,
     search: searchInput,
@@ -27,6 +30,7 @@ const ProjectList = () => {
     archive: status !== "Archived" ? 0 : 1,
     limit: 10,
   };
+  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -35,8 +39,6 @@ const ProjectList = () => {
     }, 500),
     []
   );
-
-  const { data, isLoading, refetch } = useFetch("/pm/projects", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -55,9 +57,7 @@ const ProjectList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-        <Text fontWeight={500} fontSize={16}>
-          My Project
-        </Text>
+        <PageHeader title="My Project" backButton={false} />
       </Flex>
 
       <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
@@ -105,8 +105,9 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={Platform.OS === "ios" ? 400 : height - 465}>
+            <Box h={Platform.OS === "ios" ? 435 : height - 420}>
               <FlashList
+                refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
                 keyExtractor={(item) => item.id}
                 onEndReachedThreshold={0.1}

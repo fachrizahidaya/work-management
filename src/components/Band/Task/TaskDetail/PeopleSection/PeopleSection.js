@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 
 import { Flex, FormControl, Pressable, Text } from "native-base";
 
@@ -82,4 +82,4 @@ const PeopleSection = ({ observers, responsibleArr, ownerId, ownerName, ownerIma
   );
 };
 
-export default PeopleSection;
+export default memo(PeopleSection);
