@@ -147,7 +147,7 @@ const MemberSection = ({ projectId, projectData }) => {
 
       <ConfirmationModal
         isOpen={deleteMemberModalIsOpen}
-        toggleIsOpen={toggle}
+        toggle={toggle}
         apiUrl={`/pm/projects/member/${selectedMember?.id}`}
         successMessage="Member removed"
         header="Remove Member"

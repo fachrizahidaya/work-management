@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Button, Flex, Icon, Skeleton, Text, View, useSafeArea } from "native-base";
+import { Button, Flex, Icon, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -13,13 +13,14 @@ import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlide
 import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
+import PageHeader from "../../components/shared/PageHeader";
 
 const AdHocScreen = () => {
   const { height } = Dimensions.get("window");
   const [view, setView] = useState("Task List");
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState("On Progress");
+  const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
@@ -86,9 +87,7 @@ const AdHocScreen = () => {
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
         >
           <Flex gap={15}>
-            <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-              {!taskIsLoading ? <Text fontSize={16}>Ad Hoc</Text> : <Skeleton h={8} w={200} />}
-            </Flex>
+            <PageHeader title="Ad Hoc" backButton={false} />
 
             <TaskViewSection changeView={changeView} view={view} />
 
@@ -101,14 +100,12 @@ const AdHocScreen = () => {
                 setFilteredData={setFilteredData}
               />
 
-              <Button onPress={toggleTaskForm}>
-                <Flex flexDir="row" gap={6} alignItems="center" px={2}>
-                  <Text color="white">Add</Text>
-
-                  <Box alignItems="center" bgColor="#2d6076" borderRadius={10} p={2}>
-                    <Icon as={<MaterialCommunityIcons name="plus" />} color="white" />
-                  </Box>
-                </Flex>
+              <Button
+                size="lg"
+                onPress={toggleTaskForm}
+                endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
+              >
+                Task
               </Button>
             </Flex>
           </Flex>

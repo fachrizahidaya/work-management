@@ -105,7 +105,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={Platform.OS === "ios" ? 400 : height - 465}>
+            <Box h={Platform.OS === "ios" ? 435 : height - 420}>
               <FlashList
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}

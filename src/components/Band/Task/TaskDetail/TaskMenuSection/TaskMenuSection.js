@@ -7,6 +7,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
+import ConfirmationModal from "../../../../shared/ConfirmationModal";
+import { useDisclosure } from "../../../../../hooks/useDisclosure";
 
 const TaskMenuSection = ({
   selectedTask,
@@ -18,6 +20,7 @@ const TaskMenuSection = ({
 }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
+  const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   /**
    * Handles take task as responsible
@@ -52,33 +55,49 @@ const TaskMenuSection = ({
     }
   };
   return (
-    <HStack space={2}>
-      <Menu
-        trigger={(triggerProps) => {
-          return (
-            <IconButton
-              {...triggerProps}
-              size="lg"
-              borderRadius="full"
-              icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
-            />
-          );
-        }}
-      >
-        <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-        <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
-        <Menu.Item>
-          <Text color="red.600">Delete</Text>
-        </Menu.Item>
-      </Menu>
+    <>
+      <HStack space={2}>
+        <Menu
+          trigger={(triggerProps) => {
+            return (
+              <IconButton
+                {...triggerProps}
+                size="lg"
+                borderRadius="full"
+                icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
+              />
+            );
+          }}
+        >
+          <Menu.Item onPress={takeTask}>Take task</Menu.Item>
+          <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
+          <Menu.Item onPress={toggleDeleteModal}>
+            <Text color="red.600">Delete</Text>
+          </Menu.Item>
+        </Menu>
 
-      <IconButton
-        onPress={onCloseDetail}
-        size="lg"
-        borderRadius="full"
-        icon={<Icon as={<MaterialCommunityIcons name="chevron-right" />} color="black" />}
+        <IconButton
+          onPress={onCloseDetail}
+          size="lg"
+          borderRadius="full"
+          icon={<Icon as={<MaterialCommunityIcons name="chevron-right" />} color="black" />}
+        />
+      </HStack>
+
+      <ConfirmationModal
+        isOpen={isOpen}
+        toggle={toggleDeleteModal}
+        apiUrl={`/pm/tasks/${selectedTask?.id}`}
+        successMessage="Task deleted"
+        header="Delete Task"
+        description={`Are you sure to delete ${selectedTask?.title}?`}
+        hasSuccessFunc={true}
+        onSuccess={() => {
+          refetchAllTasks();
+          onCloseDetail();
+        }}
       />
-    </HStack>
+    </>
   );
 };
 
