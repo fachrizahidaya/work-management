@@ -4,15 +4,19 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { Dimensions } from "react-native";
-import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
+import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
+import { useFetch } from "../../hooks/useFetch";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
+
+  const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
+  const { data: myProfile } = useFetch("/hr/my-profile");
 
   const first = [
     {
@@ -66,10 +70,10 @@ const SettingScreen = () => {
                     }}
                   />
                   <Box>
-                    <Text fontSize={18} fontWeight={700}>
+                    <Text fontSize={20} fontWeight={700}>
                       {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
                     </Text>
-                    <Text fontSize={12}>{userSelector.user_type}</Text>
+                    {myProfile?.data && <Text>{myProfile.data.position_name || "You have no position"}</Text>}
                   </Box>
                 </Flex>
               </Box>
@@ -86,31 +90,29 @@ const SettingScreen = () => {
               p="8px 12px"
             >
               <Flex flexDir="row" alignItems="center" gap={4}>
-                <Center ml={3}>
+                <Center px={3}>
                   <Avatar.Group>
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                      }}
-                    />
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-                      }}
-                    />
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                      }}
-                    />
+                    {!teamIsLoading ? (
+                      team.data.length > 0 &&
+                      team.data.map((item) => {
+                        return (
+                          <Avatar
+                            key={item.id}
+                            size="sm"
+                            source={{
+                              uri: `https://dev.kolabora-app.com/api-dev/image/${item.image}`,
+                            }}
+                          />
+                        );
+                      })
+                    ) : (
+                      <Skeleton h={35} />
+                    )}
                   </Avatar.Group>
                 </Center>
 
                 <Flex flexDirection="row" gap={1}>
-                  <Text>Team</Text>
+                  {myProfile?.data && <Text>{myProfile.data.division_name || "You have no team"}</Text>}
                 </Flex>
               </Flex>
 
