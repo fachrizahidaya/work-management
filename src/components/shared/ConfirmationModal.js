@@ -48,7 +48,7 @@ const ConfirmationModal = ({
   };
   return (
     <Modal isOpen={isOpen} onClose={!isDeleting && toggle}>
-      <Modal.Content h={200}>
+      <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>{header}</Modal.Header>
         <Modal.Body>
