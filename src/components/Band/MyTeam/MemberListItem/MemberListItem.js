@@ -1,23 +1,79 @@
 import React from "react";
 
-import { Divider, Flex, HStack, Image, Text, VStack } from "native-base";
+import { Avatar, Divider, Flex, HStack, Icon, IconButton, Image, Menu, Text, VStack } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { StyleSheet } from "react-native";
 
-const MemberListItem = ({ id, name, image, email, totalProjects, totalTasks }) => {
+const MemberListItem = ({
+  member,
+  name,
+  image,
+  email,
+  totalProjects,
+  totalTasks,
+  master,
+  loggedInUser,
+  openRemoveMemberModal,
+}) => {
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string?.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+
+  const userInitialGenerator = () => {
+    const nameArray = name?.split(" ");
+    let alias = "";
+
+    if (nameArray?.length >= 2) {
+      alias = nameArray[0][0] + nameArray[1][0];
+    } else {
+      alias = nameArray[0][0];
+    }
+
+    return alias;
+  };
+
   return (
     <Flex style={styles.card} gap={23}>
       <HStack alignItems="center" space={2} position="relative">
-        <Image
-          source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${image}` }}
-          h={63}
-          w={63}
-          borderRadius={20}
-          alt={`${name} avatar`}
-        />
+        {image ? (
+          <Image
+            source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${image}` }}
+            h={63}
+            w={63}
+            borderRadius={20}
+            alt={`${name} avatar`}
+          />
+        ) : (
+          <Avatar h={63} w={63} bgColor={stringToColor(name)} borderRadius={20}>
+            {userInitialGenerator()}
+          </Avatar>
+        )}
 
-        <Text w={125} numberOfLines={2}>
-          {name}
-        </Text>
+        <VStack>
+          <Text w={125} numberOfLines={2}>
+            {name}
+          </Text>
+
+          {master === name && (
+            <Icon as={<MaterialCommunityIcons name="shield-account-variant" />} size="lg" color="yellow.400" />
+          )}
+        </VStack>
 
         <HStack position="absolute" bottom={0} right={0} space={2}>
           <VStack alignItems="center">
@@ -36,14 +92,38 @@ const MemberListItem = ({ id, name, image, email, totalProjects, totalTasks }) =
 
       <VStack space={2}>
         <Flex flexDir="row" justifyContent="space-between">
-          <Text>Location:</Text>
-          <Text>Indonesia</Text>
-        </Flex>
-
-        <Flex flexDir="row" justifyContent="space-between">
           <Text>Email:</Text>
           <Text>{email}</Text>
         </Flex>
+
+        {loggedInUser === master && (
+          <>
+            {name !== master && (
+              <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+                <Text>Action:</Text>
+
+                <Menu
+                  trigger={(triggerProps) => {
+                    return (
+                      <IconButton
+                        borderRadius="full"
+                        {...triggerProps}
+                        icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
+                      />
+                    );
+                  }}
+                >
+                  <Menu.Item onPress={() => openRemoveMemberModal(member)}>
+                    <Flex flexDir="row" alignItems="center" gap={2}>
+                      <Icon as={<MaterialCommunityIcons name="account-remove-outline" />} size="md" color="red.600" />
+                      <Text color="red.600">Remove Member</Text>
+                    </Flex>
+                  </Menu.Item>
+                </Menu>
+              </Flex>
+            )}
+          </>
+        )}
       </VStack>
     </Flex>
   );
@@ -62,6 +142,5 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
-    height: 200,
   },
 });

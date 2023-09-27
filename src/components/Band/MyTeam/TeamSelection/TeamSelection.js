@@ -2,13 +2,13 @@ import React from "react";
 
 import { Select } from "native-base";
 
-const TeamSelection = ({ onChange, selectedTeamId, teams }) => {
+const TeamSelection = ({ onChange, selectedTeam, teams }) => {
   return (
-    <Select defaultValue={selectedTeamId} onValueChange={(value) => onChange(value)}>
-      <Select.Item value={0} label="Select Team" />
+    <Select selectedValue={selectedTeam?.name || ""}>
+      <Select.Item value={""} label="Select Team" onPress={() => onChange({})} />
       {teams.length > 0 &&
         teams.map((team) => {
-          return <Select.Item key={team.id} value={team.id} label={team.name} />;
+          return <Select.Item key={team.id} value={team.name} label={team.name} onPress={() => onChange(team)} />;
         })}
     </Select>
   );
