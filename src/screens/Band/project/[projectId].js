@@ -181,12 +181,7 @@ const ProjectDetailScreen = ({ route }) => {
       </KeyboardAwareScrollView>
 
       {openEditForm && (
-        <ProjectForm
-          isOpen={openEditForm}
-          projectData={projectData}
-          refetchSelectedProject={refetch}
-          onClose={onCloseEditForm}
-        />
+        <ProjectForm projectData={projectData} refetchSelectedProject={refetch} onClose={onCloseEditForm} />
       )}
     </SafeAreaView>
   );

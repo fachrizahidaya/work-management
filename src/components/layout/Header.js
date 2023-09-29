@@ -5,11 +5,14 @@ import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native";
 import { Box, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
+import { useFetch } from "../../hooks/useFetch";
 
 const Header = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
+  const { data: myProfile } = useFetch("/hr/my-profile");
 
   return (
     <SafeAreaView style={{ backgroundColor: "white" }}>
@@ -27,13 +30,15 @@ const Header = () => {
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} />
 
           <Box>
-            <Text fontWeight={700} fontSize={16} lineHeight={24}>
+            <Text fontWeight={700} fontSize={18} lineHeight={24}>
               {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
             </Text>
 
-            <Text fontSize={10} fontWeight={400}>
-              {userSelector.user_type}
-            </Text>
+            {myProfile?.data && (
+              <Text fontSize={12} fontWeight={400}>
+                {myProfile.data.position_name || "You have no position"}
+              </Text>
+            )}
           </Box>
         </Flex>
 

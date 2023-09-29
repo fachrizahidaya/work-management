@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, useToast, TextArea } from "native-base";
+import { Box, Flex, Icon, Text, FormControl, Input, Select, useToast, TextArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -14,7 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 import PageHeader from "../../../shared/PageHeader";
 
-const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
+const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject, teamMembers }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
   const toast = useToast();
@@ -25,16 +25,25 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject }) => {
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
       if (!projectData) {
-        // Create new project
         const res = await axiosInstance.post("/pm/projects", form);
-        // Assign the creator as owner
-        axiosInstance.post("/pm/projects/member", {
-          project_id: res.data.data.id,
-          user_id: res.data.data.owner_id,
-        });
+        // Creating project from My Team screen
+        // Bulk invite teams to project
+        if (teamMembers) {
+          for (let i = 0; i < teamMembers.length; i++) {
+            await axiosInstance.post("/pm/projects/member", {
+              project_id: res.data.data.id,
+              user_id: teamMembers[i].user_id,
+            });
+          }
+        } else {
+          // Assign the creator as owner
+          axiosInstance.post("/pm/projects/member", {
+            project_id: res.data.data.id,
+            user_id: res.data.data.owner_id,
+          });
+        }
         setProjectId(res.data.data.id);
       } else {
-        // Edit existing project
         await axiosInstance.patch(`/pm/projects/${projectData.id}`, form);
         setProjectId(projectData.id);
 
