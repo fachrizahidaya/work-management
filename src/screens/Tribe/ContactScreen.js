@@ -1,13 +1,15 @@
-import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
-import { useFetch } from "../../hooks/useFetch";
-import ContactList from "../../components/Tribe/Contact/ContactList";
-import { FlashList } from "@shopify/flash-list";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useState, useRef, useCallback } from "react";
-import _ from "lodash";
-import { useEffect } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+
 import { useFocusEffect } from "@react-navigation/native";
+import { FlashList } from "@shopify/flash-list";
+import _ from "lodash";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
+
+import ContactList from "../../components/Tribe/Contact/ContactList";
+import { useFetch } from "../../hooks/useFetch";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);

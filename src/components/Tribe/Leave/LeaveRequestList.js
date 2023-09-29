@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
 import { Badge, Box, Flex, Icon, Text } from "native-base";
+
+import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, supervisorName, reason }) => {

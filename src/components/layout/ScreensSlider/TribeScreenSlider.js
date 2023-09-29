@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
+
 import { Box, FlatList, Flex, Icon, Slide, Pressable, Text } from "native-base";
 import { Dimensions } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const TribeScreenSlider = ({ toggle }) => {

@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { Dimensions } from "react-native";
 import { Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useFetch } from "../../../hooks/useFetch";
+
 import dayjs from "dayjs";
-import { useEffect } from "react";
-import axiosInstance from "../../../config/api";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import NewLeaveRequest from "../../Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NewReimbursement from "../../Tribe/Reimbursement/NewReimbursement.js/NewReimbursement";
+import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
+import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
 
 const AddNewTribeSlider = ({ toggle }) => {
   const [newLeaveRequest, setNewLeaveRequest] = useState(false);
@@ -21,7 +24,6 @@ const AddNewTribeSlider = ({ toggle }) => {
   const { data: userIp } = useFetch("https://jsonip.com/");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
-  console.log("pers", personalLeave?.data);
 
   const onCloseLeaveRequest = () => {
     setNewLeaveRequest(false);
@@ -52,22 +54,24 @@ const AddNewTribeSlider = ({ toggle }) => {
         const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
           ip: userIp?.ip,
         });
+        toggle();
         toast.show({
           description:
             attendance?.data?.time_in && attendance?.data?.time_out
               ? `You've both Clocked in and out`
-              : !attendance?.data?.time_out
+              : attendance?.data?.time_out
               ? "Clock-in Success"
               : "Clock-out Success",
         });
-        toggle();
         refetch();
       } else {
         toast.show({ description: "You already checked out at this time" });
-        throw new Error(`You already checked out at this time`);
       }
     } catch (err) {
-      console.log(err);
+      toast.show({
+        description: `You're not connected to the proper connection`,
+      });
+      console.log(err.response.data.message);
     }
   };
 

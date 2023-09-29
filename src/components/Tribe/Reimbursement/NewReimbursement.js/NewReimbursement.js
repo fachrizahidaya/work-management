@@ -1,5 +1,6 @@
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
 import { Dimensions } from "react-native";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const NewReimbursement = ({ onClose }) => {

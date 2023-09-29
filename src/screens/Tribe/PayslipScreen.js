@@ -1,40 +1,18 @@
-import { Flex, Text } from "native-base";
+import { useEffect, useState } from "react";
+
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useFetch } from "../../hooks/useFetch";
+import { Flex, Text } from "native-base";
+
 import { FlashList } from "@shopify/flash-list";
-import { useState } from "react";
-import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import dayjs from "dayjs";
+
+import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import axiosInstance from "../../config/api";
-import { useEffect } from "react";
+import { useFetch } from "../../hooks/useFetch";
 
 const PayslipScreen = () => {
-  const [filter, setFilter] = useState({
-    month: dayjs().format("M"),
-    year: dayjs().format("YYYY"),
-  });
-  const [attendance, setAttendance] = useState([]);
-  const params = {
-    month: dayjs().format("M"),
-    year: dayjs().format("YYYY"),
-  };
   const { data: payslip } = useFetch("/hr/payslip");
   const { data: listAttendance } = useFetch("/hr/timesheets/personal", [filter]);
-
-  const fetchAttendance = async () => {
-    try {
-      const res = await axiosInstance.get("/hr/timesheets/personal", {
-        params: filter,
-      });
-      setAttendance(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchAttendance();
-  }, [filter]);
 
   return (
     <SafeAreaView style={styles.container}>

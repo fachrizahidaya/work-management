@@ -1,17 +1,19 @@
-import React, { useState, Fragment, useCallback, useMemo, useRef } from "react";
+import React, { useState, Fragment, useCallback, useMemo, useRef, useEffect } from "react";
+
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text, ScrollView } from "native-base";
+
 import { Calendar, CalendarUtils } from "react-native-calendars";
-import testIDs from "../testIDs";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+
+import testIDs from "../testIDs";
 
 const AttendanceCalendar = ({ attendance }) => {
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
   const [items, setItems] = useState({});
   const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
-  const selectedDate = dayjs().format("YYYY-MM-DD");
+
   const allGood = { key: "allGood", color: "#ededed" };
   const reportRequired = { key: "reportRequired", color: "#fdc500" };
   const submittedReport = { key: "submittedReport", color: "#186688" };
@@ -93,7 +95,10 @@ const AttendanceCalendar = ({ attendance }) => {
             dotColor = submittedReport.color;
           } else if (event?.attendanceType === "Sick") {
             dotColor = sick.color;
-          } else if (event?.confirmation && event?.dayType !== "Weekend") {
+          } else if (
+            (event?.confirmation && event?.dayType !== "Weekend") ||
+            (!event?.confirmation && event?.dayType !== "Weekend")
+          ) {
             dotColor = allGood.color;
           }
           dots.push({

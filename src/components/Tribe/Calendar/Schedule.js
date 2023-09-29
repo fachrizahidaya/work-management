@@ -1,12 +1,14 @@
-import React, { useState, Component } from "react";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, Component, useEffect } from "react";
+
 import { Agenda } from "react-native-calendars";
-import { Text, Flex } from "native-base";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+
+import { TouchableOpacity, StyleSheet } from "react-native";
+import { Text, Flex } from "native-base";
+
 import testIDs from "../testIDs";
 
-const Schedule = ({ attendance }) => {
+const Schedule = ({}) => {
   const [items, setItems] = useState({});
   const selectedDate = dayjs().format("YYYY-MM-DD");
   /**

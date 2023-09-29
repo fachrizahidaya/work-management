@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet } from "react-native";
 import dayjs from "dayjs";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button, Flex, Icon, IconButton, Input } from "native-base";
+import { Button, Flex, Icon, IconButton, Input, Text } from "native-base";
 
 /**
  * @param {number} width - The width of the component.
@@ -13,13 +13,18 @@ import { Button, Flex, Icon, IconButton, Input } from "native-base";
  */
 const CustomDateTimePicker = ({
   width,
+  height,
   onChange,
   defaultValue,
   disabled,
   maximumDate = null,
   withIcon,
+  withText,
   iconName,
   iconType,
+  iconColor,
+  textLabel,
+  fontSize,
 }) => {
   // State for the selected date and the displayed value
   const [date, setDate] = useState(new Date());
@@ -84,13 +89,18 @@ const CustomDateTimePicker = ({
       {!calendarIsOpen && (
         <Pressable onPress={toggleDatePicker} disabled={disabled}>
           {withIcon ? (
-            <Icon onPressIn={toggleDatePicker} as={iconType} name={iconName} size={30} color="white" />
+            <Icon onPressIn={toggleDatePicker} as={iconType} name={iconName} size={30} color={iconColor} />
+          ) : withText ? (
+            <Text fontSize={fontSize} underline>
+              {textLabel}
+            </Text>
           ) : (
             <Input
               placeholder="DD/MM/YYYY"
               editable={false}
               value={value}
               onPressIn={toggleDatePicker}
+              height={height}
               w={width}
               borderRadius={15}
               style={{ height: 40 }}

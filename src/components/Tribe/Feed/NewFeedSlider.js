@@ -1,25 +1,45 @@
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, useToast, Image } from "native-base";
 import { useState } from "react";
-import axiosInstance from "../../../config/api";
+
 import { useFormik } from "formik";
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import dayjs from "dayjs";
+
+import { Dimensions } from "react-native";
+import {
+  Box,
+  Flex,
+  Icon,
+  Pressable,
+  Text,
+  FormControl,
+  Input,
+  useToast,
+  Image,
+  Button,
+  TextArea,
+  Actionsheet,
+} from "native-base";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { SuccessToast } from "../../shared/ToastDialog";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
-import FormButton from "../../shared/FormButton";
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { SuccessToast } from "../../shared/ToastDialog";
+import axiosInstance from "../../../config/api";
 
-const NewFeedSlider = ({ refetch, toggle }) => {
+const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
   const [dateShown, setDateShown] = useState(false);
+  const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [image, setImage] = useState(null);
   const [isPressed, setIsPressed] = useState();
   const [selectedOption, setSelectedOption] = useState("Public");
+  const [showModalDate, setShowModalDate] = useState(false);
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
 
   const postSubmitHandler = async (form) => {
     try {
@@ -28,7 +48,7 @@ const NewFeedSlider = ({ refetch, toggle }) => {
           "content-type": "multipart/form-data",
         },
       });
-      toggle();
+      toggleNewFeed();
       refetch();
       toast.show({
         render: () => {
@@ -76,19 +96,22 @@ const NewFeedSlider = ({ refetch, toggle }) => {
   });
 
   const announcementToggleHandler = () => {
-    if (formik.values.type === "Public") {
-      setSelectedOption("Announcement");
-      formik.setFieldValue("type", "Announcement");
-      setIsPressed(true);
-      setDateShown(true);
-      toast.show({ description: "Set to Announcement" });
-    } else {
-      formik.setFieldValue("type", "Public");
-      formik.setFieldValue("end_date", "");
-      setIsPressed(false);
-      setDateShown(false);
-      toast.show({ description: "Set to Public" });
-    }
+    setSelectedOption("Announcement");
+    formik.setFieldValue("type", "Announcement");
+    setIsPressed(true);
+    setDateShown(true);
+    setIsAnnouncementSelected(true);
+    // setShowModalDate(true);
+  };
+
+  const publicToggleHandler = () => {
+    setSelectedOption("Public");
+    formik.setFieldValue("type", "Public");
+    formik.setFieldValue("end_date", "");
+    setIsPressed(false);
+    setDateShown(false);
+    setIsAnnouncementSelected(false);
+    togglePostType();
   };
 
   const pickImageHandler = async () => {
@@ -121,110 +144,133 @@ const NewFeedSlider = ({ refetch, toggle }) => {
 
   return (
     <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="#FAFAFA" p={5}>
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable
-            onPress={() => {
-              toggle();
-              setImage(null);
-            }}
+      <Box w={width} height={height} bgColor="#FFFFFF" p={5}>
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+          <Flex flexDir="row" alignItems="center" gap={2}>
+            <Pressable
+              onPress={() => {
+                toggleNewFeed();
+                setImage(null);
+              }}
+            >
+              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
+            </Pressable>
+            <Text fontSize={16} fontWeight={500}>
+              New Post
+            </Text>
+          </Flex>
+          <Button
+            size="sm"
+            borderRadius="full"
+            opacity={formik.values.content === "" ? 0.5 : 1}
+            onPress={formik.handleSubmit}
           >
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-          </Pressable>
-          <Text fontSize={16} fontWeight={500}>
-            New Post
-          </Text>
+            {formik.values.type === "Public" ? "Post" : "Announce"}
+          </Button>
         </Flex>
-        <Flex mt={22}>
+
+        <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
+          <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" />
+          <Flex gap={1}>
+            <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
+              <Flex alignItems="center" flexDir="row">
+                <Text fontSize={10}>{formik.values.type}</Text>
+                <Icon as={<MaterialIcons name="keyboard-arrow-down" />} />
+              </Flex>
+            </Button>
+            {formik.values.type === "Public" ? (
+              ""
+            ) : (
+              <Flex gap={2} flexDir="row">
+                <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
+                <Text fontSize={12}>
+                  {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
+        </Flex>
+        <Flex mt={3}>
           <FormControl isInvalid={formik.errors.content}>
-            <Input
-              minH={300}
-              maxH={600}
-              position="relative"
-              borderRadius={15}
+            <TextArea
+              minH={100}
+              maxH={500}
+              // position="relative"
               variant="unstyled"
-              placeholder="What's happening?"
+              placeholder="What is happening?"
               multiline
-              textAlignVertical="top"
               onChangeText={(value) => formik.setFieldValue("content", value)}
               value={formik.values.content}
               fontSize="lg"
             />
-            {image ? (
-              <Box position="relative" mt={2} alignSelf="center">
-                <Image source={{ uri: image.uri }} style={{ width: 300, height: 250 }} alt="image selected" />
+
+            <Flex p={2} flexDir="column" justifyContent="space-between">
+              {image ? (
                 <Box
-                  backgroundColor="danger.800"
-                  borderRadius="full"
-                  padding="13px"
-                  top={1}
-                  right={1}
-                  position="absolute"
+                  // position="relative"
+                  alignSelf="center"
                 >
-                  <Pressable onPress={() => setImage(null)}>
-                    <Icon as={<MaterialCommunityIcons name="trash-can-outline" />} size={30} color="white" />
-                  </Pressable>
+                  <Image
+                    source={{ uri: image.uri }}
+                    style={{ width: 300, height: 250, borderRadius: 15 }}
+                    alt="image selected"
+                  />
+                  <Box backgroundColor="#000000" borderRadius="full" top={1} right={1} position="absolute">
+                    <Pressable onPress={() => setImage(null)}>
+                      <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="white" />
+                    </Pressable>
+                  </Box>
                 </Box>
-              </Box>
-            ) : null}
-
-            {/* <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage> */}
-
-            <Flex
-              p={2}
-              top={220}
-              left={0}
-              width="full"
-              position="absolute"
-              flexDir="row"
-              justifyContent="space-between"
-            >
-              <Flex gap={1} flexDir="row">
-                {/* <Switch onValueChange={announcementToggleHandler} value={selectedOption === "Announcement"} size="md" /> */}
-                <Pressable
-                  background="#377893"
-                  borderRadius="full"
-                  padding="11px"
-                  width={50}
-                  height={50}
-                  onPress={pickImageHandler}
-                >
-                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="white" />
+              ) : null}
+              <Flex gap={1} my={2} pt={2} flexDir="row">
+                <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
+                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
                 </Pressable>
-                <Pressable
-                  onPress={announcementToggleHandler}
-                  background={isPressed ? "orange.800" : "#377893"}
-                  borderRadius="full"
-                  padding="11px"
-                  width={50}
-                  height={50}
-                >
-                  <Icon as={<MaterialIcons name="campaign" />} size={30} color="white" />
-                </Pressable>
-                {dateShown ? (
-                  <Pressable background="#377893" borderRadius="full" padding="11px" width={50} height={50}>
-                    <CustomDateTimePicker
-                      defaultValue={formik.values.end_date}
-                      onChange={endDateAnnouncementHandler}
-                      withIcon={true}
-                      iconName="calendar-month-outline"
-                      iconType={MaterialCommunityIcons}
-                    />
-                  </Pressable>
-                ) : null}
               </Flex>
-
-              <Pressable
-                background="#377893"
-                borderRadius="full"
-                padding="10px"
-                width={50}
-                height={50}
-                onPress={formik.handleSubmit}
-              >
-                <Icon as={<SimpleLineIcons name="paper-plane" />} size={30} color="white" />
-              </Pressable>
             </Flex>
+            <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
+              <Actionsheet.Content>
+                <Flex w="100%" h={30} px={4} flexDir="row">
+                  <Text>Choose Post Type</Text>
+                </Flex>
+                <Actionsheet.Item
+                  onPress={publicToggleHandler}
+                  startIcon={<Icon as={<MaterialIcons name="people" />} size={6} />}
+                >
+                  <Flex flex={1} w="70.6%" alignItems="center" justifyContent="space-between" flexDir="row">
+                    Public
+                    {formik.values.type === "Public" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                  </Flex>
+                </Actionsheet.Item>
+                <Actionsheet.Item
+                  onPress={() => {
+                    announcementToggleHandler();
+                  }}
+                  startIcon={<Icon as={<MaterialIcons name="campaign" />} size={6} />}
+                >
+                  <Flex flex={1} w="85%" alignItems="center" justifyContent="space-between" flexDir="row">
+                    <Box>
+                      <Text>Announcement</Text>
+                      <Flex gap={2} alignItems="center" flexDir="row">
+                        <Text fontSize={12} fontWeight={400}>
+                          End Date must be provided
+                        </Text>
+                        {isAnnouncementSelected && dateShown ? (
+                          <CustomDateTimePicker
+                            defaultValue={formik.values.end_date}
+                            onChange={endDateAnnouncementHandler}
+                            withText={true}
+                            textLabel="Adjust date"
+                            fontSize={12}
+                          />
+                        ) : null}
+                      </Flex>
+                    </Box>
+                    {formik.values.type === "Announcement" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                  </Flex>
+                </Actionsheet.Item>
+              </Actionsheet.Content>
+            </Actionsheet>
           </FormControl>
         </Flex>
       </Box>

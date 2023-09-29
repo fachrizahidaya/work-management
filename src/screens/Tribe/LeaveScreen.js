@@ -1,8 +1,10 @@
-import { Button, Flex, Text } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useFetch } from "../../hooks/useFetch";
-import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
+import { Button, Flex, Text } from "native-base";
+
 import { FlashList } from "@shopify/flash-list";
+
+import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
+import { useFetch } from "../../hooks/useFetch";
 
 const LeaveScreen = () => {
   const { data: personalLeave } = useFetch("/hr/leave-requests/personal");

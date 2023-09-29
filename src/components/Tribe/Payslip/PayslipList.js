@@ -1,7 +1,7 @@
 import { Box, Flex, Icon, Text } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import dayjs from "dayjs";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const PayslipList = ({ id, month, year }) => {
   return (

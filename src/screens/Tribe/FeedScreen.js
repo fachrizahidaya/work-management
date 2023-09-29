@@ -1,18 +1,25 @@
-import { SafeAreaView, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
+
+import { useSelector } from "react-redux";
+
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
-import axiosInstance from "../../config/api";
+
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import FeedCard from "../../components/Tribe/Feed/FeedCard";
 import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import { useFetch } from "../../hooks/useFetch";
+import axiosInstance from "../../config/api";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
+  // User redux to fetch employeeName
+  const userSelector = useSelector((state) => state.auth);
+  // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
@@ -20,11 +27,16 @@ const FeedScreen = () => {
 
   const {
     data: feeds,
-    refetch,
-    isFetching,
+    refetch: refetchFeeds,
+    isFetching: feedIsFetching,
   } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
-  const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
+  const {
+    data: profile,
+    isLoading: profileIsLoading,
+    refetch: refetchProfile,
+    isFetching: profileIsFetching,
+  } = useFetch("/hr/my-profile");
 
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
@@ -45,7 +57,7 @@ const FeedScreen = () => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       setTimeout(() => {
-        console.log(posts);
+        console.log("liked this post!");
       }, 500);
     } catch (err) {
       console.log(err);
@@ -90,22 +102,32 @@ const FeedScreen = () => {
         >
           <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
         </Pressable>
-
-        <Flex px={4} my={1} flex={1} flexDir="column">
+        {/* <ScrollView> */}
+        <Flex px={3} my={3} flex={1} flexDir="column">
           {/* Content here */}
           <FeedCard
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
-            loggedEmployeeName={profile?.data?.name}
+            loggedEmployeeName={userSelector?.name}
             posts={posts}
             onToggleLike={postLikeToggleHandler}
-            refetch={postRefetchHandler}
+            postRefetchHandler={postRefetchHandler}
             handleEndReached={postEndReachedHandler}
+            feedIsFetching={feedIsFetching}
+            refetchFeeds={refetchFeeds}
           />
         </Flex>
+        {/* </ScrollView> */}
       </SafeAreaView>
 
-      {newFeedIsOpen && <NewFeedSlider toggle={toggleNewFeed} refetch={postRefetchHandler} />}
+      {newFeedIsOpen && (
+        <NewFeedSlider
+          toggleNewFeed={toggleNewFeed}
+          refetch={postRefetchHandler}
+          loggedEmployeeImage={profile?.data?.image}
+          loggedEmployeeName={userSelector?.name}
+        />
+      )}
     </>
   );
 };
@@ -116,7 +138,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    position: "relative",
+    // position: "relative",
   },
   createIcon: {
     backgroundColor: "#377893",

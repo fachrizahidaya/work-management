@@ -1,9 +1,10 @@
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useFetch } from "../../hooks/useFetch";
 import { Flex, Text } from "native-base";
+
 import LeaveDashboardUser from "../../components/Tribe/Information/LeaveDashboardUser";
 import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
+import { useFetch } from "../../hooks/useFetch";
 
 const InformationScreen = () => {
   const { data: profile } = useFetch("/hr/my-profile");

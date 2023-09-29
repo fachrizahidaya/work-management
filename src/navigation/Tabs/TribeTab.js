@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useDisclosure } from "../../hooks/useDisclosure";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { Box, Icon, Image } from "native-base";
+import { TouchableOpacity } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/FeedScreen";
 import InformationScreen from "../../screens/Tribe/InformationScreen";
-import { Box, Icon, Image } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { TouchableOpacity } from "react-native";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import TribeScreenSlider from "../../components/layout/ScreensSlider/TribeScreenSlider";
 import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeSlider";
@@ -15,6 +15,7 @@ import ContactScreen from "../../screens/Tribe/ContactScreen";
 import LeaveScreen from "../../screens/Tribe/LeaveScreen";
 import CalendarScreen from "../../screens/Tribe/CalendarScreen";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,6 +68,7 @@ const TribeTab = ({ setSelectedModule }) => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
             "My Information",

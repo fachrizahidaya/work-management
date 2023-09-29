@@ -1,13 +1,13 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useState, useEffect } from "react";
+
+import { FlashList } from "@shopify/flash-list";
+
 import { Box, Flex, Pressable, Text } from "native-base";
-import axiosInstance from "../../../../config/api";
-import { card } from "../../../../styles/Card";
-import { useState } from "react";
-import { useEffect } from "react";
+
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import CustomAccordion from "../../../shared/CustomAccordion";
-import { FlashList } from "@shopify/flash-list";
+import axiosInstance from "../../../../config/api";
+import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({
   id,
@@ -25,13 +25,20 @@ const FeedCommentItem = ({
   const [commentReplies, setCommentReplies] = useState(false);
   const [filteredComment, setFileteredComment] = useState(false);
   const [replyFetchDone, setReplyFetchDone] = useState(false);
+  const [viewReplyToggle, setViewReplyToggle] = useState(false);
+  const [hideReplies, setHideReplies] = useState(false);
+
+  const {
+    data: commentRepliesData,
+    isFetching: commentRepliesDataIsFetching,
+    refetch: refetchCommentRepliesData,
+  } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
 
   const fetchReply = async (fetchMore = false) => {
     if (!replyFetchDone) {
       try {
-        const res = await axiosInstance.get(`/hr/posts/${postId}/comment/${parentId}/replies`);
         if (!fetchMore) {
-          setCommentReplies(res.data.data);
+          setCommentReplies(commentRepliesData?.data);
         } else {
           setCommentReplies((prevState) => {
             if (prevState.length !== prevState.length + res.data.data.length) {
@@ -63,7 +70,7 @@ const FeedCommentItem = ({
 
   return (
     <Flex gap={3}>
-      <Flex mt={1} minHeight={1}>
+      <Flex my={1} minHeight={1}>
         <Flex direction="row" gap={2}>
           <Flex>
             <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
@@ -72,50 +79,83 @@ const FeedCommentItem = ({
             <Text fontSize={12} fontWeight={500}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-            <Text fontSize={12} fontWeight={400}>
+            <Text fontSize={13} fontWeight={400}>
               {comments}
             </Text>
             <Pressable onPress={() => onReply(parentId)}>
-              <Text color="#8A7373">Reply</Text>
+              <Text fontSize={12} fontWeight={500} color="#8A7373">
+                Reply
+              </Text>
             </Pressable>
           </Flex>
         </Flex>
+
         {!totalReplies ? (
           ""
         ) : (
-          <Box mx={10} my={5}>
-            <Pressable onPress={() => fetchReply()}>
-              <Flex flexDir="row">
-                View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
-              </Flex>
+          <Box mx={10} my={3}>
+            <Pressable
+              onPress={() => {
+                fetchReply();
+                setHideReplies(false);
+                setViewReplyToggle(true);
+              }}
+            >
+              {viewReplyToggle === false ? (
+                <Text fontSize={12} fontWeight={500} color="#8A7373">
+                  View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
+                </Text>
+              ) : (
+                ""
+              )}
             </Pressable>
           </Box>
         )}
-        {totalReplies > 0 && (
-          <Box flex={1} minHeight={2}>
-            <FlashList
-              data={commentReplies}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              estimatedItemSize={200}
-              renderItem={({ item }) => (
-                <FeedCommentReplyItem
-                  key={item.id}
-                  id={item.id}
-                  parent_id={item.parent_id ? item.parent_id : item.id}
-                  loggedEmployeeId={loggedEmployeeId}
-                  authorId={item?.emloyee_id}
-                  authorName={item?.employee_name}
-                  authorImage={item?.employee_image}
-                  author_username={item?.employee_username}
-                  comments={item?.comments}
-                  totalReplies={item?.total_replies}
-                  postId={postId}
-                  onReply={onReply}
-                />
-              )}
-            />
-          </Box>
+
+        {totalReplies > 0 && !hideReplies && (
+          <>
+            <Box flex={1} minHeight={2}>
+              <FlashList
+                data={commentRepliesData?.data}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                renderItem={({ item }) => (
+                  <FeedCommentReplyItem
+                    key={item?.id}
+                    id={item?.id}
+                    parent_id={item?.parent_id ? item?.parent_id : item?.id}
+                    loggedEmployeeId={loggedEmployeeId}
+                    authorId={item?.emloyee_id}
+                    authorName={item?.employee_name}
+                    authorImage={item?.employee_image}
+                    author_username={item?.employee_username}
+                    comments={item?.comments}
+                    totalReplies={item?.total_replies}
+                    postId={postId}
+                    onReply={onReply}
+                  />
+                )}
+              />
+            </Box>
+
+            {viewReplyToggle === false ? (
+              ""
+            ) : (
+              <Box mx={20} my={3}>
+                <Pressable
+                  onPress={() => {
+                    setViewReplyToggle(false);
+                    setHideReplies(true);
+                  }}
+                >
+                  <Text fontSize={12} fontWeight={500} color="#8A7373">
+                    Hide Reply
+                  </Text>
+                </Pressable>
+              </Box>
+            )}
+          </>
         )}
       </Flex>
     </Flex>

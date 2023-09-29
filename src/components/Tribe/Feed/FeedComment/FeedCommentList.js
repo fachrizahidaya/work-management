@@ -1,6 +1,8 @@
-import { Box, ScrollView } from "native-base";
-import FeedCommentItem from "./FeedCommentItem";
 import { FlashList } from "@shopify/flash-list";
+
+import { Box } from "native-base";
+
+import FeedCommentItem from "./FeedCommentItem";
 
 const FeedCommentList = ({ comments, onReply, loggedEmployeeId, postId, latestExpandedReply, commentIsLoading }) => {
   return (

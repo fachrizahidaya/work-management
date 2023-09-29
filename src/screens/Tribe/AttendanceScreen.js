@@ -1,33 +1,25 @@
-import { Flex, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
-import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useState } from "react";
-import axiosInstance from "../../config/api";
-import { useEffect } from "react";
+
 import dayjs from "dayjs";
+
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Flex, Text } from "native-base";
+
+import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
+import { useFetch } from "../../hooks/useFetch";
 import Schedule from "../../components/Tribe/Calendar/Schedule";
 
 const AttendanceScreen = () => {
-  const [attendance, setAttendance] = useState([]);
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
   });
 
-  const fetchAttendance = async () => {
-    try {
-      const res = await axiosInstance.get("/hr/timesheets/personal", {
-        params: filter,
-      });
-      setAttendance(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchAttendance();
-  }, [filter]);
+  const {
+    data: attendanceData,
+    isFetching: attendanceDataIsFetching,
+    refetch: refetchAttendanceData,
+  } = useFetch(`/hr/timesheets/personal`, [filter], filter);
 
   return (
     <>
@@ -40,7 +32,7 @@ const AttendanceScreen = () => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-        <AttendanceCalendar attendance={attendance} />
+        <AttendanceCalendar attendance={attendanceData?.data} />
         {/* <Schedule/> */}
       </SafeAreaView>
     </>

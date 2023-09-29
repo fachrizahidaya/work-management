@@ -1,11 +1,14 @@
-import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
 import { useEffect, useState } from "react";
-import { card } from "../../../styles/Card";
+
+import dayjs from "dayjs";
+
+import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import dayjs from "dayjs";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { card } from "../../../styles/Card";
 
 const FeedCardItem = ({
   id,
@@ -24,10 +27,13 @@ const FeedCardItem = ({
   onCommentToggle,
   onOpen,
 }) => {
-  const [likeAction, setLikeAction] = useState("dislike");
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
 
+  /**
+   * Like post control
+   */
+  const [likeAction, setLikeAction] = useState("dislike");
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -39,6 +45,10 @@ const FeedCardItem = ({
     onToggleLike(post_id, action);
   };
 
+  /**
+   *
+   * Control for fullscreen image
+   */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
@@ -53,28 +63,31 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <Flex flexDir="column" style={card.card} mb={5}>
-      <Flex flex={1} gap={5} style={card.card}>
+    <Flex flexDir="column" mb={3}>
+      <Flex gap={5} style={card.card}>
         <Flex alignItems="center" direction="row" gap={3}>
           <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
-          <Box>
-            <Text fontSize={15} fontWeight={500}>
-              {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
-            </Text>
-            <Flex gap={1} flexDir="row" alignItems="center">
-              <Text fontSize={12} fontWeight={400} color="#8A9099">
-                {dayjs(createdAt).format("MMM DD, YYYY")}
+          <Flex flex={1}>
+            <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
+              <Text fontSize={15} fontWeight={500}>
+                {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
-              {/* {type === "Announcement" ? (
+              {type === "Announcement" ? (
                 <Badge borderRadius={15} backgroundColor="#ADD7FF">
-                  Announcement
+                  <Text fontSize={10}>Announcement</Text>
                 </Badge>
-              ) : null} */}
+              ) : null}
             </Flex>
-          </Box>
+            <Text fontSize={12} fontWeight={400} color="#8A9099">
+              {dayjs(createdAt).format("MMM DD, YYYY")}
+            </Text>
+          </Flex>
         </Flex>
 
-        {/* if picture not available, it will not show alt props */}
+        <Text fontSize={12} fontWeight={500} color="#595F69">
+          {content}
+        </Text>
+
         {attachment ? (
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
@@ -102,9 +115,7 @@ const FeedCardItem = ({
             </Modal>
           </>
         ) : null}
-        <Text fontSize={12} fontWeight={500} color="#595F69">
-          {content}
-        </Text>
+
         <Flex alignItems="center" direction="row" gap={4}>
           <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
@@ -117,6 +128,7 @@ const FeedCardItem = ({
                 <Icon as={<MaterialIcons name="favorite-outline" />} size="md" color="#8A9099" />
               </Pressable>
             )}
+
             <Text fontSize={15} fontWeight={500}>
               {totalLike}
             </Text>
@@ -134,9 +146,5 @@ const FeedCardItem = ({
     </Flex>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: { flex: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center" },
-});
 
 export default FeedCardItem;

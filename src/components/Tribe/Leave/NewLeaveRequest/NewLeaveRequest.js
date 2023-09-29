@@ -36,12 +36,10 @@ const NewLeaveRequest = ({
 
   const { data: leaveType } = useFetch("/hr/leaves");
   const { data: leaveHistory, refetchLeaveHistory } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
-  console.log("his", leaveHistory?.data);
 
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests`, form);
-      console.log("add", res);
       refetchLeavePersonal();
       refetchLeaveHistory();
       setSubmitting(false);
@@ -90,7 +88,6 @@ const NewLeaveRequest = ({
         leave_id: formik.values.leave_id,
         begin_date: formik.values.end_date,
       });
-      console.log("leave", res);
       formik.setFieldValue("days", res.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end", dayjs(res.data.end_date).format("YYYY-MM-DD"));
@@ -121,7 +118,6 @@ const NewLeaveRequest = ({
       end_date: yup.date().min(yup.ref("begin_date"), "End date can't be less than start date"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      console.log("value", values);
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -165,14 +161,12 @@ const NewLeaveRequest = ({
   useEffect(() => {
     setSelectedGenerateType(() => {
       const selectedLeave = leaveType?.data.find((leave) => leave.id === formik.values.leave_id);
-      console.log(selectedLeave?.generate_type);
       return selectedLeave?.generate_type;
     });
   }, [formik.values.leave_id]);
 
   useEffect(() => {
     filterAvailableHistory();
-    console.log(availableLeaves);
   }, [leaveHistory?.data]);
 
   return (
