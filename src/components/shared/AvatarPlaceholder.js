@@ -39,7 +39,7 @@ const AvatarPlaceholder = ({ image, name, size }) => {
   return image ? (
     <Avatar
       source={{
-        uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
+        uri: `https://api-dev.kolabora-app.com/image/${image}/thumb`,
       }}
       size={size || "xs"}
     />
