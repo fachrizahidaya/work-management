@@ -1,59 +1,63 @@
+import { useEffect, useState } from "react";
+
+import { useSelector } from "react-redux";
+
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { useEffect, useRef, useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
-import axiosInstance from "../../config/api";
+
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import FeedCard from "../../components/Tribe/Feed/FeedCard";
 import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import { useFetch } from "../../hooks/useFetch";
+import axiosInstance from "../../config/api";
 
 const FeedScreen = () => {
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
-  const [myProfile, setMyProfile] = useState(null);
-  const [postFetchDone, setPostFetchDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const firstTimeRef = useRef(true);
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
+  // User redux to fetch employeeName
+  const userSelector = useSelector((state) => state.auth);
+  // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
+
   const {
     data: feeds,
-    isLoading: feedIsLoading,
-    refetch,
-  } = useFetch("/hr/posts", [currentOffset], postFetchParameters);
-  const { data: profile, isLoading: profileIsLoading } = useFetch("/hr/my-profile");
+    refetch: refetchFeeds,
+    isFetching: feedIsFetching,
+  } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
-  const fetchMyProfile = async () => {
-    try {
-      const res = await axiosInstance.get("/hr/my-profile");
-      setMyProfile(res.data.data);
-    } catch (err) {
-      console.log(err);
+  const {
+    data: profile,
+    isLoading: profileIsLoading,
+    refetch: refetchProfile,
+    isFetching: profileIsFetching,
+  } = useFetch("/hr/my-profile");
+
+  const postEndReachedHandler = () => {
+    if (!fetchIsDone) {
+      if (posts.length !== posts.length + feeds?.data.length) {
+        setCurrentOffset(currentOffset + 10);
+      } else {
+        setFetchIsDone(true);
+      }
     }
   };
 
-  const fetchMorePosts = () => {
-    if (posts.length !== posts.length + feeds?.data.length) {
-      setCurrentOffset(currentOffset + 10);
-    }
-  };
-
-  const postRefetchHandler = async () => {
-    await refetch();
-    setPosts(feeds?.data);
+  const postRefetchHandler = () => {
     setCurrentOffset(0);
+    setFetchIsDone(false);
   };
 
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       setTimeout(() => {
-        console.log(posts);
+        console.log("liked this post!");
       }, 500);
     } catch (err) {
       console.log(err);
@@ -61,14 +65,18 @@ const FeedScreen = () => {
   };
 
   useEffect(() => {
-    fetchMyProfile();
-  }, []);
-
-  useEffect(() => {
     if (feeds?.data) {
-      setPosts((prevData) => [...prevData, ...feeds?.data]);
+      if (currentOffset === 0) {
+        setPosts(feeds?.data);
+      } else {
+        setPosts((prevData) => [...prevData, ...feeds?.data]);
+      }
     }
   }, [feeds?.data]);
+
+  // useEffect(() => {
+  //   console.log(posts);
+  // }, [posts]);
 
   return (
     <>
@@ -84,46 +92,42 @@ const FeedScreen = () => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-        <Box
-          bg="#377893"
-          borderWidth={2}
-          borderColor="white"
-          borderRadius="full"
-          padding="13px"
-          width="60px"
-          height="60px"
-          position="absolute"
-          bottom={10}
-          right={10}
-          zIndex={2}
-        >
-          <Pressable
-            onPress={() => {
-              toggleNewFeed();
-            }}
-          >
-            <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
-          </Pressable>
-        </Box>
 
-        <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
+        <Pressable
+          style={styles.createIcon}
+          borderRadius="full"
+          onPress={() => {
+            toggleNewFeed();
+          }}
+        >
+          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
+        </Pressable>
+        {/* <ScrollView> */}
+        <Flex px={3} my={3} flex={1} flexDir="column">
           {/* Content here */}
           <FeedCard
-            loggedEmployeeId={myProfile?.id}
-            loggedEmployeeImage={myProfile?.image}
-            loggedEmployeeName={myProfile?.name}
+            loggedEmployeeId={profile?.data?.id}
+            loggedEmployeeImage={profile?.data?.image}
+            loggedEmployeeName={userSelector?.name}
             posts={posts}
             onToggleLike={postLikeToggleHandler}
-            feedIsLoading={feedIsLoading}
-            profileIsLoading={profileIsLoading}
-            refetch={postRefetchHandler}
-            handleEndReached={fetchMorePosts}
-            setPosts={setPosts}
+            postRefetchHandler={postRefetchHandler}
+            handleEndReached={postEndReachedHandler}
+            feedIsFetching={feedIsFetching}
+            refetchFeeds={refetchFeeds}
           />
         </Flex>
+        {/* </ScrollView> */}
       </SafeAreaView>
 
-      {newFeedIsOpen && <NewFeedSlider toggle={toggleNewFeed} refetch={postRefetchHandler} />}
+      {newFeedIsOpen && (
+        <NewFeedSlider
+          toggleNewFeed={toggleNewFeed}
+          refetch={postRefetchHandler}
+          loggedEmployeeImage={profile?.data?.image}
+          loggedEmployeeName={userSelector?.name}
+        />
+      )}
     </>
   );
 };
@@ -133,7 +137,17 @@ export default FeedScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
-    position: "relative",
+    backgroundColor: "#F8F8F8",
+    // position: "relative",
+  },
+  createIcon: {
+    backgroundColor: "#377893",
+    padding: 15,
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 15,
+    right: 15,
+    zIndex: 2,
   },
 });

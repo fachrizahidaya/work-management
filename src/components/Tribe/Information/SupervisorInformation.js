@@ -1,5 +1,7 @@
 import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+
 import { card } from "../../../styles/Card";
 
 const SupervisorInformation = ({

@@ -1,32 +1,39 @@
-import { Avatar, Box, Flex, Image, Text, ScrollView, Skeleton, Icon, Pressable, Modal } from "native-base";
 import { useEffect, useState } from "react";
-import { card } from "../../../styles/Card";
+
+import dayjs from "dayjs";
+
+import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import dayjs from "dayjs";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { card } from "../../../styles/Card";
 
 const FeedCardItem = ({
   id,
-  employee_name,
-  created_at,
-  employee_image,
+  employeeName,
+  createdAt,
+  employeeImage,
   content,
   total_like,
-  total_comment,
-  liked_by,
+  totalComment,
+  likedBy,
   attachment,
+  type,
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
+  onOpen,
 }) => {
-  const [likeAction, setLikeAction] = useState("dislike");
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
-  const [isFullScreen, setIsFullScreen] = useState(false);
 
+  /**
+   * Like post control
+   */
+  const [likeAction, setLikeAction] = useState("dislike");
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -38,33 +45,49 @@ const FeedCardItem = ({
     onToggleLike(post_id, action);
   };
 
+  /**
+   *
+   * Control for fullscreen image
+   */
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
   useEffect(() => {
-    if (liked_by && liked_by.includes("'" + String(loggedEmployeeId) + "'")) {
+    if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
       setLikeAction("dislike");
     } else {
       setLikeAction("like");
     }
-  }, [liked_by, loggedEmployeeId]);
+  }, [likedBy, loggedEmployeeId]);
 
   return (
-    <Flex flexDir="column" style={card.card} my={5}>
-      <Flex flex={1} gap={8} style={card.card}>
-        <Box flex={1} minHeight={2}>
-          <Flex direction="row" gap={4}>
-            <AvatarPlaceholder image={employee_image} name={employee_name} size="md" />
-            <Box>
-              <Text fontSize={18} fontWeight={700}>
-                {employee_name.length > 30 ? employee_name.split(" ")[0] : employee_name}
+    <Flex flexDir="column" mb={3}>
+      <Flex gap={5} style={card.card}>
+        <Flex alignItems="center" direction="row" gap={3}>
+          <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
+          <Flex flex={1}>
+            <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
+              <Text fontSize={15} fontWeight={500}>
+                {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
-              <Text fontSize={12}>{dayjs(created_at).format("MMM DD, YYYY")}</Text>
-            </Box>
+              {type === "Announcement" ? (
+                <Badge borderRadius={15} backgroundColor="#ADD7FF">
+                  <Text fontSize={10}>Announcement</Text>
+                </Badge>
+              ) : null}
+            </Flex>
+            <Text fontSize={12} fontWeight={400} color="#8A9099">
+              {dayjs(createdAt).format("MMM DD, YYYY")}
+            </Text>
           </Flex>
-        </Box>
-        {/* if picture not available, it will not show alt props */}
+        </Flex>
+
+        <Text fontSize={12} fontWeight={500} color="#595F69">
+          {content}
+        </Text>
+
         {attachment ? (
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
@@ -92,35 +115,36 @@ const FeedCardItem = ({
             </Modal>
           </>
         ) : null}
-        <Text color="muted.500">{content}</Text>
-        <Flex direction="row" gap={4}>
-          <Flex direction="row" gap={2}>
+
+        <Flex alignItems="center" direction="row" gap={4}>
+          <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite" />} size="md" fill="red" />
+                <Icon as={<MaterialIcons name="favorite" />} size="md" fill="#FD7972" />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite-outline" />} size="md" color="black" />
+                <Icon as={<MaterialIcons name="favorite-outline" />} size="md" color="#8A9099" />
               </Pressable>
             )}
-            <Text>{totalLike}</Text>
+
+            <Text fontSize={15} fontWeight={500}>
+              {totalLike}
+            </Text>
           </Flex>
-          <Flex direction="row" gap={2}>
+          <Flex alignItems="center" direction="row" gap={2}>
             <Pressable onPress={() => onCommentToggle(id)}>
-              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="black" />
+              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
             </Pressable>
-            <Text>{total_comment}</Text>
+            <Text fontSize={15} fontWeight={500}>
+              {totalComment}
+            </Text>
           </Flex>
         </Flex>
       </Flex>
     </Flex>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: { flex: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center" },
-});
 
 export default FeedCardItem;

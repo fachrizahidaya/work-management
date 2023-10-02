@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
+
 import { Box, FlatList, Flex, Icon, Slide, Pressable, Text } from "native-base";
 import { Dimensions } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const TribeScreenSlider = ({ toggle }) => {
@@ -10,13 +12,13 @@ const TribeScreenSlider = ({ toggle }) => {
   const items = [
     { icons: "sticker-text-outline", title: "Feed", screen: "Feed" },
     { icons: "account-outline", title: "My Information", screen: "My Information" },
-    { icons: "clipboard-text-clock-outline", title: "Attendance Log", screen: "" },
-    { icons: "car-outline", title: "Leave Request", screen: "" },
+    { icons: "clipboard-text-clock-outline", title: "Attendance Log", screen: "Attendance Log" },
+    { icons: "car-outline", title: "Leave Request", screen: "Leave Request" },
     { icons: "file-edit-outline", title: "Reimbursement", screen: "" },
     { icons: "signal-cellular-3", title: "My KPI", screen: "" },
-    { icons: "file-document-outline", title: "My Payslip", screen: "" },
-    { icons: "calendar-clock", title: "Calendar", screen: "" },
-    { icons: "phone", title: "Contact", screen: "" },
+    { icons: "file-document-outline", title: "My Payslip", screen: "My Payslip" },
+    { icons: "calendar-clock", title: "Calendar", screen: "Calendar" },
+    { icons: "phone", title: "Contact", screen: "Contact" },
   ];
 
   return (

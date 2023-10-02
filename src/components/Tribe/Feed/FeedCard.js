@@ -1,9 +1,12 @@
-import { Box, ScrollView, Skeleton } from "native-base";
+import { useState } from "react";
+
 import { FlashList } from "@shopify/flash-list";
-import { useEffect, useState } from "react";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
+import { Box } from "native-base";
+
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
-import { ActivityIndicator, View } from "react-native";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCard = ({
@@ -12,31 +15,30 @@ const FeedCard = ({
   loggedEmployeeImage,
   loggedEmployeeName,
   onToggleLike,
-  postFetchDone,
-  refetch,
-  feedIsLoading,
+  postRefetchHandler,
   handleEndReached,
-  setPosts,
+  feedIsFetching,
+  refetchFeeds,
 }) => {
-  const { isOpen: commentIsOpen, open: openComment, close: closeComment, toggle: toggleComment } = useDisclosure();
-  const [postEditOpen, setPostEditOpen] = useState(false);
-  const [commentsOpen, setCommentsOpen] = useState(false);
   const [postTotalComment, setPostTotalComment] = useState(0);
-  const [editedPost, setEditedPost] = useState(null);
-  const [postIsFetching, setPostIsFetching] = useState(false);
   const [postId, setPostId] = useState(null);
+  const [postEditOpen, setPostEditOpen] = useState(false);
+  const [editedPost, setEditedPost] = useState(null);
+  const { isOpen: commentIsOpen, close: commentIsClose, toggle: toggleComment, open } = useDisclosure();
 
+  /**
+   * Action sheet control
+   */
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
     setPostId(post_id);
     setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
-
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
-    // If return to feed screen, it will refetch Post
   };
 
   const commentSubmitHandler = () => {
@@ -47,38 +49,30 @@ const FeedCard = ({
     posts[referenceIndex]["total_comment"] += 1;
   };
 
-  // useEffect(() => {
-  //   if (!postFetchDone && postIsFetching && posts) {
-  //     fetchPost(posts.length, 10, true).then(() => {
-  //       setPostIsFetching(false);
-  //     });
-  //   } else {
-  //     setPostIsFetching(false);
-  //   }
-  // }, [posts, postIsFetching, postFetchDone]);
-
   return (
     <>
-      <Box height={600}>
+      <Box pt={1} height={800}>
         <FlashList
           data={posts}
           onEndReachedThreshold={0.1}
           onEndReached={posts.length ? handleEndReached : null}
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
+          refreshControl={<RefreshControl refreshing={feedIsFetching} onRefresh={refetchFeeds} />}
           renderItem={({ item }) => (
             <FeedCardItem
               key={item?.id}
               post={item}
               id={item?.id}
-              employee_name={item?.employee_name}
-              created_at={item?.created_at}
-              employee_image={item?.employee_image}
+              employeeName={item?.employee_name}
+              createdAt={item?.created_at}
+              employeeImage={item?.employee_image}
               content={item?.content}
               total_like={item?.total_like}
-              total_comment={item?.total_comment}
-              liked_by={item?.liked_by}
+              totalComment={item?.total_comment}
+              likedBy={item?.liked_by}
               attachment={item?.file_path}
+              type={item?.type}
               // like post
               loggedEmployeeId={loggedEmployeeId}
               loggedEmployeeImage={loggedEmployeeImage}
@@ -88,6 +82,7 @@ const FeedCard = ({
           )}
         />
       </Box>
+
       <FeedComment
         handleOpen={commentsOpen}
         handleClose={commentsCloseHandler}
@@ -96,8 +91,7 @@ const FeedCard = ({
         onSubmit={commentSubmitHandler}
         loggedEmployeeImage={loggedEmployeeImage}
         loggedEmployeeName={loggedEmployeeName}
-        refetch={refetch}
-        setPosts={setPosts}
+        postRefetchHandler={postRefetchHandler}
       />
     </>
   );

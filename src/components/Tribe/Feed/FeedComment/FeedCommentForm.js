@@ -1,10 +1,14 @@
-import { Button, FormControl, Input, Pressable } from "native-base";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axiosInstance from "../../../../config/api";
-import { useEffect } from "react";
+
 import { StyleSheet } from "react-native";
+import { Box, Button, FormControl, Input, KeyboardAvoidingView } from "native-base";
+
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
+import axiosInstance from "../../../../config/api";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
   const [employees, setEmployees] = useState([]);
@@ -39,29 +43,29 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
   }, []);
 
   return (
-    <FormControl
-      alignItems="center"
-      pt={2}
-      pb={52}
-      borderTopWidth={1}
-      borderColor="#E8E9EB"
-      isInvalid={formik.errors.comments}
-    >
+    <FormControl alignItems="center" pb={12}>
       <Input
-        height={60}
-        variant="unstyled"
+        variant="solid"
         multiline
         onChangeText={(value) => formik.setFieldValue("comments", value)}
         placeholder={parentId ? "Add a reply" : "Add a comment"}
-        textAlignVertical="top"
         value={formik.values.comments}
+        InputLeftElement={
+          <Box pl={1}>
+            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" />
+          </Box>
+        }
         InputRightElement={
-          <Button size="md" onPress={formik.handleSubmit}>
-            Send
+          <Button
+            opacity={formik.values.comments === "" ? 0.5 : 1}
+            variant="unstyled"
+            size="sm"
+            onPress={formik.handleSubmit}
+          >
+            {parentId ? "Reply" : "Post"}
           </Button>
         }
       />
-      <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
     </FormControl>
   );
 };

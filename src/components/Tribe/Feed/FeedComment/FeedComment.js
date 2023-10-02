@@ -1,13 +1,11 @@
+import { useEffect, useState, useRef } from "react";
+
 import { Flex, Icon, Pressable, ScrollView, Slide, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
-import axiosInstance from "../../../../config/api";
-import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
+import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
-import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedComment = ({
   handleOpen,
@@ -18,26 +16,27 @@ const FeedComment = ({
   postId,
   total_comments,
   onSubmit,
-  refetch,
-  setPosts,
+  postRefetchHandler,
 }) => {
-  const { data: comment, isLoading: commentIsLoading } = useFetch(`/hr/posts/${postId}/comment`);
-  const [commentParentId, setCommentParentId] = useState(null);
   const [comments, setComments] = useState([]);
+  const [currentOffset, setCurrentOffset] = useState(0);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const { width, height } = Dimensions.get("window");
   const inputRef = useRef();
-  const { isKeyboardVisible } = useKeyboardChecker();
+  const commentsFetchParameters = {
+    offset: currentOffset,
+    limit: 30,
+  };
+
+  const {
+    data: commentData,
+    isLoading: commentIsLoading,
+    isFetching: commentIsFetching,
+    refetch: refetchComment,
+  } = useFetch(`/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
 
   const fetchComment = async (offset = 0, limit = 10, fetchMore = false) => {
     try {
-      const res = await axiosInstance.get(`/hr/posts/${postId}/comment`, {
-        params: {
-          offset: offset,
-          limit: limit,
-        },
-      });
-      setComments(res.data.data);
+      setComments(commentData?.data);
     } catch (err) {
       console.log(err);
     }
@@ -46,19 +45,22 @@ const FeedComment = ({
   const commentSubmitHandler = async (data) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
-      fetchComment();
       setCommentParentId(null);
       onSubmit(postId);
-      refetch();
+      postRefetchHandler();
+      fetchComment();
     } catch (err) {
       console.log(err);
     }
   };
 
+  /**
+   * Control for reply a comment
+   */
+  const [commentParentId, setCommentParentId] = useState(null);
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
-    // inputRef.current.focus();
   };
 
   useEffect(() => {
@@ -70,24 +72,24 @@ const FeedComment = ({
   }, [handleOpen]);
 
   return (
-    <Slide in={handleOpen} placement="bottom" duration={200} marginTop={Platform.OS === "android" ? 90 : 120}>
-      <KeyboardAvoidingView behavior="height" flex={1} width={width} pb={isKeyboardVisible ? 85 : 21}>
-        <Flex flexDir="column" flexGrow={1} bgColor="white" position="relative">
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-            <Flex flexDir="row" alignItems="center" gap={2}>
-              <Pressable onPress={handleClose}>
-                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-              </Pressable>
-              <Text fontSize={16} fontWeight={500}>
+    <Actionsheet isOpen={handleOpen} onClose={handleClose}>
+      <Actionsheet.Content>
+        <Flex flexDir="column" justifyContent="center" position="relative">
+          <Flex
+            flexDir="row"
+            alignItems="center"
+            justifyContent="center"
+            borderBottomWidth={1}
+            borderBottomColor="#DBDBDB"
+          >
+            <Flex mb={2} alignItems="center">
+              <Text fontSize={15} fontWeight={500}>
                 Comments
-              </Text>
-              <Text fontSize={16} fontWeight={400}>
-                {total_comments}
               </Text>
             </Flex>
           </Flex>
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
-            <Flex gap={1} mt={1} flex={2} paddingX={5}>
+            <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
                 onReply={replyHandler}
@@ -107,8 +109,8 @@ const FeedComment = ({
             onSubmit={commentSubmitHandler}
           />
         </Flex>
-      </KeyboardAvoidingView>
-    </Slide>
+      </Actionsheet.Content>
+    </Actionsheet>
   );
 };
 

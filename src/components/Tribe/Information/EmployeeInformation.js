@@ -1,7 +1,9 @@
 import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
+
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const EmployeeInformation = ({ name, position, email, phone, image }) => {
   return (

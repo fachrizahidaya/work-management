@@ -1,15 +1,21 @@
-import { useState } from "react";
-import { useDisclosure } from "../../hooks/useDisclosure";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { Box, Icon, Image } from "native-base";
+import { TouchableOpacity } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/FeedScreen";
 import InformationScreen from "../../screens/Tribe/InformationScreen";
-import { Box, Icon, Image } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { TouchableOpacity } from "react-native";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import TribeScreenSlider from "../../components/layout/ScreensSlider/TribeScreenSlider";
 import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeSlider";
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
+import PayslipScreen from "../../screens/Tribe/PayslipScreen";
+import ContactScreen from "../../screens/Tribe/ContactScreen";
+import LeaveScreen from "../../screens/Tribe/LeaveScreen";
+import CalendarScreen from "../../screens/Tribe/CalendarScreen";
+import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const Tab = createBottomTabNavigator();
 
@@ -62,11 +68,12 @@ const TribeTab = ({ setSelectedModule }) => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
             "My Information",
-            "My Attendance History",
-            "My Leave Request",
+            "Attendance Log",
+            "Leave Request",
             "My Reimbursement",
             "My Payslip",
             "My Key Performance Indicator",
@@ -168,13 +175,13 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
-        <Tab.Screen name="My Attendance History" component={EmptyScreen} />
-        <Tab.Screen name="My Leave Request" component={EmptyScreen} />
+        <Tab.Screen name="Attendance Log" component={AttendanceScreen} />
+        <Tab.Screen name="Leave Request" component={LeaveScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
-        <Tab.Screen name="My Payslip" component={EmptyScreen} />
+        <Tab.Screen name="My Payslip" component={PayslipScreen} />
         <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />
-        <Tab.Screen name="Calendar" component={EmptyScreen} />
-        <Tab.Screen name="Contact" component={EmptyScreen} />
+        <Tab.Screen name="Calendar" component={CalendarScreen} />
+        <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
