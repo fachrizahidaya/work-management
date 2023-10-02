@@ -33,10 +33,10 @@ const LeaveDashboardUser = ({ availableLeave, pendingApproval, approved }) => {
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-evenly" gap={3} flexDir="row">
+      <Flex alignItems="center" justifyContent="space-evenly" flexDir="row">
         {items.map((item) => {
           return (
-            <Box key={item.id} alignItems="center" justifyContent="center" gap={2}>
+            <Box key={item.id} alignItems="center" justifyContent="center" gap={1}>
               <Box
                 backgroundColor={item.backgroundColor}
                 alignItems="center"

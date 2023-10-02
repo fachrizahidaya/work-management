@@ -12,16 +12,7 @@ const LeaveScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex
-          flexDir="row"
-          alignItems="center"
-          justifyContent="space-between"
-          bgColor="white"
-          py={14}
-          px={15}
-          borderBottomWidth={1}
-          borderBottomColor="#cbcbcb"
-        >
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <Flex flexDir="row" gap={1}>
             <Text fontSize={16}>My Leave Request</Text>
           </Flex>

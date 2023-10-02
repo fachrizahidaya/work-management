@@ -92,19 +92,19 @@ const FeedCardItem = ({
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
               <Image
-                source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
                 borderRadius={15}
                 height={200}
                 alt="Feed Image"
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Modal backgroundColor="black" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-              <Modal.Content backgroundColor="black">
+            <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+              <Modal.Content backgroundColor="#000000">
                 <Modal.CloseButton />
                 <Modal.Body alignContent="center">
                   <Image
-                    source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                    source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
                     height={500}
                     width={500}
                     alt="Feed Image"

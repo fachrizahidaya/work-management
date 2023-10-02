@@ -23,7 +23,7 @@ const AddNewTribeSlider = ({ toggle }) => {
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: userIp } = useFetch("https://jsonip.com/");
   const { data: profile } = useFetch("/hr/my-profile");
-  const { data: personalLeave, refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
+  const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
   const onCloseLeaveRequest = () => {
     setNewLeaveRequest(false);
@@ -56,12 +56,7 @@ const AddNewTribeSlider = ({ toggle }) => {
         });
         toggle();
         toast.show({
-          description:
-            attendance?.data?.time_in && attendance?.data?.time_out
-              ? `You've both Clocked in and out`
-              : !attendance?.data?.time_in
-              ? "Clock-in Success"
-              : "Clock-out Success",
+          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
         });
         refetch();
       } else {
@@ -96,7 +91,7 @@ const AddNewTribeSlider = ({ toggle }) => {
     <>
       <Box>
         <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-        <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
+        <Box position="absolute" bottom={79} width="100%" bgColor="#FFFFFF" zIndex={3}>
           <FlatList
             data={items}
             renderItem={({ item }) => (
@@ -124,7 +119,7 @@ const AddNewTribeSlider = ({ toggle }) => {
                   {item.title !== "Clock in" ? (
                     <>
                       <Box
-                        bg="#f7f7f7"
+                        bg="#F7F7F7"
                         borderRadius={5}
                         style={{ height: 32, width: 32 }}
                         alignItems="center"
@@ -132,35 +127,33 @@ const AddNewTribeSlider = ({ toggle }) => {
                       >
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
-                      <Text key={item.title} fontWeight={700} color="black">
+                      <Text key={item.title} fontWeight={700} color="#000000">
                         {item.title}
                       </Text>
                     </>
                   ) : (
-                    <>
-                      <Flex
-                        bg="#f7f7f7"
-                        borderRadius={5}
-                        style={{ height: 32, width: "100%" }}
-                        flexDir="row"
-                        gap={25}
-                        alignItems="center"
-                        justifyContent="space-around"
-                      >
-                        <Box style={{ height: 32, width: 32 }} alignItems="center" justifyContent="center">
-                          <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
-                        </Box>
+                    <Flex
+                      flexDir="row"
+                      bg="#F7F7F7"
+                      borderRadius={5}
+                      style={{ height: 32, width: 352 }}
+                      alignItems="center"
+                    >
+                      <Box px={1}>
+                        <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                      </Box>
 
-                        <Text key={item.title} fontWeight={700} color="black" mr={140}>
-                          {attendance?.data?.time_in && attendance?.data?.time_out
-                            ? "You've attended"
-                            : !attendance?.data?.time_in
-                            ? "Clock in"
-                            : "Clock out"}
-                        </Text>
-                        <Text mr={2}>{currentTime}</Text>
-                      </Flex>
-                    </>
+                      <Text key={item.title} fontWeight={700} color="#000000" mx={6}>
+                        {attendance?.data?.time_in && attendance?.data?.time_out
+                          ? "You've attended"
+                          : !attendance?.data?.time_in
+                          ? "Clock in"
+                          : "Clock out"}
+                      </Text>
+                      <Text ml={160} color="#437D96">
+                        {currentTime}
+                      </Text>
+                    </Flex>
                   )}
                 </Flex>
               </Pressable>

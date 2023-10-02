@@ -9,10 +9,10 @@ import dayjs from "dayjs";
 import testIDs from "../testIDs";
 
 const AttendanceCalendar = ({ attendance }) => {
+  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
   const [items, setItems] = useState({});
-  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
 
   const allGood = { key: "allGood", color: "#ededed" };
   const reportRequired = { key: "reportRequired", color: "#fdc500" };

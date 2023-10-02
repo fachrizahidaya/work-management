@@ -15,16 +15,7 @@ const PayslipScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex
-        flexDir="row"
-        alignItems="center"
-        justifyContent="space-between"
-        bgColor="white"
-        py={14}
-        px={15}
-        borderBottomWidth={1}
-        borderBottomColor="#cbcbcb"
-      >
+      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <PageHeader title="My Payslip" backButton={false} />
       </Flex>
       <FlashList
@@ -43,7 +34,7 @@ const PayslipScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     position: "relative",
   },
 });

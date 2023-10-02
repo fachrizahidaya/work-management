@@ -174,7 +174,7 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
             {formik.values.type === "Public" ? (
               ""
             ) : (
-              <Flex gap={2} flexDir="row">
+              <Flex alignItems="center" gap={2} flexDir="row">
                 <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
                 <Text fontSize={12}>
                   {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
@@ -198,27 +198,31 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
 
             <Flex p={2} flexDir="column" justifyContent="space-between">
               {image ? (
-                <Box alignSelf="center">
-                  <Image
-                    source={{ uri: image.uri }}
-                    style={{ width: 300, height: 250, borderRadius: 15 }}
-                    alt="image selected"
-                  />
-                  <Box
-                    backgroundColor="#4b4f53"
-                    borderRadius="full"
-                    width={8}
-                    height={8}
-                    top={1}
-                    padding={1.5}
-                    right={1}
-                    position="absolute"
-                  >
-                    <Pressable onPress={() => setImage(null)}>
-                      <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="white" />
-                    </Pressable>
+                image.size >= 1000000 ? (
+                  <Text textAlign="center">Image size is too large!</Text>
+                ) : (
+                  <Box alignSelf="center">
+                    <Image
+                      source={{ uri: image.uri }}
+                      style={{ width: 300, height: 250, borderRadius: 15 }}
+                      alt="image selected"
+                    />
+                    <Box
+                      backgroundColor="#4b4f53"
+                      borderRadius="full"
+                      width={8}
+                      height={8}
+                      top={1}
+                      padding={1.5}
+                      right={1}
+                      position="absolute"
+                    >
+                      <Pressable onPress={() => setImage(null)}>
+                        <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
+                      </Pressable>
+                    </Box>
                   </Box>
-                </Box>
+                )
               ) : null}
               <Flex gap={1} my={2} pt={2} flexDir="row">
                 <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>

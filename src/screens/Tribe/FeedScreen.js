@@ -82,7 +82,7 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <Flex flexDir="row" gap={1}>
             <Text color="primary.600" fontWeight={700} fontSize={16}>
               News
@@ -101,7 +101,7 @@ const FeedScreen = () => {
             toggleNewFeed();
           }}
         >
-          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
+          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
 
         <Box flex={1} px={3}>

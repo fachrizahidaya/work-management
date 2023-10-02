@@ -1,26 +1,26 @@
-import { Box, Flex, FormControl, Icon, Input, Pressable, Select, Text, useToast } from "native-base";
-import { Dimensions, StyleSheet } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
-import FormButton from "../../../shared/FormButton";
-import { useFetch } from "../../../../hooks/useFetch";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+
+import { Dimensions, StyleSheet } from "react-native";
+import { Box, Flex, FormControl, Icon, Input, Pressable, Select, Text, TextArea, useToast } from "native-base";
+
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
-import { useEffect } from "react";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
+import FormButton from "../../../shared/FormButton";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import PageHeader from "../../../shared/PageHeader";
+import axiosInstance from "../../../../config/api";
+import { useFetch } from "../../../../hooks/useFetch";
+import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 
 const NewLeaveRequest = ({
   onClose,
   availableLeavePersonal,
-  pendingApproval,
-  approved,
-  refetchLeavePersonal,
+  refetchPersonalLeave,
   approver,
   approverImage,
   employeeId,
@@ -35,44 +35,24 @@ const NewLeaveRequest = ({
   const toast = useToast();
 
   const { data: leaveType } = useFetch("/hr/leaves");
-  const { data: leaveHistory, refetchLeaveHistory } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
+  const {
+    data: leaveHistory,
+    refetch: refetchLeaveHistory,
+    isFetching: leaveHistoryIsFetching,
+  } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
-  const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/hr/leave-requests`, form);
-      refetchLeavePersonal();
-      refetchLeaveHistory();
-      setSubmitting(false);
-      setStatus("success");
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`Request Created`} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: () => {
-          return <ErrorToast message={err.response.data.message} />;
-        },
-      });
-    }
-  };
-
-  const filterAvailableHistory = () => {
+  const filterAvailableLeaveHistory = () => {
     let sumAvailableLeave = 0;
     let sumDayOffLeave = 0;
     const availableLeave = leaveHistory?.data.filter((leave) => leave.leave_id === 1 && leave.active);
 
-    if (availableLeave.length > 0) {
+    if (availableLeave?.length > 0) {
       sumAvailableLeave = availableLeave?.reduce((val, obj) => {
         return Number(val) + Number(obj.quota);
       }, 0);
     }
     const dayOffLeave = leaveHistory?.data.filter((leave) => leave.leave_id === 10 && leave.active);
-    if (dayOffLeave.length > 0) {
+    if (dayOffLeave?.length > 0) {
       sumDayOffLeave = dayOffLeave?.reduce((val, obj) => {
         return Number(val) + Number(obj.quota);
       }, 0);
@@ -82,15 +62,43 @@ const NewLeaveRequest = ({
     });
   };
 
+  const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/hr/leave-requests`, form);
+
+      refetchPersonalLeave();
+      refetchLeaveHistory();
+      // setSubmitting(false);
+      // setStatus("success");
+      onClose();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Request Created`} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      // setSubmitting(false);
+      // setStatus("error");
+      toast.show({
+        render: () => {
+          return <ErrorToast message={err.response.data.message} />;
+        },
+      });
+    }
+  };
+
   const countLeave = async (action = null) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
         leave_id: formik.values.leave_id,
-        begin_date: formik.values.end_date,
+        begin_date: formik.values.begin_date,
+        end_date: formik.values.end_date,
       });
-      formik.setFieldValue("days", res.days);
+
+      formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
-      formik.setFieldValue("end", dayjs(res.data.end_date).format("YYYY-MM-DD"));
+      formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
       toast.show({
         render: () => {
           return <SuccessToast message={`You can continue to sumbit the form`} />;
@@ -122,8 +130,8 @@ const NewLeaveRequest = ({
       for (let key in values) {
         formData.append(key, values[key]);
       }
-      setStatus("processing");
-      leaveRequestAddHandler(formData, setSubmitting, setStatus);
+      // setStatus("processing");
+      leaveRequestAddHandler(values, setSubmitting, setStatus);
       resetForm();
     },
   });
@@ -136,11 +144,30 @@ const NewLeaveRequest = ({
     formik.setFieldValue("end_date", value);
   };
 
+  const items = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: availableLeavePersonal,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+    },
+    {
+      id: 2,
+      name: "Available Day-off",
+      icon: "clipboard-pulse-outline",
+      qty: availableLeaves?.day_off_leave,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+    },
+  ];
+
   useEffect(() => {
     // if (!formik.isSubmitting && formik.status === "success") {
-    // onClose(formik.resetForm);
+    //   onClose(formik.resetForm);
 
-    if (formik.values.leave_id && dateChanges) {
+    if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
       countLeave();
       setDateChanges(false);
     }
@@ -148,6 +175,8 @@ const NewLeaveRequest = ({
   }, [
     formik.values.leave_id,
     dateChanges,
+    formik.values.begin_date,
+    formik.values.end_date,
     // formik.isSubmitting,
     // formik.status
   ]);
@@ -166,41 +195,40 @@ const NewLeaveRequest = ({
   }, [formik.values.leave_id]);
 
   useEffect(() => {
-    filterAvailableHistory();
+    filterAvailableLeaveHistory();
   }, [leaveHistory?.data]);
 
   return (
     <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={5}>
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => onClose()}>
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-          </Pressable>
-          <Text fontSize={16} fontWeight={500}>
-            New Leave Request
-          </Text>
+      <Box w={width} height={height} bgColor="white" p={3}>
+        <PageHeader title="New Leave Request" onPress={() => onClose()} />
+
+        <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={5}>
+          {items.map((item) => {
+            return (
+              <Box key={item.id} alignItems="center" justifyContent="center" gap={2}>
+                <Box
+                  backgroundColor={item.backgroundColor}
+                  alignItems="center"
+                  justifyContent="center"
+                  width={60}
+                  height={60}
+                  borderRadius={15}
+                >
+                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
+                </Box>
+                <Text fontWeight={500} fontSize={20}>
+                  {item.qty}
+                </Text>
+                <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
+                  {item.name}
+                </Text>
+              </Box>
+            );
+          })}
         </Flex>
-        <Flex style={styles.container}>
-          <Flex gap={1} height="110px" width="60px">
-            <Box
-              flex={1}
-              minHeight="60px"
-              borderRadius={15}
-              backgroundColor="#E8E9EB"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={<MaterialCommunityIcons name="clipboard-outline" />} color="#377893" size={30} />
-            </Box>
-            <Text fontWeight={500} fontSize="20px" color="#3F434A" textAlign="center">
-              {availableLeavePersonal}
-            </Text>
-            <Text fontWeight={400} fontSize="12px" color="#8A9099" textAlign="center">
-              Available Leave
-            </Text>
-          </Flex>
-        </Flex>
-        <Flex gap={17} mt={22}>
+
+        <Flex gap={17}>
           <FormControl isInvalid={formik.errors.leave_id}>
             <FormControl.Label>Leave Type</FormControl.Label>
 
@@ -220,7 +248,7 @@ const NewLeaveRequest = ({
           </FormControl>
           <FormControl isInvalid={formik.errors.reason}>
             <FormControl.Label>Purpose of Leaving</FormControl.Label>
-            <Input
+            <TextArea
               value={formik.values.reason}
               h={100}
               onChangeText={(value) => formik.setFieldValue("reason", value)}
@@ -261,13 +289,25 @@ const NewLeaveRequest = ({
           </FormControl>
           <FormControl>
             <FormControl.Label>Approver</FormControl.Label>
-            <Flex alignItems="center" flexDir="row">
+            <Flex
+              padding={2}
+              borderWidth={1}
+              borderRadius={15}
+              borderColor="#E1E1E1"
+              alignItems="center"
+              flexDir="row"
+              justifyContent="flex-start"
+              gap={2}
+            >
               <AvatarPlaceholder name={approver} image={approverImage} size="sm" />
               <Text>{approver}</Text>
             </Flex>
           </FormControl>
 
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+          <FormButton
+            // isSubmitting={formik.isSubmitting}
+            onPress={formik.handleSubmit}
+          >
             <Text color="white">Submit</Text>
           </FormButton>
         </Flex>
@@ -283,6 +323,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    // gap: 10,
   },
 });

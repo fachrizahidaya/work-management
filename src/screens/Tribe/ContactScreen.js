@@ -56,17 +56,17 @@ const ContactScreen = () => {
     <SafeAreaView style={styles.container}>
       <Flex
         borderBottomWidth={1}
-        borderBottomColor="#DBDBDB"
+        borderBottomColor="#E8E9EB"
         flexDir="row"
         alignItems="center"
         justifyContent="space-between"
-        bgColor="white"
+        bgColor="#FFFFFF"
         py={14}
         px={15}
       >
         <PageHeader title="Contact" backButton={false} />
       </Flex>
-      <Box backgroundColor="white" py={4} px={8}>
+      <Box backgroundColor="#FFFFFF" py={4} px={8}>
         <Input
           variant="unstyled"
           size="md"
