@@ -29,17 +29,15 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../shared/ToastDialog";
 import axiosInstance from "../../../config/api";
+import PageHeader from "../../shared/PageHeader";
 
 const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
-  const [dateShown, setDateShown] = useState(false);
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
+  const { width, height } = Dimensions.get("window");
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [image, setImage] = useState(null);
-  const [isPressed, setIsPressed] = useState();
   const [selectedOption, setSelectedOption] = useState("Public");
-  const [showModalDate, setShowModalDate] = useState(false);
-  const { width, height } = Dimensions.get("window");
   const toast = useToast();
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
 
   const postSubmitHandler = async (form) => {
     try {
@@ -95,20 +93,21 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     },
   });
 
+  /**
+   * Handler for date
+   */
+  const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
     setSelectedOption("Announcement");
     formik.setFieldValue("type", "Announcement");
-    setIsPressed(true);
     setDateShown(true);
     setIsAnnouncementSelected(true);
-    // setShowModalDate(true);
   };
 
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
     formik.setFieldValue("end_date", "");
-    setIsPressed(false);
     setDateShown(false);
     setIsAnnouncementSelected(false);
     togglePostType();
@@ -146,19 +145,13 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="#FFFFFF" p={5}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable
-              onPress={() => {
-                toggleNewFeed();
-                setImage(null);
-              }}
-            >
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-            </Pressable>
-            <Text fontSize={16} fontWeight={500}>
-              New Post
-            </Text>
-          </Flex>
+          <PageHeader
+            title="New Post"
+            onPress={() => {
+              toggleNewFeed();
+              setImage(null);
+            }}
+          />
           <Button
             size="sm"
             borderRadius="full"
@@ -195,7 +188,6 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
             <TextArea
               minH={100}
               maxH={500}
-              // position="relative"
               variant="unstyled"
               placeholder="What is happening?"
               multiline
@@ -206,18 +198,24 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
 
             <Flex p={2} flexDir="column" justifyContent="space-between">
               {image ? (
-                <Box
-                  // position="relative"
-                  alignSelf="center"
-                >
+                <Box alignSelf="center">
                   <Image
                     source={{ uri: image.uri }}
                     style={{ width: 300, height: 250, borderRadius: 15 }}
                     alt="image selected"
                   />
-                  <Box backgroundColor="#000000" borderRadius="full" top={1} right={1} position="absolute">
+                  <Box
+                    backgroundColor="#4b4f53"
+                    borderRadius="full"
+                    width={8}
+                    height={8}
+                    top={1}
+                    padding={1.5}
+                    right={1}
+                    position="absolute"
+                  >
                     <Pressable onPress={() => setImage(null)}>
-                      <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="white" />
+                      <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="white" />
                     </Pressable>
                   </Box>
                 </Box>

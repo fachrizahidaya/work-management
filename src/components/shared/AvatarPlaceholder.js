@@ -2,7 +2,7 @@ import React from "react";
 
 import { Avatar } from "native-base";
 
-const AvatarPlaceholder = ({ image, name, size }) => {
+const AvatarPlaceholder = ({ image, name, size, borderRadius }) => {
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -39,12 +39,12 @@ const AvatarPlaceholder = ({ image, name, size }) => {
   return image ? (
     <Avatar
       source={{
-        uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
+        uri: `https://api-dev.kolabora-app.com/image/${image}/thumb`,
       }}
       size={size || "xs"}
     />
   ) : (
-    <Avatar size={size || "xs"} bgColor={stringToColor(name)}>
+    <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
       {userInitialGenerator()}
     </Avatar>
   );

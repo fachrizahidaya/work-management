@@ -10,17 +10,20 @@ import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
 
 import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
+import PageHeader from "../../components/shared/PageHeader";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
 
+  // Handler for search input
   const firstTimeRef = useRef(true);
   const dependencies = [currentPage, searchInput];
+
   const params = {
     page: currentPage,
     search: searchInput,
-    limit: 10,
+    limit: 100,
   };
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -29,7 +32,11 @@ const ContactScreen = () => {
     }, 500),
     []
   );
-  const { data, isLoading, refetch } = useFetch("/hr/employees", dependencies, params);
+  const {
+    data: employeeData,
+    isLoading: employeeDataIsLoading,
+    refetch,
+  } = useFetch("/hr/employees", dependencies, params);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -47,20 +54,22 @@ const ContactScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-        <Flex flexDir="row" gap={1}>
-          <Text fontSize={16}>Contact</Text>
-        </Flex>
+      <Flex
+        borderBottomWidth={1}
+        borderBottomColor="#DBDBDB"
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        bgColor="white"
+        py={14}
+        px={15}
+      >
+        <PageHeader title="Contact" backButton={false} />
       </Flex>
-      <Box backgroundColor="white" pt={4} px={4} pb={4}>
+      <Box backgroundColor="white" py={4} px={8}>
         <Input
           variant="unstyled"
           size="md"
-          InputRightElement={
-            <Pressable>
-              <Icon as={<MaterialCommunityIcons name="tune-variant" />} size="md" mr={3} color="black" />
-            </Pressable>
-          }
           InputLeftElement={
             <Pressable>
               <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
@@ -74,10 +83,10 @@ const ContactScreen = () => {
         />
       </Box>
 
-      <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
+      <Flex px={5} flex={1} flexDir="column">
         {/* Content here */}
         <FlashList
-          data={data?.data?.data}
+          data={employeeData?.data?.data}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}

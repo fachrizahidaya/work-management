@@ -59,7 +59,7 @@ const AddNewTribeSlider = ({ toggle }) => {
           description:
             attendance?.data?.time_in && attendance?.data?.time_out
               ? `You've both Clocked in and out`
-              : attendance?.data?.time_out
+              : !attendance?.data?.time_in
               ? "Clock-in Success"
               : "Clock-out Success",
         });
@@ -154,9 +154,9 @@ const AddNewTribeSlider = ({ toggle }) => {
                         <Text key={item.title} fontWeight={700} color="black" mr={140}>
                           {attendance?.data?.time_in && attendance?.data?.time_out
                             ? "You've attended"
-                            : attendance?.data?.time_in
-                            ? "Clock out"
-                            : "Clock in"}
+                            : !attendance?.data?.time_in
+                            ? "Clock in"
+                            : "Clock out"}
                         </Text>
                         <Text mr={2}>{currentTime}</Text>
                       </Flex>

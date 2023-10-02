@@ -72,7 +72,7 @@ const TribeTab = ({ setSelectedModule }) => {
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
             "My Information",
-            "Attendance Log",
+            "Attendance History",
             "Leave Request",
             "My Reimbursement",
             "My Payslip",
@@ -175,7 +175,7 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
-        <Tab.Screen name="Attendance Log" component={AttendanceScreen} />
+        <Tab.Screen name="Attendance History" component={AttendanceScreen} />
         <Tab.Screen name="Leave Request" component={LeaveScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />

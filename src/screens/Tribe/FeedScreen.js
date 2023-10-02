@@ -13,10 +13,11 @@ import { useFetch } from "../../hooks/useFetch";
 import axiosInstance from "../../config/api";
 
 const FeedScreen = () => {
+  // Handler for open/close to create a post
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   // User redux to fetch employeeName
   const userSelector = useSelector((state) => state.auth);
   // parameters for fetch posts
@@ -102,8 +103,8 @@ const FeedScreen = () => {
         >
           <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
         </Pressable>
-        {/* <ScrollView> */}
-        <Flex px={3} my={3} flex={1} flexDir="column">
+
+        <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
             loggedEmployeeId={profile?.data?.id}
@@ -116,8 +117,7 @@ const FeedScreen = () => {
             feedIsFetching={feedIsFetching}
             refetchFeeds={refetchFeeds}
           />
-        </Flex>
-        {/* </ScrollView> */}
+        </Box>
       </SafeAreaView>
 
       {newFeedIsOpen && (
@@ -138,11 +138,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    // position: "relative",
   },
   createIcon: {
     backgroundColor: "#377893",
-    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
     width: 60,
     height: 60,
     position: "absolute",

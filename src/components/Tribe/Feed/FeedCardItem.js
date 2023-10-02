@@ -63,7 +63,7 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <Flex flexDir="column" mb={3}>
+    <Flex flexDir="column" my={2}>
       <Flex gap={5} style={card.card}>
         <Flex alignItems="center" direction="row" gap={3}>
           <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />

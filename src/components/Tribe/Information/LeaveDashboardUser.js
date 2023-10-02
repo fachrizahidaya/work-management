@@ -4,75 +4,61 @@ import { Box, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const LeaveDashboardUser = ({ availableLeave, pendingApproval, approved }) => {
+  const items = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: availableLeave,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+    },
+    {
+      id: 2,
+      name: "Pending Approval",
+      icon: "clipboard-pulse-outline",
+      qty: pendingApproval,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+    },
+    {
+      id: 3,
+      name: "Approved",
+      icon: "clipboard-check-outline",
+      qty: approved,
+      backgroundColor: "#E9F5EC",
+      iconColor: "#49C96D",
+    },
+  ];
+
   return (
     <>
-      <Flex style={styles.container}>
-        <Flex gap={1} height="110px" width="60px">
-          <Box
-            flex={1}
-            minHeight="60px"
-            borderRadius={15}
-            backgroundColor="#E8E9EB"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Icon as={<MaterialCommunityIcons name="clipboard-outline" />} color="#377893" size={30} />
-          </Box>
-          <Text fontWeight={500} fontSize="20px" color="#3F434A" textAlign="center">
-            {availableLeave}
-          </Text>
-          <Text fontWeight={400} fontSize="12px" color="#8A9099" textAlign="center">
-            Available Leave
-          </Text>
-        </Flex>
-        <Flex gap={1} height="110px" width="60px">
-          <Box
-            flex={1}
-            borderRadius={15}
-            minHeight="60px"
-            backgroundColor="#FAF6E8"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Icon as={<MaterialCommunityIcons name="clipboard-pulse-outline" />} color="#FFD240" size={30} />
-          </Box>
-          <Text fontWeight={500} fontSize="20px" color="#3F434A" textAlign="center">
-            {pendingApproval}
-          </Text>
-          <Text fontWeight={400} fontSize="12px" color="#8A9099" textAlign="center">
-            Pending Approval
-          </Text>
-        </Flex>
-        <Flex gap={1} height="110px" width="60px">
-          <Box
-            flex={1}
-            borderRadius={15}
-            minHeight="60px"
-            alignItems="center"
-            justifyContent="center"
-            backgroundColor="#E9f5EC"
-          >
-            <Icon as={<MaterialCommunityIcons name="clipboard-check-outline" />} color="#49C96D" size={30} />
-          </Box>
-          <Text fontWeight={500} fontSize="20px" color="#3F434A" textAlign="center">
-            {approved}
-          </Text>
-          <Text fontWeight={400} fontSize="12px" color="#8A9099" textAlign="center">
-            Approved
-          </Text>
-        </Flex>
+      <Flex alignItems="center" justifyContent="space-evenly" gap={3} flexDir="row">
+        {items.map((item) => {
+          return (
+            <Box key={item.id} alignItems="center" justifyContent="center" gap={2}>
+              <Box
+                backgroundColor={item.backgroundColor}
+                alignItems="center"
+                justifyContent="center"
+                width={60}
+                height={60}
+                borderRadius={15}
+              >
+                <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
+              </Box>
+              <Text fontWeight={500} fontSize={20}>
+                {item.qty}
+              </Text>
+              <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
+                {item.name}
+              </Text>
+            </Box>
+          );
+        })}
       </Flex>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-});
 
 export default LeaveDashboardUser;

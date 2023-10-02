@@ -1,51 +1,56 @@
-import { Box, Divider, Flex, Icon, Input, Pressable, Text } from "native-base";
+import { Badge, Flex, Icon, IconButton, Input, Menu, Pressable, Text, Actionsheet, useDisclose } from "native-base";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
+  const { isOpen, onClose, onOpen } = useDisclose();
+  const navigation = useNavigation();
   return (
     <>
-      <Flex my={5} flexDir="column" gap={8} style={card.card}>
-        <Flex justifyContent="space-between" direction="row" gap={4}>
-          <Flex gap={3} flexDir="row">
-            <AvatarPlaceholder image={image} name={name} size="md" />
-            <Box>
-              <Text fontWeight={500} fontSize="20px" color="#3F434A">
-                {name.length > 30 ? name.split(" ")[0] : name}
-              </Text>
-              <Text fontWeight={400} fontSize="12px" color="#8A9099">
-                {position}
-              </Text>
-              <Text fontWeight={400} fontSize="12px" color="#8A9099">
-                {division}
-              </Text>
-            </Box>
-          </Flex>
-
-          <Pressable>
-            <Icon as={<Ionicons name="chatbubble-ellipses-outline" />} size={7} color="black" />
+      <Flex my={3} flexDir="column" style={card.card}>
+        <Flex alignItems="center" flexDir="row-reverse">
+          <Pressable onPress={onOpen}>
+            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="black" />
           </Pressable>
+          <Actionsheet isOpen={isOpen} onClose={onClose}>
+            <Actionsheet.Content>
+              <Actionsheet.Item>Option 1</Actionsheet.Item>
+              <Actionsheet.Item>Option 2</Actionsheet.Item>
+            </Actionsheet.Content>
+          </Actionsheet>
+        </Flex>
+        <Flex gap={3} alignItems="center">
+          <AvatarPlaceholder image={image} name={name} size="2xl" borderRadius={30} />
+          <Text fontWeight={500} fontSize={20} color="#3F434A">
+            {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+          <Badge borderRadius={10}>
+            <Text fontWeight={400} fontSize={16} color="#20A144">
+              {position}
+            </Text>
+          </Badge>
+          <Text fontWeight={400} fontSize={12} color="#8A9099">
+            {email}
+          </Text>
+          <Text fontWeight={400} fontSize={12} color="#8A9099">
+            {phone}
+          </Text>
         </Flex>
 
-        <Divider />
-
-        <Box>
-          <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-            <Text fontWeight={400} fontSize="12px" color="#3F434A">
-              Phone:
+        <Flex mt={5} alignItems="center" gap={20} justifyContent="center" flexDir="row">
+          <Text fontWeight={500} fontSize={14} color="#595F69">
+            Profile
+          </Text>
+          <Pressable onPress={() => navigation.navigate("Chat List")}>
+            <Text fontWeight={500} fontSize={14} color="#595F69">
+              Message
             </Text>
-            <Text fontWeight={400} fontSize="12px" color="#8A9099">
-              {phone}
-            </Text>
-          </Flex>
-          <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-            <Text>Email:</Text>
-            <Text fontWeight={400} fontSize="12px" color="#8A9099">
-              {email}
-            </Text>
-          </Flex>
-        </Box>
+          </Pressable>
+        </Flex>
       </Flex>
     </>
   );

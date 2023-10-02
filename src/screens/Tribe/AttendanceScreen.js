@@ -8,6 +8,7 @@ import { Flex, Text } from "native-base";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
 import Schedule from "../../components/Tribe/Calendar/Schedule";
+import PageHeader from "../../components/shared/PageHeader";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -15,22 +16,19 @@ const AttendanceScreen = () => {
     year: dayjs().format("YYYY"),
   });
 
+  const attendanceFetchParameters = filter;
+
   const {
     data: attendanceData,
     isFetching: attendanceDataIsFetching,
     refetch: refetchAttendanceData,
-  } = useFetch(`/hr/timesheets/personal`, [filter], filter);
+  } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text fontSize={16}>My Attendance Log</Text>
-          </Flex>
-          <Text fontWeight={700} fontSize={12}>
-            PT Kolabora Group Indonesia
-          </Text>
+          <PageHeader title="My Attendance History" backButton={false} />
         </Flex>
         <AttendanceCalendar attendance={attendanceData?.data} />
         {/* <Schedule/> */}

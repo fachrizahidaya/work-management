@@ -5,6 +5,7 @@ import LeaveDashboardUser from "../../components/Tribe/Information/LeaveDashboar
 import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
 import { useFetch } from "../../hooks/useFetch";
+import PageHeader from "../../components/shared/PageHeader";
 
 const InformationScreen = () => {
   const { data: profile } = useFetch("/hr/my-profile");
@@ -13,12 +14,10 @@ const InformationScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text fontSize={16}>My Information</Text>
-          </Flex>
+          <PageHeader title="My Information" backButton={false} />
         </Flex>
 
-        <Flex px={5} flex={1} flexDir="column" gap={5} my={5}>
+        <Flex px={5} flex={1} gap={5} mt={5}>
           {/* Content here */}
           <LeaveDashboardUser
             name={profile?.data?.name}

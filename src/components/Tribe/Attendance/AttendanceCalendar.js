@@ -46,28 +46,30 @@ const AttendanceCalendar = ({ attendance }) => {
   }, [selected]);
 
   useEffect(() => {
-    let dateList = {};
+    if (attendance && attendance.length > 0) {
+      let dateList = {};
 
-    attendance.map((item) => {
-      dateList[item?.date] = [
-        {
-          attendanceReason: item?.att_reason,
-          attendanceType: item?.att_type,
-          timeIn: item?.time_in,
-          late: item?.late,
-          lateReason: item?.late_reason,
-          lateType: item?.late_type,
-          dayType: item?.day_type,
-          timeOut: item?.time_out,
-          early: item?.early,
-          earlyReason: item?.early_reason,
-          earlyType: item?.early_type,
-          confirmation: item?.confirm,
-        },
-      ];
-    });
+      attendance.forEach((item) => {
+        dateList[item?.date] = [
+          {
+            attendanceReason: item?.att_reason,
+            attendanceType: item?.att_type,
+            timeIn: item?.time_in,
+            late: item?.late,
+            lateReason: item?.late_reason,
+            lateType: item?.late_type,
+            dayType: item?.day_type,
+            timeOut: item?.time_out,
+            early: item?.early,
+            earlyReason: item?.early_reason,
+            earlyType: item?.early_type,
+            confirmation: item?.confirm,
+          },
+        ];
+      });
 
-    setItems(dateList);
+      setItems(dateList);
+    }
   }, [attendance]);
 
   const renderCalendarWithMultiDotMarking = () => {

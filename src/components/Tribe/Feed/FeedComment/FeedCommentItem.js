@@ -96,7 +96,7 @@ const FeedCommentItem = ({
           <Box mx={10} my={3}>
             <Pressable
               onPress={() => {
-                fetchReply();
+                refetchCommentRepliesData();
                 setHideReplies(false);
                 setViewReplyToggle(true);
               }}
@@ -112,7 +112,7 @@ const FeedCommentItem = ({
           </Box>
         )}
 
-        {totalReplies > 0 && !hideReplies && (
+        {viewReplyToggle && totalReplies > 0 && !hideReplies && (
           <>
             <Box flex={1} minHeight={2}>
               <FlashList
