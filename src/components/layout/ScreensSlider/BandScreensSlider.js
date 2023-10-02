@@ -38,7 +38,7 @@ const BandScreensSlider = ({ toggle }) => {
     {
       icons: "note-outline",
       title: "Notes",
-      screen: "",
+      screen: "Notes",
     },
     {
       icons: "folder-outline",

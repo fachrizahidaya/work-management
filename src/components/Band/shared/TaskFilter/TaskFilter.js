@@ -71,7 +71,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
   // Run filter on initial render so the first render will return all data
   useEffect(() => {
     filterDataHandler(formik.values);
-  }, [formik.values, filteredArr]);
+  }, [formik.values, filteredArr.length]);
 
   return (
     <>
@@ -177,4 +177,4 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
   );
 };
 
-export default memo(TaskFilter);
+export default TaskFilter;
