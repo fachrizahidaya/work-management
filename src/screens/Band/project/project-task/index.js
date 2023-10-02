@@ -41,6 +41,8 @@ const ProjectTaskScreen = ({ route }) => {
     isFetching: taskIsFetching,
     refetch: refetchTasks,
   } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
+  const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
+  const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
   const onPressTaskItem = (task) => {
     toggleTaskDetail();
@@ -104,8 +106,8 @@ const ProjectTaskScreen = ({ route }) => {
             <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
               <TaskFilter
                 data={tasks?.data}
-                fetchMemberUrl={`/pm/projects/${projectId}/member`}
-                fetchLabelUrl={`/pm/projects/${projectId}/label`}
+                members={members}
+                labels={labels}
                 setSelectedLabelId={setSelectedLabelId}
                 setFilteredData={setFilteredData}
               />

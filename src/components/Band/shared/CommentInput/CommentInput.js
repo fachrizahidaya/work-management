@@ -339,7 +339,7 @@ const CommentInput = ({ taskId, projectId }) => {
                   <Avatar
                     size="xs"
                     source={{
-                      uri: `https://dev.kolabora-app.com/api-dev/image/${item.comment_image}/thumb`,
+                      uri: `${process.env.EXPO_PUBLIC_API}/image/${item.comment_image}/thumb`,
                     }}
                   />
 

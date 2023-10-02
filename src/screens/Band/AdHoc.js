@@ -37,6 +37,13 @@ const AdHocScreen = () => {
     isFetching: taskIsFetching,
     refetch: refetchTasks,
   } = useFetch(`/pm/tasks`, [selectedLabelId], fetchTaskParameters);
+  const { data: labels } = useFetch(`/pm/labels`);
+
+  // Get every task's responsible with no duplicates
+  const responsibleArr = tasks?.data.map((val) => val.responsible_name);
+  const noDuplicateResponsibleArr = [...new Set(responsibleArr)].filter((val) => {
+    return val !== null;
+  });
 
   const onPressTaskItem = (task) => {
     toggleTaskDetail();
@@ -94,8 +101,8 @@ const AdHocScreen = () => {
             <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
               <TaskFilter
                 data={tasks?.data}
-                // fetchMemberUrl={`/pm/projects/${projectId}/member`}
-                // fetchLabelUrl={`/pm/projects/${projectId}/label`}
+                members={noDuplicateResponsibleArr}
+                labels={labels}
                 setSelectedLabelId={setSelectedLabelId}
                 setFilteredData={setFilteredData}
               />

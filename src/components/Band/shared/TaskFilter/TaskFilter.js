@@ -8,13 +8,10 @@ import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, VSta
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { useFetch } from "../../../../hooks/useFetch";
 
-const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabelId, setFilteredData }) => {
+const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFilteredData }) => {
   const [selectedLabel, setSelectedLabel] = useState("");
   const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
-  const { data: members } = useFetch(fetchMemberUrl);
-  const { data: labels } = useFetch(fetchLabelUrl);
 
   let filteredArr = data;
 
@@ -100,7 +97,7 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
             />
 
             {/* Member */}
-            <FormControl.Label>Member</FormControl.Label>
+            {/* <FormControl.Label>Member</FormControl.Label>
             <Select onValueChange={(value) => onPressMember(value)} defaultValue={formik.values.responsible_name}>
               <Select.Item label="All Member" value="" />
               <Select.Item label="Not Assigned" value="null" />
@@ -108,10 +105,10 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
                 members.data.map((member) => {
                   return <Select.Item key={member.id} label={member.member_name} value={member.member_name} />;
                 })}
-            </Select>
+            </Select> */}
 
             {/* Label */}
-            <FormControl.Label>Label</FormControl.Label>
+            {/* <FormControl.Label>Label</FormControl.Label>
             <Select
               defaultValue={selectedLabel}
               onValueChange={(value) => {
@@ -122,12 +119,18 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
               <Select.Item label="No Label" value="" />
 
               {labels?.data.map((label) => {
-                return <Select.Item key={label.id} label={label.label_name} value={label.label_id} />;
+                return (
+                  <Select.Item
+                    key={label.id}
+                    label={label.label_name || label.name}
+                    value={label.label_id || label.id}
+                  />
+                );
               })}
-            </Select>
+            </Select> */}
 
             {/* Deadline */}
-            <FormControl.Label>Due Date</FormControl.Label>
+            {/* <FormControl.Label>Due Date</FormControl.Label>
             <Select
               defaultValue={formik.values.deadline}
               onValueChange={(value) => {
@@ -138,10 +141,10 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
               <Select.Item label="Due anytime" value="" />
               <Select.Item label="Closest" value="asc" />
               <Select.Item label="Latest" value="desc" />
-            </Select>
+            </Select> */}
 
             {/* Priority */}
-            <FormControl.Label>Priority</FormControl.Label>
+            {/* <FormControl.Label>Priority</FormControl.Label>
             <Select
               defaultValue={formik.values.priority}
               onValueChange={(value) => {
@@ -153,7 +156,7 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
               <Select.Item label="Low" value="Low" />
               <Select.Item label="Medium" value="Medium" />
               <Select.Item label="High" value="High" />
-            </Select>
+            </Select> */}
 
             <Button
               mt={4}
