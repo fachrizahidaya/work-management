@@ -88,7 +88,7 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex gap={15} style={{ marginHorizontal: 16, marginTop: 13 }}>
+        <Flex gap={15} style={{ marginTop: 13 }}>
           <PageHeader
             title={data?.data.title}
             withLoading
@@ -119,7 +119,6 @@ const ProjectTaskScreen = ({ route }) => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 16, marginVertical: 13 }}
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
         >
           {/* Task List view */}
@@ -182,6 +181,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 16,
   },
   taskDetailAndroid: {
     flex: 1,
