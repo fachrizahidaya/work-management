@@ -88,40 +88,40 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <Flex gap={15} style={{ marginHorizontal: 16, marginTop: 13 }}>
+          <PageHeader
+            title={data?.data.title}
+            withLoading
+            isLoading={isLoading}
+            onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
+          />
+
+          <TaskViewSection changeView={changeView} view={view} />
+
+          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+            <TaskFilter
+              data={tasks?.data}
+              members={members?.data}
+              labels={labels}
+              setSelectedLabelId={setSelectedLabelId}
+              setFilteredData={setFilteredData}
+            />
+
+            <Button
+              size="lg"
+              onPress={toggleTaskForm}
+              endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
+            >
+              Task
+            </Button>
+          </Flex>
+        </Flex>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ marginHorizontal: 16, marginVertical: 13 }}
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
         >
-          <Flex gap={15}>
-            <PageHeader
-              title={data?.data.title}
-              withLoading
-              isLoading={isLoading}
-              onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
-            />
-
-            <TaskViewSection changeView={changeView} view={view} />
-
-            <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
-              <TaskFilter
-                data={tasks?.data}
-                members={members}
-                labels={labels}
-                setSelectedLabelId={setSelectedLabelId}
-                setFilteredData={setFilteredData}
-              />
-
-              <Button
-                size="lg"
-                onPress={toggleTaskForm}
-                endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-              >
-                Task
-              </Button>
-            </Flex>
-          </Flex>
-
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList

@@ -33,7 +33,7 @@ const BandScreensSlider = ({ toggle }) => {
     {
       icons: "calendar-clock",
       title: "Calendar",
-      screen: "",
+      screen: "Calendar",
     },
     {
       icons: "note-outline",

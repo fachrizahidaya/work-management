@@ -97,18 +97,24 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
             />
 
             {/* Member */}
-            {/* <FormControl.Label>Member</FormControl.Label>
+            <FormControl.Label>Member</FormControl.Label>
             <Select onValueChange={(value) => onPressMember(value)} defaultValue={formik.values.responsible_name}>
               <Select.Item label="All Member" value="" />
               <Select.Item label="Not Assigned" value="null" />
-              {members?.data?.length > 0 &&
-                members.data.map((member) => {
-                  return <Select.Item key={member.id} label={member.member_name} value={member.member_name} />;
+              {members?.length > 0 &&
+                members.map((member, index) => {
+                  return (
+                    <Select.Item
+                      key={index}
+                      label={member.member_name || member}
+                      value={member.member_name || member}
+                    />
+                  );
                 })}
-            </Select> */}
+            </Select>
 
             {/* Label */}
-            {/* <FormControl.Label>Label</FormControl.Label>
+            <FormControl.Label>Label</FormControl.Label>
             <Select
               defaultValue={selectedLabel}
               onValueChange={(value) => {
@@ -127,10 +133,10 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
                   />
                 );
               })}
-            </Select> */}
+            </Select>
 
             {/* Deadline */}
-            {/* <FormControl.Label>Due Date</FormControl.Label>
+            <FormControl.Label>Due Date</FormControl.Label>
             <Select
               defaultValue={formik.values.deadline}
               onValueChange={(value) => {
@@ -141,10 +147,10 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
               <Select.Item label="Due anytime" value="" />
               <Select.Item label="Closest" value="asc" />
               <Select.Item label="Latest" value="desc" />
-            </Select> */}
+            </Select>
 
             {/* Priority */}
-            {/* <FormControl.Label>Priority</FormControl.Label>
+            <FormControl.Label>Priority</FormControl.Label>
             <Select
               defaultValue={formik.values.priority}
               onValueChange={(value) => {
@@ -156,7 +162,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
               <Select.Item label="Low" value="Low" />
               <Select.Item label="Medium" value="Medium" />
               <Select.Item label="High" value="High" />
-            </Select> */}
+            </Select>
 
             <Button
               mt={4}
