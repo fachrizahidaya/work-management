@@ -23,19 +23,25 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   return (
     <Flex flexDir="column" style={card.card}>
       <Text fontSize={20}>This Year Tasks</Text>
-
-      <ProgressChart
-        data={data}
-        width={screenWidth - 70}
-        height={200}
-        strokeWidth={16}
-        radius={32}
-        chartConfig={chartConfig}
-        hideLegend={true}
-        withCustomBarColorFromData={true}
-        center={true}
-        style={{ width: "100%" }}
-      />
+      <Box>
+        <ProgressChart
+          data={data}
+          width={200}
+          height={200}
+          strokeWidth={16}
+          radius={32}
+          chartConfig={chartConfig}
+          hideLegend={true}
+          withCustomBarColorFromData={true}
+          center={true}
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+          }}
+        />
+      </Box>
 
       <Flex flexDir="row" gap={5} justifyContent="center">
         <Flex alignItems="center">
