@@ -24,12 +24,14 @@ import {
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../shared/PageHeader";
+import ImagePickerAction from "./ImagePickerAction";
 
 const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
@@ -224,12 +226,13 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
                   </Box>
                 )
               ) : null}
-              <Flex gap={1} my={2} pt={2} flexDir="row">
-                <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
-                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
-                </Pressable>
-              </Flex>
             </Flex>
+            <Flex gap={1} my={2} pt={2} flexDir="row">
+              <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
+                <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
+              </Pressable>
+            </Flex>
+            {/* <ImagePickerAction /> */}
             <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
               <Actionsheet.Content>
                 <Flex w="100%" h={30} px={4} flexDir="row">

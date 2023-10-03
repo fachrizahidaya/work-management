@@ -68,8 +68,8 @@ const NewLeaveRequest = ({
 
       refetchPersonalLeave();
       refetchLeaveHistory();
-      // setSubmitting(false);
-      // setStatus("success");
+      setSubmitting(false);
+      setStatus("success");
       onClose();
       toast.show({
         render: () => {
@@ -78,8 +78,8 @@ const NewLeaveRequest = ({
       });
     } catch (err) {
       console.log(err);
-      // setSubmitting(false);
-      // setStatus("error");
+      setSubmitting(false);
+      setStatus("error");
       toast.show({
         render: () => {
           return <ErrorToast message={err.response.data.message} />;
@@ -130,7 +130,7 @@ const NewLeaveRequest = ({
       for (let key in values) {
         formData.append(key, values[key]);
       }
-      // setStatus("processing");
+      setStatus("processing");
       leaveRequestAddHandler(values, setSubmitting, setStatus);
       resetForm();
     },
@@ -164,21 +164,21 @@ const NewLeaveRequest = ({
   ];
 
   useEffect(() => {
-    // if (!formik.isSubmitting && formik.status === "success") {
-    //   onClose(formik.resetForm);
+    if (!formik.isSubmitting && formik.status === "success") {
+      onClose(formik.resetForm);
 
-    if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
-      countLeave();
-      setDateChanges(false);
+      if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
+        countLeave();
+        setDateChanges(false);
+      }
     }
-    // }
   }, [
     formik.values.leave_id,
     dateChanges,
     formik.values.begin_date,
     formik.values.end_date,
-    // formik.isSubmitting,
-    // formik.status
+    formik.isSubmitting,
+    formik.status,
   ]);
 
   useEffect(() => {

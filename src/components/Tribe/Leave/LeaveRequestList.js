@@ -24,9 +24,11 @@ const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, sup
           </Actionsheet>
         </Flex>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <Text color="#595F69" fontSize={12} fontWeight={400}>
-            {reason}
-          </Text>
+          <Flex flex={1}>
+            <Text color="#595F69" fontSize={12} fontWeight={400}>
+              {reason}
+            </Text>
+          </Flex>
           <Badge borderRadius={10} w={20}>
             <Flex gap={2} flexDir="row">
               <Icon as={<MaterialCommunityIcons name="clock-outline" />} size={5} color="#186688" />
@@ -38,7 +40,13 @@ const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, sup
           <Text color="#595F69" fontSize={12} fontWeight={400}>
             {dayjs(startDate).format("DD.MM.YYYY")} - {dayjs(endDate).format("DD.MM.YYYY")}
           </Text>
-          <Text color={status === "Pending" ? "#F0C290" : status === "Declined" ? "#FF6262" : "#437D96"}>{status}</Text>
+          <Text
+            color={
+              status === "Pending" ? "#F0C290" : status === "Declined" || status === "Canceled" ? "#FF6262" : "#437D96"
+            }
+          >
+            {status}
+          </Text>
         </Flex>
       </Box>
     </>

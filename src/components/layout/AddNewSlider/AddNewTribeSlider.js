@@ -150,9 +150,15 @@ const AddNewTribeSlider = ({ toggle }) => {
                           ? "Clock in"
                           : "Clock out"}
                       </Text>
-                      <Text ml={160} color="#437D96">
-                        {currentTime}
-                      </Text>
+                      {item.title === "Clock in" || item.title === "Clock Out" ? (
+                        <Text ml={170} color="#377893">
+                          {currentTime}
+                        </Text>
+                      ) : (
+                        <Text ml={130} color="#377893">
+                          {currentTime}
+                        </Text>
+                      )}
                     </Flex>
                   )}
                 </Flex>
