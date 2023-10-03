@@ -8,13 +8,10 @@ import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, VSta
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { useFetch } from "../../../../hooks/useFetch";
 
-const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabelId, setFilteredData }) => {
+const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFilteredData }) => {
   const [selectedLabel, setSelectedLabel] = useState("");
   const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
-  const { data: members } = useFetch(fetchMemberUrl);
-  const { data: labels } = useFetch(fetchLabelUrl);
 
   let filteredArr = data;
 
@@ -74,7 +71,7 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
   // Run filter on initial render so the first render will return all data
   useEffect(() => {
     filterDataHandler(formik.values);
-  }, [formik.values, filteredArr]);
+  }, [formik.values, filteredArr.length]);
 
   return (
     <>
@@ -104,9 +101,15 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
             <Select onValueChange={(value) => onPressMember(value)} defaultValue={formik.values.responsible_name}>
               <Select.Item label="All Member" value="" />
               <Select.Item label="Not Assigned" value="null" />
-              {members?.data?.length > 0 &&
-                members.data.map((member) => {
-                  return <Select.Item key={member.id} label={member.member_name} value={member.member_name} />;
+              {members?.length > 0 &&
+                members.map((member, index) => {
+                  return (
+                    <Select.Item
+                      key={index}
+                      label={member.member_name || member}
+                      value={member.member_name || member}
+                    />
+                  );
                 })}
             </Select>
 
@@ -122,7 +125,13 @@ const TaskFilter = ({ data = [], fetchMemberUrl, fetchLabelUrl, setSelectedLabel
               <Select.Item label="No Label" value="" />
 
               {labels?.data.map((label) => {
-                return <Select.Item key={label.id} label={label.label_name} value={label.label_id} />;
+                return (
+                  <Select.Item
+                    key={label.id}
+                    label={label.label_name || label.name}
+                    value={label.label_id || label.id}
+                  />
+                );
               })}
             </Select>
 

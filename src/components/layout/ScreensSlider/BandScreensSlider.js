@@ -33,18 +33,18 @@ const BandScreensSlider = ({ toggle }) => {
     {
       icons: "calendar-clock",
       title: "Calendar",
-      screen: "",
+      screen: "Calendar",
     },
     {
       icons: "note-outline",
       title: "Notes",
-      screen: "",
+      screen: "Notes",
     },
-    {
-      icons: "folder-outline",
-      title: "KSS Drive",
-      screen: "",
-    },
+    // {
+    //   icons: "folder-outline",
+    //   title: "KSS Drive",
+    //   screen: "",
+    // },
   ];
   return (
     <Box>

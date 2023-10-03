@@ -37,6 +37,13 @@ const AdHocScreen = () => {
     isFetching: taskIsFetching,
     refetch: refetchTasks,
   } = useFetch(`/pm/tasks`, [selectedLabelId], fetchTaskParameters);
+  const { data: labels } = useFetch(`/pm/labels`);
+
+  // Get every task's responsible with no duplicates
+  const responsibleArr = tasks?.data.map((val) => val.responsible_name);
+  const noDuplicateResponsibleArr = [...new Set(responsibleArr)].filter((val) => {
+    return val !== null;
+  });
 
   const onPressTaskItem = (task) => {
     toggleTaskDetail();
@@ -81,35 +88,34 @@ const AdHocScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <Flex gap={15} style={{ marginTop: 13 }}>
+          <PageHeader title="Ad Hoc" backButton={false} />
+
+          <TaskViewSection changeView={changeView} view={view} />
+
+          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+            <TaskFilter
+              data={tasks?.data}
+              members={noDuplicateResponsibleArr}
+              labels={labels}
+              setSelectedLabelId={setSelectedLabelId}
+              setFilteredData={setFilteredData}
+            />
+
+            <Button
+              size="lg"
+              onPress={toggleTaskForm}
+              endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
+            >
+              Task
+            </Button>
+          </Flex>
+        </Flex>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 16, marginVertical: 13 }}
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
         >
-          <Flex gap={15}>
-            <PageHeader title="Ad Hoc" backButton={false} />
-
-            <TaskViewSection changeView={changeView} view={view} />
-
-            <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
-              <TaskFilter
-                data={tasks?.data}
-                // fetchMemberUrl={`/pm/projects/${projectId}/member`}
-                // fetchLabelUrl={`/pm/projects/${projectId}/label`}
-                setSelectedLabelId={setSelectedLabelId}
-                setFilteredData={setFilteredData}
-              />
-
-              <Button
-                size="lg"
-                onPress={toggleTaskForm}
-                endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-              >
-                Task
-              </Button>
-            </Flex>
-          </Flex>
-
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList
@@ -169,6 +175,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 16,
   },
   taskDetailAndroid: {
     flex: 1,

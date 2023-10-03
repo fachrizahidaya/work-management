@@ -66,7 +66,7 @@ const SettingScreen = () => {
                 <Flex direction="row" gap={4}>
                   <Avatar
                     source={{
-                      uri: `https://dev.kolabora-app.com/api-dev/image/${userSelector.image}/thumb`,
+                      uri: `${process.env.EXPO_PUBLIC_API}/image/${userSelector.image}/thumb`,
                     }}
                   />
                   <Box>
@@ -100,7 +100,7 @@ const SettingScreen = () => {
                             key={item.id}
                             size="sm"
                             source={{
-                              uri: `https://dev.kolabora-app.com/api-dev/image/${item.image}`,
+                              uri: `${process.env.EXPO_PUBLIC_API}/image/${item.image}`,
                             }}
                           />
                         );

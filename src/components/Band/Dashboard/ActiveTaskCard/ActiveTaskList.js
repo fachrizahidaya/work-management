@@ -1,33 +1,30 @@
 import React from "react";
 
-import { Box, Checkbox, Flex, Icon, Pressable, Text } from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Checkbox, Flex, Text } from "native-base";
 
-import { useSelector } from "react-redux";
-
-const ActiveTaskList = () => {
-  const userSelector = useSelector((state) => state.auth);
-
+const ActiveTaskList = ({ task, title, responsible, status, priority, onPress }) => {
   return (
     <Flex
       flexDir="row"
       alignItems="center"
-      justifyContent="space-between"
       borderLeftWidth={3}
-      borderColor="#ff965d"
+      borderColor={priority === "Low" ? "#49c96d" : priority === "Medium" ? "#ff965d" : "#fd7972"}
       px={4}
     >
-      <Flex flexDir="row" alignItems="center" h="100%" gap={3}>
-        <Checkbox>
+      <Flex flexDir="row" alignItems="center" w="100%">
+        <Checkbox
+          isChecked={status === "Closed"}
+          onTouchEnd={() => {
+            status !== "Closed" && onPress(task);
+          }}
+          isDisabled={status === "Closed"}
+        >
           <Flex flexDir="column">
-            <Text opacity={0.5}>{userSelector.name}</Text>
-            <Text>AxiosInstance reconfig for error</Text>
+            <Text opacity={0.5}>{responsible}</Text>
+            <Text textDecorationLine={status === "Closed" ? "line-through" : "none"}>{title}</Text>
           </Flex>
         </Checkbox>
       </Flex>
-      <Pressable>
-        <Icon as={<MaterialIcons name="more-vert" />} size={6} mr={1} color="gray.600" />
-      </Pressable>
     </Flex>
   );
 };
