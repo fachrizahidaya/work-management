@@ -15,8 +15,9 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
           alignItems="center"
           justifyContent="space-between"
           borderStyle={Platform.OS === "android" && "dashed"}
-          borderWidth={Platform.OS === "android" && 2}
+          borderBottomWidth={Platform.OS === "android" && 2.5}
           paddingBottom={Platform.OS === "android" && 18}
+          borderColor={Platform.OS === "android" && "#E8E9EB"}
         >
           <HStack space={2}>
             <Icon as={<MaterialCommunityIcons name="calendar-month" />} size="md" />

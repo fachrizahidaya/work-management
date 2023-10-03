@@ -55,14 +55,14 @@ const NotesScreen = () => {
       refetch();
       toast.show({
         render: () => {
-          return <SuccessToast message={`Note ${status}`} />;
+          return <SuccessToast message={`Note ${status}`} toast={toast} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
         render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+          return <ErrorToast message={error.response.data.message} toast={toast} />;
         },
       });
     }
