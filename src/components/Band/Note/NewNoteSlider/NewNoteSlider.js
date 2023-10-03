@@ -4,14 +4,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Select, Button, useToast, TextArea } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, FormControl, Input, useToast, TextArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 
-const NewNoteSlider = ({ onClose, noteData, refresh }) => {
+const NewNoteSlider = ({ onClose, noteData, refresh, refreshFunc = true }) => {
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
 
@@ -22,7 +22,9 @@ const NewNoteSlider = ({ onClose, noteData, refresh }) => {
       } else {
         await axiosInstance.post("/pm/notes", form);
       }
-      refresh();
+      if (refreshFunc) {
+        refresh();
+      }
 
       setSubmitting(false);
       setStatus("success");

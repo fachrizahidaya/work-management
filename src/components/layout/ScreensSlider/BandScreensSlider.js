@@ -40,11 +40,11 @@ const BandScreensSlider = ({ toggle }) => {
       title: "Notes",
       screen: "Notes",
     },
-    {
-      icons: "folder-outline",
-      title: "KSS Drive",
-      screen: "",
-    },
+    // {
+    //   icons: "folder-outline",
+    //   title: "KSS Drive",
+    //   screen: "",
+    // },
   ];
   return (
     <Box>

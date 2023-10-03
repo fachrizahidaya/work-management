@@ -177,4 +177,4 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
   );
 };
 
-export default TaskFilter;
+export default memo(TaskFilter);

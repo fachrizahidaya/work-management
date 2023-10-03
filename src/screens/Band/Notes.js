@@ -14,12 +14,14 @@ import axiosInstance from "../../config/api";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NewNoteSlider from "../../components/Band/Note/NewNoteSlider/NewNoteSlider";
+import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
 
 const NotesScreen = () => {
   const { height } = Dimensions.get("screen");
   const toast = useToast();
   const [noteToDelete, setNoteToDelete] = useState({});
   const [selectedNote, setSelectedNote] = useState({});
+  const [filteredData, setFilteredData] = useState([]);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: editFormIsOpen, toggle: toggleEditForm } = useDisclosure(false);
   const { isOpen: newFormIsOpen, toggle: toggleNewForm } = useDisclosure(false);
@@ -72,11 +74,7 @@ const NotesScreen = () => {
         <VStack space={21} flex={1}>
           <PageHeader backButton={false} title="Notes" />
           <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-            <IconButton
-              icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
-              rounded="full"
-              size="md"
-            />
+            <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
 
             <Button
               size="lg"
@@ -94,7 +92,7 @@ const NotesScreen = () => {
             <View flex={1} minH={2}>
               {!isLoading ? (
                 <FlashList
-                  data={notes?.data}
+                  data={filteredData}
                   keyExtractor={(item) => item.id}
                   estimatedItemSize={270}
                   renderItem={({ item }) => (

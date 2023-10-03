@@ -100,7 +100,7 @@ const SettingScreen = () => {
                             key={item.id}
                             size="sm"
                             source={{
-                              uri: `${process.env.EXPO_PUBLIC_API}/api-dev/image/${item.image}`,
+                              uri: `${process.env.EXPO_PUBLIC_API}/image/${item.image}`,
                             }}
                           />
                         );
