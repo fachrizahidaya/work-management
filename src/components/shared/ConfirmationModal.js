@@ -16,6 +16,8 @@ const ConfirmationModal = ({
   onSuccess,
   header,
   description,
+  body = {},
+  isDelete = true,
 }) => {
   const toast = useToast();
   const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
@@ -23,7 +25,11 @@ const ConfirmationModal = ({
   const onPressHandler = async () => {
     try {
       toggleIsDeleting();
-      await axiosInstance.delete(apiUrl);
+      if (isDelete) {
+        await axiosInstance.delete(apiUrl);
+      } else {
+        await axiosInstance.post(apiUrl, body);
+      }
       toggle();
       toggleIsDeleting();
       toast.show({
