@@ -1,51 +1,76 @@
-import { Box, Divider, Flex, Icon, Input, Pressable, Text } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+
+import { Badge, Flex, Icon, Pressable, Text, Actionsheet } from "native-base";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const navigation = useNavigation();
+
   return (
     <>
-      <Flex my={5} flexDir="column" gap={8} style={card.card}>
-        <Flex justifyContent="space-between" direction="row" gap={4}>
-          <Flex gap={3} flexDir="row">
-            <AvatarPlaceholder image={image} name={name} size="md" />
-            <Box>
-              <Text fontWeight={500} fontSize="20px" color="#3F434A">
-                {name.length > 30 ? name.split(" ")[0] : name}
-              </Text>
-              <Text fontWeight={400} fontSize="12px" color="#8A9099">
-                {position}
-              </Text>
-              <Text fontWeight={400} fontSize="12px" color="#8A9099">
-                {division}
-              </Text>
-            </Box>
-          </Flex>
-
-          <Pressable>
-            <Icon as={<Ionicons name="chatbubble-ellipses-outline" />} size={7} color="black" />
+      <Flex my={3} flexDir="column" style={card.card}>
+        <Flex alignItems="center" flexDir="row-reverse">
+          <Pressable onPress={toggleAction}>
+            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
           </Pressable>
+          <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
+            <Actionsheet.Content>
+              <Actionsheet.Item>Option 1</Actionsheet.Item>
+              <Actionsheet.Item>Option 2</Actionsheet.Item>
+            </Actionsheet.Content>
+          </Actionsheet>
         </Flex>
-
-        <Divider />
-
-        <Box>
-          <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-            <Text fontWeight={400} fontSize="12px" color="#3F434A">
-              Phone:
+        <Flex gap={3} alignItems="center">
+          <AvatarPlaceholder image={image} name={name} size="2xl" borderRadius={30} />
+          <Text fontWeight={500} fontSize={20} color="#3F434A">
+            {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+          <Badge borderRadius={10}>
+            <Text fontWeight={400} fontSize={16} color="#20A144">
+              {position}
             </Text>
-            <Text fontWeight={400} fontSize="12px" color="#8A9099">
-              {phone}
-            </Text>
-          </Flex>
-          <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-            <Text>Email:</Text>
-            <Text fontWeight={400} fontSize="12px" color="#8A9099">
+          </Badge>
+          <Flex gap={1} alignItems="center" flexDir="row">
+            <Text fontWeight={400} fontSize={12} color="#8A9099">
               {email}
             </Text>
+            <Icon
+              onPress={() => CopyToClipboard(email)}
+              as={<MaterialCommunityIcons name="content-copy" />}
+              size={3}
+              color="#3F434A"
+            />
           </Flex>
-        </Box>
+          <Flex gap={1} alignItems="center" flexDir="row">
+            <Text fontWeight={400} fontSize={12} color="#8A9099">
+              {phone}
+            </Text>
+            <Icon
+              onPress={() => CopyToClipboard(phone)}
+              as={<MaterialCommunityIcons name="content-copy" />}
+              size={3}
+              color="#3F434A"
+            />
+          </Flex>
+        </Flex>
+
+        <Flex mt={5} alignItems="center" gap={20} justifyContent="center" flexDir="row">
+          <Text fontWeight={500} fontSize={14} color="#595F69">
+            Profile
+          </Text>
+          <Pressable onPress={() => navigation.navigate("Chat List")}>
+            <Text fontWeight={500} fontSize={14} color="#595F69">
+              Message
+            </Text>
+          </Pressable>
+        </Flex>
       </Flex>
     </>
   );

@@ -16,6 +16,7 @@ import LeaveScreen from "../../screens/Tribe/LeaveScreen";
 import CalendarScreen from "../../screens/Tribe/CalendarScreen";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import TeamLeaveScreen from "../../screens/Tribe/TeamLeaveScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -72,8 +73,9 @@ const TribeTab = ({ setSelectedModule }) => {
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
             "My Information",
-            "Attendance Log",
+            "Attendance History",
             "Leave Request",
+            "Team Leave Request",
             "My Reimbursement",
             "My Payslip",
             "My Key Performance Indicator",
@@ -91,7 +93,7 @@ const TribeTab = ({ setSelectedModule }) => {
           component={FeedScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="FBFBFB" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="menu" />} size={size} color="#186688" />
               </Box>
             ),
@@ -175,8 +177,9 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
-        <Tab.Screen name="Attendance Log" component={AttendanceScreen} />
+        <Tab.Screen name="Attendance History" component={AttendanceScreen} />
         <Tab.Screen name="Leave Request" component={LeaveScreen} />
+        <Tab.Screen name="Team Leave Request" component={TeamLeaveScreen} />
         <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />
         <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />

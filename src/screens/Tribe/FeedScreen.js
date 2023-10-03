@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import FeedCard from "../../components/Tribe/Feed/FeedCard";
 import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -13,10 +14,11 @@ import { useFetch } from "../../hooks/useFetch";
 import axiosInstance from "../../config/api";
 
 const FeedScreen = () => {
+  // Handler for open/close to create a post
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   // User redux to fetch employeeName
   const userSelector = useSelector((state) => state.auth);
   // parameters for fetch posts
@@ -81,7 +83,7 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <Flex flexDir="row" gap={1}>
             <Text color="primary.600" fontWeight={700} fontSize={16}>
               News
@@ -100,10 +102,10 @@ const FeedScreen = () => {
             toggleNewFeed();
           }}
         >
-          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="white" />
+          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
-        {/* <ScrollView> */}
-        <Flex px={3} my={3} flex={1} flexDir="column">
+
+        <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
             loggedEmployeeId={profile?.data?.id}
@@ -116,8 +118,7 @@ const FeedScreen = () => {
             feedIsFetching={feedIsFetching}
             refetchFeeds={refetchFeeds}
           />
-        </Flex>
-        {/* </ScrollView> */}
+        </Box>
       </SafeAreaView>
 
       {newFeedIsOpen && (
@@ -138,11 +139,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    // position: "relative",
   },
   createIcon: {
     backgroundColor: "#377893",
-    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
     width: 60,
     height: 60,
     position: "absolute",

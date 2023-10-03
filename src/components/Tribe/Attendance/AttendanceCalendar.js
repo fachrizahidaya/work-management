@@ -9,10 +9,10 @@ import dayjs from "dayjs";
 import testIDs from "../testIDs";
 
 const AttendanceCalendar = ({ attendance }) => {
+  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
   const [items, setItems] = useState({});
-  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
 
   const allGood = { key: "allGood", color: "#ededed" };
   const reportRequired = { key: "reportRequired", color: "#fdc500" };
@@ -46,28 +46,30 @@ const AttendanceCalendar = ({ attendance }) => {
   }, [selected]);
 
   useEffect(() => {
-    let dateList = {};
+    if (attendance && attendance.length > 0) {
+      let dateList = {};
 
-    attendance.map((item) => {
-      dateList[item?.date] = [
-        {
-          attendanceReason: item?.att_reason,
-          attendanceType: item?.att_type,
-          timeIn: item?.time_in,
-          late: item?.late,
-          lateReason: item?.late_reason,
-          lateType: item?.late_type,
-          dayType: item?.day_type,
-          timeOut: item?.time_out,
-          early: item?.early,
-          earlyReason: item?.early_reason,
-          earlyType: item?.early_type,
-          confirmation: item?.confirm,
-        },
-      ];
-    });
+      attendance.forEach((item) => {
+        dateList[item?.date] = [
+          {
+            attendanceReason: item?.att_reason,
+            attendanceType: item?.att_type,
+            timeIn: item?.time_in,
+            late: item?.late,
+            lateReason: item?.late_reason,
+            lateType: item?.late_type,
+            dayType: item?.day_type,
+            timeOut: item?.time_out,
+            early: item?.early,
+            earlyReason: item?.early_reason,
+            earlyType: item?.early_type,
+            confirmation: item?.confirm,
+          },
+        ];
+      });
 
-    setItems(dateList);
+      setItems(dateList);
+    }
   }, [attendance]);
 
   const renderCalendarWithMultiDotMarking = () => {

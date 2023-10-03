@@ -2,7 +2,7 @@ import React from "react";
 
 import { Avatar } from "native-base";
 
-const AvatarPlaceholder = ({ image, name, size }) => {
+const AvatarPlaceholder = ({ image, name, size, borderRadius }) => {
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -44,7 +44,7 @@ const AvatarPlaceholder = ({ image, name, size }) => {
       size={size || "xs"}
     />
   ) : (
-    <Avatar size={size || "xs"} bgColor={stringToColor(name)}>
+    <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
       {userInitialGenerator()}
     </Avatar>
   );

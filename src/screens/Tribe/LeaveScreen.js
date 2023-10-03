@@ -1,3 +1,5 @@
+import { useNavigation } from "@react-navigation/native";
+
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Text } from "native-base";
 
@@ -7,28 +9,25 @@ import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../hooks/useFetch";
 
 const LeaveScreen = () => {
-  const { data: personalLeave } = useFetch("/hr/leave-requests/personal");
+  const { data: personalLeaveRequest } = useFetch("/hr/leave-requests/personal");
+  const { data: profile } = useFetch("/hr/my-profile");
+  const navigation = useNavigation();
 
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex
-          flexDir="row"
-          alignItems="center"
-          justifyContent="space-between"
-          bgColor="white"
-          py={14}
-          px={15}
-          borderBottomWidth={1}
-          borderBottomColor="#cbcbcb"
-        >
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <Flex flexDir="row" gap={1}>
             <Text fontSize={16}>My Leave Request</Text>
           </Flex>
-          <Button size="sm">My Team</Button>
+          {profile?.data?.position_name.includes("Manager", "Head") ? (
+            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
+              My Team
+            </Button>
+          ) : null}
         </Flex>
         <FlashList
-          data={personalLeave?.data}
+          data={personalLeaveRequest?.data}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={100}

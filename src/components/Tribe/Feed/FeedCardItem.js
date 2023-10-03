@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
@@ -63,7 +62,7 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <Flex flexDir="column" mb={3}>
+    <Flex flexDir="column" my={2}>
       <Flex gap={5} style={card.card}>
         <Flex alignItems="center" direction="row" gap={3}>
           <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
@@ -92,19 +91,19 @@ const FeedCardItem = ({
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
               <Image
-                source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
                 borderRadius={15}
                 height={200}
                 alt="Feed Image"
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Modal backgroundColor="black" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-              <Modal.Content backgroundColor="black">
+            <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+              <Modal.Content backgroundColor="#000000">
                 <Modal.CloseButton />
                 <Modal.Body alignContent="center">
                   <Image
-                    source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${attachment}/thumb` }}
+                    source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
                     height={500}
                     width={500}
                     alt="Feed Image"
@@ -120,12 +119,12 @@ const FeedCardItem = ({
           <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite" />} size="md" fill="#FD7972" />
+                <Icon as={<MaterialCommunityIcons name="heart" />} size="md" fill="#FD7972" />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite-outline" />} size="md" color="#8A9099" />
+                <Icon as={<MaterialCommunityIcons name="heart-outline" />} size="md" color="#8A9099" />
               </Pressable>
             )}
 

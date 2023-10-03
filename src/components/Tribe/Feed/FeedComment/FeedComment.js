@@ -48,7 +48,7 @@ const FeedComment = ({
       setCommentParentId(null);
       onSubmit(postId);
       postRefetchHandler();
-      fetchComment();
+      refetchComment();
     } catch (err) {
       console.log(err);
     }
@@ -67,7 +67,7 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      fetchComment();
+      refetchComment();
     }
   }, [handleOpen]);
 
@@ -91,7 +91,7 @@ const FeedComment = ({
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
-                comments={comments}
+                comments={commentData?.data}
                 onReply={replyHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}

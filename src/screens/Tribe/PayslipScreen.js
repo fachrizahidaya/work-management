@@ -7,28 +7,16 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
-import axiosInstance from "../../config/api";
 import { useFetch } from "../../hooks/useFetch";
+import PageHeader from "../../components/shared/PageHeader";
 
 const PayslipScreen = () => {
   const { data: payslip } = useFetch("/hr/payslip");
-  const { data: listAttendance } = useFetch("/hr/timesheets/personal", [filter]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex
-        flexDir="row"
-        alignItems="center"
-        justifyContent="space-between"
-        bgColor="white"
-        py={14}
-        px={15}
-        borderBottomWidth={1}
-        borderBottomColor="#cbcbcb"
-      >
-        <Flex flexDir="row" gap={1}>
-          <Text fontSize={16}>My Payslip</Text>
-        </Flex>
+      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <PageHeader title="My Payslip" backButton={false} />
       </Flex>
       <FlashList
         data={payslip?.data}
@@ -46,7 +34,7 @@ const PayslipScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     position: "relative",
   },
 });

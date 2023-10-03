@@ -24,22 +24,22 @@ import {
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../shared/ToastDialog";
 import axiosInstance from "../../../config/api";
+import PageHeader from "../../shared/PageHeader";
+import ImagePickerAction from "./ImagePickerAction";
 
 const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
-  const [dateShown, setDateShown] = useState(false);
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
+  const { width, height } = Dimensions.get("window");
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [image, setImage] = useState(null);
-  const [isPressed, setIsPressed] = useState();
   const [selectedOption, setSelectedOption] = useState("Public");
-  const [showModalDate, setShowModalDate] = useState(false);
-  const { width, height } = Dimensions.get("window");
   const toast = useToast();
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
 
   const postSubmitHandler = async (form) => {
     try {
@@ -95,20 +95,21 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     },
   });
 
+  /**
+   * Handler for date
+   */
+  const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
     setSelectedOption("Announcement");
     formik.setFieldValue("type", "Announcement");
-    setIsPressed(true);
     setDateShown(true);
     setIsAnnouncementSelected(true);
-    // setShowModalDate(true);
   };
 
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
     formik.setFieldValue("end_date", "");
-    setIsPressed(false);
     setDateShown(false);
     setIsAnnouncementSelected(false);
     togglePostType();
@@ -146,19 +147,13 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="#FFFFFF" p={5}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable
-              onPress={() => {
-                toggleNewFeed();
-                setImage(null);
-              }}
-            >
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-            </Pressable>
-            <Text fontSize={16} fontWeight={500}>
-              New Post
-            </Text>
-          </Flex>
+          <PageHeader
+            title="New Post"
+            onPress={() => {
+              toggleNewFeed();
+              setImage(null);
+            }}
+          />
           <Button
             size="sm"
             borderRadius="full"
@@ -175,13 +170,13 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
             <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
               <Flex alignItems="center" flexDir="row">
                 <Text fontSize={10}>{formik.values.type}</Text>
-                <Icon as={<MaterialIcons name="keyboard-arrow-down" />} />
+                <Icon as={<MaterialCommunityIcons name="chevron-down" />} />
               </Flex>
             </Button>
             {formik.values.type === "Public" ? (
               ""
             ) : (
-              <Flex gap={2} flexDir="row">
+              <Flex alignItems="center" gap={2} flexDir="row">
                 <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
                 <Text fontSize={12}>
                   {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
@@ -195,7 +190,6 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
             <TextArea
               minH={100}
               maxH={500}
-              // position="relative"
               variant="unstyled"
               placeholder="What is happening?"
               multiline
@@ -206,28 +200,39 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
 
             <Flex p={2} flexDir="column" justifyContent="space-between">
               {image ? (
-                <Box
-                  // position="relative"
-                  alignSelf="center"
-                >
-                  <Image
-                    source={{ uri: image.uri }}
-                    style={{ width: 300, height: 250, borderRadius: 15 }}
-                    alt="image selected"
-                  />
-                  <Box backgroundColor="#000000" borderRadius="full" top={1} right={1} position="absolute">
-                    <Pressable onPress={() => setImage(null)}>
-                      <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="white" />
-                    </Pressable>
+                image.size >= 1000000 ? (
+                  <Text textAlign="center">Image size is too large!</Text>
+                ) : (
+                  <Box alignSelf="center">
+                    <Image
+                      source={{ uri: image.uri }}
+                      style={{ width: 300, height: 250, borderRadius: 15 }}
+                      alt="image selected"
+                    />
+                    <Box
+                      backgroundColor="#4b4f53"
+                      borderRadius="full"
+                      width={8}
+                      height={8}
+                      top={1}
+                      padding={1.5}
+                      right={1}
+                      position="absolute"
+                    >
+                      <Pressable onPress={() => setImage(null)}>
+                        <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
+                      </Pressable>
+                    </Box>
                   </Box>
-                </Box>
+                )
               ) : null}
-              <Flex gap={1} my={2} pt={2} flexDir="row">
-                <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
-                  <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
-                </Pressable>
-              </Flex>
             </Flex>
+            <Flex gap={1} my={2} pt={2} flexDir="row">
+              <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
+                <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
+              </Pressable>
+            </Flex>
+            {/* <ImagePickerAction /> */}
             <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
               <Actionsheet.Content>
                 <Flex w="100%" h={30} px={4} flexDir="row">
@@ -239,7 +244,7 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
                 >
                   <Flex flex={1} w="70.6%" alignItems="center" justifyContent="space-between" flexDir="row">
                     Public
-                    {formik.values.type === "Public" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                    {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
                   </Flex>
                 </Actionsheet.Item>
                 <Actionsheet.Item

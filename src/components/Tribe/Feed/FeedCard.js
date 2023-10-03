@@ -51,37 +51,35 @@ const FeedCard = ({
 
   return (
     <>
-      <Box pt={1} height={800}>
-        <FlashList
-          data={posts}
-          onEndReachedThreshold={0.1}
-          onEndReached={posts.length ? handleEndReached : null}
-          keyExtractor={(item, index) => index}
-          estimatedItemSize={200}
-          refreshControl={<RefreshControl refreshing={feedIsFetching} onRefresh={refetchFeeds} />}
-          renderItem={({ item }) => (
-            <FeedCardItem
-              key={item?.id}
-              post={item}
-              id={item?.id}
-              employeeName={item?.employee_name}
-              createdAt={item?.created_at}
-              employeeImage={item?.employee_image}
-              content={item?.content}
-              total_like={item?.total_like}
-              totalComment={item?.total_comment}
-              likedBy={item?.liked_by}
-              attachment={item?.file_path}
-              type={item?.type}
-              // like post
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeImage={loggedEmployeeImage}
-              onToggleLike={onToggleLike}
-              onCommentToggle={commentsOpenHandler}
-            />
-          )}
-        />
-      </Box>
+      <FlashList
+        data={posts}
+        onEndReachedThreshold={0.1}
+        onEndReached={posts.length ? handleEndReached : null}
+        keyExtractor={(item, index) => index}
+        estimatedItemSize={200}
+        refreshControl={<RefreshControl refreshing={feedIsFetching} onRefresh={refetchFeeds} />}
+        renderItem={({ item }) => (
+          <FeedCardItem
+            key={item?.id}
+            post={item}
+            id={item?.id}
+            employeeName={item?.employee_name}
+            createdAt={item?.created_at}
+            employeeImage={item?.employee_image}
+            content={item?.content}
+            total_like={item?.total_like}
+            totalComment={item?.total_comment}
+            likedBy={item?.liked_by}
+            attachment={item?.file_path}
+            type={item?.type}
+            // like post
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            onToggleLike={onToggleLike}
+            onCommentToggle={commentsOpenHandler}
+          />
+        )}
+      />
 
       <FeedComment
         handleOpen={commentsOpen}
