@@ -1,7 +1,9 @@
-import dayjs from "dayjs";
-import { Text } from "native-base";
 import { useState } from "react";
+
 import { Agenda } from "react-native-calendars";
+import { Text } from "native-base";
+
+import dayjs from "dayjs";
 
 const CalendarWithSlider = ({ selectedDate }) => {
   const [items, setItems] = useState({});

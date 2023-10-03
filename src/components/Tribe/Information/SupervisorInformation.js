@@ -1,7 +1,9 @@
 import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
 
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
 
 const SupervisorInformation = ({
@@ -34,17 +36,33 @@ const SupervisorInformation = ({
           <Text fontWeight={400} fontSize={12} color="#3F434A">
             Phone:
           </Text>
-          <Text fontWeight={400} fontSize={12} color="#8A9099">
-            {supervisorEmail}
-          </Text>
+          <Flex gap={1} alignItems="center" flexDir="row">
+            <Text fontWeight={400} fontSize={12} color="#8A9099">
+              {supervisorPhone}
+            </Text>
+            <Icon
+              onPress={() => CopyToClipboard(supervisorPhone)}
+              as={<MaterialCommunityIcons name="content-copy" />}
+              size={3}
+              color="#3F434A"
+            />
+          </Flex>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-          <Text fontWeight={400} fontSize={12} color="#3F434A">
+          <Text fontWeight={400} fontSize={12}>
             Email:
           </Text>
-          <Text fontWeight={400} fontSize={12} color="#8A9099">
-            {supervisorPhone}
-          </Text>
+          <Flex gap={1} alignItems="center" flexDir="row">
+            <Text fontWeight={400} fontSize={12} color="#8A9099">
+              {supervisorEmail}
+            </Text>
+            <Icon
+              onPress={() => CopyToClipboard(supervisorEmail)}
+              as={<MaterialCommunityIcons name="content-copy" />}
+              size={3}
+              color="#3F434A"
+            />
+          </Flex>
         </Flex>
       </Box>
     </Flex>

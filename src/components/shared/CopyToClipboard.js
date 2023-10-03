@@ -1,9 +1,13 @@
-import { useClipboard } from "native-base";
-import { useState } from "react";
+import { Clipboard } from "react-native";
 
-export const CopyToClipboard = async (text, toast) => {
+export const CopyToClipboard = (text) => {
   try {
-    console.log("success");
+    if (typeof text !== String) {
+      var textToCopy = text.toString();
+      Clipboard.setString(textToCopy);
+    } else {
+      Clipboard.setString(text);
+    }
   } catch (err) {
     console.error("Failed to copy to clipboard", err);
   }

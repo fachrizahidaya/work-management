@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
@@ -120,12 +119,12 @@ const FeedCardItem = ({
           <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite" />} size="md" fill="#FD7972" />
+                <Icon as={<MaterialCommunityIcons name="heart" />} size="md" fill="#FD7972" />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialIcons name="favorite-outline" />} size="md" color="#8A9099" />
+                <Icon as={<MaterialCommunityIcons name="heart-outline" />} size="md" color="#8A9099" />
               </Pressable>
             )}
 

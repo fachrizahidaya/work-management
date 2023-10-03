@@ -1,10 +1,12 @@
-import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text, useDisclose } from "native-base";
+import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useDisclosure } from "../../../hooks/useDisclosure";
+
 const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, supervisorName, reason }) => {
-  const { isOpen, onClose, onOpen } = useDisclose();
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
   return (
     <>
@@ -13,10 +15,10 @@ const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, sup
           <Text fontWeight={500} fontSize={14} color="#3F434A">
             {leaveName}
           </Text>
-          <Pressable onPress={onOpen}>
+          <Pressable onPress={toggleAction}>
             <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
           </Pressable>
-          <Actionsheet isOpen={isOpen} onClose={onClose}>
+          <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
             <Actionsheet.Content>
               <Actionsheet.Item>Edit</Actionsheet.Item>
               <Actionsheet.Item>Delete</Actionsheet.Item>

@@ -1,10 +1,12 @@
-import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text, useDisclose } from "native-base";
+import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text } from "native-base";
 
 import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useDisclosure } from "./../../../../hooks/useDisclosure";
+
 const TeamLeaveRequestList = ({ id, name, leaveName, days, startDate, endDate, status, reason }) => {
-  const { isOpen, onClose, onOpen } = useDisclose();
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
   // Canceled status not appeared in team leace request
   return status === "Canceled" ? null : (
@@ -19,10 +21,10 @@ const TeamLeaveRequestList = ({ id, name, leaveName, days, startDate, endDate, s
             {name}
           </Text>
         </Flex>
-        <Pressable onPress={onOpen}>
+        <Pressable onPress={toggleAction}>
           <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
         </Pressable>
-        <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
           <Actionsheet.Content>
             <Actionsheet.Item>Edit</Actionsheet.Item>
             <Actionsheet.Item>Delete</Actionsheet.Item>

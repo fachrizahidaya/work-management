@@ -1,7 +1,7 @@
 import { Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import dayjs from "dayjs";
-import Feather from "react-native-vector-icons/Feather";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const PayslipList = ({ id, month, year }) => {
   return (
@@ -30,7 +30,7 @@ const PayslipList = ({ id, month, year }) => {
         </Box>
 
         <Pressable>
-          <Icon as={<Feather name="download" />} size={6} color="#186688" />
+          <Icon as={<MaterialCommunityIcons name="tray-arrow-down" />} size={6} color="#186688" />
         </Pressable>
       </Flex>
     </>

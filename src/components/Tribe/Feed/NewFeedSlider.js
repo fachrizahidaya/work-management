@@ -170,7 +170,7 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
             <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
               <Flex alignItems="center" flexDir="row">
                 <Text fontSize={10}>{formik.values.type}</Text>
-                <Icon as={<MaterialIcons name="keyboard-arrow-down" />} />
+                <Icon as={<MaterialCommunityIcons name="chevron-down" />} />
               </Flex>
             </Button>
             {formik.values.type === "Public" ? (
@@ -244,7 +244,7 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
                 >
                   <Flex flex={1} w="70.6%" alignItems="center" justifyContent="space-between" flexDir="row">
                     Public
-                    {formik.values.type === "Public" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                    {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
                   </Flex>
                 </Actionsheet.Item>
                 <Actionsheet.Item

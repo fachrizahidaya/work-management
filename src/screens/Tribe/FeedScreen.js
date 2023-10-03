@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import FeedCard from "../../components/Tribe/Feed/FeedCard";
 import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -101,7 +102,7 @@ const FeedScreen = () => {
             toggleNewFeed();
           }}
         >
-          <Icon as={<SimpleLineIcons name="pencil" />} size={30} color="#FFFFFF" />
+          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
 
         <Box flex={1} px={3}>

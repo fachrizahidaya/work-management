@@ -1,28 +1,14 @@
-import { useState } from "react";
-import Clipboard from "@react-native-clipboard/clipboard";
+import { Box, Divider, Flex, Icon, Pressable, Text, Actionsheet } from "native-base";
 
-import { Box, Divider, Flex, Icon, Pressable, Text, Actionsheet, useDisclose, useToast } from "native-base";
-
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const EmployeeInformation = ({ name, position, email, phone, image }) => {
-  const { isOpen, onClose, onToggle, onOpen } = useDisclose();
-  const toast = useToast();
-  const [copyText, setCopyText] = useState(phone);
-
-  const copyToClipboard = () => {
-    try {
-      Clipboard.setString(copyText);
-      toast.show({ description: "Copied to clipboard" });
-    } catch (err) {
-      console.error("Failed to copy to clipboard", err);
-      toast.show({ description: "Phone is not available" });
-    }
-  };
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
   return (
     <Flex mt={3} gap={5} style={card.card}>
@@ -47,11 +33,11 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
           height="30px"
           alignItems="center"
           justifyContent="center"
-          onPress={onOpen}
+          onPress={toggleAction}
         >
-          <Icon as={<SimpleLineIcons name="pencil" />} size={3} color="black" />
+          <Icon as={<MaterialCommunityIcons name="pencil-outline" />} size={3} color="#000000" />
         </Pressable>
-        <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
           <Actionsheet.Content>
             <Actionsheet.Item>Edit</Actionsheet.Item>
             <Actionsheet.Item>Option 2</Actionsheet.Item>
@@ -71,7 +57,7 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
               {phone}
             </Text>
             <Icon
-              onPress={() => copyToClipboard()}
+              onPress={() => CopyToClipboard(phone)}
               as={<MaterialCommunityIcons name="content-copy" />}
               size={3}
               color="#3F434A"
@@ -86,7 +72,12 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
             <Text fontWeight={400} fontSize={12} color="#8A9099">
               {email}
             </Text>
-            <Icon as={<MaterialCommunityIcons name="content-copy" />} size={3} color="#3F434A" />
+            <Icon
+              onPress={() => CopyToClipboard(email)}
+              as={<MaterialCommunityIcons name="content-copy" />}
+              size={3}
+              color="#3F434A"
+            />
           </Flex>
         </Flex>
       </Box>
