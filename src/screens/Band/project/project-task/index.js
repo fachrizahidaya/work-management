@@ -41,6 +41,8 @@ const ProjectTaskScreen = ({ route }) => {
     isFetching: taskIsFetching,
     refetch: refetchTasks,
   } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
+  const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
+  const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
   const onPressTaskItem = (task) => {
     toggleTaskDetail();
@@ -86,40 +88,39 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 16, marginVertical: 13 }}
-          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
-        >
-          <Flex gap={15}>
-            <PageHeader
-              title={data?.data.title}
-              withLoading
-              isLoading={isLoading}
-              onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
+        <Flex gap={15} style={{ marginTop: 13 }}>
+          <PageHeader
+            title={data?.data.title}
+            withLoading
+            isLoading={isLoading}
+            onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
+          />
+
+          <TaskViewSection changeView={changeView} view={view} />
+
+          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+            <TaskFilter
+              data={tasks?.data}
+              members={members?.data}
+              labels={labels}
+              setSelectedLabelId={setSelectedLabelId}
+              setFilteredData={setFilteredData}
             />
 
-            <TaskViewSection changeView={changeView} view={view} />
-
-            <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
-              <TaskFilter
-                data={tasks?.data}
-                fetchMemberUrl={`/pm/projects/${projectId}/member`}
-                fetchLabelUrl={`/pm/projects/${projectId}/label`}
-                setSelectedLabelId={setSelectedLabelId}
-                setFilteredData={setFilteredData}
-              />
-
-              <Button
-                size="lg"
-                onPress={toggleTaskForm}
-                endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-              >
-                Task
-              </Button>
-            </Flex>
+            <Button
+              size="lg"
+              onPress={toggleTaskForm}
+              endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
+            >
+              Task
+            </Button>
           </Flex>
+        </Flex>
 
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+        >
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList
@@ -180,6 +181,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 16,
   },
   taskDetailAndroid: {
     flex: 1,

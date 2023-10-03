@@ -90,7 +90,7 @@ const AddNewBandSlider = ({ toggle }) => {
 
       {newProjectIsOpen && <NewProjectSlider onClose={onCloseProjectForm} />}
       {newTaskIsOpen && <NewTaskSlider onClose={onCloseTaskForm} />}
-      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} />}
+      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} refreshFunc={false} />}
     </>
   );
 };

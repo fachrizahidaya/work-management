@@ -5,6 +5,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Avatar, Box, Flex, Icon, Input, Pressable, Skeleton, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import PageHeader from "../../components/shared/PageHeader";
+
 const ChatListScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
@@ -49,19 +51,9 @@ const ChatListScreen = () => {
   return (
     <Box bgColor="white" flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Pressable
-          display="flex"
-          flexDir="row"
-          alignItems="center"
-          gap={2}
-          px={4}
-          pt={4}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon as={<MaterialIcons name="keyboard-backspace" />} size="lg" color="black" />
-
-          <Text fontSize={16}>Back</Text>
-        </Pressable>
+        <Box px={4} pt={4}>
+          <PageHeader onPress={() => navigation.goBack()} title="Back" />
+        </Box>
 
         <Box p={4}>
           <Input

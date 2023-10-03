@@ -53,7 +53,7 @@ const MemberListItem = ({
       <HStack alignItems="center" space={2} position="relative">
         {image ? (
           <Image
-            source={{ uri: `https://dev.kolabora-app.com/api-dev/image/${image}` }}
+            source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${image}` }}
             h={63}
             w={63}
             borderRadius={20}
