@@ -16,17 +16,7 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
   return (
     <>
       <Flex my={3} flexDir="column" style={card.card}>
-        <Flex alignItems="center" flexDir="row-reverse">
-          <Pressable onPress={toggleAction}>
-            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
-          </Pressable>
-          <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-            <Actionsheet.Content>
-              <Actionsheet.Item>Option 1</Actionsheet.Item>
-              <Actionsheet.Item>Option 2</Actionsheet.Item>
-            </Actionsheet.Content>
-          </Actionsheet>
-        </Flex>
+        <Flex alignItems="center" flexDir="row-reverse"></Flex>
         <Flex gap={3} alignItems="center">
           <AvatarPlaceholder image={image} name={name} size="2xl" borderRadius={30} />
           <Text fontWeight={500} fontSize={20} color="#3F434A">

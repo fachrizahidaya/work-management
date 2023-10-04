@@ -1,16 +1,28 @@
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Text } from "native-base";
+import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
 
 import { FlashList } from "@shopify/flash-list";
 
 import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../hooks/useFetch";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const LeaveScreen = () => {
-  const { data: personalLeaveRequest } = useFetch("/hr/leave-requests/personal");
-  const { data: profile } = useFetch("/hr/my-profile");
+  const {
+    data: personalLeaveRequest,
+    refetch: refetchPersonalLeaveRequest,
+    isFetching: personalLeaveRequestIsFetching,
+    isLoading: personalLeaveRequestIsLoading,
+  } = useFetch("/hr/leave-requests/personal");
+  const {
+    data: profile,
+    refetch: refetchProfile,
+    isFetching: profileIsFetching,
+    isLoading: profileIsLoading,
+  } = useFetch("/hr/my-profile");
+
   const navigation = useNavigation();
 
   return (
@@ -26,25 +38,43 @@ const LeaveScreen = () => {
             </Button>
           ) : null}
         </Flex>
-        <FlashList
-          data={personalLeaveRequest?.data}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={100}
-          renderItem={({ item }) => (
-            <LeaveRequestList
-              key={item?.id}
-              id={item?.id}
-              leaveName={item?.leave_name}
-              days={item?.days}
-              startDate={item?.begin_date}
-              endDate={item?.end_date}
-              status={item?.status}
-              supervisorName={item?.supervisor_name}
-              reason={item?.reason}
+        {!personalLeaveRequestIsLoading ? (
+          personalLeaveRequest?.data.length > 0 ? (
+            <FlashList
+              data={personalLeaveRequest?.data}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={100}
+              refreshControl={
+                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              }
+              renderItem={({ item }) => (
+                <LeaveRequestList
+                  key={item?.id}
+                  id={item?.id}
+                  leaveName={item?.leave_name}
+                  days={item?.days}
+                  startDate={item?.begin_date}
+                  endDate={item?.end_date}
+                  status={item?.status}
+                  supervisorName={item?.supervisor_name}
+                  reason={item?.reason}
+                />
+              )}
             />
-          )}
-        />
+          ) : (
+            <VStack space={2} alignItems="center" justifyContent="center">
+              <Image source={require("../../assets/vectors/empty.jpg")} resizeMode="contain" size="2xl" alt="empty" />
+              <Text>No Data</Text>
+            </VStack>
+          )
+        ) : (
+          <VStack px={3} space={2}>
+            <Skeleton h={41} />
+            <Skeleton h={41} />
+            <Skeleton h={41} />
+          </VStack>
+        )}
       </SafeAreaView>
     </>
   );

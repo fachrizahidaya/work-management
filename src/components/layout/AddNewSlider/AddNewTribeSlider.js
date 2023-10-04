@@ -38,10 +38,10 @@ const AddNewTribeSlider = ({ toggle }) => {
       icons: "clipboard-clock-outline",
       title: "New Leave Request",
     },
-    {
-      icons: "clipboard-minus-outline",
-      title: "New Reimbursement",
-    },
+    // {
+    //   icons: "clipboard-minus-outline",
+    //   title: "New Reimbursement",
+    // },
     {
       icons: "clock-outline",
       title: "Clock in",
@@ -180,7 +180,7 @@ const AddNewTribeSlider = ({ toggle }) => {
           employeeId={profile?.data?.id}
         />
       )}
-      {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />}
+      {/* {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />} */}
     </>
   );
 };

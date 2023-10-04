@@ -14,7 +14,6 @@ import {
   Pressable,
   Text,
   FormControl,
-  Input,
   useToast,
   Image,
   Button,
@@ -34,11 +33,11 @@ import PageHeader from "../../shared/PageHeader";
 import ImagePickerAction from "./ImagePickerAction";
 
 const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
-  const { width, height } = Dimensions.get("window");
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [image, setImage] = useState(null);
   const [selectedOption, setSelectedOption] = useState("Public");
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
+  const { width, height } = Dimensions.get("window");
   const toast = useToast();
 
   const postSubmitHandler = async (form) => {

@@ -28,6 +28,7 @@ const FileSection = ({ projectId }) => {
    * @param {string} attachmentFrom - Description of the file's origin (Comment or Project)
    */
   const downloadAttachment = async (attachmentId, attachmentName, attachmentFrom) => {
+    console.log("att", attachmentName);
     try {
       let res;
       if (attachmentFrom === "Comment") {
@@ -35,8 +36,11 @@ const FileSection = ({ projectId }) => {
       } else {
         res = await axiosInstance.get(`/pm/projects/attachment/${attachmentId}/download`);
       }
+      console.log(res);
       const base64Code = res.data.file.split(",")[1];
+      console.log(base64Code);
       const fileName = FileSystem.documentDirectory + attachmentName;
+      console.log(fileName);
       await FileSystem.writeAsStringAsync(fileName, base64Code, {
         encoding: FileSystem.EncodingType.Base64,
       });

@@ -66,7 +66,7 @@ const ContactScreen = () => {
       >
         <PageHeader title="Contact" backButton={false} />
       </Flex>
-      <Box backgroundColor="#FFFFFF" py={4} px={8}>
+      <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
           variant="unstyled"
           size="md"
@@ -83,7 +83,7 @@ const ContactScreen = () => {
         />
       </Box>
 
-      <Flex px={5} flex={1} flexDir="column">
+      <Flex px={3} flex={1} flexDir="column">
         {/* Content here */}
         <FlashList
           data={employeeData?.data?.data}

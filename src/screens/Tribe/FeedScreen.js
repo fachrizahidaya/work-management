@@ -30,7 +30,8 @@ const FeedScreen = () => {
   const {
     data: feeds,
     refetch: refetchFeeds,
-    isFetching: feedIsFetching,
+    isFetching: feedsIsFetching,
+    isLoading: feedsIsLoading,
   } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
   const {
@@ -115,8 +116,9 @@ const FeedScreen = () => {
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             handleEndReached={postEndReachedHandler}
-            feedIsFetching={feedIsFetching}
+            feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
+            feedsIsLoading={feedsIsLoading}
           />
         </Box>
       </SafeAreaView>

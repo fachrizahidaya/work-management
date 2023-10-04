@@ -5,12 +5,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
-const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, supervisorName, reason }) => {
+const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, supervisorName, reason, isLoading }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
   return (
     <>
-      <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
+      <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Text fontWeight={500} fontSize={14} color="#3F434A">
             {leaveName}
@@ -20,8 +20,7 @@ const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, sup
           </Pressable>
           <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
             <Actionsheet.Content>
-              <Actionsheet.Item>Edit</Actionsheet.Item>
-              <Actionsheet.Item>Delete</Actionsheet.Item>
+              <Actionsheet.Item>Cancel Request</Actionsheet.Item>
             </Actionsheet.Content>
           </Actionsheet>
         </Flex>

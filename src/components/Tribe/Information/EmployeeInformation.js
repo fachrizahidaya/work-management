@@ -24,25 +24,6 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
             </Text>
           </Flex>
         </Flex>
-
-        <Pressable
-          borderWidth={1}
-          borderColor="#C6C9CC"
-          borderRadius="full"
-          width="30px"
-          height="30px"
-          alignItems="center"
-          justifyContent="center"
-          onPress={toggleAction}
-        >
-          <Icon as={<MaterialCommunityIcons name="pencil-outline" />} size={3} color="#000000" />
-        </Pressable>
-        <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-          <Actionsheet.Content>
-            <Actionsheet.Item>Edit</Actionsheet.Item>
-            <Actionsheet.Item>Option 2</Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
       </Flex>
 
       <Divider />
