@@ -14,6 +14,9 @@ import LogoutScreen from "../screens/LogoutScreen";
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../screens/Band/project/project-task";
 
+// Tribe Screens
+import NewFeedSlider from "../components/Tribe/Feed/NewFeedSlider";
+
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
@@ -51,6 +54,9 @@ const HomeStack = () => {
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
+
+      {/* Tribe Screens */}
+      <Stack.Screen name="New Feed" component={NewFeedSlider} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

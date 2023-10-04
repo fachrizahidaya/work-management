@@ -188,11 +188,17 @@ const TribeTab = ({ setSelectedModule }) => {
       </Tab.Navigator>
 
       {/* Sliders */}
-      {menuScreenSliderIsOpen && <TribeScreenSlider toggle={toggleMenuScreenSlider} />}
+      {<TribeScreenSlider toggle={toggleMenuScreenSlider} isOpen={menuScreenSliderIsOpen} />}
 
-      {addSliderIsOpen && <AddNewTribeSlider toggle={toggleAddSlider} />}
+      {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />}
 
-      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
+      {
+        <ModuleSelectSlider
+          toggle={toggleModuleSlider}
+          isOpen={moduleSliderIsOpen}
+          setSelectedModule={setSelectedModule}
+        />
+      }
     </>
   );
 };

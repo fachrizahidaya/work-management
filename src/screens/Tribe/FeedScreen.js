@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
@@ -26,6 +27,7 @@ const FeedScreen = () => {
     offset: currentOffset,
     limit: 10,
   };
+  const navigation = useNavigation();
 
   const {
     data: feeds,

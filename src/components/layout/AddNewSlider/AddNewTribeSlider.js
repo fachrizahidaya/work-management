@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Dimensions } from "react-native";
-import { Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,7 +12,7 @@ import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 
-const AddNewTribeSlider = ({ toggle }) => {
+const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [newLeaveRequest, setNewLeaveRequest] = useState(false);
   const [newReimbursement, setNewReimbursement] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,33 +89,27 @@ const AddNewTribeSlider = ({ toggle }) => {
 
   return (
     <>
-      <Box>
-        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-        <Box position="absolute" bottom={79} width="100%" bgColor="#FFFFFF" zIndex={3}>
-          <FlatList
-            data={items}
-            renderItem={({ item }) => (
-              <Pressable
+      <Actionsheet isOpen={isOpen} onClose={toggle}>
+        <Actionsheet.Content>
+          {items.map((item, idx) => {
+            return (
+              <Actionsheet.Item
+                key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
                 onPress={() => {
                   if (item.title === "New Leave Request") {
                     setNewLeaveRequest(!newLeaveRequest);
-                  } else if (item.title === "New Reimbursement") {
-                    setNewReimbursement(!newReimbursement);
-                  } else if (item.title === "Clock in") {
+                  }
+                  // else if (item.title === "New Reimbursement") {
+                  //   setNewReimbursement(!newReimbursement);
+                  // }
+                  else if (item.title === "Clock in") {
                     attendanceCheckHandler();
                   }
                 }}
               >
-                <Flex
-                  flexDir="row"
-                  alignItems="center"
-                  gap={25}
-                  px={8}
-                  py={4}
-                  borderColor="#E8E9EB"
-                  borderBottomWidth={1}
-                  borderTopWidth={item.icons === "home" ? 1 : 0}
-                >
+                <Flex flexDir="row" alignItems="center" gap={21}>
                   {item.title !== "Clock in" ? (
                     <>
                       <Box
@@ -162,11 +156,11 @@ const AddNewTribeSlider = ({ toggle }) => {
                     </Flex>
                   )}
                 </Flex>
-              </Pressable>
-            )}
-          />
-        </Box>
-      </Box>
+              </Actionsheet.Item>
+            );
+          })}
+        </Actionsheet.Content>
+      </Actionsheet>
 
       {newLeaveRequest && (
         <NewLeaveRequest

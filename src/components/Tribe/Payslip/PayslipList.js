@@ -65,15 +65,12 @@ const PayslipList = ({ id, month, year }) => {
       res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
         params: data,
       });
-
-      // window.open(`https://api-dev.kolabora-app.com/download/${res.data.data}`, "_blank");
+      console.log(res.data);
       const base64Code = res?.data?.data.split(",")[0];
-      // console.log(base64Code);
+      console.log(base64Code);
       const parts = base64Code.split("/");
       const name = parts[parts.length - 1];
-      // console.log(name);
       const fileName = `${FileSystem.documentDirectory}${name}`;
-      // console.log("name", fileName);
       await FileSystem.writeAsStringAsync(fileName, base64Code, {
         encoding: FileSystem.EncodingType.Base64,
       });
