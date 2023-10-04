@@ -1,14 +1,22 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
+
+import { SafeAreaView } from "react-native";
+
+import CalendarWithSlider from "../../components/shared/CalendarWithSlider";
+import { useFetch } from "../../hooks/useFetch";
 
 const CalendarScreen = () => {
+  const { data: projectDeadlines } = useFetch("/pm/projects/deadline");
+  // const [formattedProjectDeadlines, setFormattedProjectDeadlines] = useState({});
+
+  const formatted = Object.assign({}, projectDeadlines?.data);
+  console.log(formatted);
+
   return (
-    <View>
-      <Text>CalendarScreen</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <CalendarWithSlider />
+    </SafeAreaView>
   );
 };
 
 export default CalendarScreen;
-
-const styles = StyleSheet.create({});
