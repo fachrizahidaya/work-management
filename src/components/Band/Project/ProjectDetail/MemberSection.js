@@ -101,12 +101,8 @@ const MemberSection = ({ projectId, projectData }) => {
                     <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
 
                     <Box>
-                      <Text fontSize={12} fontWeight={400}>
-                        {item?.member_name}
-                      </Text>
-                      <Text fontSize={11} fontWeight={400} color="#8A9099">
-                        {item?.member_email}
-                      </Text>
+                      <Text>{item?.member_name}</Text>
+                      <Text color="#8A9099">{item?.member_email}</Text>
                     </Box>
                   </Flex>
 

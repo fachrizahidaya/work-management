@@ -8,7 +8,7 @@ dayjs.extend(relativeTime);
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, IconButton, Menu, Text } from "native-base";
+import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -62,12 +62,11 @@ const ProjectDetailScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        style={{ marginHorizontal: 16, marginVertical: 13 }}
         extraHeight={200}
         enableOnAndroid={true}
         enableAutomaticScroll={Platform.OS === "ios"}
       >
-        <Flex gap={15}>
+        <Flex gap={15} marginHorizontal={16} marginVertical={13}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <PageHeader
               title={projectData?.title}
@@ -77,15 +76,11 @@ const ProjectDetailScreen = ({ route }) => {
             />
 
             <Menu
-              w="190"
               trigger={(triggerProps) => {
                 return (
-                  <IconButton
-                    {...triggerProps}
-                    size="md"
-                    borderRadius="full"
-                    icon={<Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />}
-                  />
+                  <Pressable {...triggerProps} mr={1}>
+                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                  </Pressable>
                 );
               }}
             >

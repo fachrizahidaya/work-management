@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Dimensions } from "react-native";
+import { Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Box, Flex, Icon, Pressable, Text, FormControl, Input, useToast, TextArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -68,45 +68,47 @@ const NewNoteSlider = ({ onClose, noteData, refresh, refreshFunc = true }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={5}>
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Pressable onPress={() => onClose(formik.resetForm)}>
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-          </Pressable>
-          <Text fontSize={16} fontWeight={500}>
-            New Note
-          </Text>
-        </Flex>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <Box position="absolute" zIndex={3}>
+        <Box w={width} height={height} bgColor="white" p={5}>
+          <Flex flexDir="row" alignItems="center" gap={2}>
+            <Pressable onPress={() => onClose(formik.resetForm)}>
+              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
+            </Pressable>
+            <Text fontSize={16} fontWeight={500}>
+              New Note
+            </Text>
+          </Flex>
 
-        <Flex gap={17} mt={22}>
-          <FormControl isInvalid={formik.errors.title}>
-            <FormControl.Label>Title</FormControl.Label>
-            <Input
-              value={formik.values.title}
-              onChangeText={(value) => formik.setFieldValue("title", value)}
-              placeholder="The title of a note"
-            />
-            <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-          </FormControl>
+          <Flex gap={17} mt={22}>
+            <FormControl isInvalid={formik.errors.title}>
+              <FormControl.Label>Title</FormControl.Label>
+              <Input
+                value={formik.values.title}
+                onChangeText={(value) => formik.setFieldValue("title", value)}
+                placeholder="The title of a note"
+              />
+              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
+            </FormControl>
 
-          <FormControl isInvalid={formik.errors.content}>
-            <FormControl.Label>Content</FormControl.Label>
-            <TextArea
-              h={200}
-              value={formik.values.content}
-              onChangeText={(value) => formik.setFieldValue("content", value)}
-              placeholder="Create a mobile application on iOS and Android devices."
-            />
-            <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
-          </FormControl>
+            <FormControl isInvalid={formik.errors.content}>
+              <FormControl.Label>Content</FormControl.Label>
+              <TextArea
+                h={200}
+                value={formik.values.content}
+                onChangeText={(value) => formik.setFieldValue("content", value)}
+                placeholder="Create a mobile application on iOS and Android devices."
+              />
+              <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
+            </FormControl>
 
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="white">{noteData ? "Save" : "Create"}</Text>
-          </FormButton>
-        </Flex>
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              <Text color="white">{noteData ? "Save" : "Create"}</Text>
+            </FormButton>
+          </Flex>
+        </Box>
       </Box>
-    </Box>
+    </TouchableWithoutFeedback>
   );
 };
 

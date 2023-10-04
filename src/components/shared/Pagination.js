@@ -66,9 +66,7 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
               borderWidth={1}
               borderColor={currentPage === page ? "#FAFAFA" : "#176688"}
             >
-              <Text fontSize={14} color={currentPage === page ? "#176688" : "white"}>
-                {page}
-              </Text>
+              <Text color={currentPage === page ? "#176688" : "white"}>{page}</Text>
             </Pressable>
           );
         })}

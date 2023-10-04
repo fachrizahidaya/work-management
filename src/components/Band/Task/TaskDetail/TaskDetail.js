@@ -42,32 +42,30 @@ const TaskDetail = ({ safeAreaProps, onCloseDetail, selectedTask, openEditForm, 
         {/* <ScrollView> */}
         <Flex {...safeAreaProps} bgColor="white" p={5} gap={5}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+            <TaskMenuSection onCloseDetail={onCloseDetail} />
+
             <ControlSection
               taskStatus={selectedTask?.status}
-              taskId={selectedTask?.id}
-              refetchObservers={refetchObservers}
-            />
-
-            <TaskMenuSection
               selectedTask={selectedTask}
-              onCloseDetail={onCloseDetail}
-              openEditForm={openEditForm}
-              refetchAllTasks={refetch}
-              responsible={responsible?.data[0]}
               refetchResponsible={refetchResponsible}
+              refetchAllTasks={refetch}
+              openEditForm={openEditForm}
             />
           </Flex>
           <Text fontSize={20}>{selectedTask?.title}</Text>
 
           {/* Reponsible, Creator and Observer section */}
           <PeopleSection
-            observers={observers}
+            observers={observers?.data}
             responsibleArr={responsible?.data}
             ownerId={selectedTask?.owner_id}
             ownerImage={selectedTask?.owner_image}
             ownerName={selectedTask?.owner_name}
             refetchObservers={refetchObservers}
             disabled={inputIsDisabled}
+            selectedTask={selectedTask}
+            refetchAllTasks={refetch}
+            refetchResponsible={refetchResponsible}
           />
 
           {/* Labels */}

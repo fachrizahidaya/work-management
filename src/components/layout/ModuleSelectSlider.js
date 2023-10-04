@@ -2,44 +2,32 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 
-import { Dimensions } from "react-native";
-import { Box, Flex, Image, Pressable, Text } from "native-base";
+import { Actionsheet, Flex, Image, Text } from "native-base";
 
 /**
  * @function ModuleSelectSlider
  * @param {boolean} isOpen - Whether the module selection slider is open or closed.
  * @param {function} setSelectedModule - Function to handle the selected module.
  */
-const ModuleSelectSlider = ({ toggle, setSelectedModule }) => {
+const ModuleSelectSlider = ({ isOpen, toggle, setSelectedModule }) => {
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
-  const { height } = Dimensions.get("window");
 
   return (
-    <Box>
-      {/* Invisible layout to close the menu below */}
-      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-
-      {/* Menu selection */}
-      <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
+    <Actionsheet isOpen={isOpen} onClose={toggle}>
+      <Actionsheet.Content>
         {userSelector?.user_module &&
           userSelector.user_module.map((item, idx) => {
             return (
-              <Pressable
+              <Actionsheet.Item
                 key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
                 onPress={() => {
                   setSelectedModule(item.module_name);
                 }}
               >
-                <Flex
-                  flexDir="row"
-                  alignItems="center"
-                  px={8}
-                  py={4}
-                  borderColor="#E8E9EB"
-                  borderBottomWidth={1}
-                  borderTopWidth={item.module_name === "SETTING" ? 1 : 0}
-                >
+                <Flex flexDir="row" alignItems="center">
                   <Image
                     size={8}
                     borderRadius={100}
@@ -55,11 +43,11 @@ const ModuleSelectSlider = ({ toggle, setSelectedModule }) => {
                     <Text> | {item.module_label}</Text>
                   </Flex>
                 </Flex>
-              </Pressable>
+              </Actionsheet.Item>
             );
           })}
-      </Box>
-    </Box>
+      </Actionsheet.Content>
+    </Actionsheet>
   );
 };
 
