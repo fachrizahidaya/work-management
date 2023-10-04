@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Button, Flex, Icon, View, useSafeArea } from "native-base";
+import { Button, Flex, Icon, Pressable, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
@@ -88,7 +88,7 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex gap={15} style={{ marginTop: 13 }}>
+        <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
           <PageHeader
             title={data?.data.title}
             withLoading
@@ -98,7 +98,7 @@ const ProjectTaskScreen = ({ route }) => {
 
           <TaskViewSection changeView={changeView} view={view} />
 
-          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+          <Flex flexDir="row" mt={11} mb={21}>
             <TaskFilter
               data={tasks?.data}
               members={members?.data}
@@ -106,20 +106,13 @@ const ProjectTaskScreen = ({ route }) => {
               setSelectedLabelId={setSelectedLabelId}
               setFilteredData={setFilteredData}
             />
-
-            <Button
-              size="lg"
-              onPress={toggleTaskForm}
-              endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-            >
-              Task
-            </Button>
           </Flex>
         </Flex>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+          style={{ paddingHorizontal: 16, marginBottom: 10 }}
         >
           {/* Task List view */}
           {view === "Task List" && (
@@ -143,6 +136,18 @@ const ProjectTaskScreen = ({ route }) => {
             setSelectedTask={setSelectedTask}
           />
         )}
+
+        <Pressable
+          position="absolute"
+          right={5}
+          bottom={81}
+          rounded="full"
+          bgColor="primary.600"
+          p={15}
+          onPress={toggleTaskForm}
+        >
+          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+        </Pressable>
       </SafeAreaView>
 
       {/* Task Detail */}
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 16,
+    position: "relative",
   },
   taskDetailAndroid: {
     flex: 1,

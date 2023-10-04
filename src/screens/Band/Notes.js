@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Icon, IconButton, Skeleton, VStack, View, useToast } from "native-base";
+import { Flex, Icon, Pressable, Skeleton, VStack, View, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 
@@ -73,16 +73,8 @@ const NotesScreen = () => {
       <SafeAreaView style={styles.container}>
         <VStack space={21} flex={1}>
           <PageHeader backButton={false} title="Notes" />
-          <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+          <Flex flexDir="row">
             <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
-
-            <Button
-              size="lg"
-              startIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-              onPress={toggleNewForm}
-            >
-              Note
-            </Button>
           </Flex>
 
           <ScrollView
@@ -115,6 +107,18 @@ const NotesScreen = () => {
             </View>
           </ScrollView>
         </VStack>
+
+        <Pressable
+          position="absolute"
+          right={5}
+          bottom={5}
+          rounded="full"
+          bgColor="primary.600"
+          p={15}
+          onPress={toggleNewForm}
+        >
+          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+        </Pressable>
       </SafeAreaView>
 
       {deleteModalIsOpen && (
@@ -145,5 +149,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingVertical: 13,
+    position: "relative",
   },
 });

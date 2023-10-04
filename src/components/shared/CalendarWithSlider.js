@@ -1,37 +1,59 @@
-import { useState } from "react";
-
 import { Agenda } from "react-native-calendars";
-import { Text } from "native-base";
 
 import dayjs from "dayjs";
 
-const CalendarWithSlider = ({ selectedDate }) => {
-  const [items, setItems] = useState({});
-  //   date format is YYYY-MM-DD
-  const dateConverter = dayjs().format(selectedDate);
+import { Image, Text, VStack } from "native-base";
+import { TouchableOpacity, StyleSheet } from "react-native";
 
-  /**
-     * The data input should be like this
-     * 
-    "2023-09-21": [
-      { name: "Clock-in", time: "08:30" },
-      { name: "Clock-out", time: "17:30" },
-    ],
-    "2023-09-22": [
-      { name: "Clock-in", time: "09:00" },
-      { name: "Clock-out", time: "17:30" },
-    ],
-    */
+const CalendarWithSlider = ({ items }) => {
+  const today = dayjs().format("YYYY-MM-DD");
+  const renderItem = (reservation) => {
+    return (
+      <TouchableOpacity style={styles.item}>
+        <Text>{reservation.description}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <Agenda
-      selected={dateConverter}
+      items={items}
       showClosingKnob={true}
+      selected={today}
+      renderItem={renderItem}
+      theme={{
+        selectedDayTextColor: "white",
+        selectedDayBackgroundColor: "#176688",
+        todayTextColor: "#176688",
+      }}
       renderEmptyData={() => {
-        return <Text>No Data</Text>;
+        return (
+          <VStack space={2} alignItems="center" justifyContent="center" height="100%" bgColor="white">
+            <Image
+              source={require("../../assets/vectors/items.jpg")}
+              h={200}
+              w={200}
+              alt="empty"
+              resizeMode="contain"
+            />
+            <Text>You have no tasks.</Text>
+          </VStack>
+        );
       }}
     />
   );
 };
 
 export default CalendarWithSlider;
+
+const styles = StyleSheet.create({
+  item: {
+    backgroundColor: "white",
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17,
+    justifyContent: "center",
+  },
+});

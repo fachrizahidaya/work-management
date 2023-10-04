@@ -1,15 +1,35 @@
 import React, { memo, useState } from "react";
 
-import { Flex, FormControl, Pressable, Text } from "native-base";
+import { useSelector } from "react-redux";
+
+import { Flex, FormControl, Icon, IconButton, Pressable, useToast } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
+import axiosInstance from "../../../../../config/api";
+import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
+import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
 
-const PeopleSection = ({ observers, responsibleArr, ownerId, ownerName, ownerImage, refetchObservers, disabled }) => {
+const PeopleSection = ({
+  observers,
+  responsibleArr,
+  ownerId,
+  ownerName,
+  ownerImage,
+  refetchObservers,
+  disabled,
+  selectedTask,
+  refetchResponsible,
+  refetchAllTasks,
+}) => {
+  const toast = useToast();
+  const userSelector = useSelector((state) => state.auth);
   const [selectedObserver, setSelectedObserver] = useState({});
 
   const { isOpen: deleteObserverModalIsOpen, toggle } = useDisclosure(false);
+  const { isOpen: observerModalIsOpen, toggle: toggleObserverModal, close: closeObserverMocal } = useDisclosure(false);
 
   const getSelectedObserver = (id) => {
     toggle();
@@ -21,6 +41,66 @@ const PeopleSection = ({ observers, responsibleArr, ownerId, ownerName, ownerIma
 
     setSelectedObserver(filteredObserver[0]);
   };
+
+  /**
+   * Handles take task as responsible
+   */
+  const takeTask = async () => {
+    try {
+      if (!selectedTask.responsible_id) {
+        await axiosInstance.post("/pm/tasks/responsible", {
+          task_id: selectedTask.id,
+          user_id: userSelector.id,
+        });
+      } else {
+        // Update the responsible user if it already exists
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsible.id}`, {
+          user_id: userSelector.id,
+        });
+      }
+      refetchResponsible();
+      refetchAllTasks();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Task assigned`} />;
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handle assign observer to selected task
+   * @param {*} userId - selected user id to add as observer
+   */
+  const addObserverToTask = async (userId) => {
+    try {
+      await axiosInstance.post("/pm/tasks/observer", {
+        task_id: selectedTask.id,
+        user_id: userId,
+      });
+      refetchObservers();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`New observer added`} />;
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
+
   return (
     <>
       <Flex gap={5}>
@@ -29,25 +109,30 @@ const PeopleSection = ({ observers, responsibleArr, ownerId, ownerName, ownerIma
           <FormControl flex={1}>
             <FormControl.Label>ASSIGNED TO</FormControl.Label>
             {responsibleArr?.length > 0 ? (
-              <>
-                {responsibleArr.map((responsible) => {
-                  return (
-                    <AvatarPlaceholder
-                      key={responsible.id}
-                      name={responsible.responsible_name}
-                      image={responsible.responsible_image}
-                      size="sm"
-                    />
-                  );
-                })}
-              </>
+              responsibleArr.map((responsible) => {
+                return (
+                  <AvatarPlaceholder
+                    key={responsible.id}
+                    name={responsible.responsible_name}
+                    image={responsible.responsible_image}
+                    size="sm"
+                  />
+                );
+              })
             ) : (
-              <Text>Not assigned</Text>
+              <IconButton
+                onPress={takeTask}
+                size="md"
+                borderRadius="full"
+                icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                alignSelf="flex-start"
+              />
             )}
           </FormControl>
 
           <FormControl flex={1}>
             <FormControl.Label>CREATED BY</FormControl.Label>
+
             {ownerId && <AvatarPlaceholder name={ownerName} image={ownerImage} size="sm" />}
           </FormControl>
         </Flex>
@@ -56,17 +141,42 @@ const PeopleSection = ({ observers, responsibleArr, ownerId, ownerName, ownerIma
         <FormControl>
           <FormControl.Label>OBSERVER</FormControl.Label>
           <Flex flexDir="row" gap={1}>
-            {observers?.data.length > 0 &&
-              observers.data.map((observer) => {
-                return (
-                  <Pressable key={observer.id} onPress={() => getSelectedObserver(observer.id)} disabled={disabled}>
-                    <AvatarPlaceholder image={observer.observer_image} name={observer.observer_name} size="sm" />
-                  </Pressable>
-                );
-              })}
+            {observers?.length > 0 ? (
+              <>
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  {observers.map((observer) => {
+                    return (
+                      <Pressable key={observer.id} onPress={() => getSelectedObserver(observer.id)} disabled={disabled}>
+                        <AvatarPlaceholder image={observer.observer_image} name={observer.observer_name} size="sm" />
+                      </Pressable>
+                    );
+                  })}
+
+                  <IconButton
+                    onPress={toggleObserverModal}
+                    size="md"
+                    borderRadius="full"
+                    icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                    alignSelf="flex-start"
+                  />
+                </Flex>
+              </>
+            ) : (
+              <IconButton
+                onPress={toggleObserverModal}
+                size="md"
+                borderRadius="full"
+                icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                alignSelf="flex-start"
+              />
+            )}
           </Flex>
         </FormControl>
       </Flex>
+
+      {observerModalIsOpen && (
+        <AddMemberModal isOpen={observerModalIsOpen} onClose={closeObserverMocal} onPressHandler={addObserverToTask} />
+      )}
 
       <ConfirmationModal
         isOpen={deleteObserverModalIsOpen}

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
+import { useFormik } from "formik";
 import _ from "lodash";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
@@ -31,6 +32,13 @@ const ProjectList = () => {
     limit: 10,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      search: "",
+    },
+  });
 
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -63,12 +71,19 @@ const ProjectList = () => {
       <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
         <Box pt={4} px={4} pb={1}>
           <Input
-            variant="unstyled"
+            value={formik.values.search}
             size="md"
             InputRightElement={
-              <Pressable>
-                <Icon as={<MaterialCommunityIcons name="tune-variant" />} size="md" mr={3} color="black" />
-              </Pressable>
+              searchInput && (
+                <Pressable
+                  onPress={() => {
+                    handleSearch("");
+                    formik.resetForm();
+                  }}
+                >
+                  <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+                </Pressable>
+              )
             }
             InputLeftElement={
               <Pressable>
@@ -76,10 +91,10 @@ const ProjectList = () => {
               </Pressable>
             }
             placeholder="Search project..."
-            borderRadius={15}
-            borderWidth={1}
-            style={{ height: 40 }}
-            onChangeText={(value) => handleSearch(value)}
+            onChangeText={(value) => {
+              handleSearch(value);
+              formik.setFieldValue("search", value);
+            }}
           />
         </Box>
 

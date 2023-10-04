@@ -10,6 +10,10 @@ import ChatListScreen from "../screens/Chat/ChatListScreen";
 import SettingScreen from "../screens/Setting/SettingScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
+// Band Screens
+import ProjectDetailScreen from "../screens/Band/project/[projectId]";
+import ProjectTaskScreen from "../screens/Band/project/project-task";
+
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
@@ -42,6 +46,11 @@ const HomeStack = () => {
       <Stack.Screen name="Chat Room" component={ChatRoom} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
+
+      {/* Band Screens */}
+      <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

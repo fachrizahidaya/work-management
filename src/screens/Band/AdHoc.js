@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Icon, View, useSafeArea } from "native-base";
+import { Button, Flex, Icon, Pressable, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -93,7 +93,7 @@ const AdHocScreen = () => {
 
           <TaskViewSection changeView={changeView} view={view} />
 
-          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
+          <Flex flexDir="row" mt={11} mb={21}>
             <TaskFilter
               data={tasks?.data}
               members={noDuplicateResponsibleArr}
@@ -101,20 +101,13 @@ const AdHocScreen = () => {
               setSelectedLabelId={setSelectedLabelId}
               setFilteredData={setFilteredData}
             />
-
-            <Button
-              size="lg"
-              onPress={toggleTaskForm}
-              endIcon={<Icon as={<MaterialCommunityIcons name="plus" />} color="white" />}
-            >
-              Task
-            </Button>
           </Flex>
         </Flex>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+          style={{ marginBottom: 10 }}
         >
           {/* Task List view */}
           {view === "Task List" && (
@@ -137,6 +130,18 @@ const AdHocScreen = () => {
             setSelectedTask={setSelectedTask}
           />
         )}
+
+        <Pressable
+          position="absolute"
+          right={5}
+          bottom={5}
+          rounded="full"
+          bgColor="primary.600"
+          p={15}
+          onPress={toggleTaskForm}
+        >
+          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+        </Pressable>
       </SafeAreaView>
 
       {/* Task Detail */}
@@ -176,6 +181,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 16,
+    position: "relative",
   },
   taskDetailAndroid: {
     flex: 1,

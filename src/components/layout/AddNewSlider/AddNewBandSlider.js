@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 
-import { Dimensions } from "react-native";
-import { Box, FlatList, Flex, Icon, Pressable, Text } from "native-base";
+import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlider";
 import NewTaskSlider from "../../Band/Task/NewTaskSlider/NewTaskSlider";
 import NewNoteSlider from "../../Band/Note/NewNoteSlider/NewNoteSlider";
 
-const AddNewBandSlider = ({ toggle }) => {
-  const { height } = Dimensions.get("window");
+const AddNewBandSlider = ({ isOpen, toggle }) => {
   const [newProjectIsOpen, setNewProjectIsOpen] = useState(false);
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
@@ -42,13 +40,14 @@ const AddNewBandSlider = ({ toggle }) => {
   ];
   return (
     <>
-      <Box>
-        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-        <Box position="absolute" bottom={79} width="100%" bgColor="white" zIndex={3}>
-          <FlatList
-            data={items}
-            renderItem={({ item }) => (
-              <Pressable
+      <Actionsheet isOpen={isOpen} onClose={toggle}>
+        <Actionsheet.Content>
+          {items.map((item, idx) => {
+            return (
+              <Actionsheet.Item
+                key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
                 onPress={() => {
                   if (item.title === "New Project") {
                     setNewProjectIsOpen(!newProjectIsOpen);
@@ -57,18 +56,10 @@ const AddNewBandSlider = ({ toggle }) => {
                   } else {
                     setNewNoteIsOpen(!newNoteIsOpen);
                   }
+                  toggle();
                 }}
               >
-                <Flex
-                  flexDir="row"
-                  alignItems="center"
-                  gap={25}
-                  px={8}
-                  py={4}
-                  borderColor="#E8E9EB"
-                  borderBottomWidth={1}
-                  borderTopWidth={item.icons === "home" ? 1 : 0}
-                >
+                <Flex flexDir="row" alignItems="center" gap={21}>
                   <Box
                     bg="#f7f7f7"
                     borderRadius={5}
@@ -82,11 +73,11 @@ const AddNewBandSlider = ({ toggle }) => {
                     {item.title}
                   </Text>
                 </Flex>
-              </Pressable>
-            )}
-          />
-        </Box>
-      </Box>
+              </Actionsheet.Item>
+            );
+          })}
+        </Actionsheet.Content>
+      </Actionsheet>
 
       {newProjectIsOpen && <NewProjectSlider onClose={onCloseProjectForm} />}
       {newTaskIsOpen && <NewTaskSlider onClose={onCloseTaskForm} />}

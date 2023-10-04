@@ -36,7 +36,7 @@ const CostSection = ({ taskId, disabled }) => {
   const [selectedCost, setSelectedChecklist] = useState({});
   const { isOpen, toggle } = useDisclosure(false);
   const { isOpen: deleteCostModalisOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+  const { keyboardHeight } = useKeyboardChecker();
   const { data: costs, refetch: refechCosts } = useFetch(`/pm/tasks/${taskId}/cost`);
 
   const onCloseActionSheet = (resetForm) => {

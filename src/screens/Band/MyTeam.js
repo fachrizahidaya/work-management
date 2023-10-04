@@ -123,7 +123,7 @@ const MyTeamScreen = () => {
           <Skeleton h={41} />
         )}
       </VStack>
-      <Box h="100%" pt={21} pb={61} position="relative">
+      <Box h="100%" pt={21} pb={61}>
         {selectedTeam?.id ? (
           !membersIsLoading ? (
             <FlashList
@@ -155,19 +155,19 @@ const MyTeamScreen = () => {
             </Text>
           </VStack>
         )}
-
-        <Pressable
-          position="absolute"
-          bottom={81}
-          right={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          onPress={toggleMenu}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
       </Box>
+
+      <Pressable
+        position="absolute"
+        right={5}
+        bottom={5}
+        rounded="full"
+        bgColor="primary.600"
+        p={15}
+        onPress={toggleMenu}
+      >
+        <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+      </Pressable>
 
       <Actionsheet isOpen={menuIsOpen} onClose={toggleMenu}>
         <Actionsheet.Content>
@@ -266,5 +266,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingVertical: 13,
+    position: "relative",
   },
 });

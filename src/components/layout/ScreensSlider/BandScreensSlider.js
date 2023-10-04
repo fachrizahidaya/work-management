@@ -1,13 +1,11 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Dimensions } from "react-native";
-import { Box, FlatList, Flex, Icon, Pressable, Text } from "native-base";
+import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const BandScreensSlider = ({ toggle }) => {
+const BandScreensSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
-  const { height } = Dimensions.get("window");
 
   const items = [
     {
@@ -47,28 +45,20 @@ const BandScreensSlider = ({ toggle }) => {
     // },
   ];
   return (
-    <Box>
-      <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-      <Box position="absolute" zIndex={3} bottom={79} width="100%" bgColor="white">
-        <FlatList
-          data={items}
-          renderItem={({ item }) => (
-            <Pressable
+    <Actionsheet isOpen={isOpen} onClose={toggle}>
+      <Actionsheet.Content>
+        {items.map((item, idx) => {
+          return (
+            <Actionsheet.Item
+              key={idx}
+              borderColor="#E8E9EB"
+              borderBottomWidth={1}
               onPress={() => {
                 navigation.navigate(item.screen);
                 toggle();
               }}
             >
-              <Flex
-                flexDir="row"
-                alignItems="center"
-                gap={25}
-                px={8}
-                py={4}
-                borderColor="#E8E9EB"
-                borderBottomWidth={1}
-                borderTopWidth={item.icons === "home" ? 1 : 0}
-              >
+              <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
                 <Box
                   bg="#f7f7f7"
                   borderRadius={5}
@@ -82,11 +72,11 @@ const BandScreensSlider = ({ toggle }) => {
                   {item.title}
                 </Text>
               </Flex>
-            </Pressable>
-          )}
-        />
-      </Box>
-    </Box>
+            </Actionsheet.Item>
+          );
+        })}
+      </Actionsheet.Content>
+    </Actionsheet>
   );
 };
 

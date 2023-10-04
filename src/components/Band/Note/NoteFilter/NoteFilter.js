@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Actionsheet, Button, FormControl, Icon, IconButton, Input, VStack } from "native-base";
+import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Pressable, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -53,40 +53,27 @@ const NoteFilter = ({ data = [], setFilteredData }) => {
     filterDataHandler(formik.values);
   }, [formik.values, filteredArr]);
   return (
-    <>
-      <IconButton
-        onPress={toggleFilter}
-        icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
-        rounded="full"
-        size="md"
-      />
-
-      <Actionsheet isOpen={filterIsOpen} onClose={toggleFilter}>
-        <Actionsheet.Content>
-          <VStack w="95%" space={2}>
-            {/* Search Bar */}
-            <FormControl.Label>Search Note</FormControl.Label>
-            <Input
-              placeholder="Type anything..."
-              value={formik.values.title}
-              onChangeText={(value) => {
-                formik.setFieldValue("title", value);
-                formik.handleSubmit();
-              }}
-            />
-
-            <Button
-              mt={4}
-              onPress={() => {
-                formik.handleReset();
-              }}
-            >
-              Reset Filter
-            </Button>
-          </VStack>
-        </Actionsheet.Content>
-      </Actionsheet>
-    </>
+    <Input
+      w="100%"
+      size="md"
+      placeholder="Searcg note..."
+      value={formik.values.title}
+      onChangeText={(value) => {
+        formik.setFieldValue("title", value);
+        formik.handleSubmit();
+      }}
+      InputRightElement={
+        formik.values.title && (
+          <Pressable
+            onPress={() => {
+              formik.resetForm();
+            }}
+          >
+            <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+          </Pressable>
+        )
+      }
+    />
   );
 };
 

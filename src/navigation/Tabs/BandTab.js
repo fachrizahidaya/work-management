@@ -10,8 +10,6 @@ import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSli
 import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";
 import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
-import ProjectTaskScreen from "../../screens/Band/project/project-task";
 import AdHocScreen from "../../screens/Band/AdHoc";
 import MyTeamScreen from "../../screens/Band/MyTeam";
 import NotesScreen from "../../screens/Band/Notes";
@@ -72,15 +70,7 @@ const BandTab = ({ setSelectedModule }) => {
           tabBarStyle: { height: 80 },
           tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: [
-            "Project List",
-            "Project Detail",
-            "Project Task",
-            "Task List",
-            "My Team",
-            "Notes",
-            "Calendar",
-          ].includes(route.name)
+          tabBarButton: ["Project List", "Task List", "My Team", "Notes", "Calendar"].includes(route.name)
             ? () => {
                 return null;
               }
@@ -175,10 +165,6 @@ const BandTab = ({ setSelectedModule }) => {
         />
         <Tab.Screen name="Project List" component={ProjectList} />
 
-        <Tab.Screen name="Project Detail" component={ProjectDetailScreen} />
-
-        <Tab.Screen name="Project Task" component={ProjectTaskScreen} />
-
         <Tab.Screen name="Task List" component={AdHocScreen} />
 
         <Tab.Screen name="My Team" component={MyTeamScreen} />
@@ -189,11 +175,15 @@ const BandTab = ({ setSelectedModule }) => {
       </Tab.Navigator>
 
       {/* Sliders */}
-      {menuScreenSliderIsOpen && <BandScreensSlider toggle={toggleMenuScreenSlider} />}
+      <BandScreensSlider isOpen={menuScreenSliderIsOpen} toggle={toggleMenuScreenSlider} />
 
-      {addSliderIsOpen && <AddNewBandSlider toggle={toggleAddSlider} />}
+      <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
+      <ModuleSelectSlider
+        isOpen={moduleSliderIsOpen}
+        toggle={toggleModuleSlider}
+        setSelectedModule={setSelectedModule}
+      />
     </>
   );
 };

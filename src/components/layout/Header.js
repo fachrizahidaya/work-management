@@ -34,11 +34,7 @@ const Header = () => {
               {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
             </Text>
 
-            {myProfile?.data && (
-              <Text fontSize={12} fontWeight={400}>
-                {myProfile.data.position_name || "You have no position"}
-              </Text>
-            )}
+            {myProfile?.data && <Text fontWeight={400}>{myProfile.data.position_name || "You have no position"}</Text>}
           </Box>
         </Flex>
 
