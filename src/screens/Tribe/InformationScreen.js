@@ -1,11 +1,12 @@
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Text } from "native-base";
+import { Flex, Image, Text, VStack } from "native-base";
+import { ScrollView } from "react-native-gesture-handler";
 
+import PageHeader from "../../components/shared/PageHeader";
 import LeaveDashboardUser from "../../components/Tribe/Information/LeaveDashboardUser";
 import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
 import { useFetch } from "../../hooks/useFetch";
-import PageHeader from "../../components/shared/PageHeader";
 
 const InformationScreen = () => {
   const { data: profile } = useFetch("/hr/my-profile");
@@ -17,29 +18,40 @@ const InformationScreen = () => {
           <PageHeader title="My Information" backButton={false} />
         </Flex>
 
-        <Flex px={5} flex={1} gap={5} mt={5}>
-          {/* Content here */}
-          <LeaveDashboardUser
-            name={profile?.data?.name}
-            availableLeave={profile?.data?.leave_quota}
-            pendingApproval={profile?.data?.pending_leave_request}
-            approved={profile?.data?.approved_leave_request}
-          />
-          <EmployeeInformation
-            name={profile?.data?.name}
-            position={profile?.data?.position_name}
-            email={profile?.data?.email}
-            phone={profile?.data?.phone_number}
-            image={profile?.data?.image}
-          />
-          <SupervisorInformation
-            supervisorName={profile?.data?.supervisor_name}
-            supervisorEmail={profile?.data?.supervisor_phone_number}
-            supervisorPhone={profile?.data?.supervisor_email}
-            supervisorImage={profile?.data?.supervisor_image}
-            supervisorPosition={profile?.data?.supervisor_position}
-          />
-        </Flex>
+        <ScrollView>
+          <Flex px={3} flex={1} gap={5} mt={5}>
+            {/* Content here */}
+            {!profile?.data ? (
+              <VStack space={2} alignItems="center" justifyContent="center">
+                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+                <Text>No Data</Text>
+              </VStack>
+            ) : (
+              <>
+                <LeaveDashboardUser
+                  name={profile?.data?.name}
+                  availableLeave={profile?.data?.leave_quota}
+                  pendingApproval={profile?.data?.pending_leave_request}
+                  approved={profile?.data?.approved_leave_request}
+                />
+                <EmployeeInformation
+                  name={profile?.data?.name}
+                  position={profile?.data?.position_name}
+                  email={profile?.data?.email}
+                  phone={profile?.data?.phone_number}
+                  image={profile?.data?.image}
+                />
+                <SupervisorInformation
+                  supervisorName={profile?.data?.supervisor_name}
+                  supervisorPhone={profile?.data?.supervisor_phone_number}
+                  supervisorEmail={profile?.data?.supervisor_email}
+                  supervisorImage={profile?.data?.supervisor_image}
+                  supervisorPosition={profile?.data?.supervisor_position}
+                />
+              </>
+            )}
+          </Flex>
+        </ScrollView>
       </SafeAreaView>
     </>
   );

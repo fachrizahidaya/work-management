@@ -76,9 +76,9 @@ const TribeTab = ({ setSelectedModule }) => {
             "Attendance History",
             "Leave Request",
             "Team Leave Request",
-            "My Reimbursement",
+            "Reimbursement",
             "My Payslip",
-            "My Key Performance Indicator",
+            "My KPI",
             "Calendar",
             "Contact",
           ].includes(route.name)
@@ -180,19 +180,25 @@ const TribeTab = ({ setSelectedModule }) => {
         <Tab.Screen name="Attendance History" component={AttendanceScreen} />
         <Tab.Screen name="Leave Request" component={LeaveScreen} />
         <Tab.Screen name="Team Leave Request" component={TeamLeaveScreen} />
-        <Tab.Screen name="My Reimbursement" component={EmptyScreen} />
+        <Tab.Screen name="Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />
-        <Tab.Screen name="My Key Performance Indicator" component={EmptyScreen} />
+        <Tab.Screen name="My KPI" component={EmptyScreen} />
         <Tab.Screen name="Calendar" component={CalendarScreen} />
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
-      {menuScreenSliderIsOpen && <TribeScreenSlider toggle={toggleMenuScreenSlider} />}
+      {<TribeScreenSlider toggle={toggleMenuScreenSlider} isOpen={menuScreenSliderIsOpen} />}
 
-      {addSliderIsOpen && <AddNewTribeSlider toggle={toggleAddSlider} />}
+      {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />}
 
-      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
+      {
+        <ModuleSelectSlider
+          toggle={toggleModuleSlider}
+          isOpen={moduleSliderIsOpen}
+          setSelectedModule={setSelectedModule}
+        />
+      }
     </>
   );
 };

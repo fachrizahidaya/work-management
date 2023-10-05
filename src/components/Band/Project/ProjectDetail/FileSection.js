@@ -35,7 +35,9 @@ const FileSection = ({ projectId }) => {
       } else {
         res = await axiosInstance.get(`/pm/projects/attachment/${attachmentId}/download`);
       }
+
       const base64Code = res.data.file.split(",")[1];
+
       const fileName = FileSystem.documentDirectory + attachmentName;
       await FileSystem.writeAsStringAsync(fileName, base64Code, {
         encoding: FileSystem.EncodingType.Base64,

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -14,7 +13,6 @@ import {
   Pressable,
   Text,
   FormControl,
-  Input,
   useToast,
   Image,
   Button,
@@ -31,16 +29,21 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../shared/PageHeader";
-import ImagePickerAction from "./ImagePickerAction";
 
 const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmployeeName }) => {
+  const [image, setImage] = useState(null);
+  const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("Public");
+
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
   const { width, height } = Dimensions.get("window");
-  const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
-  const [image, setImage] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("Public");
+
   const toast = useToast();
 
+  /**
+   * Submit a Post Handler
+   * @param {*} form
+   */
   const postSubmitHandler = async (form) => {
     try {
       await axiosInstance.post("/hr/posts", form, {
@@ -106,6 +109,10 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     setIsAnnouncementSelected(true);
   };
 
+  /**
+   * Toggle to Public Handler
+   */
+
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
@@ -115,6 +122,9 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
     togglePostType();
   };
 
+  /**
+   * Pick an image Handler
+   */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -232,7 +242,7 @@ const NewFeedSlider = ({ refetch, toggleNewFeed, loggedEmployeeImage, loggedEmpl
                 <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
               </Pressable>
             </Flex>
-            {/* <ImagePickerAction /> */}
+
             <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
               <Actionsheet.Content>
                 <Flex w="100%" h={30} px={4} flexDir="row">

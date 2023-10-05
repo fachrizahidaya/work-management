@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-
 import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
@@ -27,10 +27,13 @@ const FeedScreen = () => {
     limit: 10,
   };
 
+  const navigation = useNavigation();
+
   const {
     data: feeds,
     refetch: refetchFeeds,
-    isFetching: feedIsFetching,
+    isFetching: feedsIsFetching,
+    isLoading: feedsIsLoading,
   } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
   const {
@@ -115,8 +118,9 @@ const FeedScreen = () => {
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             handleEndReached={postEndReachedHandler}
-            feedIsFetching={feedIsFetching}
+            feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
+            feedsIsLoading={feedsIsLoading}
           />
         </Box>
       </SafeAreaView>

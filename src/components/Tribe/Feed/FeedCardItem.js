@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-
 import dayjs from "dayjs";
 
-import { Box, Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
+import { TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";

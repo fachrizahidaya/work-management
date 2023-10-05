@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Flex, Icon, Pressable, ScrollView, Slide, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
+import { Flex, ScrollView, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
@@ -21,12 +21,17 @@ const FeedComment = ({
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
+
   const inputRef = useRef();
+
+  /**
+   *
+   * Fetch Comment Handler
+   */
   const commentsFetchParameters = {
     offset: currentOffset,
     limit: 30,
   };
-
   const {
     data: commentData,
     isLoading: commentIsLoading,

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -31,7 +30,6 @@ const AttendanceScreen = () => {
           <PageHeader title="My Attendance History" backButton={false} />
         </Flex>
         <AttendanceCalendar attendance={attendanceData?.data} />
-        {/* <Schedule/> */}
       </SafeAreaView>
     </>
   );

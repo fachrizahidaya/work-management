@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Dimensions } from "react-native";
-import { Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,18 +12,34 @@ import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 
-const AddNewTribeSlider = ({ toggle }) => {
+const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [newLeaveRequest, setNewLeaveRequest] = useState(false);
   const [newReimbursement, setNewReimbursement] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
-  const { height } = Dimensions.get("window");
+
   const toast = useToast();
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
-  const { data: userIp } = useFetch("https://jsonip.com/");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
+
+  const { data: userIp } = useFetch("https://jsonip.com/");
+
+  const items = [
+    {
+      icons: "clipboard-clock-outline",
+      title: "New Leave Request",
+    },
+    // {
+    //   icons: "clipboard-minus-outline",
+    //   title: "New Reimbursement",
+    // },
+    {
+      icons: "clock-outline",
+      title: "Clock in",
+    },
+  ];
 
   const onCloseLeaveRequest = () => {
     setNewLeaveRequest(false);
@@ -33,20 +49,9 @@ const AddNewTribeSlider = ({ toggle }) => {
     setNewReimbursement(false);
   };
 
-  const items = [
-    {
-      icons: "clipboard-clock-outline",
-      title: "New Leave Request",
-    },
-    {
-      icons: "clipboard-minus-outline",
-      title: "New Reimbursement",
-    },
-    {
-      icons: "clock-outline",
-      title: "Clock in",
-    },
-  ];
+  /**
+   * Clock in and Clock out Handler
+   */
 
   const attendanceCheckHandler = async () => {
     try {
@@ -89,33 +94,27 @@ const AddNewTribeSlider = ({ toggle }) => {
 
   return (
     <>
-      <Box>
-        <Pressable position="absolute" bottom={79} height={height} width="100%" zIndex={2} onPress={toggle}></Pressable>
-        <Box position="absolute" bottom={79} width="100%" bgColor="#FFFFFF" zIndex={3}>
-          <FlatList
-            data={items}
-            renderItem={({ item }) => (
-              <Pressable
+      <Actionsheet isOpen={isOpen} onClose={toggle}>
+        <Actionsheet.Content>
+          {items.map((item, idx) => {
+            return (
+              <Actionsheet.Item
+                key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
                 onPress={() => {
                   if (item.title === "New Leave Request") {
                     setNewLeaveRequest(!newLeaveRequest);
-                  } else if (item.title === "New Reimbursement") {
-                    setNewReimbursement(!newReimbursement);
-                  } else if (item.title === "Clock in") {
+                  }
+                  // else if (item.title === "New Reimbursement") {
+                  //   setNewReimbursement(!newReimbursement);
+                  // }
+                  else if (item.title === "Clock in") {
                     attendanceCheckHandler();
                   }
                 }}
               >
-                <Flex
-                  flexDir="row"
-                  alignItems="center"
-                  gap={25}
-                  px={8}
-                  py={4}
-                  borderColor="#E8E9EB"
-                  borderBottomWidth={1}
-                  borderTopWidth={item.icons === "home" ? 1 : 0}
-                >
+                <Flex flexDir="row" alignItems="center" gap={21}>
                   {item.title !== "Clock in" ? (
                     <>
                       <Box
@@ -142,14 +141,20 @@ const AddNewTribeSlider = ({ toggle }) => {
                       <Box px={1}>
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
+                      {attendance?.data?.time_in && attendance?.data?.time_out ? (
+                        <Text fontWeight={700} color="red.500" mx={5}>
+                          You've attended
+                        </Text>
+                      ) : !attendance?.data?.time_in ? (
+                        <Text fontWeight={700} color="#000000" mx={5}>
+                          Clock in
+                        </Text>
+                      ) : (
+                        <Text fontWeight={700} color="#377893" mx={5}>
+                          Clock out
+                        </Text>
+                      )}
 
-                      <Text key={item.title} fontWeight={700} color="#000000" mx={6}>
-                        {attendance?.data?.time_in && attendance?.data?.time_out
-                          ? "You've attended"
-                          : !attendance?.data?.time_in
-                          ? "Clock in"
-                          : "Clock out"}
-                      </Text>
                       {item.title === "Clock in" || item.title === "Clock Out" ? (
                         <Text ml={170} color="#377893">
                           {currentTime}
@@ -162,11 +167,11 @@ const AddNewTribeSlider = ({ toggle }) => {
                     </Flex>
                   )}
                 </Flex>
-              </Pressable>
-            )}
-          />
-        </Box>
-      </Box>
+              </Actionsheet.Item>
+            );
+          })}
+        </Actionsheet.Content>
+      </Actionsheet>
 
       {newLeaveRequest && (
         <NewLeaveRequest
@@ -180,7 +185,7 @@ const AddNewTribeSlider = ({ toggle }) => {
           employeeId={profile?.data?.id}
         />
       )}
-      {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />}
+      {/* {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />} */}
     </>
   );
 };

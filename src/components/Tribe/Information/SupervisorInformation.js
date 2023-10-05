@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Divider, Flex, Icon, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

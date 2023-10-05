@@ -1,20 +1,23 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-
 import { useFocusEffect } from "@react-navigation/native";
-import { FlashList } from "@shopify/flash-list";
 import _ from "lodash";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
+import { Box, Button, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
+import { FlashList } from "@shopify/flash-list";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
+import ContactGrid from "../../components/Tribe/Contact/ContactGrid";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
+  const [isGridView, setIsGridView] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handler for search input
   const firstTimeRef = useRef(true);
@@ -25,6 +28,14 @@ const ContactScreen = () => {
     search: searchInput,
     limit: 100,
   };
+
+  const {
+    data: employeeData,
+    isFetching: employeeDataIsFetching,
+    isLoading: employeeDataIsLoading,
+    refetch: refetchEmployeeData,
+  } = useFetch("/hr/employees", dependencies, params);
+
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
@@ -32,11 +43,14 @@ const ContactScreen = () => {
     }, 500),
     []
   );
-  const {
-    data: employeeData,
-    isLoading: employeeDataIsLoading,
-    refetch,
-  } = useFetch("/hr/employees", dependencies, params);
+
+  const toggleView = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsGridView(!isGridView);
+      setIsLoading(false);
+    }, 2000);
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -48,8 +62,8 @@ const ContactScreen = () => {
         firstTimeRef.current = false;
         return;
       }
-      refetch();
-    }, [refetch])
+      refetchEmployeeData();
+    }, [refetchEmployeeData])
   );
 
   return (
@@ -65,8 +79,26 @@ const ContactScreen = () => {
         px={15}
       >
         <PageHeader title="Contact" backButton={false} />
+        <Flex flexDir="row" gap={2}>
+          <Button onPress={toggleView} size="sm" variant="outline">
+            <Flex gap={1} alignItems="center" justifyContent="center" flexDir="row">
+              <Icon
+                as={
+                  isGridView ? (
+                    <MaterialCommunityIcons name="format-list-bulleted" />
+                  ) : (
+                    <MaterialCommunityIcons name="view-grid-outline" />
+                  )
+                }
+              />
+              <Text fontSize={12} fontWeight={400}>
+                {isGridView ? "List" : "Grid"}
+              </Text>
+            </Flex>
+          </Button>
+        </Flex>
       </Flex>
-      <Box backgroundColor="#FFFFFF" py={4} px={8}>
+      <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
           variant="unstyled"
           size="md"
@@ -83,28 +115,65 @@ const ContactScreen = () => {
         />
       </Box>
 
-      <Flex px={5} flex={1} flexDir="column">
-        {/* Content here */}
-        <FlashList
-          data={employeeData?.data?.data}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
-          renderItem={({ item }) => (
-            <ContactList
-              key={item?.id}
-              id={item?.id}
-              name={item?.name}
-              position={item?.position_name}
-              division={item?.division_name}
-              status={item?.status}
-              image={item?.image}
-              phone={item?.phone_number}
-              email={item?.email}
-            />
+      {isLoading ? (
+        <VStack mt={3} px={3} space={2}>
+          <Skeleton h={60} />
+          <Skeleton h={60} />
+          <Skeleton h={60} />
+        </VStack>
+      ) : (
+        <Flex px={3} flex={1} flexDir="column">
+          {/* Content here */}
+          {!employeeDataIsLoading ? (
+            employeeData?.data?.data.length > 0 ? (
+              <FlashList
+                data={employeeData?.data?.data}
+                keyExtractor={(item, index) => index}
+                onEndReachedThreshold={0.1}
+                estimatedItemSize={200}
+                renderItem={({ item }) =>
+                  isGridView ? (
+                    <ContactGrid
+                      key={item?.id}
+                      id={item?.id}
+                      name={item?.name}
+                      position={item?.position_name}
+                      division={item?.division_name}
+                      status={item?.status}
+                      image={item?.image}
+                      phone={item?.phone_number}
+                      email={item?.email}
+                    />
+                  ) : (
+                    <ContactList
+                      key={item?.id}
+                      id={item?.id}
+                      name={item?.name}
+                      position={item?.position_name}
+                      division={item?.division_name}
+                      status={item?.status}
+                      image={item?.image}
+                      phone={item?.phone_number}
+                      email={item?.email}
+                    />
+                  )
+                }
+              />
+            ) : (
+              <VStack space={2} alignItems="center" justifyContent="center">
+                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+                <Text>No Data</Text>
+              </VStack>
+            )
+          ) : (
+            <VStack mt={3} px={3} space={2}>
+              <Skeleton h={60} />
+              <Skeleton h={60} />
+              <Skeleton h={60} />
+            </VStack>
           )}
-        />
-      </Flex>
+        </Flex>
+      )}
     </SafeAreaView>
   );
 };
