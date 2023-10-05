@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import _ from "lodash";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton } from "native-base";
+import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -16,7 +16,7 @@ import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
-  const { height } = Dimensions.get("window");
+  const { height } = Dimensions.get("screen");
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,7 +69,7 @@ const ProjectList = () => {
       </Flex>
 
       <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
-        <Box pt={4} px={4} pb={1}>
+        <Box pt={4} px={4}>
           <Input
             value={formik.values.search}
             size="md"
@@ -120,7 +120,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={Platform.OS === "ios" ? 435 : height - 420}>
+            <Box h={height / 1.8 - 80}>
               <FlashList
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
@@ -143,7 +143,11 @@ const ProjectList = () => {
             <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
           </>
         ) : (
-          <Skeleton height={400} />
+          <VStack px={2} space={2}>
+            <Skeleton height={81} />
+            <Skeleton height={81} />
+            <Skeleton height={81} />
+          </VStack>
         )}
       </Flex>
     </SafeAreaView>

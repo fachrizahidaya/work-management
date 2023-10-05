@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Button, Flex, Icon, Pressable, View, useSafeArea } from "native-base";
+import { Flex, Icon, Pressable, View, useSafeArea } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";

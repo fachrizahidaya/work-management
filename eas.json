@@ -21,7 +21,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://dev.kolabora-app.com/api-dev"
+        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
       },
       "distribution": "internal"
     },

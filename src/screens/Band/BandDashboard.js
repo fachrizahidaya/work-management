@@ -52,7 +52,14 @@ const BandDashboard = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        bgColor="white"
+        py={14}
+        style={{ paddingHorizontal: 16 }}
+      >
         <Flex flexDir="row" gap={1}>
           <Text color="primary.600" fontWeight={700} fontSize={16}>
             Work
@@ -104,6 +111,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
   },
   scrollView: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 16,
   },
 });
