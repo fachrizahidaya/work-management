@@ -11,6 +11,9 @@ import { useFetch } from "../../../../hooks/useFetch";
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
   const { data: employees } = useFetch("/hr/employees");
 
+  /**
+   * Form comments Handler
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

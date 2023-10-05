@@ -30,7 +30,6 @@ const AttendanceScreen = () => {
           <PageHeader title="My Attendance History" backButton={false} />
         </Flex>
         <AttendanceCalendar attendance={attendanceData?.data} />
-        {/* <Schedule/> */}
       </SafeAreaView>
     </>
   );

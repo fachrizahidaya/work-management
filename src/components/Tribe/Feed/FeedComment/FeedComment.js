@@ -21,12 +21,17 @@ const FeedComment = ({
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
+
   const inputRef = useRef();
+
+  /**
+   *
+   * Fetch Comment Handler
+   */
   const commentsFetchParameters = {
     offset: currentOffset,
     limit: 30,
   };
-
   const {
     data: commentData,
     isLoading: commentIsLoading,

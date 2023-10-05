@@ -26,6 +26,7 @@ const FeedScreen = () => {
     offset: currentOffset,
     limit: 10,
   };
+
   const navigation = useNavigation();
 
   const {

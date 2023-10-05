@@ -24,6 +24,7 @@ const FeedCard = ({
   const [postId, setPostId] = useState(null);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
+
   const { isOpen: commentIsOpen, close: commentIsClose, toggle: toggleComment, open } = useDisclosure();
 
   /**

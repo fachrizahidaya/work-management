@@ -28,6 +28,7 @@ const NewLeaveRequest = ({
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [formError, setFormError] = useState(true);
+
   const { width, height } = Dimensions.get("window");
 
   const toast = useToast();

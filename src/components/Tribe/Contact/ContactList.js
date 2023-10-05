@@ -1,10 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import { Badge, Button, Flex, Icon, Pressable, Text } from "native-base";
-import { card } from "../../../styles/Card";
+
+import { Button, Flex, Text } from "native-base";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import { card } from "../../../styles/Card";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);

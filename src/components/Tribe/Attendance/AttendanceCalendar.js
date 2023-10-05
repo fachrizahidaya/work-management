@@ -1,18 +1,21 @@
 import React, { useState, Fragment, useCallback, useMemo, useRef, useEffect } from "react";
-import { Calendar, CalendarUtils } from "react-native-calendars";
 import dayjs from "dayjs";
 
 import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { Calendar, CalendarUtils } from "react-native-calendars";
 import { ScrollView } from "native-base";
 
 import testIDs from "../testIDs";
 
 const AttendanceCalendar = ({ attendance }) => {
-  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
   const [items, setItems] = useState({});
+  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
 
+  /**
+   * Status attendance Handler
+   */
   const allGood = { key: "allGood", color: "#ededed" };
   const reportRequired = { key: "reportRequired", color: "#fdc500" };
   const submittedReport = { key: "submittedReport", color: "#186688" };
