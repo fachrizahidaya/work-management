@@ -18,6 +18,21 @@ const LoginScreen = () => {
   const userSelector = useSelector((state) => state.auth);
   const [hidePassword, setHidePassword] = useState(true);
 
+  const formik = useFormik({
+    initialValues: {
+      email: "jeremy@kolabora.com",
+      password: "Password123!",
+    },
+    validationSchema: yup.object().shape({
+      email: yup.string().email("Please use correct email format").required("Email is required"),
+      password: yup.string().required("Password is required"),
+    }),
+    validateOnChange: true,
+    onSubmit: (values) => {
+      loginHandler(values);
+    },
+  });
+
   /**
    * Handles the login process by sending a POST request to the authentication endpoint.
    * @function loginHandler
@@ -33,29 +48,13 @@ const LoginScreen = () => {
 
       // Navigate to the "Loading" screen with user data
       navigation.navigate("Loading", { userData });
+      formik.setSubmitting(false);
     } catch (error) {
       // Log any errors that occur during the login process
       console.log(error);
-
-      // Rethrow the error to propagate it further if needed
-      throw new Error("Login failed: " + error.message);
+      formik.setSubmitting(false);
     }
   };
-
-  const formik = useFormik({
-    initialValues: {
-      email: "jeremy@kolabora.com",
-      password: "Password123!",
-    },
-    validationSchema: yup.object().shape({
-      email: yup.string().email("Please use correct email format").required("Email is required"),
-      password: yup.string().required("Password is required"),
-    }),
-    validateOnChange: true,
-    onSubmit: (values) => {
-      loginHandler(values);
-    },
-  });
 
   /**
    * Retrieves user data securely from storage and initiates the login process if data is found.
@@ -86,13 +85,6 @@ const LoginScreen = () => {
   useEffect(() => {
     getUserData();
   }, []);
-
-  // Set formikIsSubmitting to false after user log in
-  useEffect(() => {
-    if (userSelector?.id) {
-      formik.setSubmitting(false);
-    }
-  }, [userSelector?.id]);
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>

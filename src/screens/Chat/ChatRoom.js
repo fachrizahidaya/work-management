@@ -29,59 +29,51 @@ const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
-  const echo = new Echo({
-    broadcaster: "pusher",
-    key: "kssapp",
-    wsHost: "api-dev.kolabora-app.com",
-    wsPort: 6001,
-    wssport: 6001,
-    transports: ["websocket"],
-    enabledTransports: ["ws", "wss"],
-    forceTLS: false,
-    disableStats: true,
-    cluster: "mt1",
-  });
+  // const echo = new Echo({
+  //   broadcaster: "pusher",
+  //   key: "kssapp",
+  //   wsHost: "api-dev.kolabora-app.com",
+  //   wsPort: 6001,
+  //   wssport: 6001,
+  //   transports: ["websocket"],
+  //   enabledTransports: ["ws", "wss"],
+  //   forceTLS: false,
+  //   disableStats: true,
+  //   cluster: "mt1",
+  // });
 
-  // PERSONAL CHAT
-  const getPersonalChat = () => {
-    echo.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
-      // setChatList(event.data);
-      console.log(event.data);
-    });
+  const getPersonalChat = async () => {
+    try {
+      await pusher.init({
+        apiKey: "kssapp",
+        cluster: "mt1",
+        authEndpoint: "api-dev.kolabora-app.com",
+        onAuthorizer,
+        onConnectionStateChange,
+        onError,
+        onEvent,
+        onSubscriptionSucceeded,
+        onSubscriptionError,
+        onSubscriptionCount,
+        onDecryptionFailure,
+        onMemberAdded,
+        onMemberRemoved,
+      });
+
+      await pusher.subscribe({
+        channelName: `personal.chat.${userSelector.id}.${userId}`,
+        onEvent: (event) => {
+          if (event.eventName === `.personal.chat`) {
+            console.log(event);
+            setChatList(event.data);
+          }
+        },
+      });
+      pusher.connect();
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  // const getPersonalChat = async () => {
-  //   try {
-  //     await pusher.init({
-  //       apiKey: "kssapp",
-  //       cluster: "mt1",
-  //       authEndpoint: "api-dev.kolabora-app.com",
-  //       onAuthorizer,
-  //       onConnectionStateChange,
-  //       onError,
-  //       onEvent,
-  //       onSubscriptionSucceeded,
-  //       onSubscriptionError,
-  //       onSubscriptionCount,
-  //       onDecryptionFailure,
-  //       onMemberAdded,
-  //       onMemberRemoved,
-  //     });
-
-  //     await pusher.connect();
-  //     await pusher.subscribe({
-  //       channelName: `personal.chat.${userSelector.id}.${userId}`,
-  //       onEvent: (event) => {
-  //         console.log(event);
-  //         // if (event.eventName === `.personal.chat`) {
-  //         //   setChatList(event.data);
-  //         // }
-  //       },
-  //     });
-  //   } catch (e) {
-  //     log("ERROR: " + e);
-  //   }
-  // };
 
   const getPersonalMessage = async () => {
     const res = await axiosInstance.get(`/chat/personal/${userSelector.id}/${userId}/message`, {

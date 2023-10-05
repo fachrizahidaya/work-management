@@ -11,6 +11,9 @@
       "ios": {
         "simulator": true
       },
+      "env": {
+        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
+      },
       "distribution": "internal"
     },
     "internal-testing": {
