@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-
-import { Dimensions, StyleSheet } from "react-native";
-import { Box, Flex, FormControl, Icon, Input, Pressable, Select, Text, TextArea, useToast } from "native-base";
-
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
+
+import { Dimensions, StyleSheet } from "react-native";
+import { Box, Flex, FormControl, Icon, Select, Text, TextArea, useToast } from "native-base";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
@@ -25,13 +24,12 @@ const NewLeaveRequest = ({
   approverImage,
   employeeId,
 }) => {
-  const [date, setDate] = useState(dayjs());
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
-  const { width, height } = Dimensions.get("window");
   const [formError, setFormError] = useState(true);
-  const navigation = useNavigation();
+  const { width, height } = Dimensions.get("window");
+
   const toast = useToast();
 
   const { data: leaveType } = useFetch("/hr/leaves");
@@ -261,13 +259,7 @@ const NewLeaveRequest = ({
             <FormControl.Label>Start Date</FormControl.Label>
             <CustomDateTimePicker
               defaultValue={formik.values.begin_date}
-              onChange={
-                //   (value) => {
-                //   formik.setFieldValue("begin_date", dayjs(value).format("YYYY-MM-DD"));
-                //   setDateChanges(true);
-                // }
-                onChangeStartDate
-              }
+              onChange={onChangeStartDate}
               disabled={!formik.values.leave_id}
             />
             <FormControl.ErrorMessage>{formik.errors.begin_date}</FormControl.ErrorMessage>
@@ -276,18 +268,12 @@ const NewLeaveRequest = ({
             <FormControl.Label>End Date</FormControl.Label>
             <CustomDateTimePicker
               defaultValue={formik.values.end_date}
-              onChange={
-                //   (value) => {
-                //   formik.setFieldValue("end_date", dayjs(value).format("YYYY-MM-DD"));
-                //   setDateChanges(true);
-                // }
-                onChangeEndDate
-              }
+              onChange={onChangeEndDate}
               disabled={!formik.values.leave_id || !selectedGenerateType}
             />
             <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
           </FormControl>
-          <FormControl>
+          {/* <FormControl>
             <FormControl.Label>Approver</FormControl.Label>
             <Flex
               padding={2}
@@ -302,12 +288,9 @@ const NewLeaveRequest = ({
               <AvatarPlaceholder name={approver} image={approverImage} size="sm" />
               <Text>{approver}</Text>
             </Flex>
-          </FormControl>
+          </FormControl> */}
 
-          <FormButton
-            // isSubmitting={formik.isSubmitting}
-            onPress={formik.handleSubmit}
-          >
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
             <Text color="white">Submit</Text>
           </FormButton>
         </Flex>
@@ -323,6 +306,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    // gap: 10,
   },
 });

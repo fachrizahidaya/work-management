@@ -1,9 +1,8 @@
 import { useState } from "react";
 
+import { Skeleton, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-
-import { Box, Image, Skeleton, Text, VStack } from "native-base";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
@@ -95,7 +94,7 @@ const FeedCard = ({
           />
         </>
       ) : (
-        <VStack>
+        <VStack px={3} space={3}>
           <Skeleton h={60} />
           <Skeleton h={60} />
           <Skeleton h={60} />

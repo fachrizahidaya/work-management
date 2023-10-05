@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 
 import { FlashList } from "@shopify/flash-list";
-
 import { Box, Flex, Pressable, Text } from "native-base";
 
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({

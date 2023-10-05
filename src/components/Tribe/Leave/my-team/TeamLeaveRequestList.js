@@ -1,6 +1,7 @@
+import dayjs from "dayjs";
+
 import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text } from "native-base";
 
-import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "./../../../../hooks/useDisclosure";
@@ -8,7 +9,7 @@ import { useDisclosure } from "./../../../../hooks/useDisclosure";
 const TeamLeaveRequestList = ({ id, name, leaveName, days, startDate, endDate, status, reason }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
-  // Canceled status not appeared in team leace request
+  // Canceled status not appeared in team leave request
   return status === "Canceled" ? null : (
     <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">

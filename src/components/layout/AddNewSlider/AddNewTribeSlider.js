@@ -17,21 +17,14 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [newReimbursement, setNewReimbursement] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
-  const { height } = Dimensions.get("window");
+
   const toast = useToast();
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
-  const { data: userIp } = useFetch("https://jsonip.com/");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
-  const onCloseLeaveRequest = () => {
-    setNewLeaveRequest(false);
-  };
-
-  const onCloseReimbursement = () => {
-    setNewReimbursement(false);
-  };
+  const { data: userIp } = useFetch("https://jsonip.com/");
 
   const items = [
     {
@@ -47,6 +40,18 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
       title: "Clock in",
     },
   ];
+
+  const onCloseLeaveRequest = () => {
+    setNewLeaveRequest(false);
+  };
+
+  const onCloseReimbursement = () => {
+    setNewReimbursement(false);
+  };
+
+  /**
+   * Clock in and Clock out Handler
+   */
 
   const attendanceCheckHandler = async () => {
     try {
@@ -136,14 +141,20 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                       <Box px={1}>
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
+                      {attendance?.data?.time_in && attendance?.data?.time_out ? (
+                        <Text fontWeight={700} color="red.500" mx={5}>
+                          You've attended
+                        </Text>
+                      ) : !attendance?.data?.time_in ? (
+                        <Text fontWeight={700} color="#000000" mx={5}>
+                          Clock in
+                        </Text>
+                      ) : (
+                        <Text fontWeight={700} color="#377893" mx={5}>
+                          Clock out
+                        </Text>
+                      )}
 
-                      <Text key={item.title} fontWeight={700} color="#000000" mx={6}>
-                        {attendance?.data?.time_in && attendance?.data?.time_out
-                          ? "You've attended"
-                          : !attendance?.data?.time_in
-                          ? "Clock in"
-                          : "Clock out"}
-                      </Text>
                       {item.title === "Clock in" || item.title === "Clock Out" ? (
                         <Text ml={170} color="#377893">
                           {currentTime}

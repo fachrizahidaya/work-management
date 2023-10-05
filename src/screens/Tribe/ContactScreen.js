@@ -1,12 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-
 import { useFocusEffect } from "@react-navigation/native";
-import { FlashList } from "@shopify/flash-list";
 import _ from "lodash";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
+import { FlashList } from "@shopify/flash-list";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
@@ -34,8 +34,9 @@ const ContactScreen = () => {
   );
   const {
     data: employeeData,
+    isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
-    refetch,
+    refetch: refetchEmployeeData,
   } = useFetch("/hr/employees", dependencies, params);
 
   useEffect(() => {
@@ -48,8 +49,8 @@ const ContactScreen = () => {
         firstTimeRef.current = false;
         return;
       }
-      refetch();
-    }, [refetch])
+      refetchEmployeeData();
+    }, [refetchEmployeeData])
   );
 
   return (
@@ -85,25 +86,40 @@ const ContactScreen = () => {
 
       <Flex px={3} flex={1} flexDir="column">
         {/* Content here */}
-        <FlashList
-          data={employeeData?.data?.data}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
-          renderItem={({ item }) => (
-            <ContactList
-              key={item?.id}
-              id={item?.id}
-              name={item?.name}
-              position={item?.position_name}
-              division={item?.division_name}
-              status={item?.status}
-              image={item?.image}
-              phone={item?.phone_number}
-              email={item?.email}
+        {!employeeDataIsLoading ? (
+          employeeData?.data?.data.length > 0 ? (
+            <FlashList
+              data={employeeData?.data?.data}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={200}
+              renderItem={({ item }) => (
+                <ContactList
+                  key={item?.id}
+                  id={item?.id}
+                  name={item?.name}
+                  position={item?.position_name}
+                  division={item?.division_name}
+                  status={item?.status}
+                  image={item?.image}
+                  phone={item?.phone_number}
+                  email={item?.email}
+                />
+              )}
             />
-          )}
-        />
+          ) : (
+            <VStack space={2} alignItems="center" justifyContent="center">
+              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <Text>No Data</Text>
+            </VStack>
+          )
+        ) : (
+          <VStack mt={3} px={3} space={2}>
+            <Skeleton h={60} />
+            <Skeleton h={60} />
+            <Skeleton h={60} />
+          </VStack>
+        )}
       </Flex>
     </SafeAreaView>
   );

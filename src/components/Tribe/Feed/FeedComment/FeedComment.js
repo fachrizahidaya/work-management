@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Flex, Icon, Pressable, ScrollView, Slide, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
+import { Flex, ScrollView, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";

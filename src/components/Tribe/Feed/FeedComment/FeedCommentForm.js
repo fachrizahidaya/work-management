@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -8,7 +6,6 @@ import { Box, Button, FormControl, Input, KeyboardAvoidingView } from "native-ba
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
-import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {

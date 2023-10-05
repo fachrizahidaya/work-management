@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import { Box, Flex, Icon, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

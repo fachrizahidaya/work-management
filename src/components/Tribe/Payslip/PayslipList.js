@@ -1,24 +1,11 @@
 import { useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
-import * as DocumentPicker from "expo-document-picker";
+
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  Actionsheet,
-  Box,
-  Flex,
-  FormControl,
-  Icon,
-  Input,
-  Pressable,
-  Skeleton,
-  Text,
-  VStack,
-  useToast,
-} from "native-base";
+import { Linking } from "react-native";
+import { Actionsheet, Box, Flex, FormControl, Icon, Input, Pressable, Text, VStack, useToast } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -31,20 +18,15 @@ import { ErrorToast } from "../../shared/ToastDialog";
 
 const PayslipList = ({ id, month, year }) => {
   const [hidePassword, setHidePassword] = useState(true);
-  const [selectedPayslipId, setSelectedPayslipId] = useState(null);
 
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
   const toast = useToast();
 
-  const payslipDownloadFormDialogOpenHandler = () => {
-    toggleDownloadDialog();
-  };
-
-  const payslipDownloadFormDialogCloseHandler = () => {
-    toggleDownloadDialog();
-    setSelectedPayslipId(null);
-  };
+  /**
+   * Input Password Handler
+   */
 
   const formik = useFormik({
     initialValues: {
@@ -59,22 +41,18 @@ const PayslipList = ({ id, month, year }) => {
     },
   });
 
-  const payslipDownloadHandler = async (data, setSubmitting, setStatus, attachmentName) => {
+  /**
+   * Payslip Download Handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const payslipDownloadHandler = async (data, setSubmitting, setStatus) => {
     try {
-      let res;
-      res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
+      const res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
         params: data,
       });
-      console.log(res.data);
-      const base64Code = res?.data?.data.split(",")[0];
-      console.log(base64Code);
-      const parts = base64Code.split("/");
-      const name = parts[parts.length - 1];
-      const fileName = `${FileSystem.documentDirectory}${name}`;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      await Share.shareAsync(fileName);
+      Linking.openURL(`https://api-dev.kolabora-app.com/download/${res?.data?.data}`);
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -91,7 +69,8 @@ const PayslipList = ({ id, month, year }) => {
 
   useEffect(() => {
     if (formik.isSubmitting && formik.status === "success") {
-      payslipDownloadFormDialogCloseHandler(formik.resetForm);
+      toggleDownloadDialog();
+      formik.resetForm();
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -115,12 +94,15 @@ const PayslipList = ({ id, month, year }) => {
           </Text>
         </Box>
 
-        <Pressable onPress={() => payslipDownloadFormDialogOpenHandler()}>
+        <Pressable onPress={toggleDownloadDialog}>
           <Icon as={<MaterialCommunityIcons name="tray-arrow-down" />} size={6} color="#186688" />
         </Pressable>
         <Actionsheet
           isOpen={downloadDialogIsOpen}
-          onClose={() => payslipDownloadFormDialogCloseHandler(formik.resetForm)}
+          onClose={() => {
+            toggleDownloadDialog();
+            formik.resetForm();
+          }}
         >
           <Actionsheet.Content>
             <VStack

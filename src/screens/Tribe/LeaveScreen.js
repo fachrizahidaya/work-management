@@ -2,12 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
-
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../hooks/useFetch";
-import { RefreshControl } from "react-native-gesture-handler";
+import PageHeader from "../../components/shared/PageHeader";
 
 const LeaveScreen = () => {
   const {
@@ -29,9 +29,7 @@ const LeaveScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text fontSize={16}>My Leave Request</Text>
-          </Flex>
+          <PageHeader title="My Leave Request" backButton={false} />
           {profile?.data?.position_name.includes("Manager", "Head") ? (
             <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
               My Team

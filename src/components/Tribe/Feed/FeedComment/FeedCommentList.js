@@ -1,6 +1,5 @@
-import { FlashList } from "@shopify/flash-list";
-
 import { Box } from "native-base";
+import { FlashList } from "@shopify/flash-list";
 
 import FeedCommentItem from "./FeedCommentItem";
 

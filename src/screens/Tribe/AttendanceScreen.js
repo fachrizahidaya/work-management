@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";

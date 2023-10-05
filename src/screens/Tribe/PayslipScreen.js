@@ -1,12 +1,11 @@
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Image, Skeleton, Text, VStack } from "native-base";
-
+import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
-import { RefreshControl } from "react-native-gesture-handler";
 
 const PayslipScreen = () => {
   const {
@@ -20,6 +19,7 @@ const PayslipScreen = () => {
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <PageHeader title="My Payslip" backButton={false} />
+        <Button>Change PIN</Button>
       </Flex>
 
       {!payslipIsLoading ? (
@@ -36,13 +36,7 @@ const PayslipScreen = () => {
           />
         ) : (
           <VStack space={2} alignItems="center" justifyContent="center">
-            <Image
-              source={require("./../../assets/vectors/empty.jpg")}
-              h={200}
-              w={200}
-              alt="empty"
-              resizeMode="contain"
-            />
+            <Image source={require("./../../assets/vectors/empty.jpg")} alt="empty" resizeMode="contain" size="2xl" />
             <Text>No Data</Text>
           </VStack>
         )

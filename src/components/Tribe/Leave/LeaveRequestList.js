@@ -1,6 +1,6 @@
 import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text } from "native-base";
-
 import dayjs from "dayjs";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";

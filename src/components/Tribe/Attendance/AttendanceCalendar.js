@@ -1,10 +1,9 @@
 import React, { useState, Fragment, useCallback, useMemo, useRef, useEffect } from "react";
-
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Text, ScrollView } from "native-base";
-
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import dayjs from "dayjs";
+
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { ScrollView } from "native-base";
 
 import testIDs from "../testIDs";
 
