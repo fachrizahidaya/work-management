@@ -9,7 +9,6 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@pusher/pusher-websocket-react-native": "^1.2.2",
     "@react-native-clipboard/clipboard": "^1.12.1",
     "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/masked-view": "^0.1.11",
@@ -22,6 +21,7 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "expo": "^49.0.0",
+    "expo-dev-client": "~2.4.11",
     "expo-document-picker": "~11.5.4",
     "expo-file-system": "~15.4.3",
     "expo-image-picker": "~14.3.2",

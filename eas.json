@@ -8,8 +8,12 @@
       "distribution": "internal"
     },
     "ios-simulator": {
+      "developmentClient": true,
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
       },
       "distribution": "internal"
     },
