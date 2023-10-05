@@ -94,10 +94,12 @@ const FeedCard = ({
           />
         </>
       ) : (
-        <VStack px={3} space={3}>
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-          <Skeleton h={60} />
+        <VStack my={3} px={3} space={3}>
+          <Skeleton h={100} />
+          <Skeleton h={100} />
+          <Skeleton h={100} />
+          <Skeleton h={100} />
+          <Skeleton h={100} />
         </VStack>
       )}
     </>
