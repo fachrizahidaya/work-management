@@ -18,6 +18,7 @@ const ConfirmationModal = ({
   description,
   body = {},
   isDelete = true,
+  isPatch = false,
 }) => {
   const toast = useToast();
   const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
@@ -27,6 +28,8 @@ const ConfirmationModal = ({
       toggleIsDeleting();
       if (isDelete) {
         await axiosInstance.delete(apiUrl);
+      } else if (isPatch) {
+        await axiosInstance.patch(apiUrl);
       } else {
         await axiosInstance.post(apiUrl, body);
       }

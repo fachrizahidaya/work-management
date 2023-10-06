@@ -271,22 +271,6 @@ const NewLeaveRequest = ({ route }) => {
             />
             <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
           </FormControl>
-          {/* <FormControl>
-            <FormControl.Label>Approver</FormControl.Label>
-            <Flex
-              padding={2}
-              borderWidth={1}
-              borderRadius={15}
-              borderColor="#E1E1E1"
-              alignItems="center"
-              flexDir="row"
-              justifyContent="flex-start"
-              gap={2}
-            >
-              <AvatarPlaceholder name={approver} image={approverImage} size="sm" />
-              <Text>{approver}</Text>
-            </Flex>
-          </FormControl> */}
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
             <Text color="white">Submit</Text>

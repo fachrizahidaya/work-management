@@ -65,7 +65,7 @@ const LeaveScreen = () => {
             />
           ) : (
             <VStack space={2} alignItems="center" justifyContent="center">
-              <Image source={require("../../assets/vectors/empty.jpg")} resizeMode="contain" size="2xl" alt="empty" />
+              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
               <Text>No Data</Text>
             </VStack>
           )

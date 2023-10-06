@@ -21,7 +21,7 @@ const PayslipScreen = () => {
         <PageHeader title="My Payslip" backButton={false} />
         <Button>
           <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
-            Change Password
+            Change PIN
           </Text>
         </Button>
       </Flex>
