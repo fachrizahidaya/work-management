@@ -8,10 +8,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import PageHeader from "../../components/shared/PageHeader";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import { card } from "../../styles/Card";
+import { useFetch } from "../../hooks/useFetch";
 
 const EmployeeProfileScreen = ({ route }) => {
   const navigation = useNavigation();
   const { employeeId } = route.params;
+
+  const {} = useFetch();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,7 +31,7 @@ const EmployeeProfileScreen = ({ route }) => {
         <PageHeader title="" onPress={() => navigation.navigate("Feed")} />
         <Button>Chat</Button>
       </Flex>
-      <Flex my={3} flexDir="column" style={card.card}>
+      <Flex my={3} mx={3} flexDir="column" style={card.card}>
         <Flex alignItems="center" flexDir="row-reverse"></Flex>
         <Flex gap={3} alignItems="center">
           {/* <AvatarPlaceholder

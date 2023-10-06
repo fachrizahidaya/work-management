@@ -18,7 +18,7 @@ import TaskDetailScreen from "../screens/Band/taskDetail/[taskId]";
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/EmployeeProfileScreen";
-import NewLeaveRequest from "../components/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
+import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 
 const Stack = createStackNavigator();
 

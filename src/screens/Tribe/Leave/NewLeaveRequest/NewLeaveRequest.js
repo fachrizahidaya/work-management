@@ -9,13 +9,13 @@ import { Box, Flex, FormControl, Icon, Select, Text, TextArea, useToast } from "
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
-import FormButton from "../../../shared/FormButton";
-import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import PageHeader from "../../../shared/PageHeader";
+import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
+import FormButton from "../../../../components/shared/FormButton";
+import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);

@@ -5,10 +5,10 @@ import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
-import { useFetch } from "../../hooks/useFetch";
-import PageHeader from "../../components/shared/PageHeader";
-import axiosInstance from "../../config/api";
+import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
+import { useFetch } from "../../../hooks/useFetch";
+import PageHeader from "../../../components/shared/PageHeader";
+import axiosInstance from "../../../config/api";
 
 const LeaveScreen = () => {
   const {
@@ -65,7 +65,12 @@ const LeaveScreen = () => {
             />
           ) : (
             <VStack space={2} alignItems="center" justifyContent="center">
-              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <Image
+                source={require("../../../assets/vectors/empty.png")}
+                resizeMode="contain"
+                size="2xl"
+                alt="empty"
+              />
               <Text>No Data</Text>
             </VStack>
           )
