@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions } from "react-native";
 import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
@@ -11,6 +12,7 @@ import NewReimbursement from "../../Tribe/Reimbursement/NewReimbursement.js/NewR
 import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [newLeaveRequest, setNewLeaveRequest] = useState(false);
@@ -18,13 +20,16 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
 
-  const toast = useToast();
-
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
   const { data: userIp } = useFetch("https://jsonip.com/");
+
+  const toast = useToast();
+  const navigation = useNavigation();
+
+  const { isOpen: newLeaveRequestIsOpen, toggle: toggleNewLeaveRequest } = useDisclosure(false);
 
   const items = [
     {
@@ -104,7 +109,17 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                 borderBottomWidth={1}
                 onPress={() => {
                   if (item.title === "New Leave Request") {
-                    setNewLeaveRequest(!newLeaveRequest);
+                    navigation.navigate("New Leave Request", {
+                      onClose: toggleNewLeaveRequest,
+                      availableLeavePersonal: profile?.data?.leave_quota,
+                      pendingApproval: profile?.data?.pending_leave_request,
+                      approved: profile?.data?.approved_leave_request,
+                      refetchPersonalLeave: refetchPersonalLeave,
+                      approver: profile?.data?.supervisor_name,
+                      approverImage: profile?.data?.supervisor_image,
+                      employeeId: profile?.data?.id,
+                    });
+                    toggle();
                   }
                   // else if (item.title === "New Reimbursement") {
                   //   setNewReimbursement(!newReimbursement);
@@ -172,20 +187,6 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           })}
         </Actionsheet.Content>
       </Actionsheet>
-
-      {newLeaveRequest && (
-        <NewLeaveRequest
-          onClose={onCloseLeaveRequest}
-          availableLeavePersonal={profile?.data?.leave_quota}
-          pendingApproval={profile?.data?.pending_leave_request}
-          approved={profile?.data?.approved_leave_request}
-          refetchPersonalLeave={refetchPersonalLeave}
-          approver={profile?.data?.supervisor_name}
-          approverImage={profile?.data?.supervisor_image}
-          employeeId={profile?.data?.id}
-        />
-      )}
-      {/* {newReimbursement && <NewReimbursement onClose={onCloseReimbursement} />} */}
     </>
   );
 };

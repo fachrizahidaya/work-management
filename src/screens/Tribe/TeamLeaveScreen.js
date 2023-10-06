@@ -7,6 +7,7 @@ import { FlashList } from "@shopify/flash-list";
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import TeamLeaveRequestList from "../../components/Tribe/Leave/my-team/TeamLeaveRequestList";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const TeamLeaveScreen = () => {
   const navigation = useNavigation();
@@ -30,6 +31,9 @@ const TeamLeaveScreen = () => {
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             estimatedItemSize={100}
+            refreshControl={
+              <RefreshControl refreshing={teamLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+            }
             renderItem={({ item }) => (
               <>
                 <TeamLeaveRequestList
@@ -42,6 +46,7 @@ const TeamLeaveScreen = () => {
                   endDate={item?.end_date}
                   status={item?.status}
                   reason={item?.reason}
+                  refetchTeamLeaveRequest={refetchTeamLeaveRequest}
                 />
               </>
             )}

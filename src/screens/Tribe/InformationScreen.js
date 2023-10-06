@@ -1,15 +1,20 @@
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Image, Text, VStack } from "native-base";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../components/shared/PageHeader";
-import LeaveDashboardUser from "../../components/Tribe/Information/LeaveDashboardUser";
-import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
+import EmployeeLeaveDashboard from "../../components/Tribe/Information/LeaveDashboardUser";
+import EmployeeInformation from "../../components/Tribe/Information/EmployeeLeaveDashboard";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
 import { useFetch } from "../../hooks/useFetch";
 
 const InformationScreen = () => {
-  const { data: profile } = useFetch("/hr/my-profile");
+  const {
+    data: profile,
+    isLoading: profileIsLoading,
+    isFetching: profileIsFetching,
+    refetch: refetchProfile,
+  } = useFetch("/hr/my-profile");
 
   return (
     <>
@@ -18,7 +23,7 @@ const InformationScreen = () => {
           <PageHeader title="My Information" backButton={false} />
         </Flex>
 
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
           <Flex px={3} flex={1} gap={5} mt={5}>
             {/* Content here */}
             {!profile?.data ? (
@@ -28,7 +33,7 @@ const InformationScreen = () => {
               </VStack>
             ) : (
               <>
-                <LeaveDashboardUser
+                <EmployeeLeaveDashboard
                   name={profile?.data?.name}
                   availableLeave={profile?.data?.leave_quota}
                   pendingApproval={profile?.data?.pending_leave_request}

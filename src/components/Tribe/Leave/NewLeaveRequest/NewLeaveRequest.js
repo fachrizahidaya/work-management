@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import * as yup from "yup";
 
@@ -16,14 +17,7 @@ import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 
-const NewLeaveRequest = ({
-  onClose,
-  availableLeavePersonal,
-  refetchPersonalLeave,
-  approver,
-  approverImage,
-  employeeId,
-}) => {
+const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
@@ -31,7 +25,9 @@ const NewLeaveRequest = ({
 
   const { width, height } = Dimensions.get("window");
 
+  const { onClose, availableLeavePersonal, refetchPersonalLeave, approver, approverImage, employeeId } = route.params;
   const toast = useToast();
+  const navigation = useNavigation();
 
   const { data: leaveType } = useFetch("/hr/leaves");
   const {
@@ -61,6 +57,28 @@ const NewLeaveRequest = ({
     });
   };
 
+  const countLeave = async (action = null) => {
+    try {
+      const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
+        leave_id: formik.values.leave_id,
+        begin_date: formik.values.begin_date,
+        end_date: formik.values.end_date,
+      });
+
+      formik.setFieldValue("days", res.data.days);
+      formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
+      formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
+      // toast.show({
+      //   render: () => {
+      //     return <SuccessToast message={`You can continue to sumbit the form`} />;
+      //   },
+      // });
+      setFormError(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests`, form);
@@ -69,7 +87,7 @@ const NewLeaveRequest = ({
       refetchLeaveHistory();
       setSubmitting(false);
       setStatus("success");
-      onClose();
+
       toast.show({
         render: () => {
           return <SuccessToast message={`Request Created`} />;
@@ -84,28 +102,6 @@ const NewLeaveRequest = ({
           return <ErrorToast message={err.response.data.message} />;
         },
       });
-    }
-  };
-
-  const countLeave = async (action = null) => {
-    try {
-      const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
-        leave_id: formik.values.leave_id,
-        begin_date: formik.values.begin_date,
-        end_date: formik.values.end_date,
-      });
-
-      formik.setFieldValue("days", res.data.days);
-      formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
-      formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`You can continue to sumbit the form`} />;
-        },
-      });
-      setFormError(false);
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -125,10 +121,6 @@ const NewLeaveRequest = ({
       end_date: yup.date().min(yup.ref("begin_date"), "End date can't be less than start date"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      const formData = new FormData();
-      for (let key in values) {
-        formData.append(key, values[key]);
-      }
       setStatus("processing");
       leaveRequestAddHandler(values, setSubmitting, setStatus);
       resetForm();
@@ -148,7 +140,7 @@ const NewLeaveRequest = ({
       id: 1,
       name: "Available Leave",
       icon: "clipboard-outline",
-      qty: availableLeavePersonal,
+      qty: availableLeaves?.available_leave,
       backgroundColor: "#E8E9EB",
       iconColor: "#377893",
     },
@@ -163,19 +155,18 @@ const NewLeaveRequest = ({
   ];
 
   useEffect(() => {
+    if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
+      countLeave();
+      setDateChanges(false);
+    }
     if (!formik.isSubmitting && formik.status === "success") {
-      onClose(formik.resetForm);
-
-      if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
-        countLeave();
-        setDateChanges(false);
-      }
+      navigation.navigate("Feed");
     }
   }, [
     formik.values.leave_id,
-    dateChanges,
     formik.values.begin_date,
     formik.values.end_date,
+    dateChanges,
     formik.isSubmitting,
     formik.status,
   ]);
@@ -200,7 +191,7 @@ const NewLeaveRequest = ({
   return (
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="white" p={3}>
-        <PageHeader title="New Leave Request" onPress={() => onClose()} />
+        <PageHeader title="New Leave Request" onPress={() => navigation.navigate("Feed")} />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={5}>
           {items.map((item) => {
@@ -227,24 +218,30 @@ const NewLeaveRequest = ({
           })}
         </Flex>
 
-        <Flex gap={17}>
+        <Flex gap={13}>
           <FormControl isInvalid={formik.errors.leave_id}>
             <FormControl.Label>Leave Type</FormControl.Label>
-
-            <Select
-              selectedValue={formik.values.leave_id}
-              onValueChange={(value) => formik.setFieldValue("leave_id", value)}
-              borderRadius={15}
-              key="leave_id"
-              placeholder="Select Leave type"
-              dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-            >
-              {leaveType?.data.map((item) => {
-                return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
-              })}
-            </Select>
+          </FormControl>
+          <Select
+            mt={-3}
+            selectedValue={formik.values.leave_id}
+            onValueChange={(value) => formik.setFieldValue("leave_id", value)}
+            borderRadius={15}
+            borderWidth={1}
+            variant="unstyled"
+            key="leave_id"
+            accessibilityLabel="Select Leave type"
+            placeholder="Select Leave type"
+            dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+          >
+            {leaveType?.data.map((item) => {
+              return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
+            })}
+          </Select>
+          <FormControl mt={-2} isInvalid={formik.errors.leave_id}>
             <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage>
           </FormControl>
+
           <FormControl isInvalid={formik.errors.reason}>
             <FormControl.Label>Purpose of Leaving</FormControl.Label>
             <TextArea

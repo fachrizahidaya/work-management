@@ -8,6 +8,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 import LeaveRequestList from "../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
+import axiosInstance from "../../config/api";
 
 const LeaveScreen = () => {
   const {
@@ -57,6 +58,8 @@ const LeaveScreen = () => {
                   status={item?.status}
                   supervisorName={item?.supervisor_name}
                   reason={item?.reason}
+                  refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
+                  refetchProfile={refetchProfile}
                 />
               )}
             />

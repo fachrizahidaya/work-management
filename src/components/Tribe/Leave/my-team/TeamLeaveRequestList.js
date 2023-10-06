@@ -5,9 +5,28 @@ import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text } from "na
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "./../../../../hooks/useDisclosure";
+import axiosInstance from "../../../../config/api";
 
-const TeamLeaveRequestList = ({ id, name, leaveName, days, startDate, endDate, status, reason }) => {
+const TeamLeaveRequestList = ({
+  id,
+  name,
+  leaveName,
+  days,
+  startDate,
+  endDate,
+  status,
+  reason,
+  refetchTeamLeaveRequest,
+}) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+
+  const leaveResponseHandler = async (response) => {
+    try {
+      const res = await axiosInstance.patch(`/hr/leave-requests/${id}/${response}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Canceled status not appeared in team leave request
   return status === "Canceled" ? null : (
@@ -27,8 +46,7 @@ const TeamLeaveRequestList = ({ id, name, leaveName, days, startDate, endDate, s
         </Pressable>
         <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
           <Actionsheet.Content>
-            <Actionsheet.Item>Edit</Actionsheet.Item>
-            <Actionsheet.Item>Delete</Actionsheet.Item>
+            <Actionsheet.Item>Cancel Leave</Actionsheet.Item>
           </Actionsheet.Content>
         </Actionsheet>
       </Flex>

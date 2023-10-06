@@ -1,12 +1,41 @@
-import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import dayjs from "dayjs";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import axiosInstance from "../../../config/api";
 
-const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, supervisorName, reason, isLoading }) => {
+const LeaveRequestList = ({
+  id,
+  leaveName,
+  days,
+  startDate,
+  endDate,
+  status,
+  supervisorName,
+  reason,
+  isLoading,
+  refetchPersonalLeaveRequest,
+  refetchProfile,
+}) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+
+  const toast = useToast();
+
+  const leaveCancelHandler = async () => {
+    try {
+      const res = await axiosInstance.patch(`/hr/leave-requests/${id}/cancel`);
+      refetchPersonalLeaveRequest();
+      refetchProfile();
+      toast.show({
+        description: "Request Cancelled",
+      });
+      toggleAction();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -15,12 +44,19 @@ const LeaveRequestList = ({ id, leaveName, days, startDate, endDate, status, sup
           <Text fontWeight={500} fontSize={14} color="#3F434A">
             {leaveName}
           </Text>
-          <Pressable onPress={toggleAction}>
-            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
-          </Pressable>
+          {status !== "Pending" ? null : (
+            <Pressable onPress={toggleAction}>
+              <Icon
+                as={<MaterialCommunityIcons name="dots-vertical" />}
+                size="md"
+                borderRadius="full"
+                color="#000000"
+              />
+            </Pressable>
+          )}
           <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
             <Actionsheet.Content>
-              <Actionsheet.Item>Cancel Request</Actionsheet.Item>
+              <Actionsheet.Item onPress={() => leaveCancelHandler()}>Cancel Request</Actionsheet.Item>
             </Actionsheet.Content>
           </Actionsheet>
         </Flex>

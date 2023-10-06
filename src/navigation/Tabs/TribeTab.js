@@ -4,7 +4,7 @@ import { Box, Icon, Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import FeedScreen from "../../screens/Tribe/FeedScreen";
+import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
 import InformationScreen from "../../screens/Tribe/InformationScreen";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import TribeScreenSlider from "../../components/layout/ScreensSlider/TribeScreenSlider";

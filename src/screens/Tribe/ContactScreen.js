@@ -12,9 +12,11 @@ import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import ContactGrid from "../../components/Tribe/Contact/ContactGrid";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isGridView, setIsGridView] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,10 +25,10 @@ const ContactScreen = () => {
   const firstTimeRef = useRef(true);
   const dependencies = [currentPage, searchInput];
 
-  const params = {
+  const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
-    limit: 100,
+    limit: 20,
   };
 
   const {
@@ -34,7 +36,13 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch("/hr/employees", dependencies, params);
+  } = useFetch("/hr/employees", dependencies, fetchEmployeeContactParameters);
+
+  const fetchMoreEmployeeContact = () => {
+    if (currentPage < employeeData?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -52,6 +60,11 @@ const ContactScreen = () => {
     }, 2000);
   };
 
+  useEffect(() => {
+    if (employeeData?.data?.data) {
+      setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
+    }
+  }, [employeeData?.data?.data]);
   useEffect(() => {
     setCurrentPage(1);
   }, [searchInput]);
@@ -98,6 +111,7 @@ const ContactScreen = () => {
           </Button>
         </Flex>
       </Flex>
+
       <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
           variant="unstyled"
@@ -127,10 +141,12 @@ const ContactScreen = () => {
           {!employeeDataIsLoading ? (
             employeeData?.data?.data.length > 0 ? (
               <FlashList
-                data={employeeData?.data?.data}
+                data={contacts}
                 keyExtractor={(item, index) => index}
                 onEndReachedThreshold={0.1}
                 estimatedItemSize={200}
+                onEndReached={fetchMoreEmployeeContact}
+                refreshControl={<RefreshControl refreshing={employeeDataIsFetching} onRefresh={refetchEmployeeData} />}
                 renderItem={({ item }) =>
                   isGridView ? (
                     <ContactGrid
@@ -181,7 +197,7 @@ const ContactScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#F8F8F8",
     position: "relative",
   },
 });
