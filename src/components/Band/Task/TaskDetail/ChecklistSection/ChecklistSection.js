@@ -170,7 +170,6 @@ const ChecklistSection = ({ taskId }) => {
           </Flex>
         </TouchableOpacity>
       </FormControl>
-
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>
           <VStack w="100%" pb={isKeyboardVisible ? keyboardHeight : 0} space={2}>
@@ -191,7 +190,6 @@ const ChecklistSection = ({ taskId }) => {
           </VStack>
         </Actionsheet.Content>
       </Actionsheet>
-
       <ConfirmationModal
         isOpen={deleteChecklistModalIsOpen}
         toggle={toggleDeleteChecklist}

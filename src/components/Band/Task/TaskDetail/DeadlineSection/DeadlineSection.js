@@ -9,7 +9,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../hooks/useLoading";
 
-const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, refetchTasks }) => {
+const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   const toast = useToast();
   const { isLoading, start, stop } = useLoading(false);
 
@@ -21,7 +21,6 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, refetchT
     try {
       start();
       await axiosInstance.patch(`/pm/tasks/${taskId}`, newDeadline);
-      refetchTasks();
       stop();
       toast.show({
         render: () => {

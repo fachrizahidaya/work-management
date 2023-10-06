@@ -120,7 +120,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={height / 1.8 - 80}>
+            <Box h={height / (Platform.OS === "android" ? 1.9 : 1.8) - 80}>
               <FlashList
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}

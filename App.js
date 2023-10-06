@@ -7,7 +7,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClientProvider, QueryClient } from "react-query";
 
-import { Platform, StatusBar, StyleSheet } from "react-native";
 import { customTheme } from "./src/theme";
 import { Navigations } from "./src/navigation";
 
@@ -23,7 +22,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <NativeBaseProvider theme={customTheme}>
           <NavigationContainer>
-            <SafeAreaProvider style={styles.container}>
+            <SafeAreaProvider>
               {isLoading ? <LaunchScreen setIsLoading={setIsLoading} /> : <Navigations />}
             </SafeAreaProvider>
           </NavigationContainer>
@@ -32,9 +31,3 @@ export default function App() {
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-});

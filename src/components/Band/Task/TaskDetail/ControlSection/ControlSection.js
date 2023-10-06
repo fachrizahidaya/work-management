@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
@@ -11,10 +12,12 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 
-const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchAllTasks, openEditForm }) => {
+const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm, refetchTask }) => {
+  const navigation = useNavigation();
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const isDisabled = taskStatus === "Finish" || taskStatus === "Closed";
 
   /**
    * Handles take task as responsible
@@ -28,17 +31,40 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
         });
       } else {
         // Update the responsible user if it already exists
-        await axiosInstance.patch(`/pm/tasks/responsible/${responsible.id}`, {
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsible[0].id}`, {
           user_id: userSelector.id,
         });
       }
       refetchResponsible();
-      refetchAllTasks();
       toast.show({
         render: () => {
           return <SuccessToast message={`Task assigned`} />;
         },
       });
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handles change task status
+   */
+  const changeTaskStatus = async (status) => {
+    try {
+      await axiosInstance.post(`/pm/tasks/${status}`, {
+        id: selectedTask?.id,
+      });
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Task ${status}ed`} />;
+        },
+      });
+      refetchTask();
     } catch (error) {
       console.log(error);
       toast.show({
@@ -62,7 +88,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
           }}
         >
           <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-          <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
+          <Menu.Item onPress={openEditForm}>Edit</Menu.Item>
           <Menu.Item onPress={toggleDeleteModal}>
             <Text color="red.600">Delete</Text>
           </Menu.Item>
@@ -72,7 +98,12 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
           w="160"
           trigger={(triggerProps) => {
             return (
-              <Button size="md" {...triggerProps}>
+              <Button
+                size="md"
+                {...triggerProps}
+                disabled={isDisabled}
+                bgColor={isDisabled ? "gray.500" : "primary.600"}
+              >
                 <Flex flexDir="row" alignItems="center" gap={1}>
                   <Text color="white">{taskStatus}</Text>
                 </Flex>
@@ -80,9 +111,11 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
             );
           }}
         >
-          <Menu.Item>Open</Menu.Item>
-          <Menu.Item>On Progress</Menu.Item>
-          <Menu.Item>Finish</Menu.Item>
+          {taskStatus === "Open" ? (
+            <Menu.Item onPress={() => changeTaskStatus("start")}>Start</Menu.Item>
+          ) : (
+            <Menu.Item onPress={() => changeTaskStatus("finish")}>Finish</Menu.Item>
+          )}
         </Menu>
       </HStack>
 
@@ -94,10 +127,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
         header="Delete Task"
         description={`Are you sure to delete ${selectedTask?.title}?`}
         hasSuccessFunc={true}
-        onSuccess={() => {
-          refetchAllTasks();
-          onCloseDetail();
-        }}
+        onSuccess={() => navigation.goBack()}
       />
     </>
   );

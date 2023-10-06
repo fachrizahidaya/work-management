@@ -13,6 +13,7 @@ import LogoutScreen from "../screens/LogoutScreen";
 // Band Screens
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../screens/Band/project/project-task";
+import TaskDetailScreen from "../screens/Band/taskDetail/[taskId]";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";
@@ -56,6 +57,8 @@ const HomeStack = () => {
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
 
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
