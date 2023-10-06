@@ -6,10 +6,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
+import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
 
 const TeamLeaveRequestList = ({
   id,
   name,
+  image,
   leaveName,
   days,
   startDate,
@@ -32,18 +34,23 @@ const TeamLeaveRequestList = ({
   return status === "Canceled" ? null : (
     <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex flex={1} flexDir="row">
-          <Text fontWeight={500} fontSize={14} color="#3F434A">
-            {leaveName}
-          </Text>{" "}
-          |{" "}
-          <Text fontWeight={500} fontSize={14} color="#377893">
-            {name}
-          </Text>
+        <Flex gap={2} flex={1} flexDir="row">
+          <AvatarPlaceholder image={image} name={name} size="xs" borderRadius="full" />
+          <Flex flexDir="row" alignItems="center">
+            <Text fontWeight={500} fontSize={14} color="#3F434A">
+              {leaveName}
+            </Text>{" "}
+            |{" "}
+            <Text fontWeight={500} fontSize={14} color="#377893">
+              {name}
+            </Text>
+          </Flex>
         </Flex>
-        <Pressable onPress={toggleAction}>
-          <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
-        </Pressable>
+        {status === "Pending" ? null : (
+          <Pressable onPress={toggleAction}>
+            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
+          </Pressable>
+        )}
         <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
           <Actionsheet.Content>
             <Actionsheet.Item>Cancel Leave</Actionsheet.Item>

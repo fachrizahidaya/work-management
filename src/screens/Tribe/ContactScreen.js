@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
+import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Button, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
@@ -44,10 +45,19 @@ const ContactScreen = () => {
     }
   };
 
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      search: "",
+    },
+  });
+
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
-      setCurrentPage(1);
+      if (value === "") {
+        setCurrentPage(1);
+      }
     }, 500),
     []
   );
@@ -61,10 +71,20 @@ const ContactScreen = () => {
   };
 
   useEffect(() => {
-    if (employeeData?.data?.data) {
-      setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
+    if (searchInput) {
+      if (employeeData?.data?.data) {
+        const filteredData = employeeData?.data?.data.filter((item) =>
+          item.name.toLowerCase().includes(searchInput.toLowerCase())
+        );
+        setContacts(filteredData);
+      }
+    } else {
+      if (employeeData?.data?.data) {
+        setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
+      }
     }
   }, [employeeData?.data?.data]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchInput]);
@@ -114,6 +134,7 @@ const ContactScreen = () => {
 
       <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
+          value={formik.values.search}
           variant="unstyled"
           size="md"
           InputLeftElement={
@@ -121,11 +142,26 @@ const ContactScreen = () => {
               <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
             </Pressable>
           }
+          InputRightElement={
+            searchInput && (
+              <Pressable
+                onPress={() => {
+                  handleSearch("");
+                  formik.resetForm();
+                }}
+              >
+                <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
+              </Pressable>
+            )
+          }
           placeholder="Search contact"
           borderRadius={15}
           borderWidth={1}
           style={{ height: 40 }}
-          onChangeText={(value) => handleSearch(value)}
+          onChangeText={(value) => {
+            handleSearch(value);
+            formik.setFieldValue("search", value);
+          }}
         />
       </Box>
 

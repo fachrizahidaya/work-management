@@ -40,6 +40,7 @@ const TeamLeaveScreen = () => {
                   key={item?.id}
                   id={item?.id}
                   name={item?.employee_name}
+                  image={item?.employee_image}
                   leaveName={item?.leave_name}
                   days={item?.days}
                   startDate={item?.begin_date}
