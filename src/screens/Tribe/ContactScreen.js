@@ -5,6 +5,7 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Button, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -12,7 +13,6 @@ import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import ContactGrid from "../../components/Tribe/Contact/ContactGrid";
-import { RefreshControl } from "react-native-gesture-handler";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);

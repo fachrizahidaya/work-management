@@ -3,11 +3,11 @@ import { useNavigation } from "@react-navigation/native";
 import { Flex, Image, Skeleton, Text, VStack } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import TeamLeaveRequestList from "../../components/Tribe/Leave/my-team/TeamLeaveRequestList";
-import { RefreshControl } from "react-native-gesture-handler";
 
 const TeamLeaveScreen = () => {
   const navigation = useNavigation();

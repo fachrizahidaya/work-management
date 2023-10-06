@@ -34,7 +34,6 @@ const FeedScreen = () => {
     isFetching: feedsIsFetching,
     isLoading: feedsIsLoading,
   } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
-  // console.log(feeds?.data);
 
   const {
     data: profile,
@@ -42,7 +41,6 @@ const FeedScreen = () => {
     refetch: refetchProfile,
     isFetching: profileIsFetching,
   } = useFetch("/hr/my-profile");
-  // console.log(profile?.data);
 
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
