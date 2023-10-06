@@ -22,13 +22,17 @@ const TaskListItem = ({
   status,
   responsible,
   onPress,
+  openCloseTaskConfirmation,
 }) => {
   return (
     <Pressable style={styles.wrapper} onPress={() => onPress(task)}>
       <Flex gap={2}>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Flex flexDir="row" gap={3} alignItems="center">
-            <Pressable>
+            <Pressable
+              display={status !== "Closed" && status !== "Finish" ? "none" : "block"}
+              onPress={() => openCloseTaskConfirmation(task)}
+            >
               <Icon
                 as={<MaterialCommunityIcons name={status === "Closed" ? "check-circle-outline" : "circle-outline"} />}
                 size="lg"
@@ -61,7 +65,7 @@ const TaskListItem = ({
               <Flex flexDir="row" alignItems="center" gap={1}>
                 <Icon
                   as={<MaterialCommunityIcons name="attachment" />}
-                  size="lg"
+                  size="sm"
                   style={{ transform: [{ rotate: "-35deg" }] }}
                 />
                 <Text fontWeight={400}>{totalAttachments || 0}</Text>
@@ -70,14 +74,14 @@ const TaskListItem = ({
 
             {totalComments > 0 && (
               <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="message-text-outline" />} size="lg" />
+                <Icon as={<MaterialCommunityIcons name="message-text-outline" />} size="sm" />
                 <Text fontWeight={400}>{totalComments || 0}</Text>
               </Flex>
             )}
 
             {totalChecklists > 0 && (
               <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="checkbox-marked-outline" />} size="lg" />
+                <Icon as={<MaterialCommunityIcons name="checkbox-marked-outline" />} size="sm" />
                 <Text fontWeight={400}>
                   {totalChecklistsDone || 0} / {totalChecklists || 0}
                 </Text>

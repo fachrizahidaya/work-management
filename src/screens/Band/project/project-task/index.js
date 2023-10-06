@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -13,19 +13,22 @@ import TaskViewSection from "../../../../components/Band/Project/ProjectTask/Tas
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../../../components/shared/PageHeader";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 
 const ProjectTaskScreen = ({ route }) => {
   const { projectId } = route.params;
   const navigation = useNavigation();
+  const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
   };
-
+  const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
   const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
@@ -53,10 +56,24 @@ const ProjectTaskScreen = ({ route }) => {
     setSelectedStatus("Open");
   };
 
+  const onOpenCloseConfirmation = (task) => {
+    toggleCloseConfirmation();
+    setSelectedTask(task);
+  };
+
   const changeView = (value) => {
     setView(value);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchTasks();
+    }, [refetchTasks])
+  );
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -93,6 +110,7 @@ const ProjectTaskScreen = ({ route }) => {
               isLoading={taskIsLoading}
               openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
+              openCloseTaskConfirmation={onOpenCloseConfirmation}
             />
           )}
 
@@ -108,16 +126,6 @@ const ProjectTaskScreen = ({ route }) => {
           )}
         </ScrollView>
 
-        {/* Task Form */}
-        {taskFormIsOpen && (
-          <NewTaskSlider
-            selectedStatus={selectedStatus}
-            onClose={onCloseTaskForm}
-            projectId={projectId}
-            refetch={refetchTasks}
-          />
-        )}
-
         <Pressable
           position="absolute"
           right={5}
@@ -130,6 +138,31 @@ const ProjectTaskScreen = ({ route }) => {
           <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
         </Pressable>
       </SafeAreaView>
+
+      {/* Task Form */}
+      {taskFormIsOpen && (
+        <NewTaskSlider
+          selectedStatus={selectedStatus}
+          onClose={onCloseTaskForm}
+          projectId={projectId}
+          refetch={refetchTasks}
+        />
+      )}
+
+      {closeConfirmationIsOpen && (
+        <ConfirmationModal
+          isDelete={false}
+          isOpen={closeConfirmationIsOpen}
+          toggle={toggleCloseConfirmation}
+          apiUrl={"/pm/tasks/close"}
+          body={{ id: selectedTask?.id }}
+          header="Close Task"
+          description={`Are you sure to close task ${selectedTask?.title}?`}
+          successMessage="Task closed"
+          hasSuccessFunc
+          onSuccess={refetchTasks}
+        />
+      )}
     </>
   );
 };

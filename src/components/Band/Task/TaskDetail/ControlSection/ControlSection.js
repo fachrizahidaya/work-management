@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
@@ -11,10 +12,12 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 
-const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm }) => {
+const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm, refetchTask }) => {
+  const navigation = useNavigation();
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const isDisabled = taskStatus === "Finish" || taskStatus === "Closed";
 
   /**
    * Handles take task as responsible
@@ -48,6 +51,30 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
     }
   };
 
+  /**
+   * Handles change task status
+   */
+  const changeTaskStatus = async (status) => {
+    try {
+      await axiosInstance.post(`/pm/tasks/${status}`, {
+        id: selectedTask?.id,
+      });
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Task ${status}ed`} />;
+        },
+      });
+      refetchTask();
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
+
   return (
     <>
       <HStack space={6} alignItems="center">
@@ -71,7 +98,12 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
           w="160"
           trigger={(triggerProps) => {
             return (
-              <Button size="md" {...triggerProps}>
+              <Button
+                size="md"
+                {...triggerProps}
+                disabled={isDisabled}
+                bgColor={isDisabled ? "gray.500" : "primary.600"}
+              >
                 <Flex flexDir="row" alignItems="center" gap={1}>
                   <Text color="white">{taskStatus}</Text>
                 </Flex>
@@ -79,9 +111,11 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
             );
           }}
         >
-          <Menu.Item>Open</Menu.Item>
-          <Menu.Item>On Progress</Menu.Item>
-          <Menu.Item>Finish</Menu.Item>
+          {taskStatus === "Open" ? (
+            <Menu.Item onPress={() => changeTaskStatus("start")}>Start</Menu.Item>
+          ) : (
+            <Menu.Item onPress={() => changeTaskStatus("finish")}>Finish</Menu.Item>
+          )}
         </Menu>
       </HStack>
 
@@ -93,10 +127,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
         header="Delete Task"
         description={`Are you sure to delete ${selectedTask?.title}?`}
         hasSuccessFunc={true}
-        onSuccess={() => {
-          refetchAllTasks();
-          onCloseDetail();
-        }}
+        onSuccess={() => navigation.goBack()}
       />
     </>
   );
