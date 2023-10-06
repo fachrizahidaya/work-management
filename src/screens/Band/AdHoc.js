@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Pressable } from "native-base";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Center, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -91,6 +91,17 @@ const AdHocScreen = () => {
               openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
             />
+          )}
+
+          {view === "Kanban" && (
+            <Center>
+              <Text bold>This feature only available for desktop</Text>
+            </Center>
+          )}
+          {view === "Gantt Chart" && (
+            <Center>
+              <Text bold>This feature only available for desktop</Text>
+            </Center>
           )}
         </ScrollView>
 
