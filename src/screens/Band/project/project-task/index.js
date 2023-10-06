@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Flex, Icon, Pressable } from "native-base";
+import { Center, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
@@ -94,6 +94,17 @@ const ProjectTaskScreen = ({ route }) => {
               openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
             />
+          )}
+
+          {view === "Kanban" && (
+            <Center>
+              <Text bold>This feature only available for desktop</Text>
+            </Center>
+          )}
+          {view === "Gantt Chart" && (
+            <Center>
+              <Text bold>This feature only available for desktop</Text>
+            </Center>
           )}
         </ScrollView>
 
