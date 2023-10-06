@@ -22,7 +22,6 @@ const PeopleSection = ({
   disabled,
   selectedTask,
   refetchResponsible,
-  refetchAllTasks,
 }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
@@ -59,7 +58,6 @@ const PeopleSection = ({
         });
       }
       refetchResponsible();
-      refetchAllTasks();
       toast.show({
         render: () => {
           return <SuccessToast message={`Task assigned`} />;

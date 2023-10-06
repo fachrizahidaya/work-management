@@ -11,7 +11,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 
-const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchAllTasks, openEditForm }) => {
+const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
@@ -28,12 +28,11 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
         });
       } else {
         // Update the responsible user if it already exists
-        await axiosInstance.patch(`/pm/tasks/responsible/${responsible.id}`, {
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsible[0].id}`, {
           user_id: userSelector.id,
         });
       }
       refetchResponsible();
-      refetchAllTasks();
       toast.show({
         render: () => {
           return <SuccessToast message={`Task assigned`} />;
@@ -62,7 +61,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, refetchA
           }}
         >
           <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-          <Menu.Item onPress={() => openEditForm(selectedTask)}>Edit</Menu.Item>
+          <Menu.Item onPress={openEditForm}>Edit</Menu.Item>
           <Menu.Item onPress={toggleDeleteModal}>
             <Text color="red.600">Delete</Text>
           </Menu.Item>

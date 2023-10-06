@@ -131,71 +131,73 @@ const CostSection = ({ taskId, disabled }) => {
         </Pressable>
       </FormControl>
 
-      <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
-        <Actionsheet.Content>
-          <VStack w="95%" space={3} pb={keyboardHeight}>
-            {costs?.data.length > 0 ? (
-              <ScrollView style={{ maxHeight: 200 }}>
-                <Box flex={1} minHeight={2}>
-                  <FlashList
-                    data={costs?.data}
-                    keyExtractor={(item) => item?.id}
-                    estimatedItemSize={200}
-                    renderItem={({ item }) => (
-                      <Flex key={item.id} flexDir="row" justifyContent="space-between" alignItems="center">
-                        <HStack>
-                          <Text fontSize={16}>{item.cost_name} - </Text>
-                          <Text fontSize={16}>Rp {item.cost_amount.toLocaleString()}</Text>
-                        </HStack>
+      {isOpen && (
+        <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
+          <Actionsheet.Content>
+            <VStack w="95%" space={3} pb={keyboardHeight}>
+              {costs?.data.length > 0 ? (
+                <ScrollView style={{ maxHeight: 200 }}>
+                  <Box flex={1} minHeight={2}>
+                    <FlashList
+                      data={costs?.data}
+                      keyExtractor={(item) => item?.id}
+                      estimatedItemSize={200}
+                      renderItem={({ item }) => (
+                        <Flex key={item.id} flexDir="row" justifyContent="space-between" alignItems="center">
+                          <HStack>
+                            <Text fontSize={16}>{item.cost_name} - </Text>
+                            <Text fontSize={16}>Rp {item.cost_amount.toLocaleString()}</Text>
+                          </HStack>
 
-                        <IconButton
-                          onPress={() => openDeleteModal(item.id)}
-                          rounded="full"
-                          icon={
-                            <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />
-                          }
-                        />
-                      </Flex>
-                    )}
-                  />
-                </Box>
-              </ScrollView>
-            ) : (
-              <Actionsheet.Item isDisabled>This task has no cost yet.</Actionsheet.Item>
-            )}
-            {!disabled && (
-              <>
-                <Divider orientation="horizontal" />
-                <VStack w="100%" space={2}>
-                  <FormControl.Label justifyContent="center">Add New Cost</FormControl.Label>
-
-                  <FormControl isInvalid={formik.errors.cost_name}>
-                    <Input
-                      placeholder="Cost Title"
-                      value={formik.values.cost_name}
-                      onChangeText={(value) => formik.setFieldValue("cost_name", value)}
+                          <IconButton
+                            onPress={() => openDeleteModal(item.id)}
+                            rounded="full"
+                            icon={
+                              <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />
+                            }
+                          />
+                        </Flex>
+                      )}
                     />
-                    <FormControl.ErrorMessage>{formik.errors.cost_name}</FormControl.ErrorMessage>
-                  </FormControl>
+                  </Box>
+                </ScrollView>
+              ) : (
+                <Actionsheet.Item isDisabled>This task has no cost yet.</Actionsheet.Item>
+              )}
+              {!disabled && (
+                <>
+                  <Divider orientation="horizontal" />
+                  <VStack w="100%" space={2}>
+                    <FormControl.Label justifyContent="center">Add New Cost</FormControl.Label>
 
-                  <FormControl isInvalid={formik.errors.cost_amount}>
-                    <Input
-                      keyboardType="numeric"
-                      placeholder="Cost Amount"
-                      value={formik.values.cost_amount}
-                      onChangeText={(value) => formik.setFieldValue("cost_amount", value)}
-                    />
-                    <FormControl.ErrorMessage>{formik.errors.cost_amount}</FormControl.ErrorMessage>
-                  </FormControl>
-                  <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                    <Text color="white">Save</Text>
-                  </FormButton>
-                </VStack>
-              </>
-            )}
-          </VStack>
-        </Actionsheet.Content>
-      </Actionsheet>
+                    <FormControl isInvalid={formik.errors.cost_name}>
+                      <Input
+                        placeholder="Cost Title"
+                        value={formik.values.cost_name}
+                        onChangeText={(value) => formik.setFieldValue("cost_name", value)}
+                      />
+                      <FormControl.ErrorMessage>{formik.errors.cost_name}</FormControl.ErrorMessage>
+                    </FormControl>
+
+                    <FormControl isInvalid={formik.errors.cost_amount}>
+                      <Input
+                        keyboardType="numeric"
+                        placeholder="Cost Amount"
+                        value={formik.values.cost_amount}
+                        onChangeText={(value) => formik.setFieldValue("cost_amount", value)}
+                      />
+                      <FormControl.ErrorMessage>{formik.errors.cost_amount}</FormControl.ErrorMessage>
+                    </FormControl>
+                    <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                      <Text color="white">Save</Text>
+                    </FormButton>
+                  </VStack>
+                </>
+              )}
+            </VStack>
+          </Actionsheet.Content>
+        </Actionsheet>
+      )}
 
       <ConfirmationModal
         isOpen={deleteCostModalisOpen}

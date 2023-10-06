@@ -10,21 +10,17 @@ import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import CustomSelect from "../../../shared/CustomSelect";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
-import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import PageHeader from "../../../shared/PageHeader";
 
-const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", setSelectedTask }) => {
+const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", refetch }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const statuses = ["Low", "Medium", "High"];
   const scores = [1, 2, 3, 4, 5];
   const { isOpen: priorityMenuIsOpen, toggle: togglePriorityMenu } = useDisclosure(false);
   const { isOpen: scoreMenuIsOpen, toggle: toggleScoreMenu } = useDisclosure(false);
-
-  const { refetch: refetchAllTasks } = useFetch(projectId && `/pm/tasks/project/${projectId}`);
-  const { refetch: refetchCurrentTask } = useFetch(taskData && `/pm/tasks/${taskData?.id}`);
 
   /**
    * Handles submission of task
@@ -43,14 +39,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
         });
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
-        const res = await refetchCurrentTask();
-        setSelectedTask(res.data.data);
       }
+      refetch();
       setSubmitting(false);
       setStatus("success");
-
-      // Refetch tasks
-      refetchAllTasks();
 
       toast.show({
         render: () => {
@@ -175,7 +167,7 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
                       key={score}
                       onPress={() => {
                         toggleScoreMenu();
-                        formik.setFieldValue("priority", score);
+                        formik.setFieldValue("score", score);
                       }}
                     >
                       <Text>{score}</Text>
