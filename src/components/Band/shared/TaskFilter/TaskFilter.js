@@ -70,8 +70,10 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
 
   // Run filter on initial render so the first render will return all data
   useEffect(() => {
-    filterDataHandler(formik.values);
-  }, [formik.values, filteredArr.length]);
+    if (filteredArr.length) {
+      filterDataHandler(formik.values);
+    }
+  }, [formik.values, filteredArr]);
 
   return (
     <>

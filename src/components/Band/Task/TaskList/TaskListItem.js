@@ -22,13 +22,17 @@ const TaskListItem = ({
   status,
   responsible,
   onPress,
+  openCloseTaskConfirmation,
 }) => {
   return (
     <Pressable style={styles.wrapper} onPress={() => onPress(task)}>
       <Flex gap={2}>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Flex flexDir="row" gap={3} alignItems="center">
-            <Pressable>
+            <Pressable
+              display={status !== "Closed" || status !== "Finish" ? "none" : "block"}
+              onPress={() => openCloseTaskConfirmation(task)}
+            >
               <Icon
                 as={<MaterialCommunityIcons name={status === "Closed" ? "check-circle-outline" : "circle-outline"} />}
                 size="lg"

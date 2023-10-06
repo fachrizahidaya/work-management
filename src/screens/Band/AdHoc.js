@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Center, Flex, Icon, Pressable, Text } from "native-base";
@@ -16,6 +16,7 @@ import PageHeader from "../../components/shared/PageHeader";
 
 const AdHocScreen = () => {
   const navigation = useNavigation();
+  const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
@@ -59,6 +60,16 @@ const AdHocScreen = () => {
   const changeView = (value) => {
     setView(value);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchTasks();
+    }, [refetchTasks])
+  );
   return (
     <>
       <SafeAreaView style={styles.container}>

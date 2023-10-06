@@ -64,6 +64,7 @@ const TaskDetailScreen = ({ route }) => {
               refetchResponsible={refetchResponsible}
               responsible={responsible?.data}
               openEditForm={onOpenTaskForm}
+              refetchTask={refetchSelectedTask}
             />
           </Flex>
           <Text fontSize={20}>{selectedTask?.data?.title}</Text>
@@ -77,7 +78,7 @@ const TaskDetailScreen = ({ route }) => {
             ownerName={selectedTask?.data?.owner_name}
             refetchObservers={refetchObservers}
             disabled={inputIsDisabled}
-            selectedTask={selectedTask}
+            selectedTask={selectedTask?.data}
             refetchResponsible={refetchResponsible}
           />
 
