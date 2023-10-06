@@ -19,7 +19,11 @@ const PayslipScreen = () => {
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <PageHeader title="My Payslip" backButton={false} />
-        <Button>Change PIN</Button>
+        <Button>
+          <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
+            Change Password
+          </Text>
+        </Button>
       </Flex>
 
       {!payslipIsLoading ? (

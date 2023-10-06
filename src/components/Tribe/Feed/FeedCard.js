@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Skeleton, VStack } from "native-base";
+import { Box, Skeleton, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -25,7 +25,7 @@ const FeedCard = ({
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
-  const { isOpen: commentIsOpen, close: commentIsClose, toggle: toggleComment, open } = useDisclosure();
+  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
 
   /**
    * Action sheet control
@@ -51,7 +51,7 @@ const FeedCard = ({
   };
 
   return (
-    <>
+    <Box flex={1}>
       {!feedsIsLoading ? (
         <>
           <FlashList
@@ -66,6 +66,7 @@ const FeedCard = ({
                 key={item?.id}
                 post={item}
                 id={item?.id}
+                employeeId={item?.author_id}
                 employeeName={item?.employee_name}
                 createdAt={item?.created_at}
                 employeeImage={item?.employee_image}
@@ -79,20 +80,23 @@ const FeedCard = ({
                 loggedEmployeeId={loggedEmployeeId}
                 loggedEmployeeImage={loggedEmployeeImage}
                 onToggleLike={onToggleLike}
+                // toggle Comment
                 onCommentToggle={commentsOpenHandler}
               />
             )}
           />
-          <FeedComment
-            handleOpen={commentsOpen}
-            handleClose={commentsCloseHandler}
-            postId={postId}
-            total_comments={postTotalComment}
-            onSubmit={commentSubmitHandler}
-            loggedEmployeeImage={loggedEmployeeImage}
-            loggedEmployeeName={loggedEmployeeName}
-            postRefetchHandler={postRefetchHandler}
-          />
+          {commentsOpen && (
+            <FeedComment
+              handleOpen={commentsOpen}
+              handleClose={commentsCloseHandler}
+              postId={postId}
+              total_comments={postTotalComment}
+              onSubmit={commentSubmitHandler}
+              loggedEmployeeImage={loggedEmployeeImage}
+              loggedEmployeeName={loggedEmployeeName}
+              postRefetchHandler={postRefetchHandler}
+            />
+          )}
         </>
       ) : (
         <VStack my={3} px={3} space={3}>
@@ -103,7 +107,7 @@ const FeedCard = ({
           <Skeleton h={100} />
         </VStack>
       )}
-    </>
+    </Box>
   );
 };
 

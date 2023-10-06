@@ -2,7 +2,7 @@ import { Box, Flex, Icon, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const LeaveDashboardUser = ({ availableLeave, pendingApproval, approved }) => {
+const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) => {
   const items = [
     {
       id: 1,
@@ -60,4 +60,4 @@ const LeaveDashboardUser = ({ availableLeave, pendingApproval, approved }) => {
   );
 };
 
-export default LeaveDashboardUser;
+export default EmployeeLeaveDashboard;

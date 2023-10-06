@@ -7,9 +7,11 @@ import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
+import { useNavigation } from "@react-navigation/core";
 
 const FeedCardItem = ({
   id,
+  employeeId,
   employeeName,
   createdAt,
   employeeImage,
@@ -27,6 +29,8 @@ const FeedCardItem = ({
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
+
+  const navigation = useNavigation();
 
   /**
    * Like post control
@@ -64,10 +68,18 @@ const FeedCardItem = ({
     <Flex flexDir="column" my={2}>
       <Flex gap={5} style={card.card}>
         <Flex alignItems="center" direction="row" gap={3}>
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
+          <Pressable
+            onPress={() =>
+              navigation.navigate("Employee Profile", {
+                employeeId: employeeId,
+              })
+            }
+          >
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
+          </Pressable>
           <Flex flex={1}>
             <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
-              <Text fontSize={15} fontWeight={500}>
+              <Text onPress={() => navigation.navigate("Employee Profile")} fontSize={15} fontWeight={500}>
                 {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
@@ -132,7 +144,11 @@ const FeedCardItem = ({
             </Text>
           </Flex>
           <Flex alignItems="center" direction="row" gap={2}>
-            <Pressable onPress={() => onCommentToggle(id)}>
+            <Pressable
+              onPress={() => {
+                onCommentToggle(id);
+              }}
+            >
               <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
             </Pressable>
             <Text fontSize={15} fontWeight={500}>

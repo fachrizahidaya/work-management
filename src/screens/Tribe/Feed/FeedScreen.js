@@ -7,11 +7,10 @@ import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import FeedCard from "../../components/Tribe/Feed/FeedCard";
-import NewFeedSlider from "../../components/Tribe/Feed/NewFeedSlider";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useFetch } from "../../hooks/useFetch";
-import axiosInstance from "../../config/api";
+import FeedCard from "../../../components/Tribe/Feed/FeedCard";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
 
 const FeedScreen = () => {
   // Handler for open/close to create a post
@@ -102,7 +101,13 @@ const FeedScreen = () => {
           style={styles.createIcon}
           borderRadius="full"
           onPress={() => {
-            toggleNewFeed();
+            // toggleNewFeed();
+            navigation.navigate("New Feed", {
+              toggleNewFeed: toggleNewFeed,
+              refetch: postRefetchHandler,
+              loggedEmployeeImage: profile?.data?.image,
+              loggedEmployeeName: useSelector?.name,
+            });
           }}
         >
           <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
@@ -124,15 +129,6 @@ const FeedScreen = () => {
           />
         </Box>
       </SafeAreaView>
-
-      {newFeedIsOpen && (
-        <NewFeedSlider
-          toggleNewFeed={toggleNewFeed}
-          refetch={postRefetchHandler}
-          loggedEmployeeImage={profile?.data?.image}
-          loggedEmployeeName={userSelector?.name}
-        />
-      )}
     </>
   );
 };

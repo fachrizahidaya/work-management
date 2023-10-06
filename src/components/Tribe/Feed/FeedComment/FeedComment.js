@@ -79,7 +79,7 @@ const FeedComment = ({
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>
-        <Flex flexDir="column" justifyContent="center" position="relative">
+        <Flex flexDir="column" justifyContent="center">
           <Flex
             flexDir="row"
             alignItems="center"
