@@ -21,7 +21,7 @@ const PayslipScreen = () => {
         <PageHeader title="My Payslip" backButton={false} />
         <Button>
           <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
-            Change Password
+            Change PIN
           </Text>
         </Button>
       </Flex>
@@ -40,7 +40,7 @@ const PayslipScreen = () => {
           />
         ) : (
           <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("./../../assets/vectors/empty.jpg")} alt="empty" resizeMode="contain" size="2xl" />
+            <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
             <Text>No Data</Text>
           </VStack>
         )

@@ -5,6 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
+import ConfirmationModal from "../../shared/ConfirmationModal";
 
 const LeaveRequestList = ({
   id,
@@ -20,6 +21,7 @@ const LeaveRequestList = ({
   refetchProfile,
 }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const toast = useToast();
 
@@ -56,9 +58,26 @@ const LeaveRequestList = ({
           )}
           <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
             <Actionsheet.Content>
-              <Actionsheet.Item onPress={() => leaveCancelHandler()}>Cancel Request</Actionsheet.Item>
+              <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
             </Actionsheet.Content>
           </Actionsheet>
+          <ConfirmationModal
+            isOpen={cancelModalIsOpen}
+            toggle={toggleCancelModal}
+            apiUrl={`/hr/leave-requests/${id}/cancel`}
+            color="red.600"
+            hasSuccessFunc={true}
+            header="Cancel Leave Request"
+            onSuccess={() => {
+              toggleAction();
+              refetchPersonalLeaveRequest();
+              refetchProfile();
+            }}
+            description="Are you sure to cancel this request?"
+            successMessage="Request canceled"
+            isDelete={false}
+            isPatch={true}
+          />
         </Flex>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Flex flex={1}>

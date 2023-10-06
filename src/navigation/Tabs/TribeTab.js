@@ -12,7 +12,7 @@ import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeS
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
-import LeaveScreen from "../../screens/Tribe/LeaveScreen";
+import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
 import CalendarScreen from "../../screens/Tribe/CalendarScreen";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import { useDisclosure } from "../../hooks/useDisclosure";

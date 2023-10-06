@@ -40,6 +40,7 @@ const TeamLeaveScreen = () => {
                   key={item?.id}
                   id={item?.id}
                   name={item?.employee_name}
+                  image={item?.employee_image}
                   leaveName={item?.leave_name}
                   days={item?.days}
                   startDate={item?.begin_date}
@@ -53,7 +54,7 @@ const TeamLeaveScreen = () => {
           />
         ) : (
           <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("../../assets/vectors/empty.jpg")} resizeMode="contain" size="2xl" alt="empty" />
+            <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
             <Text>No Data</Text>
           </VStack>
         )

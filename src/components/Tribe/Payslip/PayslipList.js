@@ -55,6 +55,8 @@ const PayslipList = ({ id, month, year }) => {
       Linking.openURL(`https://api-dev.kolabora-app.com/download/${res?.data?.data}`);
       setSubmitting(false);
       setStatus("success");
+      formik.resetForm();
+      toggleDownloadDialog();
     } catch (err) {
       console.log(err);
       setSubmitting(false);

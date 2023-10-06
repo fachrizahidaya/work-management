@@ -4,6 +4,7 @@ import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
+import { useNavigation } from "@react-navigation/core";
 
 import { Dimensions } from "react-native";
 import {
@@ -29,7 +30,8 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
-import { useNavigation } from "@react-navigation/core";
+import FormButton from "../../../components/shared/FormButton";
+import { useEffect } from "react";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -45,32 +47,8 @@ const NewFeedScreen = ({ route }) => {
   const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName } = route.params;
 
   /**
-   * Submit a Post Handler
-   * @param {*} form
+   *
    */
-  const postSubmitHandler = async (form) => {
-    try {
-      await axiosInstance.post("/hr/posts", form, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      navigation.navigate("Feed");
-      refetch();
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`Posted succesfuly!`} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const endDateAnnouncementHandler = (value) => {
-    formik.setFieldValue("end_date", value);
-  };
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -81,7 +59,7 @@ const NewFeedScreen = ({ route }) => {
     validationSchema: yup.object().shape({
       content: yup.string().required("Content is required"),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -89,7 +67,7 @@ const NewFeedScreen = ({ route }) => {
 
       formData.append("file", image);
       if (values.type === "Public") {
-        postSubmitHandler(formData);
+        postSubmitHandler(formData, setSubmitting, setStatus);
         resetForm();
       } else {
         if (values.end_date) {
@@ -101,6 +79,37 @@ const NewFeedScreen = ({ route }) => {
       }
     },
   });
+
+  /**
+   * Submit a Post Handler
+   * @param {*} form
+   */
+  const postSubmitHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      await axiosInstance.post("/hr/posts", form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      navigation.navigate("Feed");
+      setSubmitting(false);
+      setStatus("success");
+      refetch();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Posted succesfuly!`} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
+  const endDateAnnouncementHandler = (value) => {
+    formik.setFieldValue("end_date", value);
+  };
 
   /**
    * Handler for date
@@ -156,6 +165,12 @@ const NewFeedScreen = ({ route }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+    }
+  }, [formik.isSubmitting, formik.status]);
 
   return (
     <Box flex={1} bgColor="#FFFFFF" p={5}>
