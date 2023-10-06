@@ -96,6 +96,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm, openCloseTask
                       status={item.status}
                       responsible={item.responsible_name}
                       onPress={openDetail}
+                      openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
                 />
@@ -144,6 +145,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm, openCloseTask
                       status={item.status}
                       responsible={item.responsible_name}
                       onPress={openDetail}
+                      openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
                 />

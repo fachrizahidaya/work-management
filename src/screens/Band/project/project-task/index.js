@@ -13,6 +13,7 @@ import TaskViewSection from "../../../../components/Band/Project/ProjectTask/Tas
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../../../components/shared/PageHeader";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 
 const ProjectTaskScreen = ({ route }) => {
   const { projectId } = route.params;
@@ -151,15 +152,15 @@ const ProjectTaskScreen = ({ route }) => {
       {closeConfirmationIsOpen && (
         <ConfirmationModal
           isDelete={false}
-          isOpen={isOpen}
-          toggle={toggle}
+          isOpen={closeConfirmationIsOpen}
+          toggle={toggleCloseConfirmation}
           apiUrl={"/pm/tasks/close"}
           body={{ id: selectedTask?.id }}
           header="Close Task"
           description={`Are you sure to close task ${selectedTask?.title}?`}
           successMessage="Task closed"
           hasSuccessFunc
-          onSuccess={refetch}
+          onSuccess={refetchTasks}
         />
       )}
     </>

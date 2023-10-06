@@ -13,6 +13,7 @@ import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
 import PageHeader from "../../components/shared/PageHeader";
+import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AdHocScreen = () => {
   const navigation = useNavigation();
@@ -21,6 +22,8 @@ const AdHocScreen = () => {
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
@@ -59,6 +62,11 @@ const AdHocScreen = () => {
 
   const changeView = (value) => {
     setView(value);
+  };
+
+  const onOpenCloseConfirmation = (task) => {
+    toggleCloseConfirmation();
+    setSelectedTask(task);
   };
 
   useFocusEffect(
@@ -101,6 +109,7 @@ const AdHocScreen = () => {
               isLoading={taskIsLoading}
               openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
+              openCloseTaskConfirmation={onOpenCloseConfirmation}
             />
           )}
 
@@ -137,6 +146,21 @@ const AdHocScreen = () => {
           <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
         </Pressable>
       </SafeAreaView>
+
+      {closeConfirmationIsOpen && (
+        <ConfirmationModal
+          isDelete={false}
+          isOpen={closeConfirmationIsOpen}
+          toggle={toggleCloseConfirmation}
+          apiUrl={"/pm/tasks/close"}
+          body={{ id: selectedTask?.id }}
+          header="Close Task"
+          description={`Are you sure to close task ${selectedTask?.title}?`}
+          successMessage="Task closed"
+          hasSuccessFunc
+          onSuccess={refetchTasks}
+        />
+      )}
     </>
   );
 };
