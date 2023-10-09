@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";

@@ -8,6 +8,7 @@ import { Icon, Input, Pressable } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const NoteFilter = ({ data = [], setFilteredData }) => {
+  console.log("filter rendered");
   let filteredArr = data;
 
   const formik = useFormik({
