@@ -41,29 +41,29 @@ const ProjectTaskScreen = ({ route }) => {
   const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
   const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
-  const onPressTaskItem = (task) => {
+  const onPressTaskItem = useCallback((task) => {
     navigation.navigate("Task Detail", { taskId: task.id });
-  };
+  }, []);
 
-  const onOpenTaskFormWithStatus = (status) => {
+  const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
     setSelectedStatus(status);
-  };
+  }, []);
 
-  const onCloseTaskForm = (resetForm) => {
+  const onCloseTaskForm = useCallback((resetForm) => {
     toggleTaskForm();
     resetForm();
     setSelectedStatus("Open");
-  };
+  }, []);
 
-  const onOpenCloseConfirmation = (task) => {
+  const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
-  };
+  }, []);
 
-  const changeView = (value) => {
+  const changeView = useCallback((value) => {
     setView(value);
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -140,14 +140,13 @@ const ProjectTaskScreen = ({ route }) => {
       </SafeAreaView>
 
       {/* Task Form */}
-      {taskFormIsOpen && (
-        <NewTaskSlider
-          selectedStatus={selectedStatus}
-          onClose={onCloseTaskForm}
-          projectId={projectId}
-          refetch={refetchTasks}
-        />
-      )}
+      <NewTaskSlider
+        isOpen={taskFormIsOpen}
+        selectedStatus={selectedStatus}
+        onClose={onCloseTaskForm}
+        projectId={projectId}
+        refetch={refetchTasks}
+      />
 
       {closeConfirmationIsOpen && (
         <ConfirmationModal

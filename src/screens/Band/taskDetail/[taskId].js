@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -34,16 +34,16 @@ const TaskDetailScreen = ({ route }) => {
     selectedTask?.data?.owner_id,
     selectedTask?.data?.responsible_id,
   ];
-  const inputIsDisabled = !taskUserRights.includes(loggedUser);
+  const inputIsDisabled = useMemo(() => !taskUserRights.includes(loggedUser), [taskUserRights]);
 
-  const onOpenTaskForm = () => {
+  const onOpenTaskForm = useCallback(() => {
     toggleTaskForm();
-  };
+  }, []);
 
-  const onCloseTaskForm = (resetForm) => {
+  const onCloseTaskForm = useCallback((resetForm) => {
     toggleTaskForm();
     resetForm();
-  };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -118,14 +118,13 @@ const TaskDetailScreen = ({ route }) => {
         {/* </ScrollView> */}
       </KeyboardAwareScrollView>
 
-      {taskFormIsOpen && (
-        <NewTaskSlider
-          isOpen={taskFormIsOpen}
-          taskData={selectedTask?.data}
-          onClose={onCloseTaskForm}
-          refetchCurrentTask={refetchSelectedTask}
-        />
-      )}
+      {/* Task Form */}
+      <NewTaskSlider
+        isOpen={taskFormIsOpen}
+        taskData={selectedTask?.data}
+        onClose={onCloseTaskForm}
+        refetchCurrentTask={refetchSelectedTask}
+      />
     </SafeAreaView>
   );
 };

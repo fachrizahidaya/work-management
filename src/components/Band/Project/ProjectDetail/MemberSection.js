@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -155,4 +155,4 @@ const MemberSection = ({ projectId, projectData }) => {
   );
 };
 
-export default MemberSection;
+export default memo(MemberSection);

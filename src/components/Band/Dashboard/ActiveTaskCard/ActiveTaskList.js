@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Checkbox, Flex, Text } from "native-base";
 
@@ -29,4 +29,4 @@ const ActiveTaskList = ({ task, title, responsible, status, priority, onPress })
   );
 };
 
-export default ActiveTaskList;
+export default memo(ActiveTaskList);

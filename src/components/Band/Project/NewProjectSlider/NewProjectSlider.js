@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
@@ -14,7 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 import PageHeader from "../../../shared/PageHeader";
 
-const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject, teamMembers }) => {
+const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject, teamMembers }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
   const toast = useToast();
@@ -72,7 +72,7 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject, teamMe
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: projectData ? true : false,
     initialValues: {
       title: projectData?.title?.toString() || "",
       priority: projectData?.priority || "",
@@ -103,62 +103,64 @@ const NewProjectSlider = ({ onClose, projectData, refetchSelectedProject, teamMe
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <Box position="absolute" zIndex={3}>
-        <Box w={width} height={height} bgColor="white" p={5}>
-          <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
+    isOpen && (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <Box position="absolute" zIndex={3}>
+          <Box w={width} height={height} bgColor="white" p={5}>
+            <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
 
-          <Flex gap={17} mt={22}>
-            <FormControl isInvalid={formik.errors.title}>
-              <FormControl.Label>Project Name</FormControl.Label>
-              <Input
-                value={formik.values.title}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
-                placeholder="Input project title..."
-              />
-              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-            </FormControl>
+            <Flex gap={17} mt={22}>
+              <FormControl isInvalid={formik.errors.title}>
+                <FormControl.Label>Project Name</FormControl.Label>
+                <Input
+                  value={formik.values.title}
+                  onChangeText={(value) => formik.setFieldValue("title", value)}
+                  placeholder="Input project title..."
+                />
+                <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.description}>
-              <FormControl.Label>Description</FormControl.Label>
-              <TextArea
-                value={formik.values.description}
-                onChangeText={(value) => formik.setFieldValue("description", value)}
-                placeholder="Input project description..."
-              />
-              <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.description}>
+                <FormControl.Label>Description</FormControl.Label>
+                <TextArea
+                  value={formik.values.description}
+                  onChangeText={(value) => formik.setFieldValue("description", value)}
+                  placeholder="Input project description..."
+                />
+                <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.deadline}>
-              <FormControl.Label>End Date</FormControl.Label>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
-              <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.deadline}>
+                <FormControl.Label>End Date</FormControl.Label>
+                <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
+                <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.priority}>
-              <FormControl.Label>Priority</FormControl.Label>
-              <Select
-                selectedValue={formik.values.priority}
-                onValueChange={(value) => formik.setFieldValue("priority", value)}
-                borderRadius={15}
-                placeholder="Select priority"
-                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              >
-                <Select.Item label="Low" value="Low" />
-                <Select.Item label="Medium" value="Medium" />
-                <Select.Item label="High" value="High" />
-              </Select>
-              <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.priority}>
+                <FormControl.Label>Priority</FormControl.Label>
+                <Select
+                  selectedValue={formik.values.priority}
+                  onValueChange={(value) => formik.setFieldValue("priority", value)}
+                  borderRadius={15}
+                  placeholder="Select priority"
+                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                >
+                  <Select.Item label="Low" value="Low" />
+                  <Select.Item label="Medium" value="Medium" />
+                  <Select.Item label="High" value="High" />
+                </Select>
+                <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">{projectData ? "Save" : "Create"}</Text>
-            </FormButton>
-          </Flex>
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="white">{projectData ? "Save" : "Create"}</Text>
+              </FormButton>
+            </Flex>
+          </Box>
         </Box>
-      </Box>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    )
   );
 };
 
-export default NewProjectSlider;
+export default memo(NewProjectSlider);

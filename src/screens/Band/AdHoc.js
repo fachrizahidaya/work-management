@@ -125,14 +125,13 @@ const AdHocScreen = () => {
           )}
         </ScrollView>
 
-        {taskFormIsOpen && (
-          <NewTaskSlider
-            selectedStatus={selectedStatus}
-            onClose={onCloseTaskForm}
-            isOpen={taskFormIsOpen}
-            refetch={refetchTasks}
-          />
-        )}
+        {/* Task Form */}
+        <NewTaskSlider
+          selectedStatus={selectedStatus}
+          onClose={onCloseTaskForm}
+          isOpen={taskFormIsOpen}
+          refetch={refetchTasks}
+        />
 
         <Pressable
           position="absolute"

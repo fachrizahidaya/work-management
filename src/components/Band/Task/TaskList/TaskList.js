@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Box, Button, Flex, Icon, Skeleton, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -172,4 +172,4 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm, openCloseTask
   );
 };
 
-export default TaskList;
+export default memo(TaskList);

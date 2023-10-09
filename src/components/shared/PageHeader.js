@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Flex, Icon, Pressable, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -25,4 +25,4 @@ const PageHeader = ({ title, backButton = true, withLoading, isLoading, onPress 
   );
 };
 
-export default PageHeader;
+export default memo(PageHeader);
