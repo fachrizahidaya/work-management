@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Center, Flex, Icon, Pressable, Text } from "native-base";
@@ -16,7 +16,6 @@ import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AdHocScreen = () => {
-  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
@@ -44,10 +43,6 @@ const AdHocScreen = () => {
   const noDuplicateResponsibleArr = [...new Set(responsibleArr)].filter((val) => {
     return val !== null;
   });
-
-  const onPressTaskItem = useCallback((task) => {
-    navigation.navigate("Task Detail", { taskId: task.id });
-  }, []);
 
   const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
@@ -107,7 +102,6 @@ const AdHocScreen = () => {
             <TaskList
               tasks={filteredData}
               isLoading={taskIsLoading}
-              openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
               openCloseTaskConfirmation={onOpenCloseConfirmation}
             />

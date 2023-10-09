@@ -113,7 +113,7 @@ const MemberSection = ({ projectId, projectData }) => {
                           trigger={(triggerProps) => {
                             return (
                               <Pressable {...triggerProps}>
-                                <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                                <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
                               </Pressable>
                             );
                           }}

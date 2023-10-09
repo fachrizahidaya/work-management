@@ -82,7 +82,7 @@ const ProjectDetailScreen = ({ route }) => {
               trigger={(triggerProps) => {
                 return (
                   <Pressable {...triggerProps} mr={1}>
-                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
                   </Pressable>
                 );
               }}

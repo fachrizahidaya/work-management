@@ -41,10 +41,6 @@ const ProjectTaskScreen = ({ route }) => {
   const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
   const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
-  const onPressTaskItem = useCallback((task) => {
-    navigation.navigate("Task Detail", { taskId: task.id });
-  }, []);
-
   const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
     setSelectedStatus(status);
@@ -108,7 +104,6 @@ const ProjectTaskScreen = ({ route }) => {
             <TaskList
               tasks={filteredData}
               isLoading={taskIsLoading}
-              openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
               openCloseTaskConfirmation={onOpenCloseConfirmation}
             />

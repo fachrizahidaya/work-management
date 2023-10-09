@@ -4,11 +4,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 import _ from "lodash";
 
-import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
@@ -16,7 +16,6 @@ import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
-  const { height } = Dimensions.get("screen");
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);

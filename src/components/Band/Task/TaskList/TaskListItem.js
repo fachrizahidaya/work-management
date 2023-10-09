@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import dayjs from "dayjs";
 
@@ -21,11 +22,12 @@ const TaskListItem = ({
   totalComments,
   status,
   responsible,
-  onPress,
   openCloseTaskConfirmation,
 }) => {
+  const navigation = useNavigation();
+
   return (
-    <Pressable style={styles.wrapper} onPress={() => onPress(task)}>
+    <Pressable style={styles.wrapper} onPress={() => navigation.navigate("Task Detail", { taskId: id })}>
       <Flex gap={2}>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Flex flexDir="row" gap={3} alignItems="center">
