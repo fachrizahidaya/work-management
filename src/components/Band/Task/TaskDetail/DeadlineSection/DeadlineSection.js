@@ -39,7 +39,6 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       deadline: deadline,
     },

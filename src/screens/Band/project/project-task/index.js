@@ -140,13 +140,15 @@ const ProjectTaskScreen = ({ route }) => {
       </SafeAreaView>
 
       {/* Task Form */}
-      <NewTaskSlider
-        isOpen={taskFormIsOpen}
-        selectedStatus={selectedStatus}
-        onClose={onCloseTaskForm}
-        projectId={projectId}
-        refetch={refetchTasks}
-      />
+      {taskFormIsOpen && (
+        <NewTaskSlider
+          isOpen={taskFormIsOpen}
+          selectedStatus={selectedStatus}
+          onClose={onCloseTaskForm}
+          projectId={projectId}
+          refetch={refetchTasks}
+        />
+      )}
 
       {closeConfirmationIsOpen && (
         <ConfirmationModal

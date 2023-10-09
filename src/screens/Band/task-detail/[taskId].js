@@ -119,12 +119,14 @@ const TaskDetailScreen = ({ route }) => {
       </KeyboardAwareScrollView>
 
       {/* Task Form */}
-      <NewTaskSlider
-        isOpen={taskFormIsOpen}
-        taskData={selectedTask?.data}
-        onClose={onCloseTaskForm}
-        refetchCurrentTask={refetchSelectedTask}
-      />
+      {taskFormIsOpen && (
+        <NewTaskSlider
+          isOpen={taskFormIsOpen}
+          taskData={selectedTask?.data}
+          onClose={onCloseTaskForm}
+          refetchCurrentTask={refetchSelectedTask}
+        />
+      )}
     </SafeAreaView>
   );
 };

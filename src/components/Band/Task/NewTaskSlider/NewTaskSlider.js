@@ -65,7 +65,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
     enableReinitialize: taskData ? true : false,
     initialValues: {
       title: taskData?.title || "",
-      description: taskData?.description || "",
+      description: taskData?.description.toString() || "",
       deadline: taskData?.deadline || "",
       priority: taskData?.priority || "Low",
       score: taskData?.score || 1,
@@ -75,7 +75,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       description: yup.string().max(150, "150 character max").required("Description is required"),
       deadline: yup.date().required("Deadline is required"),
       priority: yup.string().required("Priority is required"),
-      score: yup.string().required("Score is required"),
+      score: yup.number().required("Score is required"),
     }),
     validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {

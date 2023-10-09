@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -47,10 +47,10 @@ const MyTeamScreen = () => {
     toggleMenu();
   };
 
-  const closeProjectFormHandler = (resetForm) => {
+  const closeProjectFormHandler = useCallback((resetForm) => {
     toggleProjectForm();
     resetForm();
-  };
+  }, []);
 
   const openMemberModalHandler = () => {
     toggleAddMemberModal();
@@ -72,7 +72,6 @@ const MyTeamScreen = () => {
   const {
     data: members,
     isLoading: membersIsLoading,
-    isFetching: membersIsFetching,
     refetch: refetchMembers,
   } = useFetch(selectedTeam?.id && `/pm/teams/${selectedTeam.id}/members`, [selectedTeam?.id]);
 
@@ -216,7 +215,9 @@ const MyTeamScreen = () => {
       )}
 
       {/* Create project form */}
-      {projectFormIsOpen && <NewProjectSlider onClose={closeProjectFormHandler} teamMembers={members?.data} />}
+      {projectFormIsOpen && (
+        <NewProjectSlider isOpen={projectFormIsOpen} onClose={closeProjectFormHandler} teamMembers={members?.data} />
+      )}
 
       {/* Add member modal */}
       {addMemberModalIsOpen && (

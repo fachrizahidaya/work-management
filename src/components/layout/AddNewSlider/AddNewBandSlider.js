@@ -79,8 +79,8 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
         </Actionsheet.Content>
       </Actionsheet>
 
-      <NewProjectSlider isOpen={newProjectIsOpen} onClose={onCloseProjectForm} />
-      <NewTaskSlider isOpen={newTaskIsOpen} onClose={onCloseTaskForm} />
+      {newProjectIsOpen && <NewProjectSlider isOpen={newProjectIsOpen} onClose={onCloseProjectForm} />}
+      {newTaskIsOpen && <NewTaskSlider isOpen={newTaskIsOpen} onClose={onCloseTaskForm} />}
       {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} refreshFunc={false} />}
     </>
   );

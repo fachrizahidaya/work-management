@@ -45,29 +45,29 @@ const AdHocScreen = () => {
     return val !== null;
   });
 
-  const onPressTaskItem = (task) => {
+  const onPressTaskItem = useCallback((task) => {
     navigation.navigate("Task Detail", { taskId: task.id });
-  };
+  }, []);
 
-  const onOpenTaskFormWithStatus = (status) => {
+  const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
     setSelectedStatus(status);
-  };
+  }, []);
 
-  const onCloseTaskForm = (resetForm) => {
+  const onCloseTaskForm = useCallback((resetForm) => {
     toggleTaskForm();
     setSelectedStatus("Open");
     resetForm();
-  };
+  }, []);
 
-  const changeView = (value) => {
+  const changeView = useCallback((value) => {
     setView(value);
-  };
+  }, []);
 
-  const onOpenCloseConfirmation = (task) => {
+  const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -126,12 +126,14 @@ const AdHocScreen = () => {
         </ScrollView>
 
         {/* Task Form */}
-        <NewTaskSlider
-          selectedStatus={selectedStatus}
-          onClose={onCloseTaskForm}
-          isOpen={taskFormIsOpen}
-          refetch={refetchTasks}
-        />
+        {taskFormIsOpen && (
+          <NewTaskSlider
+            selectedStatus={selectedStatus}
+            onClose={onCloseTaskForm}
+            isOpen={taskFormIsOpen}
+            refetch={refetchTasks}
+          />
+        )}
 
         <Pressable
           position="absolute"

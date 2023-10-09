@@ -86,7 +86,6 @@ const CommentInput = ({ taskId, projectId }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       task_id: taskId || null,
       project_id: projectId || null,
