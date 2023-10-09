@@ -8,7 +8,7 @@ import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
@@ -47,6 +47,14 @@ const ProjectList = () => {
     []
   );
 
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 5; i++) {
+      skeletons.push(<Skeleton height={41} key={i} />);
+    }
+    return skeletons;
+  };
+
   useEffect(() => {
     setCurrentPage(1);
   }, [status, searchInput]);
@@ -67,7 +75,7 @@ const ProjectList = () => {
         <PageHeader title="My Project" backButton={false} />
       </Flex>
 
-      <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
+      <Flex flex={1} gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
         <Box pt={4} px={4}>
           <Input
             value={formik.values.search}
@@ -119,7 +127,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={height / (Platform.OS === "android" ? 1.9 : 1.8) - 80}>
+            <Box flex={1}>
               <FlashList
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
@@ -139,13 +147,14 @@ const ProjectList = () => {
                 )}
               />
             </Box>
-            <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+
+            {data?.data?.last_page > 1 && (
+              <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+            )}
           </>
         ) : (
           <VStack px={2} space={2}>
-            <Skeleton height={81} />
-            <Skeleton height={81} />
-            <Skeleton height={81} />
+            {renderSkeletons()}
           </VStack>
         )}
       </Flex>
