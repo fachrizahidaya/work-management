@@ -101,7 +101,6 @@ const FeedScreen = () => {
           style={styles.createIcon}
           borderRadius="full"
           onPress={() => {
-            // toggleNewFeed();
             navigation.navigate("New Feed", {
               toggleNewFeed: toggleNewFeed,
               refetch: postRefetchHandler,
