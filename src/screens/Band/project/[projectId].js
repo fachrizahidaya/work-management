@@ -94,17 +94,19 @@ const ProjectDetailScreen = ({ route }) => {
             </Menu>
 
             {/* Delete confirmation modal */}
-            <ConfirmationModal
-              isOpen={deleteModalIsOpen}
-              toggle={toggle}
-              apiUrl={`/pm/projects/${projectId}`}
-              color="red.600"
-              successMessage={`${projectData?.title} deleted`}
-              hasSuccessFunc={true}
-              onSuccess={() => navigation.navigate("Project List")}
-              header="Delete Project"
-              description="Are you sure to delete this project?"
-            />
+            {deleteModalIsOpen && (
+              <ConfirmationModal
+                isOpen={deleteModalIsOpen}
+                toggle={toggle}
+                apiUrl={`/pm/projects/${projectId}`}
+                color="red.600"
+                successMessage={`${projectData?.title} deleted`}
+                hasSuccessFunc={true}
+                onSuccess={() => navigation.navigate("Project List")}
+                header="Delete Project"
+                description="Are you sure to delete this project?"
+              />
+            )}
           </Flex>
 
           <StatusSection projectId={projectId} projectData={projectData} refetch={refetch} />
