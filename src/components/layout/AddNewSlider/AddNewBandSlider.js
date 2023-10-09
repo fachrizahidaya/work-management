@@ -20,9 +20,9 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
     setNewProjectIsOpen(false);
   }, []);
 
-  const onCloseNoteForm = () => {
+  const onCloseNoteForm = useCallback(() => {
     setNewNoteIsOpen(false);
-  };
+  }, []);
 
   const items = [
     {
@@ -81,7 +81,7 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
 
       {newProjectIsOpen && <NewProjectSlider isOpen={newProjectIsOpen} onClose={onCloseProjectForm} />}
       {newTaskIsOpen && <NewTaskSlider isOpen={newTaskIsOpen} onClose={onCloseTaskForm} />}
-      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} refreshFunc={false} />}
+      {newNoteIsOpen && <NewNoteSlider isOpen={newNoteIsOpen} onClose={onCloseNoteForm} refreshFunc={false} />}
     </>
   );
 };

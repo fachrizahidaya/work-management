@@ -11,7 +11,7 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 
-const NewNoteSlider = ({ onClose, noteData, refresh, refreshFunc = true }) => {
+const NewNoteSlider = ({ isOpen, onClose, noteData, refresh, refreshFunc = true }) => {
   const { width, height } = Dimensions.get("window");
   const toast = useToast();
 
@@ -46,7 +46,7 @@ const NewNoteSlider = ({ onClose, noteData, refresh, refreshFunc = true }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: noteData ? true : false,
     initialValues: {
       title: noteData?.title || "",
       content: noteData?.content || "",
@@ -68,47 +68,49 @@ const NewNoteSlider = ({ onClose, noteData, refresh, refreshFunc = true }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <Box position="absolute" zIndex={3}>
-        <Box w={width} height={height} bgColor="white" p={5}>
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable onPress={() => onClose(formik.resetForm)}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-            </Pressable>
-            <Text fontSize={16} fontWeight={500}>
-              New Note
-            </Text>
-          </Flex>
+    isOpen && (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <Box position="absolute" zIndex={3}>
+          <Box w={width} height={height} bgColor="white" p={5}>
+            <Flex flexDir="row" alignItems="center" gap={2}>
+              <Pressable onPress={() => onClose(formik.resetForm)}>
+                <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
+              </Pressable>
+              <Text fontSize={16} fontWeight={500}>
+                New Note
+              </Text>
+            </Flex>
 
-          <Flex gap={17} mt={22}>
-            <FormControl isInvalid={formik.errors.title}>
-              <FormControl.Label>Title</FormControl.Label>
-              <Input
-                value={formik.values.title}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
-                placeholder="The title of a note"
-              />
-              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-            </FormControl>
+            <Flex gap={17} mt={22}>
+              <FormControl isInvalid={formik.errors.title}>
+                <FormControl.Label>Title</FormControl.Label>
+                <Input
+                  value={formik.values.title}
+                  onChangeText={(value) => formik.setFieldValue("title", value)}
+                  placeholder="The title of a note"
+                />
+                <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.content}>
-              <FormControl.Label>Content</FormControl.Label>
-              <TextArea
-                h={200}
-                value={formik.values.content}
-                onChangeText={(value) => formik.setFieldValue("content", value)}
-                placeholder="Create a mobile application on iOS and Android devices."
-              />
-              <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.content}>
+                <FormControl.Label>Content</FormControl.Label>
+                <TextArea
+                  h={200}
+                  value={formik.values.content}
+                  onChangeText={(value) => formik.setFieldValue("content", value)}
+                  placeholder="Create a mobile application on iOS and Android devices."
+                />
+                <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">{noteData ? "Save" : "Create"}</Text>
-            </FormButton>
-          </Flex>
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="white">{noteData ? "Save" : "Create"}</Text>
+              </FormButton>
+            </Flex>
+          </Box>
         </Box>
-      </Box>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    )
   );
 };
 

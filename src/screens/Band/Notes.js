@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
@@ -134,9 +134,16 @@ const NotesScreen = () => {
         />
       )}
 
-      {editFormIsOpen && <NewNoteSlider onClose={closeEditFormHandler} noteData={selectedNote} refresh={refetch} />}
+      {editFormIsOpen && (
+        <NewNoteSlider
+          isOpen={editFormIsOpen}
+          onClose={closeEditFormHandler}
+          noteData={selectedNote}
+          refresh={refetch}
+        />
+      )}
 
-      {newFormIsOpen && <NewNoteSlider onClose={closeNewFormHandler} refresh={refetch} />}
+      {newFormIsOpen && <NewNoteSlider isOpen={newFormIsOpen} onClose={closeNewFormHandler} refresh={refetch} />}
     </>
   );
 };

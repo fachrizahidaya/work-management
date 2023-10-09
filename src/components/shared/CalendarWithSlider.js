@@ -36,7 +36,7 @@ const CalendarWithSlider = ({ items }) => {
               alt="empty"
               resizeMode="contain"
             />
-            <Text>You have no tasks.</Text>
+            <Text>You have no agenda</Text>
           </VStack>
         );
       }}

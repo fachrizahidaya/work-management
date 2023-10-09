@@ -34,7 +34,6 @@ const ProjectList = () => {
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       search: "",
     },
