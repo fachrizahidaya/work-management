@@ -13,7 +13,7 @@ import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
 import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
-import CalendarScreen from "../../screens/Tribe/CalendarScreen";
+import CalendarScreen from "../../screens/Band/Calendar";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import TeamLeaveScreen from "../../screens/Tribe/TeamLeaveScreen";

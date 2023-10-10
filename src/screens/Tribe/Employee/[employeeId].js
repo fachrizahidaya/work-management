@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
+import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
 import { Avatar, Badge, Box, Button, Flex, Icon, Image, Text, View } from "native-base";
+import { FlashList } from "@shopify/flash-list";
+import { ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -10,11 +14,6 @@ import PageHeader from "../../../components/shared/PageHeader";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
 import { useFetch } from "../../../hooks/useFetch";
-import dayjs from "dayjs";
-import { FlashList } from "@shopify/flash-list";
-import { ScrollView } from "react-native-gesture-handler";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import { useState } from "react";
 import Tabs from "../../../components/shared/Tabs";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
@@ -45,7 +44,6 @@ const EmployeeProfileScreen = ({ route }) => {
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`);
-  console.log(feeds?.data);
 
   const onChangeTab = (value) => {
     setTabValue(value);
