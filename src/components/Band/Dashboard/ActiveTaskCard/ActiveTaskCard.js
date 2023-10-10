@@ -115,7 +115,7 @@ const ActiveTaskCard = () => {
 
       {/* More tasks modal */}
       {openMore && (
-        <Modal isOpen={openMore} onClose={toggleMore}>
+        <Modal isOpen={openMore} onClose={toggleMore} size="xl">
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header>

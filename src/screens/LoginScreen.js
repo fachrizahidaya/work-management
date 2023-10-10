@@ -3,20 +3,47 @@ import { StyleSheet, Dimensions, KeyboardAvoidingView } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
+// Google authentication and firebase
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
+import { auth } from "../config/firebase";
+
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Box, Button, FormControl, Icon, Input, Image, Text, Flex, Divider, Pressable, Checkbox } from "native-base";
+import {
+  Box,
+  Button,
+  FormControl,
+  Icon,
+  Input,
+  Image,
+  Text,
+  Flex,
+  Divider,
+  Pressable,
+  Checkbox,
+  useToast,
+} from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import axiosInstance from "../config/api";
+import { ErrorToast } from "../components/shared/ToastDialog";
+import { useLoading } from "../hooks/useLoading";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
+  const toast = useToast();
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
-  const userSelector = useSelector((state) => state.auth);
   const [hidePassword, setHidePassword] = useState(true);
+  const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: "509807030668-rb8ssvhb83nr97c9t9rm52riv0fd9tbi.apps.googleusercontent.com",
+    androidClientId: "509807030668-avkkna2j6lpj09j2c27dedupoa0p25qu.apps.googleusercontent.com",
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -28,8 +55,8 @@ const LoginScreen = () => {
       password: yup.string().required("Password is required"),
     }),
     validateOnChange: true,
-    onSubmit: (values) => {
-      loginHandler(values);
+    onSubmit: (values, { setSubmitting }) => {
+      loginHandler(values, setSubmitting);
     },
   });
 
@@ -38,7 +65,7 @@ const LoginScreen = () => {
    * @function loginHandler
    * @param {Object} form - The login form data to be sent in the request.
    */
-  const loginHandler = async (form) => {
+  const loginHandler = async (form, setSubmitting) => {
     try {
       // Send a POST request to the authentication endpoint
       const res = await axiosInstance.post("/auth/login", form);
@@ -48,11 +75,11 @@ const LoginScreen = () => {
 
       // Navigate to the "Loading" screen with user data
       navigation.navigate("Loading", { userData });
-      formik.setSubmitting(false);
+      setSubmitting(false);
     } catch (error) {
       // Log any errors that occur during the login process
       console.log(error);
-      formik.setSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -81,9 +108,51 @@ const LoginScreen = () => {
     }
   };
 
+  const signInWithGoogle = async (user) => {
+    try {
+      const res = await axiosInstance.post("/auth/login-with-google", {
+        uid: user.uid,
+        email: user.email,
+      });
+      toggleLoading();
+      const userData = res.data.data;
+
+      // Navigate to the "Loading" screen with user data
+      navigation.navigate("Loading", { userData });
+    } catch (error) {
+      console.log(error);
+      toggleLoading();
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
+
   // Initiate the getUserData function
   useEffect(() => {
     getUserData();
+  }, []);
+
+  useEffect(() => {
+    if (response?.type == "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential);
+    } else if (response?.type === "cancel") {
+      toggleLoading();
+    }
+  }, [response]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        signInWithGoogle(user);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -106,9 +175,19 @@ const LoginScreen = () => {
               left={14}
               bottom={3}
             />
-            <Button borderWidth={1} borderColor="#E8E9EB" bg="white" borderRadius={15} style={{ height: 40 }}>
+            <Button
+              disabled={isLoading}
+              variant="ghost"
+              borderWidth={1}
+              borderColor="#E8E9EB"
+              bg="white"
+              onPress={() => {
+                toggleLoading();
+                promptAsync();
+              }}
+            >
               <Text fontSize={12} color="#595F69">
-                Login with Google
+                {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
             </Button>
           </Flex>
@@ -126,25 +205,14 @@ const LoginScreen = () => {
         <Flex w="100%" style={{ gap: 20 }}>
           <FormControl width="100%" isInvalid={formik.errors.email}>
             <FormControl.Label>Email</FormControl.Label>
-            <Input
-              variant="unstyled"
-              size="lg"
-              onChangeText={(value) => formik.setFieldValue("email", value)}
-              borderWidth={1}
-              borderRadius={15}
-              style={{ height: 40 }}
-            />
+            <Input size="lg" onChangeText={(value) => formik.setFieldValue("email", value)} />
             <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl width="100%" isInvalid={formik.errors.password}>
             <FormControl.Label>Password</FormControl.Label>
             <Input
-              variant="unstyled"
               size="lg"
-              borderWidth={1}
-              borderRadius={15}
-              style={{ height: 40 }}
               type={!hidePassword ? "text" : "password"}
               onChangeText={(value) => formik.setFieldValue("password", value)}
               InputRightElement={
@@ -175,7 +243,13 @@ const LoginScreen = () => {
         </Flex>
 
         <Flex w="100%">
-          <Button onPress={formik.handleSubmit} isLoading={formik.isSubmitting} isLoadingText="Loging in...">
+          <Button
+            onPress={formik.handleSubmit}
+            isLoading={formik.isSubmitting}
+            disabled={formik.isSubmitting || isLoading}
+            bgColor={formik.isSubmitting || isLoading ? "gray.500" : "primary.600"}
+            isLoadingText="Loging in..."
+          >
             Log In
           </Button>
         </Flex>
