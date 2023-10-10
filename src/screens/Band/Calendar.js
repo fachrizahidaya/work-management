@@ -40,13 +40,12 @@ const CalendarScreen = () => {
 
   holidays?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
     const value = { description: item.description };
 
-    if (!formattedHolidays[key]) {
-      formattedHolidays[key] = [value];
+    if (!formattedHolidays[date]) {
+      formattedHolidays[date] = [value];
     } else {
-      formattedHolidays[key].push(value);
+      formattedHolidays[date].push(value);
     }
   });
 
