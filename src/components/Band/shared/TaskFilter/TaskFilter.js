@@ -4,13 +4,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, VStack } from "native-base";
+import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Pressable, Select, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFilteredData }) => {
   const [selectedLabel, setSelectedLabel] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
 
   let filteredArr = data;
@@ -77,31 +78,46 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
 
   return (
     <>
-      <IconButton
-        onPress={toggleFilter}
-        icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
-        rounded="full"
+      <Input
+        value={formik.values.title}
+        onChangeText={(value) => {
+          formik.setFieldValue("title", value);
+          formik.handleSubmit();
+        }}
+        width="full"
+        placeholder="Search task..."
         size="md"
+        InputRightElement={
+          <Button.Group mr={2}>
+            {formik.values.title && (
+              <IconButton
+                onPress={() => formik.setFieldValue("title", "")}
+                icon={<Icon as={<MaterialCommunityIcons name="close" />} color="#3F434A" />}
+                rounded="full"
+                size="sm"
+              />
+            )}
+            <IconButton
+              onPress={toggleFilter}
+              icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
+              rounded="full"
+              size="sm"
+            />
+          </Button.Group>
+        }
       />
 
       {filterIsOpen && (
         <Actionsheet isOpen={filterIsOpen} onClose={toggleFilter}>
           <Actionsheet.Content>
             <VStack w="95%" space={2}>
-              {/* Search Bar */}
-              <FormControl.Label>Search Task</FormControl.Label>
-              <Input
-                placeholder="Type anything..."
-                value={formik.values.title}
-                onChangeText={(value) => {
-                  formik.setFieldValue("title", value);
-                  formik.handleSubmit();
-                }}
-              />
-
               {/* Member */}
               <FormControl.Label>Member</FormControl.Label>
-              <Select onValueChange={(value) => onPressMember(value)} defaultValue={formik.values.responsible_name}>
+              <Select
+                onValueChange={(value) => onPressMember(value)}
+                defaultValue={formik.values.responsible_name}
+                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+              >
                 <Select.Item label="All Member" value="" />
                 <Select.Item label="Not Assigned" value="null" />
                 {members?.length > 0 &&
@@ -124,6 +140,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
                   onPressLabel(value);
                   formik.handleSubmit();
                 }}
+                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
               >
                 <Select.Item label="No Label" value="" />
 
@@ -146,6 +163,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
                   formik.setFieldValue("deadline", value);
                   formik.handleSubmit();
                 }}
+                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
               >
                 <Select.Item label="Due anytime" value="" />
                 <Select.Item label="Closest" value="asc" />
@@ -160,6 +178,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
                   formik.setFieldValue("priority", value);
                   formik.handleSubmit();
                 }}
+                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
               >
                 <Select.Item label="All Priority" value="" />
                 <Select.Item label="Low" value="Low" />

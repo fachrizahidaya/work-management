@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { SafeAreaView } from "react-native";
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
@@ -38,21 +38,13 @@ const Header = () => {
           </Box>
         </Flex>
 
-        <Flex direction="row" gap={8}>
+        <Flex flexDir="row" gap={8} alignItems="center">
           <Pressable>
-            <Icon
-              as={<MaterialCommunityIcons name="bell-outline" />}
-              style={{ height: 22, width: 22 }}
-              color="#3f434b"
-            />
+            <Icon as={<MaterialCommunityIcons name="bell-outline" />} color="#3f434b" />
           </Pressable>
 
           <Pressable onPress={() => navigation.navigate("Chat List")}>
-            <Icon
-              as={<MaterialCommunityIcons name="message-text-outline" />}
-              style={{ height: 22, width: 22 }}
-              color="#3f434b"
-            />
+            <Image source={require("../../assets/icons/nest_logo.png")} alt="nest" style={{ height: 25, width: 25 }} />
           </Pressable>
         </Flex>
       </Flex>

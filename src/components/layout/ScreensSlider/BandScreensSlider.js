@@ -14,7 +14,7 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
       screen: "Dashboard",
     },
     {
-      icons: "layers-triple-outline",
+      icons: "lightning-bolt-outline",
       title: "Project List",
       screen: "Project List",
     },
@@ -24,7 +24,7 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
       screen: "Task List",
     },
     {
-      icons: "lightning-bolt",
+      icons: "account-group-outline",
       title: "My Team",
       screen: "My Team",
     },

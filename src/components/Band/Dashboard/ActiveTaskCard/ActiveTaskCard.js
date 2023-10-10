@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { Button, Flex, Image, Modal, Skeleton, Text, VStack } from "native-base";
 
@@ -9,13 +10,19 @@ import ConfirmationModal from "../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const ActiveTaskCard = () => {
+  const navigation = useNavigation();
   const [status, setStatus] = useState("week");
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen, toggle } = useDisclosure(false);
-  const { isOpen: openMore, toggle: toggleMore } = useDisclosure(false);
+  const { isOpen: openMore, toggle: toggleMore, close: closeMore } = useDisclosure(false);
 
   const { data: tasks, isLoading, refetch } = useFetch(`/pm/tasks/${status}`, [status], { limit: 10 });
   const { data: allTasks, isLoading: allTasksLoading } = useFetch(openMore && `/pm/tasks/${status}`);
+
+  const onPressTaskItem = (id) => {
+    navigation.navigate("Task Detail", { taskId: id });
+    closeMore();
+  };
 
   const openCloseModal = useCallback((task) => {
     setSelectedTask(task);
@@ -61,12 +68,14 @@ const ActiveTaskCard = () => {
                 {tasks.data.data.slice(0, 4).map((task) => (
                   <ActiveTaskList
                     key={task.id}
+                    id={task.id}
                     task={task}
                     title={task.title}
                     responsible={task.responsible_name}
                     status={task.status}
                     priority={task.priority}
                     onPress={openCloseModal}
+                    onPressItem={onPressTaskItem}
                   />
                 ))}
                 {tasks.data.data.length > 4 && (
@@ -127,12 +136,14 @@ const ActiveTaskCard = () => {
                 allTasks.data.map((task) => {
                   return (
                     <ActiveTaskList
+                      id={task.id}
                       key={task.id}
                       task={task}
                       title={task.title}
                       responsible={task.responsible_name}
                       status={task.status}
                       priority={task.priority}
+                      onPressItem={onPressTaskItem}
                     />
                   );
                 })

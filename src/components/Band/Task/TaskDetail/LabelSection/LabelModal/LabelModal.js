@@ -14,7 +14,6 @@ import { ErrorToast, SuccessToast } from "../../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../../hooks/useLoading";
 
 const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetch, refetchTaskLabels }) => {
-  console.log("modal rendered");
   const toast = useToast();
   const { isLoading, start, stop } = useLoading(false);
 
@@ -115,7 +114,7 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
     }
   }, [formik.isSubmitting, formik.status]);
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose(formik.resetForm)}>
+    <Modal isOpen={isOpen} onClose={() => onClose(formik.resetForm)} size="xl">
       <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>New Label</Modal.Header>

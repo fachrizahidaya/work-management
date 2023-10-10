@@ -41,8 +41,8 @@ const TaskListItem = ({
               />
             </Pressable>
 
-            <Text textDecorationLine={status === "Closed" ? "line-through" : "none"}>
-              {title.length > 20 ? title.slice(0, 20) + "..." : title}
+            <Text w={190} numberOfLines={2} textDecorationLine={status === "Closed" ? "line-through" : "none"}>
+              {title}
             </Text>
           </Flex>
 
@@ -53,7 +53,7 @@ const TaskListItem = ({
           </Flex>
         </Flex>
 
-        <Flex flexDir="row" gap={1} flex={1} ml={10}>
+        <Flex flexDir="row" gap={1}>
           <Box bgColor="#49C96D" w={3} h={3} borderRadius={50}></Box>
           {(priority === "Medium" || priority === "High") && (
             <Box bgColor="#FF965D" w={3} h={3} borderRadius={50}></Box>

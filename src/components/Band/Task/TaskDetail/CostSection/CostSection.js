@@ -114,21 +114,24 @@ const CostSection = ({ taskId, disabled }) => {
     <>
       <FormControl>
         <FormControl.Label>COST</FormControl.Label>
-        <Pressable
-          onPress={() => {
-            Platform.OS === "android" && onCloseActionSheet(formik.resetForm);
-          }}
-        >
+        <Box position="relative">
+          <Pressable
+            onPress={() => onCloseActionSheet(formik.resetForm)}
+            position="absolute"
+            zIndex={2}
+            top={0}
+            right={0}
+            bottom={0}
+            left={0}
+          />
+
           <Input
-            onPressOut={() => {
-              Platform.OS === "ios" && onCloseActionSheet(formik.resetForm);
-            }}
             isReadOnly
             value={`Rp ${totalCostCalculation?.toLocaleString()}`}
             placeholder="Task's cost"
             editable={false}
           />
-        </Pressable>
+        </Box>
       </FormControl>
 
       {isOpen && (
