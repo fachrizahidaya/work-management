@@ -1,30 +1,38 @@
 import React, { memo } from "react";
 
-import { Checkbox, Flex, Text } from "native-base";
+import { Checkbox, Flex, Icon, Text } from "native-base";
+import { TouchableOpacity } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ActiveTaskList = ({ task, title, responsible, status, priority, onPress }) => {
+const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPress, onPressItem }) => {
   return (
     <Flex
       flexDir="row"
       alignItems="center"
+      justifyContent="space-between"
       borderLeftWidth={3}
       borderColor={priority === "Low" ? "#49c96d" : priority === "Medium" ? "#ff965d" : "#fd7972"}
       px={4}
     >
-      <Flex flexDir="row" alignItems="center" w="100%">
-        <Checkbox
-          isChecked={status === "Closed"}
-          onTouchEnd={() => {
-            status !== "Closed" && onPress(task);
-          }}
-          isDisabled={status === "Closed"}
-        >
-          <Flex flexDir="column">
-            <Text opacity={0.5}>{responsible}</Text>
-            <Text textDecorationLine={status === "Closed" ? "line-through" : "none"}>{title}</Text>
-          </Flex>
-        </Checkbox>
-      </Flex>
+      <Checkbox
+        isChecked={status === "Closed"}
+        onTouchEnd={() => {
+          status !== "Closed" && onPress(task);
+        }}
+        isDisabled={status === "Closed"}
+        borderWidth={1}
+      >
+        <Flex flexDir="column">
+          <Text opacity={0.5}>{responsible}</Text>
+          <Text textDecorationLine={status === "Closed" ? "line-through" : "none"} w={200}>
+            {title}
+          </Text>
+        </Flex>
+      </Checkbox>
+
+      <TouchableOpacity onPress={() => onPressItem(id)}>
+        <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" />
+      </TouchableOpacity>
     </Flex>
   );
 };

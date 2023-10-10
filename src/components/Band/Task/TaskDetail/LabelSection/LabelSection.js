@@ -93,7 +93,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                 onPress={openModal}
                 size="md"
                 borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
                 alignSelf="flex-start"
               />
             </Flex>
@@ -107,7 +107,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
             onPress={openModal}
             size="md"
             borderRadius="full"
-            icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+            icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
             alignSelf="flex-start"
           />
         )}

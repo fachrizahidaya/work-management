@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Center, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -73,26 +73,28 @@ const ProjectTaskScreen = ({ route }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
-          <PageHeader
-            title={data?.data.title}
-            withLoading
-            isLoading={isLoading}
-            onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
-          />
-
-          <TaskViewSection changeView={changeView} view={view} />
-
-          <Flex flexDir="row" mt={11} mb={21}>
-            <TaskFilter
-              data={tasks?.data}
-              members={members?.data}
-              labels={labels}
-              setSelectedLabelId={setSelectedLabelId}
-              setFilteredData={setFilteredData}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
+            <PageHeader
+              title={data?.data.title}
+              withLoading
+              isLoading={isLoading}
+              onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
             />
+
+            <TaskViewSection changeView={changeView} view={view} />
+
+            <Flex flexDir="row" mt={11} mb={21}>
+              <TaskFilter
+                data={tasks?.data}
+                members={members?.data}
+                labels={labels}
+                setSelectedLabelId={setSelectedLabelId}
+                setFilteredData={setFilteredData}
+              />
+            </Flex>
           </Flex>
-        </Flex>
+        </TouchableWithoutFeedback>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
