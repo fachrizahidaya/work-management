@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -113,7 +113,7 @@ const MemberSection = ({ projectId, projectData }) => {
                           trigger={(triggerProps) => {
                             return (
                               <Pressable {...triggerProps}>
-                                <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                                <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
                               </Pressable>
                             );
                           }}
@@ -155,4 +155,4 @@ const MemberSection = ({ projectId, projectData }) => {
   );
 };
 
-export default MemberSection;
+export default memo(MemberSection);

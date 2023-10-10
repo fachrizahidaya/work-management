@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 import _ from "lodash";
 
-import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
@@ -16,7 +16,6 @@ import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
-  const { height } = Dimensions.get("screen");
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +33,6 @@ const ProjectList = () => {
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       search: "",
     },
@@ -47,6 +45,14 @@ const ProjectList = () => {
     }, 500),
     []
   );
+
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 5; i++) {
+      skeletons.push(<Skeleton height={41} key={i} />);
+    }
+    return skeletons;
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -68,7 +74,7 @@ const ProjectList = () => {
         <PageHeader title="My Project" backButton={false} />
       </Flex>
 
-      <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
+      <Flex flex={1} gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
         <Box pt={4} px={4}>
           <Input
             value={formik.values.search}
@@ -120,7 +126,7 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={height / (Platform.OS === "android" ? 1.9 : 1.8) - 80}>
+            <Box flex={1}>
               <FlashList
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
@@ -140,13 +146,14 @@ const ProjectList = () => {
                 )}
               />
             </Box>
-            <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+
+            {data?.data?.last_page > 1 && (
+              <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+            )}
           </>
         ) : (
           <VStack px={2} space={2}>
-            <Skeleton height={81} />
-            <Skeleton height={81} />
-            <Skeleton height={81} />
+            {renderSkeletons()}
           </VStack>
         )}
       </Flex>

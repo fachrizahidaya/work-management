@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Button, Modal, Spinner, Text, useToast } from "native-base";
 
@@ -88,4 +88,4 @@ const ConfirmationModal = ({
   );
 };
 
-export default ConfirmationModal;
+export default memo(ConfirmationModal);

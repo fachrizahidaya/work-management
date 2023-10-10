@@ -134,9 +134,16 @@ const NotesScreen = () => {
         />
       )}
 
-      {editFormIsOpen && <NewNoteSlider onClose={closeEditFormHandler} noteData={selectedNote} refresh={refetch} />}
+      {editFormIsOpen && (
+        <NewNoteSlider
+          isOpen={editFormIsOpen}
+          onClose={closeEditFormHandler}
+          noteData={selectedNote}
+          refresh={refetch}
+        />
+      )}
 
-      {newFormIsOpen && <NewNoteSlider onClose={closeNewFormHandler} refresh={refetch} />}
+      {newFormIsOpen && <NewNoteSlider isOpen={newFormIsOpen} onClose={closeNewFormHandler} refresh={refetch} />}
     </>
   );
 };

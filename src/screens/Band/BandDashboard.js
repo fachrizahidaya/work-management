@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Skeleton, Text } from "native-base";
@@ -40,15 +40,17 @@ const BandDashboard = () => {
   const finishTasks = tasksThisYear?.data?.total_finish || 0;
   const sumAllTasks = openTasks + onProgressTasks + finishTasks;
 
-  const data = {
-    labels: ["Open", "On Progress", "Finish"],
-    // total tasks divided by task on that status length
-    data:
-      sumAllTasks !== 0
-        ? [openTasks / sumAllTasks, onProgressTasks / sumAllTasks, finishTasks / sumAllTasks]
-        : [0, 0, 0],
-    colors: ["#176688", "#fcd241", "#FF965D"],
-  };
+  const data = useMemo(() => {
+    return {
+      labels: ["Open", "On Progress", "Finish"],
+      // total tasks divided by task on that status length
+      data:
+        sumAllTasks !== 0
+          ? [openTasks / sumAllTasks, onProgressTasks / sumAllTasks, finishTasks / sumAllTasks]
+          : [0, 0, 0],
+      colors: ["#176688", "#fcd241", "#FF965D"],
+    };
+  }, [openTasks, onProgressTasks, finishTasks, sumAllTasks]);
 
   return (
     <SafeAreaView style={styles.container}>

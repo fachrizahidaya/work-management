@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -14,7 +14,7 @@ import FormButton from "../../../shared/FormButton";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import PageHeader from "../../../shared/PageHeader";
 
-const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", refetch }) => {
+const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = "Open", refetch }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
   const statuses = ["Low", "Medium", "High"];
@@ -62,10 +62,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: taskData ? true : false,
     initialValues: {
       title: taskData?.title || "",
-      description: taskData?.description || "",
+      description: taskData?.description.toString() || "",
       deadline: taskData?.deadline || "",
       priority: taskData?.priority || "Low",
       score: taskData?.score || 1,
@@ -95,97 +95,99 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open", 
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={5}>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
+    isOpen && (
+      <Box position="absolute" zIndex={3}>
+        <Box w={width} height={height} bgColor="white" p={5}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
 
-          <Flex gap={17} mt={22}>
-            <FormControl isInvalid={formik.errors.title}>
-              <FormControl.Label>Task Title</FormControl.Label>
-              <Input
-                value={formik.values.title}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
-                placeholder="Input task title..."
-              />
-              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-            </FormControl>
+            <Flex gap={17} mt={22}>
+              <FormControl isInvalid={formik.errors.title}>
+                <FormControl.Label>Task Title</FormControl.Label>
+                <Input
+                  value={formik.values.title}
+                  onChangeText={(value) => formik.setFieldValue("title", value)}
+                  placeholder="Input task title..."
+                />
+                <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.description}>
-              <FormControl.Label>Description</FormControl.Label>
-              <TextArea
-                value={formik.values.description}
-                onChangeText={(value) => formik.setFieldValue("description", value)}
-                placeholder="Input task description..."
-              />
+              <FormControl isInvalid={formik.errors.description}>
+                <FormControl.Label>Description</FormControl.Label>
+                <TextArea
+                  value={formik.values.description}
+                  onChangeText={(value) => formik.setFieldValue("description", value)}
+                  placeholder="Input task description..."
+                />
 
-              <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
-            </FormControl>
+                <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.deadline}>
-              <FormControl.Label>End Date</FormControl.Label>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
-              <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.deadline}>
+                <FormControl.Label>End Date</FormControl.Label>
+                <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
+                <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.priority}>
-              <FormControl.Label>Priority</FormControl.Label>
-              <CustomSelect
-                value={formik.values?.priority}
-                isOpen={priorityMenuIsOpen}
-                toggle={togglePriorityMenu}
-                bgColor={"white"}
-              >
-                {statuses.map((status) => {
-                  return (
-                    <Actionsheet.Item
-                      key={status}
-                      onPress={() => {
-                        togglePriorityMenu();
-                        formik.setFieldValue("priority", status);
-                      }}
-                    >
-                      <Text>{status}</Text>
-                    </Actionsheet.Item>
-                  );
-                })}
-              </CustomSelect>
-              <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.priority}>
+                <FormControl.Label>Priority</FormControl.Label>
+                <CustomSelect
+                  value={formik.values?.priority}
+                  isOpen={priorityMenuIsOpen}
+                  toggle={togglePriorityMenu}
+                  bgColor={"white"}
+                >
+                  {statuses.map((status) => {
+                    return (
+                      <Actionsheet.Item
+                        key={status}
+                        onPress={() => {
+                          togglePriorityMenu();
+                          formik.setFieldValue("priority", status);
+                        }}
+                      >
+                        <Text>{status}</Text>
+                      </Actionsheet.Item>
+                    );
+                  })}
+                </CustomSelect>
+                <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.score}>
-              <FormControl.Label>Score</FormControl.Label>
-              <CustomSelect
-                value={formik.values?.score}
-                isOpen={scoreMenuIsOpen}
-                toggle={toggleScoreMenu}
-                bgColor={"white"}
-              >
-                {scores.map((score) => {
-                  return (
-                    <Actionsheet.Item
-                      key={score}
-                      onPress={() => {
-                        toggleScoreMenu();
-                        formik.setFieldValue("score", score);
-                      }}
-                    >
-                      <Text>{score}</Text>
-                    </Actionsheet.Item>
-                  );
-                })}
-              </CustomSelect>
-              <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.score}>
+                <FormControl.Label>Score</FormControl.Label>
+                <CustomSelect
+                  value={formik.values?.score}
+                  isOpen={scoreMenuIsOpen}
+                  toggle={toggleScoreMenu}
+                  bgColor={"white"}
+                >
+                  {scores.map((score) => {
+                    return (
+                      <Actionsheet.Item
+                        key={score}
+                        onPress={() => {
+                          toggleScoreMenu();
+                          formik.setFieldValue("score", score);
+                        }}
+                      >
+                        <Text>{score}</Text>
+                      </Actionsheet.Item>
+                    );
+                  })}
+                </CustomSelect>
+                <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">{taskData ? "Save" : "Create"}</Text>
-            </FormButton>
-          </Flex>
-        </ScrollView>
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="white">{taskData ? "Save" : "Create"}</Text>
+              </FormButton>
+            </Flex>
+          </ScrollView>
+        </Box>
       </Box>
-    </Box>
+    )
   );
 };
 
-export default NewTaskSlider;
+export default memo(NewTaskSlider);
