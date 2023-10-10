@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { Button, Modal, Spinner, Text, useToast } from "native-base";
+import { Button, Image, Modal, Spinner, Text, VStack, useToast } from "native-base";
 
 import { ErrorToast, SuccessToast } from "./ToastDialog";
 import axiosInstance from "../../config/api";
@@ -56,20 +56,28 @@ const ConfirmationModal = ({
     }
   };
   return (
-    <Modal isOpen={isOpen} onClose={!isDeleting && toggle}>
+    <Modal isOpen={isOpen} onClose={!isDeleting && toggle} size="xl">
       <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>{header}</Modal.Header>
-        <Modal.Body>
-          <Text>{description}</Text>
+        <Modal.Body bgColor="white">
+          <VStack alignItems="center">
+            <Image
+              source={require("../../assets/vectors/confirmation.jpg")}
+              alt="confirmation"
+              resizeMode="contain"
+              h={150}
+              w={150}
+            />
+            <Text textAlign="center">{description}</Text>
+          </VStack>
         </Modal.Body>
 
-        <Modal.Footer>
-          <Button.Group space={2}>
+        <Modal.Footer bgColor="white">
+          <Button.Group space={2} width="full">
             <Button
               bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
               onPress={onPressHandler}
               startIcon={isDeleting && <Spinner size="sm" color="white" />}
+              flex={1}
             >
               Confirm
             </Button>
@@ -78,6 +86,7 @@ const ConfirmationModal = ({
               disabled={isDeleting}
               onPress={!isDeleting && toggle}
               bgColor={isDeleting ? "coolGray.500" : "primary.600"}
+              flex={1}
             >
               Cancel
             </Button>
