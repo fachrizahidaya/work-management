@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Platform, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import dayjs from "dayjs";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button, Flex, Icon, IconButton, Input, Text } from "native-base";
+import { Button, Flex, Icon, Input, Text, Pressable, Box } from "native-base";
 
 /**
  * @param {number} width - The width of the component.
@@ -26,6 +26,7 @@ const CustomDateTimePicker = ({
   textLabel,
   fontSize,
 }) => {
+  const inputRef = useRef(null);
   // State for the selected date and the displayed value
   const [date, setDate] = useState(new Date());
   const [value, setValue] = useState();
@@ -87,26 +88,45 @@ const CustomDateTimePicker = ({
   return (
     <>
       {!calendarIsOpen && (
-        <Pressable onPress={toggleDatePicker} disabled={disabled}>
+        <>
           {withIcon ? (
-            <Icon onPressIn={toggleDatePicker} as={iconType} name={iconName} size={30} color={iconColor} />
+            <Icon
+              disabled={disabled}
+              onPressIn={toggleDatePicker}
+              as={iconType}
+              name={iconName}
+              size={30}
+              color={iconColor}
+            />
           ) : withText ? (
             <Text fontSize={fontSize} underline>
               {textLabel}
             </Text>
           ) : (
-            <Input
-              placeholder="DD/MM/YYYY"
-              editable={false}
-              value={value}
-              onPressIn={toggleDatePicker}
-              height={height}
-              w={width}
-              borderRadius={15}
-              style={{ height: 40 }}
-            />
+            <Box position="relative">
+              <Pressable
+                position="absolute"
+                zIndex={2}
+                top={0}
+                right={0}
+                bottom={0}
+                left={0}
+                onPress={toggleDatePicker}
+              />
+              <Input
+                ref={inputRef}
+                isDisabled={disabled}
+                isReadOnly
+                placeholder="DD/MM/YYYY"
+                editable={false}
+                value={value}
+                height={height}
+                w={width}
+                onTouchStart={() => inputRef.current.blur()}
+              />
+            </Box>
           )}
-        </Pressable>
+        </>
       )}
 
       {calendarIsOpen && (

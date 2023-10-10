@@ -24,7 +24,7 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
         px={4}
       >
         <Flex gap={0.5}>
-          <Text width={140} numberOfLines={2}>
+          <Text width={190} numberOfLines={1}>
             {title}
           </Text>
 
@@ -50,7 +50,7 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
           }}
         >
           <Text color={dayjs(deadline).fromNow().includes("ago") ? "#e56e19" : "#3f434a"}>
-            Over {dayjs(deadline).fromNow()}
+            {dayjs(deadline).fromNow().includes("ago") ? "Overdue" : `Over ${dayjs(deadline).fromNow()}`}
           </Text>
         </Box>
       </Flex>

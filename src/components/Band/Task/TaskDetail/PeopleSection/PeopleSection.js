@@ -115,7 +115,7 @@ const PeopleSection = ({
                 onPress={takeTask}
                 size="md"
                 borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
                 alignSelf="flex-start"
               />
             )}
@@ -147,7 +147,7 @@ const PeopleSection = ({
                     onPress={toggleObserverModal}
                     size="md"
                     borderRadius="full"
-                    icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                    icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
                     alignSelf="flex-start"
                   />
                 </Flex>
@@ -157,7 +157,7 @@ const PeopleSection = ({
                 onPress={toggleObserverModal}
                 size="md"
                 borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus" />} color="black" />}
+                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
                 alignSelf="flex-start"
               />
             )}

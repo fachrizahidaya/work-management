@@ -55,8 +55,8 @@ const LoginScreen = () => {
       password: yup.string().required("Password is required"),
     }),
     validateOnChange: true,
-    onSubmit: (values, { setSubmitting }) => {
-      loginHandler(values, setSubmitting);
+    onSubmit: (values) => {
+      loginHandler(values);
     },
   });
 
@@ -65,7 +65,7 @@ const LoginScreen = () => {
    * @function loginHandler
    * @param {Object} form - The login form data to be sent in the request.
    */
-  const loginHandler = async (form, setSubmitting) => {
+  const loginHandler = async (form) => {
     try {
       // Send a POST request to the authentication endpoint
       const res = await axiosInstance.post("/auth/login", form);
@@ -75,11 +75,11 @@ const LoginScreen = () => {
 
       // Navigate to the "Loading" screen with user data
       navigation.navigate("Loading", { userData });
-      setSubmitting(false);
+      formik.setSubmitting(false);
     } catch (error) {
       // Log any errors that occur during the login process
       console.log(error);
-      setSubmitting(false);
+      formik.setSubmitting(false);
     }
   };
 

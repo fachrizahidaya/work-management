@@ -97,7 +97,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
   return (
     isOpen && (
       <Box position="absolute" zIndex={3}>
-        <Box w={width} height={height} bgColor="white" p={5}>
+        <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
           <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
 

@@ -106,7 +106,7 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
     isOpen && (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Box position="absolute" zIndex={3}>
-          <Box w={width} height={height} bgColor="white" p={5}>
+          <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
             <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
 
             <Flex gap={17} mt={22}>

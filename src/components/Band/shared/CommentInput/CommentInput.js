@@ -348,7 +348,7 @@ const CommentInput = ({ taskId, projectId }) => {
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 
-                    <Text>{item?.comments}</Text>
+                    <Text fontWeight={400}>{item?.comments}</Text>
 
                     <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
                       {item.attachments.length > 0 &&
@@ -375,7 +375,7 @@ const CommentInput = ({ taskId, projectId }) => {
                 </Flex>
 
                 <Pressable mr={5} onPress={() => deleteComment(item.id)}>
-                  <Icon as={<MaterialCommunityIcons name="tooltip-remove-outline" />} color="red.600" />
+                  <Icon as={<MaterialCommunityIcons name="close" />} color="red.600" />
                 </Pressable>
               </Flex>
             )}
