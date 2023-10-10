@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import dayjs from "dayjs";
@@ -8,7 +8,7 @@ dayjs.extend(relativeTime);
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, IconButton, Menu, Pressable, Text } from "native-base";
+import { Box, Button, Flex, Icon, Menu, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -31,14 +31,17 @@ const ProjectDetailScreen = ({ route }) => {
   const [tabValue, setTabValue] = useState("comments");
   const [openEditForm, setOpenEditForm] = useState(false);
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
-  const tabs = [{ title: "comments" }, { title: "activity" }];
+
+  const tabs = useMemo(() => {
+    return [{ title: "comments" }, { title: "activity" }];
+  }, []);
 
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
   const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
 
-  const onChangeTab = (value) => {
+  const onChangeTab = useCallback((value) => {
     setTabValue(value);
-  };
+  }, []);
 
   const openEditFormHandler = () => {
     setOpenEditForm(true);
@@ -79,7 +82,7 @@ const ProjectDetailScreen = ({ route }) => {
               trigger={(triggerProps) => {
                 return (
                   <Pressable {...triggerProps} mr={1}>
-                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" />
+                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
                   </Pressable>
                 );
               }}
@@ -91,17 +94,19 @@ const ProjectDetailScreen = ({ route }) => {
             </Menu>
 
             {/* Delete confirmation modal */}
-            <ConfirmationModal
-              isOpen={deleteModalIsOpen}
-              toggle={toggle}
-              apiUrl={`/pm/projects/${projectId}`}
-              color="red.600"
-              successMessage={`${projectData?.title} deleted`}
-              hasSuccessFunc={true}
-              onSuccess={() => navigation.navigate("Project List")}
-              header="Delete Project"
-              description="Are you sure to delete this project?"
-            />
+            {deleteModalIsOpen && (
+              <ConfirmationModal
+                isOpen={deleteModalIsOpen}
+                toggle={toggle}
+                apiUrl={`/pm/projects/${projectId}`}
+                color="red.600"
+                successMessage={`${projectData?.title} deleted`}
+                hasSuccessFunc={true}
+                onSuccess={() => navigation.navigate("Project List")}
+                header="Delete Project"
+                description="Are you sure to delete this project?"
+              />
+            )}
           </Flex>
 
           <StatusSection projectId={projectId} projectData={projectData} refetch={refetch} />
@@ -176,7 +181,12 @@ const ProjectDetailScreen = ({ route }) => {
       </KeyboardAwareScrollView>
 
       {openEditForm && (
-        <ProjectForm projectData={projectData} refetchSelectedProject={refetch} onClose={onCloseEditForm} />
+        <ProjectForm
+          isOpen={openEditForm}
+          projectData={projectData}
+          refetchSelectedProject={refetch}
+          onClose={onCloseEditForm}
+        />
       )}
     </SafeAreaView>
   );

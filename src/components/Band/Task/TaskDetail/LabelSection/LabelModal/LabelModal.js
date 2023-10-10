@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -14,6 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../../hooks/useLoading";
 
 const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetch, refetchTaskLabels }) => {
+  console.log("modal rendered");
   const toast = useToast();
   const { isLoading, start, stop } = useLoading(false);
 
@@ -85,7 +86,6 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       name: "",
       color: "",

@@ -102,7 +102,6 @@ const ChecklistSection = ({ taskId }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       title: "",
     },
@@ -125,10 +124,10 @@ const ChecklistSection = ({ taskId }) => {
     <>
       <FormControl>
         <FormControl.Label>
-          CHECKLIST ({(finishChecklists?.length / checklists?.data?.length) * 100}%)
+          CHECKLIST ({(finishChecklists?.length / checklists?.data?.length || 0) * 100}%)
         </FormControl.Label>
         <Slider
-          value={(finishChecklists?.length / checklists?.data?.length) * 100}
+          value={(finishChecklists?.length / checklists?.data?.length || 0) * 100}
           size="sm"
           colorScheme="blue"
           w="100%"
@@ -190,16 +189,19 @@ const ChecklistSection = ({ taskId }) => {
           </VStack>
         </Actionsheet.Content>
       </Actionsheet>
-      <ConfirmationModal
-        isOpen={deleteChecklistModalIsOpen}
-        toggle={toggleDeleteChecklist}
-        apiUrl={`/pm/tasks/checklist/${selectedChecklist?.id}`}
-        successMessage="Checklist deleted"
-        header="Delete Checklist"
-        description={`Are you sure to delete ${selectedChecklist?.title}?`}
-        hasSuccessFunc={true}
-        onSuccess={refetchChecklists}
-      />
+
+      {deleteChecklistModalIsOpen && (
+        <ConfirmationModal
+          isOpen={deleteChecklistModalIsOpen}
+          toggle={toggleDeleteChecklist}
+          apiUrl={`/pm/tasks/checklist/${selectedChecklist?.id}`}
+          successMessage="Checklist deleted"
+          header="Delete Checklist"
+          description={`Are you sure to delete ${selectedChecklist?.title}?`}
+          hasSuccessFunc={true}
+          onSuccess={refetchChecklists}
+        />
+      )}
     </>
   );
 };

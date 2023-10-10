@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { Button, Flex, Image, Modal, Skeleton, Text, VStack } from "native-base";
 
@@ -17,10 +17,10 @@ const ActiveTaskCard = () => {
   const { data: tasks, isLoading, refetch } = useFetch(`/pm/tasks/${status}`, [status], { limit: 10 });
   const { data: allTasks, isLoading: allTasksLoading } = useFetch(openMore && `/pm/tasks/${status}`);
 
-  const openCloseModal = (task) => {
+  const openCloseModal = useCallback((task) => {
     setSelectedTask(task);
     toggle();
-  };
+  }, []);
 
   return (
     <>
@@ -147,4 +147,4 @@ const ActiveTaskCard = () => {
   );
 };
 
-export default memo(ActiveTaskCard);
+export default ActiveTaskCard;

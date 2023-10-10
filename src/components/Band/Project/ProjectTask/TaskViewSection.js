@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { Button, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -55,4 +55,4 @@ const TaskViewSection = ({ changeView, view }) => {
   );
 };
 
-export default TaskViewSection;
+export default memo(TaskViewSection);

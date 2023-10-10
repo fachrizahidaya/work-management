@@ -1,4 +1,5 @@
-import React from "react";
+import React, { memo } from "react";
+
 import { Box, Flex, Pressable, Text } from "native-base";
 
 /**
@@ -23,4 +24,4 @@ const Tabs = ({ tabs = [], value, onChange }) => {
   );
 };
 
-export default Tabs;
+export default memo(Tabs);

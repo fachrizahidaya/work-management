@@ -13,7 +13,7 @@ import LogoutScreen from "../screens/LogoutScreen";
 // Band Screens
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../screens/Band/project/project-task";
-import TaskDetailScreen from "../screens/Band/taskDetail/[taskId]";
+import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";

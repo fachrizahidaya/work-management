@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { Actionsheet, Box, Flex, Icon, Pressable, Text, VStack, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -111,4 +111,4 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
   );
 };
 
-export default StatusSection;
+export default memo(StatusSection);

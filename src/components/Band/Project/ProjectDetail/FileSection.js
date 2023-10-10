@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
@@ -196,4 +196,4 @@ const FileSection = ({ projectId }) => {
   );
 };
 
-export default FileSection;
+export default memo(FileSection);

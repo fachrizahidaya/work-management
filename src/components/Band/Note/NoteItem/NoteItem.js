@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import dayjs from "dayjs";
 
@@ -82,7 +82,7 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
   );
 };
 
-export default NoteItem;
+export default memo(NoteItem);
 
 const styles = StyleSheet.create({
   card: {

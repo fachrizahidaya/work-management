@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 
 import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,17 +12,17 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
 
-  const onCloseTaskForm = () => {
+  const onCloseTaskForm = useCallback(() => {
     setNewTaskIsOpen(false);
-  };
+  }, []);
 
-  const onCloseProjectForm = () => {
+  const onCloseProjectForm = useCallback(() => {
     setNewProjectIsOpen(false);
-  };
+  }, []);
 
-  const onCloseNoteForm = () => {
+  const onCloseNoteForm = useCallback(() => {
     setNewNoteIsOpen(false);
-  };
+  }, []);
 
   const items = [
     {
@@ -79,11 +79,11 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
         </Actionsheet.Content>
       </Actionsheet>
 
-      {newProjectIsOpen && <NewProjectSlider onClose={onCloseProjectForm} />}
-      {newTaskIsOpen && <NewTaskSlider onClose={onCloseTaskForm} />}
-      {newNoteIsOpen && <NewNoteSlider onClose={onCloseNoteForm} refreshFunc={false} />}
+      {newProjectIsOpen && <NewProjectSlider isOpen={newProjectIsOpen} onClose={onCloseProjectForm} />}
+      {newTaskIsOpen && <NewTaskSlider isOpen={newTaskIsOpen} onClose={onCloseTaskForm} />}
+      {newNoteIsOpen && <NewNoteSlider isOpen={newNoteIsOpen} onClose={onCloseNoteForm} refreshFunc={false} />}
     </>
   );
 };
 
-export default AddNewBandSlider;
+export default memo(AddNewBandSlider);

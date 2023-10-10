@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Center, Flex, Icon, Pressable, Text } from "native-base";
@@ -16,7 +16,6 @@ import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AdHocScreen = () => {
-  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
@@ -45,29 +44,25 @@ const AdHocScreen = () => {
     return val !== null;
   });
 
-  const onPressTaskItem = (task) => {
-    navigation.navigate("Task Detail", { taskId: task.id });
-  };
-
-  const onOpenTaskFormWithStatus = (status) => {
+  const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
     setSelectedStatus(status);
-  };
+  }, []);
 
-  const onCloseTaskForm = (resetForm) => {
+  const onCloseTaskForm = useCallback((resetForm) => {
     toggleTaskForm();
     setSelectedStatus("Open");
     resetForm();
-  };
+  }, []);
 
-  const changeView = (value) => {
+  const changeView = useCallback((value) => {
     setView(value);
-  };
+  }, []);
 
-  const onOpenCloseConfirmation = (task) => {
+  const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -107,7 +102,6 @@ const AdHocScreen = () => {
             <TaskList
               tasks={filteredData}
               isLoading={taskIsLoading}
-              openDetail={onPressTaskItem}
               openNewTaskForm={onOpenTaskFormWithStatus}
               openCloseTaskConfirmation={onOpenCloseConfirmation}
             />
@@ -125,6 +119,7 @@ const AdHocScreen = () => {
           )}
         </ScrollView>
 
+        {/* Task Form */}
         {taskFormIsOpen && (
           <NewTaskSlider
             selectedStatus={selectedStatus}
