@@ -94,11 +94,13 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
             late: item?.late,
             lateReason: item?.late_reason,
             lateType: item?.late_type,
+            lateStatus: item?.late_status,
             dayType: item?.day_type,
             timeOut: item?.time_out,
             early: item?.early,
             earlyReason: item?.early_reason,
             earlyType: item?.early_type,
+            earlyStatus: item?.early_status,
             confirmation: item?.confirm,
             date: item?.date,
           },
@@ -181,126 +183,125 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
-            {date?.late && !date?.lateType && (
-              <Modal.Body>
-                <VStack
-                  w="95%"
-                  space={3}
-                  // pb={keyboardHeight}
-                >
-                  <VStack w="100%" space={2}>
-                    <FormControl
-                    // isInvalid={formik.errors.leave_id}
-                    >
-                      <FormControl.Label>Late Type</FormControl.Label>
-                    </FormControl>
-                    <Select
-                      // mt={-3}
-                      // selectedValue={formik.values.leave_id}
-                      // onValueChange={(value) => formik.setFieldValue("leave_id", value)}
-                      borderRadius={15}
-                      borderWidth={1}
-                      variant="unstyled"
-                      // key="leave_id"
-                      placeholder="Select Late Type"
-                      dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                    >
-                      {lateType.map((item) => {
-                        return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
-                      })}
-                    </Select>
-                    <FormControl
-                      mt={-2}
+            {(date?.late && !date?.lateType) ||
+              (date?.late && date?.lateType && (
+                <Modal.Body>
+                  <VStack
+                    w="95%"
+                    space={3}
+                    // pb={keyboardHeight}
+                  >
+                    <VStack w="100%" space={2}>
+                      <FormControl
                       // isInvalid={formik.errors.leave_id}
-                    >
-                      {/* <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage> */}
-                    </FormControl>
-                    <FormControl.Label>Reason</FormControl.Label>
+                      >
+                        <FormControl.Label>Late Type</FormControl.Label>
+                      </FormControl>
+                      <Select
+                        // mt={-3}
+                        // selectedValue={formik.values.leave_id}
+                        // onValueChange={(value) => formik.setFieldValue("leave_id", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        // key="leave_id"
+                        placeholder="Select Late Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                      >
+                        {lateType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
+                        })}
+                      </Select>
+                      <FormControl
+                        mt={-2}
+                        // isInvalid={formik.errors.leave_id}
+                      >
+                        {/* <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage> */}
+                      </FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
 
-                    <FormControl
-                    // isInvalid={formik.errors.password}
-                    >
-                      <Input
-                        variant="outline"
-                        placeholder="Enter your reason"
-                        // value={formik.values.password}
-                        // onChangeText={(value) => formik.setFieldValue("password", value)}
-                      />
-                      {/* <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage> */}
-                    </FormControl>
+                      <FormControl
+                      // isInvalid={formik.errors.password}
+                      >
+                        <Input
+                          variant="outline"
+                          placeholder="Enter your reason"
+                          // value={formik.values.password}
+                          // onChangeText={(value) => formik.setFieldValue("password", value)}
+                        />
+                        {/* <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage> */}
+                      </FormControl>
+                    </VStack>
                   </VStack>
-                </VStack>
-              </Modal.Body>
-            )}
-            {date?.early && !date?.earlyType && (
-              <Modal.Body>
-                <VStack
-                  w="95%"
-                  space={3}
-                  // pb={keyboardHeight}
-                >
-                  <VStack w="100%" space={2}>
-                    <FormControl
-                    // isInvalid={formik.errors.leave_id}
-                    >
-                      <FormControl.Label>Early Type</FormControl.Label>
-                    </FormControl>
-                    <Select
-                      // mt={-3}
-                      // selectedValue={formik.values.leave_id}
-                      // onValueChange={(value) => formik.setFieldValue("leave_id", value)}
-                      borderRadius={15}
-                      borderWidth={1}
-                      variant="unstyled"
-                      // key="leave_id"
-                      placeholder="Select Early Type"
-                      dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                    >
-                      {earlyType.map((item) => {
-                        return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
-                      })}
-                    </Select>
-                    <FormControl
-                      mt={-2}
+                </Modal.Body>
+              ))}
+            {(date?.early && !date?.earlyType) ||
+              (date?.early && date?.earlyType && (
+                <Modal.Body>
+                  <VStack
+                    w="95%"
+                    space={3}
+                    // pb={keyboardHeight}
+                  >
+                    <VStack w="100%" space={2}>
+                      <FormControl
                       // isInvalid={formik.errors.leave_id}
-                    >
-                      {/* <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage> */}
-                    </FormControl>
-                    <FormControl.Label>Reason</FormControl.Label>
+                      >
+                        <FormControl.Label>Early Type</FormControl.Label>
+                      </FormControl>
+                      <Select
+                        // mt={-3}
+                        // selectedValue={formik.values.leave_id}
+                        // onValueChange={(value) => formik.setFieldValue("leave_id", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        // key="leave_id"
+                        placeholder="Select Early Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                      >
+                        {earlyType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
+                        })}
+                      </Select>
+                      <FormControl
+                        mt={-2}
+                        // isInvalid={formik.errors.leave_id}
+                      >
+                        {/* <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage> */}
+                      </FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
 
-                    <FormControl
-                    // isInvalid={formik.errors.password}
-                    >
-                      <Input
-                        variant="outline"
-                        placeholder="Enter your reason"
-                        // value={formik.values.password}
-                        // onChangeText={(value) => formik.setFieldValue("password", value)}
-                      />
-                      {/* <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage> */}
-                    </FormControl>
+                      <FormControl
+                      // isInvalid={formik.errors.password}
+                      >
+                        <Input
+                          variant="outline"
+                          placeholder="Enter your reason"
+                          // value={formik.values.password}
+                          // onChangeText={(value) => formik.setFieldValue("password", value)}
+                        />
+                        {/* <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage> */}
+                      </FormControl>
+                    </VStack>
                   </VStack>
-                </VStack>
-              </Modal.Body>
-            )}
-            {date?.lateType || date?.earlyType ? (
+                </Modal.Body>
+              ))}
+            {date?.lateReason || date?.earlyReason ? (
               <Modal.Body>
-                <VStack
-                  w="95%"
-                  space={3}
-                  // pb={keyboardHeight}
-                >
+                <VStack w="95%" space={3}>
                   <VStack w="100%" space={2}>
                     <FormControl>
                       <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
                       <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text>
                     </FormControl>
-
-                    <FormControl
-                    // isInvalid={formik.errors.password}
-                    >
+                    <FormControl>
                       <FormControl.Label>Reason</FormControl.Label>
                       <Text>{date?.lateReason ? date?.lateReason : date?.earlyReason}</Text>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Status</FormControl.Label>
+                      <Text>{date?.lateStatus ? date?.lateStatus : date?.earlyStatus}</Text>
                     </FormControl>
                   </VStack>
                 </VStack>
@@ -308,17 +309,25 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
             ) : null}
 
             <Modal.Footer>
-              <FormButton color="muted.500" size="sm" variant="outline" onPress={toggleReport}>
-                <Text color="white">Cancel</Text>
-              </FormButton>
-              <FormButton
-                size="sm"
-                variant="solid"
-                // isSubmitting={formik.isSubmitting}
-                // onPress={formik.handleSubmit}
-              >
-                <Text color="white">Save</Text>
-              </FormButton>
+              {date?.lateType || date?.earlyType ? (
+                <FormButton color="red.800" size="sm" variant="outline" onPress={toggleReport}>
+                  <Text color="white">Close</Text>
+                </FormButton>
+              ) : (
+                <>
+                  <FormButton color="red.800" size="sm" variant="outline" onPress={toggleReport}>
+                    <Text color="white">Cancel</Text>
+                  </FormButton>
+                  <FormButton
+                    size="sm"
+                    variant="solid"
+                    // isSubmitting={formik.isSubmitting}
+                    // onPress={formik.handleSubmit}
+                  >
+                    <Text color="white">Save</Text>
+                  </FormButton>
+                </>
+              )}
             </Modal.Footer>
           </Modal.Content>
         </Modal>
