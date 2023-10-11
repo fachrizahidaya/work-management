@@ -6,7 +6,7 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, Menu, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -25,6 +25,7 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import PageHeader from "../../../components/shared/PageHeader";
 
 const ProjectDetailScreen = ({ route }) => {
+  const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
   const { projectId } = route.params;
   const [projectData, setProjectData] = useState({});
@@ -75,6 +76,7 @@ const ProjectDetailScreen = ({ route }) => {
               title={projectData?.title}
               withLoading
               isLoading={isLoading}
+              width={width / 1.3}
               onPress={() => navigation.navigate("Project List")}
             />
 
