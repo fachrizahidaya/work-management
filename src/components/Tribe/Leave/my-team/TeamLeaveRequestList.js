@@ -46,11 +46,7 @@ const TeamLeaveRequestList = ({
             </Text>
           </Flex>
         </Flex>
-        {status === "Pending" ? null : (
-          <Pressable onPress={toggleAction}>
-            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
-          </Pressable>
-        )}
+
         <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
           <Actionsheet.Content>
             <Actionsheet.Item>Cancel Leave</Actionsheet.Item>

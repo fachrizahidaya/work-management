@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import { Flex, Icon, Pressable, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const PageHeader = ({ title, backButton = true, withLoading, isLoading, onPress }) => {
+const PageHeader = ({ width, title, backButton = true, withLoading, isLoading, onPress }) => {
   return (
     <Flex flexDir="row" style={{ gap: 6 }}>
       {backButton && (
@@ -21,7 +21,7 @@ const PageHeader = ({ title, backButton = true, withLoading, isLoading, onPress 
           <Skeleton h={8} w={200} />
         )
       ) : (
-        <Text fontSize={16} w={160}>
+        <Text fontSize={16} w={width ? width : 160}>
           {title}
         </Text>
       )}
