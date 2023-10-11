@@ -9,7 +9,6 @@ const CalendarScreen = () => {
   const { data: projectDeadlines } = useFetch("/pm/projects/deadline");
   const { data: holidays } = useFetch("/hr/holidays/calendar");
   const { data: taskDeadlines } = useFetch("/pm/tasks/deadline");
-  console.log(holidays?.data);
 
   const formattedProjectDeadlines = {};
   const formattedTaskDeadlines = {};

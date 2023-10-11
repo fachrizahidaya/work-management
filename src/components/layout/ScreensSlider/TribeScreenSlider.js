@@ -10,7 +10,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
   const { height } = Dimensions.get("window");
 
   const items = [
-    { icons: "sticker-text-outline", title: "Feed", screen: "Feed" },
+    { icons: "rss", title: "Feed", screen: "Feed" },
     { icons: "account-outline", title: "My Information", screen: "My Information" },
     { icons: "clipboard-text-clock-outline", title: "Attendance History", screen: "Attendance History" },
     { icons: "car-outline", title: "Leave Request", screen: "Leave Request" },

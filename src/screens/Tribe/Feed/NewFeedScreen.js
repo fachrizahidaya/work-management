@@ -99,6 +99,7 @@ const NewFeedScreen = ({ route }) => {
         render: () => {
           return <SuccessToast message={`Posted succesfuly!`} />;
         },
+        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -213,7 +214,7 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
-      <Flex mt={3}>
+      <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
         <FormControl isInvalid={formik.errors.content}>
           <TextArea
             minH={100}
@@ -257,7 +258,7 @@ const NewFeedScreen = ({ route }) => {
           </Flex>
           <Flex gap={1} my={2} pt={2} flexDir="row">
             <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
-              <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
+              <Icon as={<MaterialCommunityIcons name="attachment" />} size={30} color="#377893" />
             </Pressable>
           </Flex>
 
@@ -299,7 +300,7 @@ const NewFeedScreen = ({ route }) => {
                       ) : null}
                     </Flex>
                   </Box>
-                  {formik.values.type === "Announcement" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                  {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
                 </Flex>
               </Actionsheet.Item>
             </Actionsheet.Content>

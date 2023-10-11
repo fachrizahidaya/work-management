@@ -99,7 +99,10 @@ const FeedScreen = () => {
 
         <Pressable
           style={styles.createIcon}
+          shadow="0"
           borderRadius="full"
+          borderWidth={3}
+          borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
               toggleNewFeed: toggleNewFeed,
