@@ -4,20 +4,23 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { TouchableOpacity } from "react-native";
-import { Button, Flex, HStack, Icon, Menu, Text, useToast } from "native-base";
+import { Actionsheet, Button, Flex, HStack, Icon, Menu, Spinner, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
+import { useLoading } from "../../../../../hooks/useLoading";
 
 const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm, refetchTask }) => {
   const navigation = useNavigation();
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const isDisabled = taskStatus === "Finish" || taskStatus === "Closed";
+  const { isOpen: sheetIsOpen, toggle: toggleSheet } = useDisclosure(false);
+  const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const isDisabled = taskStatus === "Closed";
 
   /**
    * Handles take task as responsible
@@ -56,6 +59,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
    */
   const changeTaskStatus = async (status) => {
     try {
+      toggleLoading();
       await axiosInstance.post(`/pm/tasks/${status}`, {
         id: selectedTask?.id,
       });
@@ -64,9 +68,12 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
           return <SuccessToast message={`Task ${status}ed`} />;
         },
       });
+      toggleLoading();
+      toggleSheet();
       refetchTask();
     } catch (error) {
       console.log(error);
+      toggleLoading();
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -94,30 +101,26 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
           </Menu.Item>
         </Menu>
 
-        <Menu
-          w="160"
-          trigger={(triggerProps) => {
-            return (
-              <Button
-                size="md"
-                {...triggerProps}
-                disabled={isDisabled}
-                bgColor={isDisabled ? "gray.500" : "primary.600"}
-              >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Text color="white">{taskStatus}</Text>
-                </Flex>
-              </Button>
-            );
-          }}
-        >
-          {taskStatus === "Open" ? (
-            <Menu.Item onPress={() => changeTaskStatus("start")}>Start</Menu.Item>
-          ) : (
-            <Menu.Item onPress={() => changeTaskStatus("finish")}>Finish</Menu.Item>
-          )}
-        </Menu>
+        <Button size="md" disabled={isDisabled} bgColor={isDisabled ? "gray.500" : "primary.600"} onPress={toggleSheet}>
+          <Flex flexDir="row" alignItems="center" gap={1}>
+            {isLoading ? <Spinner size="sm" color="white" /> : <Text color="white">{taskStatus}</Text>}
+          </Flex>
+        </Button>
       </HStack>
+
+      <Actionsheet isOpen={sheetIsOpen} onClose={toggleSheet}>
+        <Actionsheet.Content>
+          <Actionsheet.Item onPress={() => changeTaskStatus("open")} disabled={isLoading}>
+            Open
+          </Actionsheet.Item>
+          <Actionsheet.Item onPress={() => changeTaskStatus("start")} disabled={isLoading}>
+            On Progress
+          </Actionsheet.Item>
+          <Actionsheet.Item onPress={() => changeTaskStatus("finish")} disabled={isLoading}>
+            Finish
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
 
       <ConfirmationModal
         isOpen={isOpen}
