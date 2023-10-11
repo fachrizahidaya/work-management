@@ -13,22 +13,30 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
   const navigation = useNavigation();
 
   const handleCallPress = () => {
-    const phoneUrl = `tel:0${phone}`;
-    Linking.openURL(phoneUrl).catch((err) => console.log(err));
+    try {
+      const phoneUrl = `tel:0${phone}`;
+      Linking.openURL(phoneUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleEmailPress = () => {
-    const emailUrl = `mailto:${email}`;
-    Linking.openURL(emailUrl)
-      .then(() => console.log("Success to email"))
-      .catch((err) => console.log(err));
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleWhatsappPress = () => {
-    const whatsappUrl = `whatsapp://send?phone=+62${phone}`;
-    Linking.openURL(whatsappUrl)
-      .then(() => console.log("Success to Whatsapp"))
-      .catch((err) => console.log(err));
+    try {
+      const whatsappUrl = `whatsapp://send?phone=+62${phone}`;
+      Linking.openURL(whatsappUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

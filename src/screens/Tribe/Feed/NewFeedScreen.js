@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -31,7 +31,6 @@ import { SuccessToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import FormButton from "../../../components/shared/FormButton";
-import { useEffect } from "react";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);

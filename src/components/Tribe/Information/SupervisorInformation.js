@@ -1,11 +1,9 @@
+import { Linking, TouchableOpacity } from "react-native";
 import { Box, Divider, Flex, Icon, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
-import { Linking, TouchableOpacity } from "react-native";
 
 const SupervisorInformation = ({
   supervisorName,

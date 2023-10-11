@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
+import { Linking, TouchableOpacity } from "react-native";
 import { Badge, Flex, Icon, Pressable, Text, Actionsheet } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -8,29 +9,36 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import { Linking, TouchableOpacity } from "react-native";
 
 const ContactGrid = ({ id, name, position, division, status, image, phone, email }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const navigation = useNavigation();
 
   const handleCallPress = () => {
-    const phoneUrl = `tel:0${phone}`;
-    Linking.openURL(phoneUrl).catch((err) => console.log(err));
+    try {
+      const phoneUrl = `tel:0${phone}`;
+      Linking.openURL(phoneUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleEmailPress = () => {
-    const emailUrl = `mailto:${email}`;
-    Linking.openURL(emailUrl)
-      .then(() => console.log("Success to email"))
-      .catch((err) => console.log(err));
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleWhatsappPress = () => {
-    const whatsappUrl = `whatsapp://send?phone=+62${phone}`;
-    Linking.openURL(whatsappUrl)
-      .then(() => console.log("Success to Whatsapp"))
-      .catch((err) => console.log(err));
+    try {
+      const whatsappUrl = `whatsapp://send?phone=+62${phone}`;
+      Linking.openURL(whatsappUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

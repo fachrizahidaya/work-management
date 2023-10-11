@@ -15,6 +15,7 @@ import {
   Pressable,
   Text,
   VStack,
+  useToast,
 } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,6 +24,7 @@ import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
+import { SuccessToast } from "../../../shared/ToastDialog";
 
 const TeamLeaveRequestList = ({
   id,
@@ -39,31 +41,20 @@ const TeamLeaveRequestList = ({
   object,
   refetchTeamLeaveRequest,
 }) => {
-  const [selectedPendingApproval, setSelectedPensdingApproval] = useState(null);
   const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
-  const leaveResponseHandler = async (response) => {
-    try {
-      const res = await axiosInstance.patch(`/hr/leave-requests/${id}/${response}`);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchPendingApprovalDetail = async (pending_approval_id) => {
-    try {
-      const res = await axiosInstance.get(`/hr/approvals/pending/${pending_approval_id}`);
-      setSelectedPendingApproval(res.data?.data);
-      toggleApprovalAction();
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const toast = useToast();
 
   const approvalResponseHandler = async (data) => {
     try {
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
       refetchTeamLeaveRequest();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Task assigned`} />;
+        },
+        placement: "top",
+      });
     } catch (err) {
       console.log(err);
     }
@@ -133,38 +124,6 @@ const TeamLeaveRequestList = ({
         ) : (
           <Text color={status === "Rejected" || status === "Canceled" ? "#FF6262" : "#437D96"}>{status}</Text>
         )}
-        <Modal size="xl" isOpen={approvalActionIsOpen} onClose={toggleApprovalAction}>
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>Approve Leave Request</Modal.Header>
-
-            <Modal.Body>
-              <VStack
-                w="95%"
-                space={3}
-                // pb={keyboardHeight}
-              >
-                <VStack w="100%" space={2}>
-                  <Text>Are you sure to approve this request?</Text>
-                </VStack>
-              </VStack>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <FormButton onPress={toggleApprovalAction} color="muted.500" size="sm" variant="outline">
-                <Text color="white">Cancel</Text>
-              </FormButton>
-              <FormButton
-                size="sm"
-                variant="solid"
-                // isSubmitting={formik.isSubmitting}
-                // onPress={formik.handleSubmit}
-              >
-                <Text color="white">Confirm</Text>
-              </FormButton>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
       </Flex>
     </Box>
   );
