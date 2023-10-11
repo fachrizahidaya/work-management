@@ -283,7 +283,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
             )}
 
             <Modal.Footer>
-              <FormButton size="sm" variant="outline" onPress={toggleReport}>
+              <FormButton color="red" size="sm" variant="outline" onPress={toggleReport}>
                 <Text color="white">Cancel</Text>
               </FormButton>
               <FormButton
