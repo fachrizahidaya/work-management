@@ -41,8 +41,8 @@ const LoginScreen = () => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
   const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: "509807030668-rb8ssvhb83nr97c9t9rm52riv0fd9tbi.apps.googleusercontent.com",
-    androidClientId: "509807030668-avkkna2j6lpj09j2c27dedupoa0p25qu.apps.googleusercontent.com",
+    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+    androidClientId: process.env.EXPO_PUBLIC_ANDROID_ID,
   });
 
   const formik = useFormik({

@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
+import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
@@ -64,11 +65,7 @@ const SettingScreen = () => {
             <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
               <Box>
                 <Flex direction="row" gap={4}>
-                  <Avatar
-                    source={{
-                      uri: `${process.env.EXPO_PUBLIC_API}/image/${userSelector.image}/thumb`,
-                    }}
-                  />
+                  <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" />
                   <Box>
                     <Text fontSize={20} fontWeight={700}>
                       {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
@@ -90,26 +87,28 @@ const SettingScreen = () => {
               p="8px 12px"
             >
               <Flex flexDir="row" alignItems="center" gap={4}>
-                <Center px={3}>
-                  <Avatar.Group>
-                    {!teamIsLoading ? (
-                      team.data.length > 0 &&
-                      team.data.map((item) => {
-                        return (
-                          <Avatar
-                            key={item.id}
-                            size="sm"
-                            source={{
-                              uri: `${process.env.EXPO_PUBLIC_API}/image/${item.image}`,
-                            }}
-                          />
-                        );
-                      })
-                    ) : (
-                      <Skeleton h={35} />
-                    )}
-                  </Avatar.Group>
-                </Center>
+                {team?.data?.length > 0 && (
+                  <Center px={3}>
+                    <Avatar.Group>
+                      {!teamIsLoading ? (
+                        team.data.length > 0 &&
+                        team.data.map((item) => {
+                          return (
+                            <Avatar
+                              key={item.id}
+                              size="sm"
+                              source={{
+                                uri: `${process.env.EXPO_PUBLIC_API}/image/${item.image}`,
+                              }}
+                            />
+                          );
+                        })
+                      ) : (
+                        <Skeleton h={35} />
+                      )}
+                    </Avatar.Group>
+                  </Center>
+                )}
 
                 <Flex flexDirection="row" gap={1}>
                   {myProfile?.data && <Text>{myProfile.data.division_name || "You have no team"}</Text>}

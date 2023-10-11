@@ -4,20 +4,18 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Pressable, Select, VStack } from "native-base";
+import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFilteredData }) => {
   const [selectedLabel, setSelectedLabel] = useState("");
-  const [searchInput, setSearchInput] = useState("");
   const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
 
   let filteredArr = data;
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       title: "",
       priority: "",
