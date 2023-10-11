@@ -1,21 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+
+import _ from "lodash";
 
 import { FlashList } from "@shopify/flash-list";
-import { Box, Modal } from "native-base";
+import { Box, Icon, IconButton, Input, Modal } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 
 const AddMemberModal = ({ isOpen, onClose, onPressHandler }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [users, setUsers] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [inputToShow, setInputToShow] = useState("");
+  const [cumulativeData, setCumulativeData] = useState([]);
+  const [filteredDataArray, setFilteredDataArray] = useState([]);
 
   const userFetchParameters = {
     page: currentPage,
+    search: searchKeyword,
     limit: 10,
   };
 
-  const { data } = useFetch("/setting/users", [currentPage], userFetchParameters);
+  const { data } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -27,22 +34,59 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler }) => {
     }
   };
 
+  const searchHandler = useCallback(
+    _.debounce((value) => {
+      setSearchKeyword(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
   useEffect(() => {
-    if (data?.data?.data) {
-      setUsers((prevData) => [...prevData, ...data?.data?.data]);
+    if (data?.data?.data?.length) {
+      if (!searchKeyword) {
+        setCumulativeData((prevData) => [...prevData, ...data?.data?.data]);
+        setFilteredDataArray([]);
+      } else {
+        setFilteredDataArray((prevData) => [...prevData, ...data?.data?.data]);
+        setCumulativeData([]);
+      }
     }
-  }, [data?.data?.data]);
+  }, [data]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>New Member</Modal.Header>
         <Modal.Body>
-          <Box flex={1} height={180}>
+          <Input
+            value={inputToShow}
+            placeholder="Search user..."
+            size="md"
+            onChangeText={(value) => {
+              searchHandler(value);
+              setInputToShow(value);
+            }}
+            InputRightElement={
+              inputToShow && (
+                <IconButton
+                  onPress={() => {
+                    setSearchKeyword("");
+                    setInputToShow("");
+                  }}
+                  icon={<Icon as={<MaterialCommunityIcons name="close" />} color="#3F434A" />}
+                  rounded="full"
+                  size="sm"
+                  mr={2}
+                />
+              )
+            }
+          />
+          <Box flex={1} height={300} mt={4}>
             <FlashList
               estimatedItemSize={200}
-              data={users}
+              data={cumulativeData.length ? cumulativeData : filteredDataArray}
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
               onEndReached={fetchMoreData}
