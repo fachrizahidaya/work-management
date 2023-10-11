@@ -256,11 +256,6 @@ const NewFeedScreen = ({ route }) => {
               )
             ) : null}
           </Flex>
-          <Flex gap={1} my={2} pt={2} flexDir="row">
-            <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
-              <Icon as={<MaterialCommunityIcons name="attachment" />} size={30} color="#377893" />
-            </Pressable>
-          </Flex>
 
           <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
             <Actionsheet.Content>
@@ -306,6 +301,11 @@ const NewFeedScreen = ({ route }) => {
             </Actionsheet.Content>
           </Actionsheet>
         </FormControl>
+        <Flex mt={1} py={3} px={2} flexDir="row">
+          <Pressable onPress={pickImageHandler}>
+            <Icon as={<MaterialCommunityIcons name="attachment" />} size={25} color="#377893" />
+          </Pressable>
+        </Flex>
       </Flex>
     </Box>
   );

@@ -34,15 +34,9 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
             Phone:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
+            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
               {phone}
             </Text>
-            <Icon
-              onPress={() => CopyToClipboard(phone)}
-              as={<MaterialCommunityIcons name="content-copy" />}
-              size={3}
-              color="#3F434A"
-            />
           </Flex>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" flexDir="row">
@@ -50,15 +44,9 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
             Email:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
+            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
               {email}
             </Text>
-            <Icon
-              onPress={() => CopyToClipboard(email)}
-              as={<MaterialCommunityIcons name="content-copy" />}
-              size={3}
-              color="#3F434A"
-            />
           </Flex>
         </Flex>
       </Box>

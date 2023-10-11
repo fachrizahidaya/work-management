@@ -39,7 +39,7 @@ const TeamLeaveRequestList = ({
   object,
   refetchTeamLeaveRequest,
 }) => {
-  const [selectedPendingApproval, setSelectedPendingApproval] = useState(null);
+  const [selectedPendingApproval, setSelectedPensdingApproval] = useState(null);
   const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
   const leaveResponseHandler = async (response) => {
@@ -53,9 +53,7 @@ const TeamLeaveRequestList = ({
   const fetchPendingApprovalDetail = async (pending_approval_id) => {
     try {
       const res = await axiosInstance.get(`/hr/approvals/pending/${pending_approval_id}`);
-
       setSelectedPendingApproval(res.data?.data);
-
       toggleApprovalAction();
     } catch (err) {
       console.log(err);
