@@ -29,7 +29,6 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
-import { Platform } from "react-native";
 
 const CostSection = ({ taskId, disabled }) => {
   const toast = useToast();
@@ -82,7 +81,6 @@ const CostSection = ({ taskId, disabled }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       cost_name: "",
       cost_amount: "",
@@ -115,15 +113,7 @@ const CostSection = ({ taskId, disabled }) => {
       <FormControl>
         <FormControl.Label>COST</FormControl.Label>
         <Box position="relative">
-          <Pressable
-            onPress={() => onCloseActionSheet(formik.resetForm)}
-            position="absolute"
-            zIndex={2}
-            top={0}
-            right={0}
-            bottom={0}
-            left={0}
-          />
+          <Pressable onPress={toggle} position="absolute" zIndex={2} top={0} right={0} bottom={0} left={0} />
 
           <Input
             isReadOnly
@@ -171,7 +161,7 @@ const CostSection = ({ taskId, disabled }) => {
                 <>
                   <Divider orientation="horizontal" />
                   <VStack w="100%" space={2}>
-                    <FormControl.Label justifyContent="center">Add New Cost</FormControl.Label>
+                    <FormControl.Label>Add New Cost</FormControl.Label>
 
                     <FormControl isInvalid={formik.errors.cost_name}>
                       <Input
@@ -202,16 +192,20 @@ const CostSection = ({ taskId, disabled }) => {
         </Actionsheet>
       )}
 
-      <ConfirmationModal
-        isOpen={deleteCostModalisOpen}
-        toggle={toggleDeleteModal}
-        apiUrl={`/pm/tasks/cost/${selectedCost?.id}`}
-        successMessage="Cost deleted"
-        header="Delete Cost"
-        description={`Are you sure to delete ${selectedCost?.title}?`}
-        hasSuccessFunc={true}
-        onSuccess={refechCosts}
-      />
+      <Box>
+        {deleteCostModalisOpen && (
+          <ConfirmationModal
+            isOpen={deleteCostModalisOpen}
+            toggle={toggleDeleteModal}
+            apiUrl={`/pm/tasks/cost/${selectedCost?.id}`}
+            successMessage="Cost deleted"
+            header="Delete Cost"
+            description={`Are you sure to delete ${selectedCost?.title}?`}
+            hasSuccessFunc={true}
+            onSuccess={refechCosts}
+          />
+        )}
+      </Box>
     </>
   );
 };
