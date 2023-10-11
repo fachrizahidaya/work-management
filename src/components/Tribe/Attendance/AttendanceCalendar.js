@@ -175,7 +175,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
           onMonthChange={(date) => handleMonthChange(date)}
         />
 
-        <Modal size="full" isOpen={reportIsOpen} onClose={toggleReport}>
+        <Modal size="xl" isOpen={reportIsOpen} onClose={toggleReport}>
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
@@ -283,7 +283,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
             )}
 
             <Modal.Footer>
-              <FormButton color="red" size="sm" variant="outline" onPress={toggleReport}>
+              <FormButton color="muted.500" size="sm" variant="outline" onPress={toggleReport}>
                 <Text color="white">Cancel</Text>
               </FormButton>
               <FormButton

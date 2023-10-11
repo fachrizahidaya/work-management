@@ -47,6 +47,9 @@ const TeamLeaveScreen = () => {
                   endDate={item?.end_date}
                   status={item?.status}
                   reason={item?.reason}
+                  type={item?.approval_type}
+                  objectId={item?.approval_object_id}
+                  object={item?.approval_object}
                   refetchTeamLeaveRequest={refetchTeamLeaveRequest}
                 />
               </>

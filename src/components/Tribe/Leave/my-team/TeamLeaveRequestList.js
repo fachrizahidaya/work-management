@@ -1,12 +1,28 @@
+import { useState } from "react";
+import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text } from "native-base";
+import {
+  Actionsheet,
+  Badge,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Icon,
+  Input,
+  Modal,
+  Pressable,
+  Text,
+  VStack,
+} from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
+import FormButton from "../../../shared/FormButton";
 
 const TeamLeaveRequestList = ({
   id,
@@ -18,9 +34,13 @@ const TeamLeaveRequestList = ({
   endDate,
   status,
   reason,
+  type,
+  objectId,
+  object,
   refetchTeamLeaveRequest,
 }) => {
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const [selectedPendingApproval, setSelectedPendingApproval] = useState(null);
+  const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
   const leaveResponseHandler = async (response) => {
     try {
@@ -28,6 +48,45 @@ const TeamLeaveRequestList = ({
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const fetchPendingApprovalDetail = async (pending_approval_id) => {
+    try {
+      const res = await axiosInstance.get(`/hr/approvals/pending/${pending_approval_id}`);
+
+      setSelectedPendingApproval(res.data?.data);
+
+      toggleApprovalAction();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const approvalResponseHandler = async (data) => {
+    try {
+      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
+      refetchTeamLeaveRequest();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      object: object,
+      object_id: objectId,
+      type: type,
+      status: "",
+      notes: "",
+    },
+    onSubmit: (values) => {
+      approvalResponseHandler(values);
+    },
+  });
+
+  const responseHandler = (response) => {
+    formik.setFieldValue("status", response);
+    formik.handleSubmit();
   };
 
   // Canceled status not appeared in team leave request
@@ -46,12 +105,6 @@ const TeamLeaveRequestList = ({
             </Text>
           </Flex>
         </Flex>
-
-        <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-          <Actionsheet.Content>
-            <Actionsheet.Item>Cancel Leave</Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
       </Flex>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flex={1}>
@@ -72,16 +125,48 @@ const TeamLeaveRequestList = ({
         </Text>
         {status === "Pending" ? (
           <Flex gap={1} flexDir="row">
-            <Button size="xs" bgColor="#FF6262">
+            <Button onPress={() => responseHandler("Rejected")} size="xs" bgColor="#FF6262">
               Decline
             </Button>
-            <Button size="xs" bgColor="#377893">
+            <Button onPress={() => responseHandler("Approved")} size="xs" bgColor="#377893">
               Approve
             </Button>
           </Flex>
         ) : (
           <Text color={status === "Rejected" || status === "Canceled" ? "#FF6262" : "#437D96"}>{status}</Text>
         )}
+        <Modal size="xl" isOpen={approvalActionIsOpen} onClose={toggleApprovalAction}>
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>Approve Leave Request</Modal.Header>
+
+            <Modal.Body>
+              <VStack
+                w="95%"
+                space={3}
+                // pb={keyboardHeight}
+              >
+                <VStack w="100%" space={2}>
+                  <Text>Are you sure to approve this request?</Text>
+                </VStack>
+              </VStack>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <FormButton onPress={toggleApprovalAction} color="muted.500" size="sm" variant="outline">
+                <Text color="white">Cancel</Text>
+              </FormButton>
+              <FormButton
+                size="sm"
+                variant="solid"
+                // isSubmitting={formik.isSubmitting}
+                // onPress={formik.handleSubmit}
+              >
+                <Text color="white">Confirm</Text>
+              </FormButton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </Flex>
     </Box>
   );
