@@ -30,6 +30,8 @@ const AttendanceScreen = () => {
     refetch: refetchAttendanceData,
   } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
+  console.log(attendanceData?.data);
+
   const handleMonthChange = (newMonth) => {
     setFilter(newMonth);
   };
