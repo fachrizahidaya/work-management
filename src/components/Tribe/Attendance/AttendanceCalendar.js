@@ -124,6 +124,8 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
     }
   };
 
+  console.log(`1`, date);
+
   const renderCalendarWithMultiDotMarking = () => {
     const markedDates = {};
     for (const date in items) {
@@ -179,7 +181,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
-            {date?.late && (
+            {date?.late && !date?.lateType && (
               <Modal.Body>
                 <VStack
                   w="95%"
@@ -230,7 +232,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
                 </VStack>
               </Modal.Body>
             )}
-            {date?.early && (
+            {date?.early && !date?.earlyType && (
               <Modal.Body>
                 <VStack
                   w="95%"
@@ -281,6 +283,29 @@ const AttendanceCalendar = ({ attendance, onMonthChange }) => {
                 </VStack>
               </Modal.Body>
             )}
+            {date?.lateType || date?.earlyType ? (
+              <Modal.Body>
+                <VStack
+                  w="95%"
+                  space={3}
+                  // pb={keyboardHeight}
+                >
+                  <VStack w="100%" space={2}>
+                    <FormControl>
+                      <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
+                      <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text>
+                    </FormControl>
+
+                    <FormControl
+                    // isInvalid={formik.errors.password}
+                    >
+                      <FormControl.Label>Reason</FormControl.Label>
+                      <Text>{date?.lateReason ? date?.lateReason : date?.earlyReason}</Text>
+                    </FormControl>
+                  </VStack>
+                </VStack>
+              </Modal.Body>
+            ) : null}
 
             <Modal.Footer>
               <FormButton color="muted.500" size="sm" variant="outline" onPress={toggleReport}>
