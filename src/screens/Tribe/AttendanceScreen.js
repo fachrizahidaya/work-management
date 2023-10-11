@@ -23,13 +23,17 @@ const AttendanceScreen = () => {
     refetch: refetchAttendanceData,
   } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
+  const handleMonthChange = (newMonth) => {
+    setFilter(newMonth);
+  };
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-          <PageHeader title="My Attendance History" backButton={false} />
+          <PageHeader width={200} title="My Attendance History" backButton={false} />
         </Flex>
-        <AttendanceCalendar attendance={attendanceData?.data} />
+        <AttendanceCalendar attendance={attendanceData?.data} onMonthChange={handleMonthChange} />
       </SafeAreaView>
     </>
   );

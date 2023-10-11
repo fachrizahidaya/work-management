@@ -19,7 +19,7 @@ const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Handler for search input
@@ -170,6 +170,9 @@ const ContactScreen = () => {
           <Skeleton h={60} />
           <Skeleton h={60} />
           <Skeleton h={60} />
+          <Skeleton h={60} />
+          <Skeleton h={60} />
+          <Skeleton h={60} />
         </VStack>
       ) : (
         <Flex px={3} flex={1} flexDir="column">
@@ -219,6 +222,9 @@ const ContactScreen = () => {
             )
           ) : (
             <VStack mt={3} px={3} space={2}>
+              <Skeleton h={60} />
+              <Skeleton h={60} />
+              <Skeleton h={60} />
               <Skeleton h={60} />
               <Skeleton h={60} />
               <Skeleton h={60} />

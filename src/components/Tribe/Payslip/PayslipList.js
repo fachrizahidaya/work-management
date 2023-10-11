@@ -7,7 +7,6 @@ import * as yup from "yup";
 import { Linking } from "react-native";
 import { Actionsheet, Box, Flex, FormControl, Icon, Input, Pressable, Text, VStack, useToast } from "native-base";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
@@ -65,6 +64,7 @@ const PayslipList = ({ id, month, year }) => {
         render: () => {
           return <ErrorToast message={err.response.data.message} />;
         },
+        placement: "top",
       });
     }
   };
@@ -125,7 +125,7 @@ const PayslipList = ({ id, month, year }) => {
                     InputRightElement={
                       <Pressable onPress={() => setHidePassword(!hidePassword)}>
                         <Icon
-                          as={<MaterialIcons name={hidePassword ? "visibility" : "visibility-off"} />}
+                          as={<MaterialCommunityIcons name={hidePassword ? "eye" : "eye-off"} />}
                           size={5}
                           mr="3"
                           color="muted.400"

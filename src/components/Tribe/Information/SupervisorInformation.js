@@ -1,6 +1,5 @@
+import { Linking, TouchableOpacity } from "react-native";
 import { Box, Divider, Flex, Icon, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
@@ -13,6 +12,13 @@ const SupervisorInformation = ({
   supervisorImage,
   supervisorPosition,
 }) => {
+  const phoneNumber = supervisorPhone;
+  const phoneUrl = `tel:0${phoneNumber}`;
+
+  const handleCallPress = () => {
+    Linking.openURL(phoneUrl).catch((err) => console.log(err));
+  };
+
   return (
     <Flex gap={5} style={card.card}>
       <Flex justifyContent="space-between" direction="row" gap={4}>
@@ -37,15 +43,17 @@ const SupervisorInformation = ({
             Phone:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
-              {supervisorPhone}
-            </Text>
-            <Icon
+            <TouchableOpacity onPress={handleCallPress}>
+              <Text fontWeight={400} fontSize={12} color="#8A9099">
+                {supervisorPhone}
+              </Text>
+            </TouchableOpacity>
+            {/* <Icon
               onPress={() => CopyToClipboard(supervisorPhone)}
               as={<MaterialCommunityIcons name="content-copy" />}
               size={3}
               color="#3F434A"
-            />
+            /> */}
           </Flex>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" flexDir="row">
@@ -53,15 +61,9 @@ const SupervisorInformation = ({
             Email:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
+            <Text onPress={() => CopyToClipboard(supervisorEmail)} fontWeight={400} fontSize={12} color="#8A9099">
               {supervisorEmail}
             </Text>
-            <Icon
-              onPress={() => CopyToClipboard(supervisorEmail)}
-              as={<MaterialCommunityIcons name="content-copy" />}
-              size={3}
-              color="#3F434A"
-            />
           </Flex>
         </Flex>
       </Box>

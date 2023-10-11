@@ -1,12 +1,30 @@
+import { useState } from "react";
+import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import { Actionsheet, Badge, Box, Button, Flex, Icon, Pressable, Text } from "native-base";
+import {
+  Actionsheet,
+  Badge,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Icon,
+  Input,
+  Modal,
+  Pressable,
+  Text,
+  VStack,
+  useToast,
+} from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
+import FormButton from "../../../shared/FormButton";
+import { SuccessToast } from "../../../shared/ToastDialog";
 
 const TeamLeaveRequestList = ({
   id,
@@ -18,16 +36,46 @@ const TeamLeaveRequestList = ({
   endDate,
   status,
   reason,
+  type,
+  objectId,
+  object,
   refetchTeamLeaveRequest,
 }) => {
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
-  const leaveResponseHandler = async (response) => {
+  const toast = useToast();
+
+  const approvalResponseHandler = async (data) => {
     try {
-      const res = await axiosInstance.patch(`/hr/leave-requests/${id}/${response}`);
+      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
+      refetchTeamLeaveRequest();
+      toast.show({
+        render: () => {
+          return <SuccessToast message={`Task assigned`} />;
+        },
+        placement: "top",
+      });
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      object: object,
+      object_id: objectId,
+      type: type,
+      status: "",
+      notes: "",
+    },
+    onSubmit: (values) => {
+      approvalResponseHandler(values);
+    },
+  });
+
+  const responseHandler = (response) => {
+    formik.setFieldValue("status", response);
+    formik.handleSubmit();
   };
 
   // Canceled status not appeared in team leave request
@@ -46,16 +94,6 @@ const TeamLeaveRequestList = ({
             </Text>
           </Flex>
         </Flex>
-        {status === "Pending" ? null : (
-          <Pressable onPress={toggleAction}>
-            <Icon as={<MaterialCommunityIcons name="dots-vertical" />} size="md" borderRadius="full" color="#000000" />
-          </Pressable>
-        )}
-        <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-          <Actionsheet.Content>
-            <Actionsheet.Item>Cancel Leave</Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
       </Flex>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flex={1}>
@@ -76,10 +114,10 @@ const TeamLeaveRequestList = ({
         </Text>
         {status === "Pending" ? (
           <Flex gap={1} flexDir="row">
-            <Button size="xs" bgColor="#FF6262">
+            <Button onPress={() => responseHandler("Rejected")} size="xs" bgColor="#FF6262">
               Decline
             </Button>
-            <Button size="xs" bgColor="#377893">
+            <Button onPress={() => responseHandler("Approved")} size="xs" bgColor="#377893">
               Approve
             </Button>
           </Flex>

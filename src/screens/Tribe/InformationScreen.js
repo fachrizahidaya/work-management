@@ -46,6 +46,9 @@ const InformationScreen = () => {
                   phone={profile?.data?.phone_number}
                   image={profile?.data?.image}
                 />
+                <Text fontSize={16} fontWeight={500} px={3}>
+                  My Supervisor
+                </Text>
                 <SupervisorInformation
                   supervisorName={profile?.data?.supervisor_name}
                   supervisorPhone={profile?.data?.supervisor_phone_number}

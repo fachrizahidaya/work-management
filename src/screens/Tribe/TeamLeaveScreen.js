@@ -22,7 +22,7 @@ const TeamLeaveScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <PageHeader title="My Team Leave Request" onPress={() => navigation.navigate("Leave Request")} />
+        <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.navigate("Leave Request")} />
       </Flex>
       {!teamLeaveRequestIsLoading ? (
         teamLeaveRequest?.data.length > 0 ? (
@@ -47,6 +47,9 @@ const TeamLeaveScreen = () => {
                   endDate={item?.end_date}
                   status={item?.status}
                   reason={item?.reason}
+                  type={item?.approval_type}
+                  objectId={item?.approval_object_id}
+                  object={item?.approval_object}
                   refetchTeamLeaveRequest={refetchTeamLeaveRequest}
                 />
               </>

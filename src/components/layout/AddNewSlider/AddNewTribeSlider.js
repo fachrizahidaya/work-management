@@ -66,14 +66,16 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         toggle();
         toast.show({
           description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
+          placement: "top",
         });
         refetch();
       } else {
-        toast.show({ description: "You already checked out at this time" });
+        toast.show({ description: "You already checked out at this time", placement: "top" });
       }
     } catch (err) {
       toast.show({
         description: `You're not connected to the proper connection`,
+        placement: "top",
       });
       console.log(err.response.data.message);
     }
@@ -147,37 +149,31 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                   ) : (
                     <Flex
                       flexDir="row"
-                      bg="#F7F7F7"
+                      bg={!attendance?.data?.time_in ? "#daecfc" : "#feedaf"}
                       borderRadius={5}
                       style={{ height: 32, width: 352 }}
                       alignItems="center"
                     >
                       <Box px={1}>
-                        <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                        <Icon
+                          as={<MaterialCommunityIcons name={item.icons} />}
+                          size={6}
+                          color={!attendance?.data?.time_in ? "#2984c3" : "#fdc500"}
+                        />
                       </Box>
-                      {attendance?.data?.time_in && attendance?.data?.time_out ? (
-                        <Text fontWeight={700} color="red.500" mx={5}>
-                          You've attended
-                        </Text>
-                      ) : !attendance?.data?.time_in ? (
-                        <Text fontWeight={700} color="#000000" mx={5}>
+                      {!attendance?.data?.time_in ? (
+                        <Text fontWeight={700} color="#2984c3" mx={5}>
                           Clock in
                         </Text>
                       ) : (
-                        <Text fontWeight={700} color="#377893" mx={5}>
+                        <Text fontWeight={700} color="#fdc500" mx={5}>
                           Clock out
                         </Text>
                       )}
 
-                      {item.title === "Clock in" || item.title === "Clock Out" ? (
-                        <Text ml={170} color="#377893">
-                          {currentTime}
-                        </Text>
-                      ) : (
-                        <Text ml={130} color="#377893">
-                          {currentTime}
-                        </Text>
-                      )}
+                      <Text ml={170} color={!attendance?.data?.time_in ? "#2984c3" : "#fdc500"}>
+                        {currentTime}
+                      </Text>
                     </Flex>
                   )}
                 </Flex>

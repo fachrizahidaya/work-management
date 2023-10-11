@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -31,7 +31,6 @@ import { SuccessToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import FormButton from "../../../components/shared/FormButton";
-import { useEffect } from "react";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -99,6 +98,7 @@ const NewFeedScreen = ({ route }) => {
         render: () => {
           return <SuccessToast message={`Posted succesfuly!`} />;
         },
+        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -213,7 +213,7 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
-      <Flex mt={3}>
+      <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
         <FormControl isInvalid={formik.errors.content}>
           <TextArea
             minH={100}
@@ -255,11 +255,6 @@ const NewFeedScreen = ({ route }) => {
               )
             ) : null}
           </Flex>
-          <Flex gap={1} my={2} pt={2} flexDir="row">
-            <Pressable padding={11} width={50} height={50} onPress={pickImageHandler}>
-              <Icon as={<MaterialCommunityIcons name="image-outline" />} size={30} color="#377893" />
-            </Pressable>
-          </Flex>
 
           <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
             <Actionsheet.Content>
@@ -299,12 +294,17 @@ const NewFeedScreen = ({ route }) => {
                       ) : null}
                     </Flex>
                   </Box>
-                  {formik.values.type === "Announcement" ? <Icon as={<MaterialIcons name="check" />} /> : ""}
+                  {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
                 </Flex>
               </Actionsheet.Item>
             </Actionsheet.Content>
           </Actionsheet>
         </FormControl>
+        <Flex mt={1} py={3} px={2} flexDir="row">
+          <Pressable onPress={pickImageHandler}>
+            <Icon as={<MaterialCommunityIcons name="attachment" />} size={25} color="#377893" />
+          </Pressable>
+        </Flex>
       </Flex>
     </Box>
   );

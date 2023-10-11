@@ -92,6 +92,7 @@ const NewLeaveRequest = ({ route }) => {
         render: () => {
           return <SuccessToast message={`Request Created`} />;
         },
+        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -101,6 +102,7 @@ const NewLeaveRequest = ({ route }) => {
         render: () => {
           return <ErrorToast message={err.response.data.message} />;
         },
+        placement: "top",
       });
     }
   };
