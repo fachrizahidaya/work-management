@@ -4,14 +4,22 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, VStack } from "native-base";
+import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFilteredData }) => {
   const [selectedLabel, setSelectedLabel] = useState("");
+  const [isReady, setIsReady] = useState(false);
   const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
+
+  const openFilterHandler = () => {
+    toggleFilter();
+    setTimeout(() => {
+      setIsReady(true);
+    }, 150);
+  };
 
   let filteredArr = data;
 
@@ -96,7 +104,7 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
               />
             )}
             <IconButton
-              onPress={toggleFilter}
+              onPress={() => openFilterHandler()}
               icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
               rounded="full"
               size="sm"
@@ -106,97 +114,107 @@ const TaskFilter = ({ data = [], members, labels, setSelectedLabelId, setFiltere
       />
 
       {filterIsOpen && (
-        <Actionsheet isOpen={filterIsOpen} onClose={toggleFilter}>
+        <Actionsheet
+          isOpen={filterIsOpen}
+          onClose={() => {
+            toggleFilter();
+            setIsReady(false);
+          }}
+        >
           <Actionsheet.Content>
-            <VStack w="95%" space={2}>
-              {/* Member */}
-              <FormControl.Label>Member</FormControl.Label>
-              <Select
-                onValueChange={(value) => onPressMember(value)}
-                defaultValue={formik.values.responsible_name}
-                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              >
-                <Select.Item label="All Member" value="" />
-                <Select.Item label="Not Assigned" value="null" />
-                {members?.length > 0 &&
-                  members.map((member, index) => {
+            {isReady ? (
+              <VStack w="95%" space={2}>
+                {/* Member */}
+                <FormControl.Label>Member</FormControl.Label>
+                <Select
+                  onValueChange={(value) => onPressMember(value)}
+                  defaultValue={formik.values.responsible_name}
+                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                >
+                  <Select.Item label="All Member" value="" />
+                  <Select.Item label="Not Assigned" value="null" />
+                  {members?.length > 0 &&
+                    members.map((member, index) => {
+                      return (
+                        <Select.Item
+                          key={index}
+                          label={member.member_name || member}
+                          value={member.member_name || member}
+                        />
+                      );
+                    })}
+                </Select>
+
+                {/* Label */}
+                <FormControl.Label>Label</FormControl.Label>
+                <Select
+                  defaultValue={selectedLabel}
+                  onValueChange={(value) => {
+                    onPressLabel(value);
+                    formik.handleSubmit();
+                  }}
+                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                >
+                  <Select.Item label="No Label" value="" />
+
+                  {labels?.data.map((label) => {
                     return (
                       <Select.Item
-                        key={index}
-                        label={member.member_name || member}
-                        value={member.member_name || member}
+                        key={label.id}
+                        label={label.label_name || label.name}
+                        value={label.label_id || label.id}
                       />
                     );
                   })}
-              </Select>
+                </Select>
 
-              {/* Label */}
-              <FormControl.Label>Label</FormControl.Label>
-              <Select
-                defaultValue={selectedLabel}
-                onValueChange={(value) => {
-                  onPressLabel(value);
-                  formik.handleSubmit();
-                }}
-                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              >
-                <Select.Item label="No Label" value="" />
+                {/* Deadline */}
+                <FormControl.Label>Due Date</FormControl.Label>
+                <Select
+                  defaultValue={formik.values.deadline}
+                  onValueChange={(value) => {
+                    formik.setFieldValue("deadline", value);
+                    formik.handleSubmit();
+                  }}
+                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                >
+                  <Select.Item label="Due anytime" value="" />
+                  <Select.Item label="Closest" value="asc" />
+                  <Select.Item label="Latest" value="desc" />
+                </Select>
 
-                {labels?.data.map((label) => {
-                  return (
-                    <Select.Item
-                      key={label.id}
-                      label={label.label_name || label.name}
-                      value={label.label_id || label.id}
-                    />
-                  );
-                })}
-              </Select>
+                {/* Priority */}
+                <FormControl.Label>Priority</FormControl.Label>
+                <Select
+                  defaultValue={formik.values.priority}
+                  onValueChange={(value) => {
+                    formik.setFieldValue("priority", value);
+                    formik.handleSubmit();
+                  }}
+                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                >
+                  <Select.Item label="All Priority" value="" />
+                  <Select.Item label="Low" value="Low" />
+                  <Select.Item label="Medium" value="Medium" />
+                  <Select.Item label="High" value="High" />
+                </Select>
 
-              {/* Deadline */}
-              <FormControl.Label>Due Date</FormControl.Label>
-              <Select
-                defaultValue={formik.values.deadline}
-                onValueChange={(value) => {
-                  formik.setFieldValue("deadline", value);
-                  formik.handleSubmit();
-                }}
-                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              >
-                <Select.Item label="Due anytime" value="" />
-                <Select.Item label="Closest" value="asc" />
-                <Select.Item label="Latest" value="desc" />
-              </Select>
+                <Button
+                  mt={4}
+                  onPress={() => {
+                    formik.handleReset();
 
-              {/* Priority */}
-              <FormControl.Label>Priority</FormControl.Label>
-              <Select
-                defaultValue={formik.values.priority}
-                onValueChange={(value) => {
-                  formik.setFieldValue("priority", value);
-                  formik.handleSubmit();
-                }}
-                dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              >
-                <Select.Item label="All Priority" value="" />
-                <Select.Item label="Low" value="Low" />
-                <Select.Item label="Medium" value="Medium" />
-                <Select.Item label="High" value="High" />
-              </Select>
-
-              <Button
-                mt={4}
-                onPress={() => {
-                  formik.handleReset();
-
-                  // Reset labels
-                  setSelectedLabel("");
-                  setSelectedLabelId(null);
-                }}
-              >
-                Reset Filter
-              </Button>
-            </VStack>
+                    // Reset labels
+                    setSelectedLabel("");
+                    setSelectedLabelId(null);
+                  }}
+                >
+                  Reset Filter
+                </Button>
+              </VStack>
+            ) : (
+              <Skeleton h={41} />
+            )}
           </Actionsheet.Content>
         </Actionsheet>
       )}
