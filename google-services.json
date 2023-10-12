@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "994028386897",
+    "project_id": "kolabora-auth",
+    "storage_bucket": "kolabora-auth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994028386897:android:89a920d27a95933f2e1670",
+        "android_client_info": {
+          "package_name": "com.kolabora.kssmobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "994028386897-knqp9t9ai59gu1j5kthqfvnth82251p4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kolabora.kssmobileapp",
+            "certificate_hash": "451ef9fdceef1d91b34cfdb3ac7a9a1f5981aa99"
+          }
+        },
+        {
+          "client_id": "994028386897-mak6agbkc9lbggjvr03qi2ropdo1dvb2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kolabora.kssmobileapp",
+            "certificate_hash": "f2414335f5c8fb66b6287b04c6ae4874fecc0cd6"
+          }
+        },
+        {
+          "client_id": "994028386897-h6u6pnb07bjgng1vq77v6jdr3fgm7utp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFOOWUKYwtElSWyRDJRcAkmoSL4T02jk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "994028386897-h6u6pnb07bjgng1vq77v6jdr3fgm7utp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "994028386897-itikuckthrbv49qe3sd9mskcnuto7ock.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kolabora.kssmobileapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
