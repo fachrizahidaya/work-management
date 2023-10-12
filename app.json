@@ -2,6 +2,7 @@
   "expo": {
     "name": "Nest",
     "slug": "kss-mobile-app",
+    "plugins": ["@react-native-google-signin/google-signin"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/nest-icon.png",
@@ -21,6 +22,7 @@
         "foregroundImage": "./assets/nest-android.png",
         "backgroundColor": "#ffffff"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.kolabora.kssmobileapp"
     },
     "web": {
