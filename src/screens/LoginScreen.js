@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 
-// Google authentication and firebase
+// For iOS
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth as auths } from "../config/firebase";
+// For android
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -32,6 +35,7 @@ import axiosInstance from "../config/api";
 import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 
+// For iOS
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
@@ -40,10 +44,35 @@ const LoginScreen = () => {
   const { width, height } = Dimensions.get("window");
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
+
+  // This is firebase configurations for iOS
   const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: "509807030668-rb8ssvhb83nr97c9t9rm52riv0fd9tbi.apps.googleusercontent.com",
-    androidClientId: "509807030668-avkkna2j6lpj09j2c27dedupoa0p25qu.apps.googleusercontent.com",
+    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+    androidClientId: "",
   });
+
+  // This is firebase configurations for android
+  GoogleSignin.configure({
+    webClientId: "994028386897-h6u6pnb07bjgng1vq77v6jdr3fgm7utp.apps.googleusercontent.com",
+  });
+
+  const onGoogleButtonPress = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+      await GoogleSignin.revokeAccess();
+
+      const { idToken } = await GoogleSignin.signIn();
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      const userCredentials = await auth().signInWithCredential(googleCredential);
+
+      signInWithGoogle(userCredentials.user._user);
+    } catch (error) {
+      toggleLoading();
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -139,20 +168,21 @@ const LoginScreen = () => {
     if (response?.type == "success") {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
+      signInWithCredential(auths, credential);
     } else if (response?.type === "cancel") {
       toggleLoading();
     }
   }, [response]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        signInWithGoogle(user);
-      }
-    });
-
-    return () => unsubscribe();
+    if (Platform.OS === "ios") {
+      const unsubscribe = onAuthStateChanged(auths, async (user) => {
+        if (user) {
+          signInWithGoogle(user);
+        }
+      });
+      return () => unsubscribe();
+    }
   }, []);
 
   return (
@@ -175,6 +205,7 @@ const LoginScreen = () => {
               left={14}
               bottom={3}
             />
+
             <Button
               disabled={isLoading}
               variant="ghost"
@@ -182,8 +213,12 @@ const LoginScreen = () => {
               borderColor="#E8E9EB"
               bg="white"
               onPress={() => {
+                if (Platform.OS === "android") {
+                  onGoogleButtonPress();
+                } else {
+                  promptAsync();
+                }
                 toggleLoading();
-                promptAsync();
               }}
             >
               <Text fontSize={12} color="#595F69">

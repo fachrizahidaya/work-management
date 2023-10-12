@@ -92,7 +92,7 @@ const LogoutScreen = () => {
       } else {
         clearInterval(interval);
       }
-    }, 50);
+    }, 10);
 
     // Clean up the interval when the component unmounts or the dependencies change
     return () => {
