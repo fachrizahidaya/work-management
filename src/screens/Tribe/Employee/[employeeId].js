@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import { Avatar, Badge, Box, Button, Flex, Icon, Image, Text, View } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
@@ -32,6 +32,8 @@ const EmployeeProfileScreen = ({ route }) => {
     isFetching: employeeIsFetching,
     refetch: refetchEmployee,
   } = useFetch(`/hr/employees/${router.params.employeeId}`);
+
+  console.log(employee?.data);
 
   const {
     data: teammates,
@@ -81,7 +83,25 @@ const EmployeeProfileScreen = ({ route }) => {
             position="relative"
           />
           <Flex flex={1} gap={5}>
-            <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+            <Flex borderWidth={1} px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+              <Flex gap={2} flexDirection="row-reverse" alignItems="center">
+                <TouchableOpacity onPress={handleWhatsappPress}>
+                  <Icon as={<MaterialCommunityIcons name="whatsapp" />} size={5} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleEmailPress}>
+                  <Icon as={<MaterialCommunityIcons name="email-outline" />} size={5} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleCallPress}>
+                  <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={5} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("Chat List")}>
+                  <Image
+                    source={require("../../../assets/icons/nest_logo.png")}
+                    alt="nest"
+                    style={{ height: 20, width: 20 }}
+                  />
+                </TouchableOpacity>
+              </Flex>
               <Image
                 source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${employee?.data?.image}` }}
                 resizeMethod="contain"
@@ -92,14 +112,20 @@ const EmployeeProfileScreen = ({ route }) => {
                 borderWidth={2}
                 borderColor="#FFFFFF"
                 position="relative"
-                bottom={12}
+                bottom="75px"
               />
-              <Flex mt={-10}>
+
+              <Flex mt="-70px">
                 <Flex gap={3}>
                   <Box>
-                    <Text fontWeight={500} fontSize={20} color="#3F434A">
-                      {employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                    </Text>
+                    <Flex gap={1} alignItems="center" flexDir="row">
+                      <Text fontWeight={500} fontSize={20} color="#3F434A">
+                        {employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                      </Text>
+                      <Text fontWeight={400} fontSize={14} color="#8A9099">
+                        {`(${employee?.data?.gender.charAt(0).toUpperCase() + employee?.data?.gender.slice(1)})`}
+                      </Text>
+                    </Flex>
                     {/* <Text fontWeight={400} fontSize={14} color="#8A9099">
                       {employee?.data?.division_name}
                     </Text> */}
@@ -130,9 +156,17 @@ const EmployeeProfileScreen = ({ route }) => {
                         color="#3F434A"
                       />
                     </Flex>
-                    <Text fontWeight={400} fontSize={12} color="#8A9099">
-                      {dayjs(employee?.data?.birthdate).format("DD MMM YYYY")}
-                    </Text>
+                    <Flex gap={1} alignItems="center" flexDir="row">
+                      <Icon
+                        // onPress={() => CopyToClipboard(employee?.data?.phone_number)}
+                        as={<MaterialCommunityIcons name="cake-variant-outline" />}
+                        size={3}
+                        color="#3F434A"
+                      />
+                      <Text fontWeight={400} fontSize={12} color="#8A9099">
+                        {dayjs(employee?.data?.birthdate).format("DD MMM YYYY")}
+                      </Text>
+                    </Flex>
                   </Box>
                 </Flex>
               </Flex>

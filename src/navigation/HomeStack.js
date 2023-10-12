@@ -19,6 +19,7 @@ import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
+import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
 
 const Stack = createStackNavigator();
 
@@ -66,6 +67,8 @@ const HomeStack = () => {
       <Stack.Screen name="Employee Profile" component={EmployeeProfileScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
