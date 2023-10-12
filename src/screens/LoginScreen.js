@@ -4,13 +4,13 @@ import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 
 // For iOS
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
-import { auth as auths } from "../config/firebase";
+// import * as Google from "expo-auth-session/providers/google";
+// import * as WebBrowser from "expo-web-browser";
+// import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
+// import { auth as auths } from "../config/firebase";
 // For android
-import auth from "@react-native-firebase/auth";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+// import auth from "@react-native-firebase/auth";
+// import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -36,7 +36,7 @@ import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 
 // For iOS
-WebBrowser.maybeCompleteAuthSession();
+// WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
   const toast = useToast();
@@ -46,33 +46,33 @@ const LoginScreen = () => {
   const { isLoading, toggle: toggleLoading } = useLoading(false);
 
   // This is firebase configurations for iOS
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
-    androidClientId: "",
-  });
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+  //   androidClientId: "",
+  // });
 
   // This is firebase configurations for android
-  GoogleSignin.configure({
-    webClientId: "994028386897-h6u6pnb07bjgng1vq77v6jdr3fgm7utp.apps.googleusercontent.com",
-  });
+  // GoogleSignin.configure({
+  //   webClientId: "994028386897-h6u6pnb07bjgng1vq77v6jdr3fgm7utp.apps.googleusercontent.com",
+  // });
 
-  const onGoogleButtonPress = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  // const onGoogleButtonPress = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      await GoogleSignin.revokeAccess();
+  //     await GoogleSignin.revokeAccess();
 
-      const { idToken } = await GoogleSignin.signIn();
+  //     const { idToken } = await GoogleSignin.signIn();
 
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      const userCredentials = await auth().signInWithCredential(googleCredential);
+  //     const userCredentials = await auth().signInWithCredential(googleCredential);
 
-      signInWithGoogle(userCredentials.user._user);
-    } catch (error) {
-      toggleLoading();
-    }
-  };
+  //     signInWithGoogle(userCredentials.user._user);
+  //   } catch (error) {
+  //     toggleLoading();
+  //   }
+  // };
 
   const formik = useFormik({
     initialValues: {
@@ -137,53 +137,53 @@ const LoginScreen = () => {
     }
   };
 
-  const signInWithGoogle = async (user) => {
-    try {
-      const res = await axiosInstance.post("/auth/login-with-google", {
-        uid: user.uid,
-        email: user.email,
-      });
-      toggleLoading();
-      const userData = res.data.data;
+  // const signInWithGoogle = async (user) => {
+  //   try {
+  //     const res = await axiosInstance.post("/auth/login-with-google", {
+  //       uid: user.uid,
+  //       email: user.email,
+  //     });
+  //     toggleLoading();
+  //     const userData = res.data.data;
 
-      // Navigate to the "Loading" screen with user data
-      navigation.navigate("Loading", { userData });
-    } catch (error) {
-      console.log(error);
-      toggleLoading();
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
-      });
-    }
-  };
+  //     // Navigate to the "Loading" screen with user data
+  //     navigation.navigate("Loading", { userData });
+  //   } catch (error) {
+  //     console.log(error);
+  //     toggleLoading();
+  //     toast.show({
+  //       render: () => {
+  //         return <ErrorToast message={error.response.data.message} />;
+  //       },
+  //     });
+  //   }
+  // };
 
   // Initiate the getUserData function
   useEffect(() => {
     getUserData();
   }, []);
 
-  useEffect(() => {
-    if (response?.type == "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auths, credential);
-    } else if (response?.type === "cancel") {
-      toggleLoading();
-    }
-  }, [response]);
+  // useEffect(() => {
+  //   if (response?.type == "success") {
+  //     const { id_token } = response.params;
+  //     const credential = GoogleAuthProvider.credential(id_token);
+  //     signInWithCredential(auths, credential);
+  //   } else if (response?.type === "cancel") {
+  //     toggleLoading();
+  //   }
+  // }, [response]);
 
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      const unsubscribe = onAuthStateChanged(auths, async (user) => {
-        if (user) {
-          signInWithGoogle(user);
-        }
-      });
-      return () => unsubscribe();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Platform.OS === "ios") {
+  //     const unsubscribe = onAuthStateChanged(auths, async (user) => {
+  //       if (user) {
+  //         signInWithGoogle(user);
+  //       }
+  //     });
+  //     return () => unsubscribe();
+  //   }
+  // }, []);
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
@@ -212,14 +212,14 @@ const LoginScreen = () => {
               borderWidth={1}
               borderColor="#E8E9EB"
               bg="white"
-              onPress={() => {
-                if (Platform.OS === "android") {
-                  onGoogleButtonPress();
-                } else {
-                  promptAsync();
-                }
-                toggleLoading();
-              }}
+              // onPress={() => {
+              //   if (Platform.OS === "android") {
+              //     onGoogleButtonPress();
+              //   } else {
+              //     promptAsync();
+              //   }
+              //   toggleLoading();
+              // }}
             >
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
