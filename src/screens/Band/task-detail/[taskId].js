@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Flex, FormControl, HStack, Skeleton, Text, VStack } from "native-base";
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
 
 import { useFetch } from "../../../hooks/useFetch";
 import ChecklistSection from "../../../components/Band/Task/TaskDetail/ChecklistSection/ChecklistSection";
@@ -21,6 +21,7 @@ import NewTaskSlider from "../../../components/Band/Task/NewTaskSlider/NewTaskSl
 import PageHeader from "../../../components/shared/PageHeader";
 
 const TaskDetailScreen = ({ route }) => {
+  const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const { taskId } = route.params;
@@ -72,7 +73,7 @@ const TaskDetailScreen = ({ route }) => {
             }}
           >
             <Flex flexDir="row" alignItems="end" justifyContent="space-between">
-              <PageHeader title={selectedTask?.data?.title} onPress={() => navigation.goBack()} />
+              <PageHeader title={selectedTask?.data?.title} onPress={() => navigation.goBack()} width={width / 2} />
 
               <ControlSection
                 taskStatus={selectedTask?.data?.status}
