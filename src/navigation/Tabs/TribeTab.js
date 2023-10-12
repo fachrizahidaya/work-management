@@ -16,7 +16,6 @@ import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import TeamLeaveScreen from "../../screens/Tribe/TeamLeaveScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -179,7 +178,6 @@ const TribeTab = ({ setSelectedModule }) => {
         <Tab.Screen name="My Information" component={InformationScreen} />
         <Tab.Screen name="Attendance History" component={AttendanceScreen} />
         <Tab.Screen name="Leave Request" component={LeaveScreen} />
-        <Tab.Screen name="Team Leave Request" component={TeamLeaveScreen} />
         <Tab.Screen name="Reimbursement" component={EmptyScreen} />
         <Tab.Screen name="My Payslip" component={PayslipScreen} />
         <Tab.Screen name="My KPI" component={EmptyScreen} />

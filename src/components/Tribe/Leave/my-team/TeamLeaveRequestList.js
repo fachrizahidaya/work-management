@@ -41,22 +41,27 @@ const TeamLeaveRequestList = ({
   object,
   refetchTeamLeaveRequest,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(null);
   const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
   const toast = useToast();
 
-  const approvalResponseHandler = async (data) => {
+  const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
     try {
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
       refetchTeamLeaveRequest();
+      setSubmitting(false);
+      setStatus("success");
       toast.show({
         render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+          return <SuccessToast message={status === "Approved" ? "Request Approved" : "Request Rejected"} />;
         },
         placement: "top",
       });
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
+      setStatus("error");
     }
   };
 
@@ -68,18 +73,20 @@ const TeamLeaveRequestList = ({
       status: "",
       notes: "",
     },
-    onSubmit: (values) => {
-      approvalResponseHandler(values);
+    onSubmit: (values, { setStatus, setSubmitting }) => {
+      setStatus("processing");
+      approvalResponseHandler(values, setStatus, setSubmitting);
     },
   });
 
   const responseHandler = (response) => {
     formik.setFieldValue("status", response);
+    setIsSubmitting(response);
     formik.handleSubmit();
   };
 
   // Canceled status not appeared in team leave request
-  return status === "Canceled" ? null : (
+  return status === "Canceled" || status === "Rejected" ? null : (
     <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex gap={2} flex={1} flexDir="row">
@@ -114,12 +121,22 @@ const TeamLeaveRequestList = ({
         </Text>
         {status === "Pending" ? (
           <Flex gap={1} flexDir="row">
-            <Button onPress={() => responseHandler("Rejected")} size="xs" bgColor="#FF6262">
+            <FormButton
+              onPress={() => responseHandler("Rejected")}
+              isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
+              size="xs"
+              color="red.500"
+            >
               Decline
-            </Button>
-            <Button onPress={() => responseHandler("Approved")} size="xs" bgColor="#377893">
+            </FormButton>
+            <FormButton
+              onPress={() => responseHandler("Approved")}
+              isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
+              size="xs"
+              bgColor="#377893"
+            >
               Approve
-            </Button>
+            </FormButton>
           </Flex>
         ) : (
           <Text color={status === "Rejected" || status === "Canceled" ? "#FF6262" : "#437D96"}>{status}</Text>

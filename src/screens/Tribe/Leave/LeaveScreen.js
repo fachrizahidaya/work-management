@@ -17,12 +17,20 @@ const LeaveScreen = () => {
     isFetching: personalLeaveRequestIsFetching,
     isLoading: personalLeaveRequestIsLoading,
   } = useFetch("/hr/leave-requests/personal");
+
   const {
     data: profile,
     refetch: refetchProfile,
     isFetching: profileIsFetching,
     isLoading: profileIsLoading,
   } = useFetch("/hr/my-profile");
+
+  const {
+    data: teamLeaveRequest,
+    refetch: refetchTeamLeaveRequest,
+    isFetching: teamLeaveRequestIsFetching,
+    isLoading: teamLeaveRequestIsLoading,
+  } = useFetch("/hr/leave-requests/waiting-approval");
 
   const navigation = useNavigation();
 
@@ -32,7 +40,17 @@ const LeaveScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
           {profile?.data?.position_name.includes("Manager", "Head") ? (
-            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
+            <Button
+              onPress={() =>
+                navigation.navigate("Team Leave Request", {
+                  teamLeaveRequest: teamLeaveRequest,
+                  teamLeaveRequestIsLoading: teamLeaveRequestIsLoading,
+                  refetchTeamLeaveRequest: refetchTeamLeaveRequest,
+                  teamLeaveRequestIsFetching: teamLeaveRequestIsFetching,
+                })
+              }
+              size="sm"
+            >
               My Team
             </Button>
           ) : null}
