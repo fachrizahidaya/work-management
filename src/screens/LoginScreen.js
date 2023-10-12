@@ -36,7 +36,7 @@ import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 
 // For iOS
-// WebBrowser.maybeCompleteAuthSession();
+WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
   const toast = useToast();
