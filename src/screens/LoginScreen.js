@@ -220,7 +220,9 @@ const LoginScreen = () => {
               //   }
               //   toggleLoading();
               // }}
-              onPress={() => promptAsync()}
+              onPress={() => {
+                Platform.OS === "ios" && promptAsync();
+              }}
             >
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
