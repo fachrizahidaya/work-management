@@ -4,10 +4,10 @@ import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 
 // For iOS
-// import * as Google from "expo-auth-session/providers/google";
-// import * as WebBrowser from "expo-web-browser";
-// import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
-// import { auth as auths } from "../config/firebase";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
+import { auth as auths } from "../config/firebase";
 // For android
 // import auth from "@react-native-firebase/auth";
 // import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -46,10 +46,10 @@ const LoginScreen = () => {
   const { isLoading, toggle: toggleLoading } = useLoading(false);
 
   // This is firebase configurations for iOS
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
-  //   androidClientId: "",
-  // });
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: process.env.EXPO_PUBLIC_IOS_ID,
+    androidClientId: "",
+  });
 
   // This is firebase configurations for android
   // GoogleSignin.configure({
@@ -137,53 +137,53 @@ const LoginScreen = () => {
     }
   };
 
-  // const signInWithGoogle = async (user) => {
-  //   try {
-  //     const res = await axiosInstance.post("/auth/login-with-google", {
-  //       uid: user.uid,
-  //       email: user.email,
-  //     });
-  //     toggleLoading();
-  //     const userData = res.data.data;
+  const signInWithGoogle = async (user) => {
+    try {
+      const res = await axiosInstance.post("/auth/login-with-google", {
+        uid: user.uid,
+        email: user.email,
+      });
+      toggleLoading();
+      const userData = res.data.data;
 
-  //     // Navigate to the "Loading" screen with user data
-  //     navigation.navigate("Loading", { userData });
-  //   } catch (error) {
-  //     console.log(error);
-  //     toggleLoading();
-  //     toast.show({
-  //       render: () => {
-  //         return <ErrorToast message={error.response.data.message} />;
-  //       },
-  //     });
-  //   }
-  // };
+      // Navigate to the "Loading" screen with user data
+      navigation.navigate("Loading", { userData });
+    } catch (error) {
+      console.log(error);
+      toggleLoading();
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
 
   // Initiate the getUserData function
   useEffect(() => {
     getUserData();
   }, []);
 
-  // useEffect(() => {
-  //   if (response?.type == "success") {
-  //     const { id_token } = response.params;
-  //     const credential = GoogleAuthProvider.credential(id_token);
-  //     signInWithCredential(auths, credential);
-  //   } else if (response?.type === "cancel") {
-  //     toggleLoading();
-  //   }
-  // }, [response]);
+  useEffect(() => {
+    if (response?.type == "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auths, credential);
+    } else if (response?.type === "cancel") {
+      toggleLoading();
+    }
+  }, [response]);
 
-  // useEffect(() => {
-  //   if (Platform.OS === "ios") {
-  //     const unsubscribe = onAuthStateChanged(auths, async (user) => {
-  //       if (user) {
-  //         signInWithGoogle(user);
-  //       }
-  //     });
-  //     return () => unsubscribe();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      const unsubscribe = onAuthStateChanged(auths, async (user) => {
+        if (user) {
+          signInWithGoogle(user);
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, []);
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
@@ -220,6 +220,7 @@ const LoginScreen = () => {
               //   }
               //   toggleLoading();
               // }}
+              onPress={() => promptAsync()}
             >
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
