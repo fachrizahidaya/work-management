@@ -32,7 +32,7 @@ const EmployeeInformation = ({ name, position, email, phone, image }) => {
             Phone:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
+            <Text onPress={() => CopyToClipboard(phone)} fontWeight={400} fontSize={12} color="#8A9099">
               {phone}
             </Text>
           </Flex>

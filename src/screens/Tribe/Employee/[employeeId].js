@@ -3,8 +3,8 @@ import { useNavigation } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
-import { Avatar, Badge, Box, Button, Flex, Icon, Image, Text, View } from "native-base";
+import { Linking, SafeAreaView, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
+import { Actionsheet, Avatar, Badge, Box, Button, Flex, Icon, Image, Pressable, Text, View } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -17,6 +17,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
+import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [index, setIndex] = useState(0);
@@ -25,15 +26,13 @@ const EmployeeProfileScreen = ({ route }) => {
   const navigation = useNavigation();
   const { employeeId } = route.params;
   const router = useRoute();
-  const tabs = [{ title: "posts" }, { title: "teammates" }];
+  const tabs = [{ title: "posts" }];
 
   const {
     data: employee,
     isFetching: employeeIsFetching,
     refetch: refetchEmployee,
   } = useFetch(`/hr/employees/${router.params.employeeId}`);
-
-  console.log(employee?.data);
 
   const {
     data: teammates,
@@ -51,6 +50,33 @@ const EmployeeProfileScreen = ({ route }) => {
     setTabValue(value);
   };
 
+  const handleCallPress = () => {
+    try {
+      const phoneUrl = `tel:0${employee?.data?.phone_number}`;
+      Linking.openURL(phoneUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEmailPress = () => {
+    try {
+      const emailUrl = `mailto:${employee?.data?.email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleWhatsappPress = () => {
+    try {
+      const whatsappUrl = `whatsapp://send?phone=+62${employee?.data?.phone_number}`;
+      Linking.openURL(whatsappUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -63,12 +89,9 @@ const EmployeeProfileScreen = ({ route }) => {
           py={14}
           px={15}
         >
-          <PageHeader title="" onPress={() => navigation.navigate("Feed")} />
-          <Icon
-            // onPress={() => CopyToClipboard(employee?.data?.email)}
-            as={<MaterialCommunityIcons name="chat-processing-outline" />}
-            size={5}
-            color="#3F434A"
+          <PageHeader
+            title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+            onPress={() => navigation.navigate("Feed")}
           />
         </Flex>
 
@@ -83,24 +106,40 @@ const EmployeeProfileScreen = ({ route }) => {
             position="relative"
           />
           <Flex flex={1} gap={5}>
-            <Flex borderWidth={1} px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
-              <Flex gap={2} flexDirection="row-reverse" alignItems="center">
-                <TouchableOpacity onPress={handleWhatsappPress}>
-                  <Icon as={<MaterialCommunityIcons name="whatsapp" />} size={5} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleEmailPress}>
-                  <Icon as={<MaterialCommunityIcons name="email-outline" />} size={5} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleCallPress}>
-                  <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={5} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Chat List")}>
+            <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+              <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
+                <Pressable
+                  padding={1}
+                  borderRadius="full"
+                  borderWidth={1}
+                  borderColor="#dae2e6"
+                  onPress={handleWhatsappPress}
+                >
+                  <Icon as={<MaterialCommunityIcons name="whatsapp" />} size={6} />
+                </Pressable>
+                <Pressable
+                  padding={1}
+                  borderRadius="full"
+                  borderWidth={1}
+                  borderColor="#dae2e6"
+                  onPress={handleEmailPress}
+                >
+                  <Icon as={<MaterialCommunityIcons name="email-outline" />} size={6} />
+                </Pressable>
+
+                <Pressable
+                  padding={1}
+                  borderRadius="full"
+                  borderWidth={1}
+                  borderColor="#dae2e6"
+                  onPress={() => navigation.navigate("Chat List")}
+                >
                   <Image
                     source={require("../../../assets/icons/nest_logo.png")}
                     alt="nest"
-                    style={{ height: 20, width: 20 }}
+                    style={{ height: 25, width: 25 }}
                   />
-                </TouchableOpacity>
+                </Pressable>
               </Flex>
               <Image
                 source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${employee?.data?.image}` }}
@@ -112,10 +151,10 @@ const EmployeeProfileScreen = ({ route }) => {
                 borderWidth={2}
                 borderColor="#FFFFFF"
                 position="relative"
-                bottom="75px"
+                bottom="90px"
               />
 
-              <Flex mt="-70px">
+              <Flex mt="-80px">
                 <Flex gap={3}>
                   <Box>
                     <Flex gap={1} alignItems="center" flexDir="row">
@@ -135,93 +174,84 @@ const EmployeeProfileScreen = ({ route }) => {
                   </Box>
                   <Box>
                     <Flex gap={1} alignItems="center" flexDir="row">
-                      <Text fontWeight={400} fontSize={12} color="#8A9099">
-                        {employee?.data?.email}
-                      </Text>
-                      <Icon
-                        onPress={() => CopyToClipboard(employee?.data?.email)}
-                        as={<MaterialCommunityIcons name="content-copy" />}
-                        size={3}
-                        color="#3F434A"
-                      />
+                      <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={3} color="#3F434A" />
+                      <TouchableOpacity onPress={() => CopyToClipboard(employee?.data?.phone_number)}>
+                        <Text fontWeight={400} fontSize={12} color="#8A9099">
+                          {employee?.data?.phone_number}
+                        </Text>
+                      </TouchableOpacity>
                     </Flex>
                     <Flex gap={1} alignItems="center" flexDir="row">
-                      <Text fontWeight={400} fontSize={12} color="#8A9099">
-                        {employee?.data?.phone_number}
-                      </Text>
-                      <Icon
-                        onPress={() => CopyToClipboard(employee?.data?.phone_number)}
-                        as={<MaterialCommunityIcons name="content-copy" />}
-                        size={3}
-                        color="#3F434A"
-                      />
-                    </Flex>
-                    <Flex gap={1} alignItems="center" flexDir="row">
-                      <Icon
-                        // onPress={() => CopyToClipboard(employee?.data?.phone_number)}
-                        as={<MaterialCommunityIcons name="cake-variant-outline" />}
-                        size={3}
-                        color="#3F434A"
-                      />
+                      <Icon as={<MaterialCommunityIcons name="cake-variant-outline" />} size={3} color="#3F434A" />
                       <Text fontWeight={400} fontSize={12} color="#8A9099">
                         {dayjs(employee?.data?.birthdate).format("DD MMM YYYY")}
                       </Text>
                     </Flex>
                   </Box>
+                  <Flex gap={1} alignItems="center" flexDir="row">
+                    <Text>{teammates?.data.length}</Text>
+                    <Text fontWeight={400} fontSize={12} color="#8A9099">
+                      Teammates
+                    </Text>
+                    <Actionsheet>
+                      <Actionsheet.Content></Actionsheet.Content>
+                    </Actionsheet>
+                  </Flex>
                 </Flex>
               </Flex>
             </Flex>
             <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
               <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
-              {tabValue === "posts" ? (
-                <FlashList
-                  data={feeds?.data}
-                  keyExtractor={(item, index) => index}
-                  onEndReachedThreshold={0.1}
-                  estimatedItemSize={100}
-                  renderItem={({ item }) => (
-                    <FeedCardItem
-                      key={item?.id}
-                      id={item?.id}
-                      employeeId={item?.author_id}
-                      employeeName={item?.employee_name}
-                      createdAt={item?.created_at}
-                      employeeImage={item?.employee_image}
-                      content={item?.content}
-                      total_like={item?.total_like}
-                      totalComment={item?.total_comment}
-                      likedBy={item?.liked_by}
-                      attachment={item?.file_path}
-                      type={item?.type}
-                    />
-                  )}
-                />
-              ) : (
-                <Flex minHeight={2} flex={1} px={3} gap={2} flexDir="column">
+              {
+                tabValue === "posts" ? (
                   <FlashList
-                    data={teammates?.data}
+                    data={feeds?.data}
                     keyExtractor={(item, index) => index}
                     onEndReachedThreshold={0.1}
-                    estimatedItemSize={50}
+                    estimatedItemSize={100}
                     renderItem={({ item }) => (
-                      <Flex flexDirection="column" my={2}>
-                        <Flex flexDir="row" alignItems="center" gap={3}>
-                          <AvatarPlaceholder image={item?.image} name={item?.name} size="md" borderRadius="full" />
-                          <Flex>
-                            <Text fontWeight={500} fontSize={14} color="#3F434A">
-                              {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
-                            </Text>
-                            <Text fontWeight={400} fontSize={12} color="#20A144">
-                              {item?.position_name}
-                            </Text>
-                          </Flex>
-                        </Flex>
-                      </Flex>
+                      <FeedCardItem
+                        key={item?.id}
+                        id={item?.id}
+                        employeeId={item?.author_id}
+                        employeeName={item?.employee_name}
+                        createdAt={item?.created_at}
+                        employeeImage={item?.employee_image}
+                        content={item?.content}
+                        total_like={item?.total_like}
+                        totalComment={item?.total_comment}
+                        likedBy={item?.liked_by}
+                        attachment={item?.file_path}
+                        type={item?.type}
+                      />
                     )}
                   />
-                </Flex>
-              )}
+                ) : null
+                // <Flex minHeight={2} flex={1} px={3} gap={2} flexDir="column">
+                //   <FlashList
+                //     data={teammates?.data}
+                //     keyExtractor={(item, index) => index}
+                //     onEndReachedThreshold={0.1}
+                //     estimatedItemSize={50}
+                //     renderItem={({ item }) => (
+                //       <Flex flexDirection="column" my={2}>
+                //         <Flex flexDir="row" alignItems="center" gap={3}>
+                //           <AvatarPlaceholder image={item?.image} name={item?.name} size="md" borderRadius="full" />
+                //           <Flex>
+                //             <Text fontWeight={500} fontSize={14} color="#3F434A">
+                //               {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
+                //             </Text>
+                //             <Text fontWeight={400} fontSize={12} color="#20A144">
+                //               {item?.position_name}
+                //             </Text>
+                //           </Flex>
+                //         </Flex>
+                //       </Flex>
+                //     )}
+                //   />
+                // </Flex>
+              }
             </Flex>
           </Flex>
         </Box>
