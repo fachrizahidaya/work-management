@@ -21,6 +21,7 @@ import {
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
+import { Platform } from "react-native";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -127,7 +128,7 @@ const CostSection = ({ taskId, disabled }) => {
       {isOpen && (
         <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
           <Actionsheet.Content>
-            <VStack w="95%" space={3} pb={keyboardHeight}>
+            <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
               {costs?.data.length > 0 ? (
                 <ScrollView style={{ maxHeight: 200 }}>
                   <Box flex={1} minHeight={2}>

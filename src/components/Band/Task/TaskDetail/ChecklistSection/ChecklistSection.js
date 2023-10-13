@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import { Actionsheet, Box, Flex, FormControl, Icon, Input, Slider, Spinner, Text, VStack, useToast } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -171,7 +171,7 @@ const ChecklistSection = ({ taskId }) => {
       </FormControl>
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>
-          <VStack w="100%" pb={isKeyboardVisible ? keyboardHeight : 0} space={2}>
+          <VStack w="100%" pb={Platform.OS === "ios" && keyboardHeight} space={2}>
             <FormControl.Label justifyContent="center">Add New Checklist</FormControl.Label>
 
             <FormControl isInvalid={formik.errors.title}>
