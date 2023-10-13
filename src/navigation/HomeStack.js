@@ -21,7 +21,6 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
-import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
 
 const Stack = createStackNavigator();
 
