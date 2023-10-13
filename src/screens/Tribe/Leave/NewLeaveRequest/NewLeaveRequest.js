@@ -16,6 +16,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
+import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -26,10 +27,12 @@ const NewLeaveRequest = ({ route }) => {
   const { width, height } = Dimensions.get("window");
 
   const { onClose, availableLeavePersonal, refetchPersonalLeave, approver, approverImage, employeeId } = route.params;
+
   const toast = useToast();
   const navigation = useNavigation();
 
   const { data: leaveType } = useFetch("/hr/leaves");
+
   const {
     data: leaveHistory,
     refetch: refetchLeaveHistory,
@@ -137,7 +140,7 @@ const NewLeaveRequest = ({ route }) => {
     formik.setFieldValue("end_date", value);
   };
 
-  const items = [
+  const personalLeaveData = [
     {
       id: 1,
       name: "Available Leave",
@@ -196,7 +199,7 @@ const NewLeaveRequest = ({ route }) => {
         <PageHeader title="New Leave Request" onPress={() => navigation.navigate("Feed")} />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={5}>
-          {items.map((item) => {
+          {personalLeaveData.map((item) => {
             return (
               <Box key={item.id} alignItems="center" justifyContent="center" gap={2}>
                 <Box
@@ -220,7 +223,14 @@ const NewLeaveRequest = ({ route }) => {
           })}
         </Flex>
 
-        <Flex gap={13}>
+        <NewLeaveRequestForm
+          formik={formik}
+          leaveType={leaveType}
+          onChangeEndDate={onChangeEndDate}
+          onChangeStartDate={onChangeStartDate}
+          selectedGenerateType={selectedGenerateType}
+        />
+        {/* <Flex gap={13}>
           <FormControl isInvalid={formik.errors.leave_id}>
             <FormControl.Label>Leave Type</FormControl.Label>
           </FormControl>
@@ -277,7 +287,7 @@ const NewLeaveRequest = ({ route }) => {
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
             <Text color="white">Submit</Text>
           </FormButton>
-        </Flex>
+        </Flex> */}
       </Box>
     </Box>
   );

@@ -5,19 +5,15 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import PageHeader from "../../components/shared/PageHeader";
-import { useFetch } from "../../hooks/useFetch";
-import TeamLeaveRequestList from "../../components/Tribe/Leave/my-team/TeamLeaveRequestList";
+import PageHeader from "../../../components/shared/PageHeader";
+import { useFetch } from "../../../hooks/useFetch";
+import TeamLeaveRequestList from "../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
-const TeamLeaveScreen = () => {
+const TeamLeaveScreen = ({ route }) => {
   const navigation = useNavigation();
 
-  const {
-    data: teamLeaveRequest,
-    refetch: refetchTeamLeaveRequest,
-    isFetching: teamLeaveRequestIsFetching,
-    isLoading: teamLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/waiting-approval");
+  const { teamLeaveRequest, teamLeaveRequestIsLoading, refetchTeamLeaveRequest, teamLeaveRequestIsFetching } =
+    route.params;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,7 +53,7 @@ const TeamLeaveScreen = () => {
           />
         ) : (
           <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+            <Image source={require("../../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
             <Text>No Data</Text>
           </VStack>
         )

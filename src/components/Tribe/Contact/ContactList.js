@@ -47,6 +47,7 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: id,
+                returnPage: "Contact",
               })
             }
           >
