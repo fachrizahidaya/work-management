@@ -22,7 +22,6 @@ import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequ
 import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
-import TeammatesScreen from "../screens/Tribe/Employee/TeammatesScreen";
 
 const Stack = createStackNavigator();
 
@@ -74,8 +73,6 @@ const HomeStack = () => {
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
-
-      <Stack.Screen name="Teammates Screen" component={TeammatesScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
