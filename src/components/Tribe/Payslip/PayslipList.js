@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Linking } from "react-native";
+import { Linking, Platform } from "react-native";
 import { Actionsheet, Box, Flex, FormControl, Icon, Input, Pressable, Text, VStack, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,6 +14,7 @@ import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../shared/ToastDialog";
+import PayslipDownload from "./PayslipDownload";
 
 const PayslipList = ({ id, month, year }) => {
   const [hidePassword, setHidePassword] = useState(true);
@@ -99,49 +100,11 @@ const PayslipList = ({ id, month, year }) => {
         <Pressable onPress={toggleDownloadDialog}>
           <Icon as={<MaterialCommunityIcons name="tray-arrow-down" />} size={6} color="#186688" />
         </Pressable>
-        <Actionsheet
-          isOpen={downloadDialogIsOpen}
-          onClose={() => {
-            toggleDownloadDialog();
-            formik.resetForm();
-          }}
-        >
-          <Actionsheet.Content>
-            <VStack
-              w="95%"
-              space={3}
-              // pb={keyboardHeight}
-            >
-              <VStack w="100%" space={2}>
-                <FormControl.Label justifyContent="center">Password</FormControl.Label>
-
-                <FormControl isInvalid={formik.errors.password}>
-                  <Input
-                    variant="outline"
-                    type={!hidePassword ? "text" : "password"}
-                    placeholder="Enter your KSS password"
-                    value={formik.values.password}
-                    onChangeText={(value) => formik.setFieldValue("password", value)}
-                    InputRightElement={
-                      <Pressable onPress={() => setHidePassword(!hidePassword)}>
-                        <Icon
-                          as={<MaterialCommunityIcons name={hidePassword ? "eye" : "eye-off"} />}
-                          size={5}
-                          mr="3"
-                          color="muted.400"
-                        />
-                      </Pressable>
-                    }
-                  />
-                  <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
-                </FormControl>
-                <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                  <Text color="white">Download</Text>
-                </FormButton>
-              </VStack>
-            </VStack>
-          </Actionsheet.Content>
-        </Actionsheet>
+        <PayslipDownload
+          downloadDialogIsOpen={downloadDialogIsOpen}
+          formik={formik}
+          toggleDownloadDialog={toggleDownloadDialog}
+        />
       </Flex>
     </>
   );

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { Actionsheet, FormControl, Icon, Input, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -53,18 +53,11 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
       }}
     >
       <Actionsheet.Content>
-        <VStack
-          w="95%"
-          space={3}
-          //   pb={keyboardHeight}
-          //   pb={isKeyboardVisible ? keyboardHeight : 0}
-        >
+        <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
           <VStack w="100%" space={3}>
             <FormControl.Label>Old Password</FormControl.Label>
 
-            <FormControl
-            // isInvalid={formik.errors.password}
-            >
+            <FormControl isInvalid={formik.errors.old_password}>
               <Input
                 variant="outline"
                 type={!hideOldPassword ? "text" : "password"}

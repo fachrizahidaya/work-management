@@ -7,30 +7,16 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
 import { Dimensions } from "react-native";
-import {
-  Box,
-  Flex,
-  Icon,
-  Pressable,
-  Text,
-  FormControl,
-  useToast,
-  Image,
-  Button,
-  TextArea,
-  Actionsheet,
-} from "native-base";
+import { Box, Flex, Icon, Text, useToast, Button } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import CustomDateTimePicker from "../../../components/shared/CustomDateTimePicker";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { SuccessToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
-import FormButton from "../../../components/shared/FormButton";
+import NewFeedForm from "../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -115,11 +101,12 @@ const NewFeedScreen = ({ route }) => {
    * Handler for date
    */
   const [dateShown, setDateShown] = useState(false);
+
   const announcementToggleHandler = () => {
-    setSelectedOption("Announcement");
-    formik.setFieldValue("type", "Announcement");
     setDateShown(true);
     setIsAnnouncementSelected(true);
+    setSelectedOption("Announcement");
+    formik.setFieldValue("type", "Announcement");
   };
 
   /**
@@ -182,14 +169,14 @@ const NewFeedScreen = ({ route }) => {
             setImage(null);
           }}
         />
-        <Button
+        {/* <Button
           size="sm"
           borderRadius="full"
           opacity={formik.values.content === "" ? 0.5 : 1}
           onPress={formik.handleSubmit}
         >
           {formik.values.type === "Public" ? "Post" : "Announce"}
-        </Button>
+        </Button> */}
       </Flex>
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
@@ -213,99 +200,19 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
-      <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
-        <FormControl isInvalid={formik.errors.content}>
-          <TextArea
-            minH={100}
-            maxH={500}
-            variant="unstyled"
-            placeholder="What is happening?"
-            multiline
-            onChangeText={(value) => formik.setFieldValue("content", value)}
-            value={formik.values.content}
-            fontSize="lg"
-          />
-
-          <Flex p={2} flexDir="column" justifyContent="space-between">
-            {image ? (
-              image.size >= 1000000 ? (
-                <Text textAlign="center">Image size is too large!</Text>
-              ) : (
-                <Box alignSelf="center">
-                  <Image
-                    source={{ uri: image.uri }}
-                    style={{ width: 300, height: 250, borderRadius: 15 }}
-                    alt="image selected"
-                  />
-                  <Box
-                    backgroundColor="#4b4f53"
-                    borderRadius="full"
-                    width={8}
-                    height={8}
-                    top={1}
-                    padding={1.5}
-                    right={1}
-                    position="absolute"
-                  >
-                    <Pressable onPress={() => setImage(null)}>
-                      <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
-                    </Pressable>
-                  </Box>
-                </Box>
-              )
-            ) : null}
-          </Flex>
-
-          <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
-            <Actionsheet.Content>
-              <Flex w="100%" h={30} px={4} flexDir="row">
-                <Text>Choose Post Type</Text>
-              </Flex>
-              <Actionsheet.Item
-                onPress={publicToggleHandler}
-                startIcon={<Icon as={<MaterialIcons name="people" />} size={6} />}
-              >
-                <Flex flex={1} w="70.6%" alignItems="center" justifyContent="space-between" flexDir="row">
-                  Public
-                  {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-                </Flex>
-              </Actionsheet.Item>
-              <Actionsheet.Item
-                onPress={() => {
-                  announcementToggleHandler();
-                }}
-                startIcon={<Icon as={<MaterialIcons name="campaign" />} size={6} />}
-              >
-                <Flex flex={1} w="85%" alignItems="center" justifyContent="space-between" flexDir="row">
-                  <Box>
-                    <Text>Announcement</Text>
-                    <Flex gap={2} alignItems="center" flexDir="row">
-                      <Text fontSize={12} fontWeight={400}>
-                        End Date must be provided
-                      </Text>
-                      {isAnnouncementSelected && dateShown ? (
-                        <CustomDateTimePicker
-                          defaultValue={formik.values.end_date}
-                          onChange={endDateAnnouncementHandler}
-                          withText={true}
-                          textLabel="Adjust date"
-                          fontSize={12}
-                        />
-                      ) : null}
-                    </Flex>
-                  </Box>
-                  {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-                </Flex>
-              </Actionsheet.Item>
-            </Actionsheet.Content>
-          </Actionsheet>
-        </FormControl>
-        <Flex mt={1} py={3} px={2} flexDir="row">
-          <Pressable onPress={pickImageHandler}>
-            <Icon as={<MaterialCommunityIcons name="attachment" />} size={25} color="#377893" />
-          </Pressable>
-        </Flex>
-      </Flex>
+      <NewFeedForm
+        formik={formik}
+        image={image}
+        setImage={setImage}
+        pickImageHandler={pickImageHandler}
+        postTypeIsOpen={postTypeIsOpen}
+        postTypeIsClose={postTypeIsClose}
+        publicToggleHandler={publicToggleHandler}
+        announcementToggleHandler={announcementToggleHandler}
+        isAnnouncementSelected={isAnnouncementSelected}
+        dateShown={dateShown}
+        endDateAnnouncementHandler={endDateAnnouncementHandler}
+      />
     </Box>
   );
 };

@@ -4,7 +4,7 @@ import { useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
 import { Linking, SafeAreaView, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
-import { Actionsheet, Avatar, Badge, Box, Button, Flex, Icon, Image, Pressable, Text, View } from "native-base";
+import { Actionsheet, Avatar, Badge, Box, Button, Flex, Icon, Image, Pressable, Text, VStack, View } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -18,13 +18,16 @@ import Tabs from "../../../components/shared/Tabs";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
 import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [index, setIndex] = useState(0);
   const [tabValue, setTabValue] = useState("posts");
 
+  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+
   const navigation = useNavigation();
-  const { employeeId } = route.params;
+  const { employeeId, returnPage } = route.params;
   const router = useRoute();
   const tabs = [{ title: "posts" }];
 
@@ -91,7 +94,7 @@ const EmployeeProfileScreen = ({ route }) => {
         >
           <PageHeader
             title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-            onPress={() => navigation.navigate("Feed")}
+            onPress={() => navigation.navigate(returnPage)}
           />
         </Flex>
 
@@ -190,68 +193,88 @@ const EmployeeProfileScreen = ({ route }) => {
                   </Box>
                   <Flex gap={1} alignItems="center" flexDir="row">
                     <Text>{teammates?.data.length}</Text>
-                    <Text fontWeight={400} fontSize={12} color="#8A9099">
+                    <Text onPress={toggleTeammates} fontWeight={400} fontSize={12} color="#8A9099">
                       Teammates
                     </Text>
-                    <Actionsheet>
-                      <Actionsheet.Content></Actionsheet.Content>
+                    <Actionsheet isOpen={teammatesIsOpen} onClose={toggleTeammates}>
+                      <Actionsheet.Content>
+                        <VStack w="95%">
+                          {teammates?.data.map((item) => {
+                            return (
+                              <Actionsheet.Item>
+                                <Flex flexDir="row" alignItems="center" gap={3}>
+                                  <AvatarPlaceholder
+                                    image={item?.image}
+                                    name={item?.name}
+                                    size="md"
+                                    borderRadius="full"
+                                  />
+                                  <Flex>
+                                    <Text fontWeight={500} fontSize={14} color="#3F434A">
+                                      {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
+                                    </Text>
+                                    <Text fontWeight={400} fontSize={12} color="#20A144">
+                                      {item?.position_name}
+                                    </Text>
+                                  </Flex>
+                                </Flex>
+                              </Actionsheet.Item>
+                            );
+                          })}
+                        </VStack>
+                      </Actionsheet.Content>
                     </Actionsheet>
                   </Flex>
                 </Flex>
               </Flex>
             </Flex>
             <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
-              <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+              <FlashList
+                data={feeds?.data}
+                keyExtractor={(item, index) => index}
+                onEndReachedThreshold={0.1}
+                estimatedItemSize={100}
+                renderItem={({ item }) => (
+                  <FeedCardItem
+                    key={item?.id}
+                    id={item?.id}
+                    employeeId={item?.author_id}
+                    employeeName={item?.employee_name}
+                    createdAt={item?.created_at}
+                    employeeImage={item?.employee_image}
+                    content={item?.content}
+                    total_like={item?.total_like}
+                    totalComment={item?.total_comment}
+                    likedBy={item?.liked_by}
+                    attachment={item?.file_path}
+                    type={item?.type}
+                  />
+                )}
+              />
 
-              {
-                tabValue === "posts" ? (
+              {/* <Flex minHeight={2} flex={1} px={3} gap={2} flexDir="column">
                   <FlashList
-                    data={feeds?.data}
+                    data={teammates?.data}
                     keyExtractor={(item, index) => index}
                     onEndReachedThreshold={0.1}
-                    estimatedItemSize={100}
+                    estimatedItemSize={50}
                     renderItem={({ item }) => (
-                      <FeedCardItem
-                        key={item?.id}
-                        id={item?.id}
-                        employeeId={item?.author_id}
-                        employeeName={item?.employee_name}
-                        createdAt={item?.created_at}
-                        employeeImage={item?.employee_image}
-                        content={item?.content}
-                        total_like={item?.total_like}
-                        totalComment={item?.total_comment}
-                        likedBy={item?.liked_by}
-                        attachment={item?.file_path}
-                        type={item?.type}
-                      />
+                      <Flex flexDirection="column" my={2}>
+                        <Flex flexDir="row" alignItems="center" gap={3}>
+                          <AvatarPlaceholder image={item?.image} name={item?.name} size="md" borderRadius="full" />
+                          <Flex>
+                            <Text fontWeight={500} fontSize={14} color="#3F434A">
+                              {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
+                            </Text>
+                            <Text fontWeight={400} fontSize={12} color="#20A144">
+                              {item?.position_name}
+                            </Text>
+                          </Flex>
+                        </Flex>
+                      </Flex>
                     )}
                   />
-                ) : null
-                // <Flex minHeight={2} flex={1} px={3} gap={2} flexDir="column">
-                //   <FlashList
-                //     data={teammates?.data}
-                //     keyExtractor={(item, index) => index}
-                //     onEndReachedThreshold={0.1}
-                //     estimatedItemSize={50}
-                //     renderItem={({ item }) => (
-                //       <Flex flexDirection="column" my={2}>
-                //         <Flex flexDir="row" alignItems="center" gap={3}>
-                //           <AvatarPlaceholder image={item?.image} name={item?.name} size="md" borderRadius="full" />
-                //           <Flex>
-                //             <Text fontWeight={500} fontSize={14} color="#3F434A">
-                //               {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
-                //             </Text>
-                //             <Text fontWeight={400} fontSize={12} color="#20A144">
-                //               {item?.position_name}
-                //             </Text>
-                //           </Flex>
-                //         </Flex>
-                //       </Flex>
-                //     )}
-                //   />
-                // </Flex>
-              }
+                </Flex> */}
             </Flex>
           </Flex>
         </Box>
@@ -265,6 +288,6 @@ export default EmployeeProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F8F8F8",
   },
 });

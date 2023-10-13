@@ -105,6 +105,7 @@ const FeedComment = ({
               />
             </Flex>
           </ScrollView>
+
           <FeedCommentForm
             postId={postId}
             loggedEmployeeImage={loggedEmployeeImage}

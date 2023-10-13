@@ -1,5 +1,3 @@
-import { useFormik } from "formik";
-
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Image, Skeleton, Text, VStack, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";

@@ -1,55 +1,63 @@
-import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Text } from "native-base";
 
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { CopyToClipboard } from "../../shared/CopyToClipboard";
-import { card } from "../../../styles/Card";
-import { useDisclosure } from "../../../hooks/useDisclosure";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const EmployeeInformation = ({ name, position, email, phone, image }) => {
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) => {
+  const items = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: availableLeave,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+    },
+    {
+      id: 2,
+      name: "Pending Approval",
+      icon: "clipboard-pulse-outline",
+      qty: pendingApproval,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+    },
+    {
+      id: 3,
+      name: "Approved",
+      icon: "clipboard-check-outline",
+      qty: approved,
+      backgroundColor: "#E9F5EC",
+      iconColor: "#49C96D",
+    },
+  ];
 
   return (
-    <Flex mt={3} gap={5} style={card.card}>
-      <Flex justifyContent="space-between" direction="row" gap={4}>
-        <Flex gap={3} flexDir="row" alignItems="center">
-          <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={10} />
-          <Flex>
-            <Text fontWeight={500} fontSize={14} color="#3F434A">
-              {name.length > 30 ? name.split(" ")[0] : name}
-            </Text>
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
-              {position}
-            </Text>
-          </Flex>
-        </Flex>
+    <>
+      <Flex gap={3} alignItems="center" justifyContent="center" flexDir="row">
+        {items.map((item) => {
+          return (
+            <Box key={item.id} alignItems="center" justifyContent="center" gap={1}>
+              <Box
+                backgroundColor={item.backgroundColor}
+                alignItems="center"
+                justifyContent="center"
+                width={60}
+                height={60}
+                borderRadius={15}
+              >
+                <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
+              </Box>
+              <Text fontWeight={500} fontSize={20}>
+                {item.qty}
+              </Text>
+              <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
+                {item.name}
+              </Text>
+            </Box>
+          );
+        })}
       </Flex>
-
-      <Divider />
-
-      <Box>
-        <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-          <Text fontWeight={400} fontSize={12} color="#3F434A">
-            Phone:
-          </Text>
-          <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(phone)} fontWeight={400} fontSize={12} color="#8A9099">
-              {phone}
-            </Text>
-          </Flex>
-        </Flex>
-        <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-          <Text fontWeight={400} fontSize={12}>
-            Email:
-          </Text>
-          <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
-              {email}
-            </Text>
-          </Flex>
-        </Flex>
-      </Box>
-    </Flex>
+    </>
   );
 };
 
-export default EmployeeInformation;
+export default EmployeeLeaveDashboard;

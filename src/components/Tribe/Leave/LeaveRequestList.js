@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import axiosInstance from "../../../config/api";
 import ConfirmationModal from "../../shared/ConfirmationModal";
 
 const LeaveRequestList = ({
@@ -24,20 +23,6 @@ const LeaveRequestList = ({
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const toast = useToast();
-
-  const leaveCancelHandler = async () => {
-    try {
-      const res = await axiosInstance.patch(`/hr/leave-requests/${id}/cancel`);
-      refetchPersonalLeaveRequest();
-      refetchProfile();
-      toast.show({
-        description: "Request Cancelled",
-      });
-      toggleAction();
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -62,11 +47,12 @@ const LeaveRequestList = ({
                 <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
               </Actionsheet.Content>
             </Actionsheet>
+
             <ConfirmationModal
               isOpen={cancelModalIsOpen}
               toggle={toggleCancelModal}
               apiUrl={`/hr/leave-requests/${id}/cancel`}
-              color="red.600"
+              color="coolGray.500"
               hasSuccessFunc={true}
               header="Cancel Leave Request"
               onSuccess={() => {
