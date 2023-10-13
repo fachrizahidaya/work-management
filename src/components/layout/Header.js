@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
 import { useFetch } from "../../hooks/useFetch";
 
-const Header = () => {
+const Header = ({ selectedModule }) => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const { data: myProfile } = useFetch("/hr/my-profile");
@@ -39,7 +39,7 @@ const Header = () => {
         </Flex>
 
         <Flex flexDir="row" gap={8} alignItems="center">
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate("Notification", { module: selectedModule })}>
             <Icon as={<MaterialCommunityIcons name="bell-outline" />} color="#3f434b" />
           </Pressable>
 

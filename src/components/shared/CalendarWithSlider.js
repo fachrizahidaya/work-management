@@ -1,15 +1,26 @@
-import { Agenda } from "react-native-calendars";
+import { useNavigation } from "@react-navigation/native";
 
+import { Agenda } from "react-native-calendars";
 import dayjs from "dayjs";
 
 import { Image, Text, VStack } from "native-base";
 import { TouchableOpacity, StyleSheet } from "react-native";
 
 const CalendarWithSlider = ({ items }) => {
+  const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
     return (
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => {
+          if (reservation.module === "Project") {
+            navigation.navigate("Project Detail", { projectId: reservation.id });
+          } else if (reservation.module === "Task") {
+            navigation.navigate("Task Detail", { taskId: reservation.id });
+          }
+        }}
+      >
         <Text>{reservation.description}</Text>
       </TouchableOpacity>
     );

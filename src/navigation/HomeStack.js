@@ -19,6 +19,7 @@ import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
+import NotificationScreen from "../screens/NotificationScreen";
 
 const Stack = createStackNavigator();
 
@@ -28,7 +29,7 @@ const HomeStack = () => {
   return (
     // Includes screens after user log in
     <Stack.Navigator>
-      <Stack.Screen name="Module" options={{ header: () => <Header /> }}>
+      <Stack.Screen name="Module" options={{ header: () => <Header selectedModule={selectedModule} /> }}>
         {() => {
           if (selectedModule === "BAND") {
             return <BandTab setSelectedModule={setSelectedModule} />;
@@ -46,6 +47,8 @@ const HomeStack = () => {
           }
         }}
       </Stack.Screen>
+
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Chat List" component={ChatListScreen} options={{ header: () => <Header /> }} />
 
