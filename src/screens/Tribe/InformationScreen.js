@@ -3,8 +3,8 @@ import { Flex, Image, Text, VStack } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../components/shared/PageHeader";
-import EmployeeLeaveDashboard from "../../components/Tribe/Information/LeaveDashboardUser";
-import EmployeeInformation from "../../components/Tribe/Information/EmployeeLeaveDashboard";
+import EmployeeLeaveDashboard from "../../components/Tribe/Information/EmployeeLeaveDashboard";
+import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
 import { useFetch } from "../../hooks/useFetch";
 
@@ -40,6 +40,7 @@ const InformationScreen = () => {
                   approved={profile?.data?.approved_leave_request}
                 />
                 <EmployeeInformation
+                  id={profile?.data?.id}
                   name={profile?.data?.name}
                   position={profile?.data?.position_name}
                   email={profile?.data?.email}
@@ -50,6 +51,7 @@ const InformationScreen = () => {
                   My Supervisor
                 </Text>
                 <SupervisorInformation
+                  supervisorId={profile?.data?.supervisor_employee_id}
                   supervisorName={profile?.data?.supervisor_name}
                   supervisorPhone={profile?.data?.supervisor_phone_number}
                   supervisorEmail={profile?.data?.supervisor_email}

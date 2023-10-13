@@ -74,6 +74,7 @@ const FeedCardItem = ({
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
+                returnPage: "Feed",
               })
             }
           >

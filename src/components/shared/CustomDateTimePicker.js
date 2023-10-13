@@ -99,7 +99,7 @@ const CustomDateTimePicker = ({
               color={iconColor}
             />
           ) : withText ? (
-            <Text fontSize={fontSize} underline>
+            <Text fontSize={fontSize} underline onPress={toggleDatePicker}>
               {textLabel}
             </Text>
           ) : (

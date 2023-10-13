@@ -1,51 +1,40 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Linking, TouchableOpacity } from "react-native";
-import { Box, Divider, Flex, Icon, Text } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
-const SupervisorInformation = ({
-  supervisorId,
-  supervisorName,
-  supervisorEmail,
-  supervisorPhone,
-  supervisorImage,
-  supervisorPosition,
-}) => {
-  const phoneNumber = supervisorPhone;
-  const phoneUrl = `tel:0${phoneNumber}`;
+const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
 
   const navigation = useNavigation();
 
-  const handleCallPress = () => {
-    Linking.openURL(phoneUrl).catch((err) => console.log(err));
-  };
-
   return (
-    <Flex gap={5} style={card.card}>
+    <Flex mt={3} gap={5} style={card.card}>
       <Flex justifyContent="space-between" direction="row" gap={4}>
         <Flex gap={3} flexDir="row" alignItems="center">
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("Employee Profile", {
-                employeeId: supervisorId,
+                employeeId: id,
                 returnPage: "My Information",
               })
             }
           >
-            <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" borderRadius={10} />
+            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={10} />
           </TouchableOpacity>
-          <Box>
+          <Flex>
             <Text fontWeight={500} fontSize={14} color="#3F434A">
-              {supervisorName.length > 30 ? supervisorName.split(" ")[0] : supervisorName}
+              {name.length > 30 ? name.split(" ")[0] : name}
             </Text>
             <Text fontWeight={400} fontSize={12} color="#8A9099">
-              {supervisorPosition}
+              {position}
             </Text>
-          </Box>
+          </Flex>
         </Flex>
       </Flex>
 
@@ -57,17 +46,9 @@ const SupervisorInformation = ({
             Phone:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <TouchableOpacity onPress={handleCallPress}>
-              <Text fontWeight={400} fontSize={12} color="#8A9099">
-                {supervisorPhone}
-              </Text>
-            </TouchableOpacity>
-            {/* <Icon
-              onPress={() => CopyToClipboard(supervisorPhone)}
-              as={<MaterialCommunityIcons name="content-copy" />}
-              size={3}
-              color="#3F434A"
-            /> */}
+            <Text onPress={() => CopyToClipboard(phone)} fontWeight={400} fontSize={12} color="#8A9099">
+              {phone}
+            </Text>
           </Flex>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" flexDir="row">
@@ -75,8 +56,8 @@ const SupervisorInformation = ({
             Email:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(supervisorEmail)} fontWeight={400} fontSize={12} color="#8A9099">
-              {supervisorEmail}
+            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
+              {email}
             </Text>
           </Flex>
         </Flex>
@@ -85,4 +66,4 @@ const SupervisorInformation = ({
   );
 };
 
-export default SupervisorInformation;
+export default EmployeeInformation;
