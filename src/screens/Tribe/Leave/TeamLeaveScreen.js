@@ -7,7 +7,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import TeamLeaveRequestList from "../../../components/Tribe/Leave/my-team/TeamLeaveRequestList";
+import TeamLeaveRequestList from "../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = ({ route }) => {
   const navigation = useNavigation();
