@@ -108,7 +108,7 @@ const FeedScreen = () => {
               toggleNewFeed: toggleNewFeed,
               refetch: postRefetchHandler,
               loggedEmployeeImage: profile?.data?.image,
-              loggedEmployeeName: useSelector?.name,
+              loggedEmployeeName: userSelector?.name,
             });
           }}
         >
