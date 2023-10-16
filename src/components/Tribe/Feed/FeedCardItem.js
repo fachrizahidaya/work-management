@@ -80,9 +80,19 @@ const FeedCardItem = ({
           >
             <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
           </Pressable>
+
           <Flex flex={1}>
             <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
-              <Text onPress={() => navigation.navigate("Employee Profile")} fontSize={15} fontWeight={500}>
+              <Text
+                onPress={() =>
+                  navigation.navigate("Employee Profile", {
+                    employeeId: employeeId,
+                    returnPage: "Feed",
+                  })
+                }
+                fontSize={15}
+                fontWeight={500}
+              >
                 {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (

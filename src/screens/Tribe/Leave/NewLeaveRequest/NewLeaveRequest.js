@@ -5,13 +5,10 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 
 import { Dimensions, StyleSheet } from "react-native";
-import { Box, Flex, FormControl, Icon, Select, Text, TextArea, useToast } from "native-base";
+import { Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
-import FormButton from "../../../../components/shared/FormButton";
-import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
 import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
