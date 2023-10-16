@@ -10,7 +10,15 @@ const NotificationItem = ({ name, modul, content, itemId, time }) => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("Task Detail", { taskId: itemId })}>
+    <TouchableOpacity
+      onPress={() => {
+        if (modul === "Task") {
+          navigation.navigate("Task Detail", { taskId: itemId });
+        } else if (modul === "Project") {
+          navigation.navigate("Project Detail", { projectId: itemId });
+        }
+      }}
+    >
       <Flex flexDir="row" mb={25} style={{ gap: 12 }} alignItems="center">
         <Text style={{ width: 42 }}>{time.split(" ")[1]}</Text>
 

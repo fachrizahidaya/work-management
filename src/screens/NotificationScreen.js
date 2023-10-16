@@ -1,10 +1,8 @@
-import React from "react";
-
-import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 
 import { FlashList } from "@shopify/flash-list";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Skeleton, Text } from "native-base";
+import { Flex, Skeleton, Spinner } from "native-base";
 
 import { useFetch } from "../hooks/useFetch";
 import NotificationItem from "../components/Notification/NotificationItem/NotificationItem";
@@ -13,25 +11,49 @@ import NotificationTimeStamp from "../components/Notification/NotificationTimeSt
 
 const NotificationScreen = ({ route }) => {
   const { module } = route.params;
-  const { data: notifications, isLoading: notificationIsLoading } = useFetch(
-    module === "BAND" ? "/pm/notifications/new" : "/hr/notifications/new"
+  const [currentPage, setCurrentPage] = useState(1);
+  const [cumulativeNotifs, setCumulativeNotifs] = useState([]);
+
+  const notificationFetchParameters = {
+    page: currentPage,
+    limit: 20,
+  };
+
+  const { data: notifications, isFetching: notifIsFetching } = useFetch(
+    module === "BAND" ? "/pm/notifications" : "/hr/notifications",
+    [currentPage],
+    notificationFetchParameters
   );
+
+  const fetchMoreData = () => {
+    if (currentPage < notifications?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (notifications?.data?.data?.length) {
+      setCumulativeNotifs((prevData) => [...prevData, ...notifications?.data?.data]);
+    }
+  }, [notifications]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Flex marginHorizontal={16} marginVertical={13} flex={1} style={{ gap: 24 }}>
         <PageHeader backButton={false} title="Notifications" />
 
-        {!notificationIsLoading ? (
+        {cumulativeNotifs.length > 0 ? (
           <FlashList
-            data={notifications?.data}
+            data={cumulativeNotifs}
             keyExtractor={(item) => item.id}
             onEndReachedThreshold={0.1}
+            onEndReached={fetchMoreData}
             estimatedItemSize={50}
+            ListFooterComponent={notifIsFetching && <Spinner color="primary.600" size="sm" />}
             renderItem={({ item, index }) => (
               <>
-                {notifications.data[index - 1] ? (
-                  item?.created_at.split(" ")[0] !== notifications?.data[index - 1]?.created_at.split(" ")[0] ? (
+                {cumulativeNotifs[index - 1] ? (
+                  item?.created_at.split(" ")[0] !== cumulativeNotifs[index - 1]?.created_at.split(" ")[0] ? (
                     <>
                       <NotificationTimeStamp
                         key={`${item.id}_${index}_timestamp-group`}
@@ -56,7 +78,7 @@ const NotificationScreen = ({ route }) => {
             )}
           />
         ) : (
-          <Skeleton height={41} />
+          <Skeleton h={41} />
         )}
       </Flex>
     </SafeAreaView>
