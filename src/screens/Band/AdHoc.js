@@ -136,6 +136,10 @@ const AdHocScreen = () => {
           rounded="full"
           bgColor="primary.600"
           p={15}
+          shadow="0"
+          borderRadius="full"
+          borderWidth={3}
+          borderColor="#FFFFFF"
           onPress={toggleTaskForm}
         >
           <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />

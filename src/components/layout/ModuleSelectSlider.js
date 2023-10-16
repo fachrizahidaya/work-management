@@ -1,15 +1,16 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Actionsheet, Flex, Image, Text } from "native-base";
+import { setModule } from "../../redux/reducer/module";
 
 /**
  * @function ModuleSelectSlider
  * @param {boolean} isOpen - Whether the module selection slider is open or closed.
- * @param {function} setSelectedModule - Function to handle the selected module.
  */
-const ModuleSelectSlider = ({ isOpen, toggle, setSelectedModule }) => {
+const ModuleSelectSlider = ({ isOpen, toggle }) => {
+  const dispatch = useDispatch();
   // Get user data from the Redux store
   const userSelector = useSelector((state) => state.auth);
 
@@ -23,9 +24,7 @@ const ModuleSelectSlider = ({ isOpen, toggle, setSelectedModule }) => {
                 key={idx}
                 borderColor="#E8E9EB"
                 borderBottomWidth={1}
-                onPress={() => {
-                  setSelectedModule(item.module_name);
-                }}
+                onPress={() => dispatch(setModule(item.module_name))}
               >
                 <Flex flexDir="row" alignItems="center">
                   <Image

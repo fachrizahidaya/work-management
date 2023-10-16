@@ -6,9 +6,9 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Menu, Pressable, Text } from "native-base";
+import { Box, Button, Flex, HStack, Icon, Menu, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -159,21 +159,39 @@ const ProjectDetailScreen = ({ route }) => {
                   onEndReachedThreshold={0.1}
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
-                    <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                      <AvatarPlaceholder name={item.user_name} image={item.user_image} />
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (item.modul === "Task") {
+                          navigation.navigate("Task Detail", {
+                            taskId: item.reference_id,
+                          });
+                        } else if (item.modul === "Project") {
+                          navigation.navigate("Project Detail", {
+                            projectId: item.reference_id,
+                          });
+                        }
+                      }}
+                    >
+                      <Flex flexDir="row" gap={1.5} mb={2}>
+                        <AvatarPlaceholder name={item.user_name} image={item.user_image} />
 
-                      <Box>
-                        <Flex flexDir="row" gap={1} alignItems="center">
-                          <Text>{item?.user_name}</Text>
-                          <Text color="#8A9099">{dayjs(item?.created_date + item?.create_time).fromNow()}</Text>
-                        </Flex>
+                        <Box>
+                          <Flex flexDir="row" gap={1} alignItems="center">
+                            <Text>{item?.user_name}</Text>
+                            <Text color="#8A9099">{dayjs(item?.created_date + item?.create_time).fromNow()}</Text>
+                          </Flex>
 
-                        <Flex alignItems="center" gap={1} flexDir="row">
-                          <Text>{item?.description}</Text>
-                          <Text color="#377893">#{item?.id}</Text>
-                        </Flex>
-                      </Box>
-                    </Flex>
+                          <Flex>
+                            <Text fontWeight={400}>{item?.description}</Text>
+
+                            <HStack space={1}>
+                              <Text fontWeight={400}>{item.object_title}</Text>
+                              <Text color="#377893">#{item.reference_id}</Text>
+                            </HStack>
+                          </Flex>
+                        </Box>
+                      </Flex>
+                    </TouchableOpacity>
                   )}
                 />
               </Box>

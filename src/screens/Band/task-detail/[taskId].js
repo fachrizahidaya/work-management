@@ -73,7 +73,12 @@ const TaskDetailScreen = ({ route }) => {
             }}
           >
             <Flex flexDir="row" alignItems="end" justifyContent="space-between">
-              <PageHeader title={selectedTask?.data?.title} onPress={() => navigation.goBack()} width={width / 2} />
+              <PageHeader
+                title={selectedTask?.data?.title}
+                subTitle={selectedTask?.data?.id}
+                onPress={() => navigation.goBack()}
+                width={width / 2}
+              />
 
               <ControlSection
                 taskStatus={selectedTask?.data?.status}
