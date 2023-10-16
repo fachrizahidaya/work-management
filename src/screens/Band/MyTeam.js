@@ -137,7 +137,7 @@ const MyTeamScreen = () => {
         )}
       </VStack>
 
-      <Box h="full" pt={21} pb={61}>
+      <Box flex={1}>
         {selectedTeamId ? (
           !membersIsLoading ? (
             <FlashList
