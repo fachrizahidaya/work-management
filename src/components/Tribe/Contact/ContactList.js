@@ -8,36 +8,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import EmailButton from "../../shared/EmailButton";
+import PhoneButton from "../../shared/PhoneButton";
+import WhatsappButton from "../../shared/WhatsappButton";
+import PersonalNestButton from "../../shared/PersonalNestButton";
 
 const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
   const navigation = useNavigation();
-
-  const handleCallPress = () => {
-    try {
-      const phoneUrl = `tel:0${phone}`;
-      Linking.openURL(phoneUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleEmailPress = () => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleWhatsappPress = () => {
-    try {
-      const whatsappUrl = `whatsapp://send?phone=+62${phone}`;
-      Linking.openURL(whatsappUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -64,22 +41,10 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
             </Flex>
           </TouchableOpacity>
           <Flex gap={2} flexDirection="row" alignItems="center">
-            <TouchableOpacity onPress={handleWhatsappPress}>
-              <Icon as={<MaterialCommunityIcons name="whatsapp" />} size={5} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleEmailPress}>
-              <Icon as={<MaterialCommunityIcons name="email-outline" />} size={5} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCallPress}>
-              <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={5} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Chat List")}>
-              <Image
-                source={require("../../../assets/icons/nest_logo.png")}
-                alt="nest"
-                style={{ height: 20, width: 20 }}
-              />
-            </TouchableOpacity>
+            <WhatsappButton phone={phone} size={5} />
+            <EmailButton email={email} size={5} />
+            <PhoneButton phone={phone} size={5} />
+            <PersonalNestButton />
           </Flex>
         </Flex>
       </Flex>

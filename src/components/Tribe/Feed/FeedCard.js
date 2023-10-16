@@ -59,7 +59,6 @@ const FeedCard = ({
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
         refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
-        bounces={true}
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}

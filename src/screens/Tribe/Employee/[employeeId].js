@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { Actionsheet, Avatar, Badge, Box, Button, Flex, Icon, Image, Pressable, Text, VStack, View } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -24,20 +24,24 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
 import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
-import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
 import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [currentOffset, setCurrentOffset] = useState(0);
+
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
 
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
 
-  const { employeeId, returnPage } = route.params;
+  const { employeeId, returnPage, loggedEmployeeImage } = route.params;
 
   const router = useRoute();
 
@@ -49,6 +53,11 @@ const EmployeeProfileScreen = ({ route }) => {
     } else {
       setIsHeaderSticky(false);
     }
+  };
+
+  const postFetchParameters = {
+    offset: currentOffset,
+    limit: 10,
   };
 
   const {
@@ -67,7 +76,7 @@ const EmployeeProfileScreen = ({ route }) => {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-  } = useFetch(`/hr/posts/personal/${employee?.data?.id}`);
+  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
 
   const handleCallPress = () => {
     try {
@@ -96,25 +105,61 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   };
 
+  const postEndReachedHandler = () => {
+    if (!fetchIsDone) {
+      if (posts.length !== posts.length + feeds?.data.length) {
+        setCurrentOffset(currentOffset + 10);
+      } else {
+        setFetchIsDone(true);
+      }
+    }
+  };
+
+  const postRefetchHandler = () => {
+    setCurrentOffset(0);
+    setFetchIsDone(false);
+  };
+
+  useEffect(() => {
+    if (feeds?.data) {
+      if (currentOffset === 0) {
+        setPosts(feeds?.data);
+      } else {
+        setPosts((prevData) => [...prevData, ...feeds?.data]);
+      }
+    }
+  }, [feeds?.data]);
+
+  // useEffect(() => {
+  //   console.log(posts);
+  // }, [posts]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Flex
-        // borderBottomColor="#E8E9EB"
-        // flexDir="row"
-        // alignItems="center"
-        // justifyContent="space-between"
-        // bgColor="#FFFFFF"
-        // py={14}
-        // px={15}
-        // position="sticky"
-        style={isHeaderSticky ? styles.stickyHeader : styles.header}
-      >
+      <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
         <PageHeader
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
           onPress={() => navigation.navigate(returnPage)}
         />
       </Flex>
-      <ScrollView>
+      <Pressable
+        style={styles.createIcon}
+        shadow="0"
+        borderRadius="full"
+        borderWidth={3}
+        borderColor="#FFFFFF"
+        onPress={() => {
+          navigation.navigate("New Feed", {
+            toggleNewFeed: toggleNewFeed,
+            refetch: postRefetchHandler,
+            loggedEmployeeImage: loggedEmployeeImage,
+            loggedEmployeeName: userSelector?.name,
+          });
+        }}
+      >
+        <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
+      </Pressable>
+      <ScrollView onScroll={handleScroll}>
         <Image
           source={require("../../../assets/profile_banner.jpg")}
           alignSelf="center"
@@ -297,9 +342,11 @@ const EmployeeProfileScreen = ({ route }) => {
           </Flex>
           <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
             <FlashList
-              data={feeds?.data}
+              data={posts}
               keyExtractor={(item, index) => index}
+              onEndReached={posts.length ? postEndReachedHandler : null}
               onEndReachedThreshold={0.1}
+              refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
               estimatedItemSize={100}
               renderItem={({ item }) => (
                 <FeedCardItem
@@ -348,6 +395,17 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     zIndex: 1,
+  },
+  createIcon: {
+    backgroundColor: "#377893",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 15,
+    right: 15,
+    zIndex: 2,
   },
   headerText: {
     fontWeight: "bold",
