@@ -22,7 +22,7 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const BandTab = ({ setSelectedModule }) => {
+const BandTab = () => {
   const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
   const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
   const {
@@ -179,11 +179,7 @@ const BandTab = ({ setSelectedModule }) => {
 
       <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      <ModuleSelectSlider
-        isOpen={moduleSliderIsOpen}
-        toggle={toggleModuleSlider}
-        setSelectedModule={setSelectedModule}
-      />
+      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />
     </>
   );
 };

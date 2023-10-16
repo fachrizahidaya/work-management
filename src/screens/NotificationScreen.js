@@ -8,9 +8,10 @@ import { useFetch } from "../hooks/useFetch";
 import NotificationItem from "../components/Notification/NotificationItem/NotificationItem";
 import PageHeader from "../components/shared/PageHeader";
 import NotificationTimeStamp from "../components/Notification/NotificationTimeStamp/NotificationTimeStamp";
+import axiosInstance from "../config/api";
 
 const NotificationScreen = ({ route }) => {
-  const { module } = route.params;
+  const { module, refetch } = route.params;
   const [currentPage, setCurrentPage] = useState(1);
   const [cumulativeNotifs, setCumulativeNotifs] = useState([]);
 
@@ -36,6 +37,19 @@ const NotificationScreen = ({ route }) => {
       setCumulativeNotifs((prevData) => [...prevData, ...notifications?.data?.data]);
     }
   }, [notifications]);
+
+  useEffect(() => {
+    const readAllNotifications = async () => {
+      try {
+        await axiosInstance.get(module === "BAND" ? "/pm/notifications/read" : "/hr/notifications/read");
+        refetch();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    readAllNotifications();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
