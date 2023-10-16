@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from "dayjs";
 
 import { Dimensions } from "react-native";
 import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
-import dayjs from "dayjs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewReimbursement from "../../Tribe/Reimbursement/NewReimbursement.js/NewReimbursement";
@@ -12,10 +12,9 @@ import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
-  const [newLeaveRequest, setNewLeaveRequest] = useState(false);
-  const [newReimbursement, setNewReimbursement] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
 
@@ -29,6 +28,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
 
   const { isOpen: newLeaveRequestIsOpen, toggle: toggleNewLeaveRequest } = useDisclosure(false);
+  const { isOpen: newReimbursementIsOpen, toggle: toggleNewReimbursement } = useDisclosure(false);
 
   const items = [
     {
@@ -45,27 +45,18 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     },
   ];
 
-  const onCloseLeaveRequest = () => {
-    setNewLeaveRequest(false);
-  };
-
-  const onCloseReimbursement = () => {
-    setNewReimbursement(false);
-  };
-
-  /**
-   * Clock in and Clock out Handler
-   */
-
   const attendanceCheckHandler = async () => {
     try {
-      if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance?.data) {
+      if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
         const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
           ip: userIp?.ip,
         });
         toggle();
         toast.show({
-          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
+          render: () => {
+            return <SuccessToast message={!attendance?.time_in ? "Clock-in Success" : "Clock-out Success"} />;
+          },
+          // description: !attendance?.time_in ? "Clock-in Success" : "Clock-out Success",
           placement: "top",
         });
         refetch();
@@ -147,34 +138,12 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                       </Text>
                     </>
                   ) : (
-                    <Flex
-                      flexDir="row"
-                      bg={!attendance?.data?.time_in ? "#daecfc" : "#feedaf"}
-                      borderRadius={5}
-                      style={{ height: 32, width: 352 }}
-                      alignItems="center"
-                    >
-                      <Box px={1}>
-                        <Icon
-                          as={<MaterialCommunityIcons name={item.icons} />}
-                          size={6}
-                          color={!attendance?.data?.time_in ? "#2984c3" : "#fdc500"}
-                        />
-                      </Box>
-                      {!attendance?.data?.time_in ? (
-                        <Text fontWeight={700} color="#2984c3" mx={5}>
-                          Clock in
-                        </Text>
-                      ) : (
-                        <Text fontWeight={700} color="#fdc500" mx={5}>
-                          Clock out
-                        </Text>
-                      )}
-
-                      <Text ml={170} color={!attendance?.data?.time_in ? "#2984c3" : "#fdc500"}>
-                        {currentTime}
-                      </Text>
-                    </Flex>
+                    <ClockAttendance
+                      item={item}
+                      attendance={attendance?.data}
+                      currentTime={currentTime}
+                      attendanceCheckHandler={attendanceCheckHandler}
+                    />
                   )}
                 </Flex>
               </Actionsheet.Item>
