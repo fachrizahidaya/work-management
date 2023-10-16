@@ -1,7 +1,8 @@
-import { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { Header } from "../components/layout/Header";
+import { useSelector } from "react-redux";
+
+import Header from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
 import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
@@ -25,26 +26,26 @@ import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
-  const [selectedModule, setSelectedModule] = useState("BAND");
+  const moduleSelector = useSelector((state) => state.module);
 
   return (
     // Includes screens after user log in
     <Stack.Navigator>
-      <Stack.Screen name="Module" options={{ header: () => <Header selectedModule={selectedModule} /> }}>
+      <Stack.Screen name="Module" options={{ header: () => <Header /> }}>
         {() => {
-          if (selectedModule === "BAND") {
-            return <BandTab setSelectedModule={setSelectedModule} />;
-          } else if (selectedModule === "SETTING") {
-            return <SettingTab setSelectedModule={setSelectedModule} />;
-          } else if (selectedModule === "TRIBE") {
-            return <TribeTab setSelectedModule={setSelectedModule} />;
-            // } else if (selectedModule === "PIPE") {
-            //   return <PipeTab setSelectedModule={setSelectedModule} />;
-            // } else if (selectedModule === "COIN") {
-            //   return <CoinTab setSelectedModule={setSelectedModule} />;
+          if (moduleSelector.module_name === "BAND") {
+            return <BandTab />;
+          } else if (moduleSelector.module_name === "SETTING") {
+            return <SettingTab />;
+          } else if (moduleSelector.module_name === "TRIBE") {
+            return <TribeTab />;
+            // } else if (moduleSelector.module_name === "PIPE") {
+            //   return <PipeTab  />;
+            // } else if (moduleSelector.module_name === "COIN") {
+            //   return <CoinTab  />;
           } else {
             // Render a default component or handle unknown cases
-            return <BandTab setSelectedModule={setSelectedModule} />;
+            return <BandTab />;
           }
         }}
       </Stack.Screen>
