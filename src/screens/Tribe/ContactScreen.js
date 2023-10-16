@@ -4,7 +4,7 @@ import _ from "lodash";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Button, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
+import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -13,7 +13,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
-import ContactGrid from "../../components/Tribe/Contact/ContactGrid";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,24 +111,6 @@ const ContactScreen = () => {
         px={15}
       >
         <PageHeader title="Contact" backButton={false} />
-        <Flex flexDir="row" gap={2}>
-          <Button onPress={toggleView} size="sm" variant="outline">
-            <Flex gap={1} alignItems="center" justifyContent="center" flexDir="row">
-              <Icon
-                as={
-                  isGridView ? (
-                    <MaterialCommunityIcons name="format-list-bulleted" />
-                  ) : (
-                    <MaterialCommunityIcons name="view-grid-outline" />
-                  )
-                }
-              />
-              <Text fontSize={12} fontWeight={400}>
-                {isGridView ? "List" : "Grid"}
-              </Text>
-            </Flex>
-          </Button>
-        </Flex>
       </Flex>
 
       <Box backgroundColor="#FFFFFF" py={4} px={3}>
@@ -177,57 +158,32 @@ const ContactScreen = () => {
       ) : (
         <Flex px={3} flex={1} flexDir="column">
           {/* Content here */}
-          {!employeeDataIsLoading ? (
-            employeeData?.data?.data.length > 0 ? (
-              <FlashList
-                data={contacts}
-                keyExtractor={(item, index) => index}
-                onEndReachedThreshold={0.1}
-                estimatedItemSize={200}
-                onEndReached={fetchMoreEmployeeContact}
-                refreshControl={<RefreshControl refreshing={employeeDataIsFetching} onRefresh={refetchEmployeeData} />}
-                renderItem={({ item }) =>
-                  isGridView ? (
-                    <ContactGrid
-                      key={item?.id}
-                      id={item?.id}
-                      name={item?.name}
-                      position={item?.position_name}
-                      division={item?.division_name}
-                      status={item?.status}
-                      image={item?.image}
-                      phone={item?.phone_number}
-                      email={item?.email}
-                    />
-                  ) : (
-                    <ContactList
-                      key={item?.id}
-                      id={item?.id}
-                      name={item?.name}
-                      position={item?.position_name}
-                      division={item?.division_name}
-                      status={item?.status}
-                      image={item?.image}
-                      phone={item?.phone_number}
-                      email={item?.email}
-                    />
-                  )
-                }
-              />
-            ) : (
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-                <Text>No Data</Text>
-              </VStack>
-            )
+          {employeeData?.data?.data.length > 0 ? (
+            <FlashList
+              data={contacts}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={200}
+              onEndReached={fetchMoreEmployeeContact}
+              refreshControl={<RefreshControl refreshing={employeeDataIsFetching} onRefresh={refetchEmployeeData} />}
+              renderItem={({ item }) => (
+                <ContactList
+                  key={item?.id}
+                  id={item?.id}
+                  name={item?.name}
+                  position={item?.position_name}
+                  division={item?.division_name}
+                  status={item?.status}
+                  image={item?.image}
+                  phone={item?.phone_number}
+                  email={item?.email}
+                />
+              )}
+            />
           ) : (
-            <VStack mt={3} px={3} space={2}>
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
+            <VStack space={2} alignItems="center" justifyContent="center">
+              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <Text>No Data</Text>
             </VStack>
           )}
         </Flex>

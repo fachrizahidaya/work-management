@@ -19,6 +19,7 @@ const ConfirmationModal = ({
   body = {},
   isDelete = true,
   isPatch = false,
+  placement,
 }) => {
   const toast = useToast();
   const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
@@ -39,6 +40,7 @@ const ConfirmationModal = ({
         render: () => {
           return <SuccessToast message={successMessage} />;
         },
+        placement: placement ? placement : "bottom",
       });
 
       // If hasSuccessFunc passed then run the available onSuccess function

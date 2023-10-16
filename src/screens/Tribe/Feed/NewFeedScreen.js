@@ -29,7 +29,7 @@ const NewFeedScreen = ({ route }) => {
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName } = route.params;
+  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
 
   /**
    *
@@ -212,6 +212,7 @@ const NewFeedScreen = ({ route }) => {
         isAnnouncementSelected={isAnnouncementSelected}
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
+        loggedEmployeeDivision={loggedEmployeeDivision}
       />
     </Box>
   );
