@@ -1,12 +1,13 @@
 import React, { memo } from "react";
 
-import { Box, Button, Flex, Icon, Skeleton, Text } from "native-base";
+import { Box, Button, Flex, Icon, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem";
+import TaskSkeleton from "./TaskSkeleton";
 
 const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
   const todoTasks = tasks?.filter((task) => {
@@ -67,7 +68,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
 
@@ -116,7 +117,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
 
@@ -165,7 +166,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
     </Flex>
