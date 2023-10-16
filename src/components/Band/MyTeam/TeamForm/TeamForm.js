@@ -10,7 +10,7 @@ import FormButton from "../../../shared/FormButton";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import axiosInstance from "../../../../config/api";
 
-const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam }) => {
+const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelectedTeamId }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
 
@@ -31,10 +31,11 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam }) => {
           ...form,
           owner_name: userSelector.name,
         });
+
+        setSelectedTeamId(res.data.data.id);
       }
 
       refetch();
-      console.log(res);
       setSubmitting(false);
       setStatus("success");
 
@@ -55,7 +56,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam }) => {
     }
   };
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: teamData ? true : false,
     initialValues: {
       name: teamData?.name || "",
     },

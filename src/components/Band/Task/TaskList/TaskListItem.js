@@ -43,6 +43,7 @@ const TaskListItem = ({
 
             <Text w={190} numberOfLines={2} textDecorationLine={status === "Closed" ? "line-through" : "none"}>
               {title}
+              <Text color="primary.600"> #{id}</Text>
             </Text>
           </Flex>
 

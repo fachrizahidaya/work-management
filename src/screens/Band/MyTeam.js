@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -22,7 +22,8 @@ import axiosInstance from "../../config/api";
 const MyTeamScreen = () => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
-  const [selectedTeam, setSelectedTeam] = useState({});
+  const [selectedTeamId, setSelectedTeamId] = useState(0);
+  const [team, setTeam] = useState({});
   const [memberToRemove, setMemberToRemove] = useState({});
   const { isOpen: menuIsOpen, toggle: toggleMenu } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
@@ -62,18 +63,24 @@ const MyTeamScreen = () => {
     toggleRemoveMemberModal();
   };
 
-  const {
-    data: teams,
-    isLoading: teamIsLoading,
-    isFetching: teamIsFetching,
-    refetch: refetchTeam,
-  } = useFetch("/pm/teams");
+  const onPressTeam = useCallback(
+    (teamId) => {
+      setSelectedTeamId(teamId);
+      const selectedTeam = teams?.data?.filter((item) => {
+        return item.id === teamId;
+      });
+      setTeam(selectedTeam[0] || null);
+    },
+    [selectedTeamId]
+  );
+
+  const { data: teams, isLoading: teamIsLoading, refetch: refetchTeam } = useFetch("/pm/teams");
 
   const {
     data: members,
     isLoading: membersIsLoading,
     refetch: refetchMembers,
-  } = useFetch(selectedTeam?.id && `/pm/teams/${selectedTeam.id}/members`, [selectedTeam?.id]);
+  } = useFetch(selectedTeamId && `/pm/teams/${selectedTeamId}/members`, [selectedTeamId]);
 
   /**
    * Handles add member to team
@@ -82,7 +89,7 @@ const MyTeamScreen = () => {
   const addNewMember = async (userId) => {
     try {
       await axiosInstance.post("/pm/teams/members", {
-        team_id: selectedTeam.id,
+        team_id: selectedTeamId,
         user_id: userId,
       });
 
@@ -102,6 +109,13 @@ const MyTeamScreen = () => {
     }
   };
 
+  useEffect(() => {
+    if (teams?.data?.length > 0) {
+      setSelectedTeamId(teams?.data[0]?.id);
+      setTeam(teams?.data[0]);
+    }
+  }, [teamIsLoading]);
+
   return (
     <SafeAreaView style={styles.container}>
       <VStack space={4}>
@@ -109,7 +123,7 @@ const MyTeamScreen = () => {
         {!teamIsLoading ? (
           <>
             {teams?.data?.length > 0 ? (
-              <TeamSelection onChange={setSelectedTeam} selectedTeam={selectedTeam} teams={teams?.data} />
+              <TeamSelection onChange={onPressTeam} selectedTeamId={selectedTeamId} teams={teams?.data} />
             ) : (
               <VStack space={2} alignItems="center">
                 <Image h={230} w={300} source={require("../../assets/vectors/team.jpg")} alt="team" />
@@ -122,8 +136,9 @@ const MyTeamScreen = () => {
           <Skeleton h={41} />
         )}
       </VStack>
-      <Box h="100%" pt={21} pb={61}>
-        {selectedTeam?.id ? (
+
+      <Box flex={1}>
+        {selectedTeamId ? (
           !membersIsLoading ? (
             <FlashList
               data={members?.data}
@@ -137,14 +152,14 @@ const MyTeamScreen = () => {
                   email={item.email}
                   totalProjects={item.total_project}
                   totalTasks={item.total_task}
-                  master={selectedTeam?.owner_name}
+                  master={team?.owner_name}
                   loggedInUser={userSelector.name}
                   openRemoveMemberModal={openRemoveMemberModalHandler}
                 />
               )}
             />
           ) : (
-            <Skeleton h={200} />
+            <Skeleton h={10} />
           )
         ) : (
           <VStack alignItems="center" position="relative">
@@ -163,6 +178,10 @@ const MyTeamScreen = () => {
         rounded="full"
         bgColor="primary.600"
         p={15}
+        shadow="0"
+        borderRadius="full"
+        borderWidth={3}
+        borderColor="#FFFFFF"
         onPress={toggleMenu}
       >
         <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
@@ -172,11 +191,11 @@ const MyTeamScreen = () => {
         <Actionsheet.Content>
           <VStack w="95%">
             <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>
-            {selectedTeam.id && (
+            {team && (
               <>
                 <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
 
-                {selectedTeam?.owner_id === userSelector.id && (
+                {team?.owner_id === userSelector.id && (
                   <>
                     <Actionsheet.Item onPress={openMemberModalHandler}>Add new member to this team</Actionsheet.Item>
                     <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
@@ -199,7 +218,8 @@ const MyTeamScreen = () => {
           isOpen={newTeamFormIsOpen}
           refetch={refetchTeam}
           toggle={toggleNewTeamForm}
-          setSelectedTeam={setSelectedTeam}
+          setSelectedTeam={setTeam}
+          setSelectedTeamId={setSelectedTeamId}
         />
       )}
 
@@ -207,10 +227,10 @@ const MyTeamScreen = () => {
       {editTeamFormIsOpen && (
         <TeamForm
           isOpen={editTeamFormIsOpen}
-          teamData={selectedTeam}
+          teamData={team}
           refetch={refetchTeam}
           toggle={toggleEditTeamForm}
-          setSelectedTeam={setSelectedTeam}
+          setSelectedTeam={setTeam}
         />
       )}
 
@@ -243,14 +263,15 @@ const MyTeamScreen = () => {
         <ConfirmationModal
           isOpen={deleteModalIsOpen}
           toggle={toggleDeleteModal}
-          apiUrl={`/pm/teams/${selectedTeam?.id}`}
+          apiUrl={`/pm/teams/${selectedTeamId}`}
           successMessage="Team deleted"
           header="Delete Team"
-          description={`Are you sure to delete team ${selectedTeam?.name}`}
+          description={`Are you sure to delete team ${team?.name}`}
           hasSuccessFunc={true}
           onSuccess={() => {
             refetchTeam();
-            setSelectedTeam({});
+            setTeam({});
+            setSelectedTeamId(0);
             toggleMenu();
           }}
         />

@@ -4,7 +4,7 @@ import { Flex, Icon, Pressable, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dimensions } from "react-native";
 
-const PageHeader = ({ width, title, backButton = true, withLoading, isLoading, onPress }) => {
+const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, isLoading, onPress }) => {
   const { width: screenWidth } = Dimensions.get("screen");
   return (
     <Flex flexDir="row" style={{ gap: 6 }} maxWidth={width ? width : screenWidth - 45}>
@@ -18,6 +18,7 @@ const PageHeader = ({ width, title, backButton = true, withLoading, isLoading, o
         !isLoading ? (
           <Text fontSize={16} numberOfLines={2}>
             {title}
+            {subTitle && <Text color="primary.600"> #{subTitle}</Text>}
           </Text>
         ) : (
           <Skeleton h={8} w={200} />
@@ -25,6 +26,7 @@ const PageHeader = ({ width, title, backButton = true, withLoading, isLoading, o
       ) : (
         <Text fontSize={16} numberOfLines={2}>
           {title}
+          {subTitle && <Text color="primary.600"> #{subTitle}</Text>}
         </Text>
       )}
     </Flex>

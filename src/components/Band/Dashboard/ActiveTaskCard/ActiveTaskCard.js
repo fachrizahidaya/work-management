@@ -43,7 +43,7 @@ const ActiveTaskCard = () => {
               bgColor={status === "month" ? "primary.600" : "#fff"}
               onPress={() => setStatus("month")}
             >
-              <Text color={status === "month" ? "#fff" : "black"}>Month</Text>
+              <Text color={status === "month" ? "#fff" : "#3F434A"}>Month</Text>
             </Button>
             <Button
               flex={1}
@@ -51,7 +51,7 @@ const ActiveTaskCard = () => {
               bgColor={status === "week" ? "primary.600" : "#fff"}
               onPress={() => setStatus("week")}
             >
-              <Text color={status === "week" ? "#fff" : "black"}>Week</Text>
+              <Text color={status === "week" ? "#fff" : "#3F434A"}>Week</Text>
             </Button>
             <Button
               flex={1}
@@ -59,7 +59,7 @@ const ActiveTaskCard = () => {
               bgColor={status === "day" ? "primary.600" : "#fff"}
               onPress={() => setStatus("day")}
             >
-              <Text color={status === "day" ? "#fff" : "black"}>Day</Text>
+              <Text color={status === "day" ? "#fff" : "#3F434A"}>Day</Text>
             </Button>
           </Flex>
           {!isLoading ? (
