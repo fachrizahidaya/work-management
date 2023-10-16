@@ -22,6 +22,7 @@ const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
               navigation.navigate("Employee Profile", {
                 employeeId: id,
                 returnPage: "My Information",
+                loggedEmployeeImage: image,
               })
             }
           >

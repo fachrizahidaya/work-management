@@ -74,6 +74,7 @@ const TribeTab = ({ setSelectedModule }) => {
             "My Information",
             "Attendance History",
             "Leave Request",
+            "Reimbursement",
             "Team Leave Request",
             "Reimbursement",
             "My Payslip",

@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
@@ -34,12 +34,30 @@ const LeaveScreen = () => {
 
   const navigation = useNavigation();
 
+  const pendingLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Pending");
+  const pendingCount = pendingLeaveRequests.length;
+  const approvedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Approved");
+  const approvedCount = approvedLeaveRequests.length;
+  const rejectedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Rejected");
+  const rejectedCount = rejectedLeaveRequests.length;
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
-          {profile?.data?.position_name.includes("Manager", "Head") ? (
+          {profile?.data?.position_id !== 1 ||
+          profile?.data?.position_id !== 11 ||
+          profile?.data?.position_id !== 13 ||
+          profile?.data?.position_id !== 17 ||
+          profile?.data?.position_id !== 20 ||
+          profile?.data?.position_id !== 22 ||
+          profile?.data?.position_id !== 28 ||
+          profile?.data?.position_id !== 31 ||
+          profile?.data?.position_id !== 34 ||
+          profile?.data?.position_id !== 39 ||
+          profile?.data?.position_id !== 40 ||
+          profile?.data?.position_id !== 46 ? (
             <Button
               onPress={() =>
                 navigation.navigate("Team Leave Request", {
@@ -57,30 +75,24 @@ const LeaveScreen = () => {
         </Flex>
         {!personalLeaveRequestIsLoading ? (
           personalLeaveRequest?.data.length > 0 ? (
-            <FlashList
-              data={personalLeaveRequest?.data}
-              keyExtractor={(item, index) => index}
-              onEndReachedThreshold={0.1}
-              estimatedItemSize={100}
+            <ScrollView
               refreshControl={
-                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+                <RefreshControl onRefresh={refetchPersonalLeaveRequest} refreshing={personalLeaveRequestIsFetching} />
               }
-              renderItem={({ item }) => (
-                <LeaveRequestList
-                  key={item?.id}
-                  id={item?.id}
-                  leaveName={item?.leave_name}
-                  days={item?.days}
-                  startDate={item?.begin_date}
-                  endDate={item?.end_date}
-                  status={item?.status}
-                  supervisorName={item?.supervisor_name}
-                  reason={item?.reason}
-                  refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
-                  refetchProfile={refetchProfile}
-                />
-              )}
-            />
+            >
+              <LeaveRequestList
+                data={personalLeaveRequest?.data}
+                pendingLeaveRequest={pendingLeaveRequests}
+                approvedLeaveRequests={approvedLeaveRequests}
+                rejectedLeaveRequests={rejectedLeaveRequests}
+                refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
+                refetchProfile={refetchProfile}
+                pendingCount={pendingCount}
+                approvedCount={approvedCount}
+                rejectedCount={rejectedCount}
+                personalLeaveRequestIsFetching={personalLeaveRequestIsFetching}
+              />
+            </ScrollView>
           ) : (
             <VStack space={2} alignItems="center" justifyContent="center">
               <Image
