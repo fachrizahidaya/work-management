@@ -77,7 +77,7 @@ const TaskDetailScreen = ({ route }) => {
                 title={selectedTask?.data?.title}
                 subTitle={selectedTask?.data?.id}
                 onPress={() => navigation.goBack()}
-                width={width / 2}
+                width={width / 2.2}
               />
 
               <ControlSection
@@ -87,6 +87,7 @@ const TaskDetailScreen = ({ route }) => {
                 responsible={responsible?.data}
                 openEditForm={onOpenTaskForm}
                 refetchTask={refetchSelectedTask}
+                disabled={inputIsDisabled}
               />
             </Flex>
 
