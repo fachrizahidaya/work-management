@@ -14,6 +14,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { TouchableOpacity } from "react-native";
 
 const MemberSection = ({ projectId, projectData }) => {
   const toast = useToast();
@@ -71,16 +72,18 @@ const MemberSection = ({ projectId, projectData }) => {
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Text fontSize={16}>MEMBERS</Text>
 
-        <Pressable
-          bg="#f1f2f3"
-          alignItems="center"
-          justifyContent="center"
-          p={2}
-          borderRadius={10}
+        <TouchableOpacity
           onPress={toggleMemberModal}
+          style={{
+            backgroundColor: "#f1f2f3",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 8,
+            borderRadius: 10,
+          }}
         >
           <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
-        </Pressable>
+        </TouchableOpacity>
       </Flex>
 
       {memberModalIsOpen && (

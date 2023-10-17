@@ -4,8 +4,8 @@ import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Alert } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Alert, TouchableOpacity } from "react-native";
+import { Box, Flex, Icon, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -157,16 +157,18 @@ const FileSection = ({ projectId }) => {
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Text fontSize={16}>FILES</Text>
 
-        <Pressable
-          bg="#f1f2f3"
-          alignItems="center"
-          justifyContent="center"
-          p={2}
-          borderRadius={10}
+        <TouchableOpacity
           onPress={selectFile}
+          style={{
+            backgroundColor: "#f1f2f3",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 8,
+            borderRadius: 10,
+          }}
         >
           <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
-        </Pressable>
+        </TouchableOpacity>
       </Flex>
 
       <ScrollView style={{ maxHeight: 200 }}>
