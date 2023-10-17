@@ -7,7 +7,9 @@ const FormButton = ({ children, color, size, isSubmitting, onPress, disabled, se
 
   // Update the loading state when the 'isSubmitting' prop changes
   useEffect(() => {
-    setIsLoading(isSubmitting);
+    if (isSubmitting !== undefined) {
+      setIsLoading(isSubmitting);
+    }
   }, [isSubmitting]);
 
   // Notify parent component about loading state (if setLoadingIndicator is provided)
@@ -19,7 +21,14 @@ const FormButton = ({ children, color, size, isSubmitting, onPress, disabled, se
       size={size || "md"}
       bgColor={color ? color : disabled || isLoading ? "coolGray.500" : "primary.600"}
       disabled={disabled || isLoading}
-      onPress={onPress}
+      onPress={() => {
+        if (isSubmitting !== undefined) {
+          onPress();
+        } else {
+          setIsLoading(true);
+          onPress(setIsLoading);
+        }
+      }}
       variant={variant}
     >
       {isLoading ? <Spinner size="sm" color="white" /> : children}

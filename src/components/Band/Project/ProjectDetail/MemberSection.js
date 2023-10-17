@@ -36,27 +36,33 @@ const MemberSection = ({ projectId, projectData }) => {
 
   /**
    * Add member to project handler
-   * @param {string} userId - selected user id to add to project
+   * @param {Array} users - selected user id to add to project
    */
-  const addMember = async (userId) => {
+  const addMember = async (users, setIsLoading) => {
     try {
-      await axiosInstance.post("/pm/projects/member", {
-        project_id: projectId,
-        user_id: userId,
-      });
+      for (let i = 0; i < users.length; i++) {
+        await axiosInstance.post("/pm/projects/member", {
+          project_id: projectId,
+          user_id: users[i],
+        });
+      }
+      setIsLoading(false);
+      refetchMember();
       toast.show({
         render: () => {
           return <SuccessToast message={`New member added`} />;
         },
       });
-      refetchMember();
+      toggleMemberModal();
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
         },
       });
+      toggleMemberModal();
     }
   };
 
