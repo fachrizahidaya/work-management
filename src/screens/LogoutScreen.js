@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
 // Google authentication and firebase
-import { signOut } from "firebase/auth";
-import { auth } from "../config/firebase";
+// import { signOut } from "firebase/auth";
+// import { auth } from "../config/firebase";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -75,7 +75,7 @@ const LogoutScreen = () => {
       // Delete user data and token from SecureStore
       await SecureStore.deleteItemAsync("user_data");
       await SecureStore.deleteItemAsync("user_token");
-      await signOut(auth);
+      // await signOut(auth);
       // Dispatch a logout action
       dispatch(logout());
     } catch (error) {
