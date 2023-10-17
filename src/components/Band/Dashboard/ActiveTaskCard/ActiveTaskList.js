@@ -17,9 +17,9 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
       <Checkbox
         isChecked={status === "Closed"}
         onTouchEnd={() => {
-          status !== "Closed" && onPress(task);
+          status === "Finish" && onPress(task);
         }}
-        isDisabled={status === "Closed"}
+        isDisabled={status !== "Finish"}
         borderWidth={1}
       >
         <Flex flexDir="column">

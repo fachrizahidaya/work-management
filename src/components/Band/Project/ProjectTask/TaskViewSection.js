@@ -48,7 +48,7 @@ const TaskViewSection = ({ changeView, view }) => {
             color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}
             size="md"
           />
-          <Text color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}>Gantt Chart</Text>
+          <Text color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}>Gantt</Text>
         </Flex>
       </Button>
     </Flex>

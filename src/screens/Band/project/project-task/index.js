@@ -3,7 +3,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Center, Flex, Icon, Pressable, Text } from "native-base";
+import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
@@ -111,13 +111,15 @@ const ProjectTaskScreen = ({ route }) => {
             />
           )}
 
-          {view === "Kanban" && (
+          {(view === "Kanban" || view === "Gantt Chart") && (
             <Center>
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
-          )}
-          {view === "Gantt Chart" && (
-            <Center>
+              <Image
+                source={require("../../../../assets/vectors/desktop.jpg")}
+                h={250}
+                w={250}
+                alt="desktop-only"
+                resizeMode="contain"
+              />
               <Text bold>This feature only available for desktop</Text>
             </Center>
           )}

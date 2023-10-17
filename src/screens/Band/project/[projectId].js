@@ -128,16 +128,24 @@ const ProjectDetailScreen = ({ route }) => {
                 <Text>Task List</Text>
               </Flex>
             </Button>
-            <Button flex={1} variant="outline">
+            <Button
+              flex={1}
+              variant="outline"
+              onPress={() => navigation.navigate("Project Task", { projectId: projectId })}
+            >
               <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
                 <Icon as={<MaterialCommunityIcons name="map-outline" />} color="#3F434A" size="md" />
                 <Text>Kanban</Text>
               </Flex>
             </Button>
-            <Button flex={1} variant="outline">
+            <Button
+              flex={1}
+              variant="outline"
+              onPress={() => navigation.navigate("Project Task", { projectId: projectId })}
+            >
               <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
                 <Icon as={<MaterialCommunityIcons name="chart-gantt" />} color="#3F434A" size="md" />
-                <Text>Gantt Chart</Text>
+                <Text>Gantt</Text>
               </Flex>
             </Button>
           </Flex>

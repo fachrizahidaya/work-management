@@ -143,6 +143,7 @@ const ActiveTaskCard = () => {
                       responsible={task.responsible_name}
                       status={task.status}
                       priority={task.priority}
+                      onPress={openCloseModal}
                       onPressItem={onPressTaskItem}
                     />
                   );
