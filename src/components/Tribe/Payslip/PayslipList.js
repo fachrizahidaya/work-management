@@ -10,7 +10,6 @@ import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import axiosInstance from "../../../config/api";
 import PayslipDownload from "./PayslipDownload";
 
