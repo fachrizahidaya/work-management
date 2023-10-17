@@ -185,8 +185,8 @@ const ProjectDetailScreen = ({ route }) => {
 
                         <Box>
                           <Flex flexDir="row" gap={1} alignItems="center">
-                            <Text>{item?.user_name}</Text>
-                            <Text color="#8A9099">{dayjs(item?.created_date + item?.create_time).fromNow()}</Text>
+                            <Text>{item?.user_name.split(" ")[0]}</Text>
+                            <Text color="#8A9099">{dayjs(item?.created_at).fromNow()}</Text>
                           </Flex>
 
                           <Flex>

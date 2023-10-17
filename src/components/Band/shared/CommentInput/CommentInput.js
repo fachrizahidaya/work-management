@@ -11,7 +11,20 @@ import * as yup from "yup";
 
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Flex, FormControl, Icon, IconButton, Image, Input, Pressable, Text, useToast } from "native-base";
+import {
+  Avatar,
+  Box,
+  Flex,
+  FormControl,
+  Icon,
+  IconButton,
+  Image,
+  Input,
+  Pressable,
+  Text,
+  TextArea,
+  useToast,
+} from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -289,23 +302,18 @@ const CommentInput = ({ taskId, projectId }) => {
       )}
       <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
         <FormControl>
-          <Input
+          <TextArea
             isInvalid={formik.errors.comments}
             variant="unstyled"
+            size="md"
             placeholder="Add comment..."
-            multiline
-            h={20}
             value={formik.values.comments}
             onChangeText={(value) => formik.setFieldValue("comments", value)}
           />
           <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
         </FormControl>
 
-        <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="white">Comment</Text>
-          </FormButton>
-
+        <Flex flexDir="row" justifyContent="flex-end" alignItems="center">
           <Flex flexDir="row" alignItems="center" gap={1}>
             <IconButton
               size="sm"
@@ -321,6 +329,10 @@ const CommentInput = ({ taskId, projectId }) => {
               onPress={selectFile}
             />
           </Flex>
+
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} color="white">
+            <Icon as={<MaterialCommunityIcons name="send" />} style={{ transform: [{ rotate: "-45deg" }] }} />
+          </FormButton>
         </Flex>
       </Box>
 
@@ -344,7 +356,7 @@ const CommentInput = ({ taskId, projectId }) => {
 
                   <Box>
                     <Flex flexDir="row" gap={1} alignItems="center">
-                      <Text>{item?.comment_name}</Text>
+                      <Text>{item?.comment_name.split(" ")[0]}</Text>
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 

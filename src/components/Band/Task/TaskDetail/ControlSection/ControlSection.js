@@ -111,8 +111,8 @@ const ControlSection = ({
 
         <Button
           size="md"
-          disabled={isDisabled || selectedTask.responsible_id !== userSelector.id}
-          bgColor={isDisabled || selectedTask.responsible_id !== userSelector.id ? "gray.500" : "primary.600"}
+          disabled={isDisabled || selectedTask?.responsible_id !== userSelector.id}
+          bgColor={isDisabled || selectedTask?.responsible_id !== userSelector.id ? "gray.500" : "primary.600"}
           onPress={toggleSheet}
         >
           <Flex flexDir="row" alignItems="center" gap={1}>

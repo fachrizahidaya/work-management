@@ -31,7 +31,7 @@ const FormButton = ({ children, color, size, isSubmitting, onPress, disabled, se
       }}
       variant={variant}
     >
-      {isLoading ? <Spinner size="sm" color="white" /> : children}
+      {isLoading ? <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} /> : children}
     </Button>
   );
 };
