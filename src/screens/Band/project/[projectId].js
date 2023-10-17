@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
+import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -8,7 +9,7 @@ dayjs.extend(relativeTime);
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, HStack, Icon, Menu, Pressable, Text } from "native-base";
+import { Box, Button, Flex, HStack, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -23,15 +24,23 @@ import CommentInput from "../../../components/Band/shared/CommentInput/CommentIn
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import PageHeader from "../../../components/shared/PageHeader";
+import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMemberModal";
+import axiosInstance from "../../../config/api";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const ProjectDetailScreen = ({ route }) => {
+  const toast = useToast();
+  const userSelector = useSelector((state) => state.auth);
   const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
   const { projectId } = route.params;
   const [projectData, setProjectData] = useState({});
   const [tabValue, setTabValue] = useState("comments");
   const [openEditForm, setOpenEditForm] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
+  const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
 
   const tabs = useMemo(() => {
     return [{ title: "comments" }, { title: "activity" }];
@@ -39,6 +48,26 @@ const ProjectDetailScreen = ({ route }) => {
 
   const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
   const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
+  const { data: members, refetch: refetchMember } = useFetch(`/pm/projects/${projectId}/member`);
+
+  const onDelegateSuccess = async () => {
+    try {
+      await axiosInstance.post("/pm/projects/member", {
+        project_id: projectId,
+        user_id: selectedUserId,
+      });
+      closeUserModal();
+      refetch();
+      refetchMember();
+    } catch (error) {
+      console.log(error);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={error.response.data.message} />;
+        },
+      });
+    }
+  };
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -50,6 +79,16 @@ const ProjectDetailScreen = ({ route }) => {
 
   const onCloseEditForm = () => {
     setOpenEditForm(false);
+  };
+
+  const onPressUserToDelegate = (userId) => {
+    toggleConfirmationModal();
+    setSelectedUserId(userId);
+  };
+
+  const closeUserModal = () => {
+    toggleUserModal();
+    setSelectedUserId(null);
   };
 
   useEffect(() => {
@@ -80,20 +119,23 @@ const ProjectDetailScreen = ({ route }) => {
               onPress={() => navigation.navigate("Project List")}
             />
 
-            <Menu
-              trigger={(triggerProps) => {
-                return (
-                  <Pressable {...triggerProps} mr={1}>
-                    <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
-                  </Pressable>
-                );
-              }}
-            >
-              <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-              <Menu.Item onPress={toggle}>
-                <Text color="red.600">Delete</Text>
-              </Menu.Item>
-            </Menu>
+            {projectData?.owner_id === userSelector.id && (
+              <Menu
+                trigger={(triggerProps) => {
+                  return (
+                    <Pressable {...triggerProps} mr={1}>
+                      <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
+                    </Pressable>
+                  );
+                }}
+              >
+                <Menu.Item onPress={toggleUserModal}>Change Ownership</Menu.Item>
+                <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
+                <Menu.Item onPress={toggle}>
+                  <Text color="red.600">Delete</Text>
+                </Menu.Item>
+              </Menu>
+            )}
 
             {/* Delete confirmation modal */}
             {deleteModalIsOpen && (
@@ -107,6 +149,30 @@ const ProjectDetailScreen = ({ route }) => {
                 onSuccess={() => navigation.navigate("Project List")}
                 header="Delete Project"
                 description="Are you sure to delete this project?"
+              />
+            )}
+
+            {userModalIsOpen && (
+              <AddMemberModal
+                isOpen={userModalIsOpen}
+                onClose={closeUserModal}
+                multiSelect={false}
+                onPressHandler={onPressUserToDelegate}
+              />
+            )}
+
+            {confirmationModalIsOpen && (
+              <ConfirmationModal
+                isDelete={false}
+                isOpen={confirmationModalIsOpen}
+                toggle={toggleConfirmationModal}
+                apiUrl={"/pm/projects/delegate"}
+                body={{ id: projectId, user_id: selectedUserId }}
+                header="Change Project Ownership"
+                description="Are you sure to change ownership of this project?"
+                successMessage="Project ownership changed"
+                hasSuccessFunc
+                onSuccess={onDelegateSuccess}
               />
             )}
           </Flex>
@@ -152,7 +218,12 @@ const ProjectDetailScreen = ({ route }) => {
 
           <FileSection projectId={projectId} projectData={projectData} />
 
-          <MemberSection projectId={projectId} projectData={projectData} />
+          <MemberSection
+            projectId={projectId}
+            projectData={projectData}
+            members={members}
+            refetchMember={refetchMember}
+          />
 
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 

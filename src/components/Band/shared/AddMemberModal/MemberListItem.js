@@ -6,16 +6,30 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
-const MemberListItem = ({ id, image, name, userType, onPressAddHandler, onPressRemoveHandler, selectedUsers }) => {
+const MemberListItem = ({
+  id,
+  image,
+  name,
+  userType,
+  onPressAddHandler,
+  onPressRemoveHandler,
+  selectedUsers,
+  multiSelect,
+  onPressHandler,
+}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        // If user already inside array, remove onpress
-        if (selectedUsers.includes(id)) {
-          onPressRemoveHandler(id);
+        if (multiSelect) {
+          // If user already inside array, remove onpress
+          if (selectedUsers.includes(id)) {
+            onPressRemoveHandler(id);
+          } else {
+            // If user not inside array, add onpress
+            onPressAddHandler(id);
+          }
         } else {
-          // If user not inside array, add onpress
-          onPressAddHandler(id);
+          onPressHandler(id);
         }
       }}
     >
