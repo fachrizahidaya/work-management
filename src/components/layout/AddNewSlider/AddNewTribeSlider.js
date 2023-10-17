@@ -7,7 +7,6 @@ import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } fro
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import NewReimbursement from "../../Tribe/Reimbursement/NewReimbursement.js/NewReimbursement";
 import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
@@ -35,10 +34,10 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
       icons: "clipboard-clock-outline",
       title: "New Leave Request",
     },
-    // {
-    //   icons: "clipboard-minus-outline",
-    //   title: "New Reimbursement",
-    // },
+    {
+      icons: "clipboard-minus-outline",
+      title: "New Reimbursement",
+    },
     {
       icons: "clock-outline",
       title: "Clock in",
@@ -53,10 +52,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         });
         toggle();
         toast.show({
-          render: () => {
-            return <SuccessToast message={!attendance?.time_in ? "Clock-in Success" : "Clock-out Success"} />;
-          },
-          // description: !attendance?.time_in ? "Clock-in Success" : "Clock-out Success",
+          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
           placement: "top",
         });
         refetch();
@@ -112,11 +108,10 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                       employeeId: profile?.data?.id,
                     });
                     toggle();
-                  }
-                  // else if (item.title === "New Reimbursement") {
-                  //   setNewReimbursement(!newReimbursement);
-                  // }
-                  else if (item.title === "Clock in") {
+                  } else if (item.title === "New Reimbursement") {
+                    navigation.navigate("New Reimbursement", { onClose: toggleNewReimbursement });
+                    toggle();
+                  } else if (item.title === "Clock in") {
                     attendanceCheckHandler();
                   }
                 }}

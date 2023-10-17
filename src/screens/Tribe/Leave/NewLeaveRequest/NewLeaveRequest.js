@@ -82,12 +82,10 @@ const NewLeaveRequest = ({ route }) => {
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests`, form);
-
       refetchPersonalLeave();
       refetchLeaveHistory();
       setSubmitting(false);
       setStatus("success");
-
       toast.show({
         render: () => {
           return <SuccessToast message={`Request Created`} />;
@@ -168,9 +166,9 @@ const NewLeaveRequest = ({ route }) => {
     formik.values.leave_id,
     formik.values.begin_date,
     formik.values.end_date,
-    dateChanges,
     formik.isSubmitting,
     formik.status,
+    dateChanges,
   ]);
 
   useEffect(() => {
@@ -192,7 +190,7 @@ const NewLeaveRequest = ({ route }) => {
 
   return (
     <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={3}>
+      <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
         <PageHeader title="New Leave Request" onPress={() => navigation.navigate("Feed")} />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>

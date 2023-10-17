@@ -22,6 +22,11 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
+import ReimbursementScreen from "../screens/Tribe/Reimbursement/ReimbursementScreen";
+import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
+
+// Settings Screens
+import MyProfileScreen from "../screens/Setting/MyProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -73,6 +78,13 @@ const HomeStack = () => {
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Reimbursement" component={ReimbursementScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
+
+      {/* Setting Screens */}
+      <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

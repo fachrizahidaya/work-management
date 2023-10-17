@@ -6,7 +6,6 @@ import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
-import { useFetch } from "../../../hooks/useFetch";
 import TeamLeaveRequestList from "../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = ({ route }) => {

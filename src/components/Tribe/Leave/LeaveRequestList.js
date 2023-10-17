@@ -47,6 +47,39 @@ const LeaveRequestList = ({
                       <Text fontWeight={500} fontSize={14} color="#3F434A">
                         {item?.leave_name}
                       </Text>
+                      <Pressable onPress={toggleAction}>
+                        <Icon
+                          as={<MaterialCommunityIcons name="dots-vertical" />}
+                          size="md"
+                          borderRadius="full"
+                          color="#000000"
+                        />
+                      </Pressable>
+
+                      <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
+                        <Actionsheet.Content>
+                          <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
+                        </Actionsheet.Content>
+                      </Actionsheet>
+
+                      <ConfirmationModal
+                        isOpen={cancelModalIsOpen}
+                        toggle={toggleCancelModal}
+                        apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
+                        color="coolGray.500"
+                        hasSuccessFunc={true}
+                        header="Cancel Leave Request"
+                        onSuccess={() => {
+                          toggleAction();
+                          refetchPersonalLeaveRequest();
+                          refetchProfile();
+                        }}
+                        description="Are you sure to cancel this request?"
+                        successMessage="Request canceled"
+                        isDelete={false}
+                        isPatch={true}
+                        placement="top"
+                      />
                     </Flex>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
                       <Flex flex={1}>

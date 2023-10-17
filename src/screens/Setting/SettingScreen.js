@@ -55,6 +55,8 @@ const SettingScreen = () => {
     },
   ];
 
+  const { data: profile, isFetching, refetch, isLoading } = useFetch("/hr/my-profile");
+
   return (
     <Box bg="white" w={width} flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -62,21 +64,23 @@ const SettingScreen = () => {
           <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
-            <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
-              <Box>
-                <Flex direction="row" gap={4}>
-                  <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" />
-                  <Box>
-                    <Text fontSize={20} fontWeight={700}>
-                      {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
-                    </Text>
-                    {myProfile?.data && <Text>{myProfile.data.position_name || "You have no position"}</Text>}
-                  </Box>
-                </Flex>
-              </Box>
+            <Pressable onPress={() => navigation.navigate("Profile Screen", { profile: profile })}>
+              <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
+                <Box>
+                  <Flex direction="row" gap={4}>
+                    <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" />
+                    <Box>
+                      <Text fontSize={20} fontWeight={700}>
+                        {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
+                      </Text>
+                      {myProfile?.data && <Text>{myProfile.data.position_name || "You have no position"}</Text>}
+                    </Box>
+                  </Flex>
+                </Box>
 
-              <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-            </Flex>
+                <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
+              </Flex>
+            </Pressable>
 
             <Pressable
               display="flex"

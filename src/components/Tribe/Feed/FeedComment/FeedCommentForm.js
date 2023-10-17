@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
     minHeight: 50,
     maxHeight: 100,
     width: 400,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
   },
 });

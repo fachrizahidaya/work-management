@@ -122,7 +122,7 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
               <FormControl.ErrorMessage>{formik.errors.confirm_password}</FormControl.ErrorMessage>
             </FormControl>
             <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">Submit</Text>
+              <Text color="#FFFFFF">Submit</Text>
             </FormButton>
           </VStack>
         </VStack>
