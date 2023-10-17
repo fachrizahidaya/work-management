@@ -5,7 +5,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Alert, TouchableOpacity } from "react-native";
-import { Box, Flex, Icon, Text, useToast } from "native-base";
+import { Box, Center, Flex, Icon, Image, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -17,7 +17,11 @@ import AttachmentList from "../../Task/TaskDetail/AttachmentSection/AttachmentLi
 const FileSection = ({ projectId }) => {
   const toast = useToast();
 
-  const { data: attachments, refetch: refetchAttachments } = useFetch(`/pm/projects/${projectId}/attachment`);
+  const {
+    data: attachments,
+    isLoading: attachmentIsLoading,
+    refetch: refetchAttachments,
+  } = useFetch(`/pm/projects/${projectId}/attachment`);
   const { refetch: refetchComments } = useFetch(`/pm/projects/${projectId}/comment`);
 
   /**
@@ -170,30 +174,45 @@ const FileSection = ({ projectId }) => {
           <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
         </TouchableOpacity>
       </Flex>
-
-      <ScrollView style={{ maxHeight: 200 }}>
-        <Box flex={1} minHeight={2}>
-          <FlashList
-            data={attachments?.data}
-            keyExtractor={(item) => item?.id}
-            onEndReachedThreshold={0.1}
-            estimatedItemSize={200}
-            renderItem={({ item }) => (
-              <AttachmentList
-                deleteFileHandler={deleteFileHandler}
-                downloadFileHandler={downloadAttachment}
-                from={item?.attachment_from}
-                iconHeight={39}
-                iconWidth={31}
-                id={item?.id}
-                size={item?.file_size}
-                title={item?.file_name}
-                type={item?.mime_type}
+      {!attachmentIsLoading && (
+        <>
+          {attachments?.data?.length > 0 ? (
+            <ScrollView style={{ maxHeight: 200 }}>
+              <Box flex={1} minHeight={2}>
+                <FlashList
+                  data={attachments?.data}
+                  keyExtractor={(item) => item?.id}
+                  onEndReachedThreshold={0.1}
+                  estimatedItemSize={200}
+                  renderItem={({ item }) => (
+                    <AttachmentList
+                      deleteFileHandler={deleteFileHandler}
+                      downloadFileHandler={downloadAttachment}
+                      from={item?.attachment_from}
+                      iconHeight={39}
+                      iconWidth={31}
+                      id={item?.id}
+                      size={item?.file_size}
+                      title={item?.file_name}
+                      type={item?.mime_type}
+                    />
+                  )}
+                />
+              </Box>
+            </ScrollView>
+          ) : (
+            <Center>
+              <Image
+                alt="no-attachment"
+                source={require("../../../../assets/vectors/no-file.jpg")}
+                style={{ height: 100, width: 140 }}
+                resizeMode="contain"
               />
-            )}
-          />
-        </Box>
-      </ScrollView>
+              <Text fontWeight={400}>This project has no attachment</Text>
+            </Center>
+          )}
+        </>
+      )}
     </Flex>
   );
 };
