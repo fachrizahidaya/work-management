@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -16,6 +16,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 
 const ProjectTaskScreen = ({ route }) => {
+  const { width } = Dimensions.get("screen");
   const { projectId } = route.params;
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
@@ -77,6 +78,7 @@ const ProjectTaskScreen = ({ route }) => {
           <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
             <PageHeader
               title={data?.data.title}
+              width={width - 65}
               withLoading
               isLoading={isLoading}
               onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
