@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 
-const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog }) => {
+const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog, passwordError, setPasswordError }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
@@ -18,6 +18,7 @@ const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog })
       onClose={() => {
         toggleDownloadDialog();
         formik.resetForm();
+        setPasswordError("");
       }}
     >
       <Actionsheet.Content>
@@ -25,7 +26,7 @@ const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog })
           <VStack w="100%" space={2}>
             <FormControl.Label justifyContent="center">Password</FormControl.Label>
 
-            <FormControl isInvalid={formik.errors.password}>
+            <FormControl isInvalid={formik.errors.password || !!passwordError}>
               <Input
                 variant="outline"
                 type={!hidePassword ? "text" : "password"}
@@ -43,10 +44,10 @@ const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog })
                   </Pressable>
                 }
               />
-              <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
+              <FormControl.ErrorMessage>{formik.errors.password || passwordError}</FormControl.ErrorMessage>
             </FormControl>
             <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">Download</Text>
+              <Text color="#FFFFFF">Download</Text>
             </FormButton>
           </VStack>
         </VStack>

@@ -40,13 +40,13 @@ const AttendanceScreen = () => {
       refetchAttendanceData();
       setStatus("success");
       setSubmitting(false);
+      toggleReport();
       toast.show({
         render: () => {
           return <SuccessToast message={"Report Submitted"} />;
         },
         placement: "top",
       });
-      toggleReport();
     } catch (err) {
       console.log(err);
       setStatus("error");
@@ -57,8 +57,8 @@ const AttendanceScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-          <PageHeader width={200} title="My Attendance History" backButton={false} />
+        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+          <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
         <AttendanceCalendar
           attendance={attendanceData?.data}

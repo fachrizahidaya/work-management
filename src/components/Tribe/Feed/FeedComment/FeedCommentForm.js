@@ -9,6 +9,8 @@ import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
   const { data: employees } = useFetch("/hr/employees");
 
   /**
@@ -24,14 +26,15 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
     validationSchema: yup.object().shape({
       comments: yup.string().required("Comments is required"),
     }),
-    onSubmit: (values, { resetForm }) => {
-      onSubmit(values);
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onSubmit(values, setSubmitting, setStatus);
       resetForm();
     },
   });
 
   return (
-    <FormControl alignItems="center" pb={12}>
+    <FormControl alignItems="center" pb={12} paddingBottom={Platform.OS === "ios" && keyboardHeight}>
       <Input
         variant="solid"
         multiline
@@ -65,6 +68,6 @@ const styles = StyleSheet.create({
     minHeight: 50,
     maxHeight: 100,
     width: 400,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
   },
 });

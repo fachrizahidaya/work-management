@@ -3,6 +3,7 @@ import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Text, Text
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
+import FormButton from "../../../shared/FormButton";
 
 const NewFeedForm = ({
   formik,
@@ -16,6 +17,7 @@ const NewFeedForm = ({
   isAnnouncementSelected,
   dateShown,
   endDateAnnouncementHandler,
+  loggedEmployeeDivision,
 }) => {
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
@@ -75,40 +77,49 @@ const NewFeedForm = ({
                 {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
               </Flex>
             </Actionsheet.Item>
-            <Actionsheet.Item
-              onPress={() => {
-                announcementToggleHandler();
-              }}
-              startIcon={<Icon as={<MaterialCommunityIcons name="bullhorn" />} size={6} />}
-            >
-              <Flex flex={1} w="85%" alignItems="center" justifyContent="space-between" flexDir="row">
-                <Box>
-                  <Text>Announcement</Text>
-                  <Flex gap={2} alignItems="center" flexDir="row">
-                    <Text fontSize={12} fontWeight={400}>
-                      End Date must be provided
-                    </Text>
-                    {isAnnouncementSelected && dateShown ? (
-                      <CustomDateTimePicker
-                        defaultValue={formik.values.end_date}
-                        onChange={endDateAnnouncementHandler}
-                        withText={true}
-                        textLabel="Adjust date"
-                        fontSize={12}
-                      />
-                    ) : null}
+            {loggedEmployeeDivision === 1 ||
+              (loggedEmployeeDivision === 6 && (
+                <Actionsheet.Item
+                  onPress={() => {
+                    announcementToggleHandler();
+                  }}
+                  startIcon={<Icon as={<MaterialCommunityIcons name="bullhorn" />} size={6} />}
+                >
+                  <Flex flex={1} w="85%" alignItems="center" justifyContent="space-between" flexDir="row">
+                    <Box>
+                      <Text>Announcement</Text>
+                      <Flex gap={2} alignItems="center" flexDir="row">
+                        <Text fontSize={12} fontWeight={400}>
+                          End Date must be provided
+                        </Text>
+                        {isAnnouncementSelected && dateShown ? (
+                          <CustomDateTimePicker
+                            defaultValue={formik.values.end_date}
+                            onChange={endDateAnnouncementHandler}
+                            withText={true}
+                            textLabel="Adjust date"
+                            fontSize={12}
+                          />
+                        ) : null}
+                      </Flex>
+                    </Box>
+                    {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
                   </Flex>
-                </Box>
-                {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-              </Flex>
-            </Actionsheet.Item>
+                </Actionsheet.Item>
+              ))}
           </Actionsheet.Content>
         </Actionsheet>
       </FormControl>
-      <Flex mt={1} py={3} px={2} flexDir="row" justifyContent="space-between" alignItems="center">
+      <Flex mt={2} py={3} px={2} flexDir="row" justifyContent="space-between" alignItems="center">
         <Pressable onPress={pickImageHandler}>
-          <Icon as={<MaterialCommunityIcons name="attachment" />} size={25} color="#377893" />
+          <Icon
+            as={<MaterialCommunityIcons name="attachment" />}
+            size={25}
+            color="#377893"
+            style={{ transform: [{ rotate: "-35deg" }] }}
+          />
         </Pressable>
+
         <Pressable
           borderRadius="full"
           borderWidth={1}
@@ -125,6 +136,7 @@ const NewFeedForm = ({
             as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
             size={25}
             color="#FFFFFF"
+            style={{ transform: [{ rotate: "-45deg" }] }}
           />
         </Pressable>
       </Flex>

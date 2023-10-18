@@ -29,7 +29,7 @@ const NewFeedScreen = ({ route }) => {
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName } = route.params;
+  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
 
   /**
    *
@@ -169,14 +169,6 @@ const NewFeedScreen = ({ route }) => {
             setImage(null);
           }}
         />
-        {/* <Button
-          size="sm"
-          borderRadius="full"
-          opacity={formik.values.content === "" ? 0.5 : 1}
-          onPress={formik.handleSubmit}
-        >
-          {formik.values.type === "Public" ? "Post" : "Announce"}
-        </Button> */}
       </Flex>
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
@@ -212,6 +204,7 @@ const NewFeedScreen = ({ route }) => {
         isAnnouncementSelected={isAnnouncementSelected}
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
+        loggedEmployeeDivision={loggedEmployeeDivision}
       />
     </Box>
   );

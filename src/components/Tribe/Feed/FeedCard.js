@@ -52,60 +52,48 @@ const FeedCard = ({
 
   return (
     <Box flex={1}>
-      {!feedsIsLoading ? (
-        <>
-          <FlashList
-            data={posts}
-            onEndReachedThreshold={0.1}
-            onEndReached={posts.length ? handleEndReached : null}
-            keyExtractor={(item, index) => index}
-            estimatedItemSize={200}
-            refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
-            renderItem={({ item }) => (
-              <FeedCardItem
-                key={item?.id}
-                post={item}
-                id={item?.id}
-                employeeId={item?.author_id}
-                employeeName={item?.employee_name}
-                createdAt={item?.created_at}
-                employeeImage={item?.employee_image}
-                content={item?.content}
-                total_like={item?.total_like}
-                totalComment={item?.total_comment}
-                likedBy={item?.liked_by}
-                attachment={item?.file_path}
-                type={item?.type}
-                // like post
-                loggedEmployeeId={loggedEmployeeId}
-                loggedEmployeeImage={loggedEmployeeImage}
-                onToggleLike={onToggleLike}
-                // toggle Comment
-                onCommentToggle={commentsOpenHandler}
-              />
-            )}
+      <FlashList
+        data={posts}
+        onEndReachedThreshold={0.1}
+        onEndReached={posts.length ? handleEndReached : null}
+        keyExtractor={(item, index) => index}
+        estimatedItemSize={200}
+        refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
+        renderItem={({ item }) => (
+          <FeedCardItem
+            key={item?.id}
+            post={item}
+            id={item?.id}
+            employeeId={item?.author_id}
+            employeeName={item?.employee_name}
+            createdAt={item?.created_at}
+            employeeImage={item?.employee_image}
+            content={item?.content}
+            total_like={item?.total_like}
+            totalComment={item?.total_comment}
+            likedBy={item?.liked_by}
+            attachment={item?.file_path}
+            type={item?.type}
+            // like post
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            onToggleLike={onToggleLike}
+            // toggle Comment
+            onCommentToggle={commentsOpenHandler}
           />
-          {commentsOpen && (
-            <FeedComment
-              handleOpen={commentsOpen}
-              handleClose={commentsCloseHandler}
-              postId={postId}
-              total_comments={postTotalComment}
-              onSubmit={commentSubmitHandler}
-              loggedEmployeeImage={loggedEmployeeImage}
-              loggedEmployeeName={loggedEmployeeName}
-              postRefetchHandler={postRefetchHandler}
-            />
-          )}
-        </>
-      ) : (
-        <VStack my={3} px={3} space={3}>
-          <Skeleton h={100} />
-          <Skeleton h={100} />
-          <Skeleton h={100} />
-          <Skeleton h={100} />
-          <Skeleton h={100} />
-        </VStack>
+        )}
+      />
+      {commentsOpen && (
+        <FeedComment
+          handleOpen={commentsOpen}
+          handleClose={commentsCloseHandler}
+          postId={postId}
+          total_comments={postTotalComment}
+          onSubmit={commentSubmitHandler}
+          loggedEmployeeImage={loggedEmployeeImage}
+          loggedEmployeeName={loggedEmployeeName}
+          postRefetchHandler={postRefetchHandler}
+        />
       )}
     </Box>
   );

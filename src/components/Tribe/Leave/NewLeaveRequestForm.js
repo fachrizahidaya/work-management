@@ -1,3 +1,6 @@
+import { useRef } from "react";
+
+import { Keyboard } from "react-native";
 import { Flex, FormControl, Icon, Select, Text, TextArea } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -7,7 +10,7 @@ import FormButton from "../../shared/FormButton";
 
 const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStartDate, selectedGenerateType }) => {
   return (
-    <Flex gap={13}>
+    <Flex px={1} gap={11}>
       <FormControl isInvalid={formik.errors.leave_id}>
         <FormControl.Label>Leave Type</FormControl.Label>
       </FormControl>
@@ -62,7 +65,7 @@ const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStart
       </FormControl>
 
       <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-        <Text color="white">Submit</Text>
+        <Text color="#FFFFFF">Submit</Text>
       </FormButton>
     </Flex>
   );

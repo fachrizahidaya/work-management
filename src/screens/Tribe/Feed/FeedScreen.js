@@ -20,6 +20,7 @@ const FeedScreen = () => {
   const [fetchIsDone, setFetchIsDone] = useState(false);
   // User redux to fetch employeeName
   const userSelector = useSelector((state) => state.auth);
+
   // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
@@ -108,7 +109,8 @@ const FeedScreen = () => {
               toggleNewFeed: toggleNewFeed,
               refetch: postRefetchHandler,
               loggedEmployeeImage: profile?.data?.image,
-              loggedEmployeeName: useSelector?.name,
+              loggedEmployeeName: userSelector?.name,
+              loggedEmployeeDivision: profile?.data?.position_id,
             });
           }}
         >

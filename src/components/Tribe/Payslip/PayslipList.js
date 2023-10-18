@@ -4,25 +4,19 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Linking, Platform } from "react-native";
-import { Actionsheet, Box, Flex, FormControl, Icon, Input, Pressable, Text, VStack, useToast } from "native-base";
+import { Linking } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
-import FormButton from "../../shared/FormButton";
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../shared/ToastDialog";
 import PayslipDownload from "./PayslipDownload";
 
 const PayslipList = ({ id, month, year }) => {
-  const [hidePassword, setHidePassword] = useState(true);
+  const [passwordError, setPasswordError] = useState("");
 
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
-
-  const toast = useToast();
 
   /**
    * Input Password Handler
@@ -61,12 +55,7 @@ const PayslipList = ({ id, month, year }) => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: () => {
-          return <ErrorToast message={err.response.data.message} />;
-        },
-        placement: "top",
-      });
+      setPasswordError(err.response.data.message);
     }
   };
 
@@ -104,6 +93,8 @@ const PayslipList = ({ id, month, year }) => {
           downloadDialogIsOpen={downloadDialogIsOpen}
           formik={formik}
           toggleDownloadDialog={toggleDownloadDialog}
+          passwordError={passwordError}
+          setPasswordError={setPasswordError}
         />
       </Flex>
     </>

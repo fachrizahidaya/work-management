@@ -9,6 +9,6 @@ export const CopyToClipboard = (text) => {
       Clipboard.setString(text);
     }
   } catch (err) {
-    console.error("Failed to copy to clipboard", err);
+    console.log(err);
   }
 };

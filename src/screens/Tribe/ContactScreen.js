@@ -4,7 +4,7 @@ import _ from "lodash";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Button, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
+import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -13,17 +13,19 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
-import ContactGrid from "../../components/Tribe/Contact/ContactGrid";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isGridView, setIsGridView] = useState(false);
+  const [filteredDataArray, setFilteredDataArray] = useState([]);
+  const [inputToShow, setInputToShow] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Handler for search input
   const firstTimeRef = useRef(true);
+
   const dependencies = [currentPage, searchInput];
 
   const fetchEmployeeContactParameters = {
@@ -45,6 +47,14 @@ const ContactScreen = () => {
     }
   };
 
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -52,52 +62,17 @@ const ContactScreen = () => {
     },
   });
 
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      if (value === "") {
-        setCurrentPage(1);
-      }
-    }, 500),
-    []
-  );
-
-  const toggleView = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsGridView(!isGridView);
-      setIsLoading(false);
-    }, 2000);
-  };
-
   useEffect(() => {
-    if (searchInput) {
-      if (employeeData?.data?.data) {
-        const filteredData = employeeData?.data?.data.filter((item) =>
-          item.name.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        setContacts(filteredData);
-      }
-    } else {
-      if (employeeData?.data?.data) {
+    if (employeeData?.data?.data.length) {
+      if (!searchInput) {
         setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
+        setFilteredDataArray([]);
+      } else {
+        setFilteredDataArray((prevData) => [...prevData, ...employeeData?.data?.data]);
+        setContacts([]);
       }
     }
-  }, [employeeData?.data?.data]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchInput]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (firstTimeRef.current) {
-        firstTimeRef.current = false;
-        return;
-      }
-      refetchEmployeeData();
-    }, [refetchEmployeeData])
-  );
+  }, [employeeData]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -112,56 +87,38 @@ const ContactScreen = () => {
         px={15}
       >
         <PageHeader title="Contact" backButton={false} />
-        <Flex flexDir="row" gap={2}>
-          <Button onPress={toggleView} size="sm" variant="outline">
-            <Flex gap={1} alignItems="center" justifyContent="center" flexDir="row">
-              <Icon
-                as={
-                  isGridView ? (
-                    <MaterialCommunityIcons name="format-list-bulleted" />
-                  ) : (
-                    <MaterialCommunityIcons name="view-grid-outline" />
-                  )
-                }
-              />
-              <Text fontSize={12} fontWeight={400}>
-                {isGridView ? "List" : "Grid"}
-              </Text>
-            </Flex>
-          </Button>
-        </Flex>
       </Flex>
 
       <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
-          value={formik.values.search}
-          variant="unstyled"
-          size="md"
+          value={inputToShow}
           InputLeftElement={
             <Pressable>
               <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
             </Pressable>
           }
           InputRightElement={
-            searchInput && (
+            inputToShow && (
               <Pressable
                 onPress={() => {
-                  handleSearch("");
-                  formik.resetForm();
+                  setInputToShow("");
+                  setSearchInput("");
                 }}
               >
                 <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
               </Pressable>
             )
           }
+          onChangeText={(value) => {
+            handleSearch(value);
+            setInputToShow(value);
+          }}
+          variant="unstyled"
+          size="md"
           placeholder="Search contact"
           borderRadius={15}
           borderWidth={1}
           style={{ height: 40 }}
-          onChangeText={(value) => {
-            handleSearch(value);
-            formik.setFieldValue("search", value);
-          }}
         />
       </Box>
 
@@ -177,57 +134,31 @@ const ContactScreen = () => {
       ) : (
         <Flex px={3} flex={1} flexDir="column">
           {/* Content here */}
-          {!employeeDataIsLoading ? (
-            employeeData?.data?.data.length > 0 ? (
-              <FlashList
-                data={contacts}
-                keyExtractor={(item, index) => index}
-                onEndReachedThreshold={0.1}
-                estimatedItemSize={200}
-                onEndReached={fetchMoreEmployeeContact}
-                refreshControl={<RefreshControl refreshing={employeeDataIsFetching} onRefresh={refetchEmployeeData} />}
-                renderItem={({ item }) =>
-                  isGridView ? (
-                    <ContactGrid
-                      key={item?.id}
-                      id={item?.id}
-                      name={item?.name}
-                      position={item?.position_name}
-                      division={item?.division_name}
-                      status={item?.status}
-                      image={item?.image}
-                      phone={item?.phone_number}
-                      email={item?.email}
-                    />
-                  ) : (
-                    <ContactList
-                      key={item?.id}
-                      id={item?.id}
-                      name={item?.name}
-                      position={item?.position_name}
-                      division={item?.division_name}
-                      status={item?.status}
-                      image={item?.image}
-                      phone={item?.phone_number}
-                      email={item?.email}
-                    />
-                  )
-                }
-              />
-            ) : (
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-                <Text>No Data</Text>
-              </VStack>
-            )
+          {employeeData?.data?.data.length > 0 ? (
+            <FlashList
+              data={contacts.length ? contacts : filteredDataArray}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={200}
+              onEndReached={fetchMoreEmployeeContact}
+              renderItem={({ item }) => (
+                <ContactList
+                  key={item?.id}
+                  id={item?.id}
+                  name={item?.name}
+                  position={item?.position_name}
+                  division={item?.division_name}
+                  status={item?.status}
+                  image={item?.image}
+                  phone={item?.phone_number}
+                  email={item?.email}
+                />
+              )}
+            />
           ) : (
-            <VStack mt={3} px={3} space={2}>
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
-              <Skeleton h={60} />
+            <VStack space={2} alignItems="center" justifyContent="center">
+              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <Text>No Data</Text>
             </VStack>
           )}
         </Flex>
