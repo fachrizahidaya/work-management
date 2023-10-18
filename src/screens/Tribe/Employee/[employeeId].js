@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -102,6 +101,7 @@ const EmployeeProfileScreen = ({ route }) => {
           onPress={() => navigation.navigate(returnPage)}
         />
       </Flex>
+
       <Pressable
         style={styles.createIcon}
         shadow="0"
@@ -119,6 +119,7 @@ const EmployeeProfileScreen = ({ route }) => {
       >
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
+
       <ScrollView onScroll={handleScroll}>
         <Image
           source={require("../../../assets/profile_banner.jpg")}
