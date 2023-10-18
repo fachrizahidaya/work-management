@@ -6,16 +6,12 @@ import { Flex, Text, useToast } from "native-base";
 
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
-import Schedule from "../../components/Tribe/Calendar/Schedule";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const AttendanceScreen = () => {
-  /**
-   * Date Handler
-   */
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
