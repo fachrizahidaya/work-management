@@ -105,6 +105,7 @@ const CustomDateTimePicker = ({
           ) : (
             <Box position="relative">
               <Pressable
+                disabled={disabled}
                 position="absolute"
                 zIndex={2}
                 top={0}

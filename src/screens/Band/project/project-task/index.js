@@ -17,10 +17,10 @@ import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 
 const ProjectTaskScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
-  const { projectId } = route.params;
+  const { projectId, view: viewType } = route.params;
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
-  const [view, setView] = useState("Task List");
+  const [view, setView] = useState(viewType);
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [filteredData, setFilteredData] = useState([]);

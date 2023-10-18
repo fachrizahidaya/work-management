@@ -19,10 +19,10 @@ import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 
-const ChecklistSection = ({ taskId }) => {
+const ChecklistSection = ({ taskId, disabled }) => {
   const toast = useToast();
   const [selectedChecklist, setSelectedChecklist] = useState({});
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+  const { keyboardHeight } = useKeyboardChecker();
   const { isOpen, toggle } = useDisclosure(false);
   const { isLoading, start, stop } = useLoading(false);
   const { isOpen: deleteChecklistModalIsOpen, toggle: toggleDeleteChecklist } = useDisclosure(false);
@@ -138,36 +138,44 @@ const ChecklistSection = ({ taskId }) => {
           <Slider.Thumb borderWidth="0" bg="transparent" display="none"></Slider.Thumb>
         </Slider>
 
-        {!isLoading ? (
-          <ScrollView style={{ maxHeight: 200 }}>
-            <Box flex={1} minHeight={2}>
-              <FlashList
-                data={checklists?.data}
-                keyExtractor={(item) => item?.id}
-                estimatedItemSize={200}
-                renderItem={({ item }) => (
-                  <CheckListItem
-                    id={item.id}
-                    title={item.title}
-                    status={item.status}
-                    isLoading={isLoading}
-                    onPress={checkAndUncheckChecklist}
-                    onPressDelete={openDeleteModal}
+        {checklists?.length > 0 ? (
+          <>
+            {!isLoading ? (
+              <ScrollView style={{ maxHeight: 200 }}>
+                <Box flex={1} minHeight={2}>
+                  <FlashList
+                    data={checklists?.data}
+                    keyExtractor={(item) => item?.id}
+                    estimatedItemSize={200}
+                    renderItem={({ item }) => (
+                      <CheckListItem
+                        id={item.id}
+                        title={item.title}
+                        status={item.status}
+                        isLoading={isLoading}
+                        onPress={checkAndUncheckChecklist}
+                        onPressDelete={openDeleteModal}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Box>
-          </ScrollView>
+                </Box>
+              </ScrollView>
+            ) : (
+              <Spinner size="sm" />
+            )}
+          </>
         ) : (
-          <Spinner size="sm" />
+          <Text fontWeight={400}>This task has no checklist</Text>
         )}
 
-        <TouchableOpacity onPress={toggle}>
-          <Flex flexDir="row" alignItems="center" gap={3}>
-            <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-            <Text color="blue.600">Add checklist item</Text>
-          </Flex>
-        </TouchableOpacity>
+        {!disabled && (
+          <TouchableOpacity onPress={toggle}>
+            <Flex flexDir="row" alignItems="center" gap={3}>
+              <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
+              <Text color="blue.600">Add checklist item</Text>
+            </Flex>
+          </TouchableOpacity>
+        )}
       </FormControl>
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>

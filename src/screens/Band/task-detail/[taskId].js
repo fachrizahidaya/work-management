@@ -126,10 +126,10 @@ const TaskDetailScreen = ({ route }) => {
             </FormControl>
 
             {/* Checklists */}
-            <ChecklistSection taskId={taskId} />
+            <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
 
             {/* Attachments */}
-            <AttachmentSection taskId={taskId} />
+            <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
 
             {/* Comments */}
             <FormControl>

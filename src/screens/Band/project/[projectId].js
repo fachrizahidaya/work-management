@@ -187,7 +187,7 @@ const ProjectDetailScreen = ({ route }) => {
             <Button
               flex={1}
               variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId })}
+              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
             >
               <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
                 <Icon as={<MaterialCommunityIcons name="format-list-bulleted" />} color="#3F434A" size="md" />
@@ -197,7 +197,7 @@ const ProjectDetailScreen = ({ route }) => {
             <Button
               flex={1}
               variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId })}
+              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Kanban" })}
             >
               <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
                 <Icon as={<MaterialCommunityIcons name="map-outline" />} color="#3F434A" size="md" />
@@ -207,7 +207,7 @@ const ProjectDetailScreen = ({ route }) => {
             <Button
               flex={1}
               variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId })}
+              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Gantt Chart" })}
             >
               <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
                 <Icon as={<MaterialCommunityIcons name="chart-gantt" />} color="#3F434A" size="md" />

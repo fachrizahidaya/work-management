@@ -149,23 +149,27 @@ const PeopleSection = ({
                     );
                   })}
 
-                  <IconButton
-                    onPress={toggleObserverModal}
-                    size="md"
-                    borderRadius="full"
-                    icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                    alignSelf="flex-start"
-                  />
+                  {!disabled && (
+                    <IconButton
+                      onPress={toggleObserverModal}
+                      size="md"
+                      borderRadius="full"
+                      icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+                      alignSelf="flex-start"
+                    />
+                  )}
                 </Flex>
               </>
             ) : (
-              <IconButton
-                onPress={toggleObserverModal}
-                size="md"
-                borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                alignSelf="flex-start"
-              />
+              !disabled && (
+                <IconButton
+                  onPress={toggleObserverModal}
+                  size="md"
+                  borderRadius="full"
+                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+                  alignSelf="flex-start"
+                />
+              )
             )}
           </Flex>
         </FormControl>
