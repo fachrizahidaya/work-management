@@ -17,6 +17,9 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
 
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
+  /**
+   * Change password handler
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

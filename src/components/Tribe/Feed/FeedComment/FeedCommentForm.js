@@ -11,7 +11,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
-  const { data: employees } = useFetch("/hr/employees");
+  const { data: employeeData } = useFetch("/hr/employees");
 
   /**
    * Form comments Handler

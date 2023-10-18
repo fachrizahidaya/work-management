@@ -24,15 +24,14 @@ const NewFeedScreen = ({ route }) => {
   const [selectedOption, setSelectedOption] = useState("Public");
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
-  const { width, height } = Dimensions.get("window");
 
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
 
   /**
-   *
+   * Create a new post handler
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -93,6 +92,11 @@ const NewFeedScreen = ({ route }) => {
     }
   };
 
+  /**
+   * End date of announcement handler
+   * @param {*} value
+   */
+
   const endDateAnnouncementHandler = (value) => {
     formik.setFieldValue("end_date", value);
   };
@@ -101,7 +105,6 @@ const NewFeedScreen = ({ route }) => {
    * Handler for date
    */
   const [dateShown, setDateShown] = useState(false);
-
   const announcementToggleHandler = () => {
     setDateShown(true);
     setIsAnnouncementSelected(true);

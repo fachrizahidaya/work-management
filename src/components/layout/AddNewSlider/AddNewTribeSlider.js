@@ -44,6 +44,10 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     },
   ];
 
+  /**
+   * Attendance check-in and check-out handler
+   */
+
   const attendanceCheckHandler = async () => {
     try {
       if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
@@ -76,6 +80,9 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     }
   }, [userIp?.ip, isLoading]);
 
+  /**
+   * Clock Handler
+   */
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentTime(dayjs().format("HH:mm"));
