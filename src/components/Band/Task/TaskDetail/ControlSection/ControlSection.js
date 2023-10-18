@@ -13,7 +13,15 @@ import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 
-const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsible, openEditForm, refetchTask }) => {
+const ControlSection = ({
+  taskStatus,
+  selectedTask,
+  refetchResponsible,
+  responsible,
+  openEditForm,
+  refetchTask,
+  disabled,
+}) => {
   const navigation = useNavigation();
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
@@ -88,7 +96,7 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
         <Menu
           trigger={(triggerProps) => {
             return (
-              <TouchableOpacity {...triggerProps}>
+              <TouchableOpacity {...triggerProps} disabled={disabled}>
                 <Icon as={<MaterialCommunityIcons name="dots-horizontal" />} size="xl" color="#3F434A" />
               </TouchableOpacity>
             );
@@ -101,7 +109,12 @@ const ControlSection = ({ taskStatus, selectedTask, refetchResponsible, responsi
           </Menu.Item>
         </Menu>
 
-        <Button size="md" disabled={isDisabled} bgColor={isDisabled ? "gray.500" : "primary.600"} onPress={toggleSheet}>
+        <Button
+          size="md"
+          disabled={isDisabled || selectedTask?.responsible_id !== userSelector.id}
+          bgColor={isDisabled || selectedTask?.responsible_id !== userSelector.id ? "gray.500" : "primary.600"}
+          onPress={toggleSheet}
+        >
           <Flex flexDir="row" alignItems="center" gap={1}>
             {isLoading ? <Spinner size="sm" color="white" /> : <Text color="white">{taskStatus}</Text>}
           </Flex>

@@ -68,27 +68,33 @@ const PeopleSection = ({
 
   /**
    * Handle assign observer to selected task
-   * @param {*} userId - selected user id to add as observer
+   * @param {Array} users - selected user id to add as observer
    */
-  const addObserverToTask = async (userId) => {
+  const addObserverToTask = async (users, setIsLoading) => {
     try {
-      await axiosInstance.post("/pm/tasks/observer", {
-        task_id: selectedTask.id,
-        user_id: userId,
-      });
+      for (let i = 0; i < users.length; i++) {
+        await axiosInstance.post("/pm/tasks/observer", {
+          task_id: selectedTask.id,
+          user_id: users[i],
+        });
+      }
       refetchObservers();
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <SuccessToast message={`New observer added`} />;
         },
       });
+      toggleObserverModal();
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
         },
       });
+      toggleObserverModal();
     }
   };
 
@@ -143,23 +149,27 @@ const PeopleSection = ({
                     );
                   })}
 
-                  <IconButton
-                    onPress={toggleObserverModal}
-                    size="md"
-                    borderRadius="full"
-                    icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                    alignSelf="flex-start"
-                  />
+                  {!disabled && (
+                    <IconButton
+                      onPress={toggleObserverModal}
+                      size="md"
+                      borderRadius="full"
+                      icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+                      alignSelf="flex-start"
+                    />
+                  )}
                 </Flex>
               </>
             ) : (
-              <IconButton
-                onPress={toggleObserverModal}
-                size="md"
-                borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                alignSelf="flex-start"
-              />
+              !disabled && (
+                <IconButton
+                  onPress={toggleObserverModal}
+                  size="md"
+                  borderRadius="full"
+                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+                  alignSelf="flex-start"
+                />
+              )
             )}
           </Flex>
         </FormControl>

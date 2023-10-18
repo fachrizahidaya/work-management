@@ -107,13 +107,15 @@ const AdHocScreen = () => {
             />
           )}
 
-          {view === "Kanban" && (
+          {(view === "Kanban" || view === "Gantt Chart") && (
             <Center>
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
-          )}
-          {view === "Gantt Chart" && (
-            <Center>
+              <Image
+                source={require("../../assets/vectors/desktop.jpg")}
+                h={250}
+                w={250}
+                alt="desktop-only"
+                resizeMode="contain"
+              />
               <Text bold>This feature only available for desktop</Text>
             </Center>
           )}

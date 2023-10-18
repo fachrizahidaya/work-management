@@ -84,28 +84,33 @@ const MyTeamScreen = () => {
 
   /**
    * Handles add member to team
-   * @param {string} userId - user id to add to the team
+   * @param {Array} users - user ids to add to the team
    */
-  const addNewMember = async (userId) => {
+  const addNewMember = async (users, setIsLoading) => {
     try {
-      await axiosInstance.post("/pm/teams/members", {
-        team_id: selectedTeamId,
-        user_id: userId,
-      });
-
+      for (let i = 0; i < users.length; i++) {
+        await axiosInstance.post("/pm/teams/members", {
+          team_id: selectedTeamId,
+          user_id: users[i],
+        });
+      }
       refetchMembers();
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <SuccessToast message={"Team Saved"} />;
         },
       });
+      toggleAddMemberModal();
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
         },
       });
+      toggleAddMemberModal();
     }
   };
 

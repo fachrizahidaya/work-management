@@ -19,10 +19,10 @@ import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 
-const ChecklistSection = ({ taskId }) => {
+const ChecklistSection = ({ taskId, disabled }) => {
   const toast = useToast();
   const [selectedChecklist, setSelectedChecklist] = useState({});
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+  const { keyboardHeight } = useKeyboardChecker();
   const { isOpen, toggle } = useDisclosure(false);
   const { isLoading, start, stop } = useLoading(false);
   const { isOpen: deleteChecklistModalIsOpen, toggle: toggleDeleteChecklist } = useDisclosure(false);
@@ -162,12 +162,14 @@ const ChecklistSection = ({ taskId }) => {
           <Spinner size="sm" />
         )}
 
-        <TouchableOpacity onPress={toggle}>
-          <Flex flexDir="row" alignItems="center" gap={3}>
-            <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-            <Text color="blue.600">Add checklist item</Text>
-          </Flex>
-        </TouchableOpacity>
+        {!disabled && (
+          <TouchableOpacity onPress={toggle}>
+            <Flex flexDir="row" alignItems="center" gap={3}>
+              <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
+              <Text color="blue.600">Add checklist item</Text>
+            </Flex>
+          </TouchableOpacity>
+        )}
       </FormControl>
       <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
         <Actionsheet.Content>

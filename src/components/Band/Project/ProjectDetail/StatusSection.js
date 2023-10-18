@@ -1,5 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 
+import { useSelector } from "react-redux";
+
 import { Actionsheet, Box, Flex, Icon, Pressable, Text, VStack, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -8,6 +10,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const StatusSection = ({ projectData, refetch, projectId }) => {
+  const userSelector = useSelector((state) => state.auth);
   const toast = useToast();
   const [value, setValue] = useState("");
   const { isOpen, toggle, close } = useDisclosure(false);
@@ -49,7 +52,7 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
   }, [projectData]);
   return (
     <>
-      <Pressable onPress={toggle}>
+      <Pressable onPress={toggle} disabled={projectData?.owner_id !== userSelector.id}>
         <Flex
           borderWidth={1}
           borderColor="#cbcbcb"
@@ -73,7 +76,9 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
             <Text>{value}</Text>
           </Flex>
 
-          <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
+          {projectData?.owner_id === userSelector.id && (
+            <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
+          )}
         </Flex>
       </Pressable>
 

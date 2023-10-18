@@ -14,7 +14,7 @@ import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 
-const AttachmentSection = ({ taskId }) => {
+const AttachmentSection = ({ taskId, disabled }) => {
   const toast = useToast();
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
 
@@ -151,6 +151,7 @@ const AttachmentSection = ({ taskId }) => {
     <Flex gap={2}>
       <FormControl>
         <FormControl.Label>ATTACHMENTS</FormControl.Label>
+
         <ScrollView style={{ maxHeight: 200 }}>
           <Box flex={1} minHeight={2}>
             <FlashList
@@ -174,12 +175,14 @@ const AttachmentSection = ({ taskId }) => {
         </ScrollView>
       </FormControl>
 
-      <TouchableOpacity onPress={selectFile}>
-        <Flex flexDir="row" alignItems="center" gap={3}>
-          <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-          <Text color="blue.600">Add attachment</Text>
-        </Flex>
-      </TouchableOpacity>
+      {!disabled && (
+        <TouchableOpacity onPress={selectFile}>
+          <Flex flexDir="row" alignItems="center" gap={3}>
+            <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
+            <Text color="blue.600">Add attachment</Text>
+          </Flex>
+        </TouchableOpacity>
+      )}
     </Flex>
   );
 };

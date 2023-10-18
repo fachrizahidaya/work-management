@@ -86,6 +86,33 @@ const MemberListItem = ({
             <Text>{totalProjects}</Text>
           </VStack>
         </HStack>
+        {loggedInUser === master && (
+          <>
+            {name !== master && (
+              <Menu
+                trigger={(triggerProps) => {
+                  return (
+                    <IconButton
+                      position="absolute"
+                      top={-20}
+                      right={-10}
+                      borderRadius="full"
+                      {...triggerProps}
+                      icon={<Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="#3F434A" />}
+                    />
+                  );
+                }}
+              >
+                <Menu.Item onPress={() => openRemoveMemberModal(member)}>
+                  <Flex flexDir="row" alignItems="center" gap={2}>
+                    <Icon as={<MaterialCommunityIcons name="account-remove-outline" />} size="md" color="red.600" />
+                    <Text color="red.600">Remove Member</Text>
+                  </Flex>
+                </Menu.Item>
+              </Menu>
+            )}
+          </>
+        )}
       </HStack>
 
       <Divider orientation="horizontal" bgColor="#E8E9EB" />
@@ -95,35 +122,6 @@ const MemberListItem = ({
           <Text>Email:</Text>
           <Text>{email}</Text>
         </Flex>
-
-        {loggedInUser === master && (
-          <>
-            {name !== master && (
-              <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                <Text>Action:</Text>
-
-                <Menu
-                  trigger={(triggerProps) => {
-                    return (
-                      <IconButton
-                        borderRadius="full"
-                        {...triggerProps}
-                        icon={<Icon as={<MaterialCommunityIcons name="dots-horizontal" />} color="black" />}
-                      />
-                    );
-                  }}
-                >
-                  <Menu.Item onPress={() => openRemoveMemberModal(member)}>
-                    <Flex flexDir="row" alignItems="center" gap={2}>
-                      <Icon as={<MaterialCommunityIcons name="account-remove-outline" />} size="md" color="red.600" />
-                      <Text color="red.600">Remove Member</Text>
-                    </Flex>
-                  </Menu.Item>
-                </Menu>
-              </Flex>
-            )}
-          </>
-        )}
       </VStack>
     </Flex>
   );

@@ -1,68 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
+
+import { Image, View } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
+import axiosInstance from "../../config/api";
 
-import { Progress } from "native-base";
-import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
+const LaunchScreen = () => {
+  const navigation = useNavigation();
 
-const LaunchScreen = ({ setIsLoading }) => {
-  const [loadingValue, setLoadingValue] = useState(0);
+  const loginHandler = async (form) => {
+    try {
+      const res = await axiosInstance.post("/auth/login", form);
 
-  const updateLoadingValue = () => {
-    setLoadingValue((prevValue) => prevValue + 1);
+      const userData = res.data.data;
+
+      navigation.navigate("Loading", { userData });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // Animate style for kss logo fade in
-  const rStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(
-      loadingValue <= 10
-        ? 0
-        : loadingValue > 10 && loadingValue <= 20
-        ? 0.1
-        : loadingValue > 20 && loadingValue <= 50
-        ? 0.5
-        : loadingValue > 50 && loadingValue <= 80
-        ? 0.8
-        : 1
-    ),
-  }));
+  const getUserData = async () => {
+    try {
+      const userData = await SecureStore.getItemAsync("user_data");
 
-  // Animate style for loading bar fade out
-  const tStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(loadingValue < 100 ? 1 : 0),
-  }));
+      if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        loginHandler({
+          email: parsedUserData.email,
+          password: parsedUserData.password_real,
+        });
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    // Effect to update loadingValue at regular intervals
-    const interval = setInterval(() => {
-      if (loadingValue < 100) {
-        updateLoadingValue();
-      } else {
-        // Set isLoading to false when loadingValue reaches 100
-        setIsLoading(false);
-        clearInterval(interval);
-      }
-    }, 10);
-
-    // Clean up the interval when the component unmounts or the dependencies change
-    return () => {
-      clearInterval(interval);
-    };
-  }, [loadingValue]);
+    getUserData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View style={styles.loadingContainer}>
-        <Animated.Image
+      <View style={styles.loadingContainer}>
+        <Image
           resizeMode="contain"
           source={require("../../assets/icons/kss_logo.png")}
           alt="KSS_LOGO"
-          style={[styles.logo, rStyle]}
+          style={styles.logo}
         />
-
-        <Animated.View style={[styles.loadingIndicator, tStyle]}>
-          <Progress value={loadingValue} colorScheme="primary" size="sm" bg="#E8E9EB" w={300} mt={50} />
-        </Animated.View>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };

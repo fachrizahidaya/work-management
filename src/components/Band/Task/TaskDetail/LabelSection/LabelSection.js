@@ -88,28 +88,30 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                 />
               ))}
 
-              <IconButton
-                disabled={disabled}
-                onPress={openModal}
-                size="md"
-                borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                alignSelf="flex-start"
-              />
+              {!disabled && (
+                <IconButton
+                  onPress={openModal}
+                  size="md"
+                  borderRadius="full"
+                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+                  alignSelf="flex-start"
+                />
+              )}
             </Flex>
             <Text color="gray.500" mt={1}>
               Press any label to remove.
             </Text>
           </>
         ) : (
-          <IconButton
-            disabled={disabled}
-            onPress={openModal}
-            size="md"
-            borderRadius="full"
-            icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-            alignSelf="flex-start"
-          />
+          !disabled && (
+            <IconButton
+              onPress={openModal}
+              size="md"
+              borderRadius="full"
+              icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
+              alignSelf="flex-start"
+            />
+          )
         )}
       </FormControl>
 
