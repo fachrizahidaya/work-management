@@ -3,6 +3,7 @@ import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Text, Text
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
+import FormButton from "../../../shared/FormButton";
 
 const NewFeedForm = ({
   formik,
@@ -118,6 +119,7 @@ const NewFeedForm = ({
             style={{ transform: [{ rotate: "-35deg" }] }}
           />
         </Pressable>
+
         <Pressable
           borderRadius="full"
           borderWidth={1}

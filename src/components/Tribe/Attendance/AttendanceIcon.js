@@ -15,7 +15,7 @@ const AttendanceIcon = () => {
     <Flex alignItems="center" justifyContent="center" gap={1} px={3} flexDirection="row" flexWrap="wrap">
       {listIcons.slice(0, 4).map((item) => {
         return (
-          <Flex flexDirection="row" alignItems="center" justifyContent="center" gap={1}>
+          <Flex key={item?.key} flexDirection="row" alignItems="center" justifyContent="center" gap={1}>
             <Icon as={<MaterialCommunityIcons name="circle" />} color={item.color} />
             <Text fontSize={12} fontWeight={500}>
               {item.name}

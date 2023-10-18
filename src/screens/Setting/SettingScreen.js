@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Dimensions } from "react-native";
 import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text } from "native-base";
@@ -10,11 +10,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
+import axiosInstance from "../../config/api";
+import { update_profile } from "../../redux/reducer/auth";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
   const { data: myProfile } = useFetch("/hr/my-profile");
@@ -55,7 +58,23 @@ const SettingScreen = () => {
     },
   ];
 
-  const { data: profile, isFetching, refetch, isLoading } = useFetch("/hr/my-profile");
+  const {
+    data: profile,
+    isFetching: profileIsFetching,
+    refetch: refetchProfile,
+    isLoading: profileIsLoading,
+  } = useFetch("/hr/my-profile");
+
+  const editProfileHandler = async (form, setSubmitting) => {
+    try {
+      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
+      dispatch(update_profile(res.data.data));
+      setSubmitting(false);
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Box bg="white" w={width} flex={1}>
@@ -64,7 +83,11 @@ const SettingScreen = () => {
           <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
-            <Pressable onPress={() => navigation.navigate("Profile Screen", { profile: profile })}>
+            <Pressable
+              onPress={() =>
+                navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
+              }
+            >
               <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
                 <Box>
                   <Flex direction="row" gap={4}>

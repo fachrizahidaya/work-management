@@ -183,12 +183,6 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
       }
     }
 
-    // useEffect(() => {
-    //   if (!formik.isSubmitting && formik.status === "success") {
-    //     toggleReport(formik.resetForm);
-    //   }
-    // }, [formik.isSubmitting, formik.status]);
-
     return (
       <Fragment>
         <Calendar

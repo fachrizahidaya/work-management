@@ -19,10 +19,13 @@ const ContactScreen = () => {
   const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isGridView, setIsGridView] = useState(false);
+  const [filteredDataArray, setFilteredDataArray] = useState([]);
+  const [inputToShow, setInputToShow] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Handler for search input
   const firstTimeRef = useRef(true);
+
   const dependencies = [currentPage, searchInput];
 
   const fetchEmployeeContactParameters = {
@@ -44,6 +47,14 @@ const ContactScreen = () => {
     }
   };
 
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -51,52 +62,17 @@ const ContactScreen = () => {
     },
   });
 
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      if (value === "") {
-        setCurrentPage(1);
-      }
-    }, 500),
-    []
-  );
-
-  const toggleView = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsGridView(!isGridView);
-      setIsLoading(false);
-    }, 2000);
-  };
-
   useEffect(() => {
-    if (searchInput) {
-      if (employeeData?.data?.data) {
-        const filteredData = employeeData?.data?.data.filter((item) =>
-          item.name.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        setContacts(filteredData);
-      }
-    } else {
-      if (employeeData?.data?.data) {
+    if (employeeData?.data?.data.length) {
+      if (!searchInput) {
         setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
+        setFilteredDataArray([]);
+      } else {
+        setFilteredDataArray((prevData) => [...prevData, ...employeeData?.data?.data]);
+        setContacts([]);
       }
     }
-  }, [employeeData?.data?.data]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchInput]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (firstTimeRef.current) {
-        firstTimeRef.current = false;
-        return;
-      }
-      refetchEmployeeData();
-    }, [refetchEmployeeData])
-  );
+  }, [employeeData]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,34 +91,34 @@ const ContactScreen = () => {
 
       <Box backgroundColor="#FFFFFF" py={4} px={3}>
         <Input
-          value={formik.values.search}
-          variant="unstyled"
-          size="md"
+          value={inputToShow}
           InputLeftElement={
             <Pressable>
               <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
             </Pressable>
           }
           InputRightElement={
-            searchInput && (
+            inputToShow && (
               <Pressable
                 onPress={() => {
-                  handleSearch("");
-                  formik.resetForm();
+                  setInputToShow("");
+                  setSearchInput("");
                 }}
               >
                 <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
               </Pressable>
             )
           }
+          onChangeText={(value) => {
+            handleSearch(value);
+            setInputToShow(value);
+          }}
+          variant="unstyled"
+          size="md"
           placeholder="Search contact"
           borderRadius={15}
           borderWidth={1}
           style={{ height: 40 }}
-          onChangeText={(value) => {
-            handleSearch(value);
-            formik.setFieldValue("search", value);
-          }}
         />
       </Box>
 
@@ -160,12 +136,11 @@ const ContactScreen = () => {
           {/* Content here */}
           {employeeData?.data?.data.length > 0 ? (
             <FlashList
-              data={contacts}
+              data={contacts.length ? contacts : filteredDataArray}
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
               estimatedItemSize={200}
               onEndReached={fetchMoreEmployeeContact}
-              refreshControl={<RefreshControl refreshing={employeeDataIsFetching} onRefresh={refetchEmployeeData} />}
               renderItem={({ item }) => (
                 <ContactList
                   key={item?.id}

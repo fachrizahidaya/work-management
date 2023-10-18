@@ -27,6 +27,7 @@ import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/Ne
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/MyProfileScreen";
+import AccountScreen from "../screens/Setting/AccountScreen";
 
 const Stack = createStackNavigator();
 
@@ -40,10 +41,10 @@ const HomeStack = () => {
         {() => {
           if (moduleSelector.module_name === "BAND") {
             return <BandTab />;
-          } else if (moduleSelector.module_name === "SETTING") {
-            return <SettingTab />;
           } else if (moduleSelector.module_name === "TRIBE") {
             return <TribeTab />;
+          } else if (moduleSelector.module_name === "SETTING") {
+            return <SettingTab />;
             // } else if (moduleSelector.module_name === "PIPE") {
             //   return <PipeTab  />;
             // } else if (moduleSelector.module_name === "COIN") {
@@ -62,6 +63,8 @@ const HomeStack = () => {
       <Stack.Screen name="Chat Room" component={ChatRoom} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
+
+      <Stack.Screen name="Setting" component={SettingScreen} options={{ header: () => <Header /> }} />
 
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
@@ -85,6 +88,8 @@ const HomeStack = () => {
 
       {/* Setting Screens */}
       <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
