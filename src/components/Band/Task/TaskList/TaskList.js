@@ -1,14 +1,15 @@
-import React from "react";
+import React, { memo } from "react";
 
-import { Box, Button, Flex, Icon, Skeleton, Text } from "native-base";
+import { Box, Button, Flex, Icon, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem";
+import TaskSkeleton from "./TaskSkeleton";
 
-const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
+const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
@@ -36,6 +37,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                   renderItem={({ item }) => (
                     <TaskListItem
                       key={item.id}
+                      id={item.id}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
@@ -47,7 +49,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
-                      onPress={openDetail}
+                      openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
                 />
@@ -66,7 +68,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
 
@@ -83,6 +85,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                   renderItem={({ item }) => (
                     <TaskListItem
                       key={item.id}
+                      id={item.id}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
@@ -94,7 +97,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
-                      onPress={openDetail}
+                      openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
                 />
@@ -114,7 +117,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
 
@@ -131,6 +134,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                   renderItem={({ item }) => (
                     <TaskListItem
                       key={item.id}
+                      id={item.id}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
@@ -142,7 +146,7 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
-                      onPress={openDetail}
+                      openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
                 />
@@ -162,11 +166,11 @@ const TaskList = ({ tasks, isLoading, openDetail, openNewTaskForm }) => {
             </Button>
           </>
         ) : (
-          <Skeleton h={40} />
+          <TaskSkeleton />
         )}
       </CustomAccordion>
     </Flex>
   );
 };
 
-export default TaskList;
+export default memo(TaskList);

@@ -2,13 +2,13 @@ import React from "react";
 
 import { Avatar } from "native-base";
 
-const AvatarPlaceholder = ({ image, name, size }) => {
+const AvatarPlaceholder = ({ image, name, size, borderRadius }) => {
   function stringToColor(string) {
     let hash = 0;
     let i;
 
     /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
+    for (i = 0; i < string?.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
 
@@ -24,10 +24,10 @@ const AvatarPlaceholder = ({ image, name, size }) => {
   }
 
   const userInitialGenerator = () => {
-    const nameArray = name.split(" ");
+    const nameArray = name?.split(" ");
     let alias = "";
 
-    if (nameArray.length >= 2) {
+    if (nameArray?.length >= 2) {
       alias = nameArray[0][0] + nameArray[1][0];
     } else {
       alias = nameArray[0][0];
@@ -39,12 +39,12 @@ const AvatarPlaceholder = ({ image, name, size }) => {
   return image ? (
     <Avatar
       source={{
-        uri: `https://dev.kolabora-app.com/api-dev/image/${image}/thumb`,
+        uri: `https://api-dev.kolabora-app.com/image/${image}/thumb`,
       }}
       size={size || "xs"}
     />
   ) : (
-    <Avatar size={size || "xs"} bgColor={stringToColor(name)}>
+    <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
       {userInitialGenerator()}
     </Avatar>
   );

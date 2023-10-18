@@ -1,16 +1,26 @@
 import React from "react";
-import { Dimensions, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
+import { Dimensions } from "react-native";
+import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import PageHeader from "../../components/shared/PageHeader";
+import { useFetch } from "../../hooks/useFetch";
+import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
+import axiosInstance from "../../config/api";
+import { update_profile } from "../../redux/reducer/auth";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
-  const { width, height } = Dimensions.get("window");
+  const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
+  const { data: myProfile } = useFetch("/hr/my-profile");
 
   const first = [
     {
@@ -48,34 +58,52 @@ const SettingScreen = () => {
     },
   ];
 
+  const {
+    data: profile,
+    isFetching: profileIsFetching,
+    refetch: refetchProfile,
+    isLoading: profileIsLoading,
+  } = useFetch("/hr/my-profile");
+
+  const editProfileHandler = async (form, setSubmitting) => {
+    try {
+      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
+      dispatch(update_profile(res.data.data));
+      setSubmitting(false);
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <Box w={width} style={{ height: Platform.OS === "android" ? height - 130 : height - 220 }}>
-      <ScrollView flex={1} showsVerticalScrollIndicator={false} bounces={false}>
+    <Box bg="white" w={width} flex={1}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Flex bgColor="white" p={5} pb={10} gap={33}>
-          <Text fontSize={16} fontWeight={500}>
-            Settings
-          </Text>
+          <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
-            <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
-              <Box>
-                <Flex direction="row" gap={4}>
-                  <Avatar
-                    source={{
-                      uri: `https://dev.kolabora-app.com/api-dev/image/${userSelector.image}/thumb`,
-                    }}
-                  />
-                  <Box>
-                    <Text fontSize={18} fontWeight={700}>
-                      {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
-                    </Text>
-                    <Text fontSize={12}>{userSelector.user_type}</Text>
-                  </Box>
-                </Flex>
-              </Box>
+            <Pressable
+              onPress={() =>
+                navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
+              }
+            >
+              <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
+                <Box>
+                  <Flex direction="row" gap={4}>
+                    <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" />
+                    <Box>
+                      <Text fontSize={20} fontWeight={700}>
+                        {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
+                      </Text>
+                      {myProfile?.data && <Text>{myProfile.data.position_name || "You have no position"}</Text>}
+                    </Box>
+                  </Flex>
+                </Box>
 
-              <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-            </Flex>
+                <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
+              </Flex>
+            </Pressable>
 
             <Pressable
               display="flex"
@@ -86,31 +114,31 @@ const SettingScreen = () => {
               p="8px 12px"
             >
               <Flex flexDir="row" alignItems="center" gap={4}>
-                <Center ml={3}>
-                  <Avatar.Group>
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                      }}
-                    />
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-                      }}
-                    />
-                    <Avatar
-                      size="sm"
-                      source={{
-                        uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                      }}
-                    />
-                  </Avatar.Group>
-                </Center>
+                {team?.data?.length > 0 && (
+                  <Center px={3}>
+                    <Avatar.Group>
+                      {!teamIsLoading ? (
+                        team.data.length > 0 &&
+                        team.data.map((item) => {
+                          return (
+                            <Avatar
+                              key={item.id}
+                              size="sm"
+                              source={{
+                                uri: `${process.env.EXPO_PUBLIC_API}/image/${item.image}`,
+                              }}
+                            />
+                          );
+                        })
+                      ) : (
+                        <Skeleton h={35} />
+                      )}
+                    </Avatar.Group>
+                  </Center>
+                )}
 
                 <Flex flexDirection="row" gap={1}>
-                  <Text>Team</Text>
+                  {myProfile?.data && <Text>{myProfile.data.division_name || "You have no team"}</Text>}
                 </Flex>
               </Flex>
 

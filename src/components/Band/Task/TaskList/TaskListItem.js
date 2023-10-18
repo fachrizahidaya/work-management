@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import dayjs from "dayjs";
 
@@ -21,22 +22,28 @@ const TaskListItem = ({
   totalComments,
   status,
   responsible,
-  onPress,
+  openCloseTaskConfirmation,
 }) => {
+  const navigation = useNavigation();
+
   return (
-    <Pressable style={styles.wrapper} onPress={() => onPress(task)}>
+    <Pressable style={styles.wrapper} onPress={() => navigation.navigate("Task Detail", { taskId: id })}>
       <Flex gap={2}>
         <Flex flexDir="row" justifyContent="space-between" alignItems="center">
           <Flex flexDir="row" gap={3} alignItems="center">
-            <Pressable>
+            <Pressable
+              display={status !== "Closed" && status !== "Finish" ? "none" : "block"}
+              onPress={() => openCloseTaskConfirmation(task)}
+            >
               <Icon
                 as={<MaterialCommunityIcons name={status === "Closed" ? "check-circle-outline" : "circle-outline"} />}
                 size="lg"
               />
             </Pressable>
 
-            <Text textDecorationLine={status === "Closed" ? "line-through" : "none"}>
-              {title.length > 20 ? title.slice(0, 20) + "..." : title}
+            <Text w={190} numberOfLines={2} textDecorationLine={status === "Closed" ? "line-through" : "none"}>
+              {title}
+              <Text color="primary.600"> #{id}</Text>
             </Text>
           </Flex>
 
@@ -47,7 +54,7 @@ const TaskListItem = ({
           </Flex>
         </Flex>
 
-        <Flex flexDir="row" gap={1} flex={1} ml={10}>
+        <Flex flexDir="row" gap={1}>
           <Box bgColor="#49C96D" w={3} h={3} borderRadius={50}></Box>
           {(priority === "Medium" || priority === "High") && (
             <Box bgColor="#FF965D" w={3} h={3} borderRadius={50}></Box>
@@ -61,7 +68,7 @@ const TaskListItem = ({
               <Flex flexDir="row" alignItems="center" gap={1}>
                 <Icon
                   as={<MaterialCommunityIcons name="attachment" />}
-                  size="lg"
+                  size="sm"
                   style={{ transform: [{ rotate: "-35deg" }] }}
                 />
                 <Text fontWeight={400}>{totalAttachments || 0}</Text>
@@ -70,14 +77,14 @@ const TaskListItem = ({
 
             {totalComments > 0 && (
               <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="message-text-outline" />} size="lg" />
+                <Icon as={<MaterialCommunityIcons name="message-text-outline" />} size="sm" />
                 <Text fontWeight={400}>{totalComments || 0}</Text>
               </Flex>
             )}
 
             {totalChecklists > 0 && (
               <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="checkbox-marked-outline" />} size="lg" />
+                <Icon as={<MaterialCommunityIcons name="checkbox-marked-outline" />} size="sm" />
                 <Text fontWeight={400}>
                   {totalChecklistsDone || 0} / {totalChecklists || 0}
                 </Text>

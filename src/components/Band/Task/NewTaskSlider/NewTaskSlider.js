@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, FormControl, Input, Menu, ScrollView, useToast } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Box, Flex, Text, FormControl, Input, ScrollView, useToast, Actionsheet, TextArea } from "native-base";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import CustomSelect from "../../../shared/CustomSelect";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
-import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import PageHeader from "../../../shared/PageHeader";
 
-const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }) => {
+const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = "Open", refetch }) => {
   const toast = useToast();
   const { width, height } = Dimensions.get("window");
-  const [openSelect, setOpenSelect] = useState(false);
-  const [openScore, setOpenScore] = useState(false);
   const statuses = ["Low", "Medium", "High"];
   const scores = [1, 2, 3, 4, 5];
+  const { isOpen: priorityMenuIsOpen, toggle: togglePriorityMenu } = useDisclosure(false);
+  const { isOpen: scoreMenuIsOpen, toggle: toggleScoreMenu } = useDisclosure(false);
 
-  const { refetch: refetchAllTasks } = useFetch(projectId && `/pm/tasks/project/${projectId}`);
-  const { refetch: refetchCurrentTask } = useFetch(taskData && `/pm/tasks/${taskData?.id}`);
-
+  /**
+   * Handles submission of task
+   * @param {*} form - form to submit
+   * @param {*} status - task status
+   * @param {*} setSubmitting - formik setSubmitting
+   * @param {*} setStatus - formik setStatus
+   */
   const submitHandler = async (form, status, setSubmitting, setStatus) => {
     try {
       if (!taskData) {
@@ -36,11 +40,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
       }
+      refetch();
       setSubmitting(false);
       setStatus("success");
 
-      // Refetch tasks
-      refetchAllTasks();
       toast.show({
         render: () => {
           return <SuccessToast message={`Task saved!`} />;
@@ -59,10 +62,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: taskData ? true : false,
     initialValues: {
       title: taskData?.title || "",
-      description: taskData?.description || "",
+      description: taskData?.description.toString() || "",
       deadline: taskData?.deadline || "",
       priority: taskData?.priority || "Low",
       score: taskData?.score || 1,
@@ -81,6 +84,10 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
     },
   });
 
+  const onChangeDeadline = (value) => {
+    formik.setFieldValue("deadline", value);
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       onClose(formik.resetForm);
@@ -88,95 +95,99 @@ const NewTaskSlider = ({ onClose, taskData, projectId, selectedStatus = "Open" }
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="white" p={5}>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Pressable onPress={() => onClose(formik.resetForm)}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="lg" color="black" />
-            </Pressable>
-            <Text fontSize={16} fontWeight={500}>
-              New Task
-            </Text>
-          </Flex>
+    isOpen && (
+      <Box position="absolute" zIndex={3}>
+        <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
 
-          <Flex gap={17} mt={22}>
-            <FormControl isInvalid={formik.errors.title}>
-              <FormControl.Label>Task Title</FormControl.Label>
-              <Input
-                value={formik.values.title}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
-                placeholder="Input task title..."
-              />
-              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-            </FormControl>
+            <Flex gap={17} mt={22}>
+              <FormControl isInvalid={formik.errors.title}>
+                <FormControl.Label>Task Title</FormControl.Label>
+                <Input
+                  value={formik.values.title}
+                  onChangeText={(value) => formik.setFieldValue("title", value)}
+                  placeholder="Input task title..."
+                />
+                <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.description}>
-              <FormControl.Label>Description</FormControl.Label>
-              <Input
-                value={formik.values.description}
-                // multiline
-                h={100}
-                onChangeText={(value) => formik.setFieldValue("description", value)}
-                placeholder="Create a mobile application on iOS and Android devices."
-              />
-              <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.description}>
+                <FormControl.Label>Description</FormControl.Label>
+                <TextArea
+                  value={formik.values.description}
+                  onChangeText={(value) => formik.setFieldValue("description", value)}
+                  placeholder="Input task description..."
+                />
 
-            <FormControl isInvalid={formik.errors.deadline}>
-              <FormControl.Label>End Date</FormControl.Label>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} formik={formik} fieldName="deadline" />
-              <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
-            </FormControl>
+                <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.priority}>
-              <FormControl.Label>Priority</FormControl.Label>
-              <CustomSelect value={formik.values?.priority} open={openSelect} setOpen={setOpenSelect} bgColor={"white"}>
-                {statuses.map((status) => {
-                  return (
-                    <Menu.Item
-                      key={status}
-                      onPress={() => {
-                        setOpenSelect(!openSelect);
-                        formik.setFieldValue("priority", status);
-                      }}
-                    >
-                      <Text>{status}</Text>
-                    </Menu.Item>
-                  );
-                })}
-              </CustomSelect>
-              <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.deadline}>
+                <FormControl.Label>End Date</FormControl.Label>
+                <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
+                <FormControl.ErrorMessage>{formik.errors.deadline}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.score}>
-              <FormControl.Label>Score</FormControl.Label>
-              <CustomSelect value={formik.values?.score} open={openScore} setOpen={setOpenScore} bgColor={"white"}>
-                {scores.map((score) => {
-                  return (
-                    <Menu.Item
-                      key={score}
-                      onPress={() => {
-                        setOpenScore(!openScore);
-                        formik.setFieldValue("priority", score);
-                      }}
-                    >
-                      <Text>{score}</Text>
-                    </Menu.Item>
-                  );
-                })}
-              </CustomSelect>
-              <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.priority}>
+                <FormControl.Label>Priority</FormControl.Label>
+                <CustomSelect
+                  value={formik.values?.priority}
+                  isOpen={priorityMenuIsOpen}
+                  toggle={togglePriorityMenu}
+                  bgColor={"white"}
+                >
+                  {statuses.map((status) => {
+                    return (
+                      <Actionsheet.Item
+                        key={status}
+                        onPress={() => {
+                          togglePriorityMenu();
+                          formik.setFieldValue("priority", status);
+                        }}
+                      >
+                        <Text>{status}</Text>
+                      </Actionsheet.Item>
+                    );
+                  })}
+                </CustomSelect>
+                <FormControl.ErrorMessage>{formik.errors.priority}</FormControl.ErrorMessage>
+              </FormControl>
 
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">{taskData ? "Save" : "Create"}</Text>
-            </FormButton>
-          </Flex>
-        </ScrollView>
+              <FormControl isInvalid={formik.errors.score}>
+                <FormControl.Label>Score</FormControl.Label>
+                <CustomSelect
+                  value={formik.values?.score}
+                  isOpen={scoreMenuIsOpen}
+                  toggle={toggleScoreMenu}
+                  bgColor={"white"}
+                >
+                  {scores.map((score) => {
+                    return (
+                      <Actionsheet.Item
+                        key={score}
+                        onPress={() => {
+                          toggleScoreMenu();
+                          formik.setFieldValue("score", score);
+                        }}
+                      >
+                        <Text>{score}</Text>
+                      </Actionsheet.Item>
+                    );
+                  })}
+                </CustomSelect>
+                <FormControl.ErrorMessage>{formik.errors.score}</FormControl.ErrorMessage>
+              </FormControl>
+
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="white">{taskData ? "Save" : "Create"}</Text>
+              </FormButton>
+            </Flex>
+          </ScrollView>
+        </Box>
       </Box>
-    </Box>
+    )
   );
 };
 
-export default NewTaskSlider;
+export default memo(NewTaskSlider);

@@ -5,9 +5,7 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
-    },
-    "simulator": {
+      "distribution": "internal",
       "ios": {
         "simulator": true
       },
@@ -15,13 +13,18 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://dev.kolabora-app.com/api-dev"
-      },
-      "distribution": "internal"
+        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
+      }
     },
-    "adhoc": {
+    "internal-testing": {
       "ios": {
-        "enterpriseProvisioning": "universal"
+        "enterpriseProvisioning": "adhoc"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
       },
       "distribution": "internal"
     },

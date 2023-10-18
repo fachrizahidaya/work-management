@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Flex, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const { isOpen, toggle } = useDisclosure(true);
 
   return (
     <Flex gap={15}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flexDir="row" gap={1}>
-          <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <Pressable onPress={toggle}>
             <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
           </Pressable>
           <Text>{title}</Text>

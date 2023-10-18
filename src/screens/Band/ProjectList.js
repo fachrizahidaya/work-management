@@ -1,25 +1,28 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
+import { useFormik } from "formik";
 import _ from "lodash";
 
-import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, Text } from "native-base";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
-import { useFocusEffect } from "@react-navigation/native";
+import PageHeader from "../../components/shared/PageHeader";
 
 const ProjectList = () => {
-  const { height } = Dimensions.get("window");
   const firstTimeRef = useRef(true);
-  const [status, setStatus] = useState("Open");
+  const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
 
   const dependencies = [status, currentPage, searchInput];
+
   const params = {
     page: currentPage,
     search: searchInput,
@@ -27,6 +30,13 @@ const ProjectList = () => {
     archive: status !== "Archived" ? 0 : 1,
     limit: 10,
   };
+  const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
+
+  const formik = useFormik({
+    initialValues: {
+      search: "",
+    },
+  });
 
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -36,7 +46,13 @@ const ProjectList = () => {
     []
   );
 
-  const { data, isLoading, refetch } = useFetch("/pm/projects", dependencies, params);
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 5; i++) {
+      skeletons.push(<Skeleton height={41} key={i} />);
+    }
+    return skeletons;
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -55,20 +71,25 @@ const ProjectList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
-        <Text fontWeight={500} fontSize={16}>
-          My Project
-        </Text>
+        <PageHeader title="My Project" backButton={false} />
       </Flex>
 
-      <Flex gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
-        <Box pt={4} px={4} pb={1}>
+      <Flex flex={1} gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
+        <Box pt={4} px={4}>
           <Input
-            variant="unstyled"
+            value={formik.values.search}
             size="md"
             InputRightElement={
-              <Pressable>
-                <Icon as={<MaterialCommunityIcons name="tune-variant" />} size="md" mr={3} color="black" />
-              </Pressable>
+              searchInput && (
+                <Pressable
+                  onPress={() => {
+                    handleSearch("");
+                    formik.resetForm();
+                  }}
+                >
+                  <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+                </Pressable>
+              )
             }
             InputLeftElement={
               <Pressable>
@@ -76,10 +97,10 @@ const ProjectList = () => {
               </Pressable>
             }
             placeholder="Search project..."
-            borderRadius={15}
-            borderWidth={1}
-            style={{ height: 40 }}
-            onChangeText={(value) => handleSearch(value)}
+            onChangeText={(value) => {
+              handleSearch(value);
+              formik.setFieldValue("search", value);
+            }}
           />
         </Box>
 
@@ -105,8 +126,9 @@ const ProjectList = () => {
 
         {!isLoading ? (
           <>
-            <Box h={Platform.OS === "ios" ? 400 : height - 465}>
+            <Box flex={1}>
               <FlashList
+                refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                 data={data?.data.data}
                 keyExtractor={(item) => item.id}
                 onEndReachedThreshold={0.1}
@@ -124,10 +146,15 @@ const ProjectList = () => {
                 )}
               />
             </Box>
-            <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+
+            {data?.data?.last_page > 1 && (
+              <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+            )}
           </>
         ) : (
-          <Skeleton height={400} />
+          <VStack px={2} space={2}>
+            {renderSkeletons()}
+          </VStack>
         )}
       </Flex>
     </SafeAreaView>

@@ -1,5 +1,6 @@
-import { Dimensions, StyleSheet, Platform } from "react-native";
 import React, { useEffect } from "react";
+
+import { Dimensions, StyleSheet, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -20,7 +21,9 @@ const CustomDrawer = ({ children, height, isOpen }) => {
 
   // Update the animation value based on the isOpen prop
   useEffect(() => {
-    translateX.value = withTiming(isOpen ? 0 : width);
+    translateX.value = withTiming(isOpen ? 0 : width, {
+      duration: 150,
+    });
   }, [isOpen]);
 
   // Create an animated style for the drawer
@@ -51,6 +54,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingBottom: Platform.OS === "android" ? 105 : 125,
+    paddingBottom: 125,
+    zIndex: 1,
   },
 });

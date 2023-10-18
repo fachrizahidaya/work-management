@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
@@ -11,7 +11,20 @@ import * as yup from "yup";
 
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Flex, FormControl, Icon, IconButton, Image, Input, Pressable, Text, useToast } from "native-base";
+import {
+  Avatar,
+  Box,
+  Flex,
+  FormControl,
+  Icon,
+  IconButton,
+  Image,
+  Input,
+  Pressable,
+  Text,
+  TextArea,
+  useToast,
+} from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -86,7 +99,6 @@ const CommentInput = ({ taskId, projectId }) => {
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       task_id: taskId || null,
       project_id: projectId || null,
@@ -290,23 +302,18 @@ const CommentInput = ({ taskId, projectId }) => {
       )}
       <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
         <FormControl>
-          <Input
+          <TextArea
             isInvalid={formik.errors.comments}
             variant="unstyled"
+            size="md"
             placeholder="Add comment..."
-            multiline
-            h={20}
             value={formik.values.comments}
             onChangeText={(value) => formik.setFieldValue("comments", value)}
           />
           <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
         </FormControl>
 
-        <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="white">Comment</Text>
-          </FormButton>
-
+        <Flex flexDir="row" justifyContent="flex-end" alignItems="center">
           <Flex flexDir="row" alignItems="center" gap={1}>
             <IconButton
               size="sm"
@@ -322,6 +329,10 @@ const CommentInput = ({ taskId, projectId }) => {
               onPress={selectFile}
             />
           </Flex>
+
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} color="white">
+            <Icon as={<MaterialCommunityIcons name="send" />} style={{ transform: [{ rotate: "-45deg" }] }} />
+          </FormButton>
         </Flex>
       </Box>
 
@@ -339,17 +350,17 @@ const CommentInput = ({ taskId, projectId }) => {
                   <Avatar
                     size="xs"
                     source={{
-                      uri: `https://dev.kolabora-app.com/api-dev/image/${item.comment_image}/thumb`,
+                      uri: `${process.env.EXPO_PUBLIC_API}/image/${item.comment_image}/thumb`,
                     }}
                   />
 
                   <Box>
                     <Flex flexDir="row" gap={1} alignItems="center">
-                      <Text>{item?.comment_name}</Text>
+                      <Text>{item?.comment_name.split(" ")[0]}</Text>
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 
-                    <Text>{item?.comments}</Text>
+                    <Text fontWeight={400}>{item?.comments}</Text>
 
                     <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
                       {item.attachments.length > 0 &&
@@ -376,7 +387,7 @@ const CommentInput = ({ taskId, projectId }) => {
                 </Flex>
 
                 <Pressable mr={5} onPress={() => deleteComment(item.id)}>
-                  <Icon as={<MaterialCommunityIcons name="tooltip-remove-outline" />} color="red.600" />
+                  <Icon as={<MaterialCommunityIcons name="close" />} color="red.600" />
                 </Pressable>
               </Flex>
             )}
@@ -387,4 +398,4 @@ const CommentInput = ({ taskId, projectId }) => {
   );
 };
 
-export default CommentInput;
+export default memo(CommentInput);

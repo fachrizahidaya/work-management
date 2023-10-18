@@ -1,174 +1,175 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Pressable, Skeleton, Text, useSafeArea } from "native-base";
+import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import TaskList from "../../../../components/Band/Task/TaskList/TaskList";
 import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
-import CustomDrawer from "../../../../components/shared/CustomDrawer";
-import TaskDetail from "../../../../components/Band/Task/TaskDetail/TaskDetail";
+import TaskViewSection from "../../../../components/Band/Project/ProjectTask/TaskViewSection";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
+import PageHeader from "../../../../components/shared/PageHeader";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 
 const ProjectTaskScreen = ({ route }) => {
-  const { height } = Dimensions.get("window");
-  const { projectId } = route.params;
+  const { width } = Dimensions.get("screen");
+  const { projectId, view: viewType } = route.params;
   const navigation = useNavigation();
-  const [view, setView] = useState("Task List");
-  const [taskFormIsOpen, setTaskFormIsOpen] = useState(false);
-  const [taskDetailIsOpen, setTaskDetailIsOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [taskToEdit, setTaskToEdit] = useState(null);
+  const firstTimeRef = useRef(true);
+  const [view, setView] = useState(viewType);
   const [selectedStatus, setSelectedStatus] = useState("Open");
+  const [selectedLabelId, setSelectedLabelId] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-  const onPressTaskItem = (task) => {
-    setTaskDetailIsOpen(!taskDetailIsOpen);
-    setSelectedTask(task);
+  const fetchTaskParameters = {
+    label_id: selectedLabelId,
   };
-
-  const onCloseTaskDetail = () => {
-    setTaskDetailIsOpen(!taskDetailIsOpen);
-    setSelectedTask(null);
-  };
-
-  const onOpenTaskForm = (task) => {
-    setTaskFormIsOpen(true);
-    setTaskToEdit(task);
-  };
-
-  const onCloseTaskForm = (resetForm) => {
-    setTaskFormIsOpen(false);
-    setTaskToEdit(null);
-    setSelectedStatus("Open");
-    resetForm();
-  };
-
-  const onOpenTaskFormWithStatus = (status) => {
-    setTaskFormIsOpen(true);
-    setSelectedStatus(status);
-  };
-
-  const safeAreaProps = useSafeArea({
-    safeAreaTop: true,
-  });
-
-  const changeView = (value) => {
-    setView(value);
-  };
+  const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
+  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
-  const { data: tasks, isLoading: taskIsLoading } = useFetch(`/pm/tasks/project/${projectId}`);
+  const {
+    data: tasks,
+    isLoading: taskIsLoading,
+    isFetching: taskIsFetching,
+    refetch: refetchTasks,
+  } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
+  const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
+  const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
+  const onOpenTaskFormWithStatus = useCallback((status) => {
+    toggleTaskForm();
+    setSelectedStatus(status);
+  }, []);
+
+  const onCloseTaskForm = useCallback((resetForm) => {
+    toggleTaskForm();
+    resetForm();
+    setSelectedStatus("Open");
+  }, []);
+
+  const onOpenCloseConfirmation = useCallback((task) => {
+    toggleCloseConfirmation();
+    setSelectedTask(task);
+  }, []);
+
+  const changeView = useCallback((value) => {
+    setView(value);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchTasks();
+    }, [refetchTasks])
+  );
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 16, marginVertical: 13 }}>
-        <Flex gap={15}>
-          <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-            <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}>
-              <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-            </Pressable>
+    <>
+      <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
+            <PageHeader
+              title={data?.data.title}
+              width={width - 65}
+              withLoading
+              isLoading={isLoading}
+              onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
+            />
 
-            {!isLoading ? <Text fontSize={16}>{data?.data.title}</Text> : <Skeleton h={8} w={200} />}
+            <TaskViewSection changeView={changeView} view={view} />
+
+            <Flex flexDir="row" mt={11} mb={21}>
+              <TaskFilter
+                data={tasks?.data}
+                members={members?.data}
+                labels={labels}
+                setSelectedLabelId={setSelectedLabelId}
+                setFilteredData={setFilteredData}
+              />
+            </Flex>
           </Flex>
+        </TouchableWithoutFeedback>
 
-          <Flex flexDir="row" style={{ gap: 8 }}>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Task List" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Task List")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="format-list-bulleted" />}
-                  color={view === "Task List" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Task List" ? "primary.600" : "#3F434A"}>Task List</Text>
-              </Flex>
-            </Button>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Kanban" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Kanban")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="map-outline" />}
-                  color={view === "Kanban" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Kanban" ? "primary.600" : "#3F434A"}>Kanban</Text>
-              </Flex>
-            </Button>
-            <Button
-              flex={1}
-              variant="outline"
-              borderColor={view === "Gantt Chart" ? "primary.600" : "#E8E9EB"}
-              onPress={() => changeView("Gantt Chart")}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon
-                  as={<MaterialCommunityIcons name="chart-gantt" />}
-                  color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}
-                  size="md"
-                />
-                <Text color={view === "Gantt Chart" ? "primary.600" : "#3F434A"}>Gantt Chart</Text>
-              </Flex>
-            </Button>
-          </Flex>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
+          style={{ paddingHorizontal: 16, marginBottom: 10 }}
+        >
+          {/* Task List view */}
+          {view === "Task List" && (
+            <TaskList
+              tasks={filteredData}
+              isLoading={taskIsLoading}
+              openNewTaskForm={onOpenTaskFormWithStatus}
+              openCloseTaskConfirmation={onOpenCloseConfirmation}
+            />
+          )}
 
-          <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt={11} mb={21}>
-            <Pressable>
-              <Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />
-            </Pressable>
+          {(view === "Kanban" || view === "Gantt Chart") && (
+            <Center>
+              <Image
+                source={require("../../../../assets/vectors/desktop.jpg")}
+                h={250}
+                w={250}
+                alt="desktop-only"
+                resizeMode="contain"
+              />
+              <Text bold>This feature only available for desktop</Text>
+            </Center>
+          )}
+        </ScrollView>
 
-            <Button onPress={() => setTaskFormIsOpen(true)}>
-              <Flex flexDir="row" gap={6} alignItems="center" px={2}>
-                <Text color="white">Add</Text>
+        <Pressable
+          position="absolute"
+          right={5}
+          bottom={81}
+          rounded="full"
+          bgColor="primary.600"
+          p={15}
+          shadow="0"
+          borderRadius="full"
+          borderWidth={3}
+          borderColor="#FFFFFF"
+          onPress={toggleTaskForm}
+        >
+          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+        </Pressable>
+      </SafeAreaView>
 
-                <Box alignItems="center" bgColor="#2d6076" borderRadius={10} p={2}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="white" />
-                </Box>
-              </Flex>
-            </Button>
-          </Flex>
-        </Flex>
-
-        {/* Task List view */}
-        {view === "Task List" && (
-          <TaskList
-            tasks={tasks?.data}
-            isLoading={taskIsLoading}
-            openDetail={onPressTaskItem}
-            openEditForm={onOpenTaskForm}
-            openNewTaskForm={onOpenTaskFormWithStatus}
-          />
-        )}
-      </ScrollView>
-
+      {/* Task Form */}
       {taskFormIsOpen && (
         <NewTaskSlider
           isOpen={taskFormIsOpen}
-          projectId={projectId}
-          taskData={taskToEdit}
-          onClose={onCloseTaskForm}
           selectedStatus={selectedStatus}
+          onClose={onCloseTaskForm}
+          projectId={projectId}
+          refetch={refetchTasks}
         />
       )}
 
-      <CustomDrawer isOpen={taskDetailIsOpen} height={height}>
-        <TaskDetail
-          safeAreaProps={safeAreaProps}
-          onCloseDetail={onCloseTaskDetail}
-          selectedTask={selectedTask}
-          openEditForm={onOpenTaskForm}
+      {closeConfirmationIsOpen && (
+        <ConfirmationModal
+          isDelete={false}
+          isOpen={closeConfirmationIsOpen}
+          toggle={toggleCloseConfirmation}
+          apiUrl={"/pm/tasks/close"}
+          body={{ id: selectedTask?.id }}
+          header="Close Task"
+          description={`Are you sure to close task ${selectedTask?.title}?`}
+          successMessage="Task closed"
+          hasSuccessFunc
+          onSuccess={refetchTasks}
         />
-      </CustomDrawer>
-    </SafeAreaView>
+      )}
+    </>
   );
 };
 
@@ -178,5 +179,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    position: "relative",
   },
 });

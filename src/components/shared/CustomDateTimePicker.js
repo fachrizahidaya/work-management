@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Platform, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import dayjs from "dayjs";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button, Flex, Input } from "native-base";
+import { Button, Flex, Icon, Input, Text, Pressable, Box } from "native-base";
 
 /**
  * @param {number} width - The width of the component.
@@ -11,7 +11,22 @@ import { Button, Flex, Input } from "native-base";
  * @param {string} defaultValue - The default date value.
  * @param {boolean} disabled - Whether the component is disabled
  */
-const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled }) => {
+const CustomDateTimePicker = ({
+  width,
+  height,
+  onChange,
+  defaultValue,
+  disabled,
+  maximumDate = null,
+  withIcon,
+  withText,
+  iconName,
+  iconType,
+  iconColor,
+  textLabel,
+  fontSize,
+}) => {
+  const inputRef = useRef(null);
   // State for the selected date and the displayed value
   const [date, setDate] = useState(new Date());
   const [value, setValue] = useState();
@@ -25,7 +40,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   };
 
   // Handle date change
-  const onChange = ({ type }, selectedDate) => {
+  const onChangeDate = ({ type }, selectedDate) => {
     if (type == "set") {
       const currentDate = selectedDate;
       setDate(currentDate);
@@ -33,7 +48,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
       if (Platform.OS === "android") {
         toggleDatePicker();
         setValue(formatDate(currentDate));
-        formik.setFieldValue(fieldName, formatDate(currentDate));
+        onChange(formatDate(currentDate));
       }
     } else {
       toggleDatePicker();
@@ -44,7 +59,7 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   const confirmIOSDate = () => {
     setValue(formatDate(date));
     toggleDatePicker();
-    formik.setFieldValue(fieldName, formatDate(date));
+    onChange(formatDate(date));
   };
 
   // Format date as "YYYY-MM-DD"
@@ -73,17 +88,46 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
   return (
     <>
       {!calendarIsOpen && (
-        <Pressable onPress={toggleDatePicker} disabled={disabled}>
-          <Input
-            placeholder="DD/MM/YYYY"
-            editable={false}
-            value={value}
-            onPressIn={toggleDatePicker}
-            w={width}
-            borderRadius={15}
-            style={{ height: 40 }}
-          />
-        </Pressable>
+        <>
+          {withIcon ? (
+            <Icon
+              disabled={disabled}
+              onPressIn={toggleDatePicker}
+              as={iconType}
+              name={iconName}
+              size={30}
+              color={iconColor}
+            />
+          ) : withText ? (
+            <Text fontSize={fontSize} underline onPress={toggleDatePicker}>
+              {textLabel}
+            </Text>
+          ) : (
+            <Box position="relative">
+              <Pressable
+                disabled={disabled}
+                position="absolute"
+                zIndex={2}
+                top={0}
+                right={0}
+                bottom={0}
+                left={0}
+                onPress={toggleDatePicker}
+              />
+              <Input
+                ref={inputRef}
+                isDisabled={disabled}
+                isReadOnly
+                placeholder="DD/MM/YYYY"
+                editable={false}
+                value={value}
+                height={height}
+                w={width}
+                onTouchStart={() => inputRef.current.blur()}
+              />
+            </Box>
+          )}
+        </>
       )}
 
       {calendarIsOpen && (
@@ -91,9 +135,10 @@ const CustomDateTimePicker = ({ width, formik, fieldName, defaultValue, disabled
           mode="date"
           value={date}
           display="spinner"
-          onChange={onChange}
+          onChange={onChangeDate}
           style={styles.datePicker}
           minimumDate={new Date(dayjs().format("YYYY-MM-DD"))}
+          maximumDate={maximumDate && new Date(maximumDate)}
         />
       )}
 

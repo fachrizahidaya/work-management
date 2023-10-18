@@ -1,13 +1,14 @@
-import React from "react";
+import React, { memo } from "react";
 
-import { Button, Modal, Text, useToast } from "native-base";
+import { Button, Image, Modal, Spinner, Text, VStack, useToast } from "native-base";
 
 import { ErrorToast, SuccessToast } from "./ToastDialog";
 import axiosInstance from "../../config/api";
+import { useLoading } from "../../hooks/useLoading";
 
 const ConfirmationModal = ({
   isOpen,
-  setIsOpen,
+  toggle,
   apiUrl,
   successMessage,
   color,
@@ -15,17 +16,31 @@ const ConfirmationModal = ({
   onSuccess,
   header,
   description,
+  body = {},
+  isDelete = true,
+  isPatch = false,
+  placement,
 }) => {
   const toast = useToast();
+  const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
 
   const onPressHandler = async () => {
     try {
-      await axiosInstance.delete(apiUrl);
-      setIsOpen(false);
+      toggleIsDeleting();
+      if (isDelete) {
+        await axiosInstance.delete(apiUrl);
+      } else if (isPatch) {
+        await axiosInstance.patch(apiUrl);
+      } else {
+        await axiosInstance.post(apiUrl, body);
+      }
+      toggle();
+      toggleIsDeleting();
       toast.show({
         render: () => {
           return <SuccessToast message={successMessage} />;
         },
+        placement: placement ? placement : "bottom",
       });
 
       // If hasSuccessFunc passed then run the available onSuccess function
@@ -34,6 +49,7 @@ const ConfirmationModal = ({
       }
     } catch (error) {
       console.log(error);
+      toggleIsDeleting();
       toast.show({
         render: () => {
           return <ErrorToast message={error.response.data.message} />;
@@ -42,21 +58,40 @@ const ConfirmationModal = ({
     }
   };
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <Modal.Content h={200}>
-        <Modal.CloseButton />
-        <Modal.Header>{header}</Modal.Header>
-        <Modal.Body>
-          <Text>{description}</Text>
+    <Modal isOpen={isOpen} onClose={!isDeleting && toggle} size="xl">
+      <Modal.Content>
+        <Modal.Body bgColor="white">
+          <VStack alignItems="center">
+            <Image
+              source={require("../../assets/vectors/confirmation.jpg")}
+              alt="confirmation"
+              resizeMode="contain"
+              h={150}
+              w={150}
+            />
+            <Text textAlign="center">{description}</Text>
+          </VStack>
         </Modal.Body>
 
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button bgColor={color || "red.600"} onPress={onPressHandler}>
+        <Modal.Footer bgColor="white">
+          <Button.Group space={2} width="full">
+            <Button
+              bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
+              onPress={onPressHandler}
+              startIcon={isDeleting && <Spinner size="sm" color="white" />}
+              flex={1}
+            >
               Confirm
             </Button>
 
-            <Button onPress={() => setIsOpen(false)}>Cancel</Button>
+            <Button
+              disabled={isDeleting}
+              onPress={!isDeleting && toggle}
+              bgColor={isDeleting ? "coolGray.500" : "primary.600"}
+              flex={1}
+            >
+              Cancel
+            </Button>
           </Button.Group>
         </Modal.Footer>
       </Modal.Content>
@@ -64,4 +99,4 @@ const ConfirmationModal = ({
   );
 };
 
-export default ConfirmationModal;
+export default memo(ConfirmationModal);

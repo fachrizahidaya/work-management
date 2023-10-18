@@ -8,7 +8,7 @@ export const customTheme = extendTheme({
       baseStyle: {
         color: "#3F434A",
         fontWeight: 500,
-        fontSize: 12,
+        fontSize: 14,
       },
     },
     Button: {
@@ -23,6 +23,14 @@ export const customTheme = extendTheme({
         borderRadius: 15,
         variant: "unstyled",
       },
+    },
+    Skeleton: {
+      baseStyle: {
+        borderRadius: 15,
+      },
+    },
+    Modal: {
+      defaultProps: { _overlay: { useRNModalOnAndroid: false }, _backdrop: { _pressed: { opacity: 0.3 } } },
     },
   },
   colors: {

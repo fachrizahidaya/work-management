@@ -5,28 +5,18 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Avatar, Box, Flex, Icon, Input, Pressable, Skeleton, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
+
 const ChatListScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
-  const friends = [
-    {
-      username: "Mark Zuckerberg",
-      image: "https://cdn.britannica.com/99/236599-050-1199AD2C/Mark-Zuckerberg-2019.jpg",
-      chat: "Hey wanna hang out?",
-    },
-    {
-      username: "Bill Gates",
-      image:
-        "https://imageio.forbes.com/specials-images/imageserve/62d599ede3ff49f348f9b9b4/0x0.jpg?format=jpg&crop=821,821,x155,y340,safe&height=416&width=416&fit=bounds",
-      chat: "You wont believe what Susan just told me!",
-    },
-    {
-      username: "Mark Cuban",
-      image:
-        "https://cdn1.edgedatg.com/aws/v2/abc/SharkTank/person/942357/9828d1c422a22d1366a05121fcf78eef/528x528-Q90_9828d1c422a22d1366a05121fcf78eef.jpg",
-      chat: "Yoo.. have you tried the new Starbucks coffee?",
-    },
+  const users = [
+    { id: 17, name: "Huda Azzuhri" },
+    { id: 27, name: "Bryan Wangsa" },
+    { id: 25, name: "Indra Oei" },
+    { id: 68, name: "Fachriza" },
+    { id: 7, name: "Jeremy Gerald" },
   ];
 
   const teams = [
@@ -49,20 +39,6 @@ const ChatListScreen = () => {
   return (
     <Box bgColor="white" flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Pressable
-          display="flex"
-          flexDir="row"
-          alignItems="center"
-          gap={2}
-          px={4}
-          pt={4}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon as={<MaterialIcons name="keyboard-backspace" />} size="lg" color="black" />
-
-          <Text fontSize={16}>Back</Text>
-        </Pressable>
-
         <Box p={4}>
           <Input
             variant="unstyled"
@@ -142,13 +118,13 @@ const ChatListScreen = () => {
             <Icon as={<MaterialIcons name="add" />} color="black" />
           </Box>
         </Flex>
-        {friends.length > 0 &&
-          friends.map((friend, idx) => {
+        {users.length > 0 &&
+          users.map((user, idx) => {
             return (
               <Pressable
                 key={idx}
                 onPress={() => {
-                  navigation.navigate("Chat Room", { name: friend.username, image: friend.image });
+                  navigation.navigate("Chat Room", { name: user.name, userId: user.id, image: "" });
                 }}
               >
                 <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
@@ -156,24 +132,17 @@ const ChatListScreen = () => {
                     {isLoading ? (
                       <Skeleton h={12} w={12} rounded="full" />
                     ) : (
-                      <Avatar size="md" source={{ uri: friend.image }}>
-                        SS
-                        {friend.username === "Bill Gates" && <Avatar.Badge bg="green.500" />}
-                      </Avatar>
+                      <AvatarPlaceholder name={user.name} size="md" />
                     )}
 
                     <Box>
-                      {isLoading ? (
-                        <Skeleton h={3} w={20} rounded="full" />
-                      ) : (
-                        <Text fontSize={16}>{friend.username}</Text>
-                      )}
+                      {isLoading ? <Skeleton h={3} w={20} rounded="full" /> : <Text fontSize={16}>{user.name}</Text>}
                       <Flex flexDir="row" alignItems="center" gap={1}>
                         {isLoading ? (
                           <Skeleton h={3} w={"48"} rounded="full" mt={1} />
                         ) : (
                           <Text opacity={0.5}>
-                            {friend.chat.length > 35 ? friend.chat.slice(0, 35) + "..." : friend.chat}
+                            {user?.chat?.length > 35 ? user?.chat.slice(0, 35) + "..." : user.chat}
                           </Text>
                         )}
                       </Flex>

@@ -10,8 +10,10 @@ import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSli
 import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";
 import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import ProjectDetailScreen from "../../screens/Band/project/[projectId]";
-import ProjectTaskScreen from "../../screens/Band/project/project-task";
+import AdHocScreen from "../../screens/Band/AdHoc";
+import MyTeamScreen from "../../screens/Band/MyTeam";
+import NotesScreen from "../../screens/Band/Notes";
+import CalendarScreen from "../../screens/Band/Calendar";
 import { useDisclosure } from "../../hooks/useDisclosure";
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +22,7 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const BandTab = ({ setSelectedModule }) => {
+const BandTab = () => {
   const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
   const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
   const {
@@ -66,8 +68,9 @@ const BandTab = ({ setSelectedModule }) => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: ["Project List", "Project Detail", "Project Task"].includes(route.name)
+          tabBarButton: ["Project List", "Task List", "My Team", "Notes", "Calendar"].includes(route.name)
             ? () => {
                 return null;
               }
@@ -162,17 +165,21 @@ const BandTab = ({ setSelectedModule }) => {
         />
         <Tab.Screen name="Project List" component={ProjectList} />
 
-        <Tab.Screen name="Project Detail" component={ProjectDetailScreen} />
+        <Tab.Screen name="Task List" component={AdHocScreen} />
 
-        <Tab.Screen name="Project Task" component={ProjectTaskScreen} />
+        <Tab.Screen name="My Team" component={MyTeamScreen} />
+
+        <Tab.Screen name="Notes" component={NotesScreen} />
+
+        <Tab.Screen name="Calendar" component={CalendarScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}
-      {menuScreenSliderIsOpen && <BandScreensSlider toggle={toggleMenuScreenSlider} />}
+      <BandScreensSlider isOpen={menuScreenSliderIsOpen} toggle={toggleMenuScreenSlider} />
 
-      {addSliderIsOpen && <AddNewBandSlider toggle={toggleAddSlider} />}
+      <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      {moduleSliderIsOpen && <ModuleSelectSlider toggle={toggleModuleSlider} setSelectedModule={setSelectedModule} />}
+      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />
     </>
   );
 };

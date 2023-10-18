@@ -2,6 +2,10 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
+// Google authentication and firebase
+// import { signOut } from "firebase/auth";
+// import { auth } from "../config/firebase";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Flex, Progress, Text } from "native-base";
@@ -65,12 +69,13 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
+
       await axiosInstance.post("/auth/logout");
 
       // Delete user data and token from SecureStore
       await SecureStore.deleteItemAsync("user_data");
       await SecureStore.deleteItemAsync("user_token");
-
+      // await signOut(auth);
       // Dispatch a logout action
       dispatch(logout());
     } catch (error) {
@@ -87,7 +92,7 @@ const LogoutScreen = () => {
       } else {
         clearInterval(interval);
       }
-    }, 50);
+    }, 10);
 
     // Clean up the interval when the component unmounts or the dependencies change
     return () => {
