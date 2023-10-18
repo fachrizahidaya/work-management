@@ -2,21 +2,7 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import {
-  Actionsheet,
-  Badge,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Icon,
-  Input,
-  Modal,
-  Pressable,
-  Text,
-  VStack,
-  useToast,
-} from "native-base";
+import { Badge, Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

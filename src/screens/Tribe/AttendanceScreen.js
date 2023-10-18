@@ -13,6 +13,9 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const AttendanceScreen = () => {
+  /**
+   * Date Handler
+   */
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
@@ -34,6 +37,13 @@ const AttendanceScreen = () => {
     setFilter(newMonth);
   };
 
+  /**
+   * Submit attendance report handler
+   * @param {*} attendance_id
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);

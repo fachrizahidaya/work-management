@@ -4,6 +4,9 @@ import { Linking, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const PhoneButton = ({ phone, size }) => {
+  /**
+   * Link to Caller from phone number handler
+   */
   const handleCallPress = () => {
     try {
       const phoneUrl = `tel:${phone}`;

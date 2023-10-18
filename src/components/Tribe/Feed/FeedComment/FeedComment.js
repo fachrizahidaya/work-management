@@ -32,6 +32,7 @@ const FeedComment = ({
     offset: currentOffset,
     limit: 30,
   };
+
   const {
     data: commentData,
     isLoading: commentIsLoading,
@@ -46,6 +47,13 @@ const FeedComment = ({
       console.log(err);
     }
   };
+
+  /**
+   * Submit comment handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
 
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {

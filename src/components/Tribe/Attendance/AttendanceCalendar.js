@@ -20,6 +20,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   const [items, setItems] = useState({});
   const [date, setDate] = useState({});
 
+  // initial date handler
   const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
 
   /**
@@ -31,6 +32,10 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off" };
   const sick = { key: "sick", color: "#000000", name: "Sick" };
 
+  /**
+   * Month change handler
+   * @param {*} newMonth
+   */
   const handleMonthChange = (newMonth) => {
     onMonthChange(newMonth);
   };
@@ -115,6 +120,10 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
       }
     }
   };
+
+  /**
+   * Create attendance report handler
+   */
 
   const formik = useFormik({
     enableReinitialize: true,

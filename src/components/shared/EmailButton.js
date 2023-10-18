@@ -4,6 +4,9 @@ import { Linking, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const EmailButton = ({ email, size }) => {
+  /**
+   * Link to email form from email address handler
+   */
   const handleEmailPress = () => {
     try {
       const emailUrl = `mailto:${email}`;

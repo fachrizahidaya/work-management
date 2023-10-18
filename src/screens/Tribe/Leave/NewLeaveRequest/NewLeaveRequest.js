@@ -30,12 +30,34 @@ const NewLeaveRequest = ({ route }) => {
 
   const { data: leaveType } = useFetch("/hr/leaves");
 
+  const personalLeaveData = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: availableLeaves?.available_leave,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+    },
+    {
+      id: 2,
+      name: "Available Day-off",
+      icon: "clipboard-pulse-outline",
+      qty: availableLeaves?.day_off_leave,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+    },
+  ];
+
   const {
     data: leaveHistory,
     refetch: refetchLeaveHistory,
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
+  /**
+   * Calculate available leave quota and day-off
+   */
   const filterAvailableLeaveHistory = () => {
     let sumAvailableLeave = 0;
     let sumDayOffLeave = 0;
@@ -56,6 +78,11 @@ const NewLeaveRequest = ({ route }) => {
       return { available_leave: sumAvailableLeave, day_off_leave: sumDayOffLeave };
     });
   };
+
+  /**
+   * Calculate leave quota handler
+   * @param {*} action
+   */
 
   const countLeave = async (action = null) => {
     try {
@@ -78,6 +105,13 @@ const NewLeaveRequest = ({ route }) => {
       console.log(err);
     }
   };
+
+  /**
+   * Submit leave request handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
 
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -105,6 +139,9 @@ const NewLeaveRequest = ({ route }) => {
     }
   };
 
+  /**
+   * Create leave request handler
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -127,6 +164,10 @@ const NewLeaveRequest = ({ route }) => {
     },
   });
 
+  /**
+   * Begin and End date Leave handler
+   * @param {*} value
+   */
   const onChangeStartDate = (value) => {
     formik.setFieldValue("begin_date", value);
   };
@@ -134,25 +175,6 @@ const NewLeaveRequest = ({ route }) => {
   const onChangeEndDate = (value) => {
     formik.setFieldValue("end_date", value);
   };
-
-  const personalLeaveData = [
-    {
-      id: 1,
-      name: "Available Leave",
-      icon: "clipboard-outline",
-      qty: availableLeaves?.available_leave,
-      backgroundColor: "#E8E9EB",
-      iconColor: "#377893",
-    },
-    {
-      id: 2,
-      name: "Available Day-off",
-      icon: "clipboard-pulse-outline",
-      qty: availableLeaves?.day_off_leave,
-      backgroundColor: "#FAF6E8",
-      iconColor: "#FFD240",
-    },
-  ];
 
   useEffect(() => {
     if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
