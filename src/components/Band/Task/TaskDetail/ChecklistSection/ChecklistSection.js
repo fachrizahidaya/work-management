@@ -138,34 +138,28 @@ const ChecklistSection = ({ taskId, disabled }) => {
           <Slider.Thumb borderWidth="0" bg="transparent" display="none"></Slider.Thumb>
         </Slider>
 
-        {checklists?.length > 0 ? (
-          <>
-            {!isLoading ? (
-              <ScrollView style={{ maxHeight: 200 }}>
-                <Box flex={1} minHeight={2}>
-                  <FlashList
-                    data={checklists?.data}
-                    keyExtractor={(item) => item?.id}
-                    estimatedItemSize={200}
-                    renderItem={({ item }) => (
-                      <CheckListItem
-                        id={item.id}
-                        title={item.title}
-                        status={item.status}
-                        isLoading={isLoading}
-                        onPress={checkAndUncheckChecklist}
-                        onPressDelete={openDeleteModal}
-                      />
-                    )}
+        {!isLoading ? (
+          <ScrollView style={{ maxHeight: 200 }}>
+            <Box flex={1} minHeight={2}>
+              <FlashList
+                data={checklists?.data}
+                keyExtractor={(item) => item?.id}
+                estimatedItemSize={200}
+                renderItem={({ item }) => (
+                  <CheckListItem
+                    id={item.id}
+                    title={item.title}
+                    status={item.status}
+                    isLoading={isLoading}
+                    onPress={checkAndUncheckChecklist}
+                    onPressDelete={openDeleteModal}
                   />
-                </Box>
-              </ScrollView>
-            ) : (
-              <Spinner size="sm" />
-            )}
-          </>
+                )}
+              />
+            </Box>
+          </ScrollView>
         ) : (
-          <Text fontWeight={400}>This task has no checklist</Text>
+          <Spinner size="sm" />
         )}
 
         {!disabled && (

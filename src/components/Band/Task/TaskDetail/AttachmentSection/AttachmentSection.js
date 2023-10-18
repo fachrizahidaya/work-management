@@ -151,31 +151,28 @@ const AttachmentSection = ({ taskId, disabled }) => {
     <Flex gap={2}>
       <FormControl>
         <FormControl.Label>ATTACHMENTS</FormControl.Label>
-        {attachments?.length > 0 ? (
-          <ScrollView style={{ maxHeight: 200 }}>
-            <Box flex={1} minHeight={2}>
-              <FlashList
-                data={attachments?.data}
-                keyExtractor={(item) => item?.id}
-                estimatedItemSize={200}
-                renderItem={({ item }) => (
-                  <AttachmentList
-                    id={item?.id}
-                    title={item?.file_name}
-                    size={item?.file_size}
-                    time={item?.uploaded_at}
-                    type={item?.mime_type}
-                    from={item?.attachment_from}
-                    deleteFileHandler={deleteFileHandler}
-                    downloadFileHandler={downloadAttachment}
-                  />
-                )}
-              />
-            </Box>
-          </ScrollView>
-        ) : (
-          <Text fontWeight={400}>This task has no attachment</Text>
-        )}
+
+        <ScrollView style={{ maxHeight: 200 }}>
+          <Box flex={1} minHeight={2}>
+            <FlashList
+              data={attachments?.data}
+              keyExtractor={(item) => item?.id}
+              estimatedItemSize={200}
+              renderItem={({ item }) => (
+                <AttachmentList
+                  id={item?.id}
+                  title={item?.file_name}
+                  size={item?.file_size}
+                  time={item?.uploaded_at}
+                  type={item?.mime_type}
+                  from={item?.attachment_from}
+                  deleteFileHandler={deleteFileHandler}
+                  downloadFileHandler={downloadAttachment}
+                />
+              )}
+            />
+          </Box>
+        </ScrollView>
       </FormControl>
 
       {!disabled && (
