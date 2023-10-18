@@ -12,9 +12,6 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const AttendanceScreen = () => {
-  /**
-   * Date Handler
-   */
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
