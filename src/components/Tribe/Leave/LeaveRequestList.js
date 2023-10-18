@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 import dayjs from "dayjs";
 
@@ -9,14 +9,6 @@ import ConfirmationModal from "../../shared/ConfirmationModal";
 import CustomAccordion from "../../shared/CustomAccordion";
 
 const LeaveRequestList = ({
-  // id,
-  // leaveName,
-  // days,
-  // startDate,
-  // endDate,
-  // status,
-  // supervisorName,
-  // reason,
   data,
   pendingLeaveRequest,
   approvedLeaveRequests,

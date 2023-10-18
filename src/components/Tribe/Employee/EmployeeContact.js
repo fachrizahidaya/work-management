@@ -4,6 +4,9 @@ import EmailButton from "../../shared/EmailButton";
 import PersonalNestButton from "../../shared/PersonalNestButton";
 
 const EmployeeContact = ({ employee }) => {
+  /**
+   * Contacts handler
+   */
   const contacts = [
     {
       component: <WhatsappButton phone={employee?.data?.phone_number} size={6} />,

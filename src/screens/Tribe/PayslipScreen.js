@@ -23,6 +23,12 @@ const PayslipScreen = () => {
     isLoading: payslipIsLoading,
   } = useFetch("/hr/payslip");
 
+  /**
+   * Document Password update handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
   const payslipPasswordUpdateHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/payslip/change-password`, data);
