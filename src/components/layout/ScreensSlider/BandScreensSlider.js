@@ -11,31 +11,8 @@ import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 const BandScreensSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
-
   const { mergedMenu } = useGetSubMenu(menuSelector.user_menu);
 
-  const items = [
-    {
-      icons: "sticker-check-outline",
-      screen: "Dashboard",
-    },
-    {
-      icons: "lightning-bolt-outline",
-      screen: "Project List",
-    },
-    {
-      icons: "format-list-bulleted",
-      screen: "Task List",
-    },
-    {
-      icons: "account-group-outline",
-      screen: "My Team",
-    },
-    {
-      icons: "note-outline",
-      screen: "Notes",
-    },
-  ];
   return (
     <Actionsheet isOpen={isOpen} onClose={toggle}>
       <Actionsheet.Content>
