@@ -194,7 +194,7 @@ const LoginScreen = () => {
             <Text fontSize={20}>Login</Text>
           </Flex>
 
-          <Flex position="relative">
+          {/* <Flex position="relative">
             <Image
               resizeMode="contain"
               source={require("../assets/icons/google.png")}
@@ -228,9 +228,9 @@ const LoginScreen = () => {
                 {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
             </Button>
-          </Flex>
+          </Flex> */}
         </Flex>
-
+        {/* 
         <Flex position="relative" w="100%" alignItems="center" justifyContent="center">
           <Divider />
           <Box style={{ paddingHorizontal: 16 }} position="absolute" top={-10} bg="white">
@@ -238,19 +238,24 @@ const LoginScreen = () => {
               OR LOGIN WITH EMAIL
             </Text>
           </Box>
-        </Flex>
+        </Flex> */}
 
         <Flex w="100%" style={{ gap: 20 }}>
           <FormControl width="100%" isInvalid={formik.errors.email}>
             <FormControl.Label>Email</FormControl.Label>
-            <Input size="lg" onChangeText={(value) => formik.setFieldValue("email", value)} />
+            <Input
+              size="md"
+              placeholder="Insert your email..."
+              onChangeText={(value) => formik.setFieldValue("email", value)}
+            />
             <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl width="100%" isInvalid={formik.errors.password}>
             <FormControl.Label>Password</FormControl.Label>
             <Input
-              size="lg"
+              size="md"
+              placeholder="Insert your password..."
               type={!hidePassword ? "text" : "password"}
               onChangeText={(value) => formik.setFieldValue("password", value)}
               InputRightElement={
@@ -267,7 +272,7 @@ const LoginScreen = () => {
             <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
           </FormControl>
 
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+          {/* <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <Flex>
               <Checkbox color="primary.600">
                 <Text fontWeight={400}>Remember Me</Text>
@@ -277,7 +282,7 @@ const LoginScreen = () => {
             <Text color="primary.600" fontWeight={400}>
               Forgot Password?
             </Text>
-          </Flex>
+          </Flex> */}
         </Flex>
 
         <Flex w="100%">
@@ -292,10 +297,10 @@ const LoginScreen = () => {
           </Button>
         </Flex>
 
-        <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
+        {/* <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
           <Text>Don't have an account?</Text>
           <Text color="primary.600">Sign Up</Text>
-        </Flex>
+        </Flex> */}
       </Flex>
     </KeyboardAvoidingView>
   );
