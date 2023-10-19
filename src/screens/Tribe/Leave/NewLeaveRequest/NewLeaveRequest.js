@@ -14,6 +14,8 @@ import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -24,6 +26,8 @@ const NewLeaveRequest = ({ route }) => {
   const { width, height } = Dimensions.get("window");
 
   const { onClose, availableLeavePersonal, refetchPersonalLeave, approver, approverImage, employeeId } = route.params;
+
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
   const navigation = useNavigation();
@@ -213,7 +217,24 @@ const NewLeaveRequest = ({ route }) => {
   return (
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
-        <PageHeader title="New Leave Request" onPress={() => navigation.navigate("Feed")} />
+        <PageHeader
+          title="New Leave Request"
+          onPress={
+            formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
+              ? toggleReturnModal
+              : () => navigation.navigate("Feed")
+          }
+        />
+
+        <ReturnConfirmationModal
+          isOpen={returnModalIsOpen}
+          toggle={toggleReturnModal}
+          onPress={() => {
+            toggleReturnModal();
+            navigation.navigate("Feed");
+          }}
+          description="If you return, It will be discarded"
+        />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
           {personalLeaveData.map((item) => {

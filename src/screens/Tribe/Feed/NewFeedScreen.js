@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
 import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Text, useToast, Button } from "native-base";
+import { Box, Flex, Icon, Text, useToast, Button, Modal, VStack, Image } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -17,13 +17,15 @@ import { SuccessToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import NewFeedForm from "../../../components/Tribe/Feed/NewFeed/NewFeedForm";
+import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
 
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
   const navigation = useNavigation();
@@ -55,7 +57,7 @@ const NewFeedScreen = ({ route }) => {
         resetForm();
       } else {
         if (values.end_date) {
-          postSubmitHandler(formData);
+          postSubmitHandler(formData, setSubmitting, setStatus);
           resetForm();
         } else {
           throw new Error("For Announcement type, end date is required");
@@ -164,15 +166,28 @@ const NewFeedScreen = ({ route }) => {
 
   return (
     <Box flex={1} bgColor="#FFFFFF" p={5}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-        <PageHeader
-          title="New Post"
-          onPress={() => {
-            navigation.navigate("Feed");
-            setImage(null);
-          }}
-        />
-      </Flex>
+      <PageHeader
+        title="New Post"
+        onPress={
+          formik.values.content
+            ? toggleReturnModal
+            : () => {
+                navigation.navigate("Feed");
+                setImage(null);
+              }
+        }
+      />
+
+      <ReturnConfirmationModal
+        isOpen={returnModalIsOpen}
+        toggle={toggleReturnModal}
+        onPress={() => {
+          toggleReturnModal();
+          navigation.navigate("Feed");
+          setImage(null);
+        }}
+        description="If you return, It will be discarded"
+      />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
         <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" />
