@@ -1,9 +1,10 @@
+import { StyleSheet } from "react-native";
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Text, TextArea } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
-import FormButton from "../../../shared/FormButton";
 
 const NewFeedForm = ({
   formik,

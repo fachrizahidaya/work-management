@@ -110,7 +110,7 @@ const TribeTab = ({ setSelectedModule }) => {
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#186688" />
               </Box>
             ),
@@ -131,7 +131,7 @@ const TribeTab = ({ setSelectedModule }) => {
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="plus" />} size={size} color="#186688" />
               </Box>
             ),
@@ -152,7 +152,7 @@ const TribeTab = ({ setSelectedModule }) => {
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2} position="fixed">
+              <Box bg="#FBFBFB" borderRadius="full" padding={2} position="fixed">
                 <Icon as={<MaterialCommunityIcons name="cog-outline" />} size={size} color="#186688" />
               </Box>
             ),

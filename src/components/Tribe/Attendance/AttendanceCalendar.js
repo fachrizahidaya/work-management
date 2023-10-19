@@ -136,9 +136,8 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
       att_reason: date?.attendanceReason || "",
     },
     // validationSchema: yup.object().shape({}),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      onSubmit(date?.id, values, setSubmitting, setStatus);
+    onSubmit: (values, { resetForm }) => {
+      onSubmit(date?.id, values);
       resetForm();
     },
   });

@@ -8,7 +8,6 @@ import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
 import ChatRoom from "../screens/Chat/ChatRoom";
 import ChatListScreen from "../screens/Chat/ChatListScreen";
-import SettingScreen from "../screens/Setting/SettingScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
 // Band Screens
@@ -22,7 +21,6 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
-import ReimbursementScreen from "../screens/Tribe/Reimbursement/ReimbursementScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
 // Settings Screens
@@ -64,8 +62,6 @@ const HomeStack = () => {
 
       <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
 
-      <Stack.Screen name="Setting" component={SettingScreen} options={{ header: () => <Header /> }} />
-
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
@@ -81,8 +77,6 @@ const HomeStack = () => {
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
-
-      <Stack.Screen name="Reimbursement" component={ReimbursementScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
+import { Button, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -126,11 +126,34 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
-                  <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text>
+                  {/* <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text> */}
+                  <Select
+                    onValueChange={(value) => formik.setFieldValue(date?.lateType ? "late_type" : "early_type", value)}
+                    borderRadius={15}
+                    borderWidth={1}
+                    variant="unstyled"
+                    key="late_type"
+                    placeholder="Select Late Type"
+                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                    defaultValue={date?.lateType ? date?.lateType : date?.earlyType}
+                  >
+                    {lateType.map((item) => {
+                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                    })}
+                  </Select>
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Reason</FormControl.Label>
-                  <Text>{date?.lateReason ? date?.lateReason : date?.earlyReason}</Text>
+                  {/* <Text>{date?.lateReason ? date?.lateReason : date?.earlyReason}</Text> */}
+                  <Input
+                    variant="outline"
+                    placeholder="Enter your reason"
+                    value={formik.values.late_reason}
+                    onChangeText={(value) =>
+                      formik.setFieldValue(date?.lateReason ? "late_reason" : "early_reason", value)
+                    }
+                    defaultValue={date?.lateReason ? date?.lateReason : date?.earlyReason}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Status</FormControl.Label>
@@ -214,14 +237,16 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
         <Modal.Footer>
           {(date?.lateType && date?.lateReason && !date?.earlyType) ||
           (date?.earlyType && date?.earlyReason && !date?.lateType) ||
-          (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ? (
-            <FormButton color="red.800" size="sm" variant="outline" onPress={toggleReport}>
+          (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
+          date?.attendanceType === "Permit" ||
+          date?.attendanceType === "Leave" ? (
+            <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
               <Text color="#FFFFFF">Close</Text>
-            </FormButton>
+            </Button>
           ) : (
             <>
-              <FormButton
-                color="red.800"
+              <Button
+                backgroundColor="red.800"
                 size="sm"
                 variant="outline"
                 onPress={() => {
@@ -229,10 +254,10 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                 }}
               >
                 <Text color="#FFFFFF">Cancel</Text>
-              </FormButton>
-              <FormButton size="sm" variant="solid" isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              </Button>
+              <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
                 <Text color="#FFFFFF">Save</Text>
-              </FormButton>
+              </Button>
             </>
           )}
         </Modal.Footer>
