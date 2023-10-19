@@ -13,7 +13,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
+        "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
       }
     },
     "internal-testing": {
@@ -24,13 +24,22 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://api-dev.kolabora-app.com"
+        "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
       },
       "distribution": "internal"
     },
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "developer@kolabora.com",
+        "ascAppId": "",
+        "appleTeamId": "RP9L4Q9H5J"
+      },
+      "env": {
+        "EXPO_PUBLIC_API": "https://kolabora.kolabora-app.com/api"
+      }
+    }
   }
 }

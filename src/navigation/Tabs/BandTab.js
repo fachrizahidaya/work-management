@@ -70,7 +70,7 @@ const BandTab = () => {
           tabBarStyle: { height: 80 },
           tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: ["Project List", "Task List", "My Team", "Notes", "Calendar"].includes(route.name)
+          tabBarButton: ["Projects", "Tasks", "My Team", "Notes", "Calendar"].includes(route.name)
             ? () => {
                 return null;
               }
@@ -163,9 +163,9 @@ const BandTab = () => {
             ),
           }}
         />
-        <Tab.Screen name="Project List" component={ProjectList} />
+        <Tab.Screen name="Projects" component={ProjectList} />
 
-        <Tab.Screen name="Task List" component={AdHocScreen} />
+        <Tab.Screen name="Tasks" component={AdHocScreen} />
 
         <Tab.Screen name="My Team" component={MyTeamScreen} />
 

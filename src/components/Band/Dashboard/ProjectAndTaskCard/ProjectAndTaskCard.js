@@ -11,7 +11,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
   return (
     <Flex height={160} flexDir="row" gap={4} flex={1}>
       {!projectIsLoading ? (
-        <TouchableOpacity onPress={() => navigation.navigate("Project List")} style={[card.card, { flex: 1 }]}>
+        <TouchableOpacity onPress={() => navigation.navigate("Projects")} style={[card.card, { flex: 1 }]}>
           <Flex flex={1} alignItems="center" justifyContent="center" gap={1}>
             <Image
               source={require("../../../../assets/icons/project_chart.png")}
@@ -30,7 +30,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
       )}
 
       {!taskIsLoading ? (
-        <TouchableOpacity onPress={() => navigation.navigate("Task List")} style={[card.card, { flex: 1 }]}>
+        <TouchableOpacity onPress={() => navigation.navigate("Tasks")} style={[card.card, { flex: 1 }]}>
           <Flex flex={1} alignItems="center" justifyContent="center" gap={1}>
             <Image
               source={require("../../../../assets/icons/task_chart.png")}

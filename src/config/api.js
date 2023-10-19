@@ -2,7 +2,8 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API,
+  baseURL: "https://api-dev.ksshub.com",
+  // process.env.EXPO_PUBLIC_API,
 });
 
 axiosInstance.interceptors.request.use(
