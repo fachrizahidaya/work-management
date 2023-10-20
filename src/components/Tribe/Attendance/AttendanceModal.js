@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FormButton from "../../shared/FormButton";
 
 const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
+  console.log(date);
   /**
    * Late type Handler
    */
@@ -30,6 +31,26 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
       <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
+
+        {/* If employee ontime Clock in and Clock out */}
+        {!date?.lateType && !date?.earlyType && (
+          <Modal.Body>
+            <VStack w="95%" space={3}>
+              <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Clock-in Time</FormControl.Label>
+                  <Text>{date?.timeIn}</Text>
+                </FormControl>
+                {!date?.timeOut ? null : (
+                  <FormControl>
+                    <FormControl.Label>Clock-out Time</FormControl.Label>
+                    <Text>{date?.timeOut}</Text>
+                  </FormControl>
+                )}
+              </VStack>
+            </VStack>
+          </Modal.Body>
+        )}
 
         {/* If employee Clock in late, require Late Report */}
         {date?.late && date?.lateType && !date?.lateReason && (
@@ -148,7 +169,7 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                   <Input
                     variant="outline"
                     placeholder="Enter your reason"
-                    value={formik.values.late_reason}
+                    value={formik.values.late_reason ? formik.values_late_reason : formik.values.early_reason}
                     onChangeText={(value) =>
                       formik.setFieldValue(date?.lateReason ? "late_reason" : "early_reason", value)
                     }
@@ -171,11 +192,32 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>Late Type</FormControl.Label>
-                  <Text>{date?.lateType}</Text>
+                  {/* <Text>{date?.lateType}</Text> */}
+                  <Select
+                    onValueChange={(value) => formik.setFieldValue("late_type", value)}
+                    borderRadius={15}
+                    borderWidth={1}
+                    variant="unstyled"
+                    key="late_type"
+                    placeholder="Select Late Type"
+                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                    defaultValue={date?.lateType}
+                  >
+                    {lateType.map((item) => {
+                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                    })}
+                  </Select>
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Reason</FormControl.Label>
-                  <Text>{date?.lateReason}</Text>
+                  {/* <Text>{date?.lateReason}</Text> */}
+                  <Input
+                    variant="outline"
+                    placeholder="Enter your reason"
+                    value={formik.values.late_reason}
+                    onChangeText={(value) => formik.setFieldValue("late_reason", value)}
+                    defaultValue={date?.lateReason}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Status</FormControl.Label>
@@ -183,11 +225,32 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Early Type</FormControl.Label>
-                  <Text>{date?.earlyType}</Text>
+                  {/* <Text>{date?.earlyType}</Text> */}
+                  <Select
+                    onValueChange={(value) => formik.setFieldValue("early_type", value)}
+                    borderRadius={15}
+                    borderWidth={1}
+                    variant="unstyled"
+                    key="early_type"
+                    placeholder="Select Late Type"
+                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                    defaultValue={date?.earlyType}
+                  >
+                    {lateType.map((item) => {
+                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                    })}
+                  </Select>
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Reason</FormControl.Label>
-                  <Text>{date?.earlyReason}</Text>
+                  {/* <Text>{date?.earlyReason}</Text> */}
+                  <Input
+                    variant="outline"
+                    placeholder="Enter your reason"
+                    value={formik.values.early_reason}
+                    onChangeText={(value) => formik.setFieldValue("early_reason", value)}
+                    defaultValue={date?.earlyReason}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Status</FormControl.Label>
@@ -198,8 +261,7 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
           </Modal.Body>
         )}
 
-        {/* If attendance type is Permit or Leave */}
-
+        {/* If attendance type is Leave */}
         {date?.attendanceType === "Leave" && (
           <Modal.Body>
             <VStack w="95%" space={3}>
@@ -217,6 +279,7 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
           </Modal.Body>
         )}
 
+        {/* If attendance type is Permit */}
         {date?.attendanceType === "Permit" && (
           <Modal.Body>
             <VStack w="95%" space={3}>
@@ -235,31 +298,35 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
         )}
 
         <Modal.Footer>
-          {(date?.lateType && date?.lateReason && !date?.earlyType) ||
-          (date?.earlyType && date?.earlyReason && !date?.lateType) ||
-          (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
-          date?.attendanceType === "Permit" ||
-          date?.attendanceType === "Leave" ? (
-            <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
-              <Text color="#FFFFFF">Close</Text>
-            </Button>
-          ) : (
-            <>
-              <Button
-                backgroundColor="red.800"
-                size="sm"
-                variant="outline"
-                onPress={() => {
-                  toggleReport(formik.resetForm);
-                }}
-              >
-                <Text color="#FFFFFF">Cancel</Text>
+          {
+            // (date?.lateType && date?.lateReason && !date?.earlyType) ||
+            // (date?.earlyType && date?.earlyReason && !date?.lateType) ||
+            // (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
+            date?.attendanceType === "Permit" ||
+            date?.attendanceType === "Leave" ||
+            !date?.lateType ||
+            !date?.earlyType ? (
+              <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
+                <Text color="#FFFFFF">Close</Text>
               </Button>
-              <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
-                <Text color="#FFFFFF">Save</Text>
-              </Button>
-            </>
-          )}
+            ) : (
+              <>
+                <Button
+                  backgroundColor="red.800"
+                  size="sm"
+                  variant="outline"
+                  onPress={() => {
+                    toggleReport(formik.resetForm);
+                  }}
+                >
+                  <Text color="#FFFFFF">Cancel</Text>
+                </Button>
+                <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
+                  <Text color="#FFFFFF">Save</Text>
+                </Button>
+              </>
+            )
+          }
         </Modal.Footer>
       </Modal.Content>
     </Modal>

@@ -40,12 +40,9 @@ const AttendanceScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
+  const attendanceReportSubmitHandler = async (attendance_id, data) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      refetchAttendanceData();
-      setStatus("success");
-      setSubmitting(false);
       toggleReport();
       toast.show({
         render: () => {
@@ -53,10 +50,9 @@ const AttendanceScreen = () => {
         },
         placement: "top",
       });
+      refetchAttendanceData();
     } catch (err) {
       console.log(err);
-      setStatus("error");
-      setSubmitting(false);
     }
   };
 

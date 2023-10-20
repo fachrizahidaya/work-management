@@ -6,13 +6,23 @@ import PageHeader from "../../../components/shared/PageHeader";
 import ReimbursementList from "../../../components/Tribe/Reimbursement/ReimbursementList";
 
 const ReimbursementScreen = () => {
+  const reimbursements = [
+    {
+      title: "Grab",
+      description: "Visit client di Jakarta Pusat",
+      total: 250000,
+      date: "2023-10-17",
+      status: "Pending",
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <PageHeader title="My Reimbursement" backButton={false} />
       </Flex>
       <ScrollView>
-        <ReimbursementList />
+        <ReimbursementList data={reimbursements} />
       </ScrollView>
     </SafeAreaView>
   );
