@@ -186,7 +186,7 @@ const NewLeaveRequest = ({ route }) => {
       setDateChanges(false);
     }
     if (!formik.isSubmitting && formik.status === "success") {
-      navigation.navigate("Feed");
+      navigation.navigate("Dashboard");
     }
   }, [
     formik.values.leave_id,
@@ -222,7 +222,7 @@ const NewLeaveRequest = ({ route }) => {
           onPress={
             formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
               ? toggleReturnModal
-              : () => navigation.navigate("Feed")
+              : () => navigation.navigate("Dashboard")
           }
         />
 
@@ -231,7 +231,7 @@ const NewLeaveRequest = ({ route }) => {
           toggle={toggleReturnModal}
           onPress={() => {
             toggleReturnModal();
-            navigation.navigate("Feed");
+            navigation.navigate("Dashboard");
           }}
           description="If you return, It will be discarded"
         />

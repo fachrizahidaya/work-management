@@ -7,7 +7,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FormButton from "../../shared/FormButton";
 
 const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
-  console.log(date);
   /**
    * Late type Handler
    */
@@ -33,24 +32,26 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
         <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
 
         {/* If employee ontime Clock in and Clock out */}
-        {!date?.lateType && !date?.earlyType && (
-          <Modal.Body>
-            <VStack w="95%" space={3}>
-              <VStack w="100%" space={2}>
-                <FormControl>
-                  <FormControl.Label>Clock-in Time</FormControl.Label>
-                  <Text>{date?.timeIn}</Text>
-                </FormControl>
-                {!date?.timeOut ? null : (
+        {!date?.lateType &&
+          !date?.earlyType &&
+          (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave") && (
+            <Modal.Body>
+              <VStack w="95%" space={3}>
+                <VStack w="100%" space={2}>
                   <FormControl>
-                    <FormControl.Label>Clock-out Time</FormControl.Label>
-                    <Text>{date?.timeOut}</Text>
+                    <FormControl.Label>Clock-in Time</FormControl.Label>
+                    <Text>{date?.timeIn}</Text>
                   </FormControl>
-                )}
+                  {!date?.timeOut ? null : (
+                    <FormControl>
+                      <FormControl.Label>Clock-out Time</FormControl.Label>
+                      <Text>{date?.timeOut}</Text>
+                    </FormControl>
+                  )}
+                </VStack>
               </VStack>
-            </VStack>
-          </Modal.Body>
-        )}
+            </Modal.Body>
+          )}
 
         {/* If employee Clock in late, require Late Report */}
         {date?.late && date?.lateType && !date?.lateReason && (
@@ -299,13 +300,12 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
 
         <Modal.Footer>
           {
-            // (date?.lateType && date?.lateReason && !date?.earlyType) ||
+            // (date?.lateType && date?.lateReason && !date?.earlyType && !date?.earlyReason) ||
             // (date?.earlyType && date?.earlyReason && !date?.lateType) ||
             // (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
             date?.attendanceType === "Permit" ||
             date?.attendanceType === "Leave" ||
-            !date?.lateType ||
-            !date?.earlyType ? (
+            (!date?.lateType && !date?.earlyType) ? (
               <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
                 <Text color="#FFFFFF">Close</Text>
               </Button>

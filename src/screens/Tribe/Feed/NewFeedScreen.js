@@ -52,6 +52,7 @@ const NewFeedScreen = ({ route }) => {
       }
 
       formData.append("file", image);
+      console.log(formData);
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
         resetForm();
@@ -77,7 +78,7 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      navigation.navigate("Feed");
+      navigation.navigate("Dashboard");
       setSubmitting(false);
       setStatus("success");
       refetch();
@@ -172,7 +173,7 @@ const NewFeedScreen = ({ route }) => {
           formik.values.content
             ? toggleReturnModal
             : () => {
-                navigation.navigate("Feed");
+                navigation.navigate("Dashboard");
                 setImage(null);
               }
         }
@@ -183,7 +184,7 @@ const NewFeedScreen = ({ route }) => {
         toggle={toggleReturnModal}
         onPress={() => {
           toggleReturnModal();
-          navigation.navigate("Feed");
+          navigation.navigate("Dashboard");
           setImage(null);
         }}
         description="If you return, It will be discarded"

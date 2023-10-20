@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Text, useToast } from "native-base";
+import { Flex, useToast } from "native-base";
 
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
@@ -29,9 +29,9 @@ const AttendanceScreen = () => {
     refetch: refetchAttendanceData,
   } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
-  const handleMonthChange = (newMonth) => {
+  const handleMonthChange = useCallback((newMonth) => {
     setFilter(newMonth);
-  };
+  }, []);
 
   /**
    * Submit attendance report handler
@@ -40,7 +40,7 @@ const AttendanceScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const attendanceReportSubmitHandler = async (attendance_id, data) => {
+  const attendanceReportSubmitHandler = useCallback(async (attendance_id, data) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
       toggleReport();
@@ -54,7 +54,7 @@ const AttendanceScreen = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
 
   return (
     <>

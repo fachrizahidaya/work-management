@@ -127,7 +127,11 @@ const SettingScreen = () => {
             </Pressable>
           </Box>
 
-          <Flex bgColor="#FAFAFA" borderRadius={9}>
+          <Flex
+            bgColor="#FAFAFA"
+            borderRadius={9}
+            opacity={0.5} // feature disabled
+          >
             {first.map((item) => {
               return (
                 <Pressable
@@ -161,6 +165,7 @@ const SettingScreen = () => {
             borderRadius={9}
             h={42}
             p="8px 12px"
+            opacity={0.5} // feature disabled
           >
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#8B63E7" p={1} borderRadius={4}>
@@ -186,6 +191,7 @@ const SettingScreen = () => {
             borderRadius={9}
             h={42}
             p="8px 12px"
+            opacity={0.5} // feature disabled
           >
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#B5B5B5" p={1} borderRadius={4}>
@@ -197,7 +203,11 @@ const SettingScreen = () => {
             <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
           </Pressable>
 
-          <Flex bgColor="#FAFAFA" borderRadius={9}>
+          <Flex
+            bgColor="#FAFAFA"
+            borderRadius={9}
+            opacity={0.5} // feature disabled
+          >
             {second.map((item) => {
               return (
                 <Pressable

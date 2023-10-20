@@ -9,10 +9,10 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Options from "../../components/Setting/Account/Options";
-import axiosInstance from "../../config/api";
-import { update_profile } from "../../redux/reducer/auth";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Options from "../../../components/Setting/Account/Options";
+import axiosInstance from "../../../config/api";
+import { update_profile } from "../../../redux/reducer/auth";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
@@ -72,6 +72,7 @@ const AccountScreen = ({ route }) => {
             borderRadius={9}
             h={42}
             p="8px 12px"
+            opacity={0.5}
           >
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Flex flexDirection="row" gap={1}>
