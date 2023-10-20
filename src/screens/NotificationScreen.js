@@ -9,6 +9,7 @@ import NotificationItem from "../components/Notification/NotificationItem/Notifi
 import PageHeader from "../components/shared/PageHeader";
 import NotificationTimeStamp from "../components/Notification/NotificationTimeStamp/NotificationTimeStamp";
 import axiosInstance from "../config/api";
+import EmptyPlaceholder from "../components/shared/EmptyPlaceholder";
 
 const NotificationScreen = ({ route }) => {
   const { module, refetch } = route.params;
@@ -20,7 +21,11 @@ const NotificationScreen = ({ route }) => {
     limit: 20,
   };
 
-  const { data: notifications, isFetching: notifIsFetching } = useFetch(
+  const {
+    data: notifications,
+    isLoading: notifIsLoading,
+    isFetching: notifIsFetching,
+  } = useFetch(
     module === "BAND" ? "/pm/notifications" : "/hr/notifications",
     [currentPage],
     notificationFetchParameters
@@ -56,43 +61,47 @@ const NotificationScreen = ({ route }) => {
       <Flex marginHorizontal={16} marginVertical={13} flex={1} style={{ gap: 24 }}>
         <PageHeader backButton={false} title="Notifications" />
 
-        {cumulativeNotifs.length > 0 ? (
-          <FlashList
-            data={cumulativeNotifs}
-            keyExtractor={(item) => item.id}
-            onEndReachedThreshold={0.1}
-            onEndReached={fetchMoreData}
-            estimatedItemSize={50}
-            ListFooterComponent={notifIsFetching && <Spinner color="primary.600" size="sm" />}
-            renderItem={({ item, index }) => (
-              <>
-                {cumulativeNotifs[index - 1] ? (
-                  item?.created_at.split(" ")[0] !== cumulativeNotifs[index - 1]?.created_at.split(" ")[0] ? (
-                    <>
-                      <NotificationTimeStamp
-                        key={`${item.id}_${index}_timestamp-group`}
-                        timestamp={item?.created_at.split(" ")[0]}
-                      />
-                    </>
+        {notifications?.data?.length > 0 ? (
+          !notifIsLoading ? (
+            <FlashList
+              data={cumulativeNotifs}
+              keyExtractor={(item) => item.id}
+              onEndReachedThreshold={0.1}
+              onEndReached={fetchMoreData}
+              estimatedItemSize={50}
+              ListFooterComponent={notifIsFetching && <Spinner color="primary.600" size="sm" />}
+              renderItem={({ item, index }) => (
+                <>
+                  {cumulativeNotifs[index - 1] ? (
+                    item?.created_at.split(" ")[0] !== cumulativeNotifs[index - 1]?.created_at.split(" ")[0] ? (
+                      <>
+                        <NotificationTimeStamp
+                          key={`${item.id}_${index}_timestamp-group`}
+                          timestamp={item?.created_at.split(" ")[0]}
+                        />
+                      </>
+                    ) : (
+                      ""
+                    )
                   ) : (
-                    ""
-                  )
-                ) : (
-                  <NotificationTimeStamp timestamp={item?.created_at.split(" ")[0]} />
-                )}
+                    <NotificationTimeStamp timestamp={item?.created_at.split(" ")[0]} />
+                  )}
 
-                <NotificationItem
-                  name={item.from_user_name}
-                  modul={item.modul}
-                  content={item.description}
-                  itemId={item.reference_id}
-                  time={item.created_at}
-                />
-              </>
-            )}
-          />
+                  <NotificationItem
+                    name={item.from_user_name}
+                    modul={item.modul}
+                    content={item.description}
+                    itemId={item.reference_id}
+                    time={item.created_at}
+                  />
+                </>
+              )}
+            />
+          ) : (
+            <Skeleton h={41} />
+          )
         ) : (
-          <Skeleton h={41} />
+          <EmptyPlaceholder height={200} width={240} text="No notification" />
         )}
       </Flex>
     </SafeAreaView>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Flex, Icon, Input, Pressable, Skeleton, Text } from "native-base";
+import { Avatar, Box, Center, Flex, Icon, Image, Input, Pressable, Skeleton, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -36,7 +36,9 @@ const ChatListScreen = () => {
       chat: "Yoo.. have you tried the new Starbucks coffee?",
     },
   ];
-  return (
+
+  const isReady = false;
+  return isReady ? (
     <Box bgColor="white" flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box p={4}>
@@ -154,6 +156,11 @@ const ChatListScreen = () => {
           })}
       </ScrollView>
     </Box>
+  ) : (
+    <Center flex={1} bgColor="white">
+      <Image source={require("../../assets/vectors/chat.jpg")} alt="chat-app" h={180} w={250} resizeMode="contain" />
+      <Text fontSize={22}>This feature is coming soon!</Text>
+    </Center>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Center, Flex, Icon, Pressable, Text } from "native-base";
+import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -113,7 +113,7 @@ const AdHocScreen = () => {
             <Center>
               <Image
                 source={require("../../assets/vectors/desktop.jpg")}
-                h={250}
+                h={180}
                 w={250}
                 alt="desktop-only"
                 resizeMode="contain"
