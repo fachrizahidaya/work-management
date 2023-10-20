@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Image, Skeleton, Text, VStack, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -12,6 +16,10 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const PayslipScreen = () => {
+  const [hideNewPassword, setHideNewPassword] = useState(true);
+  const [hideOldPassword, setHideOldPassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+  const [passwordError, setPasswordError] = useState("");
   const { isOpen: formIsOpen, toggle: toggleForm } = useDisclosure(false);
 
   const toast = useToast();
@@ -23,22 +31,54 @@ const PayslipScreen = () => {
     isLoading: payslipIsLoading,
   } = useFetch("/hr/payslip");
 
+  /**
+   * Change password handler
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      old_password: "",
+      new_password: "",
+      confirm_password: "",
+    },
+    validationSchema: yup.object().shape({
+      old_password: yup.string().required("Old Password is required"),
+      new_password: yup.string().required("New Password is required"),
+      confirm_password: yup
+        .string()
+        .oneOf([yup.ref("new_password"), null], "Password doesn't match")
+        .required("Confirm Password is required"),
+    }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      payslipPasswordUpdateHandler(values, setSubmitting, setStatus);
+    },
+  });
+
+  /**
+   * Document Password update handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
   const payslipPasswordUpdateHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/payslip/change-password`, data);
       setSubmitting(false);
       setStatus("success");
-      refetchPayslip();
+      formik.resetForm();
       toast.show({
         render: () => {
           return <SuccessToast message={"Password Updated"} />;
         },
         placement: "top",
       });
+      refetchPayslip();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
+      setPasswordError(err.response.data.message);
     }
   };
 
@@ -51,7 +91,20 @@ const PayslipScreen = () => {
             Change PIN
           </Text>
         </Button>
-        <PayslipPasswordEdit formIsOpen={formIsOpen} toggleForm={toggleForm} onSubmit={payslipPasswordUpdateHandler} />
+        <PayslipPasswordEdit
+          formIsOpen={formIsOpen}
+          toggleForm={toggleForm}
+          onSubmit={payslipPasswordUpdateHandler}
+          passwordError={passwordError}
+          setPasswordError={setPasswordError}
+          formik={formik}
+          hideNewPassword={hideNewPassword}
+          setHideNewPassword={setHideNewPassword}
+          hideOldPassword={hideOldPassword}
+          setHideOldPassword={setHideOldPassword}
+          hideConfirmPassword={hideConfirmPassword}
+          setHideConfirmPassword={setHideConfirmPassword}
+        />
       </Flex>
 
       {!payslipIsLoading ? (

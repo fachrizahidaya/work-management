@@ -9,7 +9,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import { useFetch } from "../../../hooks/useFetch";
 
 const FeedCardItem = ({
   id,
@@ -116,7 +115,7 @@ const FeedCardItem = ({
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
               <Image
-                source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                 borderRadius={15}
                 height={200}
                 alt="Feed Image"
@@ -128,7 +127,7 @@ const FeedCardItem = ({
                 <Modal.CloseButton />
                 <Modal.Body alignContent="center">
                   <Image
-                    source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
+                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                     height={500}
                     width={500}
                     alt="Feed Image"

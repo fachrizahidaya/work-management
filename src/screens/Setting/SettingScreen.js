@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Dimensions } from "react-native";
-import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text } from "native-base";
+import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
@@ -12,12 +12,15 @@ import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import axiosInstance from "../../config/api";
 import { update_profile } from "../../redux/reducer/auth";
+import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  const toast = useToast();
 
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
   const { data: myProfile } = useFetch("/hr/my-profile");
@@ -58,24 +61,6 @@ const SettingScreen = () => {
     },
   ];
 
-  const {
-    data: profile,
-    isFetching: profileIsFetching,
-    refetch: refetchProfile,
-    isLoading: profileIsLoading,
-  } = useFetch("/hr/my-profile");
-
-  const editProfileHandler = async (form, setSubmitting) => {
-    try {
-      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
-      dispatch(update_profile(res.data.data));
-      setSubmitting(false);
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-    }
-  };
-
   return (
     <Box bg="white" w={width} flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -83,11 +68,7 @@ const SettingScreen = () => {
           <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
-            <Pressable
-              onPress={() =>
-                navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
-              }
-            >
+            <Pressable onPress={() => navigation.navigate("Account Screen", { profile: myProfile })}>
               <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
                 <Box>
                   <Flex direction="row" gap={4}>
@@ -146,7 +127,11 @@ const SettingScreen = () => {
             </Pressable>
           </Box>
 
-          <Flex bgColor="#FAFAFA" borderRadius={9}>
+          <Flex
+            bgColor="#FAFAFA"
+            borderRadius={9}
+            opacity={0.5} // feature disabled
+          >
             {first.map((item) => {
               return (
                 <Pressable
@@ -180,6 +165,7 @@ const SettingScreen = () => {
             borderRadius={9}
             h={42}
             p="8px 12px"
+            opacity={0.5} // feature disabled
           >
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#8B63E7" p={1} borderRadius={4}>
@@ -205,6 +191,7 @@ const SettingScreen = () => {
             borderRadius={9}
             h={42}
             p="8px 12px"
+            opacity={0.5} // feature disabled
           >
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#B5B5B5" p={1} borderRadius={4}>
@@ -216,7 +203,11 @@ const SettingScreen = () => {
             <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
           </Pressable>
 
-          <Flex bgColor="#FAFAFA" borderRadius={9}>
+          <Flex
+            bgColor="#FAFAFA"
+            borderRadius={9}
+            opacity={0.5} // feature disabled
+          >
             {second.map((item) => {
               return (
                 <Pressable

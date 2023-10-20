@@ -1,25 +1,18 @@
-import React, { useState, Fragment, useCallback, useMemo, useRef, useEffect } from "react";
+import React, { useState, Fragment, useEffect, memo, useCallback, useMemo } from "react";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
-import * as yup from "yup";
 
 import { StyleSheet, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { Flex, FormControl, Icon, Input, Modal, ScrollView, Select, Text, VStack } from "native-base";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import testIDs from "../testIDs";
-import FormButton from "../../shared/FormButton";
 import AttendanceModal from "./AttendanceModal";
 import AttendanceIcon from "./AttendanceIcon";
 
 const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen, toggleReport }) => {
-  const [selected, setSelected] = useState(INITIAL_DATE);
-  const [currentMonth, setCurrentMonth] = useState(INITIAL_DATE);
   const [items, setItems] = useState({});
   const [date, setDate] = useState({});
 
+  // initial date handler
   const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
 
   /**
@@ -31,34 +24,13 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off" };
   const sick = { key: "sick", color: "#000000", name: "Sick" };
 
+  /**
+   * Month change handler
+   * @param {*} newMonth
+   */
   const handleMonthChange = (newMonth) => {
     onMonthChange(newMonth);
   };
-
-  const getDate = (count) => {
-    const date = dayjs(INITIAL_DATE);
-    const newDate = date.add(count, "day");
-    return newDate.format("YYYY-MM-DD");
-  };
-
-  const onDayPress = useCallback((day) => {
-    setSelected(day.dateString);
-  }, []);
-
-  const marked = useMemo(() => {
-    return {
-      [getDate(-1)]: {
-        dotColor: "red",
-        marked: true,
-      },
-      [selected]: {
-        selected: true,
-        disableTouchEvent: true,
-        selectedColor: "orange",
-        selectedTextColor: "red",
-      },
-    };
-  }, [selected]);
 
   /**
    *
@@ -116,6 +88,10 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
     }
   };
 
+  /**
+   * Create attendance report handler
+   */
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -127,9 +103,8 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
       att_reason: date?.attendanceReason || "",
     },
     // validationSchema: yup.object().shape({}),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      onSubmit(date?.id, values, setSubmitting, setStatus);
+    onSubmit: (values, { resetForm }) => {
+      onSubmit(date?.id, values);
       resetForm();
     },
   });
@@ -198,33 +173,18 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
     );
   };
 
-  const customHeaderProps = useRef();
-
-  const setCustomHeaderNewMonth = (next = false) => {
-    const add = next ? 1 : -1;
-    const month = new Date(customHeaderProps?.current?.month);
-    const newMonth = new Date(month.setMonth(month.getMonth() + add));
-    customHeaderProps?.current?.addMonth(add);
-    setCurrentMonth(newMonth.toISOString().split("T")[0]);
-  };
-  const moveNext = () => {
-    setCustomHeaderNewMonth(true);
-  };
-  const movePrevious = () => {
-    setCustomHeaderNewMonth(false);
-  };
-
   return (
     <>
-      <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
-        <Fragment>{renderCalendarWithMultiDotMarking()}</Fragment>
-        <AttendanceIcon />
-      </ScrollView>
+      <Fragment>{renderCalendarWithMultiDotMarking()}</Fragment>
+      <AttendanceIcon />
     </>
   );
 };
 
-export default AttendanceCalendar;
+export default // memo
+// (
+AttendanceCalendar;
+//   );
 
 const styles = StyleSheet.create({
   calendar: {

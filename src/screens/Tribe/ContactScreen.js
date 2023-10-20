@@ -1,7 +1,5 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useState, useCallback, useEffect } from "react";
 import _ from "lodash";
-import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
@@ -18,16 +16,11 @@ const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [isGridView, setIsGridView] = useState(false);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handler for search input
-  const firstTimeRef = useRef(true);
-
   const dependencies = [currentPage, searchInput];
-
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
@@ -41,12 +34,19 @@ const ContactScreen = () => {
     refetch: refetchEmployeeData,
   } = useFetch("/hr/employees", dependencies, fetchEmployeeContactParameters);
 
+  /**
+   * Fetch employee contact Handler
+   */
+
   const fetchMoreEmployeeContact = () => {
     if (currentPage < employeeData?.data?.last_page) {
       setCurrentPage(currentPage + 1);
     }
   };
 
+  /**
+   * Search contact name handler
+   */
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
@@ -54,13 +54,6 @@ const ContactScreen = () => {
     }, 1000),
     []
   );
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      search: "",
-    },
-  });
 
   useEffect(() => {
     if (employeeData?.data?.data.length) {
@@ -156,6 +149,7 @@ const ContactScreen = () => {
               )}
             />
           ) : (
+            // If there are no data handler
             <VStack space={2} alignItems="center" justifyContent="center">
               <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
               <Text>No Data</Text>

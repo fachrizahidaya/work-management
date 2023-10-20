@@ -14,6 +14,8 @@ import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -25,10 +27,31 @@ const NewLeaveRequest = ({ route }) => {
 
   const { onClose, availableLeavePersonal, refetchPersonalLeave, approver, approverImage, employeeId } = route.params;
 
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+
   const toast = useToast();
   const navigation = useNavigation();
 
   const { data: leaveType } = useFetch("/hr/leaves");
+
+  const personalLeaveData = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: availableLeaves?.available_leave,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+    },
+    {
+      id: 2,
+      name: "Available Day-off",
+      icon: "clipboard-pulse-outline",
+      qty: availableLeaves?.day_off_leave,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+    },
+  ];
 
   const {
     data: leaveHistory,
@@ -36,6 +59,9 @@ const NewLeaveRequest = ({ route }) => {
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
+  /**
+   * Calculate available leave quota and day-off
+   */
   const filterAvailableLeaveHistory = () => {
     let sumAvailableLeave = 0;
     let sumDayOffLeave = 0;
@@ -56,6 +82,11 @@ const NewLeaveRequest = ({ route }) => {
       return { available_leave: sumAvailableLeave, day_off_leave: sumDayOffLeave };
     });
   };
+
+  /**
+   * Calculate leave quota handler
+   * @param {*} action
+   */
 
   const countLeave = async (action = null) => {
     try {
@@ -78,6 +109,13 @@ const NewLeaveRequest = ({ route }) => {
       console.log(err);
     }
   };
+
+  /**
+   * Submit leave request handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
 
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -105,6 +143,9 @@ const NewLeaveRequest = ({ route }) => {
     }
   };
 
+  /**
+   * Create leave request handler
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -127,6 +168,10 @@ const NewLeaveRequest = ({ route }) => {
     },
   });
 
+  /**
+   * Begin and End date Leave handler
+   * @param {*} value
+   */
   const onChangeStartDate = (value) => {
     formik.setFieldValue("begin_date", value);
   };
@@ -135,32 +180,13 @@ const NewLeaveRequest = ({ route }) => {
     formik.setFieldValue("end_date", value);
   };
 
-  const personalLeaveData = [
-    {
-      id: 1,
-      name: "Available Leave",
-      icon: "clipboard-outline",
-      qty: availableLeaves?.available_leave,
-      backgroundColor: "#E8E9EB",
-      iconColor: "#377893",
-    },
-    {
-      id: 2,
-      name: "Available Day-off",
-      icon: "clipboard-pulse-outline",
-      qty: availableLeaves?.day_off_leave,
-      backgroundColor: "#FAF6E8",
-      iconColor: "#FFD240",
-    },
-  ];
-
   useEffect(() => {
     if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
       countLeave();
       setDateChanges(false);
     }
     if (!formik.isSubmitting && formik.status === "success") {
-      navigation.navigate("Feed");
+      navigation.navigate("Dashboard");
     }
   }, [
     formik.values.leave_id,
@@ -191,7 +217,24 @@ const NewLeaveRequest = ({ route }) => {
   return (
     <Box position="absolute" zIndex={3}>
       <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
-        <PageHeader title="New Leave Request" onPress={() => navigation.navigate("Feed")} />
+        <PageHeader
+          title="New Leave Request"
+          onPress={
+            formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
+              ? toggleReturnModal
+              : () => navigation.navigate("Dashboard")
+          }
+        />
+
+        <ReturnConfirmationModal
+          isOpen={returnModalIsOpen}
+          toggle={toggleReturnModal}
+          onPress={() => {
+            toggleReturnModal();
+            navigation.navigate("Dashboard");
+          }}
+          description="If you return, It will be discarded"
+        />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
           {personalLeaveData.map((item) => {

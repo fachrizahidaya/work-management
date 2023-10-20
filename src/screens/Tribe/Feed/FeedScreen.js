@@ -8,24 +8,22 @@ import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 
 const FeedScreen = () => {
-  // Handler for open/close to create a post
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  // User redux to fetch employeeName
-  const userSelector = useSelector((state) => state.auth);
 
   // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
+
+  // User redux to fetch employeeName
+  const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
 
@@ -43,6 +41,11 @@ const FeedScreen = () => {
     isFetching: profileIsFetching,
   } = useFetch("/hr/my-profile");
 
+  /**
+   * Fetch more Posts handler
+   * After end of scroll reached, it will added other earlier posts
+   */
+
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
       if (posts.length !== posts.length + feeds?.data.length) {
@@ -57,6 +60,12 @@ const FeedScreen = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
   };
+
+  /**
+   * Like post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
 
   const postLikeToggleHandler = async (post_id, action) => {
     try {
@@ -106,7 +115,6 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              toggleNewFeed: toggleNewFeed,
               refetch: postRefetchHandler,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,

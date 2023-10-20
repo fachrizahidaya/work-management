@@ -8,7 +8,6 @@ import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
 import ChatRoom from "../screens/Chat/ChatRoom";
 import ChatListScreen from "../screens/Chat/ChatListScreen";
-import SettingScreen from "../screens/Setting/SettingScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
 // Band Screens
@@ -22,12 +21,14 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
-import ReimbursementScreen from "../screens/Tribe/Reimbursement/ReimbursementScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/MyProfileScreen";
-import AccountScreen from "../screens/Setting/AccountScreen";
+import AccountScreen from "../screens/Setting/Account/AccountScreen";
+import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
+import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
+import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 
 const Stack = createStackNavigator();
 
@@ -64,8 +65,6 @@ const HomeStack = () => {
 
       <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
 
-      <Stack.Screen name="Setting" component={SettingScreen} options={{ header: () => <Header /> }} />
-
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
@@ -82,14 +81,18 @@ const HomeStack = () => {
 
       <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Reimbursement" component={ReimbursementScreen} options={{ header: () => <Header /> }} />
-
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
+      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+
       <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Company Screen" component={CompanyScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Subscription Screen" component={SubscriptionScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

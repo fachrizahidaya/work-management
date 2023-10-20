@@ -19,24 +19,24 @@ import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile"
 import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
 
 const EmployeeProfileScreen = ({ route }) => {
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
 
-  const { employeeId, returnPage, loggedEmployeeImage } = route.params;
-
-  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
-
-  const userSelector = useSelector((state) => state.auth);
-
-  const navigation = useNavigation();
-
+  // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
+
+  const { employeeId, returnPage, loggedEmployeeImage } = route.params;
+
+  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+
+  const navigation = useNavigation();
+
+  // User redux to fetch id, name
+  const userSelector = useSelector((state) => state.auth);
 
   const {
     data: employee,
@@ -56,14 +56,10 @@ const EmployeeProfileScreen = ({ route }) => {
     isFetching: feedsIsFetching,
   } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
 
-  const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > 0) {
-      setIsHeaderSticky(true);
-    } else {
-      setIsHeaderSticky(false);
-    }
-  };
-
+  /**
+   * Fetch more Posts handler
+   * After end of scroll reached, it will added other earlier posts
+   */
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
       if (posts.length !== posts.length + feeds?.data.length) {
@@ -77,6 +73,18 @@ const EmployeeProfileScreen = ({ route }) => {
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
+  };
+
+  /**
+   * Header when screen scrolling handler
+   */
+  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+  const handleScroll = (event) => {
+    if (event.nativeEvent.contentOffset.y > 0) {
+      setIsHeaderSticky(true);
+    } else {
+      setIsHeaderSticky(false);
+    }
   };
 
   useEffect(() => {
@@ -110,7 +118,6 @@ const EmployeeProfileScreen = ({ route }) => {
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            toggleNewFeed: toggleNewFeed,
             refetch: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
@@ -133,6 +140,7 @@ const EmployeeProfileScreen = ({ route }) => {
           <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
             {userSelector?.id !== employee?.data?.user_id ? (
               <>
+                {/* When the employee id is not equal, it will appear the contacts of employee */}
                 <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
                   <EmployeeContact employee={employee} />
                 </Flex>
@@ -151,6 +159,7 @@ const EmployeeProfileScreen = ({ route }) => {
           </Flex>
 
           <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
+            {/* Posts that created by employee handler */}
             <FlashList
               data={posts}
               keyExtractor={(item, index) => index}

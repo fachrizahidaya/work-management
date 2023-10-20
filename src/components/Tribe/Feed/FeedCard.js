@@ -1,12 +1,11 @@
 import { useState } from "react";
 
-import { Box, Skeleton, VStack } from "native-base";
+import { Box } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCard = ({
   posts,
@@ -24,8 +23,6 @@ const FeedCard = ({
   const [postId, setPostId] = useState(null);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
-
-  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
 
   /**
    * Action sheet control
@@ -74,10 +71,10 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post
+            // like post handker
+            onToggleLike={onToggleLike}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            onToggleLike={onToggleLike}
             // toggle Comment
             onCommentToggle={commentsOpenHandler}
           />
