@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  module_name: "BAND",
+  module_name: "",
 };
 
 const moduleReducer = createSlice({
@@ -11,9 +11,12 @@ const moduleReducer = createSlice({
     setModule: (state, action) => {
       state.module_name = action.payload;
     },
+    resetModule: (state, action) => {
+      return initialState;
+    },
   },
 });
 
-export const { setModule } = moduleReducer.actions;
+export const { setModule, resetModule } = moduleReducer.actions;
 
 export default moduleReducer.reducer;

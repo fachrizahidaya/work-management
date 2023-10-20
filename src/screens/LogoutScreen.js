@@ -13,6 +13,7 @@ import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native
 
 import axiosInstance from "../config/api";
 import { logout } from "../redux/reducer/auth";
+import { resetModule } from "../redux/reducer/module";
 
 const LogoutScreen = () => {
   const dispatch = useDispatch();
@@ -76,6 +77,9 @@ const LogoutScreen = () => {
       await SecureStore.deleteItemAsync("user_data");
       await SecureStore.deleteItemAsync("user_token");
       // await signOut(auth);
+
+      // Dispatch module to empty string again
+      dispatch(resetModule());
       // Dispatch a logout action
       dispatch(logout());
     } catch (error) {

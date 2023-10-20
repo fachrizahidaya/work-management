@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { Box, Flex, Progress, Text } from "native-base";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 import { login } from "../redux/reducer/auth";
+import { setModule } from "../redux/reducer/module";
 
 const LoadingScreen = ({ route }) => {
   const userData = route.params;
@@ -81,6 +82,9 @@ const LoadingScreen = ({ route }) => {
 
       // Store user token in SecureStore
       await SecureStore.setItemAsync("user_token", userData.userData.access_token);
+
+      // Dispatch band module to firstly be rendered
+      dispatch(setModule("BAND"));
 
       // Dispatch a login action with the provided user data
       dispatch(login(userData.userData));
