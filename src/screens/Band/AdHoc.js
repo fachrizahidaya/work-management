@@ -14,6 +14,7 @@ import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
   const firstTimeRef = useRef(true);
@@ -23,6 +24,7 @@ const AdHocScreen = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
+  const createActionCheck = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
@@ -131,21 +133,23 @@ const AdHocScreen = () => {
           />
         )}
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleTaskForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createActionCheck && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={5}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleTaskForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {closeConfirmationIsOpen && (

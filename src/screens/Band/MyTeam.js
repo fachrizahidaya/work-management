@@ -18,6 +18,7 @@ import NewProjectSlider from "../../components/Band/Project/NewProjectSlider/New
 import AddMemberModal from "../../components/Band/shared/AddMemberModal/AddMemberModal";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const MyTeamScreen = () => {
   const toast = useToast();
@@ -32,6 +33,10 @@ const MyTeamScreen = () => {
   const { isOpen: projectFormIsOpen, toggle: toggleProjectForm } = useDisclosure(false);
   const { isOpen: addMemberModalIsOpen, toggle: toggleAddMemberModal } = useDisclosure(false);
   const { isOpen: removeMemberModalIsOpen, toggle: toggleRemoveMemberModal } = useDisclosure(false);
+  const createCheckAccess = useCheckAccess("create", "My Team");
+  const editCheckAccess = useCheckAccess("update", "My Team");
+  const deleteCheckAccess = useCheckAccess("delete", "My Team");
+  const createProjectCheckAccess = useCheckAccess("create", "Projects");
 
   const openNewTeamFormHandler = () => {
     toggleNewTeamForm();
@@ -195,20 +200,30 @@ const MyTeamScreen = () => {
       <Actionsheet isOpen={menuIsOpen} onClose={toggleMenu}>
         <Actionsheet.Content>
           <VStack w="95%">
-            <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>
+            {createCheckAccess && <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>}
             {team && (
               <>
-                <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
+                {createProjectCheckAccess && (
+                  <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
+                )}
 
                 {team?.owner_id === userSelector.id && (
                   <>
-                    <Actionsheet.Item onPress={openMemberModalHandler}>Add new member to this team</Actionsheet.Item>
-                    <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
-                    <Actionsheet.Item onPress={toggleDeleteModal}>
-                      <Text color="red.500" fontSize={16}>
-                        Delete this team
-                      </Text>
-                    </Actionsheet.Item>
+                    {editCheckAccess && (
+                      <>
+                        <Actionsheet.Item onPress={openMemberModalHandler}>
+                          Add new member to this team
+                        </Actionsheet.Item>
+                        <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
+                      </>
+                    )}
+                    {deleteCheckAccess && (
+                      <Actionsheet.Item onPress={toggleDeleteModal}>
+                        <Text color="red.500" fontSize={16}>
+                          Delete this team
+                        </Text>
+                      </Actionsheet.Item>
+                    )}
                   </>
                 )}
               </>

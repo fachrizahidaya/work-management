@@ -12,6 +12,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
+import useCheckAccess from "../../../../../hooks/useCheckAccess";
 
 const ControlSection = ({
   taskStatus,
@@ -28,6 +29,8 @@ const ControlSection = ({
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: sheetIsOpen, toggle: toggleSheet } = useDisclosure(false);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const editCheckAccess = useCheckAccess("update", "Tasks");
+  const deleteCheckAccess = useCheckAccess("delete", "Tasks");
   const isDisabled = taskStatus === "Closed";
 
   /**
@@ -103,10 +106,12 @@ const ControlSection = ({
           }}
         >
           <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-          <Menu.Item onPress={openEditForm}>Edit</Menu.Item>
-          <Menu.Item onPress={toggleDeleteModal}>
-            <Text color="red.600">Delete</Text>
-          </Menu.Item>
+          {editCheckAccess && <Menu.Item onPress={openEditForm}>Edit</Menu.Item>}
+          {deleteCheckAccess && (
+            <Menu.Item onPress={toggleDeleteModal}>
+              <Text color="red.600">Delete</Text>
+            </Menu.Item>
+          )}
         </Menu>
 
         <Button

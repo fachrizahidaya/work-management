@@ -27,6 +27,7 @@ import PageHeader from "../../../components/shared/PageHeader";
 import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const ProjectDetailScreen = ({ route }) => {
   const toast = useToast();
@@ -41,6 +42,8 @@ const ProjectDetailScreen = ({ route }) => {
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
   const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const deleteCheckAccess = useCheckAccess("delete", "Projects");
+  const editCheckAccess = useCheckAccess("update", "Projects");
 
   const tabs = useMemo(() => {
     return [{ title: "comments" }, { title: "activity" }];
@@ -130,10 +133,12 @@ const ProjectDetailScreen = ({ route }) => {
                 }}
               >
                 <Menu.Item onPress={toggleUserModal}>Change Ownership</Menu.Item>
-                <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-                <Menu.Item onPress={toggle}>
-                  <Text color="red.600">Delete</Text>
-                </Menu.Item>
+                {editCheckAccess && <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>}
+                {deleteCheckAccess && (
+                  <Menu.Item onPress={toggle}>
+                    <Text color="red.600">Delete</Text>
+                  </Menu.Item>
+                )}
               </Menu>
             )}
 

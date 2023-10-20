@@ -8,8 +8,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
+  const createActionCheck = useCheckAccess("create", "Tasks");
+
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
@@ -55,17 +58,20 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                 />
               </Box>
             </ScrollView>
-            <Button
-              variant="outline"
-              borderStyle="dashed"
-              style={{ height: 56 }}
-              onPress={() => openNewTaskForm("Open")}
-            >
-              <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                <Text color="primary.600">ADD TASK</Text>
-              </Flex>
-            </Button>
+
+            {createActionCheck && (
+              <Button
+                variant="outline"
+                borderStyle="dashed"
+                style={{ height: 56 }}
+                onPress={() => openNewTaskForm("Open")}
+              >
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
+                  <Text color="primary.600">ADD TASK</Text>
+                </Flex>
+              </Button>
+            )}
           </>
         ) : (
           <TaskSkeleton />
@@ -104,17 +110,19 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
               </Box>
             </ScrollView>
 
-            <Button
-              variant="outline"
-              borderStyle="dashed"
-              style={{ height: 56 }}
-              onPress={() => openNewTaskForm("On Progress")}
-            >
-              <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                <Text color="primary.600">ADD TASK</Text>
-              </Flex>
-            </Button>
+            {createActionCheck && (
+              <Button
+                variant="outline"
+                borderStyle="dashed"
+                style={{ height: 56 }}
+                onPress={() => openNewTaskForm("On Progress")}
+              >
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
+                  <Text color="primary.600">ADD TASK</Text>
+                </Flex>
+              </Button>
+            )}
           </>
         ) : (
           <TaskSkeleton />
@@ -153,17 +161,19 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
               </Box>
             </ScrollView>
 
-            <Button
-              variant="outline"
-              borderStyle="dashed"
-              style={{ height: 56 }}
-              onPress={() => openNewTaskForm("Finish")}
-            >
-              <Flex flexDir="row" alignItems="center" gap={1}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                <Text color="primary.600">ADD TASK</Text>
-              </Flex>
-            </Button>
+            {createActionCheck && (
+              <Button
+                variant="outline"
+                borderStyle="dashed"
+                style={{ height: 56 }}
+                onPress={() => openNewTaskForm("Finish")}
+              >
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
+                  <Text color="primary.600">ADD TASK</Text>
+                </Flex>
+              </Button>
+            )}
           </>
         ) : (
           <TaskSkeleton />

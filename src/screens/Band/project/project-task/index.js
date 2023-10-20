@@ -14,6 +14,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const ProjectTaskScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -25,6 +26,7 @@ const ProjectTaskScreen = ({ route }) => {
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const createCheckAccess = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
@@ -127,21 +129,23 @@ const ProjectTaskScreen = ({ route }) => {
           )}
         </ScrollView>
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={81}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleTaskForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createCheckAccess && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={81}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleTaskForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {/* Task Form */}
