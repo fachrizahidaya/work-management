@@ -119,7 +119,7 @@ const ProjectTaskScreen = ({ route }) => {
             <Center>
               <Image
                 source={require("../../../../assets/vectors/desktop.jpg")}
-                h={250}
+                h={180}
                 w={250}
                 alt="desktop-only"
                 resizeMode="contain"

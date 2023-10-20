@@ -93,7 +93,7 @@ const BandTab = () => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
@@ -113,7 +113,7 @@ const BandTab = () => {
               </TouchableOpacity>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="Add"
           component={EmptyScreen}

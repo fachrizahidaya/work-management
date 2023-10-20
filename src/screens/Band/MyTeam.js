@@ -135,11 +135,13 @@ const MyTeamScreen = () => {
             {teams?.data?.length > 0 ? (
               <TeamSelection onChange={onPressTeam} selectedTeamId={selectedTeamId} teams={teams?.data} />
             ) : (
-              <VStack space={2} alignItems="center">
-                <Image h={230} w={300} source={require("../../assets/vectors/team.jpg")} alt="team" />
-                <Text fontSize={22}>You don't have teams yet...</Text>
-                <Button>Create here</Button>
-              </VStack>
+              createCheckAccess && (
+                <VStack space={2} alignItems="center">
+                  <Image h={230} w={300} source={require("../../assets/vectors/team.jpg")} alt="team" />
+                  <Text fontSize={22}>You don't have teams yet...</Text>
+                  <Button onPress={toggleNewTeamForm}>Create here</Button>
+                </VStack>
+              )
             )}
           </>
         ) : (
@@ -172,12 +174,21 @@ const MyTeamScreen = () => {
             <Skeleton h={10} />
           )
         ) : (
-          <VStack alignItems="center" position="relative">
-            <Image source={require("../../assets/vectors/member.jpg")} alt="member" resizeMode="contain" size="2xl" />
-            <Text fontSize={22} position="absolute" bottom={0}>
-              Select team to show
-            </Text>
-          </VStack>
+          <>
+            {teams?.data?.length > 0 && (
+              <VStack alignItems="center" position="relative">
+                <Image
+                  source={require("../../assets/vectors/member.jpg")}
+                  alt="member"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text fontSize={22} position="absolute" bottom={0}>
+                  Select team to show
+                </Text>
+              </VStack>
+            )}
+          </>
         )}
       </Box>
 
