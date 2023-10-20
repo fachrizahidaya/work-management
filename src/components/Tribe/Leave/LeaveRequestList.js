@@ -28,13 +28,14 @@ const LeaveRequestList = ({
 
   return (
     <Flex gap={10}>
+      {/* Pending Leave handler */}
       {pendingCount === 0 ? null : (
         <CustomAccordion title="Pending" subTitle={pendingCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
             <Box flex={1} minHeight={2}>
               {pendingLeaveRequest.map((item) => {
                 return (
-                  <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
+                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
                       <Text fontWeight={500} fontSize={14} color="#3F434A">
                         {item?.leave_name}
@@ -100,13 +101,14 @@ const LeaveRequestList = ({
         </CustomAccordion>
       )}
 
+      {/* Approved Leave handler */}
       {approvedCount === 0 ? null : (
         <CustomAccordion title="Approved" subTitle={approvedCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
             <Box flex={1} minHeight={2}>
               {approvedLeaveRequests.map((item) => {
                 return (
-                  <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
+                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
                       <Text fontWeight={500} fontSize={14} color="#3F434A">
                         {item?.leave_name}
@@ -139,13 +141,14 @@ const LeaveRequestList = ({
         </CustomAccordion>
       )}
 
+      {/* Rejected Leave handler */}
       {rejectedCount === 0 ? null : (
         <CustomAccordion title="Rejected" subTitle={rejectedCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
             <Box flex={1} minHeight={2}>
               {rejectedLeaveRequests.map((item) => {
                 return (
-                  <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
+                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
                       <Text fontWeight={500} fontSize={14} color="#3F434A">
                         {item?.leave_name}
