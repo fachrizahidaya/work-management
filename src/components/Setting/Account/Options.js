@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -19,17 +19,29 @@ const Options = ({ profile, editProfileHandler }) => {
     {
       id: 2,
       name: "Company",
-      navigate: null,
+      navigate: () =>
+        navigation.navigate("Company Screen", {
+          profile: profile,
+          editProfileHandler: editProfileHandler,
+        }),
     },
     {
       id: 3,
       name: "Subscriptions",
-      navigate: null,
+      navigate: () =>
+        navigation.navigate("Subscription Screen", {
+          profile: profile,
+          editProfileHandler: editProfileHandler,
+        }),
     },
     {
       id: 4,
       name: "Payments",
-      navigate: null,
+      navigate: () =>
+        navigation.navigate("Payment Screen", {
+          profile: profile,
+          editProfileHandler: editProfileHandler,
+        }),
     },
   ];
 

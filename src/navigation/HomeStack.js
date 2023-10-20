@@ -25,7 +25,10 @@ import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/Ne
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/MyProfileScreen";
-import AccountScreen from "../screens/Setting/AccountScreen";
+import AccountScreen from "../screens/Setting/Account/AccountScreen";
+import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
+import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
+import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 
 const Stack = createStackNavigator();
 
@@ -81,9 +84,15 @@ const HomeStack = () => {
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
+      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+
       <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Company Screen" component={CompanyScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Subscription Screen" component={SubscriptionScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

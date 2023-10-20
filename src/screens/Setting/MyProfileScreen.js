@@ -13,7 +13,6 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import PageHeader from "../../components/shared/PageHeader";
 import FormButton from "../../components/shared/FormButton";
 import { SuccessToast } from "../../components/shared/ToastDialog";
 import { update_image } from "../../redux/reducer/auth";
@@ -33,8 +32,13 @@ const MyProfileScreen = ({ route }) => {
 
   const phoneNumber = profile?.data?.phone_number.toString();
 
-  const returnToAccount = () =>
-    navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler });
+  const forms = [
+    { title: "Email", source: profile?.data?.email },
+    { title: "Username", source: profile?.data?.username },
+    { title: "Date of Birth", source: profile?.data?.birthdate_convert },
+    { title: "Job Title", source: profile?.data?.position_name },
+    { title: "Status", source: profile?.data?.status.charAt(0).toUpperCase() + profile?.data?.status.slice(1) },
+  ];
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -76,6 +80,11 @@ const MyProfileScreen = ({ route }) => {
     // Handling for file information
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
 
+    if (fileInfo.size >= 1000000) {
+      toast.show({ description: "Image size is too large", placement: "top" });
+      return;
+    }
+
     if (result) {
       setImage({
         name: filename,
@@ -87,15 +96,24 @@ const MyProfileScreen = ({ route }) => {
     }
   };
 
-  const formData = new FormData();
-  formData.append("image", image?.name);
-  formData.append("_method", "PATCH");
-
   const editProfilePictureHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.patch(`/setting/users/change-image/${userSelector.id}`, image?.name);
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("_method", "PATCH");
+      const res = await axiosInstance.post(`/setting/users/change-image/${userSelector.id}`, formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
       dispatch(update_image(res.data.data));
+      toast.show({
+        render: () => {
+          return <SuccessToast message={"Profile Picture Updated"} />;
+        },
+        placement: "top",
+      });
       setImage(null);
       setIsLoading(false);
     } catch (err) {
@@ -107,7 +125,16 @@ const MyProfileScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <PageHeader title="My Profile Screen" backButton={returnToAccount} />
+        <Flex flexDir="row" gap={1}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
+            }
+          >
+            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+          </Pressable>
+          <Text fontSize={16}>My Profile Screen</Text>
+        </Flex>
       </Flex>
 
       <ScrollView>
@@ -115,11 +142,7 @@ const MyProfileScreen = ({ route }) => {
           <Box borderStyle="dashed" borderColor="#C6C9CC" borderRadius={20} padding={2} borderWidth={1}>
             <Image
               source={{
-                uri: !image
-                  ? `${process.env.EXPO_PUBLIC_API}/image/${userSelector?.image}`
-                  : image.size >= 1000000
-                  ? toast.show({ description: "Your image size is too large" })
-                  : image.uri,
+                uri: !image ? `${process.env.EXPO_PUBLIC_API}/image/${userSelector?.image}` : image.uri,
               }}
               resizeMethod="contain"
               borderRadius={20}
@@ -157,60 +180,18 @@ const MyProfileScreen = ({ route }) => {
             <FormControl.ErrorMessage>{formik.errors.name}</FormControl.ErrorMessage>
           </FormControl>
 
-          <FormControl>
-            <FormControl.Label>Email</FormControl.Label>
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.email}
-              </Text>
-            </Box>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>Username</FormControl.Label>
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.username}
-              </Text>
-            </Box>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>Date of Birth</FormControl.Label>
-            {/* <Input
-              type="text"
-              isDisabled
-              editable={false}
-              selectTextOnFocus={false}
-              contextMenuHidden={true}
-              defaultValue={profile?.data?.birthdate_convert}
-            /> */}
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.birthdate_convert}
-              </Text>
-            </Box>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>Job Title</FormControl.Label>
-
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.position_name}
-              </Text>
-            </Box>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>Status</FormControl.Label>
-
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.status.charAt(0).toUpperCase() + profile?.data?.status.slice(1)}
-              </Text>
-            </Box>
-          </FormControl>
+          {forms.map((form) => {
+            return (
+              <FormControl>
+                <FormControl.Label>{form.title}</FormControl.Label>
+                <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
+                  <Text fontSize={12} fontWeight={400} color="gray.400">
+                    {form.source}
+                  </Text>
+                </Box>
+              </FormControl>
+            );
+          })}
 
           <FormControl>
             <FormControl.Label>Phone Number</FormControl.Label>

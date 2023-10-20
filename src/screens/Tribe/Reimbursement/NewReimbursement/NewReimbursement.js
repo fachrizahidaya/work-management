@@ -36,7 +36,7 @@ const NewReimbursement = ({ route }) => {
           onPress={
             formik.values.title || formik.values.description || formik.values.total || formik.values.date
               ? toggleReturnModal
-              : () => navigation.navigate("Feed")
+              : () => navigation.navigate("Dashboard")
           }
         />
 
@@ -45,7 +45,7 @@ const NewReimbursement = ({ route }) => {
           toggle={toggleReturnModal}
           onPress={() => {
             toggleReturnModal();
-            navigation.navigate("Feed");
+            navigation.navigate("Dashboard");
           }}
           description="If you return, It will be discarded"
         />

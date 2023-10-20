@@ -74,11 +74,9 @@ const TribeTab = ({ setSelectedModule }) => {
           tabBarButton: [
             "My Information",
             "Attendance",
-            "Leave Request",
+            "Leave Requests",
             "Reimbursement",
-            "Team Leave Request",
-            "Reimbursement",
-            "My Payslip",
+            "Payslip",
             "My KPI",
             "Calendar",
             "Contact",
@@ -90,7 +88,7 @@ const TribeTab = ({ setSelectedModule }) => {
         })}
       >
         <Tab.Screen
-          name="Feed"
+          name="Dashboard"
           component={FeedScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
@@ -178,12 +176,19 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
+
         <Tab.Screen name="Attendance" component={AttendanceScreen} />
-        <Tab.Screen name="Leave Request" component={LeaveScreen} />
+
+        <Tab.Screen name="Leave Requests" component={LeaveScreen} />
+
         <Tab.Screen name="Reimbursement" component={ReimbursementScreen} />
-        <Tab.Screen name="My Payslip" component={PayslipScreen} />
+
+        <Tab.Screen name="Payslip" component={PayslipScreen} />
+
         <Tab.Screen name="My KPI" component={EmptyScreen} />
+
         <Tab.Screen name="Calendar" component={CalendarScreen} />
+
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 
