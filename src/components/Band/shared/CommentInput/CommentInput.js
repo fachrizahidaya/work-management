@@ -19,7 +19,6 @@ import {
   Icon,
   IconButton,
   Image,
-  Input,
   Pressable,
   Text,
   TextArea,
@@ -269,21 +268,21 @@ const CommentInput = ({ taskId, projectId }) => {
                   <Image
                     alt="file"
                     source={
-                      file.mimeType.includes("doc")
+                      file.type.includes("doc")
                         ? require(doc)
-                        : file.mimeType.includes("gif")
+                        : file.type.includes("gif")
                         ? require(gif)
-                        : file.mimeType.includes("key")
+                        : file.type.includes("key")
                         ? require(key)
-                        : file.mimeType.includes("pdf")
+                        : file.type.includes("pdf")
                         ? require(pdf)
-                        : file.mimeType.includes("ppt") || file.mimeType.includes("pptx")
+                        : file.type.includes("ppt") || file.type.includes("pptx")
                         ? require(ppt)
-                        : file.mimeType.includes("rar")
+                        : file.type.includes("rar")
                         ? require(rar)
-                        : file.mimeType.includes("xls") || file.mimeType.includes("xlsx")
+                        : file.type.includes("xls") || file.type.includes("xlsx")
                         ? require(xls)
-                        : file.mimeType.includes("zip")
+                        : file.type.includes("zip")
                         ? require(zip)
                         : require(other)
                     }

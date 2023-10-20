@@ -47,7 +47,7 @@ const Header = () => {
         borderColor="#E8E9EB"
       >
         <Flex direction="row" alignItems="center" gap={2}>
-          <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} />
+          <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
           <Box>
             <Text fontWeight={700} fontSize={18} lineHeight={24}>

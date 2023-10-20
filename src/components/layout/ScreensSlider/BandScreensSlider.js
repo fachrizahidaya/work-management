@@ -1,60 +1,29 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
+import { useSelector } from "react-redux";
+
 import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
+
 const BandScreensSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
+  const menuSelector = useSelector((state) => state.user_menu);
+  const { mergedMenu } = useGetSubMenu(menuSelector.user_menu);
 
-  const items = [
-    {
-      icons: "sticker-check-outline",
-      title: "Dashboard",
-      screen: "Dashboard",
-    },
-    {
-      icons: "lightning-bolt-outline",
-      title: "Project List",
-      screen: "Project List",
-    },
-    {
-      icons: "format-list-bulleted",
-      title: "Task list",
-      screen: "Task List",
-    },
-    {
-      icons: "account-group-outline",
-      title: "My Team",
-      screen: "My Team",
-    },
-    {
-      icons: "calendar-clock",
-      title: "Calendar",
-      screen: "Calendar",
-    },
-    {
-      icons: "note-outline",
-      title: "Notes",
-      screen: "Notes",
-    },
-    // {
-    //   icons: "folder-outline",
-    //   title: "KSS Drive",
-    //   screen: "",
-    // },
-  ];
   return (
     <Actionsheet isOpen={isOpen} onClose={toggle}>
       <Actionsheet.Content>
-        {items.map((item, idx) => {
+        {mergedMenu.map((item, idx) => {
           return (
             <Actionsheet.Item
               key={idx}
               borderColor="#E8E9EB"
               borderBottomWidth={1}
               onPress={() => {
-                navigation.navigate(item.screen);
+                navigation.navigate(item.name);
                 toggle();
               }}
             >
@@ -66,15 +35,38 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
+                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={6} color="#2A7290" />
                 </Box>
-                <Text key={item.title} fontWeight={700} color="black">
-                  {item.title}
+                <Text fontWeight={700} color="black">
+                  {item.name}
                 </Text>
               </Flex>
             </Actionsheet.Item>
           );
         })}
+        <Actionsheet.Item
+          borderColor="#E8E9EB"
+          borderBottomWidth={1}
+          onPress={() => {
+            navigation.navigate("Calendar");
+            toggle();
+          }}
+        >
+          <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
+            <Box
+              bg="#f7f7f7"
+              borderRadius={5}
+              style={{ height: 32, width: 32 }}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon as={<MaterialCommunityIcons name="calendar-clock" />} size={6} color="#2A7290" />
+            </Box>
+            <Text fontWeight={700} color="black">
+              Calendar
+            </Text>
+          </Flex>
+        </Actionsheet.Item>
       </Actionsheet.Content>
     </Actionsheet>
   );

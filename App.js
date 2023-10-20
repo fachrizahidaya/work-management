@@ -8,6 +8,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 import { customTheme } from "./src/theme";
 import { Navigations } from "./src/navigation";
+import UserModuleVerificationGuard from "./src/HOC/UserModuleVerificationGuard";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ export default function App() {
         <NativeBaseProvider theme={customTheme}>
           <NavigationContainer>
             <SafeAreaProvider>
-              <Navigations />
+              <UserModuleVerificationGuard>
+                <Navigations />
+              </UserModuleVerificationGuard>
             </SafeAreaProvider>
           </NavigationContainer>
         </NativeBaseProvider>

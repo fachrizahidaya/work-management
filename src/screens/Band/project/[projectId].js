@@ -116,7 +116,7 @@ const ProjectDetailScreen = ({ route }) => {
               withLoading
               isLoading={isLoading}
               width={width / 1.3}
-              onPress={() => navigation.navigate("Project List")}
+              onPress={() => navigation.navigate("Projects")}
             />
 
             {projectData?.owner_id === userSelector.id && (
@@ -146,7 +146,7 @@ const ProjectDetailScreen = ({ route }) => {
                 color="red.600"
                 successMessage={`${projectData?.title} deleted`}
                 hasSuccessFunc={true}
-                onSuccess={() => navigation.navigate("Project List")}
+                onSuccess={() => navigation.navigate("Projects")}
                 header="Delete Project"
                 description="Are you sure to delete this project?"
               />
