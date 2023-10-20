@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -14,24 +14,20 @@ import { useFetch } from "../../hooks/useFetch";
 const BandDashboard = () => {
   const menuSelector = useSelector((state) => state.user_menu);
 
-  useEffect(() => {
-    if (menuSelector?.user_menu?.menu?.length > 0) {
-      console.log(menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow || false);
-    }
-  }, [menuSelector?.user_menu]);
-
   const {
     data: projects,
     isLoading: projectIsLoading,
     refetch: refetchProjects,
     isFetching: projectIsFetching,
   } = useFetch("/pm/projects/total");
+
   const {
     data: tasks,
     isLoading: taskIsLoading,
     refetch: refetchTasks,
     isFetching: taskIsFetching,
   } = useFetch("/pm/tasks/total");
+
   const {
     data: tasksThisYear,
     isLoading: tasksThisYearIsLoading,
