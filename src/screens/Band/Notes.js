@@ -15,6 +15,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NewNoteSlider from "../../components/Band/Note/NewNoteSlider/NewNoteSlider";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const NotesScreen = () => {
   const { height } = Dimensions.get("screen");
@@ -25,7 +26,7 @@ const NotesScreen = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: editFormIsOpen, toggle: toggleEditForm } = useDisclosure(false);
   const { isOpen: newFormIsOpen, toggle: toggleNewForm } = useDisclosure(false);
-
+  const createCheckAccess = useCheckAccess("create", "Notes");
   const { data: notes, isLoading, isFetching, refetch } = useFetch("/pm/notes");
 
   const openDeleteModalHandler = (note) => {
@@ -108,21 +109,23 @@ const NotesScreen = () => {
           </ScrollView>
         </VStack>
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleNewForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createCheckAccess && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={5}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleNewForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {deleteModalIsOpen && (

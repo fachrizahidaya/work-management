@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Center, Flex, Icon, Pressable, Text } from "native-base";
+import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -14,6 +14,7 @@ import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
   const firstTimeRef = useRef(true);
@@ -23,6 +24,7 @@ const AdHocScreen = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
+  const createActionCheck = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
@@ -111,7 +113,7 @@ const AdHocScreen = () => {
             <Center>
               <Image
                 source={require("../../assets/vectors/desktop.jpg")}
-                h={250}
+                h={180}
                 w={250}
                 alt="desktop-only"
                 resizeMode="contain"
@@ -131,21 +133,23 @@ const AdHocScreen = () => {
           />
         )}
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleTaskForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createActionCheck && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={5}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleTaskForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {closeConfirmationIsOpen && (
