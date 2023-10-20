@@ -6,7 +6,11 @@ import { Platform, StyleSheet } from "react-native";
 import { Flex, HStack, Icon, IconButton, Menu, Pressable, Text, View } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import useCheckAccess from "../../../../hooks/useCheckAccess";
+
 const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDeleteModal, openEditForm }) => {
+  const deleteCheckAccess = useCheckAccess("delete", "Notes");
+
   return (
     <Pressable onPress={() => openEditForm(note)}>
       <Flex style={styles.card} gap={18}>
@@ -49,12 +53,14 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
                 );
               }}
             >
-              <Menu.Item onPress={() => openDeleteModal(note)}>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon as={<MaterialCommunityIcons name="delete-outline" />} color="red.500" />
-                  <Text color="red.500">Delete</Text>
-                </Flex>
-              </Menu.Item>
+              {deleteCheckAccess && (
+                <Menu.Item onPress={() => openDeleteModal(note)}>
+                  <Flex flexDir="row" alignItems="center" gap={2}>
+                    <Icon as={<MaterialCommunityIcons name="delete-outline" />} color="red.500" />
+                    <Text color="red.500">Delete</Text>
+                  </Flex>
+                </Menu.Item>
+              )}
             </Menu>
           </HStack>
         </Flex>

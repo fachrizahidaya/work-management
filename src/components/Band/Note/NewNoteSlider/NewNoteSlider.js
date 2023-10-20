@@ -10,10 +10,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const NewNoteSlider = ({ isOpen, onClose, noteData, refresh, refreshFunc = true }) => {
-  const { width, height } = Dimensions.get("window");
   const toast = useToast();
+  const { width, height } = Dimensions.get("window");
+  const editCheckAccess = useCheckAccess("update", "Notes");
 
   const submitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -103,9 +105,11 @@ const NewNoteSlider = ({ isOpen, onClose, noteData, refresh, refreshFunc = true 
                 <FormControl.ErrorMessage>{formik.errors.content}</FormControl.ErrorMessage>
               </FormControl>
 
-              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                <Text color="white">{noteData ? "Save" : "Create"}</Text>
-              </FormButton>
+              {editCheckAccess && (
+                <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                  <Text color="white">{noteData ? "Save" : "Create"}</Text>
+                </FormButton>
+              )}
             </Flex>
           </Box>
         </Box>

@@ -1,0 +1,51 @@
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+
+const useCheckAccess = (action_name, screen_name) => {
+  const [checkAccess, setCheckAccess] = useState(true);
+  const userMenuSelector = useSelector((state) => state.user_menu);
+
+  useEffect(() => {
+    /**
+     Search if current path is found in the logged in user's available menus
+     and return the sub menu containing the related path
+     * @param {Object} screen_name - screen name to be compared
+     */
+    const searchMenu = (screen_name) => {
+      const parent_menu = userMenuSelector.user_menu.menu?.filter((menu) => {
+        return menu.sub.some((subMenu) => {
+          return subMenu.name === screen_name;
+        });
+      });
+      if (parent_menu) {
+        const sub_menu = parent_menu[0]?.sub.filter((sub) => {
+          return sub.name === screen_name;
+        });
+        return sub_menu;
+      }
+    };
+
+    // look for the sub menu to access the actions within
+    const sub_menu = searchMenu(screen_name);
+
+    /*
+     * If there is a list of available actions, then we will loop through it
+     * and check if action_name is found in the list of actions and if the action itself
+     * is true (or available to the user's client side)
+     */
+    if (sub_menu) {
+      if (sub_menu[0].actions) {
+        const result = Object.keys(sub_menu[0].actions).some((action) => {
+          return action === action_name && sub_menu[0].actions[action] === true;
+        });
+        setCheckAccess(result);
+      }
+    } else {
+      setCheckAccess(false);
+    }
+  }, [userMenuSelector, screen_name, action_name]);
+
+  return checkAccess;
+};
+
+export default useCheckAccess;

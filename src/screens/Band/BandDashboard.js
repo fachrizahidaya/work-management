@@ -1,4 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+
+import { useSelector } from "react-redux";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Skeleton, Text } from "native-base";
@@ -10,6 +12,14 @@ import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/Activ
 import { useFetch } from "../../hooks/useFetch";
 
 const BandDashboard = () => {
+  const menuSelector = useSelector((state) => state.user_menu);
+
+  useEffect(() => {
+    if (menuSelector?.user_menu?.menu?.length > 0) {
+      console.log(menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow || false);
+    }
+  }, [menuSelector?.user_menu]);
+
   const {
     data: projects,
     isLoading: projectIsLoading,
@@ -98,7 +108,10 @@ const BandDashboard = () => {
             <Skeleton height={300} />
           )}
 
-          <ActiveTaskCard />
+          {/* Should be rendered if menuSelector?.user_menu?.menu?.length > 0 */}
+          {menuSelector?.user_menu?.menu?.length > 0 && (
+            <>{menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow && <ActiveTaskCard />}</>
+          )}
         </Flex>
       </ScrollView>
     </SafeAreaView>
