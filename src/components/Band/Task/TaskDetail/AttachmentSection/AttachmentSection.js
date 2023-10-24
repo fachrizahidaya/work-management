@@ -86,7 +86,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
             uri: result.assets[0].uri,
             webkitRelativePath: "",
           });
-          formData.append("task_id", projectId);
+          formData.append("task_id", taskId);
 
           // Call upload handler and send formData to the api
           handleUploadFile(formData);
