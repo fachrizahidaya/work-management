@@ -353,13 +353,7 @@ const CommentInput = ({ taskId, projectId }) => {
                   </Box>
                 </Flex>
 
-                <Pressable
-                  mr={5}
-                  onPress={() => {
-                    openDeleteCommentModal(item.id);
-                    console.log("delete");
-                  }}
-                >
+                <Pressable mr={5} onPress={() => openDeleteCommentModal(item.id)}>
                   <Icon as={<MaterialCommunityIcons name="close" />} color="red.600" />
                 </Pressable>
               </Flex>
