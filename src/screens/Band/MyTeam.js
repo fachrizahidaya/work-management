@@ -272,7 +272,12 @@ const MyTeamScreen = () => {
 
       {/* Add member modal */}
       {addMemberModalIsOpen && (
-        <AddMemberModal isOpen={addMemberModalIsOpen} onClose={toggleAddMemberModal} onPressHandler={addNewMember} />
+        <AddMemberModal
+          header="New Member"
+          isOpen={addMemberModalIsOpen}
+          onClose={toggleAddMemberModal}
+          onPressHandler={addNewMember}
+        />
       )}
 
       {/* Remove member confirmation modal */}

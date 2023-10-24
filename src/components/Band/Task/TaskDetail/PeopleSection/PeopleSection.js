@@ -182,7 +182,12 @@ const PeopleSection = ({
       </Flex>
 
       {observerModalIsOpen && (
-        <AddMemberModal isOpen={observerModalIsOpen} onClose={closeObserverMocal} onPressHandler={addObserverToTask} />
+        <AddMemberModal
+          header="New Observer"
+          isOpen={observerModalIsOpen}
+          onClose={closeObserverMocal}
+          onPressHandler={addObserverToTask}
+        />
       )}
 
       <ConfirmationModal
