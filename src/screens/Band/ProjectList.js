@@ -15,6 +15,7 @@ import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
 import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
+import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 
 const ProjectList = () => {
   const firstTimeRef = useRef(true);
@@ -49,8 +50,8 @@ const ProjectList = () => {
 
   const renderSkeletons = () => {
     const skeletons = [];
-    for (let i = 0; i < 5; i++) {
-      skeletons.push(<Skeleton height={41} key={i} />);
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<ProjectSkeleton key={i} />);
     }
     return skeletons;
   };
@@ -126,7 +127,7 @@ const ProjectList = () => {
         <Divider></Divider>
 
         {!isLoading ? (
-          data.data.data.length > 0 ? (
+          data?.data?.data?.length > 0 ? (
             <>
               <Box flex={1}>
                 <FlashList

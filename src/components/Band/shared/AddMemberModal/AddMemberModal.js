@@ -10,7 +10,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 import FormButton from "../../../shared/FormButton";
 
-const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true }) => {
+const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, header }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -85,7 +85,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true })
       size="xl"
     >
       <Modal.Content>
-        <Modal.Header>New Member</Modal.Header>
+        <Modal.Header>{header}</Modal.Header>
         <Modal.Body>
           <Input
             value={inputToShow}

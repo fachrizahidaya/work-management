@@ -93,7 +93,6 @@ const NotesScreen = () => {
                       note={item}
                       id={item.id}
                       title={item.title}
-                      content={item.content}
                       date={item.created_at}
                       isPinned={item.pinned}
                       onPress={pinHandler}

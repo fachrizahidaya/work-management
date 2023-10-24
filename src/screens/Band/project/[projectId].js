@@ -159,6 +159,7 @@ const ProjectDetailScreen = ({ route }) => {
 
             {userModalIsOpen && (
               <AddMemberModal
+                header="New Project Owner"
                 isOpen={userModalIsOpen}
                 onClose={closeUserModal}
                 multiSelect={false}
