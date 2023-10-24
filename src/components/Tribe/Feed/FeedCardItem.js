@@ -74,6 +74,7 @@ const FeedCardItem = ({
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
                 returnPage: "Dashboard",
+                loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
               })
             }

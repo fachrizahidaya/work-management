@@ -46,7 +46,7 @@ const PayslipList = ({ id, month, year }) => {
       const res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
         params: data,
       });
-      Linking.openURL(`https://api-dev.kolabora-app.com/download/${res?.data?.data}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/${res?.data?.data}`);
       setSubmitting(false);
       setStatus("success");
       formik.resetForm();

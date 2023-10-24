@@ -10,12 +10,12 @@ const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
   return (
     <Flex gap={15}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex flexDir="row" gap={1}>
-          <Pressable onPress={toggle}>
+        <Flex>
+          <Pressable flexDir="row" gap={1} onPress={toggle}>
             <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
+            <Text>{title}</Text>
+            <Text color="#8A9099">({subTitle})</Text>
           </Pressable>
-          <Text>{title}</Text>
-          <Text color="#8A9099">({subTitle})</Text>
         </Flex>
 
         {hasAction && (

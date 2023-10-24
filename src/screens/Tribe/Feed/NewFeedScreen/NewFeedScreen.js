@@ -52,16 +52,12 @@ const NewFeedScreen = ({ route }) => {
       }
 
       formData.append("file", image);
-      console.log(formData);
+
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
-        resetForm();
-        // refetch();
       } else {
         if (values.end_date) {
           postSubmitHandler(formData, setSubmitting, setStatus);
-          resetForm();
-          // refetch();
         } else {
           throw new Error("For Announcement type, end date is required");
         }
@@ -163,7 +159,6 @@ const NewFeedScreen = ({ route }) => {
 
   useEffect(() => {
     if (formik.isSubmitting && formik.status === "success") {
-      formik.resetForm();
     }
   }, [formik.isSubmitting, formik.status]);
 

@@ -59,7 +59,6 @@ const FeedCard = ({
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
-            post={item}
             id={item?.id}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
@@ -71,7 +70,7 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post handker
+            // like post handler
             onToggleLike={onToggleLike}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}

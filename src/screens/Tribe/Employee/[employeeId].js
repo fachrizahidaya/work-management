@@ -18,6 +18,7 @@ import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeamma
 import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile";
 import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
+import axiosInstance from "../../../config/api";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
@@ -34,7 +35,7 @@ const EmployeeProfileScreen = ({ route }) => {
     limit: 10,
   };
 
-  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName } = route.params;
+  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeId } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -60,8 +61,23 @@ const EmployeeProfileScreen = ({ route }) => {
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
   } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, [currentOffset], postFetchParameters);
-  console.log(feeds?.data);
+  // console.log(feeds?.data);
 
+  /**
+   * Header when screen scrolling handler
+   */
+  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+  const handleScroll = (event) => {
+    if (event.nativeEvent.contentOffset.y > 0) {
+      setIsHeaderSticky(true);
+    } else {
+      setIsHeaderSticky(false);
+    }
+  };
+
+  /**
+   * Comments open handler
+   */
   const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
     setPostId(post_id);
@@ -75,6 +91,9 @@ const EmployeeProfileScreen = ({ route }) => {
     setPostId(null);
   };
 
+  /**
+   * Comment submit handler
+   */
   const commentSubmitHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
@@ -102,15 +121,14 @@ const EmployeeProfileScreen = ({ route }) => {
     setFetchIsDone(false);
   };
 
-  /**
-   * Header when screen scrolling handler
-   */
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
-  const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > 0) {
-      setIsHeaderSticky(true);
-    } else {
-      setIsHeaderSticky(false);
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      setTimeout(() => {
+        console.log("liked this post!");
+      }, 500);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -208,6 +226,9 @@ const EmployeeProfileScreen = ({ route }) => {
                   likedBy={item?.liked_by}
                   attachment={item?.file_path}
                   type={item?.type}
+                  onToggleLike={postLikeToggleHandler}
+                  loggedEmployeeId={loggedEmployeeId}
+                  loggedEmployeeImage={loggedEmployeeImage}
                   onCommentToggle={commentsOpenHandler}
                 />
               )}

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, useToast } from "native-base";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
@@ -62,13 +63,17 @@ const AttendanceScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
-        <AttendanceCalendar
-          attendance={attendanceData?.data}
-          onMonthChange={handleMonthChange}
-          onSubmit={attendanceReportSubmitHandler}
-          reportIsOpen={reportIsOpen}
-          toggleReport={toggleReport}
-        />
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={attendanceDataIsFetching} onRefresh={refetchAttendanceData} />}
+        >
+          <AttendanceCalendar
+            attendance={attendanceData?.data}
+            onMonthChange={handleMonthChange}
+            onSubmit={attendanceReportSubmitHandler}
+            reportIsOpen={reportIsOpen}
+            toggleReport={toggleReport}
+          />
+        </ScrollView>
       </SafeAreaView>
     </>
   );
