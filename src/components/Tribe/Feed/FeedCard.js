@@ -17,7 +17,6 @@ const FeedCard = ({
   handleEndReached,
   feedsIsFetching,
   refetchFeeds,
-  feedsIsLoading,
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
@@ -34,6 +33,7 @@ const FeedCard = ({
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
+
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);

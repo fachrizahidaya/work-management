@@ -73,7 +73,7 @@ const FeedCardItem = ({
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
-                returnPage: "Feed",
+                returnPage: "Dashboard",
                 loggedEmployeeImage: loggedEmployeeImage,
               })
             }
@@ -87,7 +87,7 @@ const FeedCardItem = ({
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
-                    returnPage: "Feed",
+                    returnPage: "Dashboard",
                   })
                 }
                 fontSize={15}

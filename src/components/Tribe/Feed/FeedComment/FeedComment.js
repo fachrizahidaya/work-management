@@ -20,6 +20,7 @@ const FeedComment = ({
 }) => {
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
+  const [fetchIsDone, setFetchIsDone] = useState(false);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
 
   const inputRef = useRef();
@@ -30,7 +31,7 @@ const FeedComment = ({
    */
   const commentsFetchParameters = {
     offset: currentOffset,
-    limit: 30,
+    limit: 10,
   };
 
   const {
@@ -38,14 +39,21 @@ const FeedComment = ({
     isLoading: commentIsLoading,
     isFetching: commentIsFetching,
     refetch: refetchComment,
-  } = useFetch(`/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
+  } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
 
-  const fetchComment = async (offset = 0, limit = 10, fetchMore = false) => {
-    try {
-      setComments(commentData?.data);
-    } catch (err) {
-      console.log(err);
+  const commentEndReachedHandler = () => {
+    if (!fetchIsDone) {
+      if (comments.length !== comments.length + commentData?.data.length) {
+        setCurrentOffset(currentOffset + 10);
+      } else {
+        setFetchIsDone(true);
+      }
     }
+  };
+
+  const commentRefetchHandler = () => {
+    setCurrentOffset(0);
+    setFetchIsDone(false);
   };
 
   /**
@@ -84,9 +92,19 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      refetchComment();
+      // refetchComment();
+      if (comments?.data) {
+        if (currentOffset === 0) {
+          setComments(comments?.data);
+        } else {
+          setComments((prevData) => [...prevData, ...commentData?.data]);
+        }
+      }
     }
-  }, [handleOpen]);
+  }, [
+    // handleOpen
+    commentData?.data,
+  ]);
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>

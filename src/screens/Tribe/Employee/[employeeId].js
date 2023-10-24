@@ -17,11 +17,16 @@ import EmployeeContact from "../../../components/Tribe/Employee/EmployeeContact"
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile";
 import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
+import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
+  const [postId, setPostId] = useState(null);
+  const [postTotalComment, setPostTotalComment] = useState(0);
+
+  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
 
   // parameters for fetch posts
   const postFetchParameters = {
@@ -29,7 +34,7 @@ const EmployeeProfileScreen = ({ route }) => {
     limit: 10,
   };
 
-  const { employeeId, returnPage, loggedEmployeeImage } = route.params;
+  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -54,7 +59,29 @@ const EmployeeProfileScreen = ({ route }) => {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
+  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, [currentOffset], postFetchParameters);
+  console.log(feeds?.data);
+
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const commentsOpenHandler = (post_id) => {
+    setPostId(post_id);
+    setCommentsOpen(true);
+    const togglePostComment = posts.find((post) => post.id === post_id);
+    setPostTotalComment(togglePostComment.total_comment);
+  };
+
+  const commentsCloseHandler = () => {
+    setCommentsOpen(false);
+    setPostId(null);
+  };
+
+  const commentSubmitHandler = () => {
+    setPostTotalComment((prevState) => {
+      return prevState + 1;
+    });
+    const referenceIndex = posts.findIndex((post) => post.id === postId);
+    posts[referenceIndex]["total_comment"] += 1;
+  };
 
   /**
    * Fetch more Posts handler
@@ -181,9 +208,23 @@ const EmployeeProfileScreen = ({ route }) => {
                   likedBy={item?.liked_by}
                   attachment={item?.file_path}
                   type={item?.type}
+                  onCommentToggle={commentsOpenHandler}
                 />
               )}
+              style={isHeaderSticky ? styles.stickyListContainer : null}
             />
+            {commentsOpen && (
+              <FeedComment
+                handleOpen={commentsOpen}
+                handleClose={commentsCloseHandler}
+                postId={postId}
+                onSubmit={commentSubmitHandler}
+                total_comments={postTotalComment}
+                loggedEmployeeImage={loggedEmployeeImage}
+                loggedEmployeeName={loggedEmployeeName}
+                postRefetchHandler={postRefetchHandler}
+              />
+            )}
           </Flex>
         </Flex>
       </ScrollView>
@@ -229,5 +270,13 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: "bold",
     fontSize: 16,
+  },
+  stickyListContainer: {
+    position: "sticky",
+    top: 0,
+    zIndex: 1,
+    backgroundColor: "#FFFFFF", // Set your desired background color
+    borderBottomColor: "#E8E9EB",
+    borderBottomWidth: 1,
   },
 });

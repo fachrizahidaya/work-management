@@ -11,13 +11,13 @@ import { Box, Flex, Icon, Text, useToast, Button, Modal, VStack, Image } from "n
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import { SuccessToast } from "../../../components/shared/ToastDialog";
-import axiosInstance from "../../../config/api";
-import PageHeader from "../../../components/shared/PageHeader";
-import NewFeedForm from "../../../components/Tribe/Feed/NewFeed/NewFeedForm";
-import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
+import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { SuccessToast } from "../../../../components/shared/ToastDialog";
+import axiosInstance from "../../../../config/api";
+import PageHeader from "../../../../components/shared/PageHeader";
+import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -56,10 +56,12 @@ const NewFeedScreen = ({ route }) => {
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
         resetForm();
+        // refetch();
       } else {
         if (values.end_date) {
           postSubmitHandler(formData, setSubmitting, setStatus);
           resetForm();
+          // refetch();
         } else {
           throw new Error("For Announcement type, end date is required");
         }
@@ -78,10 +80,10 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
+      refetch();
       navigation.navigate("Dashboard");
       setSubmitting(false);
       setStatus("success");
-      refetch();
       toast.show({
         render: () => {
           return <SuccessToast message={`Posted succesfuly!`} />;
