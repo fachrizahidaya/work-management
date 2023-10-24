@@ -46,10 +46,16 @@ const PeopleSection = ({
    */
   const takeTask = async () => {
     try {
-      await axiosInstance.post("/pm/tasks/responsible", {
-        task_id: selectedTask.id,
-        user_id: userSelector.id,
-      });
+      if (selectedTask?.responsible_id) {
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsibleArr[0]?.id}`, {
+          user_id: userSelector.id,
+        });
+      } else {
+        await axiosInstance.post("/pm/tasks/responsible", {
+          task_id: selectedTask.id,
+          user_id: userSelector.id,
+        });
+      }
       refetchResponsible();
       toast.show({
         render: () => {
