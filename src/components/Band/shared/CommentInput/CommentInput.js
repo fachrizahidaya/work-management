@@ -1,6 +1,4 @@
 import React, { memo, useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import dayjs from "dayjs";
@@ -9,7 +7,7 @@ dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
   Avatar,
@@ -210,22 +208,10 @@ const CommentInput = ({ taskId, projectId }) => {
   /**
    * Download Attachment
    */
-  const downloadAttachment = async (attachmentId, attachmentName) => {
+  const downloadAttachment = async (attachment) => {
     try {
-      let apiURL = "";
-      if (projectId) {
-        apiURL = `/pm/projects/comment/attachment/${attachmentId}/download`;
-      } else if (taskId) {
-        apiURL = `/pm/tasks/comment/attachment/${attachmentId}/download`;
-      }
-      const res = await axiosInstance.get(apiURL);
-      const base64Code = res.data.file.split(",")[1];
-      const fileName = FileSystem.documentDirectory + attachmentName;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      await Share.shareAsync(fileName);
+      await axiosInstance.get(`/download/${attachment}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
       toast.show({
@@ -371,7 +357,7 @@ const CommentInput = ({ taskId, projectId }) => {
                               borderColor="#8A9099"
                               borderRadius={10}
                               p={1}
-                              onPress={() => downloadAttachment(attachment.id, attachment.file_name)}
+                              onPress={() => downloadAttachment(attachment.file_path)}
                             >
                               <Text>
                                 {attachment.file_name.length > 15

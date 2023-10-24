@@ -14,6 +14,7 @@ const AttachmentList = ({
   deleteFileHandler,
   iconHeight,
   iconWidth,
+  path,
 }) => {
   const doc = "../../../../../../assets/doc-icons/doc-format.png";
   const gif = "../../../../../../assets/doc-icons/gif-format.png";
@@ -80,7 +81,7 @@ const AttachmentList = ({
           );
         }}
       >
-        <Menu.Item onPress={() => downloadFileHandler(id, title, from)}>
+        <Menu.Item onPress={() => downloadFileHandler(path)}>
           <Flex flexDir="row" alignItems="center" gap={2}>
             <Icon as={<MaterialCommunityIcons name="download-outline" />} size="md" />
             <Text>Download</Text>

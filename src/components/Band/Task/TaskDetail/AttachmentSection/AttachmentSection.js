@@ -1,12 +1,10 @@
 import React, { memo } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Flex, FormControl, Icon, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { TouchableOpacity } from "react-native";
+import { Linking, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AttachmentList from "./AttachmentList/AttachmentList";
@@ -25,21 +23,10 @@ const AttachmentSection = ({ taskId, disabled }) => {
    * @param {string} attachmentName - File name
    * @param {string} attachmentFrom - Description of the file's origin (Comment or Project)
    */
-  const downloadAttachment = async (attachmentId, attachmentName, attachmentFrom) => {
+  const downloadAttachment = async (attachment) => {
     try {
-      let res;
-      if (attachmentFrom === "Comment") {
-        res = await axiosInstance.get(`/pm/tasks/comment/attachment/${attachmentId}/download`);
-      } else {
-        res = await axiosInstance.get(`/pm/tasks/attachment/${attachmentId}/download`);
-      }
-      const base64Code = res.data.file.split(",")[1];
-      const fileName = FileSystem.documentDirectory + attachmentName;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      await Share.shareAsync(fileName);
+      await axiosInstance.get(`/download/${attachment}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
       toast.show({
@@ -152,27 +139,30 @@ const AttachmentSection = ({ taskId, disabled }) => {
       <FormControl>
         <FormControl.Label>ATTACHMENTS</FormControl.Label>
 
-        <ScrollView style={{ maxHeight: 200 }}>
-          <Box flex={1} minHeight={2}>
-            <FlashList
-              data={attachments?.data}
-              keyExtractor={(item) => item?.id}
-              estimatedItemSize={200}
-              renderItem={({ item }) => (
-                <AttachmentList
-                  id={item?.id}
-                  title={item?.file_name}
-                  size={item?.file_size}
-                  time={item?.uploaded_at}
-                  type={item?.mime_type}
-                  from={item?.attachment_from}
-                  deleteFileHandler={deleteFileHandler}
-                  downloadFileHandler={downloadAttachment}
-                />
-              )}
-            />
-          </Box>
-        </ScrollView>
+        {attachments?.data?.length > 0 && (
+          <ScrollView style={{ maxHeight: 200 }}>
+            <Box flex={1} minHeight={2}>
+              <FlashList
+                data={attachments.data}
+                keyExtractor={(item) => item.id}
+                estimatedItemSize={200}
+                renderItem={({ item }) => (
+                  <AttachmentList
+                    id={item?.id}
+                    title={item.file_name}
+                    size={item.file_size}
+                    time={item.uploaded_at}
+                    type={item.mime_type}
+                    from={item.attachment_from}
+                    deleteFileHandler={deleteFileHandler}
+                    downloadFileHandler={downloadAttachment}
+                    path={item.file_path}
+                  />
+                )}
+              />
+            </Box>
+          </ScrollView>
+        )}
       </FormControl>
 
       {!disabled && (
