@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 
-const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDeleteModal, openEditForm }) => {
+const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, openEditForm }) => {
   const deleteCheckAccess = useCheckAccess("delete", "Notes");
 
   return (
@@ -80,9 +80,7 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
           </View>
         )}
 
-        <Text fontWeight={700}>{title}</Text>
-
-        <Text height={120}>{content}</Text>
+        <Text>{title}</Text>
       </Flex>
     </Pressable>
   );
@@ -101,6 +99,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
-    height: 270,
+    // height: 270,
   },
 });
