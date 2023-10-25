@@ -87,7 +87,12 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       </Flex>
 
       {memberModalIsOpen && (
-        <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={addMember} />
+        <AddMemberModal
+          header="New Member"
+          isOpen={memberModalIsOpen}
+          onClose={closeMemberModal}
+          onPressHandler={addMember}
+        />
       )}
 
       <ScrollView style={{ maxHeight: 200 }}>

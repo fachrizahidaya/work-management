@@ -187,7 +187,7 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
-      <Flex bg="white" borderRadius={15} py={38} style={{ paddingHorizontal: 16 }} gap={36}>
+      <Flex bg="white" borderRadius={15} py={38} gap={36} w="full" maxWidth={500} style={{ paddingHorizontal: 16 }}>
         <Flex gap={22} w="100%">
           <Flex gap={15} alignItems="center">
             <Image resizeMode="contain" source={require("../assets/icons/kss_logo.png")} alt="KSS_LOGO" h={45} w={45} />
@@ -313,6 +313,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 100,
     justifyContent: "center",
+    alignItems: "center",
   },
 });
 
