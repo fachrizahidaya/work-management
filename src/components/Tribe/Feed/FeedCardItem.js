@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
+import { LikeToggle } from "../../shared/LikeToggle";
 
 const FeedCardItem = ({
   id,
@@ -27,6 +28,7 @@ const FeedCardItem = ({
   onToggleLike,
   onCommentToggle,
   onOpen,
+  refetch,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
@@ -45,7 +47,8 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    // onToggleLike(post_id, action);
+    LikeToggle(post_id, action);
   };
 
   /**
@@ -76,6 +79,7 @@ const FeedCardItem = ({
                 returnPage: "Dashboard",
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
+                refetch: refetch,
               })
             }
           >

@@ -76,8 +76,8 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      refetch();
       navigation.navigate("Dashboard");
+      refetch();
       setSubmitting(false);
       setStatus("success");
       toast.show({
@@ -221,6 +221,7 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
+        refetch={refetch}
       />
     </Box>
   );

@@ -4,9 +4,9 @@ import { Box } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import FeedCardItem from "./FeedCardItem";
-import FeedComment from "./FeedComment/FeedComment";
-import { useEffect } from "react";
+import FeedCardItem from "../Feed/FeedCardItem";
+import { LikeToggle } from "../../shared/LikeToggle";
+import FeedComment from "../Feed/FeedComment/FeedComment";
 
 const FeedCard = ({
   posts,
@@ -16,16 +16,15 @@ const FeedCard = ({
   onToggleLike,
   postRefetchHandler,
   handleEndReached,
-  feedsIsFetching,
+  personalFeedsIsFetching,
+  refetchPersonalFeeds,
   refetchFeeds,
 }) => {
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
-  const [postEditOpen, setPostEditOpen] = useState(false);
-  const [editedPost, setEditedPost] = useState(null);
+  const [postTotalComment, setPostTotalComment] = useState(0);
 
   /**
-   * Action sheet control
+   * Comments open handler
    */
   const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
@@ -38,31 +37,28 @@ const FeedCard = ({
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
-    // refetchFeeds();
   };
 
+  /**
+   * Comment submit handler
+   */
   const commentSubmitHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    // refetchFeeds();
   };
-
-  useEffect(() => {
-    refetchFeeds();
-  }, [posts]);
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts}
-        onEndReachedThreshold={0.1}
-        onEndReached={posts.length ? handleEndReached : null}
         keyExtractor={(item, index) => index}
-        estimatedItemSize={200}
-        refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
+        onEndReached={posts.length ? handleEndReached : null}
+        onEndReachedThreshold={0.1}
+        refreshControl={<RefreshControl refreshing={personalFeedsIsFetching} onRefresh={refetchPersonalFeeds} />}
+        estimatedItemSize={100}
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
@@ -77,13 +73,13 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post handler
-            onToggleLike={onToggleLike}
+            onToggleLike={
+              // postLikeToggleHandler
+              LikeToggle
+            }
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            // toggle Comment
             onCommentToggle={commentsOpenHandler}
-            refetch={refetchFeeds}
           />
         )}
       />
@@ -93,8 +89,8 @@ const FeedCard = ({
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
           postId={postId}
-          total_comments={postTotalComment}
           onSubmit={commentSubmitHandler}
+          total_comments={postTotalComment}
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}

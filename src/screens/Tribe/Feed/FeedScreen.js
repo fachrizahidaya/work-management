@@ -10,6 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
+import { LikeToggle } from "../../../components/shared/LikeToggle";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -52,6 +53,7 @@ const FeedScreen = () => {
         setCurrentOffset(currentOffset + 10);
       } else {
         setFetchIsDone(true);
+        ``;
       }
     }
   };
@@ -88,10 +90,6 @@ const FeedScreen = () => {
     }
   }, [feeds?.data]);
 
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -115,7 +113,7 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              refetch: postRefetchHandler,
+              refetch: refetchFeeds,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
@@ -138,7 +136,6 @@ const FeedScreen = () => {
             handleEndReached={postEndReachedHandler}
             feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
-            feedsIsLoading={feedsIsLoading}
           />
         </Box>
       </SafeAreaView>

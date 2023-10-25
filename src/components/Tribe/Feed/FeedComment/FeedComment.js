@@ -17,6 +17,7 @@ const FeedComment = ({
   total_comments,
   onSubmit,
   postRefetchHandler,
+  refetchFeeds,
 }) => {
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
@@ -26,7 +27,6 @@ const FeedComment = ({
   const inputRef = useRef();
 
   /**
-   *
    * Fetch Comment Handler
    */
   const commentsFetchParameters = {
@@ -70,6 +70,7 @@ const FeedComment = ({
       onSubmit(postId);
       postRefetchHandler();
       refetchComment();
+      refetchFeeds();
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -105,6 +106,10 @@ const FeedComment = ({
     // handleOpen
     commentData?.data,
   ]);
+
+  useEffect(() => {
+    console.log("triggered comm", comments);
+  }, [comments]);
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
@@ -143,6 +148,7 @@ const FeedComment = ({
             parentId={commentParentId}
             inputRef={inputRef}
             onSubmit={commentSubmitHandler}
+            refetchFeeds={refetchFeeds}
           />
         </Flex>
       </Actionsheet.Content>

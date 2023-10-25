@@ -21,6 +21,7 @@ const NewFeedForm = ({
   dateShown,
   endDateAnnouncementHandler,
   loggedEmployeeDivision,
+  refetch,
 }) => {
   const [isLoading, setIsLoading] = useState();
   return (
@@ -134,7 +135,10 @@ const NewFeedForm = ({
           width={50}
           height={50}
           opacity={formik.values.content === "" ? 0.5 : 1}
-          onPress={formik.handleSubmit}
+          onPress={() => {
+            formik.handleSubmit();
+            refetch();
+          }}
         >
           <Icon
             as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}

@@ -98,6 +98,29 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
           borderColor="#E8E9EB"
           borderBottomWidth={1}
           onPress={() => {
+            navigation.navigate("My Information");
+            toggle();
+          }}
+        >
+          <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
+            <Box
+              bg="#f7f7f7"
+              borderRadius={5}
+              style={{ height: 32, width: 32 }}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon as={<MaterialCommunityIcons name="account-outline" />} size={6} color="#2A7290" />
+            </Box>
+            <Text fontWeight={700} color="black">
+              My Information
+            </Text>
+          </Flex>
+        </Actionsheet.Item>
+        <Actionsheet.Item
+          borderColor="#E8E9EB"
+          borderBottomWidth={1}
+          onPress={() => {
             navigation.navigate("Calendar");
             toggle();
           }}

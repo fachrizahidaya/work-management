@@ -8,7 +8,15 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 import { useFetch } from "../../../../hooks/useFetch";
 
-const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
+const FeedCommentForm = ({
+  postId,
+  loggedEmployeeImage,
+  parentId,
+  inputRef,
+  onSubmit,
+  loggedEmployeeName,
+  refetchFeeds,
+}) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const { data: employeeData } = useFetch("/hr/employees");
@@ -51,7 +59,10 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
             opacity={formik.values.comments === "" ? 0.5 : 1}
             variant="unstyled"
             size="sm"
-            onPress={formik.handleSubmit}
+            onPress={() => {
+              formik.handleSubmit();
+              refetchFeeds();
+            }}
           >
             {parentId ? "Reply" : "Post"}
           </Button>

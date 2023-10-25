@@ -19,13 +19,13 @@ import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile"
 import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import axiosInstance from "../../../config/api";
+import { LikeToggle } from "../../../components/shared/LikeToggle";
+import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [postId, setPostId] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
 
   const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
 
@@ -35,7 +35,7 @@ const EmployeeProfileScreen = ({ route }) => {
     limit: 10,
   };
 
-  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeId } = route.params;
+  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeId, refetch } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -57,11 +57,11 @@ const EmployeeProfileScreen = ({ route }) => {
   } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const {
-    data: feeds,
-    refetch: refetchFeeds,
-    isFetching: feedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, [currentOffset], postFetchParameters);
-  // console.log(feeds?.data);
+    data: personalFeeds,
+    refetch: refetchPersonalFeeds,
+    isFetching: personalFeedsIsFetching,
+  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, currentOffset, postFetchParameters);
+  console.log("tes", personalFeeds?.data);
 
   /**
    * Header when screen scrolling handler
@@ -76,39 +76,12 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Comments open handler
-   */
-  const [commentsOpen, setCommentsOpen] = useState(false);
-  const commentsOpenHandler = (post_id) => {
-    setPostId(post_id);
-    setCommentsOpen(true);
-    const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
-  };
-
-  const commentsCloseHandler = () => {
-    setCommentsOpen(false);
-    setPostId(null);
-  };
-
-  /**
-   * Comment submit handler
-   */
-  const commentSubmitHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
-    const referenceIndex = posts.findIndex((post) => post.id === postId);
-    posts[referenceIndex]["total_comment"] += 1;
-  };
-
-  /**
    * Fetch more Posts handler
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
-      if (posts.length !== posts.length + feeds?.data.length) {
+      if (posts.length !== posts.length + personalFeeds?.data.length) {
         setCurrentOffset(currentOffset + 10);
       } else {
         setFetchIsDone(true);
@@ -127,31 +100,30 @@ const EmployeeProfileScreen = ({ route }) => {
       setTimeout(() => {
         console.log("liked this post!");
       }, 500);
+      refetchPersonalFeeds();
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    if (feeds?.data) {
+    if (personalFeeds?.data) {
       if (currentOffset === 0) {
-        setPosts(feeds?.data);
+        setPosts(personalFeeds?.data);
       } else {
-        setPosts((prevData) => [...prevData, ...feeds?.data]);
+        setPosts((prevData) => [...prevData, ...personalFeeds?.data]);
       }
     }
-  }, [feeds?.data]);
-
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
+  }, [personalFeeds?.data]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
         <PageHeader
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-          onPress={() => navigation.navigate(returnPage)}
+          onPress={() => {
+            navigation.navigate(returnPage);
+          }}
         />
       </Flex>
 
@@ -163,16 +135,17 @@ const EmployeeProfileScreen = ({ route }) => {
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            refetch: postRefetchHandler,
+            refetch: refetch,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
+            employeeId: employeeId,
           });
         }}
       >
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
 
-      <ScrollView onScroll={handleScroll}>
+      <ScrollView onScroll={handleScroll} style={{ height: 200, overflow: "scroll" }}>
         <Image
           source={require("../../../assets/profile_banner.jpg")}
           alignSelf="center"
@@ -189,7 +162,6 @@ const EmployeeProfileScreen = ({ route }) => {
                 <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
                   <EmployeeContact employee={employee} />
                 </Flex>
-
                 <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
               </>
             ) : (
@@ -203,49 +175,20 @@ const EmployeeProfileScreen = ({ route }) => {
             />
           </Flex>
 
-          <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
+          <Flex px={3} minHeight={100} flex={1} flexDir="column" gap={2}>
             {/* Posts that created by employee handler */}
-            <FlashList
-              data={posts}
-              keyExtractor={(item, index) => index}
-              onEndReached={posts.length ? postEndReachedHandler : null}
-              onEndReachedThreshold={0.1}
-              refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
-              estimatedItemSize={100}
-              renderItem={({ item }) => (
-                <FeedCardItem
-                  key={item?.id}
-                  id={item?.id}
-                  employeeId={item?.author_id}
-                  employeeName={item?.employee_name}
-                  createdAt={item?.created_at}
-                  employeeImage={item?.employee_image}
-                  content={item?.content}
-                  total_like={item?.total_like}
-                  totalComment={item?.total_comment}
-                  likedBy={item?.liked_by}
-                  attachment={item?.file_path}
-                  type={item?.type}
-                  onToggleLike={postLikeToggleHandler}
-                  loggedEmployeeId={loggedEmployeeId}
-                  loggedEmployeeImage={loggedEmployeeImage}
-                  onCommentToggle={commentsOpenHandler}
-                />
-              )}
-              style={isHeaderSticky ? styles.stickyListContainer : null}
+            <FeedCard
+              posts={posts}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeName={loggedEmployeeName}
+              loggedEmployeeImage={loggedEmployeeImage}
+              onToggleLike={postLikeToggleHandler}
+              postRefetchHandler={postRefetchHandler}
+              handleEndReached={postEndReachedHandler}
+              personalFeedsIsFetching={personalFeedsIsFetching}
+              refetchPersonalFeeds={refetchPersonalFeeds}
+              refetchFeeds={refetch}
             />
-            {commentsOpen && (
-              <FeedComment
-                handleOpen={commentsOpen}
-                handleClose={commentsCloseHandler}
-                postId={postId}
-                onSubmit={commentSubmitHandler}
-                total_comments={postTotalComment}
-                loggedEmployeeImage={loggedEmployeeImage}
-                loggedEmployeeName={loggedEmployeeName}
-                postRefetchHandler={postRefetchHandler}
-              />
-            )}
           </Flex>
         </Flex>
       </ScrollView>
@@ -296,7 +239,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     zIndex: 1,
-    backgroundColor: "#FFFFFF", // Set your desired background color
+    backgroundColor: "#FFFFFF",
     borderBottomColor: "#E8E9EB",
     borderBottomWidth: 1,
   },
