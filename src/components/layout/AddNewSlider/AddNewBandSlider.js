@@ -53,9 +53,9 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
                 borderColor="#E8E9EB"
                 borderBottomWidth={1}
                 onPress={() => {
-                  if (item.title === "New Project") {
+                  if (item.title.includes("New Project")) {
                     createProjectAccess && setNewProjectIsOpen(!newProjectIsOpen);
-                  } else if (item.title === "New Task | ad hoc") {
+                  } else if (item.title.includes("New Task | ad hoc")) {
                     createTaskAccess && setNewTaskIsOpen(!newTaskIsOpen);
                   } else {
                     createNoteAccess && setNewNoteIsOpen(!newNoteIsOpen);

@@ -1,6 +1,4 @@
 import React, { memo, useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import dayjs from "dayjs";
@@ -9,7 +7,7 @@ dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
   Avatar,
@@ -31,6 +29,8 @@ import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import ConfirmationModal from "../../../shared/ConfirmationModal";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -45,6 +45,19 @@ const zip = "../../../../assets/doc-icons/zip-format.png";
 const CommentInput = ({ taskId, projectId }) => {
   const toast = useToast();
   const [files, setFiles] = useState([]);
+  const [commentIdToDelete, setCommentIdToDelete] = useState(null);
+  const { isOpen, toggle } = useDisclosure(false);
+
+  const openDeleteCommentModal = (comment) => {
+    setCommentIdToDelete(comment);
+    toggle();
+  };
+
+  const onDeleteSuccess = () => {
+    setCommentIdToDelete(null);
+    refetchComments();
+    refetchAttachments();
+  };
 
   const { data: comments, refetch: refetchComments } = useFetch(
     projectId ? `/pm/projects/${projectId}/comment` : taskId ? `/pm/tasks/${taskId}/comment` : null
@@ -124,39 +137,6 @@ const CommentInput = ({ taskId, projectId }) => {
   });
 
   /**
-   * Handle deletion comment
-   * @param {string} commentId - id to delete
-   */
-  const deleteComment = async (commentId) => {
-    try {
-      let apiURL = "";
-
-      if (projectId) {
-        apiURL = `/pm/projects/comment/${commentId}`;
-      } else if (taskId) {
-        apiURL = `/pm/tasks/comment/${commentId}`;
-      }
-
-      await axiosInstance.delete(apiURL);
-
-      refetchComments();
-      refetchAttachments();
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`Comment deleted`} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
-      });
-    }
-  };
-
-  /**
    * Select file handler
    */
   const selectFile = async () => {
@@ -210,22 +190,10 @@ const CommentInput = ({ taskId, projectId }) => {
   /**
    * Download Attachment
    */
-  const downloadAttachment = async (attachmentId, attachmentName) => {
+  const downloadAttachment = async (attachment) => {
     try {
-      let apiURL = "";
-      if (projectId) {
-        apiURL = `/pm/projects/comment/attachment/${attachmentId}/download`;
-      } else if (taskId) {
-        apiURL = `/pm/tasks/comment/attachment/${attachmentId}/download`;
-      }
-      const res = await axiosInstance.get(apiURL);
-      const base64Code = res.data.file.split(",")[1];
-      const fileName = FileSystem.documentDirectory + attachmentName;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      await Share.shareAsync(fileName);
+      await axiosInstance.get(`/download/${attachment}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
       toast.show({
@@ -371,7 +339,7 @@ const CommentInput = ({ taskId, projectId }) => {
                               borderColor="#8A9099"
                               borderRadius={10}
                               p={1}
-                              onPress={() => downloadAttachment(attachment.id, attachment.file_name)}
+                              onPress={() => downloadAttachment(attachment.file_path)}
                             >
                               <Text>
                                 {attachment.file_name.length > 15
@@ -385,13 +353,26 @@ const CommentInput = ({ taskId, projectId }) => {
                   </Box>
                 </Flex>
 
-                <Pressable mr={5} onPress={() => deleteComment(item.id)}>
+                <Pressable mr={5} onPress={() => openDeleteCommentModal(item.id)}>
                   <Icon as={<MaterialCommunityIcons name="close" />} color="red.600" />
                 </Pressable>
               </Flex>
             )}
           />
         </Box>
+
+        {isOpen && (
+          <ConfirmationModal
+            isOpen={isOpen}
+            toggle={toggle}
+            apiUrl={projectId ? `/pm/projects/comment/${commentIdToDelete}` : `/pm/tasks/comment/${commentIdToDelete}`}
+            header="Delete Comment"
+            description="Are you sure to delete this comment?"
+            successMessage="Comment deleted"
+            hasSuccessFunc
+            onSuccess={onDeleteSuccess}
+          />
+        )}
       </ScrollView>
     </Flex>
   );

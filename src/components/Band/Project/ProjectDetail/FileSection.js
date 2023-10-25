@@ -1,10 +1,8 @@
 import React, { memo } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, Linking, TouchableOpacity } from "react-native";
 import { Box, Center, Flex, Icon, Image, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -31,23 +29,10 @@ const FileSection = ({ projectId }) => {
    * @param {string} attachmentName - File name
    * @param {string} attachmentFrom - Description of the file's origin (Comment or Project)
    */
-  const downloadAttachment = async (attachmentId, attachmentName, attachmentFrom) => {
+  const downloadAttachment = async (attachment) => {
     try {
-      let res;
-      if (attachmentFrom === "Comment") {
-        res = await axiosInstance.get(`/pm/projects/comment/attachment/${attachmentId}/download`);
-      } else {
-        res = await axiosInstance.get(`/pm/projects/attachment/${attachmentId}/download`);
-      }
-
-      const base64Code = res.data.file.split(",")[1];
-
-      const fileName = FileSystem.documentDirectory + attachmentName;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      await Share.shareAsync(fileName);
+      await axiosInstance.get(`/download/${attachment}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
       toast.show({
@@ -180,8 +165,8 @@ const FileSection = ({ projectId }) => {
             <ScrollView style={{ maxHeight: 200 }}>
               <Box flex={1} minHeight={2}>
                 <FlashList
-                  data={attachments?.data}
-                  keyExtractor={(item) => item?.id}
+                  data={attachments.data}
+                  keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
@@ -191,10 +176,11 @@ const FileSection = ({ projectId }) => {
                       from={item?.attachment_from}
                       iconHeight={39}
                       iconWidth={31}
-                      id={item?.id}
-                      size={item?.file_size}
-                      title={item?.file_name}
-                      type={item?.mime_type}
+                      id={item.id}
+                      size={item.file_size}
+                      title={item.file_name}
+                      type={item.mime_type}
+                      path={item.file_path}
                     />
                   )}
                 />
