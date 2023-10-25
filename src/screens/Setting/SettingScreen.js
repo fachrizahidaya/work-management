@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
-import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text, useToast } from "native-base";
+import { Avatar, Box, Button, Center, Flex, Icon, ScrollView, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
