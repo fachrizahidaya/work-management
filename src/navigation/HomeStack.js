@@ -29,6 +29,7 @@ import AccountScreen from "../screens/Setting/Account/AccountScreen";
 import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
+import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 
 const Stack = createStackNavigator();
 
@@ -93,6 +94,8 @@ const HomeStack = () => {
       <Stack.Screen name="Subscription Screen" component={SubscriptionScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
