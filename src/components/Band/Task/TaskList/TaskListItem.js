@@ -11,6 +11,7 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const TaskListItem = ({
   id,
+  no,
   task,
   title,
   priority,
@@ -43,7 +44,7 @@ const TaskListItem = ({
 
             <Text w={190} numberOfLines={2} textDecorationLine={status === "Closed" ? "line-through" : "none"}>
               {title}
-              <Text color="primary.600"> #{id}</Text>
+              <Text color="primary.600"> #{no}</Text>
             </Text>
           </Flex>
 

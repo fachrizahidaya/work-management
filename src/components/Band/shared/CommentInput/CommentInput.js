@@ -9,19 +9,7 @@ import * as yup from "yup";
 
 import { Alert, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import {
-  Avatar,
-  Box,
-  Flex,
-  FormControl,
-  Icon,
-  IconButton,
-  Image,
-  Pressable,
-  Text,
-  TextArea,
-  useToast,
-} from "native-base";
+import { Box, Flex, FormControl, Icon, IconButton, Image, Pressable, Text, TextArea, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -31,6 +19,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -94,8 +83,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Comment added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Comment added`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -103,8 +92,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -312,14 +301,9 @@ const CommentInput = ({ taskId, projectId }) => {
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}
             renderItem={({ item }) => (
-              <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-                <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                  <Avatar
-                    size="xs"
-                    source={{
-                      uri: `${process.env.EXPO_PUBLIC_API}/image/${item.comment_image}/thumb`,
-                    }}
-                  />
+              <Flex flexDir="row" justifyContent="space-between">
+                <Flex flexDir="row" gap={1.5} mb={2}>
+                  <AvatarPlaceholder name={item?.comment_name} image={item?.comment_image} size="xs" />
 
                   <Box>
                     <Flex flexDir="row" gap={1} alignItems="center">

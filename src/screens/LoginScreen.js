@@ -76,8 +76,8 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "jeremy@kolabora.com",
-      password: "Password123!",
+      email: "",
+      password: "",
     },
     validationSchema: yup.object().shape({
       email: yup.string().email("Please use correct email format").required("Email is required"),
@@ -112,31 +112,6 @@ const LoginScreen = () => {
     }
   };
 
-  /**
-   * Retrieves user data securely from storage and initiates the login process if data is found.
-   */
-  const getUserData = async () => {
-    try {
-      // Retrieve user data from SecureStore
-      const userData = await SecureStore.getItemAsync("user_data");
-
-      // If user data exists, initiate the login process
-      if (userData) {
-        // Parse the retrieved user data
-        const parsedUserData = JSON.parse(userData);
-
-        // Initiate login with email and password from user data
-        loginHandler({
-          email: parsedUserData.email,
-          password: parsedUserData.password_real,
-        });
-      }
-    } catch (error) {
-      // Handle any errors that occur during the process
-      throw new Error("Failed to retrieve user data: " + error.message);
-    }
-  };
-
   // const signInWithGoogle = async (user) => {
   //   try {
   //     const res = await axiosInstance.post("/auth/login-with-google", {
@@ -160,9 +135,6 @@ const LoginScreen = () => {
   // };
 
   // Initiate the getUserData function
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   // useEffect(() => {
   //   if (response?.type == "success") {

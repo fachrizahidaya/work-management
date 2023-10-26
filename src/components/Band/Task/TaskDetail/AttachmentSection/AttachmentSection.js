@@ -50,16 +50,16 @@ const AttachmentSection = ({ taskId, disabled }) => {
 
       // Display toast if success
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Attachment uploaded"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       // Display toast if error
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -121,15 +121,15 @@ const AttachmentSection = ({ taskId, disabled }) => {
       }
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Attachment deleted"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Attachment deleted"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

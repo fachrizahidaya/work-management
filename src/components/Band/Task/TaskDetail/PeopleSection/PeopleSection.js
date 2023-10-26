@@ -1,5 +1,7 @@
 import React, { memo, useState } from "react";
 
+import { useSelector } from "react-redux";
+
 import { TouchableOpacity } from "react-native";
 import { Actionsheet, Flex, FormControl, Icon, IconButton, Pressable, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,8 +24,10 @@ const PeopleSection = ({
   disabled,
   selectedTask,
   refetchResponsible,
+  refetchTask,
 }) => {
   const toast = useToast();
+  const userSelector = useSelector((state) => state.auth);
   const [selectedObserver, setSelectedObserver] = useState({});
 
   const { isOpen: deleteObserverModalIsOpen, toggle } = useDisclosure(false);
@@ -36,7 +40,7 @@ const PeopleSection = ({
     toggle();
 
     // Filter team members which has the same id value of the selected member
-    const filteredObserver = observers?.data.filter((observer) => {
+    const filteredObserver = observers?.filter((observer) => {
       return observer.id === id;
     });
 
@@ -60,16 +64,17 @@ const PeopleSection = ({
       }
       toggleMemberSelect();
       refetchResponsible();
+      refetchTask();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -90,8 +95,8 @@ const PeopleSection = ({
       refetchObservers();
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={`New observer added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`New observer added`} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();
@@ -99,8 +104,8 @@ const PeopleSection = ({
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();
@@ -207,14 +212,17 @@ const PeopleSection = ({
 
       <Actionsheet isOpen={memberSelectIsOpen} onClose={toggleMemberSelect}>
         <Actionsheet.Content>
-          {members?.data?.length > 0 &&
+          {members?.data?.length > 0 ? (
             members.data.map((member) => {
               return (
                 <Actionsheet.Item key={member.id} onPress={() => takeTask(member.user_id)}>
                   {member.member_name}
                 </Actionsheet.Item>
               );
-            })}
+            })
+          ) : (
+            <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>{userSelector.name}</Actionsheet.Item>
+          )}
         </Actionsheet.Content>
       </Actionsheet>
     </>

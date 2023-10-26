@@ -55,15 +55,15 @@ const NotesScreen = () => {
       await axiosInstance.patch(`/pm/notes/${noteId}/${status}`);
       refetch();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Note ${status}`} toast={toast} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Note ${status}`} toast={toast} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} toast={toast} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} toast={toast} close={() => toast.close(id)} />;
         },
       });
     }

@@ -50,16 +50,17 @@ const ControlSection = ({
         });
       }
       refetchResponsible();
+      refetchTask();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -75,8 +76,8 @@ const ControlSection = ({
         id: selectedTask?.id,
       });
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task ${status}ed`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task ${status}ed`} close={() => toast.close(id)} />;
         },
       });
       toggleLoading();
@@ -86,8 +87,8 @@ const ControlSection = ({
       console.log(error);
       toggleLoading();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

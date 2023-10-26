@@ -32,16 +32,16 @@ const ChangePasswordScreen = () => {
       resetForm();
       navigation.navigate("Log Out");
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Password saved, redirecting to login screen"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Password saved, redirecting to login screen"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

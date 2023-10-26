@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { Box, Flex, Progress, Text } from "native-base";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
+
 import { login } from "../redux/reducer/auth";
 import { setModule } from "../redux/reducer/module";
 

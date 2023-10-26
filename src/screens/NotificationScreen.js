@@ -20,11 +20,7 @@ const NotificationScreen = ({ route }) => {
     limit: 20,
   };
 
-  const {
-    data: notifications,
-    isLoading: notifIsLoading,
-    isFetching: notifIsFetching,
-  } = useFetch(
+  const { data: notifications, isFetching: notifIsFetching } = useFetch(
     module === "BAND" ? "/pm/notifications" : "/hr/notifications",
     [currentPage],
     notificationFetchParameters
@@ -62,7 +58,7 @@ const NotificationScreen = ({ route }) => {
 
         <FlashList
           data={cumulativeNotifs}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           onEndReached={fetchMoreData}
           estimatedItemSize={50}

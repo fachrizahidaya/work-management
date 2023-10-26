@@ -23,7 +23,7 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
         borderWidth={1}
       >
         <Flex flexDir="column">
-          <Text opacity={0.5}>{responsible}</Text>
+          <Text opacity={0.5}>{responsible || "TBD"}</Text>
           <Text textDecorationLine={status === "Closed" ? "line-through" : "none"} w={200}>
             {title}
           </Text>

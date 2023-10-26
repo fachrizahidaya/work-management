@@ -102,8 +102,8 @@ const MyTeamScreen = () => {
       refetchMembers();
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Team Saved"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Team Saved"} close={() => toast.close(id)} />;
         },
       });
       toggleAddMemberModal();
@@ -111,8 +111,8 @@ const MyTeamScreen = () => {
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleAddMemberModal();

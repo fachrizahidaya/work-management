@@ -37,8 +37,8 @@ const ConfirmationModal = ({
       toggle();
       toggleIsDeleting();
       toast.show({
-        render: () => {
-          return <SuccessToast message={successMessage} />;
+        render: ({ id }) => {
+          return <SuccessToast message={successMessage} close={() => toast.close(id)} />;
         },
         placement: placement ? placement : "bottom",
       });
@@ -51,8 +51,8 @@ const ConfirmationModal = ({
       console.log(error);
       toggleIsDeleting();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

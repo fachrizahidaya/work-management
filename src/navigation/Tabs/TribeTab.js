@@ -78,7 +78,7 @@ const TribeTab = ({ setSelectedModule }) => {
             "Reimbursement",
             "Payslip",
             "My KPI",
-            "Calendar",
+            "Calendar Tribe",
             "Contact",
           ].includes(route.name)
             ? () => {
@@ -146,7 +146,7 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen
-          name="Setting"
+          name="Setting Tribe"
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
@@ -187,7 +187,7 @@ const TribeTab = ({ setSelectedModule }) => {
 
         <Tab.Screen name="My KPI" component={EmptyScreen} />
 
-        <Tab.Screen name="Calendar" component={CalendarScreen} />
+        <Tab.Screen name="Calendar Tribe" component={CalendarScreen} />
 
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>

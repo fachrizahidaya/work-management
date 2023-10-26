@@ -121,7 +121,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
           borderColor="#E8E9EB"
           borderBottomWidth={1}
           onPress={() => {
-            navigation.navigate("Calendar");
+            navigation.navigate("Calendar Tribe");
             toggle();
           }}
         >

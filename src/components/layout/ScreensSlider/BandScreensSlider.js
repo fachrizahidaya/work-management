@@ -48,7 +48,7 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
           borderColor="#E8E9EB"
           borderBottomWidth={1}
           onPress={() => {
-            navigation.navigate("Calendar");
+            navigation.navigate("Calendar Band");
             toggle();
           }}
         >

@@ -28,18 +28,20 @@
       },
       "distribution": "internal"
     },
-    "production": {}
-  },
-  "submit": {
     "production": {
       "ios": {
-        "appleId": "developer@kolabora.com",
-        "ascAppId": "",
-        "appleTeamId": "RP9L4Q9H5J"
+        "enterpriseProvisioning": "adhoc"
+      },
+      "android": {
+        "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://kolabora.kolabora-app.com/api"
-      }
+        "EXPO_PUBLIC_API": "https://api.ksshub.com"
+      },
+      "distribution": "internal"
     }
+  },
+  "submit": {
+    "production": {}
   }
 }
