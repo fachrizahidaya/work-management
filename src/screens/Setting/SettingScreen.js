@@ -1,26 +1,20 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { Dimensions } from "react-native";
-import { Avatar, Box, Button, Center, Flex, Icon, Pressable, ScrollView, Skeleton, Text, useToast } from "native-base";
+import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
+import { Avatar, Box, Button, Center, Flex, Icon, ScrollView, Skeleton, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import axiosInstance from "../../config/api";
-import { update_profile } from "../../redux/reducer/auth";
-import { SuccessToast } from "../../components/shared/ToastDialog";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const userSelector = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-
-  const toast = useToast();
 
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
   const { data: myProfile } = useFetch("/hr/my-profile");
@@ -30,6 +24,7 @@ const SettingScreen = () => {
       icons: "lock-outline",
       title: "Passwords",
       color: "#FF965D",
+      screen: "Change Password",
     },
     {
       icons: "alert-octagon-outline",
@@ -68,11 +63,11 @@ const SettingScreen = () => {
           <PageHeader backButton={false} title="Settings" />
 
           <Box bgColor="#FAFAFA" borderRadius={9}>
-            <Pressable onPress={() => navigation.navigate("Account Screen", { profile: myProfile })}>
+            <TouchableOpacity onPress={() => navigation.navigate("Account Screen", { profile: myProfile })}>
               <Flex direction="row" justifyContent="space-between" alignItems="center" p="8px 12px">
                 <Box>
                   <Flex direction="row" gap={4}>
-                    <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" />
+                    <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" isThumb={false} />
                     <Box>
                       <Text fontSize={20} fontWeight={700}>
                         {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
@@ -84,16 +79,9 @@ const SettingScreen = () => {
 
                 <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
               </Flex>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable
-              display="flex"
-              flexDir="row"
-              alignItems="center"
-              justifyContent="space-between"
-              h={42}
-              p="8px 12px"
-            >
+            <TouchableOpacity style={styles.item}>
               <Flex flexDir="row" alignItems="center" gap={4}>
                 {team?.data?.length > 0 && (
                   <Center px={3}>
@@ -124,24 +112,16 @@ const SettingScreen = () => {
               </Flex>
 
               <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-            </Pressable>
+            </TouchableOpacity>
           </Box>
 
-          <Flex
-            bgColor="#FAFAFA"
-            borderRadius={9}
-            opacity={0.5} // feature disabled
-          >
+          <Flex bgColor="#FAFAFA" borderRadius={9}>
             {first.map((item) => {
               return (
-                <Pressable
+                <TouchableOpacity
                   key={item.title}
-                  display="flex"
-                  flexDir="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  h={42}
-                  p="8px 12px"
+                  style={[styles.item, { opacity: item.screen ? 1 : 0.5 }]}
+                  onPress={() => item.screen && navigation.navigate(item.screen)}
                 >
                   <Flex flexDir="row" alignItems="center" gap={4}>
                     <Box bgColor={item.color} p={1} borderRadius={4}>
@@ -151,22 +131,12 @@ const SettingScreen = () => {
                   </Flex>
 
                   <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-                </Pressable>
+                </TouchableOpacity>
               );
             })}
           </Flex>
 
-          <Pressable
-            display="flex"
-            flexDir="row"
-            alignItems="center"
-            justifyContent="space-between"
-            bgColor="#FAFAFA"
-            borderRadius={9}
-            h={42}
-            p="8px 12px"
-            opacity={0.5} // feature disabled
-          >
+          <TouchableOpacity style={styles.item}>
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#8B63E7" p={1} borderRadius={4}>
                 <Icon as={<MaterialCommunityIcons name="link-variant" />} size="md" color="white" />
@@ -180,19 +150,9 @@ const SettingScreen = () => {
             </Flex>
 
             <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable
-            display="flex"
-            flexDir="row"
-            alignItems="center"
-            justifyContent="space-between"
-            bgColor="#FAFAFA"
-            borderRadius={9}
-            h={42}
-            p="8px 12px"
-            opacity={0.5} // feature disabled
-          >
+          <TouchableOpacity style={styles.item}>
             <Flex flexDir="row" alignItems="center" gap={4}>
               <Box bgColor="#B5B5B5" p={1} borderRadius={4}>
                 <Icon as={<MaterialCommunityIcons name="view-grid-outline" />} size="md" color="white" />
@@ -201,7 +161,7 @@ const SettingScreen = () => {
             </Flex>
 
             <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-          </Pressable>
+          </TouchableOpacity>
 
           <Flex
             bgColor="#FAFAFA"
@@ -210,15 +170,7 @@ const SettingScreen = () => {
           >
             {second.map((item) => {
               return (
-                <Pressable
-                  key={item.title}
-                  display="flex"
-                  flexDir="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  h={42}
-                  p="8px 12px"
-                >
+                <TouchableOpacity style={styles.item}>
                   <Flex flexDir="row" alignItems="center" gap={4}>
                     <Box bgColor={item.color} p={1} borderRadius={4}>
                       <Icon as={<MaterialCommunityIcons name={item.icons} />} size="md" color="white" />
@@ -232,7 +184,7 @@ const SettingScreen = () => {
                   ) : (
                     <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
                   )}
-                </Pressable>
+                </TouchableOpacity>
               );
             })}
           </Flex>
@@ -249,3 +201,15 @@ const SettingScreen = () => {
 };
 
 export default SettingScreen;
+
+const styles = StyleSheet.create({
+  item: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 42,
+    padding: 8,
+    opacity: 0.5,
+  },
+});
