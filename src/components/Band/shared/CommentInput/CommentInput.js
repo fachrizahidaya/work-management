@@ -301,8 +301,8 @@ const CommentInput = ({ taskId, projectId }) => {
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}
             renderItem={({ item }) => (
-              <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-                <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
+              <Flex flexDir="row" justifyContent="space-between">
+                <Flex flexDir="row" gap={1.5} mb={2}>
                   <AvatarPlaceholder name={item?.comment_name} image={item?.comment_image} size="xs" />
 
                   <Box>

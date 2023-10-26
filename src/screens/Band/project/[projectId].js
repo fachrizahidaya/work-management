@@ -269,10 +269,13 @@ const ProjectDetailScreen = ({ route }) => {
                           <Flex>
                             <Text fontWeight={400}>{item?.description}</Text>
 
-                            <HStack space={1}>
-                              <Text fontWeight={400}>{item.object_title}</Text>
-                              <Text color="#377893">#{item.reference_no}</Text>
-                            </HStack>
+                            <Text fontWeight={400} width={300} numberOfLines={2}>
+                              {item.object_title}
+                              <Text color="#377893" fontWeight={500}>
+                                {" "}
+                                #{item.reference_no}
+                              </Text>
+                            </Text>
                           </Flex>
                         </Box>
                       </Flex>
