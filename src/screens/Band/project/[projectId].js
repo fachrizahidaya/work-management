@@ -271,7 +271,7 @@ const ProjectDetailScreen = ({ route }) => {
 
                             <HStack space={1}>
                               <Text fontWeight={400}>{item.object_title}</Text>
-                              <Text color="#377893">#{item.reference_id}</Text>
+                              <Text color="#377893">#{item.reference_no}</Text>
                             </HStack>
                           </Flex>
                         </Box>

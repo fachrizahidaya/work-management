@@ -40,7 +40,9 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
       }
-      refetch();
+      if (refetch) {
+        refetch();
+      }
       setSubmitting(false);
       setStatus("success");
 

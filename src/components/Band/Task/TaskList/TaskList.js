@@ -16,7 +16,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
-
   const onProgressTasks = tasks?.filter((task) => {
     return task.status === "On Progress";
   });
@@ -41,6 +40,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     <TaskListItem
                       key={item.id}
                       id={item.id}
+                      no={item.task_no}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
@@ -92,6 +92,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     <TaskListItem
                       key={item.id}
                       id={item.id}
+                      no={item.task_no}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
@@ -143,6 +144,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     <TaskListItem
                       key={item.id}
                       id={item.id}
+                      no={item.task_no}
                       task={item}
                       title={item.title}
                       image={item.responsible_image}
