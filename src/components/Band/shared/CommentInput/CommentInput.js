@@ -9,19 +9,7 @@ import * as yup from "yup";
 
 import { Alert, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import {
-  Avatar,
-  Box,
-  Flex,
-  FormControl,
-  Icon,
-  IconButton,
-  Image,
-  Pressable,
-  Text,
-  TextArea,
-  useToast,
-} from "native-base";
+import { Box, Flex, FormControl, Icon, IconButton, Image, Pressable, Text, TextArea, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -31,6 +19,7 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -314,12 +303,7 @@ const CommentInput = ({ taskId, projectId }) => {
             renderItem={({ item }) => (
               <Flex flexDir="row" alignItems="center" justifyContent="space-between">
                 <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                  <Avatar
-                    size="xs"
-                    source={{
-                      uri: `${process.env.EXPO_PUBLIC_API}/image/${item.comment_image}/thumb`,
-                    }}
-                  />
+                  <AvatarPlaceholder name={item?.comment_name} image={item?.comment_image} size="xs" />
 
                   <Box>
                     <Flex flexDir="row" gap={1} alignItems="center">
