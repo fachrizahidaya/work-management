@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 import _ from "lodash";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -19,6 +20,8 @@ const ContactScreen = () => {
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const userSelector = useSelector((state) => state.auth);
 
   const dependencies = [currentPage, searchInput];
   const fetchEmployeeContactParameters = {
@@ -123,7 +126,7 @@ const ContactScreen = () => {
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}
           onEndReached={fetchMoreEmployeeContact}
-          ListFooterComponent={employeeDataIsFetching && <Spinner color="primary.600" size="sm" />}
+          // ListFooterComponent={employeeDataIsFetching && <Spinner color="primary.600" size="sm" />}
           renderItem={({ item }) => (
             <ContactList
               key={item?.id}
@@ -135,6 +138,8 @@ const ContactScreen = () => {
               image={item?.image}
               phone={item?.phone_number}
               email={item?.email}
+              refetch={refetchEmployeeData}
+              loggedEmployeeId={userSelector?.user_role_id}
             />
           )}
         />
