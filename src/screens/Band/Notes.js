@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Flex, Icon, Pressable, Skeleton, VStack, View, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
@@ -72,41 +72,43 @@ const NotesScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <VStack space={21} flex={1}>
-          <PageHeader backButton={false} title="Notes" />
-          <Flex flexDir="row">
-            <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
-          </Flex>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <VStack space={21} flex={1}>
+            <PageHeader backButton={false} title="Notes" />
+            <Flex flexDir="row">
+              <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
+            </Flex>
 
-          <ScrollView
-            style={{ maxHeight: height }}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-          >
-            <View flex={1} minH={2}>
-              {!isLoading ? (
-                <FlashList
-                  data={filteredData}
-                  keyExtractor={(item) => item.id}
-                  estimatedItemSize={270}
-                  renderItem={({ item }) => (
-                    <NoteItem
-                      note={item}
-                      id={item.id}
-                      title={item.title}
-                      date={item.created_at}
-                      isPinned={item.pinned}
-                      onPress={pinHandler}
-                      openDeleteModal={openDeleteModalHandler}
-                      openEditForm={openEditFormHandler}
-                    />
-                  )}
-                />
-              ) : (
-                <Skeleton height={270} />
-              )}
-            </View>
-          </ScrollView>
-        </VStack>
+            <ScrollView
+              style={{ maxHeight: height }}
+              refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            >
+              <View flex={1} minH={2}>
+                {!isLoading ? (
+                  <FlashList
+                    data={filteredData}
+                    keyExtractor={(item) => item.id}
+                    estimatedItemSize={270}
+                    renderItem={({ item }) => (
+                      <NoteItem
+                        note={item}
+                        id={item.id}
+                        title={item.title}
+                        date={item.created_at}
+                        isPinned={item.pinned}
+                        onPress={pinHandler}
+                        openDeleteModal={openDeleteModalHandler}
+                        openEditForm={openEditFormHandler}
+                      />
+                    )}
+                  />
+                ) : (
+                  <Skeleton height={270} />
+                )}
+              </View>
+            </ScrollView>
+          </VStack>
+        </TouchableWithoutFeedback>
 
         {createCheckAccess && (
           <Pressable
