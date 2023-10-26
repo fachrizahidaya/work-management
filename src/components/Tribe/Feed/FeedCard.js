@@ -6,6 +6,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
+import { useEffect } from "react";
 
 const FeedCard = ({
   posts,
@@ -17,7 +18,6 @@ const FeedCard = ({
   handleEndReached,
   feedsIsFetching,
   refetchFeeds,
-  feedsIsLoading,
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
@@ -34,9 +34,11 @@ const FeedCard = ({
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
+
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
+    // refetchFeeds();
   };
 
   const commentSubmitHandler = () => {
@@ -45,7 +47,12 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
+    // refetchFeeds();
   };
+
+  useEffect(() => {
+    refetchFeeds();
+  }, [posts]);
 
   return (
     <Box flex={1}>
@@ -59,7 +66,6 @@ const FeedCard = ({
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
-            post={item}
             id={item?.id}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
@@ -71,18 +77,20 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post handker
+            // like post handler
             onToggleLike={onToggleLike}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
             // toggle Comment
             onCommentToggle={commentsOpenHandler}
+            refetch={refetchFeeds}
           />
         )}
       />
+
       {commentsOpen && (
         <FeedComment
-          handleOpen={commentsOpen}
+          handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
           postId={postId}
           total_comments={postTotalComment}
@@ -90,6 +98,7 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
+          refetchFeeds={refetchFeeds}
         />
       )}
     </Box>

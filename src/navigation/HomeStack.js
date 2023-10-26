@@ -16,11 +16,11 @@ import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 
 // Tribe Screens
-import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen";
+import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import NotificationScreen from "../screens/NotificationScreen";
-import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen";
+import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/TeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
 // Settings Screens

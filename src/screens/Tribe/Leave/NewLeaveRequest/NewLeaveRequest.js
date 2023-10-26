@@ -164,7 +164,7 @@ const NewLeaveRequest = ({ route }) => {
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       leaveRequestAddHandler(values, setSubmitting, setStatus);
-      resetForm();
+      // resetForm();
     },
   });
 

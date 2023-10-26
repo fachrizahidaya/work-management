@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Agenda } from "react-native-calendars";
+import { Agenda, AgendaList } from "react-native-calendars";
 import dayjs from "dayjs";
 
-import { Image, Text, VStack } from "native-base";
+import { Box, Image, Text, VStack } from "native-base";
 import { TouchableOpacity, StyleSheet } from "react-native";
 
 const CalendarWithSlider = ({ items }) => {
@@ -26,32 +27,50 @@ const CalendarWithSlider = ({ items }) => {
     );
   };
 
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
+  const [isMonthVisible, setIsMonthVisible] = useState(true);
+  const toggleMonthVisibility = () => {
+    setIsMonthVisible(!isMonthVisible);
+  };
+
   return (
-    <Agenda
-      items={items}
-      showClosingKnob={true}
-      selected={today}
-      renderItem={renderItem}
-      theme={{
-        selectedDayTextColor: "white",
-        selectedDayBackgroundColor: "#176688",
-        todayTextColor: "#176688",
-      }}
-      renderEmptyData={() => {
-        return (
-          <VStack space={2} alignItems="center" justifyContent="center" height="100%" bgColor="white">
-            <Image
-              source={require("../../assets/vectors/items.jpg")}
-              h={200}
-              w={200}
-              alt="empty"
-              resizeMode="contain"
-            />
-            <Text>You have no agenda</Text>
-          </VStack>
-        );
-      }}
-    />
+    <>
+      <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
+
+      <Agenda
+        items={items}
+        showClosingKnob={true}
+        selected={today}
+        renderItem={renderItem}
+        theme={{
+          selectedDayTextColor: "white",
+          selectedDayBackgroundColor: "#176688",
+          todayTextColor: "#176688",
+        }}
+        renderEmptyData={() => {
+          return (
+            <>
+              <VStack space={2} alignItems="center" justifyContent="center" height="100%" bgColor="white">
+                <Image
+                  source={require("../../assets/vectors/items.jpg")}
+                  h={200}
+                  w={200}
+                  alt="empty"
+                  resizeMode="contain"
+                />
+                <Text>You have no agenda</Text>
+              </VStack>
+            </>
+          );
+        }}
+        onDayPress={handleDayPress}
+        // onCalendarToggled={toggleMonthVisibility}
+      />
+    </>
   );
 };
 
@@ -66,5 +85,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 17,
     justifyContent: "center",
+  },
+  monthLabel: {
+    textAlign: "center",
+    fontSize: 18,
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    color: "#000000",
+  },
+  emptyDataContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+  },
+  emptyDataText: {
+    fontSize: 16,
   },
 });

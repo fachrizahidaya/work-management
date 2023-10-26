@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Spinner } from "native-base";
+import { Button, Spinner, Text } from "native-base";
 
 const FormButton = ({
   children,
@@ -12,6 +12,8 @@ const FormButton = ({
   setLoadingIndicator,
   variant,
   opacity,
+  fontColor,
+  fontSize,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -42,7 +44,13 @@ const FormButton = ({
       variant={variant}
       opacity={opacity ? opacity : null}
     >
-      {isLoading ? <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} /> : children}
+      {isLoading ? (
+        <Spinner size="sm" color={fontColor === "white" ? "primary.600" : "white"} />
+      ) : (
+        <Text fontSize={fontSize ? fontSize : 12} color={fontColor ? fontColor : "#FFFFFF"}>
+          {children}
+        </Text>
+      )}
     </Button>
   );
 };

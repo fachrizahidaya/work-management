@@ -11,13 +11,13 @@ import { Box, Flex, Icon, Text, useToast, Button, Modal, VStack, Image } from "n
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import { SuccessToast } from "../../../components/shared/ToastDialog";
-import axiosInstance from "../../../config/api";
-import PageHeader from "../../../components/shared/PageHeader";
-import NewFeedForm from "../../../components/Tribe/Feed/NewFeed/NewFeedForm";
-import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
+import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { SuccessToast } from "../../../../components/shared/ToastDialog";
+import axiosInstance from "../../../../config/api";
+import PageHeader from "../../../../components/shared/PageHeader";
+import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -52,14 +52,12 @@ const NewFeedScreen = ({ route }) => {
       }
 
       formData.append("file", image);
-      console.log(formData);
+
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
-        resetForm();
       } else {
         if (values.end_date) {
           postSubmitHandler(formData, setSubmitting, setStatus);
-          resetForm();
         } else {
           throw new Error("For Announcement type, end date is required");
         }
@@ -79,9 +77,9 @@ const NewFeedScreen = ({ route }) => {
         },
       });
       navigation.navigate("Dashboard");
+      refetch();
       setSubmitting(false);
       setStatus("success");
-      refetch();
       toast.show({
         render: () => {
           return <SuccessToast message={`Posted succesfuly!`} />;
@@ -161,7 +159,6 @@ const NewFeedScreen = ({ route }) => {
 
   useEffect(() => {
     if (formik.isSubmitting && formik.status === "success") {
-      formik.resetForm();
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -191,7 +188,7 @@ const NewFeedScreen = ({ route }) => {
       />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
-        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" />
+        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
         <Flex gap={1}>
           <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
             <Flex alignItems="center" flexDir="row">
@@ -224,6 +221,7 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
+        refetch={refetch}
       />
     </Box>
   );

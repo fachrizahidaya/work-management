@@ -76,7 +76,7 @@ const TeamLeaveRequestList = ({
     <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex gap={2} flex={1} flexDir="row">
-          <AvatarPlaceholder image={image} name={name} size="xs" borderRadius="full" />
+          <AvatarPlaceholder image={image} name={name} size="xs" borderRadius="full" isThumb={false} />
           <Flex flexDir="row" alignItems="center">
             <Text fontWeight={500} fontSize={14} color="#3F434A">
               {leaveName}

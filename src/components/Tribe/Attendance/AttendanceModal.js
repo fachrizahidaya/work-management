@@ -321,9 +321,17 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                 >
                   <Text color="#FFFFFF">Cancel</Text>
                 </Button>
-                <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
+                {/* <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
                   <Text color="#FFFFFF">Save</Text>
-                </Button>
+                </Button> */}
+                <FormButton
+                  children="Save"
+                  size="sm"
+                  variant="solid"
+                  onPress={formik.handleSubmit}
+                  isSubmitting={formik.isSubmitting}
+                  fontColor="#FFFFFF"
+                />
               </>
             )
           }

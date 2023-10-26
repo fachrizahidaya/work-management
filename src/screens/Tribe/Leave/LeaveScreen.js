@@ -35,7 +35,6 @@ const LeaveScreen = () => {
   /**
    * Filtered leave handler
    */
-
   const pendingLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Pending");
   const pendingCount = pendingLeaveRequests.length;
   const approvedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Approved");
@@ -86,7 +85,7 @@ const LeaveScreen = () => {
               {/* Content here */}
               <LeaveRequestList
                 data={personalLeaveRequest?.data}
-                pendingLeaveRequest={pendingLeaveRequests}
+                pendingLeaveRequests={pendingLeaveRequests}
                 approvedLeaveRequests={approvedLeaveRequests}
                 rejectedLeaveRequests={rejectedLeaveRequests}
                 refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
@@ -98,24 +97,28 @@ const LeaveScreen = () => {
               />
             </ScrollView>
           ) : (
-            // No content handler
-            <VStack space={2} alignItems="center" justifyContent="center">
-              <Image
-                source={require("../../../assets/vectors/empty.png")}
-                resizeMode="contain"
-                size="2xl"
-                alt="empty"
-              />
-              <Text>No Data</Text>
-            </VStack>
+            <>
+              {/* No content handler */}
+              <VStack space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../assets/vectors/empty.png")}
+                  resizeMode="contain"
+                  size="2xl"
+                  alt="empty"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </>
           )
         ) : (
-          // During fetch data is loading handler
-          <VStack px={3} space={2}>
-            <Skeleton h={41} />
-            <Skeleton h={41} />
-            <Skeleton h={41} />
-          </VStack>
+          <>
+            {/* During fetch data is loading handler */}
+            <VStack px={3} space={2}>
+              <Skeleton h={41} />
+              <Skeleton h={41} />
+              <Skeleton h={41} />
+            </VStack>
+          </>
         )}
       </SafeAreaView>
     </>

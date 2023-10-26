@@ -10,6 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
+import { LikeToggle } from "../../../components/shared/LikeToggle";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -88,10 +89,6 @@ const FeedScreen = () => {
     }
   }, [feeds?.data]);
 
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -116,6 +113,7 @@ const FeedScreen = () => {
           onPress={() => {
             navigation.navigate("New Feed", {
               refetch: postRefetchHandler,
+              loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
@@ -128,16 +126,15 @@ const FeedScreen = () => {
         <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
+            posts={posts}
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
             loggedEmployeeName={userSelector?.name}
-            posts={posts}
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             handleEndReached={postEndReachedHandler}
             feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
-            feedsIsLoading={feedsIsLoading}
           />
         </Box>
       </SafeAreaView>

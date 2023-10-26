@@ -10,7 +10,7 @@ import CustomAccordion from "../../shared/CustomAccordion";
 
 const LeaveRequestList = ({
   data,
-  pendingLeaveRequest,
+  pendingLeaveRequests,
   approvedLeaveRequests,
   rejectedLeaveRequests,
   isLoading,
@@ -33,7 +33,7 @@ const LeaveRequestList = ({
         <CustomAccordion title="Pending" subTitle={pendingCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
             <Box flex={1} minHeight={2}>
-              {pendingLeaveRequest.map((item) => {
+              {pendingLeaveRequests.map((item) => {
                 return (
                   <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
@@ -59,7 +59,7 @@ const LeaveRequestList = ({
                         isOpen={cancelModalIsOpen}
                         toggle={toggleCancelModal}
                         apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
-                        color="coolGray.500"
+                        color="red.800"
                         hasSuccessFunc={true}
                         header="Cancel Leave Request"
                         onSuccess={() => {

@@ -5,8 +5,8 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import PageHeader from "../../../components/shared/PageHeader";
-import TeamLeaveRequestList from "../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
+import PageHeader from "../../../../components/shared/PageHeader";
+import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -52,7 +52,12 @@ const TeamLeaveScreen = ({ route }) => {
           />
         ) : (
           <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("../../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+            <Image
+              source={require("../../../../assets/vectors/empty.png")}
+              resizeMode="contain"
+              size="2xl"
+              alt="empty"
+            />
             <Text>No Data</Text>
           </VStack>
         )

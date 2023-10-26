@@ -71,7 +71,7 @@ const FeedCommentItem = ({
       <Flex my={1} minHeight={1}>
         <Flex direction="row" gap={2}>
           <Flex>
-            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
+            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" isThumb={false} />
           </Flex>
           <Flex flex={1} gap={1}>
             <Text fontSize={12} fontWeight={500}>
