@@ -107,10 +107,6 @@ const FeedComment = ({
     commentData?.data,
   ]);
 
-  useEffect(() => {
-    console.log("triggered comm", comments);
-  }, [comments]);
-
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>

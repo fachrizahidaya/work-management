@@ -112,7 +112,7 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              refetch: refetchFeeds,
+              refetch: postRefetchHandler,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,

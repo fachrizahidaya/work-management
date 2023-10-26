@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Icon, Image, Pressable } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -26,6 +26,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
+  const [fetchingMore, setFetchingMore] = useState(false);
+  const { height } = Dimensions.get("screen");
 
   const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
 
@@ -60,8 +62,7 @@ const EmployeeProfileScreen = ({ route }) => {
     data: personalFeeds,
     refetch: refetchPersonalFeeds,
     isFetching: personalFeedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, [currentOffset], postFetchParameters);
-  console.log("tes", personalFeeds?.data);
+  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
 
   /**
    * Header when screen scrolling handler
@@ -80,7 +81,8 @@ const EmployeeProfileScreen = ({ route }) => {
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (!fetchIsDone) {
+    if (!fetchingMore && !fetchIsDone) {
+      setFetchingMore(true);
       if (posts.length !== posts.length + personalFeeds?.data.length) {
         setCurrentOffset(currentOffset + 10);
       } else {
@@ -110,11 +112,10 @@ const EmployeeProfileScreen = ({ route }) => {
     if (personalFeeds?.data) {
       if (currentOffset === 0) {
         setPosts(personalFeeds?.data);
-        console.log("1", posts);
       } else {
         setPosts((prevData) => [...prevData, ...personalFeeds?.data]);
-        console.log("2", posts);
       }
+      setFetchingMore(false);
     }
   }, [personalFeeds?.data]);
 
@@ -137,7 +138,7 @@ const EmployeeProfileScreen = ({ route }) => {
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            refetch: refetch,
+            refetch: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
             employeeId: employeeId,
@@ -147,53 +148,27 @@ const EmployeeProfileScreen = ({ route }) => {
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
 
-      <ScrollView onScroll={handleScroll} style={{ height: 200, overflow: "scroll" }}>
-        {/* <Image
-          source={require("../../../assets/profile_banner.jpg")}
-          alignSelf="center"
-          h={200}
-          w={500}
-          alt="empty"
-          resizeMode="cover"
-        /> */}
-        <Flex flex={1} gap={5}>
-          {/* When the employee id is not equal, it will appear the contacts of employee */}
-          {/* <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
-            {userSelector?.id !== employee?.data?.user_id ? (
-              <>
-                <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
-                  <EmployeeContact employee={employee} />
-                </Flex>
-                <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-              </>
-            ) : (
-              <EmployeeSelfProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-            )}
-
-            <EmployeeTeammates
-              teammatesIsOpen={teammatesIsOpen}
-              toggleTeammates={toggleTeammates}
-              teammates={teammates}
-            />
-          </Flex> */}
-
-          <Flex px={3} minHeight={100} flex={1} flexDir="column" gap={2}>
-            {/* Posts that created by employee handler */}
-            <FeedCard
-              posts={posts}
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeName={loggedEmployeeName}
-              loggedEmployeeImage={loggedEmployeeImage}
-              onToggleLike={postLikeToggleHandler}
-              postRefetchHandler={postRefetchHandler}
-              handleEndReached={postEndReachedHandler}
-              personalFeedsIsFetching={personalFeedsIsFetching}
-              refetchPersonalFeeds={refetchPersonalFeeds}
-              refetchFeeds={refetch}
-            />
-          </Flex>
-        </Flex>
-      </ScrollView>
+      {/* <Flex  > */}
+      <Flex flex={1} minHeight={2} gap={2} height={height}>
+        {/* Posts that created by employee handler */}
+        <FeedCard
+          posts={posts}
+          loggedEmployeeId={loggedEmployeeId}
+          loggedEmployeeName={loggedEmployeeName}
+          loggedEmployeeImage={loggedEmployeeImage}
+          onToggleLike={postLikeToggleHandler}
+          postRefetchHandler={postRefetchHandler}
+          handleEndReached={postEndReachedHandler}
+          personalFeedsIsFetching={personalFeedsIsFetching}
+          refetchPersonalFeeds={refetchPersonalFeeds}
+          refetchFeeds={refetch}
+          employee={employee}
+          toggleTeammates={toggleTeammates}
+          teammates={teammates}
+          teammatesIsOpen={teammatesIsOpen}
+        />
+      </Flex>
+      {/* </Flex> */}
     </SafeAreaView>
   );
 };
