@@ -24,7 +24,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://api.ksshub.com"
+        "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
       },
       "distribution": "internal"
     },
@@ -42,15 +42,6 @@
     }
   },
   "submit": {
-    "production": {
-      "ios": {
-        "appleId": "developer@kolabora.com",
-        "ascAppId": "",
-        "appleTeamId": "RP9L4Q9H5J"
-      },
-      "env": {
-        "EXPO_PUBLIC_API": "https://kolabora.kolabora-app.com/api"
-      }
-    }
+    "production": {}
   }
 }
