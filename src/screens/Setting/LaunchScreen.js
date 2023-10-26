@@ -2,19 +2,16 @@ import React, { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 
+import jwt_decode from "jwt-decode";
+
 import { Image, View } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
-import axiosInstance from "../../config/api";
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
 
-  const loginHandler = async (form) => {
+  const loginHandler = async (userData) => {
     try {
-      const res = await axiosInstance.post("/auth/login", form);
-
-      const userData = res.data.data;
-
       navigation.navigate("Loading", { userData });
     } catch (error) {
       console.log(error);
@@ -23,14 +20,21 @@ const LaunchScreen = () => {
 
   const getUserData = async () => {
     try {
+      let currentDate = new Date();
       const userData = await SecureStore.getItemAsync("user_data");
+      const token = await SecureStore.getItemAsync("user_token");
 
-      if (userData) {
-        const parsedUserData = JSON.parse(userData);
-        loginHandler({
-          email: parsedUserData.email,
-          password: parsedUserData.password_real,
-        });
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
+
+        if (!isExpired) {
+          const parsedUserData = JSON.parse(userData);
+
+          loginHandler(parsedUserData);
+        } else {
+          navigation.navigate("Login");
+        }
       } else {
         navigation.navigate("Login");
       }
