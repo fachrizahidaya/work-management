@@ -13,7 +13,7 @@ import PhoneButton from "../../shared/PhoneButton";
 import WhatsappButton from "../../shared/WhatsappButton";
 import PersonalNestButton from "../../shared/PersonalNestButton";
 
-const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
+const ContactList = ({ id, name, position, division, status, image, phone, email, refetch, loggedEmployeeId }) => {
   const navigation = useNavigation();
 
   return (
@@ -25,6 +25,8 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
               navigation.navigate("Employee Profile", {
                 employeeId: id,
                 returnPage: "Contact",
+                refetch: refetch,
+                loggedEmployeeId: loggedEmployeeId,
               })
             }
           >

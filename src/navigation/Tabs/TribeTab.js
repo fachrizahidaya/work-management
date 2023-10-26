@@ -103,7 +103,7 @@ const TribeTab = ({ setSelectedModule }) => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
@@ -123,7 +123,7 @@ const TribeTab = ({ setSelectedModule }) => {
               </TouchableOpacity>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="Add"
           component={EmptyScreen}
