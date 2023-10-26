@@ -61,8 +61,8 @@ const ChecklistSection = ({ taskId, disabled }) => {
       setStatus("success");
       setSubmitting(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={"New checklist added"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"New checklist added"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -70,8 +70,8 @@ const ChecklistSection = ({ taskId, disabled }) => {
       setStatus("error");
       setSubmitting(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -86,16 +86,21 @@ const ChecklistSection = ({ taskId, disabled }) => {
       refetchChecklists();
       stop();
       toast.show({
-        render: () => {
-          return <SuccessToast message={currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked"} />;
+        render: ({ id }) => {
+          return (
+            <SuccessToast
+              message={currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked"}
+              close={() => toast.close(id)}
+            />
+          );
         },
       });
     } catch (error) {
       console.log(error);
       stop();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

@@ -48,8 +48,8 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       setIsLoading(false);
       refetchMember();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`New member added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`New member added`} close={() => toast.close(id)} />;
         },
       });
       toggleMemberModal();
@@ -57,8 +57,8 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleMemberModal();

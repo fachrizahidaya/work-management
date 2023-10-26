@@ -170,7 +170,7 @@ const SettingScreen = () => {
           >
             {second.map((item) => {
               return (
-                <TouchableOpacity style={styles.item}>
+                <TouchableOpacity style={styles.item} key={item.title}>
                   <Flex flexDir="row" alignItems="center" gap={4}>
                     <Box bgColor={item.color} p={1} borderRadius={4}>
                       <Icon as={<MaterialCommunityIcons name={item.icons} />} size="md" color="white" />

@@ -40,8 +40,8 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Team Saved"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Team Saved"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -49,8 +49,8 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

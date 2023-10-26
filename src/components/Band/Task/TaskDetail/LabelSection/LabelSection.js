@@ -55,16 +55,16 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
       refetchTaskLabels();
       stop();
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Label removed"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Label removed"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       stop();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
