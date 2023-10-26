@@ -46,6 +46,7 @@ const InformationScreen = () => {
                   email={profile?.data?.email}
                   phone={profile?.data?.phone_number}
                   image={profile?.data?.image}
+                  refetch={refetchProfile}
                 />
                 <Text fontSize={16} fontWeight={500} px={3}>
                   My Supervisor
@@ -57,6 +58,8 @@ const InformationScreen = () => {
                   supervisorEmail={profile?.data?.supervisor_email}
                   supervisorImage={profile?.data?.supervisor_image}
                   supervisorPosition={profile?.data?.supervisor_position}
+                  refetch={refetchProfile}
+                  id={profile?.data?.id}
                 />
               </>
             )}

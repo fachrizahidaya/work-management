@@ -30,7 +30,7 @@ const NewFeedScreen = ({ route }) => {
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const { refetch, refetchFeeds, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
 
   /**
    * Create a new post handler
@@ -55,9 +55,11 @@ const NewFeedScreen = ({ route }) => {
 
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
+        refetch();
       } else {
         if (values.end_date) {
           postSubmitHandler(formData, setSubmitting, setStatus);
+          refetch();
         } else {
           throw new Error("For Announcement type, end date is required");
         }
@@ -78,6 +80,7 @@ const NewFeedScreen = ({ route }) => {
       });
       navigation.navigate("Dashboard");
       refetch();
+      refetchFeeds();
       setSubmitting(false);
       setStatus("success");
       toast.show({
@@ -222,6 +225,7 @@ const NewFeedScreen = ({ route }) => {
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
         refetch={refetch}
+        refetchFeeds={refetchFeeds}
       />
     </Box>
   );
