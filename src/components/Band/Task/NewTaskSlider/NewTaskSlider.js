@@ -47,8 +47,8 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task saved!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task saved!`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -56,8 +56,8 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

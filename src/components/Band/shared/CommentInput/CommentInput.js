@@ -83,8 +83,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Comment added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Comment added`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -92,8 +92,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

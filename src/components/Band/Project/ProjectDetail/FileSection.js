@@ -56,16 +56,16 @@ const FileSection = ({ projectId }) => {
 
       // Display toast if success
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Attachment uploaded"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       // Display toast if error
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

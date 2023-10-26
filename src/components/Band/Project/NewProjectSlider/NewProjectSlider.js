@@ -55,8 +55,8 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Project saved!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Project saved!`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -64,8 +64,8 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

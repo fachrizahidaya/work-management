@@ -65,8 +65,8 @@ const CostSection = ({ taskId, disabled }) => {
       setSubmitting(false);
       refechCosts();
       toast.show({
-        render: () => {
-          return <SuccessToast message={"New cost added"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"New cost added"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -74,8 +74,8 @@ const CostSection = ({ taskId, disabled }) => {
       setStatus("error");
       setSubmitting(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

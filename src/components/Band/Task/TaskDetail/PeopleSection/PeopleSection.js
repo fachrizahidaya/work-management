@@ -66,15 +66,15 @@ const PeopleSection = ({
       refetchResponsible();
       refetchTask();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -95,8 +95,8 @@ const PeopleSection = ({
       refetchObservers();
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={`New observer added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`New observer added`} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();
@@ -104,8 +104,8 @@ const PeopleSection = ({
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();

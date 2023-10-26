@@ -42,8 +42,8 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       refetch();
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Label added"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Label added"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -51,8 +51,8 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       setStatus("error");
       setSubmitting(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -69,16 +69,16 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       refetchTaskLabels();
       stop();
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Label added"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Label added"} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       stop();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
