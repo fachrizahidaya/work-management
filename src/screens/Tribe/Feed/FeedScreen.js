@@ -53,7 +53,6 @@ const FeedScreen = () => {
         setCurrentOffset(currentOffset + 10);
       } else {
         setFetchIsDone(true);
-        ``;
       }
     }
   };
@@ -127,10 +126,10 @@ const FeedScreen = () => {
         <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
+            posts={posts}
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
             loggedEmployeeName={userSelector?.name}
-            posts={posts}
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             handleEndReached={postEndReachedHandler}

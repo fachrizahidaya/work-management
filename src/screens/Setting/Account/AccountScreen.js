@@ -52,7 +52,13 @@ const AccountScreen = ({ route }) => {
 
       <ScrollView>
         <Flex gap={1} alignItems="center" justifyContent="center" my={3}>
-          <AvatarPlaceholder borderRadius="full" size="xl" name={userSelector?.name} image={userSelector?.image} />
+          <AvatarPlaceholder
+            borderRadius="full"
+            size="xl"
+            name={userSelector?.name}
+            image={userSelector?.image}
+            isThumb={false}
+          />
           <Text fontSize={20} fontWeight={700}>
             {userSelector?.name}
           </Text>

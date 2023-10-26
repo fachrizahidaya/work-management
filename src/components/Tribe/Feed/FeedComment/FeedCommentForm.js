@@ -51,7 +51,7 @@ const FeedCommentForm = ({
         value={formik.values.comments}
         InputLeftElement={
           <Box pl={1}>
-            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" />
+            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
           </Box>
         }
         InputRightElement={

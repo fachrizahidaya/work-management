@@ -83,7 +83,7 @@ const FeedCardItem = ({
               })
             }
           >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
           </Pressable>
 
           <Flex flex={1}>

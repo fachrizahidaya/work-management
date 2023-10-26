@@ -46,7 +46,7 @@ const ContactGrid = ({ id, name, position, division, status, image, phone, email
       <Flex my={3} flexDir="column" style={card.card}>
         <Flex alignItems="center" flexDir="row-reverse"></Flex>
         <Flex gap={3} alignItems="center">
-          <AvatarPlaceholder image={image} name={name} size="2xl" borderRadius="full" />
+          <AvatarPlaceholder image={image} name={name} size="2xl" borderRadius="full" isThumb={false} />
           <Text fontWeight={500} fontSize={20} color="#3F434A">
             {name.length > 30 ? name.split(" ")[0] : name}
           </Text>

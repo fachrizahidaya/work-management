@@ -60,7 +60,7 @@ const EmployeeProfileScreen = ({ route }) => {
     data: personalFeeds,
     refetch: refetchPersonalFeeds,
     isFetching: personalFeedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, currentOffset, postFetchParameters);
+  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employeeId}`, [currentOffset], postFetchParameters);
   console.log("tes", personalFeeds?.data);
 
   /**
@@ -110,8 +110,10 @@ const EmployeeProfileScreen = ({ route }) => {
     if (personalFeeds?.data) {
       if (currentOffset === 0) {
         setPosts(personalFeeds?.data);
+        console.log("1", posts);
       } else {
         setPosts((prevData) => [...prevData, ...personalFeeds?.data]);
+        console.log("2", posts);
       }
     }
   }, [personalFeeds?.data]);
@@ -146,19 +148,19 @@ const EmployeeProfileScreen = ({ route }) => {
       </Pressable>
 
       <ScrollView onScroll={handleScroll} style={{ height: 200, overflow: "scroll" }}>
-        <Image
+        {/* <Image
           source={require("../../../assets/profile_banner.jpg")}
           alignSelf="center"
           h={200}
           w={500}
           alt="empty"
           resizeMode="cover"
-        />
+        /> */}
         <Flex flex={1} gap={5}>
-          <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+          {/* When the employee id is not equal, it will appear the contacts of employee */}
+          {/* <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
             {userSelector?.id !== employee?.data?.user_id ? (
               <>
-                {/* When the employee id is not equal, it will appear the contacts of employee */}
                 <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
                   <EmployeeContact employee={employee} />
                 </Flex>
@@ -173,7 +175,7 @@ const EmployeeProfileScreen = ({ route }) => {
               toggleTeammates={toggleTeammates}
               teammates={teammates}
             />
-          </Flex>
+          </Flex> */}
 
           <Flex px={3} minHeight={100} flex={1} flexDir="column" gap={2}>
             {/* Posts that created by employee handler */}

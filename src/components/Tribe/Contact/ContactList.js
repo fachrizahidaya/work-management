@@ -29,7 +29,7 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
             }
           >
             <Flex flexDir="row" alignItems="center" gap={3}>
-              <AvatarPlaceholder image={image} name={name} size="sm" borderRadius="full" />
+              <AvatarPlaceholder image={image} name={name} size="sm" borderRadius="full" isThumb={false} />
               <Flex>
                 <Text fontWeight={500} fontSize={12} color="#3F434A">
                   {name.length > 30 ? name.split(" ")[0] : name}

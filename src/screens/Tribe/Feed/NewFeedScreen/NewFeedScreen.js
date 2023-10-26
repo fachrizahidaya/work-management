@@ -188,7 +188,7 @@ const NewFeedScreen = ({ route }) => {
       />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
-        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" />
+        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
         <Flex gap={1}>
           <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
             <Flex alignItems="center" flexDir="row">

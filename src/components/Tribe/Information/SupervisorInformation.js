@@ -36,7 +36,13 @@ const SupervisorInformation = ({
               })
             }
           >
-            <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" borderRadius={10} />
+            <AvatarPlaceholder
+              image={supervisorImage}
+              name={supervisorName}
+              size="lg"
+              borderRadius={10}
+              isThumb={false}
+            />
           </TouchableOpacity>
           <Box>
             <Text fontWeight={500} fontSize={14} color="#3F434A">
