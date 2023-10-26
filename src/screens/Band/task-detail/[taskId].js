@@ -99,6 +99,7 @@ const TaskDetailScreen = ({ route }) => {
               ownerImage={selectedTask?.data?.owner_image}
               ownerName={selectedTask?.data?.owner_name}
               refetchObservers={refetchObservers}
+              refetchTask={refetchSelectedTask}
               disabled={inputIsDisabled}
               selectedTask={selectedTask?.data}
               refetchResponsible={refetchResponsible}
@@ -154,7 +155,7 @@ const TaskDetailScreen = ({ route }) => {
           isOpen={taskFormIsOpen}
           taskData={selectedTask?.data}
           onClose={onCloseTaskForm}
-          refetchCurrentTask={refetchSelectedTask}
+          refetch={refetchSelectedTask}
         />
       )}
     </SafeAreaView>

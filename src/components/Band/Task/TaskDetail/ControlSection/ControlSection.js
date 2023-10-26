@@ -50,6 +50,7 @@ const ControlSection = ({
         });
       }
       refetchResponsible();
+      refetchTask();
       toast.show({
         render: () => {
           return <SuccessToast message={`Task assigned`} />;
