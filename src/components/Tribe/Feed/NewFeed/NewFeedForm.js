@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Spinner, Text, TextArea } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,8 +24,12 @@ const NewFeedForm = ({
   endDateAnnouncementHandler,
   loggedEmployeeDivision,
   refetch,
+  refetchFeeds,
 }) => {
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigation = useNavigation();
+
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
       <FormControl isInvalid={formik.errors.content}>
@@ -136,16 +142,20 @@ const NewFeedForm = ({
           height={50}
           opacity={formik.values.content === "" ? 0.5 : 1}
           onPress={() => {
+            setIsLoading(true);
             formik.handleSubmit();
-            refetch();
           }}
         >
-          <Icon
-            as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
-            size={25}
-            color="#FFFFFF"
-            style={{ transform: [{ rotate: "-45deg" }] }}
-          />
+          {isLoading ? (
+            <Spinner color="#FFFFFF" />
+          ) : (
+            <Icon
+              as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
+              size={25}
+              color="#FFFFFF"
+              style={{ transform: [{ rotate: "-45deg" }] }}
+            />
+          )}
         </Pressable>
       </Flex>
     </Flex>

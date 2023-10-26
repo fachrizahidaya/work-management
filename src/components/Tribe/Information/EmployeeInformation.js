@@ -7,7 +7,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
 
-const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
+const EmployeeInformation = ({ id, name, position, email, phone, image, refetch }) => {
   const navigation = useNavigation();
 
   const phoneNumber = `0${phone}`;
@@ -22,10 +22,12 @@ const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
                 employeeId: id,
                 returnPage: "My Information",
                 loggedEmployeeImage: image,
+                refetch: refetch,
+                loggedEmployeeId: id,
               })
             }
           >
-            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={10} isThumb={false} />
+            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={"full"} isThumb={false} />
           </TouchableOpacity>
           <Flex>
             <Text fontWeight={500} fontSize={14} color="#3F434A">

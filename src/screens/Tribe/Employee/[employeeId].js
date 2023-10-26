@@ -4,23 +4,15 @@ import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Icon, Image, Pressable } from "native-base";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import EmployeeContact from "../../../components/Tribe/Employee/EmployeeContact";
-import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
-import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile";
-import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
-import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import axiosInstance from "../../../config/api";
-import { LikeToggle } from "../../../components/shared/LikeToggle";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
@@ -91,6 +83,9 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   };
 
+  /**
+   * Reset current offset after create a new feed
+   */
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
@@ -99,6 +94,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetch();
+      refetchPersonalFeeds();
       setTimeout(() => {
         console.log("liked this post!");
       }, 500);
@@ -148,13 +145,12 @@ const EmployeeProfileScreen = ({ route }) => {
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
 
-      {/* <Flex  > */}
       <Flex flex={1} minHeight={2} gap={2} height={height}>
         {/* Posts that created by employee handler */}
         <FeedCard
           posts={posts}
           loggedEmployeeId={loggedEmployeeId}
-          loggedEmployeeName={loggedEmployeeName}
+          loggedEmployeeName={userSelector?.name}
           loggedEmployeeImage={loggedEmployeeImage}
           onToggleLike={postLikeToggleHandler}
           postRefetchHandler={postRefetchHandler}
@@ -168,7 +164,6 @@ const EmployeeProfileScreen = ({ route }) => {
           teammatesIsOpen={teammatesIsOpen}
         />
       </Flex>
-      {/* </Flex> */}
     </SafeAreaView>
   );
 };

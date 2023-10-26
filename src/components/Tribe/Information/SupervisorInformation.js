@@ -14,6 +14,8 @@ const SupervisorInformation = ({
   supervisorPhone,
   supervisorImage,
   supervisorPosition,
+  refetch,
+  id,
 }) => {
   const phoneNumber = supervisorPhone;
   const phoneUrl = `tel:0${phoneNumber}`;
@@ -33,6 +35,8 @@ const SupervisorInformation = ({
               navigation.navigate("Employee Profile", {
                 employeeId: supervisorId,
                 returnPage: "My Information",
+                refetch: refetch,
+                loggedEmployeeId: id,
               })
             }
           >

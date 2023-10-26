@@ -113,6 +113,7 @@ const FeedScreen = () => {
           onPress={() => {
             navigation.navigate("New Feed", {
               refetch: postRefetchHandler,
+              refetchFeeds: refetchFeeds,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
