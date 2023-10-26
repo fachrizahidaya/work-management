@@ -5,7 +5,6 @@ import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "../Feed/FeedCardItem";
-import { LikeToggle } from "../../shared/LikeToggle";
 import FeedComment from "../Feed/FeedComment/FeedComment";
 import { Dimensions } from "react-native";
 import { useSelector } from "react-redux";
@@ -60,16 +59,29 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
+    refetchPersonalFeeds();
   };
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={100}
+        windowSize={10}
         keyExtractor={(item, index) => index}
         onEndReached={posts.length ? handleEndReached : null}
         onEndReachedThreshold={0.1}
-        refreshControl={<RefreshControl refreshing={personalFeedsIsFetching} onRefresh={refetchPersonalFeeds} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={personalFeedsIsFetching}
+            onRefresh={() => {
+              refetchPersonalFeeds();
+              postRefetchHandler();
+            }}
+          />
+        }
         estimatedItemSize={100}
         renderItem={({ item }) => (
           <Box px={3}>

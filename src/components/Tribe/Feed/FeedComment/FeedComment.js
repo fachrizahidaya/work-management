@@ -68,7 +68,7 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      postRefetchHandler();
+      // postRefetchHandler()
       refetchComment();
       refetchFeeds();
       setSubmitting(false);
@@ -94,9 +94,9 @@ const FeedComment = ({
       setCommentParentId(null);
     } else {
       // refetchComment();
-      if (comments?.data) {
+      if (commentData?.data) {
         if (currentOffset === 0) {
-          setComments(comments?.data);
+          setComments(commentData?.data);
         } else {
           setComments((prevData) => [...prevData, ...commentData?.data]);
         }
@@ -127,12 +127,16 @@ const FeedComment = ({
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
-                comments={commentData?.data}
+                comments={comments}
                 onReply={replyHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
                 latestExpandedReply={latestExpandedReply}
                 commentIsLoading={commentIsLoading}
+                handleEndReached={commentEndReachedHandler}
+                commentsRefetchHandler={commentRefetchHandler}
+                commentIsFetching={commentIsFetching}
+                refetchComment={refetchComment}
               />
             </Flex>
           </ScrollView>

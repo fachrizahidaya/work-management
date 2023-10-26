@@ -61,7 +61,6 @@ const FeedCommentForm = ({
             size="sm"
             onPress={() => {
               formik.handleSubmit();
-              refetchFeeds();
             }}
           >
             {parentId ? "Reply" : "Post"}

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { Box } from "native-base";
+import { Box, Skeleton, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
@@ -58,11 +58,23 @@ const FeedCard = ({
     <Box flex={1}>
       <FlashList
         data={posts}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={100}
+        windowSize={10}
         onEndReachedThreshold={0.1}
         onEndReached={posts.length ? handleEndReached : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
-        refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={feedsIsFetching}
+            onRefresh={() => {
+              postRefetchHandler();
+              refetchFeeds();
+            }}
+          />
+        }
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
