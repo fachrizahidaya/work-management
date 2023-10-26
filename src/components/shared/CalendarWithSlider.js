@@ -73,6 +73,7 @@ const CalendarWithSlider = ({ items }) => {
         onDayPress={handleDayPress}
         // onCalendarToggled={toggleMonthVisibility}
       />
+      {/* </ScrollView> */}
     </>
   );
 };
