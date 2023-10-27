@@ -15,6 +15,7 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
+  const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
@@ -29,7 +30,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const { isOpen: newReimbursementIsOpen, toggle: toggleNewReimbursement } = useDisclosure(false);
 
   const items = [
-    {
+    createLeaveRequestCheckAccess && {
       icons: "clipboard-clock-outline",
       title: `New Leave Request`,
     },
@@ -63,11 +64,11 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         toast.show({ description: "You already checked out at this time", placement: "top" });
       }
     } catch (err) {
+      console.log(err.response.data.message);
       toast.show({
         description: `You're not connected to the proper connection`,
         placement: "top",
       });
-      console.log(err.response.data.message);
     }
   };
 

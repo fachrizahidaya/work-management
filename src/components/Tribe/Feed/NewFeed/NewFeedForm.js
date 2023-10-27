@@ -23,8 +23,6 @@ const NewFeedForm = ({
   dateShown,
   endDateAnnouncementHandler,
   loggedEmployeeDivision,
-  refetch,
-  refetchFeeds,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 

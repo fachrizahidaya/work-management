@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Image, Pressable, Text } from "native-base";
+import { Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -13,6 +13,7 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import { ScrollView } from "react-native-gesture-handler";
+import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
@@ -34,6 +35,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
   const navigation = useNavigation();
+
+  const toast = useToast();
 
   // User redux to fetch id, name
   const userSelector = useSelector((state) => state.auth);
@@ -97,10 +100,21 @@ const EmployeeProfileScreen = ({ route }) => {
       refetch();
       refetchPersonalFeeds();
       setTimeout(() => {
+        toast.show({
+          render: ({ id }) => {
+            return <SuccessToast message={"Post Liked"} close={() => toast.close(id)} />;
+          },
+          placement: "top",
+        });
         console.log("liked this post!");
       }, 500);
-      refetchPersonalFeeds();
     } catch (err) {
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
       console.log(err);
     }
   };
@@ -122,7 +136,8 @@ const EmployeeProfileScreen = ({ route }) => {
         <PageHeader
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
           onPress={() => {
-            navigation.navigate(returnPage);
+            navigation.goBack();
+            refetch();
           }}
         />
       </Flex>
@@ -135,7 +150,7 @@ const EmployeeProfileScreen = ({ route }) => {
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            refetch: postRefetchHandler,
+            refetch: refetchPersonalFeeds,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
             employeeId: employeeId,

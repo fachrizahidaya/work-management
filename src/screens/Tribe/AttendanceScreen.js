@@ -10,7 +10,7 @@ import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import { SuccessToast } from "../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AttendanceScreen = () => {
@@ -43,19 +43,29 @@ const AttendanceScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const attendanceReportSubmitHandler = useCallback(async (attendance_id, data) => {
+  const attendanceReportSubmitHandler = useCallback(async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
       toggleReport();
+      refetchAttendanceData();
+      setSubmitting(false);
+      setStatus("success");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message={"Report Submitted"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
-      refetchAttendanceData();
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Submit failed, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   }, []);
 

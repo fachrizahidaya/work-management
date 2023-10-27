@@ -1,12 +1,14 @@
 import dayjs from "dayjs";
 
-import { Button, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
+import { Button, FormControl, Icon, Input, Modal, Select, Spinner, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
+import { useState } from "react";
 
 const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAttendanceCheckAccess }) => {
+  const [isLoading, setIsLoading] = useState(false);
   /**
    * Late type Handler
    */
@@ -26,9 +28,13 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAtten
   ];
 
   return (
-    <Modal size="xl" isOpen={reportIsOpen} onClose={toggleReport}>
+    <Modal
+      size="xl"
+      isOpen={reportIsOpen}
+      onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()}
+    >
       <Modal.Content>
-        <Modal.CloseButton />
+        <Modal.CloseButton onPress={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()} />
         <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
 
         {/* If employee ontime Clock in and Clock out */}
@@ -321,16 +327,23 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAtten
                 >
                   <Text color="#FFFFFF">Cancel</Text>
                 </Button>
-                {/* <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
-                  <Text color="#FFFFFF">Save</Text>
+                {/* <Button
+                  size="sm"
+                  variant="solid"
+                  onPress={() => {
+                    setIsLoading(true);
+                    formik.handleSubmit();
+                  }}
+                >
+                  {isLoading ? <Spinner color="#FFFFFF" /> : <Text color="#FFFFFF">Save</Text>}
                 </Button> */}
                 <FormButton
                   children="Save"
                   size="sm"
                   variant="solid"
-                  onPress={updateAttendanceCheckAccess && formik.handleSubmit}
+                  fontSize={14}
                   isSubmitting={formik.isSubmitting}
-                  fontColor="#FFFFFF"
+                  onPress={formik.handleSubmit}
                 />
               </>
             )

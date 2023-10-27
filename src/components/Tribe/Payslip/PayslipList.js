@@ -12,11 +12,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import PayslipDownload from "./PayslipDownload";
+import { ErrorToast } from "../../shared/ToastDialog";
 
 const PayslipList = ({ id, month, year, downloadPayslipCheckAccess }) => {
   const [passwordError, setPasswordError] = useState("");
 
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
+
+  const toast = useToast();
 
   /**
    * Input Password Handler
@@ -46,21 +49,24 @@ const PayslipList = ({ id, month, year, downloadPayslipCheckAccess }) => {
       const res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
         params: data,
       });
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/${res?.data?.data}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${res?.data?.data}`);
       setSubmitting(false);
       setStatus("success");
-      formik.resetForm();
-      toggleDownloadDialog();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Download failed, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
   useEffect(() => {
-    if (formik.isSubmitting && formik.status === "success") {
+    if (!formik.isSubmitting && formik.status === "success") {
       toggleDownloadDialog();
       formik.resetForm();
     }

@@ -70,13 +70,13 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("success");
       formik.resetForm();
+      refetchPayslip();
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message={"Password Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
-      refetchPayslip();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -114,6 +114,10 @@ const PayslipScreen = () => {
         payslip?.data.length > 0 ? (
           <FlashList
             data={payslip?.data}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={50}
+            windowSize={5}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             estimatedItemSize={100}
