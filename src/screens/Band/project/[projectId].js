@@ -258,7 +258,7 @@ const ProjectDetailScreen = ({ route }) => {
                       }}
                     >
                       <Flex flexDir="row" gap={1.5} mb={2}>
-                        <AvatarPlaceholder name={item.user_name} image={item.user_image} isPressable={true} />
+                        <AvatarPlaceholder name={item.user_name} image={item.user_image} />
 
                         <Box>
                           <Flex flexDir="row" gap={1} alignItems="center">
