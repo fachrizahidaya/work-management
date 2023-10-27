@@ -58,15 +58,20 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         toggle();
         refetch();
         toast.show({
-          render: ({}) => {
-            return <SuccessToast message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"} />;
+          render: ({ id }) => {
+            return (
+              <SuccessToast
+                message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
+                close={() => toast.close(id)}
+              />
+            );
           },
           placement: "top",
         });
       } else {
         toast.show({
-          render: ({}) => {
-            return <ErrorToast message={"You already checked out at this time"} />;
+          render: ({ id }) => {
+            return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
           },
           placement: "top",
         });
@@ -74,7 +79,9 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     } catch (err) {
       console.log(err.response.data.message);
       toast.show({
-        description: `You're not connected to the proper connection`,
+        render: ({ id }) => {
+          return <ErrorToast message={`You're not connected to the proper connection`} close={() => toast.close(id)} />;
+        },
         placement: "top",
       });
     }

@@ -49,20 +49,8 @@ const LeaveScreen = () => {
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
-          {/* These are the position that will get team leave */}
-          {profile?.data?.position_id !== 1 ||
-          profile?.data?.position_id !== 11 ||
-          profile?.data?.position_id !== 13 ||
-          profile?.data?.position_id !== 17 ||
-          profile?.data?.position_id !== 20 ||
-          profile?.data?.position_id !== 22 ||
-          profile?.data?.position_id !== 28 ||
-          profile?.data?.position_id !== 31 ||
-          profile?.data?.position_id !== 34 ||
-          profile?.data?.position_id !== 39 ||
-          profile?.data?.position_id !== 40 ||
-          profile?.data?.position_id !== 46 ||
-          approvalLeaveRequestCheckAccess ? (
+
+          {teamLeaveRequest?.data.length && approvalLeaveRequestCheckAccess ? (
             <Button
               onPress={() =>
                 navigation.navigate("Team Leave Request", {
