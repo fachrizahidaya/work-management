@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import FormButton from "../../shared/FormButton";
 
-const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
+const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAttendanceCheckAccess }) => {
   /**
    * Late type Handler
    */
@@ -328,7 +328,7 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                   children="Save"
                   size="sm"
                   variant="solid"
-                  onPress={formik.handleSubmit}
+                  onPress={updateAttendanceCheckAccess && formik.handleSubmit}
                   isSubmitting={formik.isSubmitting}
                   fontColor="#FFFFFF"
                 />

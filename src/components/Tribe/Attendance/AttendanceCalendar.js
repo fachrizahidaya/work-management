@@ -8,7 +8,14 @@ import { Calendar } from "react-native-calendars";
 import AttendanceModal from "./AttendanceModal";
 import AttendanceIcon from "./AttendanceIcon";
 
-const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen, toggleReport }) => {
+const AttendanceCalendar = ({
+  attendance,
+  onMonthChange,
+  onSubmit,
+  reportIsOpen,
+  toggleReport,
+  updateAttendanceCheckAccess,
+}) => {
   const [items, setItems] = useState({});
   const [date, setDate] = useState({});
 
@@ -168,7 +175,13 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
         />
-        <AttendanceModal reportIsOpen={reportIsOpen} toggleReport={toggleReport} date={date} formik={formik} />
+        <AttendanceModal
+          reportIsOpen={reportIsOpen}
+          toggleReport={toggleReport}
+          date={date}
+          formik={formik}
+          updateAttendanceCheckAccess={updateAttendanceCheckAccess}
+        />
       </Fragment>
     );
   };

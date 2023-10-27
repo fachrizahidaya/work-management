@@ -15,8 +15,6 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
-  const createNewLeaveRequestAccess = useCheckAccess("create", "New Leave Request");
-  const createClockAttendanceAccess = useCheckAccess("create", "Dashboard");
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
