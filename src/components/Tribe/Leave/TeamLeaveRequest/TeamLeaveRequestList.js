@@ -26,7 +26,6 @@ const TeamLeaveRequestList = ({
   objectId,
   object,
   refetchTeamLeaveRequest,
-  approvalLeaveRequestCheckAccess,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
   const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
@@ -122,7 +121,7 @@ const TeamLeaveRequestList = ({
               Decline
             </FormButton>
             <FormButton
-              onPress={() => approvalLeaveRequestCheckAccess && responseHandler("Approved")}
+              onPress={() => responseHandler("Approved")}
               isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
               size="xs"
               bgColor="#377893"

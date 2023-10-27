@@ -3,21 +3,20 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, ScrollView, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { LikeToggle } from "../../../components/shared/LikeToggle";
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
-const FeedScreen = () => {
+const FeedScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const createNewPostCheckAccess = useCheckAccess("create", "New Feed");
 
   // parameters for fetch posts
   const postFetchParameters = {
@@ -29,6 +28,8 @@ const FeedScreen = () => {
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
+
+  const toast = useToast();
 
   const {
     data: feeds,
@@ -73,11 +74,26 @@ const FeedScreen = () => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message={"Post Liked"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
       setTimeout(() => {
         console.log("liked this post!");
       }, 500);
     } catch (err) {
       console.log(err);
+      setTimeout(() => {
+        console.log("Process error");
+      }, 500);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -106,7 +122,6 @@ const FeedScreen = () => {
           </Text>
         </Flex>
         {
-          // createNewPostCheckAccess && (
           <Pressable
             style={styles.createIcon}
             shadow="0"
@@ -115,8 +130,7 @@ const FeedScreen = () => {
             borderColor="#FFFFFF"
             onPress={() => {
               navigation.navigate("New Feed", {
-                refetch: postRefetchHandler,
-                refetchFeeds: refetchFeeds,
+                refetch: refetchFeeds,
                 loggedEmployeeId: profile?.data?.id,
                 loggedEmployeeImage: profile?.data?.image,
                 loggedEmployeeName: userSelector?.name,
@@ -126,7 +140,6 @@ const FeedScreen = () => {
           >
             <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
           </Pressable>
-          // )
         }
 
         <Box flex={1} px={3}>

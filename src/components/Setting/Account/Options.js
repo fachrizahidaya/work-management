@@ -22,6 +22,7 @@ const Options = ({ profile, editProfileHandler }) => {
       navigate: () =>
         navigation.navigate("Company Screen", {
           profile: profile,
+
           editProfileHandler: editProfileHandler,
         }),
     },

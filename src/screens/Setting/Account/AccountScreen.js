@@ -13,6 +13,8 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Options from "../../../components/Setting/Account/Options";
 import axiosInstance from "../../../config/api";
 import { update_profile } from "../../../redux/reducer/auth";
+import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
+import { useEffect } from "react";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
@@ -28,9 +30,22 @@ const AccountScreen = ({ route }) => {
     try {
       const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
       dispatch(update_profile(res.data.data));
+      navigation.goBack({ profile: profile, editProfileHandler: editProfileHandler });
       setSubmitting(false);
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     } catch (err) {
       console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
       setSubmitting(false);
     }
   };
@@ -39,7 +54,7 @@ const AccountScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <Flex flexDir="row" gap={1}>
-          <Pressable onPress={() => navigation.navigate("Setting")}>
+          <Pressable onPress={() => navigation.goBack()}>
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
           <Text fontSize={16}>My</Text>
@@ -63,7 +78,7 @@ const AccountScreen = ({ route }) => {
             {userSelector?.name}
           </Text>
           <Text fontSize={12} fontWeight={400}>
-            {profile?.data?.email}
+            {userSelector?.email}
           </Text>
         </Flex>
         <Flex bgColor="white" p={5} pb={10} gap={33}>
