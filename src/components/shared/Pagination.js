@@ -12,6 +12,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const Pagination = ({ data, setCurrentPage, currentPage }) => {
   // State to store pagination array
   const [pagination, setPagination] = useState([]);
+  console.log(data);
 
   // Generate pagination array based on data and current page
   const paginationHandler = () => {
@@ -49,6 +50,7 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
         {/* Previous page button */}
         <Pressable
           style={styles.page}
+          disabled={currentPage == 1}
           onPress={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
           background="#176688"
         >
@@ -74,6 +76,7 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
         {/* Next page button */}
         <Pressable
           style={styles.page}
+          disabled={currentPage == data?.data?.last_page}
           onPress={() => pagination?.length > 1 && setCurrentPage(currentPage + 1)}
           background="#176688"
         >
