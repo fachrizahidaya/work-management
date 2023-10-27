@@ -145,6 +145,7 @@ const ProjectList = () => {
                       isArchive={item.archive}
                       image={item.owner_image}
                       ownerName={item.owner_name}
+                      ownerEmail={item.owner_email}
                     />
                   )}
                 />

@@ -98,6 +98,7 @@ const TaskDetailScreen = ({ route }) => {
               ownerId={selectedTask?.data?.owner_id}
               ownerImage={selectedTask?.data?.owner_image}
               ownerName={selectedTask?.data?.owner_name}
+              ownerEmail={selectedTask?.data?.owner_email}
               refetchObservers={refetchObservers}
               refetchTask={refetchSelectedTask}
               disabled={inputIsDisabled}

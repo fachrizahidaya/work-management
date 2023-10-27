@@ -101,7 +101,12 @@ const ControlSection = ({
           trigger={(triggerProps) => {
             return (
               <TouchableOpacity {...triggerProps} disabled={disabled}>
-                <Icon as={<MaterialCommunityIcons name="dots-horizontal" />} size="xl" color="#3F434A" />
+                <Icon
+                  as={<MaterialCommunityIcons name="dots-horizontal" />}
+                  size="xl"
+                  color="#3F434A"
+                  opacity={disabled ? 0.5 : 1}
+                />
               </TouchableOpacity>
             );
           }}

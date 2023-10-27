@@ -101,7 +101,10 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       <Box position="absolute" zIndex={3}>
         <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
           <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-            <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
+            <PageHeader
+              title="New Task"
+              onPress={() => !formik.isSubmitting && formik.status !== "processing" && onClose(formik.resetForm)}
+            />
 
             <Flex gap={17} mt={22}>
               <FormControl isInvalid={formik.errors.title}>

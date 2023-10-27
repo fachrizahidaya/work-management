@@ -1,8 +1,14 @@
 import React from "react";
 
 import { Avatar } from "native-base";
+import { TouchableOpacity } from "react-native";
 
-const AvatarPlaceholder = ({ image, name, size, borderRadius, isThumb = true }) => {
+import { useDisclosure } from "../../hooks/useDisclosure";
+import UserPreviewModal from "./UserPreviewModal";
+
+const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = true, isPressable }) => {
+  const { isOpen, toggle } = useDisclosure(false);
+
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -36,20 +42,52 @@ const AvatarPlaceholder = ({ image, name, size, borderRadius, isThumb = true }) 
     return alias;
   };
 
-  return image ? (
-    <Avatar
-      source={{
-        uri: isThumb
-          ? `${process.env.EXPO_PUBLIC_API}/image/${image}/thumb`
-          : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
-      }}
-      size={size || "xs"}
-      bg="transparent"
-    />
-  ) : (
-    <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
-      {userInitialGenerator()}
-    </Avatar>
+  return (
+    <>
+      {image ? (
+        <>
+          {isPressable ? (
+            <TouchableOpacity onPress={() => isPressable && toggle()}>
+              <Avatar
+                source={{
+                  uri: isThumb
+                    ? `${process.env.EXPO_PUBLIC_API}/image/${image}/thumb`
+                    : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
+                }}
+                size={size || "xs"}
+                bg="transparent"
+              />
+            </TouchableOpacity>
+          ) : (
+            <Avatar
+              source={{
+                uri: isThumb
+                  ? `${process.env.EXPO_PUBLIC_API}/image/${image}/thumb`
+                  : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
+              }}
+              size={size || "xs"}
+              bg="transparent"
+            />
+          )}
+        </>
+      ) : (
+        <>
+          {isPressable ? (
+            <TouchableOpacity onPress={() => isPressable && toggle()}>
+              <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
+                {name ? userInitialGenerator() : "KSS"}
+              </Avatar>
+            </TouchableOpacity>
+          ) : (
+            <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
+              {name ? userInitialGenerator() : "KSS"}
+            </Avatar>
+          )}
+        </>
+      )}
+
+      {isOpen && <UserPreviewModal isOpen={isOpen} onClose={toggle} name={name} image={image} email={email} />}
+    </>
   );
 };
 
