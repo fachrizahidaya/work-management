@@ -31,7 +31,7 @@ const CalendarWithSlider = ({ items }) => {
 
   const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const handleDayPress = (day) => {
-    setSelectedDate(day);
+    setSelectedDate(day.dateString);
   };
 
   const [isMonthVisible, setIsMonthVisible] = useState(true);
@@ -70,10 +70,7 @@ const CalendarWithSlider = ({ items }) => {
             </>
           );
         }}
-        onDayPress={() => {
-          handleDayPress();
-        }}
-
+        onDayPress={handleDayPress}
         // onCalendarToggled={toggleMonthVisibility}
       />
     </>
