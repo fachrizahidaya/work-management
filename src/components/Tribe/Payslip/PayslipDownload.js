@@ -53,7 +53,7 @@ const PayslipDownload = ({
               />
               <FormControl.ErrorMessage>{formik.errors.password || passwordError}</FormControl.ErrorMessage>
             </FormControl>
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <FormButton isSubmitting={formik.isSubmitting} onPress={downloadPayslipCheckAccess && formik.handleSubmit}>
               <Text color="#FFFFFF">Download</Text>
             </FormButton>
           </VStack>
