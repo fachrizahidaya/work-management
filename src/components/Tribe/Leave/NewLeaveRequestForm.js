@@ -8,14 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
 
-const NewLeaveRequestForm = ({
-  formik,
-  leaveType,
-  onChangeEndDate,
-  onChangeStartDate,
-  selectedGenerateType,
-  createNewLeaveRequestCheckAccess,
-}) => {
+const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStartDate, selectedGenerateType }) => {
   return (
     <Flex px={1} gap={11}>
       <FormControl isInvalid={formik.errors.leave_id}>
@@ -72,7 +65,7 @@ const NewLeaveRequestForm = ({
         <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
       </FormControl>
 
-      <FormButton isSubmitting={formik.isSubmitting} onPress={createNewLeaveRequestCheckAccess && formik.handleSubmit}>
+      <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
         <Text color="#FFFFFF">Submit</Text>
       </FormButton>
     </Flex>
