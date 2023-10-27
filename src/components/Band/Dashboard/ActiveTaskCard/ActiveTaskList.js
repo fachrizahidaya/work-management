@@ -4,7 +4,11 @@ import { Checkbox, Flex, Icon, Text } from "native-base";
 import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useSelector } from "react-redux";
+
 const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPress, onPressItem }) => {
+  const userSelector = useSelector((state) => state.auth);
+
   return (
     <Flex
       flexDir="row"
@@ -17,9 +21,9 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
       <Checkbox
         isChecked={status === "Closed"}
         onTouchEnd={() => {
-          status === "Finish" && onPress(task);
+          status === "Finish" && userSelector.id === task?.responsible_id && onPress(task);
         }}
-        isDisabled={status !== "Finish"}
+        isDisabled={status !== "Finish" || userSelector.id !== task?.responsible_id}
         borderWidth={1}
       >
         <Flex flexDir="column">
