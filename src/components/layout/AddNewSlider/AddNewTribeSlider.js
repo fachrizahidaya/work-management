@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { Dimensions } from "react-native";
 import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
+  const createNewLeaveRequestAccess = useCheckAccess("create", "New Leave Request");
+  const createClockAttendanceAccess = useCheckAccess("create", "Dashboard");
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
@@ -32,7 +33,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const items = [
     {
       icons: "clipboard-clock-outline",
-      title: "New Leave Request",
+      title: `New Leave Request`,
     },
     // {
     //   icons: "clipboard-minus-outline",
@@ -40,7 +41,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     // },
     {
       icons: "clock-outline",
-      title: "Clock in",
+      title: `Clock in`,
     },
   ];
 
