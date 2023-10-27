@@ -17,6 +17,7 @@ const FeedScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const createNewPostCheckAccess = useCheckAccess("create", "New Feed");
 
   // parameters for fetch posts
   const postFetchParameters = {
