@@ -11,6 +11,7 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const LeaveScreen = () => {
   const navigation = useNavigation();
+  const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
   const {
     data: personalLeaveRequest,
@@ -60,7 +61,8 @@ const LeaveScreen = () => {
           profile?.data?.position_id !== 34 ||
           profile?.data?.position_id !== 39 ||
           profile?.data?.position_id !== 40 ||
-          profile?.data?.position_id !== 46 ? (
+          profile?.data?.position_id !== 46 ||
+          approvalLeaveRequestCheckAccess ? (
             <Button
               onPress={() =>
                 navigation.navigate("Team Leave Request", {

@@ -110,9 +110,9 @@ const AttendanceCalendar = ({
       att_reason: date?.attendanceReason || "",
     },
     // validationSchema: yup.object().shape({}),
-    onSubmit: (values, { resetForm }) => {
-      onSubmit(date?.id, values);
-      // resetForm();
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onSubmit(date?.id, values, setSubmitting, setStatus);
     },
   });
 
@@ -168,20 +168,14 @@ const AttendanceCalendar = ({
     return (
       <Fragment>
         <Calendar
-          onDayPress={toggleDateHandler}
+          onDayPress={updateAttendanceCheckAccess && toggleDateHandler}
           style={styles.calendar}
           current={INITIAL_DATE}
           markingType={"multi-dot"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
         />
-        <AttendanceModal
-          reportIsOpen={reportIsOpen}
-          toggleReport={toggleReport}
-          date={date}
-          formik={formik}
-          updateAttendanceCheckAccess={updateAttendanceCheckAccess}
-        />
+        <AttendanceModal reportIsOpen={reportIsOpen} toggleReport={toggleReport} date={date} formik={formik} />
       </Fragment>
     );
   };
@@ -194,10 +188,7 @@ const AttendanceCalendar = ({
   );
 };
 
-export default // memo
-// (
-AttendanceCalendar;
-//   );
+export default AttendanceCalendar;
 
 const styles = StyleSheet.create({
   calendar: {

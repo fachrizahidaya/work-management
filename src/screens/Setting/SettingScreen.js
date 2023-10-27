@@ -14,10 +14,11 @@ import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 const SettingScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
+
   const userSelector = useSelector((state) => state.auth);
 
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
-  const { data: myProfile } = useFetch("/hr/my-profile");
+  const { data: myProfile } = useFetch("/hr/my-profile"); // for other user data, use myProfile
 
   const first = [
     {

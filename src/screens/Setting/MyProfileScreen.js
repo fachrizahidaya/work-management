@@ -14,16 +14,18 @@ import { ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../components/shared/FormButton";
-import { SuccessToast } from "../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import { update_image } from "../../redux/reducer/auth";
 import axiosInstance from "../../config/api";
+import { useEffect } from "react";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const { profile, editProfileHandler } = route.params;
 
-  const userSelector = useSelector((state) => state.auth);
+  const userSelector = useSelector((state) => state.auth); // to edit name and picture of user, use redux
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
@@ -34,7 +36,6 @@ const MyProfileScreen = ({ route }) => {
 
   const forms = [
     { title: "Email", source: profile?.data?.email },
-    { title: "Username", source: profile?.data?.username },
     { title: "Date of Birth", source: profile?.data?.birthdate_convert },
     { title: "Job Title", source: profile?.data?.position_name },
     { title: "Status", source: profile?.data?.status.charAt(0).toUpperCase() + profile?.data?.status.slice(1) },
@@ -51,15 +52,9 @@ const MyProfileScreen = ({ route }) => {
       // email: yup.string().required("Email is required"),
     }),
     validateOnChange: false,
-    onSubmit: (values, { setSubmitting }) => {
-      editProfileHandler(values, setSubmitting);
-      navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler });
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      editProfileHandler(values, setSubmitting, setStatus);
     },
   });
 
@@ -96,6 +91,12 @@ const MyProfileScreen = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+    }
+  }, []);
+
   const editProfilePictureHandler = async () => {
     try {
       setIsLoading(true);
@@ -108,17 +109,23 @@ const MyProfileScreen = ({ route }) => {
         },
       });
       dispatch(update_image(res.data.data));
+      setImage(null);
+      setIsLoading(false);
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
-      setImage(null);
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
       setIsLoading(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -128,7 +135,9 @@ const MyProfileScreen = ({ route }) => {
         <Flex flexDir="row" gap={1}>
           <Pressable
             onPress={() =>
-              navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
+              !formik.isSubmitting &&
+              formik.status !== "processing" &&
+              navigation.goBack({ profile: profile, editProfileHandler: editProfileHandler })
             }
           >
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
