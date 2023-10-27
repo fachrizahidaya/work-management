@@ -107,7 +107,10 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Box position="absolute" zIndex={3}>
           <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
-            <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
+            <PageHeader
+              title="New Project"
+              onPress={() => !formik.isSubmitting && formik.status !== "processing" && onClose(formik.resetForm)}
+            />
 
             <Flex gap={17} mt={22}>
               <FormControl isInvalid={formik.errors.title}>

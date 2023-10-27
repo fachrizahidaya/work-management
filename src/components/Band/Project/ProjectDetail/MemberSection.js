@@ -15,7 +15,7 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { TouchableOpacity } from "react-native";
 
-const MemberSection = ({ projectId, projectData, members, refetchMember, reRender }) => {
+const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);

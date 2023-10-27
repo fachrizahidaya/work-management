@@ -2,8 +2,8 @@ import React, { memo } from "react";
 
 import dayjs from "dayjs";
 
-import { Platform, StyleSheet } from "react-native";
-import { Flex, HStack, Icon, IconButton, Menu, Pressable, Text, View } from "native-base";
+import { Platform, StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, HStack, Icon, IconButton, Menu, Text, View } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import useCheckAccess from "../../../../hooks/useCheckAccess";
@@ -12,7 +12,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
   const deleteCheckAccess = useCheckAccess("delete", "Notes");
 
   return (
-    <Pressable onPress={() => openEditForm(note)}>
+    <TouchableOpacity onPress={() => openEditForm(note)}>
       <Flex style={styles.card} gap={18}>
         <Flex
           flexDir="row"
@@ -82,7 +82,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
 
         <Text>{title}</Text>
       </Flex>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

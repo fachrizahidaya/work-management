@@ -20,6 +20,7 @@ const PeopleSection = ({
   ownerId,
   ownerName,
   ownerImage,
+  ownerEmail,
   refetchObservers,
   disabled,
   selectedTask,
@@ -145,7 +146,9 @@ const PeopleSection = ({
           <FormControl flex={1}>
             <FormControl.Label>CREATED BY</FormControl.Label>
 
-            {ownerId && <AvatarPlaceholder name={ownerName} image={ownerImage} size="sm" />}
+            {ownerId && (
+              <AvatarPlaceholder name={ownerName} image={ownerImage} email={ownerEmail} size="sm" isPressable={true} />
+            )}
           </FormControl>
         </Flex>
 
