@@ -11,6 +11,7 @@ import axiosInstance from "../../../config/api";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,13 +56,20 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           ip: userIp?.ip,
         });
         toggle();
+        refetch();
         toast.show({
-          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
+          render: ({}) => {
+            return <SuccessToast message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"} />;
+          },
           placement: "top",
         });
-        refetch();
       } else {
-        toast.show({ description: "You already checked out at this time", placement: "top" });
+        toast.show({
+          render: ({}) => {
+            return <ErrorToast message={"You already checked out at this time"} />;
+          },
+          placement: "top",
+        });
       }
     } catch (err) {
       console.log(err.response.data.message);
