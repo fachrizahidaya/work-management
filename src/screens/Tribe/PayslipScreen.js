@@ -13,7 +13,7 @@ import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import { SuccessToast } from "../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const PayslipScreen = () => {
@@ -82,6 +82,12 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
