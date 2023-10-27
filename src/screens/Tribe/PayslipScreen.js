@@ -14,12 +14,15 @@ import axiosInstance from "../../config/api";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
   const [hideOldPassword, setHideOldPassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
   const [passwordError, setPasswordError] = useState("");
+  const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
+
   const { isOpen: formIsOpen, toggle: toggleForm } = useDisclosure(false);
 
   const toast = useToast();
@@ -116,7 +119,13 @@ const PayslipScreen = () => {
             estimatedItemSize={100}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
             renderItem={({ item }) => (
-              <PayslipList key={item?.id} id={item?.id} month={item?.pay_month} year={item?.pay_year} />
+              <PayslipList
+                key={item?.id}
+                id={item?.id}
+                month={item?.pay_month}
+                year={item?.pay_year}
+                downloadPayslipCheckAccess={downloadPayslipCheckAccess}
+              />
             )}
           />
         ) : (

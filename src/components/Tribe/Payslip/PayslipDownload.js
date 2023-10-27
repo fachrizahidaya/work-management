@@ -8,7 +8,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 
-const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog, passwordError, setPasswordError }) => {
+const PayslipDownload = ({
+  downloadDialogIsOpen,
+  formik,
+  toggleDownloadDialog,
+  passwordError,
+  setPasswordError,
+  downloadPayslipCheckAccess,
+}) => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
@@ -46,7 +53,7 @@ const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog, p
               />
               <FormControl.ErrorMessage>{formik.errors.password || passwordError}</FormControl.ErrorMessage>
             </FormControl>
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <FormButton isSubmitting={formik.isSubmitting} onPress={downloadPayslipCheckAccess && formik.handleSubmit}>
               <Text color="#FFFFFF">Download</Text>
             </FormButton>
           </VStack>
