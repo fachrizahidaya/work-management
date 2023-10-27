@@ -10,7 +10,7 @@ import { Box, Flex, Pressable, Text } from "native-base";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { Dimensions } from "react-native";
 
-const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName }) => {
+const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName, ownerEmail }) => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("screen");
 
@@ -39,7 +39,9 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
             {isArchive ? "Archived" : status}
           </Text>
 
-          <AvatarPlaceholder name={ownerName || "Jason Tatum"} image={image} />
+          <Box alignSelf="flex-start">
+            <AvatarPlaceholder name={ownerName} image={image} email={ownerEmail} isPressable={true} />
+          </Box>
         </Flex>
         <Box
           alignItems="center"

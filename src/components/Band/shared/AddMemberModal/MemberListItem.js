@@ -35,7 +35,7 @@ const MemberListItem = ({
     >
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flexDir="row" alignItems="center" gap={2} mb={2}>
-          <AvatarPlaceholder image={image} name={name} />
+          <AvatarPlaceholder image={image} name={name} isPressable={true} />
           <Box>
             <Text>{name}</Text>
             <Text fontSize={10} opacity={0.5}>
