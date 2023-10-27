@@ -11,11 +11,13 @@ import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { LikeToggle } from "../../../components/shared/LikeToggle";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const createNewPostCheckAccess = useCheckAccess("create", "New Feed");
 
   // parameters for fetch posts
   const postFetchParameters = {
@@ -103,26 +105,29 @@ const FeedScreen = () => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-
-        <Pressable
-          style={styles.createIcon}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={() => {
-            navigation.navigate("New Feed", {
-              refetch: postRefetchHandler,
-              refetchFeeds: refetchFeeds,
-              loggedEmployeeId: profile?.data?.id,
-              loggedEmployeeImage: profile?.data?.image,
-              loggedEmployeeName: userSelector?.name,
-              loggedEmployeeDivision: profile?.data?.position_id,
-            });
-          }}
-        >
-          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
-        </Pressable>
+        {
+          // createNewPostCheckAccess && (
+          <Pressable
+            style={styles.createIcon}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={() => {
+              navigation.navigate("New Feed", {
+                refetch: postRefetchHandler,
+                refetchFeeds: refetchFeeds,
+                loggedEmployeeId: profile?.data?.id,
+                loggedEmployeeImage: profile?.data?.image,
+                loggedEmployeeName: userSelector?.name,
+                loggedEmployeeDivision: profile?.data?.position_id,
+              });
+            }}
+          >
+            <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
+          </Pressable>
+          // )
+        }
 
         <Box flex={1} px={3}>
           {/* Content here */}

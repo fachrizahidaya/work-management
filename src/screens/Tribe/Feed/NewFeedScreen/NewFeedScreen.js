@@ -84,8 +84,8 @@ const NewFeedScreen = ({ route }) => {
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Posted succesfuly!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });

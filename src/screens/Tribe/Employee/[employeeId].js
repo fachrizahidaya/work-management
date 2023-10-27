@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Image, Pressable } from "native-base";
+import { Flex, Icon, Image, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -147,6 +147,7 @@ const EmployeeProfileScreen = ({ route }) => {
 
       <Flex flex={1} minHeight={2} gap={2} height={height}>
         {/* Posts that created by employee handler */}
+
         <FeedCard
           posts={posts}
           loggedEmployeeId={loggedEmployeeId}
