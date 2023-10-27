@@ -31,12 +31,14 @@ const CalendarWithSlider = ({ items }) => {
 
   const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const handleDayPress = (day) => {
-    setSelectedDate(day);
+    setSelectedDate(day.dateString);
   };
 
   const [isMonthVisible, setIsMonthVisible] = useState(true);
+  const [isClosingKnobOpen, setIsClosingKnobOpen] = useState(false);
   const toggleMonthVisibility = () => {
     setIsMonthVisible(!isMonthVisible);
+    setIsClosingKnobOpen(!isClosingKnobOpen);
   };
 
   return (
@@ -68,10 +70,7 @@ const CalendarWithSlider = ({ items }) => {
             </>
           );
         }}
-        onDayPress={() => {
-          handleDayPress();
-        }}
-
+        onDayPress={handleDayPress}
         // onCalendarToggled={toggleMonthVisibility}
       />
     </>
