@@ -10,7 +10,6 @@ import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRe
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const TeamLeaveScreen = ({ route }) => {
-  const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
   const navigation = useNavigation();
 
   const { teamLeaveRequest, teamLeaveRequestIsLoading, refetchTeamLeaveRequest, teamLeaveRequestIsFetching } =
@@ -19,12 +18,16 @@ const TeamLeaveScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.navigate("Leave Requests")} />
+        <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
       </Flex>
       {!teamLeaveRequestIsLoading ? (
         teamLeaveRequest?.data.length > 0 ? (
           <FlashList
             data={teamLeaveRequest?.data}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={50}
+            windowSize={5}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             estimatedItemSize={100}
@@ -48,7 +51,6 @@ const TeamLeaveScreen = ({ route }) => {
                   objectId={item?.approval_object_id}
                   object={item?.approval_object}
                   refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-                  approvalLeaveRequestCheckAccess={approvalLeaveRequestCheckAccess}
                 />
               </>
             )}

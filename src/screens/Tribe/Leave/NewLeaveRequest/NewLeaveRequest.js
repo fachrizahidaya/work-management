@@ -16,14 +16,12 @@ import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDia
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
-import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [formError, setFormError] = useState(true);
-  const createNewLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { width, height } = Dimensions.get("window");
 
@@ -138,7 +136,7 @@ const NewLeaveRequest = ({ route }) => {
       setStatus("error");
       toast.show({
         render: ({ id }) => {
-          return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
+          return <ErrorToast message={`Creating failed,${err.response.data.message}`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -188,7 +186,7 @@ const NewLeaveRequest = ({ route }) => {
       setDateChanges(false);
     }
     if (!formik.isSubmitting && formik.status === "success") {
-      navigation.navigate("Dashboard");
+      navigation.goBack();
     }
   }, [
     formik.values.leave_id,
@@ -223,8 +221,11 @@ const NewLeaveRequest = ({ route }) => {
           title="New Leave Request"
           onPress={
             formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-              ? toggleReturnModal
-              : () => navigation.navigate("Dashboard")
+              ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+              : () => {
+                  !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                  navigation.goBack();
+                }
           }
         />
 
@@ -269,7 +270,6 @@ const NewLeaveRequest = ({ route }) => {
           onChangeEndDate={onChangeEndDate}
           onChangeStartDate={onChangeStartDate}
           selectedGenerateType={selectedGenerateType}
-          createNewLeaveRequestCheckAccess={createNewLeaveRequestCheckAccess}
         />
       </Box>
     </Box>

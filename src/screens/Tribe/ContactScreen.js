@@ -122,6 +122,10 @@ const ContactScreen = () => {
         {/* Content here */}
         <FlashList
           data={contacts.length ? contacts : filteredDataArray}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          updateCellsBatchingPeriod={50}
+          windowSize={5}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}

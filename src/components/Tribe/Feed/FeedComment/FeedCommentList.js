@@ -21,6 +21,10 @@ const FeedCommentList = ({
     <Box flex={1} minHeight={2}>
       <FlashList
         data={comments}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        windowSize={5}
         keyExtractor={(item, index) => item.id}
         onEndReachedThreshold={0.1}
         // onEndReached={comments.length ? handleEndReached : null}
