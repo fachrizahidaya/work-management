@@ -39,8 +39,13 @@ const TeamLeaveRequestList = ({
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={status === "Approved" ? "Request Approved" : "Request Rejected"} />;
+        render: ({ id }) => {
+          return (
+            <SuccessToast
+              message={status === "Approved" ? "Request Approved" : "Request Rejected"}
+              close={() => toast.close(id)}
+            />
+          );
         },
         placement: "top",
       });

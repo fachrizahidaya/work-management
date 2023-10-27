@@ -125,8 +125,8 @@ const NewLeaveRequest = ({ route }) => {
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Request Created`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Request Created`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -135,8 +135,8 @@ const NewLeaveRequest = ({ route }) => {
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={err.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
         },
         placement: "top",
       });

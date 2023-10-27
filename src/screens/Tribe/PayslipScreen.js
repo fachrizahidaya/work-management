@@ -68,8 +68,8 @@ const PayslipScreen = () => {
       setStatus("success");
       formik.resetForm();
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Password Updated"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Password Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });

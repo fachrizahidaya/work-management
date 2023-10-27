@@ -55,8 +55,8 @@ const MyProfileScreen = ({ route }) => {
       editProfileHandler(values, setSubmitting);
       navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler });
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Profile Updated"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -109,8 +109,8 @@ const MyProfileScreen = ({ route }) => {
       });
       dispatch(update_image(res.data.data));
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Profile Picture Updated"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });

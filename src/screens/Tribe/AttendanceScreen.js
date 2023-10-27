@@ -46,8 +46,8 @@ const AttendanceScreen = () => {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
       toggleReport();
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Report Submitted"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Report Submitted"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });

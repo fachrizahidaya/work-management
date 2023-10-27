@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Image } from "native-base";
+import { Box, Flex, Image, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -65,7 +65,7 @@ const FeedCard = ({
   return (
     <Box flex={1}>
       <FlashList
-        data={posts}
+        data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={100}
@@ -83,28 +83,39 @@ const FeedCard = ({
           />
         }
         estimatedItemSize={100}
-        renderItem={({ item }) => (
-          <Box px={3}>
-            <FeedCardItem
-              key={item?.id}
-              id={item?.id}
-              employeeId={item?.author_id}
-              employeeName={item?.employee_name}
-              createdAt={item?.created_at}
-              employeeImage={item?.employee_image}
-              content={item?.content}
-              total_like={item?.total_like}
-              totalComment={item?.total_comment}
-              likedBy={item?.liked_by}
-              attachment={item?.file_path}
-              type={item?.type}
-              onToggleLike={onToggleLike}
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeImage={loggedEmployeeImage}
-              onCommentToggle={commentsOpenHandler}
-            />
-          </Box>
-        )}
+        renderItem={({ item }) => {
+          if (item.id === "no-posts") {
+            return (
+              <Flex alignItems="center" justifyContent="center" py={3} px={3}>
+                <Text fontSize={16} fontWeight={500}>
+                  No Posts Yet
+                </Text>
+              </Flex>
+            );
+          }
+          return (
+            <Box px={3}>
+              <FeedCardItem
+                key={item?.id}
+                id={item?.id}
+                employeeId={item?.author_id}
+                employeeName={item?.employee_name}
+                createdAt={item?.created_at}
+                employeeImage={item?.employee_image}
+                content={item?.content}
+                total_like={item?.total_like}
+                totalComment={item?.total_comment}
+                likedBy={item?.liked_by}
+                attachment={item?.file_path}
+                type={item?.type}
+                onToggleLike={onToggleLike}
+                loggedEmployeeId={loggedEmployeeId}
+                loggedEmployeeImage={loggedEmployeeImage}
+                onCommentToggle={commentsOpenHandler}
+              />
+            </Box>
+          );
+        }}
         ListHeaderComponent={
           <Box>
             <Image
