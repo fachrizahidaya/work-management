@@ -7,6 +7,7 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const LeaveScreen = () => {
   const navigation = useNavigation();

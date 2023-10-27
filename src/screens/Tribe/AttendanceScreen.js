@@ -11,12 +11,14 @@ import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { SuccessToast } from "../../components/shared/ToastDialog";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
   });
+  const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
 
@@ -72,6 +74,7 @@ const AttendanceScreen = () => {
             onSubmit={attendanceReportSubmitHandler}
             reportIsOpen={reportIsOpen}
             toggleReport={toggleReport}
+            updateAttendanceCheckAccess={updateAttendanceCheckAccess}
           />
         </ScrollView>
       </SafeAreaView>

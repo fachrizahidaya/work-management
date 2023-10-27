@@ -31,7 +31,7 @@ const FeedComment = ({
    */
   const commentsFetchParameters = {
     offset: currentOffset,
-    limit: 10,
+    limit: 50,
   };
 
   const {
@@ -68,9 +68,9 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      // postRefetchHandler()
+      postRefetchHandler();
       refetchComment();
-      refetchFeeds();
+      // refetchFeeds();
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -93,18 +93,18 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      // refetchComment();
-      if (commentData?.data) {
-        if (currentOffset === 0) {
-          setComments(commentData?.data);
-        } else {
-          setComments((prevData) => [...prevData, ...commentData?.data]);
-        }
-      }
+      refetchComment();
+      // if (commentData?.data) {
+      //   if (currentOffset === 0) {
+      //     setComments(commentData?.data);
+      //   } else {
+      //     setComments((prevData) => [...prevData, ...commentData?.data]);
+      //   }
+      // }
     }
   }, [
-    // handleOpen
-    commentData?.data,
+    handleOpen,
+    // commentData?.data
   ]);
 
   return (
@@ -127,7 +127,7 @@ const FeedComment = ({
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
-                comments={comments}
+                comments={commentData?.data}
                 onReply={replyHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
