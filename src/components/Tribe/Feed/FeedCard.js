@@ -38,7 +38,6 @@ const FeedCard = ({
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
-    // refetchFeeds();
   };
 
   const commentSubmitHandler = () => {
@@ -47,7 +46,6 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    // refetchFeeds();
   };
 
   useEffect(() => {

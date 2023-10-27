@@ -13,7 +13,7 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import PayslipDownload from "./PayslipDownload";
 
-const PayslipList = ({ id, month, year }) => {
+const PayslipList = ({ id, month, year, downloadPayslipCheckAccess }) => {
   const [passwordError, setPasswordError] = useState("");
 
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
@@ -95,6 +95,7 @@ const PayslipList = ({ id, month, year }) => {
           toggleDownloadDialog={toggleDownloadDialog}
           passwordError={passwordError}
           setPasswordError={setPasswordError}
+          downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         />
       </Flex>
     </>
