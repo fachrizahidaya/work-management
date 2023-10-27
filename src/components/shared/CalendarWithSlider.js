@@ -31,7 +31,7 @@ const CalendarWithSlider = ({ items }) => {
 
   const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const handleDayPress = (day) => {
-    setSelectedDate(day.dateString);
+    setSelectedDate(day);
   };
 
   const [isMonthVisible, setIsMonthVisible] = useState(true);
@@ -41,11 +41,7 @@ const CalendarWithSlider = ({ items }) => {
 
   return (
     <>
-      {/* <ScrollView style={{ height: height }}> */}
-      {/* {isMonthVisible && 
-      
-      } */}
-      <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
+      {isMonthVisible && <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>}
       <Agenda
         items={items}
         showClosingKnob={true}
@@ -72,10 +68,12 @@ const CalendarWithSlider = ({ items }) => {
             </>
           );
         }}
-        onDayPress={handleDayPress}
+        onDayPress={() => {
+          handleDayPress();
+        }}
+
         // onCalendarToggled={toggleMonthVisibility}
       />
-      {/* </ScrollView> */}
     </>
   );
 };
