@@ -10,7 +10,6 @@ import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRe
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const TeamLeaveScreen = ({ route }) => {
-  const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
   const navigation = useNavigation();
 
   const { teamLeaveRequest, teamLeaveRequestIsLoading, refetchTeamLeaveRequest, teamLeaveRequestIsFetching } =
@@ -52,7 +51,6 @@ const TeamLeaveScreen = ({ route }) => {
                   objectId={item?.approval_object_id}
                   object={item?.approval_object}
                   refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-                  approvalLeaveRequestCheckAccess={approvalLeaveRequestCheckAccess}
                 />
               </>
             )}
