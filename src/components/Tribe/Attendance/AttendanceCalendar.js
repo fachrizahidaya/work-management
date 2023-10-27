@@ -175,7 +175,13 @@ const AttendanceCalendar = ({
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
         />
-        <AttendanceModal reportIsOpen={reportIsOpen} toggleReport={toggleReport} date={date} formik={formik} />
+        <AttendanceModal
+          reportIsOpen={reportIsOpen}
+          toggleReport={toggleReport}
+          date={date}
+          formik={formik}
+          updateAttendanceCheckAccess={updateAttendanceCheckAccess}
+        />
       </Fragment>
     );
   };

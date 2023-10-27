@@ -68,7 +68,7 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      // postRefetchHandler()
+      postRefetchHandler();
       refetchComment();
       // refetchFeeds();
       setSubmitting(false);
@@ -127,7 +127,7 @@ const FeedComment = ({
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
-                comments={comments}
+                comments={commentData?.data}
                 onReply={replyHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
