@@ -40,6 +40,7 @@ const LaunchScreen = () => {
       }
     } catch (error) {
       console.log(error);
+      navigation.navigate("Login");
     }
   };
 
