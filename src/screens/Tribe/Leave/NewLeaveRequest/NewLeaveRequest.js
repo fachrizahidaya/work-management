@@ -16,12 +16,14 @@ import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDia
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const NewLeaveRequest = ({ route }) => {
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [formError, setFormError] = useState(true);
+  const createNewLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { width, height } = Dimensions.get("window");
 
@@ -270,6 +272,7 @@ const NewLeaveRequest = ({ route }) => {
           onChangeEndDate={onChangeEndDate}
           onChangeStartDate={onChangeStartDate}
           selectedGenerateType={selectedGenerateType}
+          createNewLeaveRequestCheckAccess={createNewLeaveRequestCheckAccess}
         />
       </Box>
     </Box>
