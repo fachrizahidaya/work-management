@@ -287,7 +287,11 @@ const CommentInput = ({ taskId, projectId }) => {
           </Flex>
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} color="white">
-            <Icon as={<MaterialCommunityIcons name="send" />} style={{ transform: [{ rotate: "-45deg" }] }} />
+            <Icon
+              as={<MaterialCommunityIcons name="send" />}
+              style={{ transform: [{ rotate: "-45deg" }] }}
+              color="gray.500"
+            />
           </FormButton>
         </Flex>
       </Box>
@@ -303,7 +307,12 @@ const CommentInput = ({ taskId, projectId }) => {
             renderItem={({ item }) => (
               <Flex flexDir="row" justifyContent="space-between">
                 <Flex flexDir="row" gap={1.5} mb={2}>
-                  <AvatarPlaceholder name={item?.comment_name} image={item?.comment_image} size="xs" />
+                  <AvatarPlaceholder
+                    name={item?.comment_name}
+                    image={item?.comment_image}
+                    size="xs"
+                    style={{ marginTop: 4 }}
+                  />
 
                   <Box>
                     <Flex flexDir="row" gap={1} alignItems="center">

@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import UserPreviewModal from "./UserPreviewModal";
 
-const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = true, isPressable }) => {
+const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = true, isPressable, style }) => {
   const { isOpen, toggle } = useDisclosure(false);
 
   function stringToColor(string) {
@@ -47,7 +47,7 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
       {image ? (
         <>
           {isPressable ? (
-            <TouchableOpacity onPress={() => isPressable && toggle()}>
+            <TouchableOpacity onPress={() => isPressable && toggle()} style={style}>
               <Avatar
                 source={{
                   uri: isThumb
@@ -67,19 +67,20 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
               }}
               size={size || "xs"}
               bg="transparent"
+              style={style}
             />
           )}
         </>
       ) : (
         <>
           {isPressable ? (
-            <TouchableOpacity onPress={() => isPressable && toggle()}>
+            <TouchableOpacity onPress={() => isPressable && toggle()} style={style}>
               <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
                 {name ? userInitialGenerator() : "KSS"}
               </Avatar>
             </TouchableOpacity>
           ) : (
-            <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
+            <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius} style={style}>
               {name ? userInitialGenerator() : "KSS"}
             </Avatar>
           )}
