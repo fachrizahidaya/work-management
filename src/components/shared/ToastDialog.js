@@ -20,7 +20,9 @@ const SuccessToast = ({ message, close }) => {
     >
       <HStack alignItems="center" space={2}>
         <Icon as={<MaterialCommunityIcons name="check-circle" />} color="green.600" size="lg" />
-        <Text>{message}</Text>
+        <Text width={200} numberOfLines={2}>
+          {message}
+        </Text>
       </HStack>
       <Pressable onPress={close}>
         <Icon as={<MaterialCommunityIcons name="close" />} size="lg" />
@@ -43,7 +45,9 @@ const ErrorToast = ({ message, close }) => {
     >
       <HStack alignItems="center" space={2}>
         <Icon as={<MaterialCommunityIcons name="alert" />} color="red.600" size="lg" />
-        <Text>{message}</Text>
+        <Text width={200} numberOfLines={2}>
+          {message}
+        </Text>
       </HStack>
       <Pressable onPress={close}>
         <Icon as={<MaterialCommunityIcons name="close" />} size="lg" />
