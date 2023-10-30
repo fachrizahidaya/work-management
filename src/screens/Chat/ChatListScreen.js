@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
-
-import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Icon, Input, Pressable, VStack } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -14,6 +11,7 @@ import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
 
 const ChatListScreen = () => {
+  const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
