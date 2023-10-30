@@ -9,6 +9,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { customTheme } from "./src/theme";
 import { Navigations } from "./src/navigation";
 import UserModuleVerificationGuard from "./src/HOC/UserModuleVerificationGuard";
+import { WebsocketContextProvider } from "./src/HOC/WebsocketContextProvider";
 
 const queryClient = new QueryClient();
 
@@ -17,13 +18,15 @@ export default function App() {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <NativeBaseProvider theme={customTheme}>
-          <NavigationContainer>
-            <SafeAreaProvider>
-              <UserModuleVerificationGuard>
-                <Navigations />
-              </UserModuleVerificationGuard>
-            </SafeAreaProvider>
-          </NavigationContainer>
+          <WebsocketContextProvider>
+            <NavigationContainer>
+              <SafeAreaProvider>
+                <UserModuleVerificationGuard>
+                  <Navigations />
+                </UserModuleVerificationGuard>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </WebsocketContextProvider>
         </NativeBaseProvider>
       </QueryClientProvider>
     </Provider>
