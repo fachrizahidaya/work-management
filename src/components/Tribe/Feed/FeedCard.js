@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { Box, Skeleton, Text, VStack } from "native-base";
+import { Box } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { FlatList, RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
@@ -21,6 +21,7 @@ const FeedCard = ({
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
+
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
@@ -48,10 +49,6 @@ const FeedCard = ({
     posts[referenceIndex]["total_comment"] += 1;
   };
 
-  useEffect(() => {
-    refetchFeeds();
-  }, [posts]);
-
   return (
     <Box flex={1}>
       <FlashList
@@ -77,6 +74,7 @@ const FeedCard = ({
           <FeedCardItem
             key={item?.id}
             id={item?.id}
+            post={item}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
             createdAt={item?.created_at}
@@ -87,11 +85,9 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post handler
             onToggleLike={onToggleLike}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            // toggle Comment
             onCommentToggle={commentsOpenHandler}
             refetch={refetchFeeds}
           />
@@ -109,6 +105,7 @@ const FeedCard = ({
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
           refetchFeeds={refetchFeeds}
+          handleEndReached={handleEndReached}
         />
       )}
     </Box>

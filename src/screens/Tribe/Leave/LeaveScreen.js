@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -8,10 +9,14 @@ import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
+  const [teamLeaveRequest, setTeamLeaveRequest] = useState({});
   const navigation = useNavigation();
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
+
+  const { isOpen: teamLeaveRequestIsOpen, toggle: toggleTeamLeaveRequest } = useDisclosure(false);
 
   const {
     data: personalLeaveRequest,
@@ -27,12 +32,12 @@ const LeaveScreen = () => {
     isLoading: profileIsLoading,
   } = useFetch("/hr/my-profile");
 
-  const {
-    data: teamLeaveRequest,
-    refetch: refetchTeamLeaveRequest,
-    isFetching: teamLeaveRequestIsFetching,
-    isLoading: teamLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/waiting-approval");
+  const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
+
+  const openTeamLeaveRequestHandler = (teamLeaveRequest) => {
+    setTeamLeaveRequest(teamLeaveRequest);
+    toggleTeamLeaveRequest();
+  };
 
   /**
    * Filtered leave handler
@@ -50,18 +55,8 @@ const LeaveScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
 
-          {teamLeaveRequest?.data.length && approvalLeaveRequestCheckAccess ? (
-            <Button
-              onPress={() =>
-                navigation.navigate("Team Leave Request", {
-                  teamLeaveRequest: teamLeaveRequest,
-                  teamLeaveRequestIsLoading: teamLeaveRequestIsLoading,
-                  refetchTeamLeaveRequest: refetchTeamLeaveRequest,
-                  teamLeaveRequestIsFetching: teamLeaveRequestIsFetching,
-                })
-              }
-              size="sm"
-            >
+          {teamLeaveRequestData?.data.length && approvalLeaveRequestCheckAccess ? (
+            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
               My Team
             </Button>
           ) : null}
@@ -75,7 +70,6 @@ const LeaveScreen = () => {
             >
               {/* Content here */}
               <LeaveRequestList
-                data={personalLeaveRequest?.data}
                 pendingLeaveRequests={pendingLeaveRequests}
                 approvedLeaveRequests={approvedLeaveRequests}
                 rejectedLeaveRequests={rejectedLeaveRequests}

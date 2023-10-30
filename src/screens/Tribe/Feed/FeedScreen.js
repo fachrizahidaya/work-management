@@ -11,12 +11,13 @@ import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
 
-const FeedScreen = ({ route }) => {
+const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [feedsData, setFeedsData] = useState({});
 
   // parameters for fetch posts
   const postFetchParameters = {
@@ -74,12 +75,6 @@ const FeedScreen = ({ route }) => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Post Liked"} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
       setTimeout(() => {
         console.log("liked this post!");
       }, 500);
@@ -88,12 +83,6 @@ const FeedScreen = ({ route }) => {
       setTimeout(() => {
         console.log("Process error");
       }, 500);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
     }
   };
 
@@ -121,26 +110,26 @@ const FeedScreen = ({ route }) => {
             PT Kolabora Group Indonesia
           </Text>
         </Flex>
-        {
-          <Pressable
-            style={styles.createIcon}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={() => {
-              navigation.navigate("New Feed", {
-                refetch: refetchFeeds,
-                loggedEmployeeId: profile?.data?.id,
-                loggedEmployeeImage: profile?.data?.image,
-                loggedEmployeeName: userSelector?.name,
-                loggedEmployeeDivision: profile?.data?.position_id,
-              });
-            }}
-          >
-            <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
-          </Pressable>
-        }
+
+        <Pressable
+          style={styles.createIcon}
+          shadow="0"
+          borderRadius="full"
+          borderWidth={3}
+          borderColor="#FFFFFF"
+          onPress={() => {
+            navigation.navigate("New Feed", {
+              refetch: refetchFeeds,
+              postRefetchHandler: postRefetchHandler,
+              loggedEmployeeId: profile?.data?.id,
+              loggedEmployeeImage: profile?.data?.image,
+              loggedEmployeeName: userSelector?.name,
+              loggedEmployeeDivision: profile?.data?.position_id,
+            });
+          }}
+        >
+          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
+        </Pressable>
 
         <Box flex={1} px={3}>
           {/* Content here */}

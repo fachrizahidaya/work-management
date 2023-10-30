@@ -116,38 +116,31 @@ const PayslipScreen = () => {
         />
       </Flex>
 
-      {!payslipIsLoading ? (
-        payslip?.data.length > 0 ? (
-          <FlashList
-            data={payslip?.data}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            updateCellsBatchingPeriod={50}
-            windowSize={5}
-            keyExtractor={(item, index) => index}
-            onEndReachedThreshold={0.1}
-            estimatedItemSize={100}
-            refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            renderItem={({ item }) => (
-              <PayslipList
-                key={item?.id}
-                id={item?.id}
-                month={item?.pay_month}
-                year={item?.pay_year}
-                downloadPayslipCheckAccess={downloadPayslipCheckAccess}
-              />
-            )}
-          />
-        ) : (
-          <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
-            <Text>No Data</Text>
-          </VStack>
-        )
+      {payslip?.data.length > 0 ? (
+        <FlashList
+          data={payslip?.data}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          updateCellsBatchingPeriod={50}
+          windowSize={5}
+          keyExtractor={(item, index) => index}
+          onEndReachedThreshold={0.1}
+          estimatedItemSize={100}
+          refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
+          renderItem={({ item }) => (
+            <PayslipList
+              key={item?.id}
+              id={item?.id}
+              month={item?.pay_month}
+              year={item?.pay_year}
+              downloadPayslipCheckAccess={downloadPayslipCheckAccess}
+            />
+          )}
+        />
       ) : (
-        <VStack px={3} space={2}>
-          <Skeleton h={41} />
-          <Skeleton h={41} />
+        <VStack space={2} alignItems="center" justifyContent="center">
+          <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
+          <Text>No Data</Text>
         </VStack>
       )}
     </SafeAreaView>

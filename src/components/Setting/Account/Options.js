@@ -4,7 +4,7 @@ import { Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const Options = ({ profile, editProfileHandler }) => {
+const Options = ({ profile }) => {
   const navigation = useNavigation();
   const titles = [
     {
@@ -13,7 +13,6 @@ const Options = ({ profile, editProfileHandler }) => {
       navigate: () =>
         navigation.navigate("Profile Screen", {
           profile: profile,
-          editProfileHandler: editProfileHandler,
         }),
     },
     {
@@ -22,8 +21,6 @@ const Options = ({ profile, editProfileHandler }) => {
       navigate: () =>
         navigation.navigate("Company Screen", {
           profile: profile,
-
-          editProfileHandler: editProfileHandler,
         }),
     },
     {
@@ -32,7 +29,6 @@ const Options = ({ profile, editProfileHandler }) => {
       navigate: () =>
         navigation.navigate("Subscription Screen", {
           profile: profile,
-          editProfileHandler: editProfileHandler,
         }),
     },
     {
@@ -41,7 +37,6 @@ const Options = ({ profile, editProfileHandler }) => {
       navigate: () =>
         navigation.navigate("Payment Screen", {
           profile: profile,
-          editProfileHandler: editProfileHandler,
         }),
     },
   ];

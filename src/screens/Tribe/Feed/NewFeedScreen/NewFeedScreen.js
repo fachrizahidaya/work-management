@@ -30,7 +30,7 @@ const NewFeedScreen = ({ route }) => {
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
 
   /**
    * Create a new post handler
@@ -77,6 +77,7 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
+      postRefetchHandler();
       refetch();
       setSubmitting(false);
       setStatus("success");
@@ -88,13 +89,13 @@ const NewFeedScreen = ({ route }) => {
       });
     } catch (err) {
       console.log(err);
+      setSubmitting(false);
+      setStatus("error");
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
         },
       });
-      setSubmitting(false);
-      setStatus("error");
     }
   };
 
