@@ -93,26 +93,29 @@ const LoginScreen = () => {
    * Handles the login process by sending a POST request to the authentication endpoint.
    * @function loginHandler
    * @param {Object} form - The login form data to be sent in the request.
+   * Some how i need to make it .then .catch format because the error wont be catched if i use
+   * the try catch format. Weird...
    */
   const loginHandler = async (form) => {
-    try {
-      const res = await axiosInstance.post("/auth/login", form);
+    await axiosInstance
+      .post("/auth/login", form)
+      .then((res) => {
+        // Extract user data from the response
+        const userData = res.data.data;
 
-      // Extract user data from the response
-      const userData = res.data.data;
-
-      // Navigate to the "Loading" screen with user data
-      navigation.navigate("Loading", { userData });
-      formik.setSubmitting(false);
-    } catch (error) {
-      console.log(error);
-      formik.setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+        // Navigate to the "Loading" screen with user data
+        navigation.navigate("Loading", { userData });
+        formik.setSubmitting(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        formik.setSubmitting(false);
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+          },
+        });
       });
-    }
   };
 
   // const signInWithGoogle = async (user) => {
