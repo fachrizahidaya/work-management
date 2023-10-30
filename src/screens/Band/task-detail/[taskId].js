@@ -136,7 +136,7 @@ const TaskDetailScreen = ({ route }) => {
             {/* Comments */}
             <FormControl>
               <FormControl.Label>COMMENTS</FormControl.Label>
-              <CommentInput taskId={taskId} />
+              <CommentInput taskId={taskId} data={selectedTask?.data} />
             </FormControl>
           </Flex>
         </KeyboardAwareScrollView>

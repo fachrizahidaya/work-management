@@ -6,6 +6,7 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useSelector } from "react-redux";
 
 import { Alert, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -43,7 +44,8 @@ const rar = "../../../../assets/doc-icons/rar-format.png";
 const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
-const CommentInput = ({ taskId, projectId }) => {
+const CommentInput = ({ taskId, projectId, data }) => {
+  const userSelector = useSelector((state) => state.auth);
   const toast = useToast();
   const [files, setFiles] = useState([]);
   const [selectedComments, setSelectedComments] = useState([]);
@@ -51,19 +53,21 @@ const CommentInput = ({ taskId, projectId }) => {
   const [bulkModeIsOn, setBulkModeIsOn] = useState(false);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
 
-  const onDeleteSuccess = () => {
-    setBulkModeIsOn(false);
-    setSelectedComments([]);
-    refetchComments();
-    refetchAttachments();
-  };
-
   const { data: comments, refetch: refetchComments } = useFetch(
     projectId ? `/pm/projects/${projectId}/comment` : taskId ? `/pm/tasks/${taskId}/comment` : null
   );
   const { refetch: refetchAttachments } = useFetch(
     projectId ? `/pm/projects/${projectId}/attachment` : taskId ? `/pm/tasks/${taskId}/attachment` : null
   );
+
+  const ownerPrivilage = data?.owner_id === userSelector.id;
+
+  const onDeleteSuccess = () => {
+    setBulkModeIsOn(false);
+    setSelectedComments([]);
+    refetchComments();
+    refetchAttachments();
+  };
 
   /**
    * Handle submission of comment for project or task
@@ -286,8 +290,6 @@ const CommentInput = ({ taskId, projectId }) => {
     }
   }, [selectedComments.length]);
 
-  console.log(selectedComments);
-
   return (
     <Flex gap={5}>
       {/* Render selected attachments here */}
@@ -406,7 +408,11 @@ const CommentInput = ({ taskId, projectId }) => {
             }
             renderItem={({ item }) => (
               <Pressable
-                onLongPress={() => !bulkModeIsOn && initializeBulkMode(item.id)}
+                onLongPress={() => {
+                  if (ownerPrivilage || item.user_id === userSelector.id) {
+                    !bulkModeIsOn && initializeBulkMode(item.id);
+                  }
+                }}
                 onPress={() => {
                   if (bulkModeIsOn) {
                     if (!selectedComments.includes(item.id)) {
