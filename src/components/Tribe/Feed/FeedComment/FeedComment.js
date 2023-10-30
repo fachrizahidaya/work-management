@@ -58,12 +58,11 @@ const FeedComment = ({
   };
 
   /**
-   * Submit comment handler
+   *
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);

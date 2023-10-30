@@ -12,8 +12,8 @@ const FormButton = ({
   setLoadingIndicator,
   variant,
   opacity,
-  fontColor,
   fontSize,
+  fontColor,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -44,7 +44,13 @@ const FormButton = ({
       variant={variant}
       opacity={opacity ? opacity : null}
     >
-      {isLoading ? <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} /> : children}
+      {isLoading ? (
+        <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} />
+      ) : (
+        <Text fontSize={fontSize ? fontSize : null} color={fontColor ? fontColor : "#FFFFFF"}>
+          {children}
+        </Text>
+      )}
     </Button>
   );
 };
