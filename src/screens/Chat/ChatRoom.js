@@ -15,6 +15,7 @@ import axiosInstance from "../../config/api";
 import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
+import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 
 const ChatRoom = () => {
   window.Pusher = Pusher;
@@ -26,23 +27,11 @@ const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-
-  const echo = new Echo({
-    broadcaster: "pusher",
-    key: "kssapp",
-    wsHost: "api-dev.kolabora-app.com",
-    wsPort: 6001,
-    wssport: 6001,
-    transports: ["websocket"],
-    enabledTransports: ["ws", "wss"],
-    forceTLS: false,
-    disableStats: true,
-    cluster: "mt1",
-  });
+  const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 
   // PERSONAL CHAT
   const getPersonalChat = () => {
-    echo.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
+    laravelEcho.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
       setChatList((currentChats) => [...currentChats, event.data]);
     });
   };
@@ -50,7 +39,7 @@ const ChatRoom = () => {
   const getPersonalMessage = async () => {
     try {
       if (hasMore) {
-        const res = await axiosInstance.get(`/chat/personal/${userSelector.id}/${userId}/message`, {
+        const res = await axiosInstance.get(`/chat/personal/${userId}/message`, {
           params: {
             offset: offset,
             limit: 20,
