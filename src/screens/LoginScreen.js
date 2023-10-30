@@ -96,7 +96,6 @@ const LoginScreen = () => {
    */
   const loginHandler = async (form) => {
     try {
-      // Send a POST request to the authentication endpoint
       const res = await axiosInstance.post("/auth/login", form);
 
       // Extract user data from the response
@@ -106,9 +105,13 @@ const LoginScreen = () => {
       navigation.navigate("Loading", { userData });
       formik.setSubmitting(false);
     } catch (error) {
-      // Log any errors that occur during the login process
       console.log(error);
       formik.setSubmitting(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
@@ -219,6 +222,7 @@ const LoginScreen = () => {
               size="md"
               placeholder="Insert your email..."
               onChangeText={(value) => formik.setFieldValue("email", value)}
+              autoCapitalize="none"
             />
             <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
           </FormControl>
