@@ -93,23 +93,29 @@ const LoginScreen = () => {
    * Handles the login process by sending a POST request to the authentication endpoint.
    * @function loginHandler
    * @param {Object} form - The login form data to be sent in the request.
+   * Some how i need to make it .then .catch format because the error wont be catched if i use
+   * the try catch format. Weird...
    */
   const loginHandler = async (form) => {
-    try {
-      // Send a POST request to the authentication endpoint
-      const res = await axiosInstance.post("/auth/login", form);
+    await axiosInstance
+      .post("/auth/login", form)
+      .then((res) => {
+        // Extract user data from the response
+        const userData = res.data.data;
 
-      // Extract user data from the response
-      const userData = res.data.data;
-
-      // Navigate to the "Loading" screen with user data
-      navigation.navigate("Loading", { userData });
-      formik.setSubmitting(false);
-    } catch (error) {
-      // Log any errors that occur during the login process
-      console.log(error);
-      formik.setSubmitting(false);
-    }
+        // Navigate to the "Loading" screen with user data
+        navigation.navigate("Loading", { userData });
+        formik.setSubmitting(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        formik.setSubmitting(false);
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+          },
+        });
+      });
   };
 
   // const signInWithGoogle = async (user) => {
@@ -219,6 +225,7 @@ const LoginScreen = () => {
               size="md"
               placeholder="Insert your email..."
               onChangeText={(value) => formik.setFieldValue("email", value)}
+              autoCapitalize="none"
             />
             <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
           </FormControl>

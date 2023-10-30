@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, HStack, Icon, Menu, Pressable, Text, useToast } from "native-base";
+import { Box, Button, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -234,7 +234,7 @@ const ProjectDetailScreen = ({ route }) => {
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
           {tabValue === "comments" ? (
-            <CommentInput projectId={projectId} />
+            <CommentInput projectId={projectId} data={projectData} />
           ) : (
             <ScrollView style={{ maxHeight: 400 }}>
               <Box flex={1} minHeight={2}>

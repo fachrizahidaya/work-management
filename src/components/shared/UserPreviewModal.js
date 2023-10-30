@@ -1,16 +1,26 @@
 import React from "react";
 
-import { Modal, Text, VStack } from "native-base";
+import { Avatar, Modal, Text, VStack } from "native-base";
 
-import AvatarPlaceholder from "./AvatarPlaceholder";
-
-const UserPreviewModal = ({ isOpen, onClose, name, image, email }) => {
+const UserPreviewModal = ({ isOpen, onClose, name, image, email, stringToColor, userInitialGenerator }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <Modal.Content>
         <Modal.Body bgColor="white">
           <VStack alignItems="center" space={2}>
-            <AvatarPlaceholder name={name} image={image} isThumb={false} size="lg" />
+            {image ? (
+              <Avatar
+                source={{
+                  uri: `${process.env.EXPO_PUBLIC_API}/image/${image}`,
+                }}
+                size="lg"
+                bg="transparent"
+              />
+            ) : (
+              <Avatar size="lg" bgColor={stringToColor(name)}>
+                {name ? userInitialGenerator() : "KSS"}
+              </Avatar>
+            )}
             <VStack alignItems="center">
               <Text textAlign="center" fontSize={20}>
                 {name || "Something went wrong"}
