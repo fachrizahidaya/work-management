@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCardItem = ({
   id,
@@ -26,13 +27,20 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  onOpen,
   refetch,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [postIsFetching, setPostIsFetching] = useState(false);
 
   const navigation = useNavigation();
+
+  const [postToOpen, setPostToOpen] = useState({});
+  const { isOpen: postIsOpen, toggle: togglePost } = useDisclosure(false);
+
+  const openPostToOpenHandler = (post) => {
+    setPostToOpen(post);
+    togglePost();
+  };
 
   /**
    * Like post control

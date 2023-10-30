@@ -36,7 +36,7 @@ const TeamLeaveRequestList = ({
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
       setSubmitting(false);
       setStatus("success");
-      // refetchTeamLeaveRequest();
+      refetchTeamLeaveRequest();
       toast.show({
         render: ({ id }) => {
           return (
@@ -79,7 +79,6 @@ const TeamLeaveRequestList = ({
     formik.setFieldValue("status", response);
     setIsSubmitting(response);
     formik.handleSubmit();
-    // refetchTeamLeaveRequest();
   };
 
   useEffect(() => {

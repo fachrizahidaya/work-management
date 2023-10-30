@@ -16,14 +16,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FormButton from "../../components/shared/FormButton";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import { update_image } from "../../redux/reducer/auth";
+import { update_profile } from "../../redux/reducer/auth";
 import axiosInstance from "../../config/api";
-import { useEffect } from "react";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { profile, editProfileHandler } = route.params;
+  const { profile } = route.params;
 
   const userSelector = useSelector((state) => state.auth); // to edit name and picture of user, use redux
   const dispatch = useDispatch();
@@ -41,15 +40,39 @@ const MyProfileScreen = ({ route }) => {
     { title: "Status", source: profile?.data?.status.charAt(0).toUpperCase() + profile?.data?.status.slice(1) },
   ];
 
+  const editProfileHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
+      dispatch(update_profile(res.data.data));
+      navigation.goBack({ profile: profile });
+      setSubmitting(false);
+      setStatus("success");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: userSelector.name,
-      // email: userSelector.email,
     },
     validationSchema: yup.object().shape({
-      // name: yup.string().required("Name is required"),
-      // email: yup.string().required("Email is required"),
+      name: yup.string().required("Name is required"),
     }),
     validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {
@@ -91,15 +114,8 @@ const MyProfileScreen = ({ route }) => {
     }
   };
 
-  useEffect(() => {
-    if (!formik.isSubmitting && formik.status === "success") {
-      formik.resetForm();
-    }
-  }, []);
-
   const editProfilePictureHandler = async () => {
     try {
-      setIsLoading(true);
       const formData = new FormData();
       formData.append("image", image);
       formData.append("_method", "PATCH");
@@ -110,7 +126,6 @@ const MyProfileScreen = ({ route }) => {
       });
       dispatch(update_image(res.data.data));
       setImage(null);
-      setIsLoading(false);
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
@@ -119,7 +134,6 @@ const MyProfileScreen = ({ route }) => {
       });
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;

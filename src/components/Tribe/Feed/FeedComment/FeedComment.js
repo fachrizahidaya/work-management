@@ -18,6 +18,7 @@ const FeedComment = ({
   onSubmit,
   postRefetchHandler,
   refetchFeeds,
+  handleEndReached,
 }) => {
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
@@ -68,9 +69,9 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      postRefetchHandler();
       refetchComment();
-      // refetchFeeds();
+      postRefetchHandler();
+      refetchFeeds();
       setSubmitting(false);
       setStatus("success");
     } catch (err) {

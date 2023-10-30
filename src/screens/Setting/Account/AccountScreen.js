@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, Button, Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
+import { Button, Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -11,44 +10,17 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Options from "../../../components/Setting/Account/Options";
-import axiosInstance from "../../../config/api";
-import { update_profile } from "../../../redux/reducer/auth";
-import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
-import { useEffect } from "react";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
 
   const userSelector = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
   const toast = useToast();
-
-  const editProfileHandler = async (form, setSubmitting) => {
-    try {
-      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
-      dispatch(update_profile(res.data.data));
-      navigation.goBack({ profile: profile, editProfileHandler: editProfileHandler });
-      setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
-      setSubmitting(false);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,11 +50,11 @@ const AccountScreen = ({ route }) => {
             {userSelector?.name}
           </Text>
           <Text fontSize={12} fontWeight={400}>
-            {userSelector?.email}
+            {profile?.data?.email}
           </Text>
         </Flex>
         <Flex bgColor="white" p={5} pb={10} gap={33}>
-          <Options profile={profile} editProfileHandler={editProfileHandler} />
+          <Options profile={profile} />
 
           <Pressable
             display="flex"

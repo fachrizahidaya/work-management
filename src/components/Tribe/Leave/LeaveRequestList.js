@@ -9,7 +9,6 @@ import ConfirmationModal from "../../shared/ConfirmationModal";
 import CustomAccordion from "../../shared/CustomAccordion";
 
 const LeaveRequestList = ({
-  data,
   pendingLeaveRequests,
   approvedLeaveRequests,
   rejectedLeaveRequests,

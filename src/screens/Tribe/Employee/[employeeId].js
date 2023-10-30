@@ -22,8 +22,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const { height } = Dimensions.get("screen");
 
-  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
-
   // parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
@@ -151,6 +149,7 @@ const EmployeeProfileScreen = ({ route }) => {
         onPress={() => {
           navigation.navigate("New Feed", {
             refetch: refetchPersonalFeeds,
+            postRefetchHandler: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
             employeeId: employeeId,
