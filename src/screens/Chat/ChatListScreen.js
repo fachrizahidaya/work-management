@@ -14,7 +14,6 @@ import PersonalSection from "../../components/Chat/PersonalSection/PersonalSecti
 
 const ChatListScreen = () => {
   const userSelector = useSelector((state) => state.auth);
-  const navigation = useNavigation();
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
