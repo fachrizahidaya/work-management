@@ -6,9 +6,10 @@ import Header from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
 import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
-import ChatRoom from "../screens/Chat/ChatRoom";
-import ChatListScreen from "../screens/Chat/ChatListScreen";
+
+// Independent Screens
 import LogoutScreen from "../screens/LogoutScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 
 // Band Screens
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
@@ -19,7 +20,6 @@ import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
-import NotificationScreen from "../screens/NotificationScreen";
 import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/TeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
@@ -30,6 +30,12 @@ import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
+
+// Nest Screens
+import ChatRoom from "../screens/Chat/ChatRoom";
+import ChatListScreen from "../screens/Chat/ChatListScreen";
+import UserSelectionScreen from "../screens/Chat/UserSelectionScreen";
+import GroupFormScreen from "../screens/Chat/GroupFormScreen";
 
 const Stack = createStackNavigator();
 
@@ -58,13 +64,19 @@ const HomeStack = () => {
         }}
       </Stack.Screen>
 
+      {/* Independent Screens */}
       <Stack.Screen name="Notification" component={NotificationScreen} options={{ header: () => <Header /> }} />
 
+      <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
+
+      {/* Nest Screens */}
       <Stack.Screen name="Chat List" component={ChatListScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
 
-      <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="User Selection" component={UserSelectionScreen} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Group Form" component={GroupFormScreen} options={{ headerShown: false }} />
 
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />

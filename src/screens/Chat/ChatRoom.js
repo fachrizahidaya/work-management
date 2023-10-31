@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import { FlashList } from "@shopify/flash-list";
 import { Flex } from "native-base";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 
 import ChatBubble from "../../components/Chat/ChatBubble/ChatBubble";
 import axiosInstance from "../../config/api";
@@ -111,7 +111,7 @@ const ChatRoom = () => {
   }, [userId]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA", marginBottom: isKeyboardVisible ? keyboardHeight : 0 }}>
+    <SafeAreaView style={[styles.container, { marginBottom: isKeyboardVisible ? keyboardHeight : 0 }]}>
       <ChatHeader name={name} image={image} navigation={navigation} />
 
       <Flex
@@ -147,3 +147,10 @@ const ChatRoom = () => {
 };
 
 export default ChatRoom;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+});
