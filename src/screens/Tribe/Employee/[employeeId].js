@@ -12,44 +12,35 @@ import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
-import { ScrollView } from "react-native-gesture-handler";
-import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchingMore, setFetchingMore] = useState(false);
-  const { height } = Dimensions.get("screen");
 
-  // parameters for fetch posts
-  const postFetchParameters = {
-    offset: currentOffset,
-    limit: 10,
-  };
-
-  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeId, refetch } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+
+  const { height } = Dimensions.get("screen");
 
   const navigation = useNavigation();
 
   const toast = useToast();
 
-  // User redux to fetch id, name
-  const userSelector = useSelector((state) => state.auth);
+  const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
 
-  const {
-    data: employee,
-    isFetching: employeeIsFetching,
-    refetch: refetchEmployee,
-  } = useFetch(`/hr/employees/${employeeId}`);
+  // Parameters for fetch posts
+  const postFetchParameters = {
+    offset: currentOffset,
+    limit: 10,
+  };
 
-  const {
-    data: teammates,
-    refetch: refetchTeammates,
-    isFetching: teammatesIsFetching,
-  } = useFetch(`/hr/employees/${employeeId}/team`);
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
+
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const {
     data: personalFeeds,
@@ -61,13 +52,6 @@ const EmployeeProfileScreen = ({ route }) => {
    * Header when screen scrolling handler
    */
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
-  const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > 0) {
-      setIsHeaderSticky(true);
-    } else {
-      setIsHeaderSticky(false);
-    }
-  };
 
   /**
    * Fetch more Posts handler
@@ -92,28 +76,27 @@ const EmployeeProfileScreen = ({ route }) => {
     setFetchIsDone(false);
   };
 
+  /**
+   * Like a Post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetch();
-      refetchPersonalFeeds();
+      // refetch();
+      // refetchPersonalFeeds();
       setTimeout(() => {
-        toast.show({
-          render: ({ id }) => {
-            return <SuccessToast message={"Post Liked"} close={() => toast.close(id)} />;
-          },
-          placement: "top",
-        });
-        console.log("liked this post!");
+        console.log("Process success");
       }, 500);
     } catch (err) {
+      console.log(err);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
-      console.log(err);
     }
   };
 
@@ -141,7 +124,7 @@ const EmployeeProfileScreen = ({ route }) => {
       </Flex>
 
       <Pressable
-        style={styles.createIcon}
+        style={styles.createPostIcon}
         shadow="0"
         borderRadius="full"
         borderWidth={3}
@@ -160,8 +143,7 @@ const EmployeeProfileScreen = ({ route }) => {
       </Pressable>
 
       <Flex flex={1} minHeight={2} gap={2} height={height}>
-        {/* Posts that created by employee handler */}
-
+        {/* Content here */}
         <FeedCard
           posts={posts}
           loggedEmployeeId={loggedEmployeeId}
@@ -207,7 +189,11 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1,
   },
-  createIcon: {
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",
@@ -217,17 +203,5 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
-  },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  stickyListContainer: {
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-    backgroundColor: "#FFFFFF",
-    borderBottomColor: "#E8E9EB",
-    borderBottomWidth: 1,
   },
 });

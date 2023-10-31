@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Actionsheet, Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -18,16 +18,16 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
-  const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
+  const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
   const { data: userIp } = useFetch("https://jsonip.com/");
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
-  const { isOpen: newLeaveRequestIsOpen, toggle: toggleNewLeaveRequest } = useDisclosure(false);
   const { isOpen: newReimbursementIsOpen, toggle: toggleNewReimbursement } = useDisclosure(false);
 
   const items = [
@@ -48,7 +48,6 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   /**
    * Attendance check-in and check-out handler
    */
-
   const attendanceCheckHandler = async () => {
     try {
       if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
@@ -56,7 +55,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           ip: userIp?.ip,
         });
         toggle();
-        refetch();
+        refetchAttendance();
         toast.show({
           render: ({ id }) => {
             return (
@@ -120,14 +119,8 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                 onPress={() => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
-                      onClose: toggleNewLeaveRequest,
-                      availableLeavePersonal: profile?.data?.leave_quota,
-                      pendingApproval: profile?.data?.pending_leave_request,
-                      approved: profile?.data?.approved_leave_request,
-                      refetchPersonalLeave: refetchPersonalLeave,
-                      approver: profile?.data?.supervisor_name,
-                      approverImage: profile?.data?.supervisor_image,
                       employeeId: profile?.data?.id,
+                      refetchPersonalLeave: refetchPersonalLeave,
                     });
                     toggle();
                   } else if (item.title === "New Reimbursement") {

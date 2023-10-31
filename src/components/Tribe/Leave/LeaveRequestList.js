@@ -12,13 +12,12 @@ const LeaveRequestList = ({
   pendingLeaveRequests,
   approvedLeaveRequests,
   rejectedLeaveRequests,
-  isLoading,
-  refetchPersonalLeaveRequest,
-  personalLeaveRequestIsFetching,
-  refetchProfile,
   pendingCount,
   approvedCount,
   rejectedCount,
+  refetchPersonalLeaveRequest,
+  refetchProfile,
+  personalLeaveRequestIsFetching,
 }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
@@ -27,7 +26,7 @@ const LeaveRequestList = ({
 
   return (
     <Flex gap={10}>
-      {/* Pending Leave handler */}
+      {/* Pending Leave */}
       {pendingCount === 0 ? null : (
         <CustomAccordion title="Pending" subTitle={pendingCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
@@ -100,7 +99,7 @@ const LeaveRequestList = ({
         </CustomAccordion>
       )}
 
-      {/* Approved Leave handler */}
+      {/* Approved Leave */}
       {approvedCount === 0 ? null : (
         <CustomAccordion title="Approved" subTitle={approvedCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>
@@ -140,7 +139,7 @@ const LeaveRequestList = ({
         </CustomAccordion>
       )}
 
-      {/* Rejected Leave handler */}
+      {/* Rejected Leave */}
       {rejectedCount === 0 ? null : (
         <CustomAccordion title="Rejected" subTitle={rejectedCount || 0}>
           <ScrollView style={{ maxHeight: 300 }}>

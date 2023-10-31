@@ -1,30 +1,22 @@
+import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { StyleSheet } from "react-native";
-import { Box, Button, FormControl, Input, KeyboardAvoidingView } from "native-base";
+import { Box, FormControl, Input } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
-import { useEffect } from "react";
 
-const FeedCommentForm = ({
-  postId,
-  loggedEmployeeImage,
-  parentId,
-  inputRef,
-  onSubmit,
-  loggedEmployeeName,
-  refetchFeeds,
-}) => {
+const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const { data: employeeData } = useFetch("/hr/employees");
 
   /**
-   * Form comments Handler
+   * Create a new post handler
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -70,7 +62,6 @@ const FeedCommentForm = ({
               opacity={formik.values.comments === "" ? 0.5 : 1}
               variant="unstyled"
               size="sm"
-              // color="#FFFFFF"
               fontColor="white"
               fontSize={12}
             />

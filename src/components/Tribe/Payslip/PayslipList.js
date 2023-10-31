@@ -24,7 +24,6 @@ const PayslipList = ({ id, month, year, downloadPayslipCheckAccess }) => {
   /**
    * Input Password Handler
    */
-
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -39,7 +38,7 @@ const PayslipList = ({ id, month, year, downloadPayslipCheckAccess }) => {
   });
 
   /**
-   * Payslip Download Handler
+   * Download payslip Handler
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus

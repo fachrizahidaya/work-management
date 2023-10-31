@@ -9,12 +9,7 @@ import SupervisorInformation from "../../components/Tribe/Information/Supervisor
 import { useFetch } from "../../hooks/useFetch";
 
 const InformationScreen = () => {
-  const {
-    data: profile,
-    isLoading: profileIsLoading,
-    isFetching: profileIsFetching,
-    refetch: refetchProfile,
-  } = useFetch("/hr/my-profile");
+  const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
 
   return (
     <>

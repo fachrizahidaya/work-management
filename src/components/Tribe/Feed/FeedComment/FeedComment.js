@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Flex, ScrollView, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
+import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
@@ -8,17 +8,15 @@ import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedComment = ({
+  postId,
+  loggedEmployeeId,
+  loggedEmployeeName,
+  loggedEmployeeImage,
   handleOpen,
   handleClose,
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  loggedEmployeeName,
-  postId,
-  total_comments,
-  onSubmit,
   postRefetchHandler,
   refetchFeeds,
-  handleEndReached,
+  onSubmit,
 }) => {
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
@@ -27,9 +25,7 @@ const FeedComment = ({
 
   const inputRef = useRef();
 
-  /**
-   * Fetch Comment Handler
-   */
+  // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffset,
     limit: 50,
@@ -37,11 +33,14 @@ const FeedComment = ({
 
   const {
     data: commentData,
-    isLoading: commentIsLoading,
-    isFetching: commentIsFetching,
+    isFetching: commentDataIsFetching,
     refetch: refetchComment,
   } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
 
+  /**
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
+   */
   const commentEndReachedHandler = () => {
     if (!fetchIsDone) {
       if (comments.length !== comments.length + commentData?.data.length) {
@@ -52,13 +51,17 @@ const FeedComment = ({
     }
   };
 
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
   const commentRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
   };
 
   /**
-   *
+   * Submit a comment handler
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
@@ -132,10 +135,9 @@ const FeedComment = ({
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
                 latestExpandedReply={latestExpandedReply}
-                commentIsLoading={commentIsLoading}
                 handleEndReached={commentEndReachedHandler}
                 commentsRefetchHandler={commentRefetchHandler}
-                commentIsFetching={commentIsFetching}
+                commentIsFetching={commentDataIsFetching}
                 refetchComment={refetchComment}
               />
             </Flex>

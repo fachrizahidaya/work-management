@@ -19,11 +19,10 @@ const ContactScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
-  const dependencies = [currentPage, searchInput];
+  // Paremeters for fetch contact
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
@@ -35,12 +34,11 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch("/hr/employees", dependencies, fetchEmployeeContactParameters);
+  } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
 
   /**
    * Fetch employee contact Handler
    */
-
   const fetchMoreEmployeeContact = () => {
     if (currentPage < employeeData?.data?.last_page) {
       setCurrentPage(currentPage + 1);
@@ -130,7 +128,6 @@ const ContactScreen = () => {
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}
           onEndReached={fetchMoreEmployeeContact}
-          // ListFooterComponent={employeeDataIsFetching && <Spinner color="primary.600" size="sm" />}
           renderItem={({ item }) => (
             <ContactList
               key={item?.id}

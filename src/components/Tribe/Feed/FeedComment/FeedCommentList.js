@@ -10,7 +10,6 @@ const FeedCommentList = ({
   loggedEmployeeId,
   postId,
   latestExpandedReply,
-  commentIsLoading,
   handleEndReached,
   commentsRefetchHandler,
   commentIsFetching,

@@ -5,10 +5,8 @@ import { Button, FormControl, Icon, Input, Modal, Select, Spinner, Text, VStack 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
-import { useState } from "react";
 
-const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAttendanceCheckAccess }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
   /**
    * Late type Handler
    */
@@ -327,16 +325,7 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik, updateAtten
                 >
                   <Text color="#FFFFFF">Cancel</Text>
                 </Button>
-                {/* <Button
-                  size="sm"
-                  variant="solid"
-                  onPress={() => {
-                    setIsLoading(true);
-                    formik.handleSubmit();
-                  }}
-                >
-                  {isLoading ? <Spinner color="#FFFFFF" /> : <Text color="#FFFFFF">Save</Text>}
-                </Button> */}
+
                 <FormButton
                   children="Save"
                   size="sm"

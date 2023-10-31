@@ -25,7 +25,7 @@ const NewLeaveRequest = ({ route }) => {
 
   const { width, height } = Dimensions.get("window");
 
-  const { onClose, availableLeavePersonal, refetchPersonalLeave, approver, approverImage, employeeId } = route.params;
+  const { refetchPersonalLeave, employeeId } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 

@@ -27,12 +27,7 @@ const PayslipScreen = () => {
 
   const toast = useToast();
 
-  const {
-    data: payslip,
-    refetch: refetchPayslip,
-    isFetching: payslipIsFetching,
-    isLoading: payslipIsLoading,
-  } = useFetch("/hr/payslip");
+  const { data: payslip, refetch: refetchPayslip, isFetching: payslipIsFetching } = useFetch("/hr/payslip");
 
   /**
    * Change password handler

@@ -1,13 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Image, Skeleton, Text, VStack } from "native-base";
+import { Flex, Image, Text, VStack } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
-import useCheckAccess from "../../../../hooks/useCheckAccess";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const TeamLeaveScreen = () => {

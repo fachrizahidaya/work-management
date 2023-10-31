@@ -4,7 +4,7 @@ import { Box, Icon, Image } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TouchableOpacity } from "react-native";
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
-import MyProfileScreen from "../../screens/Setting/MyProfileScreen";
+import MyProfileScreen from "../../screens/Setting/Account/MyProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
