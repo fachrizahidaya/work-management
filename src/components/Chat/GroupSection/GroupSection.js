@@ -9,7 +9,7 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats }) => {
   const navigation = useNavigation();
-  console.log(groupChats);
+
   return (
     <>
       <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">

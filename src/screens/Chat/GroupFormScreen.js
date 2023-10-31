@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Keyboard, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
-import { HStack, Icon, Input, Pressable, Text, VStack, useToast } from "native-base";
+import { HStack, Icon, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -24,7 +24,7 @@ const GroupFormScreen = ({ route }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   // console.log(userArray);
 
-  const createGroupHandler = async (form) => {
+  const createGroupHandler = async (form, setSubmitting) => {
     try {
       const res = await axiosInstance.post("/chat/group", form);
 
@@ -37,6 +37,13 @@ const GroupFormScreen = ({ route }) => {
         });
       }
 
+      navigation.navigate("Chat Room", {
+        name: res.data.data.name,
+        userId: res.data.data.id,
+        image: res.data.data.image,
+        type: "group",
+      });
+      setSubmitting(false);
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Group created!" close={() => toast.close(id)} />;
@@ -44,6 +51,7 @@ const GroupFormScreen = ({ route }) => {
       });
     } catch (error) {
       console.log(error);
+      setSubmitting(false);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
@@ -62,12 +70,12 @@ const GroupFormScreen = ({ route }) => {
       name: yup.string().required("Group name is required"),
     }),
     validateOnChange: false,
-    onSubmit: (values) => {
+    onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
       }
-      createGroupHandler(formData);
+      createGroupHandler(formData, setSubmitting);
     },
   });
 
@@ -105,7 +113,7 @@ const GroupFormScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable flex={1} display="flex" paddingHorizontal={16} gap={8} onPress={Keyboard.dismiss} accessible={false}>
-        <PageHeader title="New Group" onPress={() => navigation.goBack()} />
+        <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
         <HStack alignItems="center" space={2}>
           <TouchableOpacity style={styles.groupImage}>
@@ -143,15 +151,20 @@ const GroupFormScreen = ({ route }) => {
         right={5}
         bottom={isKeyboardVisible ? keyboardHeight + 20 : 20}
         rounded="full"
-        bgColor="primary.600"
+        bgColor={formik.isSubmitting ? "coolGray.500" : "primary.600"}
         p={15}
         shadow="0"
         borderRadius="full"
         borderWidth={3}
         borderColor="#FFFFFF"
         onPress={formik.handleSubmit}
+        disabled={formik.isSubmitting}
       >
-        <Icon as={<MaterialCommunityIcons name="check" />} size="xl" color="white" />
+        {formik.isSubmitting ? (
+          <Spinner color="white" size="lg" />
+        ) : (
+          <Icon as={<MaterialCommunityIcons name="check" />} size="xl" color="white" />
+        )}
       </Pressable>
     </SafeAreaView>
   );

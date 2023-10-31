@@ -72,7 +72,7 @@ const HomeStack = () => {
       {/* Nest Screens */}
       <Stack.Screen name="Chat List" component={ChatListScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
+      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false, gestureEnabled: false }} />
 
       <Stack.Screen name="User Selection" component={UserSelectionScreen} options={{ headerShown: false }} />
 
