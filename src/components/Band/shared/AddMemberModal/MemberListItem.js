@@ -16,6 +16,8 @@ const MemberListItem = ({
   selectedUsers,
   multiSelect,
   onPressHandler,
+  avatarSize,
+  descriptionSize,
 }) => {
   return (
     <TouchableOpacity
@@ -35,10 +37,10 @@ const MemberListItem = ({
     >
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flexDir="row" alignItems="center" gap={2} mb={2}>
-          <AvatarPlaceholder image={image} name={name} />
+          <AvatarPlaceholder image={image} name={name} size={avatarSize} />
           <Box>
             <Text>{name}</Text>
-            <Text fontSize={10} opacity={0.5}>
+            <Text fontSize={descriptionSize || 10} opacity={0.5}>
               {userType}
             </Text>
           </Box>
