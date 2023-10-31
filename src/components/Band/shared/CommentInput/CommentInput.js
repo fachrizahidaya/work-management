@@ -38,8 +38,6 @@ const CommentInput = ({ taskId, projectId, data }) => {
     projectId ? `/pm/projects/${projectId}/attachment` : taskId ? `/pm/tasks/${taskId}/attachment` : null
   );
 
-  console.log(comments);
-
   /**
    * Handle submission of comment for project or task
    * @param {FormData} form - FormData (comment and attachment)
