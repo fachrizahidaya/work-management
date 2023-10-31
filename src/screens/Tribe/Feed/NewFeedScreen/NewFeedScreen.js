@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -27,6 +28,7 @@ const NewFeedScreen = ({ route }) => {
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
   const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
@@ -79,7 +81,7 @@ const NewFeedScreen = ({ route }) => {
         },
       });
       postRefetchHandler();
-      refetch();
+      // refetch();
       setSubmitting(false);
       setStatus("success");
       toast.show({
