@@ -6,8 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
-import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Text, useToast, Button, Modal, VStack, Image } from "native-base";
+import { Box, Flex, Icon, Text, useToast, Button } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -67,8 +66,10 @@ const NewFeedScreen = ({ route }) => {
   });
 
   /**
-   * Submit a Post Handler
+   * Submit a post handler
    * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
    */
   const postSubmitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -103,13 +104,12 @@ const NewFeedScreen = ({ route }) => {
    * End date of announcement handler
    * @param {*} value
    */
-
   const endDateAnnouncementHandler = (value) => {
     formik.setFieldValue("end_date", value);
   };
 
   /**
-   * Handler for date
+   * Date for announcement handler
    */
   const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
@@ -122,7 +122,6 @@ const NewFeedScreen = ({ route }) => {
   /**
    * Toggle to Public Handler
    */
-
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
@@ -149,8 +148,7 @@ const NewFeedScreen = ({ route }) => {
       result.assets[0].uri.length
     );
 
-    // Handling for file information
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (result) {
       setImage({
@@ -193,7 +191,7 @@ const NewFeedScreen = ({ route }) => {
           navigation.goBack();
           setImage(null);
         }}
-        description="If you return, It will be discarded"
+        description="Are you sure want to exit? It will be deleted."
       />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
@@ -217,6 +215,7 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
+
       <NewFeedForm
         formik={formik}
         image={image}

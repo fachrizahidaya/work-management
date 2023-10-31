@@ -18,6 +18,7 @@ const AttendanceScreen = () => {
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
   });
+
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
@@ -32,6 +33,9 @@ const AttendanceScreen = () => {
     refetch: refetchAttendanceData,
   } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
+  /**
+   * Switch month handler
+   */
   const handleMonthChange = useCallback((newMonth) => {
     setFilter(newMonth);
   }, []);

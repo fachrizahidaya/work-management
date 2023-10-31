@@ -34,14 +34,6 @@ const FeedCardItem = ({
 
   const navigation = useNavigation();
 
-  const [postToOpen, setPostToOpen] = useState({});
-  const { isOpen: postIsOpen, toggle: togglePost } = useDisclosure(false);
-
-  const openPostToOpenHandler = (post) => {
-    setPostToOpen(post);
-    togglePost();
-  };
-
   /**
    * Like post control
    */
@@ -58,8 +50,7 @@ const FeedCardItem = ({
   };
 
   /**
-   *
-   * Control for fullscreen image
+   * Toggle fullscreen image
    */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
@@ -82,7 +73,6 @@ const FeedCardItem = ({
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
-                returnPage: "Dashboard",
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
                 refetch: refetch,
@@ -98,7 +88,9 @@ const FeedCardItem = ({
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
-                    returnPage: "Dashboard",
+                    loggedEmployeeId: loggedEmployeeId,
+                    loggedEmployeeImage: loggedEmployeeImage,
+                    refetch: refetch,
                   })
                 }
                 fontSize={15}

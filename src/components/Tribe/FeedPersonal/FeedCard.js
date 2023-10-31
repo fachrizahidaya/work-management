@@ -73,6 +73,7 @@ const FeedCard = ({
         keyExtractor={(item, index) => index}
         onEndReached={posts.length ? handleEndReached : null}
         onEndReachedThreshold={0.1}
+        estimatedItemSize={100}
         refreshControl={
           <RefreshControl
             refreshing={personalFeedsIsFetching}
@@ -82,7 +83,7 @@ const FeedCard = ({
             }}
           />
         }
-        estimatedItemSize={100}
+        // Employee Posts
         renderItem={({ item }) => {
           if (item.id === "no-posts") {
             return (
@@ -116,6 +117,7 @@ const FeedCard = ({
             </Box>
           );
         }}
+        // Employee Information
         ListHeaderComponent={
           <Box>
             <Image

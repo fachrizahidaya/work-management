@@ -12,11 +12,9 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
-  const [teamLeaveRequest, setTeamLeaveRequest] = useState({});
-  const navigation = useNavigation();
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
-  const { isOpen: teamLeaveRequestIsOpen, toggle: toggleTeamLeaveRequest } = useDisclosure(false);
+  const navigation = useNavigation();
 
   const {
     data: personalLeaveRequest,
@@ -25,19 +23,9 @@ const LeaveScreen = () => {
     isLoading: personalLeaveRequestIsLoading,
   } = useFetch("/hr/leave-requests/personal");
 
-  const {
-    data: profile,
-    refetch: refetchProfile,
-    isFetching: profileIsFetching,
-    isLoading: profileIsLoading,
-  } = useFetch("/hr/my-profile");
+  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
-
-  const openTeamLeaveRequestHandler = (teamLeaveRequest) => {
-    setTeamLeaveRequest(teamLeaveRequest);
-    toggleTeamLeaveRequest();
-  };
 
   /**
    * Filtered leave handler

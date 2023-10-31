@@ -2,55 +2,45 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, Icon, Pressable, ScrollView, Text, useToast } from "native-base";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import useCheckAccess from "../../../hooks/useCheckAccess";
-import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
-  const [feedsData, setFeedsData] = useState({});
 
-  // parameters for fetch posts
-  const postFetchParameters = {
-    offset: currentOffset,
-    limit: 10,
-  };
-
-  // User redux to fetch employeeName
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
 
   const toast = useToast();
 
+  // Parameters for fetch posts
+  const postFetchParameters = {
+    offset: currentOffset,
+    limit: 10,
+  };
+
   const {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-    isLoading: feedsIsLoading,
   } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
 
-  const {
-    data: profile,
-    isLoading: profileIsLoading,
-    refetch: refetchProfile,
-    isFetching: profileIsFetching,
-  } = useFetch("/hr/my-profile");
+  const { data: profile } = useFetch("/hr/my-profile");
 
   /**
    * Fetch more Posts handler
    * After end of scroll reached, it will added other earlier posts
    */
-
   const postEndReachedHandler = () => {
     if (!fetchIsDone) {
       if (posts.length !== posts.length + feeds?.data.length) {
@@ -61,28 +51,34 @@ const FeedScreen = () => {
     }
   };
 
+  /**
+   * Fetch from first offset
+   * After create a new post or comment, it will return to the first offset
+   */
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
   };
 
   /**
-   * Like post handler
+   * Like a Post handler
    * @param {*} post_id
    * @param {*} action
    */
-
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       setTimeout(() => {
-        console.log("liked this post!");
+        console.log("Process success");
       }, 500);
     } catch (err) {
       console.log(err);
-      setTimeout(() => {
-        console.log("Process error");
-      }, 500);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -112,7 +108,7 @@ const FeedScreen = () => {
         </Flex>
 
         <Pressable
-          style={styles.createIcon}
+          style={styles.createPostIcon}
           shadow="0"
           borderRadius="full"
           borderWidth={3}
@@ -157,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F8F8",
   },
-  createIcon: {
+  createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",

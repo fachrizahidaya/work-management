@@ -6,7 +6,6 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
-import { useEffect } from "react";
 
 const FeedCard = ({
   posts,
@@ -21,12 +20,11 @@ const FeedCard = ({
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
-
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
   /**
-   * Action sheet control
+   * Action sheet for comment handler
    */
   const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
@@ -41,6 +39,9 @@ const FeedCard = ({
     setPostId(null);
   };
 
+  /**
+   * Submit comment handler
+   */
   const commentSubmitHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
@@ -96,16 +97,15 @@ const FeedCard = ({
 
       {commentsOpen && (
         <FeedComment
+          postId={postId}
+          loggedEmployeeId={loggedEmployeeId}
+          loggedEmployeeName={loggedEmployeeName}
+          loggedEmployeeImage={loggedEmployeeImage}
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
-          postId={postId}
-          total_comments={postTotalComment}
-          onSubmit={commentSubmitHandler}
-          loggedEmployeeImage={loggedEmployeeImage}
-          loggedEmployeeName={loggedEmployeeName}
-          postRefetchHandler={postRefetchHandler}
           refetchFeeds={refetchFeeds}
-          handleEndReached={handleEndReached}
+          postRefetchHandler={postRefetchHandler}
+          onSubmit={commentSubmitHandler}
         />
       )}
     </Box>

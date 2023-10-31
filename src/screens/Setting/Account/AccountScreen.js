@@ -1,8 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-
+import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { Button, Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
+import { Button, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -16,11 +15,7 @@ const AccountScreen = ({ route }) => {
 
   const userSelector = useSelector((state) => state.auth);
 
-  const dispatch = useDispatch();
-
   const navigation = useNavigation();
-
-  const toast = useToast();
 
   return (
     <SafeAreaView style={styles.container}>

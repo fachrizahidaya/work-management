@@ -24,7 +24,7 @@ import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/TeamLeaveScr
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
 // Settings Screens
-import MyProfileScreen from "../screens/Setting/MyProfileScreen";
+import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
 import AccountScreen from "../screens/Setting/Account/AccountScreen";
 import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";

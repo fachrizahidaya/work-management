@@ -40,10 +40,8 @@ const AttendanceCalendar = ({
   };
 
   /**
-   *
    * Input date to Calendar Handler
    */
-
   useEffect(() => {
     if (attendance && attendance.length > 0) {
       let dateList = {};
@@ -98,7 +96,6 @@ const AttendanceCalendar = ({
   /**
    * Create attendance report handler
    */
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -120,7 +117,6 @@ const AttendanceCalendar = ({
    * Marked dates in Calendar Handler
    * @returns
    */
-
   const renderCalendarWithMultiDotMarking = () => {
     const markedDates = {};
     for (const date in items) {

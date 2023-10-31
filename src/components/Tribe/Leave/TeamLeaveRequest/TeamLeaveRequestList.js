@@ -6,7 +6,6 @@ import { Badge, Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
@@ -31,6 +30,12 @@ const TeamLeaveRequestList = ({
 
   const toast = useToast();
 
+  /**
+   * Submit response of leave request handler
+   * @param {*} data
+   * @param {*} setStatus
+   * @param {*} setSubmitting
+   */
   const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
     try {
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
@@ -61,6 +66,9 @@ const TeamLeaveRequestList = ({
     }
   };
 
+  /**
+   * Aprroval or Rejection handler
+   */
   const formik = useFormik({
     initialValues: {
       object: object,
@@ -75,6 +83,10 @@ const TeamLeaveRequestList = ({
     },
   });
 
+  /**
+   * Response handler
+   * @param {*} response
+   */
   const responseHandler = (response) => {
     formik.setFieldValue("status", response);
     setIsSubmitting(response);
