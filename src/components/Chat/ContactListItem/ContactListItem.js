@@ -16,12 +16,14 @@ const ContactListItem = ({ personal, group, type }) => {
             name: personal.user.name,
             userId: personal.user.id,
             image: personal.user.image,
+            type: type,
           });
         } else {
           navigation.navigate("Chat Room", {
             name: group.name,
             userId: group.id,
             image: group.image,
+            type: type,
           });
         }
       }}
