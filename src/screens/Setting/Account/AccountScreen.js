@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, Button, Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
+import { Button, Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -11,35 +10,23 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Options from "../../../components/Setting/Account/Options";
-import axiosInstance from "../../../config/api";
-import { update_profile } from "../../../redux/reducer/auth";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
 
   const userSelector = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
   const toast = useToast();
 
-  const editProfileHandler = async (form, setSubmitting) => {
-    try {
-      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
-      dispatch(update_profile(res.data.data));
-      setSubmitting(false);
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
         <Flex flexDir="row" gap={1}>
-          <Pressable onPress={() => navigation.navigate("Setting")}>
+          <Pressable onPress={() => navigation.goBack()}>
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
           <Text fontSize={16}>My</Text>
@@ -67,7 +54,7 @@ const AccountScreen = ({ route }) => {
           </Text>
         </Flex>
         <Flex bgColor="white" p={5} pb={10} gap={33}>
-          <Options profile={profile} editProfileHandler={editProfileHandler} />
+          <Options profile={profile} />
 
           <Pressable
             display="flex"

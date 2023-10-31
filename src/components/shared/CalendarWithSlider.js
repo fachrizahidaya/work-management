@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Agenda, AgendaList } from "react-native-calendars";
+import { Agenda, AgendaList, CalendarProvider, ExpandableCalendar, WeekCalendar } from "react-native-calendars";
 import dayjs from "dayjs";
 
 import { Box, Image, Text, VStack } from "native-base";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const CalendarWithSlider = ({ items }) => {
+  const { height } = Dimensions.get("window");
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
@@ -33,14 +35,15 @@ const CalendarWithSlider = ({ items }) => {
   };
 
   const [isMonthVisible, setIsMonthVisible] = useState(true);
+  const [isClosingKnobOpen, setIsClosingKnobOpen] = useState(false);
   const toggleMonthVisibility = () => {
     setIsMonthVisible(!isMonthVisible);
+    setIsClosingKnobOpen(!isClosingKnobOpen);
   };
 
   return (
     <>
-      <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
-
+      {isMonthVisible && <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>}
       <Agenda
         items={items}
         showClosingKnob={true}

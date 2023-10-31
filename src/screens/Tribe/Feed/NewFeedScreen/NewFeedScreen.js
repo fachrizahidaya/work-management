@@ -13,7 +13,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { SuccessToast } from "../../../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import axiosInstance from "../../../../config/api";
 import PageHeader from "../../../../components/shared/PageHeader";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
@@ -30,7 +30,7 @@ const NewFeedScreen = ({ route }) => {
   const toast = useToast();
   const navigation = useNavigation();
 
-  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
 
   /**
    * Create a new post handler
@@ -46,6 +46,7 @@ const NewFeedScreen = ({ route }) => {
       content: yup.string().required("Content is required"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -76,13 +77,13 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      navigation.navigate("Dashboard");
+      postRefetchHandler();
       refetch();
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Posted succesfuly!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -90,6 +91,11 @@ const NewFeedScreen = ({ route }) => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
@@ -158,7 +164,9 @@ const NewFeedScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if (formik.isSubmitting && formik.status === "success") {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+      navigation.goBack();
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -168,9 +176,10 @@ const NewFeedScreen = ({ route }) => {
         title="New Post"
         onPress={
           formik.values.content
-            ? toggleReturnModal
+            ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
             : () => {
-                navigation.navigate("Dashboard");
+                !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                formik.resetForm();
                 setImage(null);
               }
         }
@@ -181,7 +190,7 @@ const NewFeedScreen = ({ route }) => {
         toggle={toggleReturnModal}
         onPress={() => {
           toggleReturnModal();
-          navigation.navigate("Dashboard");
+          navigation.goBack();
           setImage(null);
         }}
         description="If you return, It will be discarded"
@@ -221,7 +230,6 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
-        refetch={refetch}
       />
     </Box>
   );

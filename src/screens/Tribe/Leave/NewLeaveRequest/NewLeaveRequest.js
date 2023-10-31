@@ -125,8 +125,8 @@ const NewLeaveRequest = ({ route }) => {
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Request Created`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Request Created`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -135,8 +135,8 @@ const NewLeaveRequest = ({ route }) => {
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={err.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={`Creating failed,${err.response.data.message}`} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
@@ -186,7 +186,7 @@ const NewLeaveRequest = ({ route }) => {
       setDateChanges(false);
     }
     if (!formik.isSubmitting && formik.status === "success") {
-      navigation.navigate("Dashboard");
+      navigation.goBack();
     }
   }, [
     formik.values.leave_id,
@@ -221,8 +221,11 @@ const NewLeaveRequest = ({ route }) => {
           title="New Leave Request"
           onPress={
             formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-              ? toggleReturnModal
-              : () => navigation.navigate("Dashboard")
+              ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+              : () => {
+                  !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                  navigation.goBack();
+                }
           }
         />
 

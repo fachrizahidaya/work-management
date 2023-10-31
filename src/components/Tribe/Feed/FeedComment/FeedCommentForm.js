@@ -7,6 +7,8 @@ import { Box, Button, FormControl, Input, KeyboardAvoidingView } from "native-ba
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 import { useFetch } from "../../../../hooks/useFetch";
+import FormButton from "../../../shared/FormButton";
+import { useEffect } from "react";
 
 const FeedCommentForm = ({
   postId,
@@ -37,9 +39,14 @@ const FeedCommentForm = ({
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       onSubmit(values, setSubmitting, setStatus);
-      resetForm();
     },
   });
+
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+    }
+  }, [formik.isSubmitting, formik.status]);
 
   return (
     <FormControl alignItems="center" pb={12} paddingBottom={Platform.OS === "ios" && keyboardHeight}>
@@ -55,17 +62,19 @@ const FeedCommentForm = ({
           </Box>
         }
         InputRightElement={
-          <Button
-            opacity={formik.values.comments === "" ? 0.5 : 1}
-            variant="unstyled"
-            size="sm"
-            onPress={() => {
-              formik.handleSubmit();
-              refetchFeeds();
-            }}
-          >
-            {parentId ? "Reply" : "Post"}
-          </Button>
+          <Box pr={0.5} py={0.5}>
+            <FormButton
+              children={parentId ? "Reply" : "Post"}
+              onPress={formik.handleSubmit}
+              isSubmitting={formik.isSubmitting}
+              opacity={formik.values.comments === "" ? 0.5 : 1}
+              variant="unstyled"
+              size="sm"
+              // color="#FFFFFF"
+              fontColor="white"
+              fontSize={12}
+            />
+          </Box>
         }
       />
     </FormControl>

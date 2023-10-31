@@ -14,6 +14,7 @@ const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStart
       <FormControl isInvalid={formik.errors.leave_id}>
         <FormControl.Label>Leave Type</FormControl.Label>
       </FormControl>
+
       <Select
         mt={-3}
         selectedValue={formik.values.leave_id}

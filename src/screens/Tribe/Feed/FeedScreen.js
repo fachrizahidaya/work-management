@@ -3,19 +3,21 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, ScrollView, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { LikeToggle } from "../../../components/shared/LikeToggle";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [feedsData, setFeedsData] = useState({});
 
   // parameters for fetch posts
   const postFetchParameters = {
@@ -27,6 +29,8 @@ const FeedScreen = () => {
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
+
+  const toast = useToast();
 
   const {
     data: feeds,
@@ -76,6 +80,9 @@ const FeedScreen = () => {
       }, 500);
     } catch (err) {
       console.log(err);
+      setTimeout(() => {
+        console.log("Process error");
+      }, 500);
     }
   };
 
@@ -112,7 +119,8 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              refetch: postRefetchHandler,
+              refetch: refetchFeeds,
+              postRefetchHandler: postRefetchHandler,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,

@@ -21,6 +21,7 @@ const FeedCard = ({
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
+
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
@@ -38,7 +39,6 @@ const FeedCard = ({
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
-    // refetchFeeds();
   };
 
   const commentSubmitHandler = () => {
@@ -47,26 +47,34 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    // refetchFeeds();
   };
-
-  useEffect(() => {
-    refetchFeeds();
-  }, [posts]);
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={100}
+        windowSize={10}
         onEndReachedThreshold={0.1}
         onEndReached={posts.length ? handleEndReached : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
-        refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={feedsIsFetching}
+            onRefresh={() => {
+              postRefetchHandler();
+              refetchFeeds();
+            }}
+          />
+        }
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
             id={item?.id}
+            post={item}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
             createdAt={item?.created_at}
@@ -77,11 +85,9 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post handler
             onToggleLike={onToggleLike}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            // toggle Comment
             onCommentToggle={commentsOpenHandler}
             refetch={refetchFeeds}
           />
@@ -99,6 +105,7 @@ const FeedCard = ({
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
           refetchFeeds={refetchFeeds}
+          handleEndReached={handleEndReached}
         />
       )}
     </Box>

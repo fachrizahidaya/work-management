@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -7,9 +8,15 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
+  const [teamLeaveRequest, setTeamLeaveRequest] = useState({});
   const navigation = useNavigation();
+  const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
+
+  const { isOpen: teamLeaveRequestIsOpen, toggle: toggleTeamLeaveRequest } = useDisclosure(false);
 
   const {
     data: personalLeaveRequest,
@@ -25,12 +32,12 @@ const LeaveScreen = () => {
     isLoading: profileIsLoading,
   } = useFetch("/hr/my-profile");
 
-  const {
-    data: teamLeaveRequest,
-    refetch: refetchTeamLeaveRequest,
-    isFetching: teamLeaveRequestIsFetching,
-    isLoading: teamLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/waiting-approval");
+  const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
+
+  const openTeamLeaveRequestHandler = (teamLeaveRequest) => {
+    setTeamLeaveRequest(teamLeaveRequest);
+    toggleTeamLeaveRequest();
+  };
 
   /**
    * Filtered leave handler
@@ -47,30 +54,9 @@ const LeaveScreen = () => {
       <SafeAreaView style={styles.container}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
-          {/* These are the position that will get team leave */}
-          {profile?.data?.position_id !== 1 ||
-          profile?.data?.position_id !== 11 ||
-          profile?.data?.position_id !== 13 ||
-          profile?.data?.position_id !== 17 ||
-          profile?.data?.position_id !== 20 ||
-          profile?.data?.position_id !== 22 ||
-          profile?.data?.position_id !== 28 ||
-          profile?.data?.position_id !== 31 ||
-          profile?.data?.position_id !== 34 ||
-          profile?.data?.position_id !== 39 ||
-          profile?.data?.position_id !== 40 ||
-          profile?.data?.position_id !== 46 ? (
-            <Button
-              onPress={() =>
-                navigation.navigate("Team Leave Request", {
-                  teamLeaveRequest: teamLeaveRequest,
-                  teamLeaveRequestIsLoading: teamLeaveRequestIsLoading,
-                  refetchTeamLeaveRequest: refetchTeamLeaveRequest,
-                  teamLeaveRequestIsFetching: teamLeaveRequestIsFetching,
-                })
-              }
-              size="sm"
-            >
+
+          {teamLeaveRequestData?.data.length && approvalLeaveRequestCheckAccess ? (
+            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
               My Team
             </Button>
           ) : null}
@@ -84,7 +70,6 @@ const LeaveScreen = () => {
             >
               {/* Content here */}
               <LeaveRequestList
-                data={personalLeaveRequest?.data}
                 pendingLeaveRequests={pendingLeaveRequests}
                 approvedLeaveRequests={approvedLeaveRequests}
                 rejectedLeaveRequests={rejectedLeaveRequests}

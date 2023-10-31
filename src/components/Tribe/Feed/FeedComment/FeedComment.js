@@ -18,6 +18,7 @@ const FeedComment = ({
   onSubmit,
   postRefetchHandler,
   refetchFeeds,
+  handleEndReached,
 }) => {
   const [comments, setComments] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
@@ -31,7 +32,7 @@ const FeedComment = ({
    */
   const commentsFetchParameters = {
     offset: currentOffset,
-    limit: 10,
+    limit: 50,
   };
 
   const {
@@ -57,19 +58,18 @@ const FeedComment = ({
   };
 
   /**
-   * Submit comment handler
+   *
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      postRefetchHandler();
       refetchComment();
+      postRefetchHandler();
       refetchFeeds();
       setSubmitting(false);
       setStatus("success");
@@ -93,18 +93,18 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      // refetchComment();
-      if (comments?.data) {
-        if (currentOffset === 0) {
-          setComments(comments?.data);
-        } else {
-          setComments((prevData) => [...prevData, ...commentData?.data]);
-        }
-      }
+      refetchComment();
+      // if (commentData?.data) {
+      //   if (currentOffset === 0) {
+      //     setComments(commentData?.data);
+      //   } else {
+      //     setComments((prevData) => [...prevData, ...commentData?.data]);
+      //   }
+      // }
     }
   }, [
-    // handleOpen
-    commentData?.data,
+    handleOpen,
+    // commentData?.data
   ]);
 
   return (
@@ -133,6 +133,10 @@ const FeedComment = ({
                 postId={postId}
                 latestExpandedReply={latestExpandedReply}
                 commentIsLoading={commentIsLoading}
+                handleEndReached={commentEndReachedHandler}
+                commentsRefetchHandler={commentRefetchHandler}
+                commentIsFetching={commentIsFetching}
+                refetchComment={refetchComment}
               />
             </Flex>
           </ScrollView>

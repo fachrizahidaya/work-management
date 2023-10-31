@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { Dimensions } from "react-native";
 import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
+  const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
@@ -30,9 +31,9 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const { isOpen: newReimbursementIsOpen, toggle: toggleNewReimbursement } = useDisclosure(false);
 
   const items = [
-    {
+    createLeaveRequestCheckAccess && {
       icons: "clipboard-clock-outline",
-      title: "New Leave Request",
+      title: `New Leave Request`,
     },
     // {
     //   icons: "clipboard-minus-outline",
@@ -40,7 +41,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     // },
     {
       icons: "clock-outline",
-      title: "Clock in",
+      title: `Clock in`,
     },
   ];
 
@@ -55,20 +56,34 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           ip: userIp?.ip,
         });
         toggle();
+        refetch();
         toast.show({
-          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
+          render: ({ id }) => {
+            return (
+              <SuccessToast
+                message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
+                close={() => toast.close(id)}
+              />
+            );
+          },
           placement: "top",
         });
-        refetch();
       } else {
-        toast.show({ description: "You already checked out at this time", placement: "top" });
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+          },
+          placement: "top",
+        });
       }
     } catch (err) {
+      console.log(err.response.data.message);
       toast.show({
-        description: `You're not connected to the proper connection`,
+        render: ({ id }) => {
+          return <ErrorToast message={`You're not connected to the proper connection`} close={() => toast.close(id)} />;
+        },
         placement: "top",
       });
-      console.log(err.response.data.message);
     }
   };
 
