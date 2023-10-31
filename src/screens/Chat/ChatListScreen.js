@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
+
+import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Icon, Input, Pressable, VStack } from "native-base";
@@ -12,7 +15,6 @@ import PersonalSection from "../../components/Chat/PersonalSection/PersonalSecti
 const ChatListScreen = () => {
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
-  const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
