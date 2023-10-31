@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
+import { Box, Icon, Input, Pressable } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
-import ContactListItem from "../../components/Chat/ContactListItem/ContactListItem";
+import GroupSection from "../../components/Chat/GroupSection/GroupSection";
+import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
 
 const ChatListScreen = () => {
   const userSelector = useSelector((state) => state.auth);
-  const navigation = useNavigation();
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -72,7 +71,7 @@ const ChatListScreen = () => {
   }, [userSelector.id]);
 
   return (
-    <Box bgColor="white" flex={1}>
+    <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box p={4}>
           <Input
@@ -89,48 +88,19 @@ const ChatListScreen = () => {
           />
         </Box>
 
-        <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-          <Text opacity={0.5} fontWeight={500}>
-            TEAMS
-          </Text>
+        <GroupSection groupChats={groupChats} />
 
-          <TouchableOpacity style={styles.addButton}>
-            <Icon as={<MaterialIcons name="add" />} color="black" />
-          </TouchableOpacity>
-        </Flex>
-        {groupChats.length > 0 &&
-          groupChats.map((group) => {
-            return <ContactListItem group={group} type="group" key={group.id} />;
-          })}
-
-        {/* ==================================================================== */}
-
-        <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-          <Text opacity={0.5} fontWeight={500}>
-            PEOPLE
-          </Text>
-
-          <TouchableOpacity style={styles.addButton}>
-            <Icon as={<MaterialIcons name="add" />} color="black" />
-          </TouchableOpacity>
-        </Flex>
-        {personalChats.length > 0 &&
-          personalChats.map((personal) => {
-            return <ContactListItem personal={personal} type="personal" key={personal.id} />;
-          })}
+        <PersonalSection personalChats={personalChats} />
       </ScrollView>
-    </Box>
+    </SafeAreaView>
   );
 };
 
 export default ChatListScreen;
 
 const styles = StyleSheet.create({
-  addButton: {
-    backgroundColor: "#f1f2f3",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 6,
-    borderRadius: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
 });
