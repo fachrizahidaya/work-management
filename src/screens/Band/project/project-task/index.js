@@ -86,7 +86,7 @@ const ProjectTaskScreen = ({ route }) => {
               onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
             />
 
-            <TaskViewSection changeView={changeView} view={view} />
+            {/* <TaskViewSection changeView={changeView} view={view} /> */}
 
             <Flex flexDir="row" mt={11} mb={21}>
               <TaskFilter
