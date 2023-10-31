@@ -20,7 +20,7 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 const ChatRoom = () => {
   window.Pusher = Pusher;
   const route = useRoute();
-  const { name, userId, image } = route.params;
+  const { name, opponentId, image } = route.params;
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
@@ -29,17 +29,32 @@ const ChatRoom = () => {
   const [hasMore, setHasMore] = useState(true);
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 
-  // PERSONAL CHAT
+  /**
+   * Event listener for new personal chat messages
+   */
   const getPersonalChat = () => {
-    laravelEcho.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
+    laravelEcho.channel(`personal.chat.${userSelector.id}.${opponentId}`).listen(".personal.chat", (event) => {
       setChatList((currentChats) => [...currentChats, event.data]);
     });
   };
 
+  /**
+   * Event listener for new group chat messages
+   */
+  // const groupChatMessageEvent = () => {
+  //   laravelEcho.channel(`group.chat.${opponentId}`).listen(".group.chat", (event) => {
+  //     setChatMessages((prevState) => [...prevState, event.data]);
+  //     scrollToBottom();
+  //   });
+  // };
+
+  /**
+   * Fetch personal chat messages
+   */
   const getPersonalMessage = async () => {
     try {
       if (hasMore) {
-        const res = await axiosInstance.get(`/chat/personal/${userId}/message`, {
+        const res = await axiosInstance.get(`/chat/personal/${opponentId}/message`, {
           params: {
             offset: offset,
             limit: 20,
@@ -61,16 +76,44 @@ const ChatRoom = () => {
     }
   };
 
+  /**
+   * Fetch group chat messages
+   */
+  const fetchGroupChatMessages = async () => {
+    if (hasMore) {
+      try {
+        const res = await axiosInstance.get(`/chat/group/${currentGroup.id}/message`, {
+          params: {
+            offset: offset,
+            limit: 20,
+          },
+        });
+
+        // setChatMessages((prevState) => {
+        //   if (prevState.length !== prevState.length + res.data.data.length) {
+        //     return [...res.data.data, ...prevState];
+        //   } else {
+        //     setHasMore(false);
+        //     return prevState;
+        //   }
+        // });
+        // setOffset((prevState) => prevState + 20);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   useEffect(() => {
-    if (userId) {
+    if (opponentId) {
       getPersonalMessage();
     }
     getPersonalChat();
-  }, [userId]);
+  }, [opponentId]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA", marginBottom: isKeyboardVisible ? keyboardHeight : 0 }}>
-      <ChatHeader name={name} navigation={navigation} />
+      <ChatHeader name={name} image={image} navigation={navigation} />
 
       <Flex
         flex={1}
@@ -99,7 +142,7 @@ const ChatRoom = () => {
         />
       </Flex>
 
-      <ChatInput userId={userId} />
+      <ChatInput opponentId={opponentId} />
     </SafeAreaView>
   );
 };
