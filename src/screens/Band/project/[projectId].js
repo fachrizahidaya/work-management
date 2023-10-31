@@ -200,7 +200,7 @@ const ProjectDetailScreen = ({ route }) => {
                 <Text>Task List</Text>
               </Flex>
             </Button>
-            <Button
+            {/* <Button
               flex={1}
               variant="outline"
               onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Kanban" })}
@@ -219,7 +219,7 @@ const ProjectDetailScreen = ({ route }) => {
                 <Icon as={<MaterialCommunityIcons name="chart-gantt" />} color="#3F434A" size="md" />
                 <Text>Gantt</Text>
               </Flex>
-            </Button>
+            </Button> */}
           </Flex>
 
           <FileSection projectId={projectId} projectData={projectData} />
