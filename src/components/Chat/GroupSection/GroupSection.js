@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Flex, Icon, Text } from "native-base";
@@ -7,6 +8,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats }) => {
+  const navigation = useNavigation();
+
   return (
     <>
       <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
@@ -14,7 +17,7 @@ const GroupSection = ({ groupChats }) => {
           TEAMS
         </Text>
 
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("User Selection")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>

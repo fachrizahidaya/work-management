@@ -16,12 +16,14 @@ const ContactListItem = ({ personal, group, type }) => {
             name: personal.user.name,
             userId: personal.user.id,
             image: personal.user.image,
+            type: type,
           });
         } else {
           navigation.navigate("Chat Room", {
             name: group.name,
             userId: group.id,
             image: group.image,
+            type: type,
           });
         }
       }}
@@ -40,15 +42,15 @@ const ContactListItem = ({ personal, group, type }) => {
             <Flex flexDir="row" alignItems="center" gap={1}>
               {type === "personal" ? (
                 <Text opacity={0.5}>
-                  {personal.latest_message.message?.length > 35
-                    ? personal.latest_message.message?.slice(0, 35) + "..."
-                    : personal.latest_message.message}
+                  {personal.latest_message?.message?.length > 35
+                    ? personal.latest_message?.message?.slice(0, 35) + "..."
+                    : personal.latest_message?.message}
                 </Text>
               ) : (
                 <Text>
-                  {group.latest_message.message?.length > 35
-                    ? group.latest_message.message?.slice(0, 35) + "..."
-                    : group.latest_message.message}
+                  {group.latest_message?.message?.length > 35
+                    ? group.latest_message?.message?.slice(0, 35) + "..."
+                    : group.latest_message?.message}
                 </Text>
               )}
             </Flex>

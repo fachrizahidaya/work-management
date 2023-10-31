@@ -9,7 +9,7 @@ const ChatHeader = ({ navigation, name, image }) => {
   return (
     <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
       <Flex direction="row" alignItems="center" gap={4}>
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable onPress={() => navigation.navigate("Chat List")}>
           <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
         </Pressable>
 
