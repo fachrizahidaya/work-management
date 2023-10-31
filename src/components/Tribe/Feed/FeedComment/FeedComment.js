@@ -17,25 +17,19 @@ const FeedComment = ({
   postRefetchHandler,
   refetchFeeds,
   onSubmit,
+  currentOffset,
+  setCurrentOffset,
+  fetchIsDone,
+  setFetchIsDone,
+  commentData,
+  commentDataIsFetching,
+  refetchCommentData,
 }) => {
   const [comments, setComments] = useState([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
 
   const inputRef = useRef();
-
-  // Parameters for fetch comments
-  const commentsFetchParameters = {
-    offset: currentOffset,
-    limit: 50,
-  };
-
-  const {
-    data: commentData,
-    isFetching: commentDataIsFetching,
-    refetch: refetchComment,
-  } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
 
   /**
    * Fetch more Comments handler
@@ -71,7 +65,7 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
-      refetchComment();
+      refetchCommentData();
       postRefetchHandler();
       refetchFeeds();
       setSubmitting(false);
@@ -96,7 +90,7 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      refetchComment();
+      refetchCommentData();
       // if (commentData?.data) {
       //   if (currentOffset === 0) {
       //     setComments(commentData?.data);
@@ -138,7 +132,7 @@ const FeedComment = ({
                 handleEndReached={commentEndReachedHandler}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentDataIsFetching}
-                refetchComment={refetchComment}
+                refetchComment={refetchCommentData}
               />
             </Flex>
           </ScrollView>

@@ -12,7 +12,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 
-const FeedScreen = () => {
+const FeedScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
@@ -33,7 +33,10 @@ const FeedScreen = () => {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-  } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
+  } = useFetch(fetchIsDone === false && "/hr/posts", [currentOffset], postFetchParameters);
+
+  console.log(feeds?.data);
+  console.log(currentOffset);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -42,7 +45,7 @@ const FeedScreen = () => {
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (!fetchIsDone) {
+    if (fetchIsDone === false) {
       if (posts.length !== posts.length + feeds?.data.length) {
         setCurrentOffset(currentOffset + 10);
       } else {
@@ -130,6 +133,7 @@ const FeedScreen = () => {
         <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
+            feeds={feeds}
             posts={posts}
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}

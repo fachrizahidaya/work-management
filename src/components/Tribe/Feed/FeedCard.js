@@ -6,8 +6,11 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
+import { useFetch } from "../../../hooks/useFetch";
+import { useEffect } from "react";
 
 const FeedCard = ({
+  feeds,
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
@@ -20,6 +23,8 @@ const FeedCard = ({
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [fetchIsDone, setFetchIsDone] = useState(false);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
@@ -43,12 +48,27 @@ const FeedCard = ({
    * Submit comment handler
    */
   const commentSubmitHandler = () => {
+    refetchCommentData();
+    refetchFeeds();
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
   };
+
+  // Parameters for fetch comments
+  const commentsFetchParameters = {
+    offset: currentOffset,
+    limit: 50,
+  };
+
+  const {
+    data: commentData,
+    isFetching: commentDataIsFetching,
+    refetch: refetchCommentData,
+  } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
+  console.log(commentData?.data);
 
   return (
     <Box flex={1}>
@@ -62,12 +82,14 @@ const FeedCard = ({
         onEndReached={posts.length ? handleEndReached : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
+        refreshing={true}
         refreshControl={
           <RefreshControl
             refreshing={feedsIsFetching}
             onRefresh={() => {
               postRefetchHandler();
               refetchFeeds();
+              // refetchCommentData();
             }}
           />
         }
@@ -106,6 +128,13 @@ const FeedCard = ({
           refetchFeeds={refetchFeeds}
           postRefetchHandler={postRefetchHandler}
           onSubmit={commentSubmitHandler}
+          currentOffset={currentOffset}
+          setCurrentOffset={setCurrentOffset}
+          fetchIsDone={fetchIsDone}
+          setFetchIsDone={setFetchIsDone}
+          commentData={commentData}
+          commentDataIsFetching={commentDataIsFetching}
+          refetchCommentData={refetchCommentData}
         />
       )}
     </Box>
