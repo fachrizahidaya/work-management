@@ -3,8 +3,8 @@ import { useNavigation } from "@react-navigation/native";
 
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
-import { Box, Flex, HStack, Icon, Pressable, Spinner, Text, VStack, useToast } from "native-base";
+import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import { Box, Flex, HStack, Icon, IconButton, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -15,7 +15,9 @@ import UserListItem from "../../components/Chat/UserSelection/UserListItem";
 
 const UserSelectionScreen = () => {
   const toast = useToast();
+  const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
+  const [searchModeIsOn, setSearchModeIsOn] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -27,7 +29,7 @@ const UserSelectionScreen = () => {
   const userFetchParameters = {
     page: currentPage,
     search: searchKeyword,
-    limit: 10,
+    limit: 20,
   };
 
   const { data, isLoading } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
@@ -46,7 +48,7 @@ const UserSelectionScreen = () => {
     _.debounce((value) => {
       setSearchKeyword(value);
       setCurrentPage(1);
-    }, 1000),
+    }, 300),
     []
   );
 
@@ -94,7 +96,7 @@ const UserSelectionScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flex={1}>
+      <Flex flex={1} position="relative">
         <HStack alignItems="center" justifyContent="space-between" paddingHorizontal={16} paddingBottom={13}>
           <VStack>
             <PageHeader title="New Group" onPress={() => navigation.goBack()} />
@@ -103,9 +105,61 @@ const UserSelectionScreen = () => {
             </Text>
           </VStack>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setSearchModeIsOn(!searchModeIsOn)}>
             <Icon as={<MaterialCommunityIcons name="magnify" />} size="lg" />
           </TouchableOpacity>
+
+          {searchModeIsOn && (
+            <Box
+              position="absolute"
+              top={0}
+              bgColor="white"
+              width={width}
+              h={50}
+              zIndex={1}
+              alignItems="center"
+              paddingHorizontal={16}
+            >
+              <Input
+                autoFocus
+                flex={1}
+                value={inputToShow}
+                placeholder="Search user..."
+                size="lg"
+                onChangeText={(value) => {
+                  searchHandler(value);
+                  setInputToShow(value);
+                }}
+                InputLeftElement={
+                  <IconButton
+                    onPress={() => {
+                      setSearchModeIsOn(!searchModeIsOn);
+                      setSearchKeyword("");
+                      setInputToShow("");
+                    }}
+                    ml={2}
+                    mb={1}
+                    rounded="full"
+                  >
+                    <Icon as={<MaterialCommunityIcons name="arrow-left" />} size="lg" />
+                  </IconButton>
+                }
+                InputRightElement={
+                  inputToShow && (
+                    <IconButton
+                      onPress={() => {
+                        setSearchKeyword("");
+                        setInputToShow("");
+                      }}
+                      icon={<Icon as={<MaterialCommunityIcons name="close" />} size="lg" />}
+                      rounded="full"
+                      mr={2}
+                    />
+                  )
+                }
+              />
+            </Box>
+          )}
         </HStack>
 
         <Box flex={1} paddingHorizontal={16}>
