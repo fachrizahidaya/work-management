@@ -8,7 +8,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import axiosInstance from "../../../config/api";
 
-const ChatInput = ({ userId }) => {
+const ChatInput = ({ opponentId }) => {
   /**
    * Handles submission of chat message
    * @param {Object} form - message to submit
@@ -16,7 +16,7 @@ const ChatInput = ({ userId }) => {
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
       await axiosInstance.post("/chat/personal/message", {
-        to_user_id: userId,
+        to_user_id: opponentId,
         ...form,
       });
       setSubmitting(false);
