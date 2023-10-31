@@ -81,7 +81,7 @@ const AdHocScreen = () => {
         <Flex gap={15} style={{ marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
 
-          <TaskViewSection changeView={changeView} view={view} />
+          {/* <TaskViewSection changeView={changeView} view={view} /> */}
 
           <Flex flexDir="row" mt={11} mb={21}>
             <TaskFilter
