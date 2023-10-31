@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-import Echo from "laravel-echo";
 import Pusher from "pusher-js/react-native";
 
 import { useSelector } from "react-redux";
@@ -20,7 +19,7 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 const ChatRoom = () => {
   window.Pusher = Pusher;
   const route = useRoute();
-  const { name, opponentId, image } = route.params;
+  const { name, userId, image } = route.params;
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
@@ -33,7 +32,7 @@ const ChatRoom = () => {
    * Event listener for new personal chat messages
    */
   const getPersonalChat = () => {
-    laravelEcho.channel(`personal.chat.${userSelector.id}.${opponentId}`).listen(".personal.chat", (event) => {
+    laravelEcho.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
       setChatList((currentChats) => [...currentChats, event.data]);
     });
   };
@@ -42,7 +41,7 @@ const ChatRoom = () => {
    * Event listener for new group chat messages
    */
   // const groupChatMessageEvent = () => {
-  //   laravelEcho.channel(`group.chat.${opponentId}`).listen(".group.chat", (event) => {
+  //   laravelEcho.channel(`group.chat.${userId}`).listen(".group.chat", (event) => {
   //     setChatMessages((prevState) => [...prevState, event.data]);
   //     scrollToBottom();
   //   });
@@ -54,7 +53,7 @@ const ChatRoom = () => {
   const getPersonalMessage = async () => {
     try {
       if (hasMore) {
-        const res = await axiosInstance.get(`/chat/personal/${opponentId}/message`, {
+        const res = await axiosInstance.get(`/chat/personal/${userId}/message`, {
           params: {
             offset: offset,
             limit: 20,
@@ -105,11 +104,11 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {
-    if (opponentId) {
+    if (userId) {
       getPersonalMessage();
     }
     getPersonalChat();
-  }, [opponentId]);
+  }, [userId]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA", marginBottom: isKeyboardVisible ? keyboardHeight : 0 }}>
@@ -142,7 +141,7 @@ const ChatRoom = () => {
         />
       </Flex>
 
-      <ChatInput opponentId={opponentId} />
+      <ChatInput userId={userId} />
     </SafeAreaView>
   );
 };

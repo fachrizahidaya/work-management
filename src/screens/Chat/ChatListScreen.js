@@ -3,13 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Icon, Input, Pressable, Skeleton, Text } from "native-base";
+import { Box, Flex, Icon, Input, Pressable, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
+import ContactListItem from "../../components/Chat/ContactListItem/ContactListItem";
 
 const ChatListScreen = () => {
   const userSelector = useSelector((state) => state.auth);
@@ -85,8 +86,6 @@ const ChatListScreen = () => {
             placeholder="Search..."
             borderColor="white"
             bgColor="#F8F8F8"
-            borderRadius={15}
-            style={{ height: 40 }}
           />
         </Box>
 
@@ -95,38 +94,13 @@ const ChatListScreen = () => {
             TEAMS
           </Text>
 
-          <Box bg="#f1f2f3" alignItems="center" justifyContent="center" p={2} borderRadius={10}>
+          <TouchableOpacity style={styles.addButton}>
             <Icon as={<MaterialIcons name="add" />} color="black" />
-          </Box>
+          </TouchableOpacity>
         </Flex>
         {groupChats.length > 0 &&
-          groupChats.map((group, idx) => {
-            return (
-              <Pressable
-                key={idx}
-                onPress={() => {
-                  navigation.navigate("Chat Room", { name: group.name, opponentId: group.id, image: group.image });
-                }}
-              >
-                <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-                  <Flex flexDir="row" gap={4} alignItems="center">
-                    <AvatarPlaceholder image={group.image} name={group.name} size="md" />
-
-                    <Box>
-                      <Text fontSize={16}>#{group.name}</Text>
-
-                      <Flex flexDir="row" alignItems="center" gap={1}>
-                        <Text opacity={0.5}>
-                          {group.latest_message.message?.length > 35
-                            ? group.latest_message.message.slice(0, 35) + "..."
-                            : group.latest_message.message}
-                        </Text>
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Flex>
-              </Pressable>
-            );
+          groupChats.map((group) => {
+            return <ContactListItem group={group} type="group" key={group.id} />;
           })}
 
         {/* ==================================================================== */}
@@ -136,42 +110,13 @@ const ChatListScreen = () => {
             PEOPLE
           </Text>
 
-          <Box bg="#f1f2f3" alignItems="center" justifyContent="center" p={2} borderRadius={10}>
+          <TouchableOpacity style={styles.addButton}>
             <Icon as={<MaterialIcons name="add" />} color="black" />
-          </Box>
+          </TouchableOpacity>
         </Flex>
         {personalChats.length > 0 &&
-          personalChats.map((personal, idx) => {
-            return (
-              <Pressable
-                key={idx}
-                onPress={() => {
-                  navigation.navigate("Chat Room", {
-                    name: personal.user.name,
-                    opponentId: personal.user.id,
-                    image: personal.user.image,
-                  });
-                }}
-              >
-                <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-                  <Flex flexDir="row" gap={4} alignItems="center">
-                    <AvatarPlaceholder name={personal.user.name} image={personal.user.image} size="md" />
-
-                    <Box>
-                      <Text fontSize={16}>{personal.user.name}</Text>
-
-                      <Flex flexDir="row" alignItems="center" gap={1}>
-                        <Text opacity={0.5}>
-                          {personal.latest_message.message.length > 35
-                            ? personal.latest_message.message.slice(0, 35) + "..."
-                            : personal.latest_message.message}
-                        </Text>
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Flex>
-              </Pressable>
-            );
+          personalChats.map((personal) => {
+            return <ContactListItem personal={personal} type="personal" key={personal.id} />;
           })}
       </ScrollView>
     </Box>
@@ -179,3 +124,13 @@ const ChatListScreen = () => {
 };
 
 export default ChatListScreen;
+
+const styles = StyleSheet.create({
+  addButton: {
+    backgroundColor: "#f1f2f3",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 6,
+    borderRadius: 8,
+  },
+});
