@@ -5,7 +5,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
-const ChatHeader = ({ navigation, name }) => {
+const ChatHeader = ({ navigation, name, image }) => {
   return (
     <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
       <Flex direction="row" alignItems="center" gap={4}>
@@ -13,7 +13,7 @@ const ChatHeader = ({ navigation, name }) => {
           <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
         </Pressable>
 
-        <AvatarPlaceholder name={name} size="sm" />
+        <AvatarPlaceholder name={name} image={image} size="sm" />
 
         <Box>
           <Text fontSize={15}>{name}</Text>

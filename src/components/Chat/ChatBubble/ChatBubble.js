@@ -13,7 +13,7 @@ const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
   const myMessage = userSelector.id === fromUserId;
   return (
     <Flex m={3} flexDirection={!myMessage ? "row" : "row-reverse"}>
-      {!myMessage && <AvatarPlaceholder name={name} size="md" />}
+      {!myMessage && <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />}
 
       <Flex flexDirection={!myMessage ? "row" : "row-reverse"}>
         <Box

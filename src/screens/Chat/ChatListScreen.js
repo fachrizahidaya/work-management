@@ -105,7 +105,7 @@ const ChatListScreen = () => {
               <Pressable
                 key={idx}
                 onPress={() => {
-                  navigation.navigate("Chat Room", { name: group.name, image: group.image });
+                  navigation.navigate("Chat Room", { name: group.name, opponentId: group.id, image: group.image });
                 }}
               >
                 <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
@@ -148,7 +148,7 @@ const ChatListScreen = () => {
                 onPress={() => {
                   navigation.navigate("Chat Room", {
                     name: personal.user.name,
-                    userId: personal.user.id,
+                    opponentId: personal.user.id,
                     image: personal.user.image,
                   });
                 }}
