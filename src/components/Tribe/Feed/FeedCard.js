@@ -9,6 +9,7 @@ import FeedComment from "./FeedComment/FeedComment";
 import { useFetch } from "../../../hooks/useFetch";
 
 const FeedCard = ({
+  feeds,
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
@@ -91,6 +92,7 @@ const FeedCard = ({
             onRefresh={() => {
               postRefetchHandler();
               refetchFeeds();
+              // refetchCommentData();
             }}
           />
         }

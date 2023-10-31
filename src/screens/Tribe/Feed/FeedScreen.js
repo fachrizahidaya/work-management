@@ -12,7 +12,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 
-const FeedScreen = () => {
+const FeedScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
@@ -126,6 +126,7 @@ const FeedScreen = () => {
         <Box flex={1} px={3}>
           {/* Content here */}
           <FeedCard
+            feeds={feeds}
             posts={posts}
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
