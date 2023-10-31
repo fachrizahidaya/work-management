@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Icon, Input, Pressable, VStack } from "native-base";
