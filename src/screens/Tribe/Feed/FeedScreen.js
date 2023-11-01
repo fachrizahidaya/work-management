@@ -15,7 +15,8 @@ import { ErrorToast } from "../../../components/shared/ToastDialog";
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -33,7 +34,7 @@ const FeedScreen = () => {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-  } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
+  } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -42,12 +43,8 @@ const FeedScreen = () => {
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (!fetchIsDone) {
-      if (posts.length !== posts.length + feeds?.data.length) {
-        setCurrentOffset(currentOffset + 10);
-      } else {
-        setFetchIsDone(true);
-      }
+    if (posts.length !== posts.length + feeds?.data.length) {
+      setCurrentOffset(currentOffset + 10);
     }
   };
 
@@ -56,8 +53,9 @@ const FeedScreen = () => {
    * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
+    console.log("triggered refetch");
     setCurrentOffset(0);
-    setFetchIsDone(false);
+    setReload(!reload);
   };
 
   /**
@@ -77,20 +75,19 @@ const FeedScreen = () => {
         render: ({ id }) => {
           return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };
 
   useEffect(() => {
-    if (feeds?.data) {
+    if (feeds?.data && feedsIsFetching === false) {
       if (currentOffset === 0) {
         setPosts(feeds?.data);
       } else {
         setPosts((prevData) => [...prevData, ...feeds?.data]);
       }
     }
-  }, [feeds?.data]);
+  }, [feedsIsFetching]);
 
   return (
     <>
@@ -115,7 +112,6 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              refetch: refetchFeeds,
               postRefetchHandler: postRefetchHandler,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
@@ -136,9 +132,11 @@ const FeedScreen = () => {
             loggedEmployeeName={userSelector?.name}
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
-            handleEndReached={postEndReachedHandler}
+            postEndReachedHandler={postEndReachedHandler}
             feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
           />
         </Box>
       </SafeAreaView>
