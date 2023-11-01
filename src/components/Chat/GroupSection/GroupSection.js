@@ -9,7 +9,6 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats }) => {
   const navigation = useNavigation();
-  console.log(groupChats);
 
   return (
     <>
