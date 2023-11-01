@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
@@ -6,11 +6,10 @@ import { Badge, Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "./../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
-import { SuccessToast } from "../../../shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 
 const TeamLeaveRequestList = ({
   id,
@@ -28,19 +27,29 @@ const TeamLeaveRequestList = ({
   refetchTeamLeaveRequest,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
-  const { isOpen: approvalActionIsOpen, toggle: toggleApprovalAction } = useDisclosure(false);
 
   const toast = useToast();
 
+  /**
+   * Submit response of leave request handler
+   * @param {*} data
+   * @param {*} setStatus
+   * @param {*} setSubmitting
+   */
   const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
     try {
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
-      refetchTeamLeaveRequest();
       setSubmitting(false);
       setStatus("success");
+      refetchTeamLeaveRequest();
       toast.show({
-        render: () => {
-          return <SuccessToast message={status === "Approved" ? "Request Approved" : "Request Rejected"} />;
+        render: ({ id }) => {
+          return (
+            <SuccessToast
+              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
+              close={() => toast.close(id)}
+            />
+          );
         },
         placement: "top",
       });
@@ -48,9 +57,18 @@ const TeamLeaveRequestList = ({
       console.log(err);
       setSubmitting(false);
       setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
+  /**
+   * Aprroval or Rejection handler
+   */
   const formik = useFormik({
     initialValues: {
       object: object,
@@ -65,11 +83,21 @@ const TeamLeaveRequestList = ({
     },
   });
 
+  /**
+   * Response handler
+   * @param {*} response
+   */
   const responseHandler = (response) => {
     formik.setFieldValue("status", response);
     setIsSubmitting(response);
     formik.handleSubmit();
   };
+
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      refetchTeamLeaveRequest();
+    }
+  }, [formik.isSubmitting && formik.status]);
 
   // Canceled status not appeared in team leave request
   return status === "Canceled" || status === "Rejected" ? null : (

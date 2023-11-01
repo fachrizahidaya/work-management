@@ -8,22 +8,24 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, FormControl, Image, Input, TextArea, Text, Pressable, Icon, useToast, Button } from "native-base";
+import { Box, Flex, FormControl, Image, Input, Text, Pressable, Icon, useToast } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import FormButton from "../../components/shared/FormButton";
-import { SuccessToast } from "../../components/shared/ToastDialog";
-import { update_image } from "../../redux/reducer/auth";
-import axiosInstance from "../../config/api";
+import FormButton from "../../../components/shared/FormButton";
+import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
+import { update_image } from "../../../redux/reducer/auth";
+import { update_profile } from "../../../redux/reducer/auth";
+import axiosInstance from "../../../config/api";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { profile, editProfileHandler } = route.params;
+
+  const { profile } = route.params;
 
   const userSelector = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
@@ -34,35 +36,65 @@ const MyProfileScreen = ({ route }) => {
 
   const forms = [
     { title: "Email", source: profile?.data?.email },
-    { title: "Username", source: profile?.data?.username },
     { title: "Date of Birth", source: profile?.data?.birthdate_convert },
     { title: "Job Title", source: profile?.data?.position_name },
     { title: "Status", source: profile?.data?.status.charAt(0).toUpperCase() + profile?.data?.status.slice(1) },
   ];
 
+  /**
+   * Submit updated profile (name) handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const editProfileHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.patch(`/setting/users/${userSelector.id}`, { ...form, password: "" });
+      dispatch(update_profile(res.data.data));
+      navigation.goBack({ profile: profile });
+      setSubmitting(false);
+      setStatus("success");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
+  /**
+   * Edit profile handler
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: userSelector.name,
-      // email: userSelector.email,
     },
     validationSchema: yup.object().shape({
-      // name: yup.string().required("Name is required"),
-      // email: yup.string().required("Email is required"),
+      name: yup.string().required("Name is required"),
     }),
     validateOnChange: false,
-    onSubmit: (values, { setSubmitting }) => {
-      editProfileHandler(values, setSubmitting);
-      navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler });
-      toast.show({
-        render: () => {
-          return <SuccessToast message={"Profile Updated"} />;
-        },
-        placement: "top",
-      });
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      editProfileHandler(values, setSubmitting, setStatus);
     },
   });
 
+  /**
+   * Pick image handler
+   * @returns
+   */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -77,8 +109,7 @@ const MyProfileScreen = ({ route }) => {
       result.assets[0].uri.length
     );
 
-    // Handling for file information
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (fileInfo.size >= 1000000) {
       toast.show({ description: "Image size is too large", placement: "top" });
@@ -96,9 +127,11 @@ const MyProfileScreen = ({ route }) => {
     }
   };
 
+  /**
+   * Submit update profile picture handler
+   */
   const editProfilePictureHandler = async () => {
     try {
-      setIsLoading(true);
       const formData = new FormData();
       formData.append("image", image);
       formData.append("_method", "PATCH");
@@ -108,17 +141,21 @@ const MyProfileScreen = ({ route }) => {
         },
       });
       dispatch(update_image(res.data.data));
+      setImage(null);
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Profile Picture Updated"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
         },
         placement: "top",
       });
-      setImage(null);
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -128,7 +165,9 @@ const MyProfileScreen = ({ route }) => {
         <Flex flexDir="row" gap={1}>
           <Pressable
             onPress={() =>
-              navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
+              !formik.isSubmitting &&
+              formik.status !== "processing" &&
+              navigation.goBack({ profile: profile, editProfileHandler: editProfileHandler })
             }
           >
             <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
@@ -195,19 +234,7 @@ const MyProfileScreen = ({ route }) => {
 
           <FormControl>
             <FormControl.Label>Phone Number</FormControl.Label>
-            {/* <Input
-              InputLeftElement={
-                <Flex ml={2}>
-                  <Text fontSize={12}>+62</Text>
-                </Flex>
-              }
-              type="text"
-              isDisabled
-              editable={false}
-              selectTextOnFocus={false}
-              contextMenuHidden={true}
-              defaultValue={phoneNumber}
-            /> */}
+
             <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
               <Text fontSize={12} fontWeight={400} color="gray.400">
                 +62 {phoneNumber}
@@ -217,14 +244,7 @@ const MyProfileScreen = ({ route }) => {
 
           <FormControl>
             <FormControl.Label>Address</FormControl.Label>
-            {/* <TextArea
-              type="text"
-              isDisabled
-              editable={false}
-              selectTextOnFocus={false}
-              contextMenuHidden={true}
-              defaultValue={profile?.data?.address}
-            /> */}
+
             <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
               <Text fontSize={12} fontWeight={400} color="gray.400">
                 {profile?.data?.address}

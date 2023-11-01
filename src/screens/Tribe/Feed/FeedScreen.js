@@ -2,92 +2,92 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, Icon, Pressable, ScrollView, Text } from "native-base";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { LikeToggle } from "../../../components/shared/LikeToggle";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [reload, setReload] = useState(false);
 
-  // parameters for fetch posts
+  const userSelector = useSelector((state) => state.auth);
+
+  const navigation = useNavigation();
+
+  const toast = useToast();
+
+  // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
 
-  // User redux to fetch employeeName
-  const userSelector = useSelector((state) => state.auth);
-
-  const navigation = useNavigation();
-
   const {
     data: feeds,
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
-    isLoading: feedsIsLoading,
-  } = useFetch(!fetchIsDone && "/hr/posts", [currentOffset], postFetchParameters);
+  } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
 
-  const {
-    data: profile,
-    isLoading: profileIsLoading,
-    refetch: refetchProfile,
-    isFetching: profileIsFetching,
-  } = useFetch("/hr/my-profile");
+  const { data: profile } = useFetch("/hr/my-profile");
 
   /**
    * Fetch more Posts handler
    * After end of scroll reached, it will added other earlier posts
    */
-
   const postEndReachedHandler = () => {
-    if (!fetchIsDone) {
-      if (posts.length !== posts.length + feeds?.data.length) {
-        setCurrentOffset(currentOffset + 10);
-      } else {
-        setFetchIsDone(true);
-      }
+    if (posts.length !== posts.length + feeds?.data.length) {
+      setCurrentOffset(currentOffset + 10);
     }
   };
 
+  /**
+   * Fetch from first offset
+   * After create a new post or comment, it will return to the first offset
+   */
   const postRefetchHandler = () => {
+    console.log("triggered refetch");
     setCurrentOffset(0);
-    setFetchIsDone(false);
+    setReload(!reload);
   };
 
   /**
-   * Like post handler
+   * Like a Post handler
    * @param {*} post_id
    * @param {*} action
    */
-
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       setTimeout(() => {
-        console.log("liked this post!");
+        console.log("Process success");
       }, 500);
     } catch (err) {
       console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
   useEffect(() => {
-    if (feeds?.data) {
+    if (feeds?.data && feedsIsFetching === false) {
       if (currentOffset === 0) {
         setPosts(feeds?.data);
       } else {
         setPosts((prevData) => [...prevData, ...feeds?.data]);
       }
     }
-  }, [feeds?.data]);
+  }, [feedsIsFetching]);
 
   return (
     <>
@@ -105,14 +105,14 @@ const FeedScreen = () => {
         </Flex>
 
         <Pressable
-          style={styles.createIcon}
+          style={styles.createPostIcon}
           shadow="0"
           borderRadius="full"
           borderWidth={3}
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              refetch: postRefetchHandler,
+              postRefetchHandler: postRefetchHandler,
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
@@ -132,9 +132,11 @@ const FeedScreen = () => {
             loggedEmployeeName={userSelector?.name}
             onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
-            handleEndReached={postEndReachedHandler}
+            postEndReachedHandler={postEndReachedHandler}
             feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
           />
         </Box>
       </SafeAreaView>
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F8F8",
   },
-  createIcon: {
+  createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",

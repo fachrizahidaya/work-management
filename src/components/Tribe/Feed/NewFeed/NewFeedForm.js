@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Spinner, Text, TextArea } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -21,9 +23,11 @@ const NewFeedForm = ({
   dateShown,
   endDateAnnouncementHandler,
   loggedEmployeeDivision,
-  refetch,
 }) => {
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigation = useNavigation();
+
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
       <FormControl isInvalid={formik.errors.content}>
@@ -40,31 +44,27 @@ const NewFeedForm = ({
 
         <Flex p={2} flexDir="column" justifyContent="space-between">
           {image ? (
-            image.size >= 1000000 ? (
-              <Text textAlign="center">Image size is too large!</Text>
-            ) : (
-              <Box alignSelf="center">
-                <Image
-                  source={{ uri: image.uri }}
-                  style={{ width: 300, height: 250, borderRadius: 15 }}
-                  alt="image selected"
-                />
-                <Box
-                  backgroundColor="#4b4f53"
-                  borderRadius="full"
-                  width={8}
-                  height={8}
-                  top={1}
-                  padding={1.5}
-                  right={1}
-                  position="absolute"
-                >
-                  <Pressable onPress={() => setImage(null)}>
-                    <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
-                  </Pressable>
-                </Box>
+            <Box alignSelf="center">
+              <Image
+                source={{ uri: image.uri }}
+                style={{ width: 300, height: 250, borderRadius: 15 }}
+                alt="image selected"
+              />
+              <Box
+                backgroundColor="#4b4f53"
+                borderRadius="full"
+                width={8}
+                height={8}
+                top={1}
+                padding={1.5}
+                right={1}
+                position="absolute"
+              >
+                <Pressable onPress={() => setImage(null)}>
+                  <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
+                </Pressable>
               </Box>
-            )
+            </Box>
           ) : null}
         </Flex>
 
@@ -136,16 +136,20 @@ const NewFeedForm = ({
           height={50}
           opacity={formik.values.content === "" ? 0.5 : 1}
           onPress={() => {
+            setIsLoading(true);
             formik.handleSubmit();
-            refetch();
           }}
         >
-          <Icon
-            as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
-            size={25}
-            color="#FFFFFF"
-            style={{ transform: [{ rotate: "-45deg" }] }}
-          />
+          {isLoading ? (
+            <Spinner color="#FFFFFF" />
+          ) : (
+            <Icon
+              as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
+              size={25}
+              color="#FFFFFF"
+              style={{ transform: [{ rotate: "-45deg" }] }}
+            />
+          )}
         </Pressable>
       </Flex>
     </Flex>

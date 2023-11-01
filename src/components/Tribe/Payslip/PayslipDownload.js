@@ -8,13 +8,20 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 
-const PayslipDownload = ({ downloadDialogIsOpen, formik, toggleDownloadDialog, passwordError, setPasswordError }) => {
+const PayslipDownload = ({
+  downloadDialogIsOpen,
+  formik,
+  toggleDownloadDialog,
+  passwordError,
+  setPasswordError,
+  downloadPayslipCheckAccess,
+}) => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   return (
     <Actionsheet
-      isOpen={downloadDialogIsOpen}
+      isOpen={downloadPayslipCheckAccess && downloadDialogIsOpen}
       onClose={() => {
         toggleDownloadDialog();
         formik.resetForm();

@@ -6,14 +6,13 @@ import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
-import { Dimensions } from "react-native";
-import { Box, Flex, Icon, Text, useToast, Button, Modal, VStack, Image } from "native-base";
+import { Box, Flex, Icon, Text, useToast, Button } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { SuccessToast } from "../../../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import axiosInstance from "../../../../config/api";
 import PageHeader from "../../../../components/shared/PageHeader";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
@@ -28,9 +27,10 @@ const NewFeedScreen = ({ route }) => {
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
-  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
 
   /**
    * Create a new post handler
@@ -46,6 +46,7 @@ const NewFeedScreen = ({ route }) => {
       content: yup.string().required("Content is required"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
@@ -66,8 +67,10 @@ const NewFeedScreen = ({ route }) => {
   });
 
   /**
-   * Submit a Post Handler
+   * Submit a post handler
    * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
    */
   const postSubmitHandler = async (form, setSubmitting, setStatus) => {
     try {
@@ -76,20 +79,23 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      navigation.navigate("Dashboard");
-      refetch();
+      postRefetchHandler();
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Posted succesfuly!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
@@ -97,13 +103,12 @@ const NewFeedScreen = ({ route }) => {
    * End date of announcement handler
    * @param {*} value
    */
-
   const endDateAnnouncementHandler = (value) => {
     formik.setFieldValue("end_date", value);
   };
 
   /**
-   * Handler for date
+   * Date for announcement handler
    */
   const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
@@ -116,7 +121,6 @@ const NewFeedScreen = ({ route }) => {
   /**
    * Toggle to Public Handler
    */
-
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
@@ -143,8 +147,7 @@ const NewFeedScreen = ({ route }) => {
       result.assets[0].uri.length
     );
 
-    // Handling for file information
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (result) {
       setImage({
@@ -158,7 +161,9 @@ const NewFeedScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if (formik.isSubmitting && formik.status === "success") {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+      navigation.goBack();
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -168,9 +173,10 @@ const NewFeedScreen = ({ route }) => {
         title="New Post"
         onPress={
           formik.values.content
-            ? toggleReturnModal
+            ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
             : () => {
-                navigation.navigate("Dashboard");
+                !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                formik.resetForm();
                 setImage(null);
               }
         }
@@ -181,10 +187,10 @@ const NewFeedScreen = ({ route }) => {
         toggle={toggleReturnModal}
         onPress={() => {
           toggleReturnModal();
-          navigation.navigate("Dashboard");
+          navigation.goBack();
           setImage(null);
         }}
-        description="If you return, It will be discarded"
+        description="Are you sure want to exit? It will be deleted."
       />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
@@ -208,6 +214,7 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
+
       <NewFeedForm
         formik={formik}
         image={image}
@@ -221,7 +228,6 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
-        refetch={refetch}
       />
     </Box>
   );

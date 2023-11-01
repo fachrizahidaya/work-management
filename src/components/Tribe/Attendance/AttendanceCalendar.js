@@ -8,7 +8,14 @@ import { Calendar } from "react-native-calendars";
 import AttendanceModal from "./AttendanceModal";
 import AttendanceIcon from "./AttendanceIcon";
 
-const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen, toggleReport }) => {
+const AttendanceCalendar = ({
+  attendance,
+  onMonthChange,
+  onSubmit,
+  reportIsOpen,
+  toggleReport,
+  updateAttendanceCheckAccess,
+}) => {
   const [items, setItems] = useState({});
   const [date, setDate] = useState({});
 
@@ -33,10 +40,8 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   };
 
   /**
-   *
    * Input date to Calendar Handler
    */
-
   useEffect(() => {
     if (attendance && attendance.length > 0) {
       let dateList = {};
@@ -91,7 +96,6 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   /**
    * Create attendance report handler
    */
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -103,9 +107,9 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
       att_reason: date?.attendanceReason || "",
     },
     // validationSchema: yup.object().shape({}),
-    onSubmit: (values, { resetForm }) => {
-      onSubmit(date?.id, values);
-      // resetForm();
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onSubmit(date?.id, values, setSubmitting, setStatus);
     },
   });
 
@@ -113,7 +117,6 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
    * Marked dates in Calendar Handler
    * @returns
    */
-
   const renderCalendarWithMultiDotMarking = () => {
     const markedDates = {};
     for (const date in items) {
@@ -161,7 +164,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
     return (
       <Fragment>
         <Calendar
-          onDayPress={toggleDateHandler}
+          onDayPress={updateAttendanceCheckAccess && toggleDateHandler}
           style={styles.calendar}
           current={INITIAL_DATE}
           markingType={"multi-dot"}
@@ -181,10 +184,7 @@ const AttendanceCalendar = ({ attendance, onMonthChange, onSubmit, reportIsOpen,
   );
 };
 
-export default // memo
-// (
-AttendanceCalendar;
-//   );
+export default AttendanceCalendar;
 
 const styles = StyleSheet.create({
   calendar: {

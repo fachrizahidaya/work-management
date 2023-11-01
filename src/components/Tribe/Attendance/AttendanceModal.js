@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { Button, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
+import { Button, FormControl, Icon, Input, Modal, Select, Spinner, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -26,9 +26,13 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
   ];
 
   return (
-    <Modal size="xl" isOpen={reportIsOpen} onClose={toggleReport}>
+    <Modal
+      size="xl"
+      isOpen={reportIsOpen}
+      onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()}
+    >
       <Modal.Content>
-        <Modal.CloseButton />
+        <Modal.CloseButton onPress={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()} />
         <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
 
         {/* If employee ontime Clock in and Clock out */}
@@ -321,16 +325,14 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                 >
                   <Text color="#FFFFFF">Cancel</Text>
                 </Button>
-                {/* <Button size="sm" variant="solid" onPress={formik.handleSubmit}>
-                  <Text color="#FFFFFF">Save</Text>
-                </Button> */}
+
                 <FormButton
                   children="Save"
                   size="sm"
                   variant="solid"
-                  onPress={formik.handleSubmit}
+                  fontSize={14}
                   isSubmitting={formik.isSubmitting}
-                  fontColor="#FFFFFF"
+                  onPress={formik.handleSubmit}
                 />
               </>
             )

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Flex, ScrollView, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
+import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
@@ -8,39 +8,33 @@ import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedComment = ({
+  postId,
+  loggedEmployeeId,
+  loggedEmployeeName,
+  loggedEmployeeImage,
   handleOpen,
   handleClose,
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  loggedEmployeeName,
-  postId,
-  total_comments,
-  onSubmit,
   postRefetchHandler,
   refetchFeeds,
+  onSubmit,
+  currentOffset,
+  setCurrentOffset,
+  fetchIsDone,
+  setFetchIsDone,
+  commentData,
+  commentDataIsFetching,
+  refetchCommentData,
 }) => {
   const [comments, setComments] = useState([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
 
   const inputRef = useRef();
 
   /**
-   * Fetch Comment Handler
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
    */
-  const commentsFetchParameters = {
-    offset: currentOffset,
-    limit: 10,
-  };
-
-  const {
-    data: commentData,
-    isLoading: commentIsLoading,
-    isFetching: commentIsFetching,
-    refetch: refetchComment,
-  } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
-
   const commentEndReachedHandler = () => {
     if (!fetchIsDone) {
       if (comments.length !== comments.length + commentData?.data.length) {
@@ -51,25 +45,28 @@ const FeedComment = ({
     }
   };
 
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
   const commentRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
   };
 
   /**
-   * Submit comment handler
+   * Submit a comment handler
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       onSubmit(postId);
+      refetchCommentData();
       postRefetchHandler();
-      refetchComment();
       refetchFeeds();
       setSubmitting(false);
       setStatus("success");
@@ -93,18 +90,18 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      // refetchComment();
-      if (comments?.data) {
-        if (currentOffset === 0) {
-          setComments(comments?.data);
-        } else {
-          setComments((prevData) => [...prevData, ...commentData?.data]);
-        }
-      }
+      refetchCommentData();
+      // if (commentData?.data) {
+      //   if (currentOffset === 0) {
+      //     setComments(commentData?.data);
+      //   } else {
+      //     setComments((prevData) => [...prevData, ...commentData?.data]);
+      //   }
+      // }
     }
   }, [
-    // handleOpen
-    commentData?.data,
+    handleOpen,
+    // commentData?.data
   ]);
 
   return (
@@ -132,7 +129,10 @@ const FeedComment = ({
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
                 latestExpandedReply={latestExpandedReply}
-                commentIsLoading={commentIsLoading}
+                handleEndReached={commentEndReachedHandler}
+                commentsRefetchHandler={commentRefetchHandler}
+                commentIsFetching={commentDataIsFetching}
+                refetchComment={refetchCommentData}
               />
             </Flex>
           </ScrollView>

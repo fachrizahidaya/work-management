@@ -3,60 +3,44 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Image, Pressable } from "native-base";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import EmployeeContact from "../../../components/Tribe/Employee/EmployeeContact";
-import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
-import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile";
-import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
-import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import axiosInstance from "../../../config/api";
-import { LikeToggle } from "../../../components/shared/LikeToggle";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
   const [fetchIsDone, setFetchIsDone] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchingMore, setFetchingMore] = useState(false);
+
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch } = route.params;
+
+  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+
   const { height } = Dimensions.get("screen");
 
-  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
+  const navigation = useNavigation();
 
-  // parameters for fetch posts
+  const toast = useToast();
+
+  const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
+
+  // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
 
-  const { employeeId, returnPage, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeId, refetch } = route.params;
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
-  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
-
-  const navigation = useNavigation();
-
-  // User redux to fetch id, name
-  const userSelector = useSelector((state) => state.auth);
-
-  const {
-    data: employee,
-    isFetching: employeeIsFetching,
-    refetch: refetchEmployee,
-  } = useFetch(`/hr/employees/${employeeId}`);
-
-  const {
-    data: teammates,
-    refetch: refetchTeammates,
-    isFetching: teammatesIsFetching,
-  } = useFetch(`/hr/employees/${employeeId}/team`);
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const {
     data: personalFeeds,
@@ -68,13 +52,6 @@ const EmployeeProfileScreen = ({ route }) => {
    * Header when screen scrolling handler
    */
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
-  const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > 0) {
-      setIsHeaderSticky(true);
-    } else {
-      setIsHeaderSticky(false);
-    }
-  };
 
   /**
    * Fetch more Posts handler
@@ -91,20 +68,35 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   };
 
+  /**
+   * Reset current offset after create a new feed
+   */
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setFetchIsDone(false);
   };
 
+  /**
+   * Like a Post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      // refetch();
+      // refetchPersonalFeeds();
       setTimeout(() => {
-        console.log("liked this post!");
+        console.log("Process success");
       }, 500);
-      refetchPersonalFeeds();
     } catch (err) {
       console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -125,20 +117,22 @@ const EmployeeProfileScreen = ({ route }) => {
         <PageHeader
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
           onPress={() => {
-            navigation.navigate(returnPage);
+            navigation.goBack();
+            refetch();
           }}
         />
       </Flex>
 
       <Pressable
-        style={styles.createIcon}
+        style={styles.createPostIcon}
         shadow="0"
         borderRadius="full"
         borderWidth={3}
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            refetch: postRefetchHandler,
+            refetch: refetchPersonalFeeds,
+            postRefetchHandler: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
             employeeId: employeeId,
@@ -148,13 +142,12 @@ const EmployeeProfileScreen = ({ route }) => {
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
 
-      {/* <Flex  > */}
       <Flex flex={1} minHeight={2} gap={2} height={height}>
-        {/* Posts that created by employee handler */}
+        {/* Content here */}
         <FeedCard
           posts={posts}
           loggedEmployeeId={loggedEmployeeId}
-          loggedEmployeeName={loggedEmployeeName}
+          loggedEmployeeName={userSelector?.name}
           loggedEmployeeImage={loggedEmployeeImage}
           onToggleLike={postLikeToggleHandler}
           postRefetchHandler={postRefetchHandler}
@@ -168,7 +161,6 @@ const EmployeeProfileScreen = ({ route }) => {
           teammatesIsOpen={teammatesIsOpen}
         />
       </Flex>
-      {/* </Flex> */}
     </SafeAreaView>
   );
 };
@@ -197,7 +189,11 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1,
   },
-  createIcon: {
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",
@@ -207,17 +203,5 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
-  },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  stickyListContainer: {
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-    backgroundColor: "#FFFFFF",
-    borderBottomColor: "#E8E9EB",
-    borderBottomWidth: 1,
   },
 });

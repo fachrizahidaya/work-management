@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import { LikeToggle } from "../../shared/LikeToggle";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCardItem = ({
   id,
@@ -27,7 +27,6 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  onOpen,
   refetch,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
@@ -47,13 +46,11 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    // onToggleLike(post_id, action);
-    LikeToggle(post_id, action);
+    onToggleLike(post_id, action);
   };
 
   /**
-   *
-   * Control for fullscreen image
+   * Toggle fullscreen image
    */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
@@ -76,7 +73,6 @@ const FeedCardItem = ({
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
-                returnPage: "Dashboard",
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
                 refetch: refetch,
@@ -92,7 +88,9 @@ const FeedCardItem = ({
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
-                    returnPage: "Dashboard",
+                    loggedEmployeeId: loggedEmployeeId,
+                    loggedEmployeeImage: loggedEmployeeImage,
+                    refetch: refetch,
                   })
                 }
                 fontSize={15}

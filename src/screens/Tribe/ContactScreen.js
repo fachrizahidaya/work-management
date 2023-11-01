@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 import _ from "lodash";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -18,9 +19,10 @@ const ContactScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const dependencies = [currentPage, searchInput];
+  const userSelector = useSelector((state) => state.auth);
+
+  // Paremeters for fetch contact
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
@@ -32,12 +34,11 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch("/hr/employees", dependencies, fetchEmployeeContactParameters);
+  } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
 
   /**
    * Fetch employee contact Handler
    */
-
   const fetchMoreEmployeeContact = () => {
     if (currentPage < employeeData?.data?.last_page) {
       setCurrentPage(currentPage + 1);
@@ -119,11 +120,14 @@ const ContactScreen = () => {
         {/* Content here */}
         <FlashList
           data={contacts.length ? contacts : filteredDataArray}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          updateCellsBatchingPeriod={50}
+          windowSize={5}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}
           onEndReached={fetchMoreEmployeeContact}
-          ListFooterComponent={employeeDataIsFetching && <Spinner color="primary.600" size="sm" />}
           renderItem={({ item }) => (
             <ContactList
               key={item?.id}
@@ -135,6 +139,8 @@ const ContactScreen = () => {
               image={item?.image}
               phone={item?.phone_number}
               email={item?.email}
+              refetch={refetchEmployeeData}
+              loggedEmployeeId={userSelector?.user_role_id}
             />
           )}
         />
