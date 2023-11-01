@@ -17,7 +17,7 @@ const GroupSection = ({ groupChats }) => {
           TEAMS
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("User Selection")}>
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
