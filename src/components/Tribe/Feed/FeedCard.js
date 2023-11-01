@@ -21,12 +21,49 @@ const FeedCard = ({
   hasBeenScrolled,
   setHasBeenScrolled,
 }) => {
+  const [comments, setComments] = useState([]);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [reload, setReload] = useState(false);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
+
+  // Parameters for fetch comments
+  const commentsFetchParameters = {
+    offset: currentOffset,
+    limit: 50,
+  };
+
+  const {
+    data: commentData,
+    isFetching: commentDataIsFetching,
+    refetch: refetchCommentData,
+  } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
+
+  console.log(commentData?.data);
+
+  /**
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + commentData?.data.length) {
+      setCurrentOffset(currentOffset + 10);
+    } else {
+      setFetchIsDone(true);
+    }
+  };
+
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
+  const commentRefetchHandler = () => {
+    setCurrentOffset(0);
+    setReload(!reload);
+  };
 
   /**
    * Action sheet for comment handler
@@ -47,27 +84,13 @@ const FeedCard = ({
   /**
    * Submit comment handler
    */
-  const commentSubmitHandler = () => {
-    refetchCommentData();
-    refetchFeeds();
+  const commentAddHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
   };
-
-  // Parameters for fetch comments
-  const commentsFetchParameters = {
-    offset: currentOffset,
-    limit: 50,
-  };
-
-  const {
-    data: commentData,
-    isFetching: commentDataIsFetching,
-    refetch: refetchCommentData,
-  } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
 
   return (
     <Box flex={1}>
@@ -78,18 +101,17 @@ const FeedCard = ({
         updateCellsBatchingPeriod={100}
         windowSize={10}
         onEndReachedThreshold={0.1}
-        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
         refreshing={true}
         onScrollBeginDrag={() => {
-          setHasBeenScrolled(true); // handler for the user has scrolled
+          setHasBeenScrolled(true); // user has scrolled handler
         }}
+        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
             refreshing={feedsIsFetching}
             onRefresh={() => {
-              postRefetchHandler();
               refetchFeeds();
             }}
           />
@@ -128,14 +150,15 @@ const FeedCard = ({
           handleClose={commentsCloseHandler}
           refetchFeeds={refetchFeeds}
           postRefetchHandler={postRefetchHandler}
-          onSubmit={commentSubmitHandler}
+          commentAddHandler={commentAddHandler}
           currentOffset={currentOffset}
-          setCurrentOffset={setCurrentOffset}
-          fetchIsDone={fetchIsDone}
-          setFetchIsDone={setFetchIsDone}
           commentData={commentData}
           commentDataIsFetching={commentDataIsFetching}
           refetchCommentData={refetchCommentData}
+          commentEndReachedHandler={commentEndReachedHandler}
+          commentRefetchHandler={commentRefetchHandler}
+          comments={comments}
+          setComments={setComments}
         />
       )}
     </Box>
