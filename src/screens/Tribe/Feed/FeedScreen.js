@@ -53,7 +53,6 @@ const FeedScreen = () => {
    * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
-    console.log("triggered refetch");
     setCurrentOffset(0);
     setReload(!reload);
   };
@@ -88,6 +87,8 @@ const FeedScreen = () => {
       }
     }
   }, [feedsIsFetching]);
+
+  console.log(feeds?.data);
 
   return (
     <>
