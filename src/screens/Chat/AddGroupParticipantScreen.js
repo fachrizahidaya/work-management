@@ -13,7 +13,7 @@ import { ErrorToast } from "../../components/shared/ToastDialog";
 import PageHeader from "../../components/shared/PageHeader";
 import UserListItem from "../../components/Chat/UserSelection/UserListItem";
 
-const UserSelectionScreen = () => {
+const AddGroupParticipantScreen = () => {
   const toast = useToast();
   const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
@@ -180,6 +180,7 @@ const UserSelectionScreen = () => {
                   name={item?.name}
                   userType={item?.user_type}
                   selectedUsers={selectedUsers}
+                  multiSelect={true}
                   onPressAddHandler={addSelectedUserToArray}
                   onPressRemoveHandler={removeSelectedUserFromArray}
                 />
@@ -208,7 +209,7 @@ const UserSelectionScreen = () => {
   );
 };
 
-export default UserSelectionScreen;
+export default AddGroupParticipantScreen;
 
 const styles = StyleSheet.create({
   container: {
