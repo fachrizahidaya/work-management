@@ -31,7 +31,7 @@ const FeedCommentList = ({
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
           onEndReached={hasBeenScrolled === true ? commentEndReachedHandler : null}
           estimatedItemSize={100}
-          refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={() => commentsRefetchHandler()} />}
+          refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={() => refetchComment()} />}
           renderItem={({ item }) => (
             <FeedCommentItem
               key={item?.id}
