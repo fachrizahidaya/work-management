@@ -6,12 +6,12 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "../Feed/FeedCardItem";
 import FeedComment from "../Feed/FeedComment/FeedComment";
-import { Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import EmployeeContact from "../Employee/EmployeeContact";
 import EmployeeProfile from "../Employee/EmployeeProfile";
 import EmployeeSelfProfile from "../Employee/EmployeeSelfProfile";
 import EmployeeTeammates from "../Employee/EmployeeTeammates";
+import { useFetch } from "../../../hooks/useFetch";
 
 const FeedCard = ({
   posts,
@@ -20,7 +20,7 @@ const FeedCard = ({
   loggedEmployeeName,
   onToggleLike,
   postRefetchHandler,
-  handleEndReached,
+  postEndReachedHandler,
   personalFeedsIsFetching,
   refetchPersonalFeeds,
   refetchFeeds,
@@ -28,11 +28,50 @@ const FeedCard = ({
   toggleTeammates,
   teammates,
   teammatesIsOpen,
+  hasBeenScrolled,
+  setHasBeenScrolled,
 }) => {
-  const userSelector = useSelector((state) => state.auth);
+  const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
-  const { height } = Dimensions.get("screen");
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [reload, setReload] = useState(false);
+
+  const userSelector = useSelector((state) => state.auth);
+
+  // Parameters for fetch comments
+  const commentsFetchParameters = {
+    offset: currentOffset,
+    limit: 50,
+  };
+
+  const {
+    data: commentData,
+    isFetching: commentDataIsFetching,
+    refetch: refetchCommentData,
+  } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
+
+  /**
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + commentData?.data.length) {
+      setCurrentOffset(currentOffset + 10);
+    } else {
+      setFetchIsDone(true);
+    }
+  };
+
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
+  const commentRefetchHandler = () => {
+    setCurrentOffset(0);
+    setReload(!reload);
+  };
 
   /**
    * Comments open handler
@@ -53,7 +92,7 @@ const FeedCard = ({
   /**
    * Comment submit handler
    */
-  const commentSubmitHandler = () => {
+  const commentAddHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
@@ -71,15 +110,15 @@ const FeedCard = ({
         updateCellsBatchingPeriod={100}
         windowSize={10}
         keyExtractor={(item, index) => index}
-        onEndReached={posts.length ? handleEndReached : null}
         onEndReachedThreshold={0.1}
         estimatedItemSize={100}
+        onScrollBeginDrag={() => setHasBeenScrolled(true)}
+        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
             refreshing={personalFeedsIsFetching}
             onRefresh={() => {
               refetchPersonalFeeds();
-              postRefetchHandler();
             }}
           />
         }
@@ -156,12 +195,23 @@ const FeedCard = ({
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
           postId={postId}
-          onSubmit={commentSubmitHandler}
+          commentAddHandler={commentAddHandler}
           total_comments={postTotalComment}
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
           refetchFeeds={refetchFeeds}
+          commentRefetchHandler={commentRefetchHandler}
+          currentOffset={currentOffset}
+          setCurrentOffset={setCurrentOffset}
+          fetchIsDone={fetchIsDone}
+          setFetchIsDone={setFetchIsDone}
+          commentData={commentData}
+          commentDataIsFetching={commentDataIsFetching}
+          refetchCommentData={refetchCommentData}
+          commentEndReachedHandler={commentEndReachedHandler}
+          comments={comments}
+          setComments={setComments}
         />
       )}
     </Box>
