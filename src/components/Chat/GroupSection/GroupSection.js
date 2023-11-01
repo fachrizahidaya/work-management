@@ -9,7 +9,6 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats }) => {
   const navigation = useNavigation();
-  console.log(groupChats);
 
   return (
     <>
@@ -25,7 +24,19 @@ const GroupSection = ({ groupChats }) => {
 
       {groupChats.length > 0 &&
         groupChats.map((group) => {
-          return <ContactListItem group={group} type="group" key={group.id} />;
+          return (
+            <ContactListItem
+              key={group.id}
+              id={group.id}
+              name={group.name}
+              image={group.image}
+              message={group.latest_message?.message}
+              fileName={group.latest_message?.file_name}
+              project={group.latest_message?.project_id}
+              task={group.latest_message?.task_id}
+              type="group"
+            />
+          );
         })}
     </>
   );
