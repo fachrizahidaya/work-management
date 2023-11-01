@@ -21,7 +21,20 @@ const PersonalSection = ({ personalChats }) => {
 
       {personalChats.length > 0 &&
         personalChats.map((personal) => {
-          return <ContactListItem personal={personal} type="personal" key={personal.id} />;
+          return (
+            <ContactListItem
+              type="personal"
+              key={personal.id}
+              id={personal.user.id}
+              name={personal.user.name}
+              image={personal.user.image}
+              message={personal.latest_message?.message}
+              fileName={personal.latest_message?.file_name}
+              project={personal.latest_message?.project_id}
+              task={personal.latest_message?.task_id}
+              isDeleted={personal.latest_message?.delete_for_everyone}
+            />
+          );
         })}
     </>
   );
