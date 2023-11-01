@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -31,7 +30,7 @@ const NewFeedScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
-  const { refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
 
   /**
    * Create a new post handler
@@ -81,14 +80,12 @@ const NewFeedScreen = ({ route }) => {
         },
       });
       postRefetchHandler();
-      // refetch();
       setSubmitting(false);
       setStatus("success");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
