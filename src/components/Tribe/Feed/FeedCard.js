@@ -7,19 +7,19 @@ import { RefreshControl } from "react-native-gesture-handler";
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
 import { useFetch } from "../../../hooks/useFetch";
-import { useEffect } from "react";
 
 const FeedCard = ({
-  feeds,
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
   loggedEmployeeName,
   onToggleLike,
   postRefetchHandler,
-  handleEndReached,
+  postEndReachedHandler,
   feedsIsFetching,
   refetchFeeds,
+  hasBeenScrolled,
+  setHasBeenScrolled,
 }) => {
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
@@ -68,7 +68,6 @@ const FeedCard = ({
     isFetching: commentDataIsFetching,
     refetch: refetchCommentData,
   } = useFetch(!fetchIsDone && `/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
-  console.log(commentData?.data);
 
   return (
     <Box flex={1}>
@@ -79,17 +78,19 @@ const FeedCard = ({
         updateCellsBatchingPeriod={100}
         windowSize={10}
         onEndReachedThreshold={0.1}
-        onEndReached={posts.length ? handleEndReached : null}
+        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
         refreshing={true}
+        onScrollBeginDrag={() => {
+          setHasBeenScrolled(true); // handler for the user has scrolled
+        }}
         refreshControl={
           <RefreshControl
             refreshing={feedsIsFetching}
             onRefresh={() => {
               postRefetchHandler();
               refetchFeeds();
-              // refetchCommentData();
             }}
           />
         }
