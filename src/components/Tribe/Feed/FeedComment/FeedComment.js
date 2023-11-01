@@ -45,7 +45,6 @@ const FeedComment = ({
       commentAddHandler(postId);
       postRefetchHandler();
       commentRefetchHandler();
-      refetchFeeds();
       refetchCommentData();
       setSubmitting(false);
       setStatus("success");
