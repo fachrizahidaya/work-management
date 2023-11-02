@@ -25,7 +25,6 @@ const FeedCard = ({
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
   const [reload, setReload] = useState(false);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
@@ -51,8 +50,6 @@ const FeedCard = ({
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + commentData?.data.length) {
       setCurrentOffset(currentOffset + 10);
-    } else {
-      setFetchIsDone(true);
     }
   };
 
@@ -112,6 +109,7 @@ const FeedCard = ({
           <RefreshControl
             refreshing={feedsIsFetching}
             onRefresh={() => {
+              postRefetchHandler();
               refetchFeeds();
             }}
           />

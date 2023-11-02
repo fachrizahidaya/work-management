@@ -4,7 +4,7 @@ import { Box, Flex, Image, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import FeedCardItem from "../Feed/FeedCardItem";
+import FeedCardItem from "../FeedPersonal/FeedCardItem";
 import FeedComment from "../Feed/FeedComment/FeedComment";
 import { useSelector } from "react-redux";
 import EmployeeContact from "../Employee/EmployeeContact";
@@ -152,6 +152,7 @@ const FeedCard = ({
                 loggedEmployeeId={loggedEmployeeId}
                 loggedEmployeeImage={loggedEmployeeImage}
                 onCommentToggle={commentsOpenHandler}
+                refetch={refetchPersonalFeeds}
               />
             </Box>
           );

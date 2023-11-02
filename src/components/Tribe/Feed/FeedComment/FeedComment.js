@@ -45,7 +45,6 @@ const FeedComment = ({
       commentAddHandler(postId);
       postRefetchHandler();
       commentRefetchHandler();
-      refetchCommentData();
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -69,9 +68,13 @@ const FeedComment = ({
     } else {
       if (commentData?.data && commentDataIsFetching === false) {
         if (currentOffset === 0) {
+          console.log("triggered 1");
           setComments(commentData?.data);
+          console.log("first", comments);
         } else {
+          console.log("triggered 2");
           setComments((prevData) => [...prevData, ...commentData?.data]);
+          console.log("next", first);
         }
       }
     }

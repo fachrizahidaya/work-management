@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+import { Linking, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Box, Flex, Pressable, Text } from "native-base";
 
@@ -32,39 +33,22 @@ const FeedCommentItem = ({
     refetch: refetchCommentRepliesData,
   } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
 
-  const fetchReply = async (fetchMore = false) => {
-    if (!replyFetchDone) {
-      try {
-        if (!fetchMore) {
-          setCommentReplies(commentRepliesData?.data);
-        } else {
-          setCommentReplies((prevState) => {
-            if (prevState.length !== prevState.length + res.data.data.length) {
-              return [...prevState, ...res.data.data];
-            } else {
-              setReplyFetchDone(true);
-              return prevState;
-            }
-          });
-        }
-      } catch (err) {
-        console.log(err);
-      }
+  const words = comments.split(" ");
+  const styledTexts = words.map((item, index) => {
+    let textStyle = styles.defaultText;
+    if (item.includes("https") || item.includes("www")) {
+      textStyle = styles.highlightedText;
     }
-  };
+    return (
+      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+        {item}{" "}
+      </Text>
+    );
+  });
 
-  const filterComment = () => {
-    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    setFileteredComment(() => {
-      return comments.replace(urlRegex, function (url) {
-        return '<a href="' + url + '" target="_blank">' + url + "</a>";
-      });
-    });
+  const handleLinkPress = (url) => {
+    Linking.openURL(url);
   };
-
-  useEffect(() => {
-    filterComment();
-  }, [comments]);
 
   return (
     <Flex gap={3}>
@@ -78,7 +62,7 @@ const FeedCommentItem = ({
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
             <Text fontSize={13} fontWeight={400}>
-              {comments}
+              {styledTexts}
             </Text>
             <Pressable onPress={() => onReply(parentId)}>
               <Text fontSize={12} fontWeight={500} color="#8A7373">
@@ -135,6 +119,7 @@ const FeedCommentItem = ({
                     comments={item?.comments}
                     totalReplies={item?.total_replies}
                     postId={postId}
+                    parentId={parentId}
                     onReply={onReply}
                   />
                 )}
@@ -165,3 +150,12 @@ const FeedCommentItem = ({
 };
 
 export default FeedCommentItem;
+
+const styles = StyleSheet.create({
+  defaultText: {
+    color: "black",
+  },
+  highlightedText: {
+    color: "#72acdc",
+  },
+});
