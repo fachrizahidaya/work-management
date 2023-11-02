@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
@@ -8,19 +9,38 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
-const UserListItem = ({ user, id, image, name, userType, onPressAddHandler, onPressRemoveHandler, selectedUsers }) => {
+const UserListItem = ({
+  user,
+  id,
+  image,
+  name,
+  userType,
+  onPressAddHandler,
+  onPressRemoveHandler,
+  selectedUsers,
+  multiSelect,
+}) => {
   const userSelector = useSelector((state) => state.auth);
+  const navigation = useNavigation();
 
   return (
     userSelector.id !== id && (
       <TouchableOpacity
         onPress={() => {
-          // If user already inside array, remove onpress
-          if (selectedUsers.find((val) => val.id === id)) {
-            onPressRemoveHandler(user);
+          if (multiSelect) {
+            // If user already inside array, remove onpress
+            if (selectedUsers.find((val) => val.id === id)) {
+              onPressRemoveHandler(user);
+            } else {
+              // If user not inside array, add onpress
+              onPressAddHandler(user);
+            }
           } else {
-            // If user not inside array, add onpress
-            onPressAddHandler(user);
+            navigation.navigate("Chat Room", {
+              name: name,
+              userId: id,
+              image: image,
+            });
           }
         }}
       >
@@ -35,8 +55,12 @@ const UserListItem = ({ user, id, image, name, userType, onPressAddHandler, onPr
             </Box>
           </Flex>
 
-          {selectedUsers.find((val) => val.id === id) && (
-            <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
+          {multiSelect && (
+            <>
+              {selectedUsers.find((val) => val.id === id) && (
+                <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
+              )}
+            </>
           )}
         </Flex>
       </TouchableOpacity>

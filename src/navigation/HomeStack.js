@@ -34,8 +34,9 @@ import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom";
 import ChatListScreen from "../screens/Chat/ChatListScreen";
-import UserSelectionScreen from "../screens/Chat/UserSelectionScreen";
+import AddGroupParticipantScreen from "../screens/Chat/AddGroupParticipantScreen";
 import GroupFormScreen from "../screens/Chat/GroupFormScreen";
+import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 
 const Stack = createStackNavigator();
 
@@ -74,9 +75,11 @@ const HomeStack = () => {
 
       <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false, gestureEnabled: false }} />
 
-      <Stack.Screen name="User Selection" component={UserSelectionScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Participant" component={AddGroupParticipantScreen} options={{ headerShown: false }} />
 
       <Stack.Screen name="Group Form" component={GroupFormScreen} options={{ headerShown: false }} />
+
+      <Stack.Screen name="New Chat" component={AddPersonalChatScreen} options={{ headerShown: false }} />
 
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />

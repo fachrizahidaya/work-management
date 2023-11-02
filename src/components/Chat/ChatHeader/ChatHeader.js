@@ -13,11 +13,11 @@ const ChatHeader = ({ navigation, name, image }) => {
           <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
         </Pressable>
 
-        <AvatarPlaceholder name={name} image={image} size="sm" />
+        <AvatarPlaceholder name={name} image={image} size="md" />
 
         <Box>
-          <Text fontSize={15}>{name}</Text>
-          <Text fontSize={13}>Project Analyst</Text>
+          <Text fontSize={16}>{name}</Text>
+          <Text>Project Analyst</Text>
         </Box>
       </Flex>
 

@@ -1,56 +1,95 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, Flex, Pressable, Text } from "native-base";
+import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
-const ContactListItem = ({ personal, group, type }) => {
+const ContactListItem = ({ type, id, name, image, message, isDeleted, fileName, project, task }) => {
   const navigation = useNavigation();
 
+  const generateIcon = () => {
+    let iconName = "";
+    if (fileName) {
+      const file_extension = fileName.split(".")[1];
+      if (
+        file_extension === "gif" ||
+        file_extension === "png" ||
+        file_extension === "jpg" ||
+        file_extension === "jpeg"
+      ) {
+        iconName = "image";
+      } else {
+        iconName = "file-document";
+      }
+    }
+    if (project) {
+      iconName = "lightning-bolt";
+    }
+    if (task) {
+      iconName = "checkbox-marked-circle-outline";
+    }
+
+    return iconName;
+  };
+
+  const generateAttachmentText = () => {
+    let text = "";
+    if (fileName) {
+      const file_extension = fileName.split(".")[1];
+      if (
+        file_extension === "gif" ||
+        file_extension === "png" ||
+        file_extension === "jpg" ||
+        file_extension === "jpeg"
+      ) {
+        text = "Photo";
+      } else {
+        text = "File";
+      }
+    }
+    if (project) {
+      text = "Project";
+    }
+    if (task) {
+      text = "Task";
+    }
+
+    return text;
+  };
   return (
     <Pressable
       onPress={() => {
-        if (type === "personal") {
-          navigation.navigate("Chat Room", {
-            name: personal.user.name,
-            userId: personal.user.id,
-            image: personal.user.image,
-            type: type,
-          });
-        } else {
-          navigation.navigate("Chat Room", {
-            name: group.name,
-            userId: group.id,
-            image: group.image,
-            type: type,
-          });
-        }
+        navigation.navigate("Chat Room", {
+          name: name,
+          userId: id,
+          image: image,
+          type: type,
+        });
       }}
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
         <Flex flexDir="row" gap={4} alignItems="center">
-          <AvatarPlaceholder
-            name={type === "personal" ? personal.user.name : group.name}
-            image={type === "personal" ? personal.user.image : group.image}
-            size="md"
-          />
+          <AvatarPlaceholder name={name} image={image} size="md" />
 
           <Box>
-            <Text fontSize={16}>{type === "personal" ? personal.user.name : group.name}</Text>
+            <Text fontSize={16}>{name}</Text>
 
             <Flex flexDir="row" alignItems="center" gap={1}>
-              {type === "personal" ? (
-                <Text opacity={0.5}>
-                  {personal.latest_message?.message?.length > 35
-                    ? personal.latest_message?.message?.slice(0, 35) + "..."
-                    : personal.latest_message?.message}
-                </Text>
+              {!isDeleted ? (
+                <>
+                  {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
+                  {message === null && (project || task || fileName) && (
+                    <HStack alignItems="center" space={1}>
+                      <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                      <Text>{generateAttachmentText()}</Text>
+                    </HStack>
+                  )}
+                </>
               ) : (
-                <Text>
-                  {group.latest_message?.message?.length > 35
-                    ? group.latest_message?.message?.slice(0, 35) + "..."
-                    : group.latest_message?.message}
+                <Text fontStyle="italic" opacity={0.5}>
+                  Message has been deleted
                 </Text>
               )}
             </Flex>

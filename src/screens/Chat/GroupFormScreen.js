@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Keyboard, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
-import { HStack, Icon, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
+import { HStack, Icon, Image, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -18,11 +18,10 @@ import axiosInstance from "../../config/api";
 
 const GroupFormScreen = ({ route }) => {
   const toast = useToast();
-  const { userArray, groupData } = route.params;
   const navigation = useNavigation();
+  const { userArray, groupData } = route.params;
   const [image, setImage] = useState(null);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
-  // console.log(userArray);
 
   const createGroupHandler = async (form, setSubmitting) => {
     try {
@@ -64,7 +63,6 @@ const GroupFormScreen = ({ route }) => {
     enableReinitialize: groupData ? true : false,
     initialValues: {
       name: groupData?.name || "",
-      image: groupData?.image || "",
     },
     validationSchema: yup.object().shape({
       name: yup.string().required("Group name is required"),
@@ -72,9 +70,10 @@ const GroupFormScreen = ({ route }) => {
     validateOnChange: false,
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
-      for (let key in values) {
-        formData.append(key, values[key]);
-      }
+
+      formData.append("name", values.name);
+      formData.append("image", image);
+
       createGroupHandler(formData, setSubmitting);
     },
   });
@@ -116,8 +115,12 @@ const GroupFormScreen = ({ route }) => {
         <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
         <HStack alignItems="center" space={2}>
-          <TouchableOpacity style={styles.groupImage}>
-            <Icon as={<MaterialCommunityIcons name="camera" />} size="lg" color="white" />
+          <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
+            {image ? (
+              <Image rounded="full" alt="group-image" source={{ uri: image.uri }} h={50} w={50} />
+            ) : (
+              <Icon as={<MaterialCommunityIcons name="camera" />} size="lg" color="white" />
+            )}
           </TouchableOpacity>
 
           <Input

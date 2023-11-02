@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Flex, Icon, Text } from "native-base";
@@ -7,6 +8,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ContactListItem from "../ContactListItem/ContactListItem";
 
 const PersonalSection = ({ personalChats }) => {
+  const navigation = useNavigation();
   return (
     <>
       <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
@@ -14,14 +16,27 @@ const PersonalSection = ({ personalChats }) => {
           PEOPLE
         </Text>
 
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
 
       {personalChats.length > 0 &&
         personalChats.map((personal) => {
-          return <ContactListItem personal={personal} type="personal" key={personal.id} />;
+          return (
+            <ContactListItem
+              type="personal"
+              key={personal.id}
+              id={personal.user.id}
+              name={personal.user.name}
+              image={personal.user.image}
+              message={personal.latest_message?.message}
+              fileName={personal.latest_message?.file_name}
+              project={personal.latest_message?.project_id}
+              task={personal.latest_message?.task_id}
+              isDeleted={personal.latest_message?.delete_for_everyone}
+            />
+          );
         })}
     </>
   );
