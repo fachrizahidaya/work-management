@@ -43,11 +43,11 @@ const LeaveScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
 
-          {teamLeaveRequestData?.data.length && approvalLeaveRequestCheckAccess ? (
+          {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
             <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
               My Team
             </Button>
-          ) : null}
+          )}
         </Flex>
         {!personalLeaveRequestIsLoading ? (
           personalLeaveRequest?.data.length > 0 ? (
