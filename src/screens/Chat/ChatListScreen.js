@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Icon, Input, Pressable } from "native-base";
+import { Box, Icon, Input, Pressable, VStack } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
+import PageHeader from "../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
+  const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
@@ -73,7 +76,10 @@ const ChatListScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Box p={4}>
+        <Box marginHorizontal={16} marginVertical={13}>
+          <PageHeader onPress={() => navigation.navigate("Dashboard")} title="Dashboard" />
+        </Box>
+        <VStack p={4} pt={0} space={2}>
           <Input
             variant="unstyled"
             size="lg"
@@ -86,7 +92,7 @@ const ChatListScreen = () => {
             borderColor="white"
             bgColor="#F8F8F8"
           />
-        </Box>
+        </VStack>
 
         <GroupSection groupChats={groupChats} />
 
