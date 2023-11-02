@@ -88,8 +88,6 @@ const FeedScreen = () => {
     }
   }, [feedsIsFetching]);
 
-  console.log(feeds?.data);
-
   return (
     <>
       <SafeAreaView style={styles.container}>

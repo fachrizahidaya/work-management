@@ -41,8 +41,6 @@ const FeedCard = ({
     refetch: refetchCommentData,
   } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
 
-  console.log(commentData?.data);
-
   /**
    * Fetch more Comments handler
    * After end of scroll reached, it will added other earlier comments
