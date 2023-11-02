@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
+import messaging from "@react-native-firebase/messaging";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -12,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 // import auth from "@react-native-firebase/auth";
 // import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
+import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -99,12 +101,36 @@ const LoginScreen = () => {
   const loginHandler = async (form) => {
     await axiosInstance
       .post("/auth/login", form)
-      .then((res) => {
+      .then(async (res) => {
         // Extract user data from the response
         const userData = res.data.data;
 
-        // Navigate to the "Loading" screen with user data
-        navigation.navigate("Loading", { userData });
+        // Check if user has firebase token already or not, if not generate one and then patch user data with the token
+        if (!userData.firebase_token) {
+          const userToken = userData.access_token.replace(/"/g, "");
+          // Get firebase messaging token for push notification
+          const fbtoken = await messaging().getToken();
+
+          await axios
+            .patch(
+              `${process.env.EXPO_PUBLIC_API}/auth/change-firebase-token`,
+              {
+                firebase_token: fbtoken,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                },
+              }
+            )
+            .then(() => {
+              navigation.navigate("Loading", { userData });
+            });
+        } else {
+          navigation.navigate("Loading", { userData });
+        }
+
+        // navigation.navigate("Loading", { userData });
         formik.setSubmitting(false);
       })
       .catch((error) => {

@@ -8,8 +8,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     const userToken = await SecureStore.getItemAsync("user_token");
-    const slicedUserToken = userToken?.replace(`"`, "");
-    const finalSlicedUserToken = slicedUserToken?.replace(`"`, "");
+    const finalSlicedUserToken = userToken?.replace(/"/g, "");
     if (finalSlicedUserToken) {
       config.headers.authorization = `Bearer ${finalSlicedUserToken}` || "";
     }
