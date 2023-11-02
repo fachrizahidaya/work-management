@@ -17,6 +17,8 @@ import axiosInstance from "../../../../config/api";
 import PageHeader from "../../../../components/shared/PageHeader";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import { useFetch } from "../../../../hooks/useFetch";
+import { useRef } from "react";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -30,7 +32,11 @@ const NewFeedScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
+  const inputRef = useRef(null);
+
   const { loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
+
+  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
   /**
    * Create a new post handler
@@ -128,6 +134,10 @@ const NewFeedScreen = ({ route }) => {
     setDateShown(false);
     setIsAnnouncementSelected(false);
     togglePostType();
+  };
+
+  const mentionSelectHandler = (updatedContent) => {
+    formik.setFieldValue("content", updatedContent);
   };
 
   /**
@@ -228,6 +238,9 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
+        employees={employees?.data}
+        mentionSelectHandler={mentionSelectHandler}
+        inputRef={inputRef}
       />
     </Box>
   );

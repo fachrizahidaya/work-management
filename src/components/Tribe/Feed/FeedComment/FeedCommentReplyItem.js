@@ -15,6 +15,7 @@ const FeedCommentReplyItem = ({
   totalReplies,
   postId,
   onReply,
+  parentId,
   authorImage,
 }) => {
   const [filteredComment, setFilteredComment] = useState();
@@ -47,8 +48,9 @@ const FeedCommentReplyItem = ({
               {comments}
             </Text>
             <Pressable
-              disabled
-              // onPress={() => onReply(parentId)}
+              onPress={() => {
+                onReply(parentId);
+              }}
             >
               <Text fontSize={12} fontWeight={500} color="#8A7373">
                 Reply

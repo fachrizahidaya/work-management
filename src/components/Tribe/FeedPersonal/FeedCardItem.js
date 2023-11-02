@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import WebView from "react-native-webview";
 
-import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
+import { Flex, Image, Text, Icon, Pressable, Modal, Badge, Actionsheet } from "native-base";
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { YouTubeEmbed, TwitterEmbed } from "react-social-media-embed";
 
@@ -11,6 +11,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
+import ConfirmationModal from "../../shared/ConfirmationModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCardItem = ({
   id,
@@ -33,6 +35,9 @@ const FeedCardItem = ({
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
   const [postIsFetching, setPostIsFetching] = useState(false);
+
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   const navigation = useNavigation();
 
@@ -117,11 +122,44 @@ const FeedCardItem = ({
               >
                 {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
-              {type === "Announcement" ? (
-                <Badge borderRadius={15} backgroundColor="#ADD7FF">
-                  <Text fontSize={10}>Announcement</Text>
-                </Badge>
-              ) : null}
+              <Flex flexDir="row" alignItems="center" gap={1}>
+                {type === "Announcement" ? (
+                  <Badge borderRadius={15} backgroundColor="#ADD7FF">
+                    <Text fontSize={10}>Announcement</Text>
+                  </Badge>
+                ) : null}
+                <Pressable onPress={toggleAction}>
+                  <Icon
+                    as={<MaterialCommunityIcons name="dots-vertical" />}
+                    size="md"
+                    borderRadius="full"
+                    color="#000000"
+                  />
+                </Pressable>
+                <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
+                  <Actionsheet.Content>
+                    <Actionsheet.Item onPress={toggleDeleteModal}>Delete Post</Actionsheet.Item>
+                  </Actionsheet.Content>
+                </Actionsheet>
+
+                <ConfirmationModal
+                  isOpen={deleteModalIsOpen}
+                  toggle={toggleDeleteModal}
+                  apiUrl={`/hr/posts/${id}`}
+                  color="red.800"
+                  hasSuccessFunc={true}
+                  header="Cancel Leave Request"
+                  onSuccess={() => {
+                    toggleAction();
+                    refetch();
+                  }}
+                  description="Are you sure to delete this post?"
+                  successMessage="Post deleted"
+                  isDelete={true}
+                  isPatch={false}
+                  placement="top"
+                />
+              </Flex>
             </Flex>
             <Text fontSize={12} fontWeight={400} color="#8A9099">
               {dayjs(createdAt).format("MMM DD, YYYY")}
@@ -129,7 +167,7 @@ const FeedCardItem = ({
           </Flex>
         </Flex>
 
-        <Text fontSize={12} fontWeight={500}>
+        <Text onPress={() => contentClickHandler(filteredContent)} fontSize={12} fontWeight={500}>
           {styledTexts}
         </Text>
 
@@ -160,20 +198,6 @@ const FeedCardItem = ({
             </Modal>
           </>
         ) : null}
-
-        {/* {styledTexts.filter((item) => {
-          if (item?.props?.children[0].includes("youtube") === true) {
-            return (
-              <Flex>
-                <YouTubeEmbed url={item?.props?.children[0]} width={300} height={200} />;
-              </Flex>
-            );
-          } else if (item?.props?.children[0].includes("twitter") === true) {
-            <Flex>
-              <TwitterEmbed url={item?.props?.children[0]} width={250} />;
-            </Flex>;
-          }
-        })} */}
 
         <Flex alignItems="center" direction="row" gap={4}>
           <Flex alignItems="center" direction="row" gap={2}>
@@ -214,9 +238,9 @@ export default FeedCardItem;
 
 const styles = StyleSheet.create({
   defaultText: {
-    color: "black",
+    color: "black", // Warna teks default
   },
   highlightedText: {
-    color: "#72acdc",
+    color: "#72acdc", // Warna teks yang mengandung 'https' atau 'www'
   },
 });
