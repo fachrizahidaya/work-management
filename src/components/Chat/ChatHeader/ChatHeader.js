@@ -1,11 +1,13 @@
-import React from "react";
-
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Menu, Pressable, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import ConfirmationModal from "../../shared/ConfirmationModal";
 
-const ChatHeader = ({ navigation, name, image }) => {
+const ChatHeader = ({ navigation, name, image, userId }) => {
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+
   return (
     <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
       <Flex direction="row" alignItems="center" gap={4}>
@@ -22,13 +24,38 @@ const ChatHeader = ({ navigation, name, image }) => {
       </Flex>
 
       <Flex direction="row" alignItems="center" gap={4}>
-        <Pressable>
-          <Icon as={<MaterialIcons name="add" />} size="xl" color="#8A9099" />
-        </Pressable>
+        <Menu
+          trigger={(trigger) => {
+            return (
+              <Pressable {...trigger} mr={1}>
+                <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
+              </Pressable>
+            );
+          }}
+        >
+          <Menu.Item onPress={toggleDeleteModal}>
+            <Text>Search</Text>
+          </Menu.Item>
+          <Menu.Item onPress={toggleDeleteModal}>
+            <Text color="red.600">Delete Chat</Text>
+          </Menu.Item>
+        </Menu>
 
-        <Pressable>
-          <Icon as={<MaterialIcons name="more-horiz" />} size="xl" color="#8A9099" />
-        </Pressable>
+        <ConfirmationModal
+          isOpen={deleteModalIsOpen}
+          toggle={toggleDeleteModal}
+          header="Delete Chat"
+          description="Are you sure want to delete this chat?"
+          isDelete={true}
+          isPatch={false}
+          hasSuccessFunc={true}
+          apiUrl={`/chat/personal/${userId}`}
+          onSuccess={() => {
+            toggleDeleteModal();
+            navigation.goBack();
+          }}
+          successMessage="Chat Deleted"
+        />
       </Flex>
     </Flex>
   );
