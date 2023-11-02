@@ -23,8 +23,12 @@ const ContactListItem = ({ type, id, name, image, message, isDeleted, fileName, 
       } else {
         iconName = "file-document";
       }
-    } else if (project || task) {
+    }
+    if (project) {
       iconName = "lightning-bolt";
+    }
+    if (task) {
+      iconName = "checkbox-marked-circle-outline";
     }
 
     return iconName;

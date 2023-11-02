@@ -42,7 +42,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
     _.debounce((value) => {
       setSearchKeyword(value);
       setCurrentPage(1);
-    }, 1000),
+    }, 300),
     []
   );
 
@@ -63,6 +63,10 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
     setSelectedUsers(newUserArray);
     setForceRerender((prev) => !prev);
   };
+
+  useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchKeyword]);
 
   useEffect(() => {
     if (data?.data?.data?.length) {
