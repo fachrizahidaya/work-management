@@ -27,9 +27,9 @@ const PersonalSection = ({ personalChats }) => {
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user.id}
-              name={personal.user.name}
-              image={personal.user.image}
+              id={personal.user?.id}
+              name={personal.user?.name}
+              image={personal.user?.image}
               message={personal.latest_message?.message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}
