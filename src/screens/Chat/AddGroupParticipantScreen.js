@@ -83,6 +83,10 @@ const AddGroupParticipantScreen = () => {
   };
 
   useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchKeyword]);
+
+  useEffect(() => {
     if (data?.data?.data?.length) {
       if (!searchKeyword) {
         setCumulativeData((prevData) => [...prevData, ...data?.data?.data]);
