@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import Pusher from "pusher-js/react-native";
@@ -112,7 +112,7 @@ const ChatRoom = () => {
 
   return (
     <SafeAreaView style={[styles.container, { marginBottom: isKeyboardVisible ? keyboardHeight : 0 }]}>
-      <ChatHeader name={name} image={image} navigation={navigation} />
+      <ChatHeader name={name} image={image} navigation={navigation} userId={userId} />
 
       <Flex
         flex={1}
