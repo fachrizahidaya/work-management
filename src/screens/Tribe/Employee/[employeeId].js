@@ -21,7 +21,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch, forceRerender, setForceRerender } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchPost, forceRerender, setForceRerender } =
+    route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -44,10 +45,10 @@ const EmployeeProfileScreen = ({ route }) => {
   const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const {
-    data: personalFeeds,
-    refetch: refetchPersonalFeeds,
-    isFetching: personalFeedsIsFetching,
-    isLoading: personalFeedsIsLoading,
+    data: personalPost,
+    refetch: refetchPersonalPost,
+    isFetching: personalPostIsFetching,
+    isLoading: personalPostIsLoading,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reload, currentOffset], postFetchParameters);
 
   /**
@@ -55,7 +56,7 @@ const EmployeeProfileScreen = ({ route }) => {
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (personalPosts.length !== personalPosts.length + personalFeeds?.data.length) {
+    if (personalPosts.length !== personalPosts.length + personalPost?.data.length) {
       setCurrentOffset(currentOffset + 10);
     }
   };
@@ -69,14 +70,14 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if (personalFeeds?.data && personalFeedsIsFetching === false) {
+    if (personalPost?.data && personalPostIsFetching === false) {
       if (currentOffset === 0) {
-        setPersonalPosts(personalFeeds?.data);
+        setPersonalPosts(personalPost?.data);
       } else {
-        setPersonalPosts((prevData) => [...prevData, ...personalFeeds?.data]);
+        setPersonalPosts((prevData) => [...prevData, ...personalPost?.data]);
       }
     }
-  }, [personalFeedsIsFetching]);
+  }, [personalPostIsFetching]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,8 +86,7 @@ const EmployeeProfileScreen = ({ route }) => {
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
           onPress={() => {
             navigation.goBack();
-            refetch();
-            setForceRerender(!forceRerender);
+            refetchPost();
           }}
         />
       </Flex>
@@ -99,7 +99,7 @@ const EmployeeProfileScreen = ({ route }) => {
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            refetch: refetchPersonalFeeds,
+            refetch: refetchPersonalPost,
             postRefetchHandler: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
@@ -119,10 +119,10 @@ const EmployeeProfileScreen = ({ route }) => {
           loggedEmployeeImage={loggedEmployeeImage}
           postRefetchHandler={postRefetchHandler}
           postEndReachedHandler={postEndReachedHandler}
-          personalFeedsIsFetching={personalFeedsIsFetching}
-          personalFeedsIsLoading={personalFeedsIsLoading}
-          refetchPersonalFeeds={refetchPersonalFeeds}
-          refetchFeeds={refetch}
+          personalPostIsFetching={personalPostIsFetching}
+          personalPostIsLoading={personalPostIsLoading}
+          refetchPersonalPost={refetchPersonalPost}
+          refetchPost={refetchPost}
           employee={employee}
           toggleTeammates={toggleTeammates}
           teammates={teammates}
@@ -131,6 +131,8 @@ const EmployeeProfileScreen = ({ route }) => {
           setHasBeenScrolled={setHasBeenScrolled}
           reload={reload}
           setReload={setReload}
+          forceRerender={forceRerender}
+          setForceRerender={setForceRerender}
         />
       </Flex>
     </SafeAreaView>
