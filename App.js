@@ -6,13 +6,14 @@ import { NativeBaseProvider } from "native-base";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClientProvider, QueryClient } from "react-query";
+import messaging from "@react-native-firebase/messaging";
 
 import { customTheme } from "./src/theme";
 import { Navigations } from "./src/navigation";
 import UserModuleVerificationGuard from "./src/HOC/UserModuleVerificationGuard";
 import { WebsocketContextProvider } from "./src/HOC/WebsocketContextProvider";
 
-import messaging from "@react-native-firebase/messaging";
+import { Alert } from "react-native";
 
 const queryClient = new QueryClient();
 
@@ -23,8 +24,10 @@ export default function App() {
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    if (enabled) {
-      console.log("Authorization status:", authStatus);
+    if (!enabled) {
+      Alert.alert(
+        "You haven't given permission for Nest to send notification. \n Go to Settigs > Apps & permissions > App manager > Nest > Notifications > Allow notifications"
+      );
     }
   };
 
