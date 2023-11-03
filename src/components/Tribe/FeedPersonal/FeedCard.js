@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Image, Text } from "native-base";
+import { Box, Flex, Image, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -12,13 +12,14 @@ import EmployeeProfile from "../Employee/EmployeeProfile";
 import EmployeeSelfProfile from "../Employee/EmployeeSelfProfile";
 import EmployeeTeammates from "../Employee/EmployeeTeammates";
 import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
+import { ErrorToast } from "../../shared/ToastDialog";
 
 const FeedCard = ({
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
   loggedEmployeeName,
-  onToggleLike,
   postRefetchHandler,
   postEndReachedHandler,
   personalFeedsIsFetching,
@@ -30,15 +31,20 @@ const FeedCard = ({
   teammatesIsOpen,
   hasBeenScrolled,
   setHasBeenScrolled,
+  reload,
+  setReload,
+  forceRerender,
+  setForceRerender,
 }) => {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
-  const [reload, setReload] = useState(false);
+  // const [forceRerender, setForceRerender] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
+
+  const toast = useToast();
 
   // Parameters for fetch comments
   const commentsFetchParameters = {
@@ -59,8 +65,6 @@ const FeedCard = ({
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + commentData?.data.length) {
       setCurrentOffset(currentOffset + 10);
-    } else {
-      setFetchIsDone(true);
     }
   };
 
@@ -99,12 +103,35 @@ const FeedCard = ({
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPersonalFeeds();
+    setForceRerender(!forceRerender);
+  };
+
+  /**
+   * Like a Post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchPersonalFeeds();
+      refetchFeeds();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
+        extraData={forceRerender} // re-render data handler
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={100}
@@ -112,7 +139,7 @@ const FeedCard = ({
         keyExtractor={(item, index) => index}
         onEndReachedThreshold={0.1}
         estimatedItemSize={100}
-        onScrollBeginDrag={() => setHasBeenScrolled(true)}
+        onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
@@ -148,11 +175,13 @@ const FeedCard = ({
                 likedBy={item?.liked_by}
                 attachment={item?.file_path}
                 type={item?.type}
-                onToggleLike={onToggleLike}
+                onToggleLike={postLikeToggleHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 loggedEmployeeImage={loggedEmployeeImage}
                 onCommentToggle={commentsOpenHandler}
                 refetch={refetchPersonalFeeds}
+                forceRerender={forceRerender}
+                setForceRerender={setForceRerender}
               />
             </Box>
           );
@@ -205,8 +234,6 @@ const FeedCard = ({
           commentRefetchHandler={commentRefetchHandler}
           currentOffset={currentOffset}
           setCurrentOffset={setCurrentOffset}
-          fetchIsDone={fetchIsDone}
-          setFetchIsDone={setFetchIsDone}
           commentData={commentData}
           commentDataIsFetching={commentDataIsFetching}
           refetchCommentData={refetchCommentData}

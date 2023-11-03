@@ -35,6 +35,7 @@ const FeedScreen = () => {
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
   } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
+  console.log("all posts", feeds?.data);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -57,27 +58,6 @@ const FeedScreen = () => {
     setReload(!reload);
   };
 
-  /**
-   * Like a Post handler
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      setTimeout(() => {
-        console.log("Process success");
-      }, 500);
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
   useEffect(() => {
     if (feeds?.data && feedsIsFetching === false) {
       if (currentOffset === 0) {
@@ -86,7 +66,7 @@ const FeedScreen = () => {
         setPosts((prevData) => [...prevData, ...feeds?.data]);
       }
     }
-  }, [feedsIsFetching]);
+  }, [feedsIsFetching, reload]);
 
   return (
     <>
@@ -129,13 +109,15 @@ const FeedScreen = () => {
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
             loggedEmployeeName={userSelector?.name}
-            onToggleLike={postLikeToggleHandler}
+            // onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             postEndReachedHandler={postEndReachedHandler}
             feedsIsFetching={feedsIsFetching}
             refetchFeeds={refetchFeeds}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
+            reload={reload}
+            setReload={setReload}
           />
         </Box>
       </SafeAreaView>

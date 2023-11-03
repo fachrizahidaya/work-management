@@ -41,10 +41,10 @@ const FeedComment = ({
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
+      refetchCommentData();
+      commentRefetchHandler();
       setCommentParentId(null);
       commentAddHandler(postId);
-      postRefetchHandler();
-      commentRefetchHandler();
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
