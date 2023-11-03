@@ -35,7 +35,6 @@ const FeedScreen = () => {
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
   } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
-  console.log("all posts", feeds?.data);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
