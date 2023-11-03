@@ -75,12 +75,12 @@ const HomeStack = () => {
         name="Chat List"
         component={ChatListScreen}
         options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           header: () => <Header />,
         }}
       />
 
-      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
 
       <Stack.Screen name="Group Participant" component={AddGroupParticipantScreen} options={{ headerShown: false }} />
 
