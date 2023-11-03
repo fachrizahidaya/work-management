@@ -23,10 +23,10 @@ const FeedCard = ({
   loggedEmployeeName,
   postRefetchHandler,
   postEndReachedHandler,
-  personalFeedsIsFetching,
-  personalFeedsIsLoading,
-  refetchPersonalFeeds,
-  refetchFeeds,
+  personalPostIsFetching,
+  personalPostIsLoading,
+  refetchPersonalPost,
+  refetchPost,
   employee,
   toggleTeammates,
   teammates,
@@ -35,12 +35,14 @@ const FeedCard = ({
   setHasBeenScrolled,
   reload,
   setReload,
+  forceRerender,
+  setForceRerender,
 }) => {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [forceRerender, setForceRerender] = useState(false);
+  const [forceRerenderPersonal, setForceRerenderPersonal] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -53,9 +55,9 @@ const FeedCard = ({
   };
 
   const {
-    data: commentData,
-    isFetching: commentDataIsFetching,
-    refetch: refetchCommentData,
+    data: comment,
+    isFetching: commentIsFetching,
+    refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
 
   /**
@@ -63,7 +65,7 @@ const FeedCard = ({
    * After end of scroll reached, it will added other earlier comments
    */
   const commentEndReachedHandler = () => {
-    if (comments.length !== comments.length + commentData?.data.length) {
+    if (comments.length !== comments.length + comment?.data.length) {
       setCurrentOffset(currentOffset + 10);
     }
   };
@@ -102,8 +104,8 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    refetchPersonalFeeds();
-    setForceRerender(true);
+    refetchPersonalPost();
+    setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
   /**
@@ -114,8 +116,8 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPersonalFeeds();
-      refetchFeeds();
+      refetchPersonalPost();
+      refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -127,15 +129,11 @@ const FeedCard = ({
     }
   };
 
-  useEffect(() => {
-    setForceRerender(!forceRerender);
-  }, []);
-
   return (
     <Box flex={1}>
       <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
-        extraData={forceRerender} // re-render data handler
+        extraData={forceRerenderPersonal} // re-render data handler
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={100}
@@ -147,9 +145,9 @@ const FeedCard = ({
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
-            refreshing={personalFeedsIsFetching}
+            refreshing={personalPostIsFetching}
             onRefresh={() => {
-              refetchPersonalFeeds();
+              refetchPersonalPost();
             }}
           />
         }
@@ -183,9 +181,11 @@ const FeedCard = ({
                 loggedEmployeeId={loggedEmployeeId}
                 loggedEmployeeImage={loggedEmployeeImage}
                 onCommentToggle={commentsOpenHandler}
-                refetch={refetchPersonalFeeds}
+                refetchPersonalPost={refetchPersonalPost}
                 forceRerender={forceRerender}
+                forceRerenderPersonal={forceRerenderPersonal}
                 setForceRerender={setForceRerender}
+                setForceRerenderPersonal={setForceRerenderPersonal}
               />
             </Box>
           );
@@ -234,13 +234,13 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
-          refetchFeeds={refetchFeeds}
+          refetchPost={refetchPost}
           commentRefetchHandler={commentRefetchHandler}
           currentOffset={currentOffset}
           setCurrentOffset={setCurrentOffset}
-          commentData={commentData}
-          commentDataIsFetching={commentDataIsFetching}
-          refetchCommentData={refetchCommentData}
+          comment={comment}
+          commentIsFetching={commentIsFetching}
+          refetchComment={refetchComment}
           commentEndReachedHandler={commentEndReachedHandler}
           comments={comments}
           setComments={setComments}
