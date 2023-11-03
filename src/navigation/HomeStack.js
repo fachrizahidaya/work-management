@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
+import messaging from "@react-native-firebase/messaging";
 
 import { useSelector } from "react-redux";
 
@@ -41,7 +44,26 @@ import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
+  const navigation = useNavigation();
   const moduleSelector = useSelector((state) => state.module);
+
+  useEffect(() => {
+    messaging()
+      .getInitialNotification()
+      .then((message) => {
+        if (message) {
+          console.log(message);
+          // if (message.data.type === "Chat") {
+          //   navigation.navigate("Chat Room", {
+          //     name: message.data.name,
+          //     userId: message.data.user_id,
+          //     image: message.data.image,
+          //   });
+          // }
+        }
+        // console.log("notif openend the app");
+      });
+  }, []);
 
   return (
     // Includes screens after user log in

@@ -21,20 +21,6 @@ export const Navigations = () => {
         });
       }
     });
-
-    messaging()
-      .getInitialNotification()
-      .then((message) => {
-        // if (message) {
-        //   if (message.data.type === "Chat") {
-        //     navigation.navigate("Chat Room", {
-        //       name: message.data.name,
-        //       userId: message.data.user_id,
-        //       image: message.data.image,
-        //     });
-        //   }
-        // }
-      });
   }, []);
 
   return <>{userSelector.id === 0 ? <AuthStack /> : <HomeStack />}</>;
