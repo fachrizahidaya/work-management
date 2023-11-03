@@ -47,8 +47,8 @@ const EmployeeProfileScreen = ({ route }) => {
     data: personalFeeds,
     refetch: refetchPersonalFeeds,
     isFetching: personalFeedsIsFetching,
+    isLoading: personalFeedsIsLoading,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reload, currentOffset], postFetchParameters);
-  console.log(personalFeeds?.data);
 
   /**
    * Fetch more Posts handler
@@ -86,6 +86,7 @@ const EmployeeProfileScreen = ({ route }) => {
           onPress={() => {
             navigation.goBack();
             refetch();
+            setForceRerender(!forceRerender);
           }}
         />
       </Flex>
@@ -119,6 +120,7 @@ const EmployeeProfileScreen = ({ route }) => {
           postRefetchHandler={postRefetchHandler}
           postEndReachedHandler={postEndReachedHandler}
           personalFeedsIsFetching={personalFeedsIsFetching}
+          personalFeedsIsLoading={personalFeedsIsLoading}
           refetchPersonalFeeds={refetchPersonalFeeds}
           refetchFeeds={refetch}
           employee={employee}
@@ -129,8 +131,6 @@ const EmployeeProfileScreen = ({ route }) => {
           setHasBeenScrolled={setHasBeenScrolled}
           reload={reload}
           setReload={setReload}
-          forceRerender={forceRerender}
-          setForceRerender={setForceRerender}
         />
       </Flex>
     </SafeAreaView>

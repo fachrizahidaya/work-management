@@ -9,6 +9,10 @@ import FeedComment from "./FeedComment/FeedComment";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../shared/ToastDialog";
+import { useRef } from "react";
+import { useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/core";
+import { useCallback } from "react";
 
 const FeedCard = ({
   posts,
@@ -33,6 +37,8 @@ const FeedCard = ({
 
   const toast = useToast();
 
+  const firstTimeRef = useRef(true);
+
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffset,
@@ -44,7 +50,6 @@ const FeedCard = ({
     isFetching: commentDataIsFetching,
     refetch: refetchCommentData,
   } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
-  console.log(commentData?.data);
 
   /**
    * Fetch more Comments handler
@@ -112,6 +117,10 @@ const FeedCard = ({
       });
     }
   };
+
+  useEffect(() => {
+    setForceRerender(!forceRerender);
+  }, []);
 
   return (
     <Box flex={1}>
