@@ -11,6 +11,7 @@ export const Navigations = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
 
+  // Redirects user to chat room if app opens after pressing the push notification
   useEffect(() => {
     messaging().onNotificationOpenedApp((message) => {
       if (message.data.type === "Chat") {

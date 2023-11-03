@@ -44,24 +44,23 @@ import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
-  const navigation = useNavigation();
   const moduleSelector = useSelector((state) => state.module);
+  const navigation = useNavigation();
 
+  // Redirects user to chat room if app opens after pressing the push notification
   useEffect(() => {
     messaging()
       .getInitialNotification()
       .then((message) => {
         if (message) {
-          console.log(message);
-          // if (message.data.type === "Chat") {
-          //   navigation.navigate("Chat Room", {
-          //     name: message.data.name,
-          //     userId: message.data.user_id,
-          //     image: message.data.image,
-          //   });
-          // }
+          if (message.data.type === "Chat") {
+            navigation.navigate("Chat Room", {
+              name: message.data.name,
+              userId: message.data.user_id,
+              image: message.data.image,
+            });
+          }
         }
-        // console.log("notif openend the app");
       });
   }, []);
 
