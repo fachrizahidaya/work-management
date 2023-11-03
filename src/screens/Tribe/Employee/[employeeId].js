@@ -21,7 +21,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch, forceRerender, setForceRerender } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -66,28 +66,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const postRefetchHandler = () => {
     setCurrentOffset(0);
     setReload(!reload);
-  };
-
-  /**
-   * Like a Post handler
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      console.log("Process success");
-
-      refetchPersonalFeeds();
-      refetch();
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
-      });
-    }
   };
 
   useEffect(() => {
@@ -138,7 +116,6 @@ const EmployeeProfileScreen = ({ route }) => {
           loggedEmployeeId={loggedEmployeeId}
           loggedEmployeeName={userSelector?.name}
           loggedEmployeeImage={loggedEmployeeImage}
-          onToggleLike={postLikeToggleHandler}
           postRefetchHandler={postRefetchHandler}
           postEndReachedHandler={postEndReachedHandler}
           personalFeedsIsFetching={personalFeedsIsFetching}
@@ -150,6 +127,10 @@ const EmployeeProfileScreen = ({ route }) => {
           teammatesIsOpen={teammatesIsOpen}
           hasBeenScrolled={hasBeenScrolled}
           setHasBeenScrolled={setHasBeenScrolled}
+          reload={reload}
+          setReload={setReload}
+          forceRerender={forceRerender}
+          setForceRerender={setForceRerender}
         />
       </Flex>
     </SafeAreaView>

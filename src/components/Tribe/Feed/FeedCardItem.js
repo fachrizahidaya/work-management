@@ -29,10 +29,11 @@ const FeedCardItem = ({
   onToggleLike,
   onCommentToggle,
   refetch,
+  forceRerender,
+  setForceRerender,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
-  const [postIsFetching, setPostIsFetching] = useState(false);
 
   const navigation = useNavigation();
 
@@ -43,12 +44,14 @@ const FeedCardItem = ({
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
+
       setTotalLike((prevState) => prevState + 1);
     } else {
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
+    setForceRerender(true);
   };
 
   /**
@@ -62,7 +65,7 @@ const FeedCardItem = ({
   const words = content.split(" ");
   const styledTexts = words.map((item, index) => {
     let textStyle = styles.defaultText;
-    if (item.includes("https") || item.includes("www")) {
+    if (item.includes("https")) {
       textStyle = styles.highlightedText;
     }
     return (
@@ -95,6 +98,8 @@ const FeedCardItem = ({
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
                 refetch: refetch,
+                forceRerender: forceRerender,
+                setForceRerender: setForceRerender,
               })
             }
           >

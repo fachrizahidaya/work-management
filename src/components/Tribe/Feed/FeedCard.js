@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-import { Box } from "native-base";
+import { Box, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
 import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
+import { ErrorToast } from "../../shared/ToastDialog";
 
 const FeedCard = ({
   posts,
@@ -20,13 +22,16 @@ const FeedCard = ({
   refetchFeeds,
   hasBeenScrolled,
   setHasBeenScrolled,
+  reload,
+  setReload,
 }) => {
   const [comments, setComments] = useState([]);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [postEditOpen, setPostEditOpen] = useState(false);
-  const [editedPost, setEditedPost] = useState(null);
+  const [forceRerender, setForceRerender] = useState(false);
+
+  const toast = useToast();
 
   // Parameters for fetch comments
   const commentsFetchParameters = {
@@ -39,6 +44,7 @@ const FeedCard = ({
     isFetching: commentDataIsFetching,
     refetch: refetchCommentData,
   } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
+  console.log(commentData?.data);
 
   /**
    * Fetch more Comments handler
@@ -84,13 +90,34 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    refetchFeeds();
+    setForceRerender(true);
+  };
+
+  /**
+   * Like a Post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchFeeds();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts}
+        extraData={forceRerender} // re-render data handler
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={100}
@@ -127,11 +154,13 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            onToggleLike={onToggleLike}
+            onToggleLike={postLikeToggleHandler}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
             onCommentToggle={commentsOpenHandler}
             refetch={refetchFeeds}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
           />
         )}
       />
@@ -155,8 +184,6 @@ const FeedCard = ({
           commentRefetchHandler={commentRefetchHandler}
           comments={comments}
           setComments={setComments}
-          reload={reload}
-          setReload={setReload}
         />
       )}
     </Box>
