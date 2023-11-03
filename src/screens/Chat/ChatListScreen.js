@@ -5,14 +5,13 @@ import { useSelector } from "react-redux";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Icon, Input, Pressable, VStack } from "native-base";
+import { Icon, Input, Pressable, VStack } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import PageHeader from "../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
@@ -73,13 +72,22 @@ const ChatListScreen = () => {
     groupChatEvent();
   }, [userSelector.id]);
 
+  // Removes chat room screen from stack if app opens by pressing push notification
+  useEffect(() => {
+    const { routes } = navigation.getState();
+
+    const filteredRoutes = routes.filter((route) => route.name !== "Chat Room");
+
+    navigation.reset({
+      index: filteredRoutes.length - 1,
+      routes: filteredRoutes,
+    });
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Box marginHorizontal={16} marginVertical={13}>
-          <PageHeader onPress={() => navigation.navigate("Dashboard")} title="Dashboard" />
-        </Box>
-        <VStack p={4} pt={0} space={2}>
+        <VStack p={4} space={2}>
           <Input
             variant="unstyled"
             size="lg"
