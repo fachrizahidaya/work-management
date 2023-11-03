@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -9,7 +8,6 @@ import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
