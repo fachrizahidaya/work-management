@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
-import WebView from "react-native-webview";
 
 import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
@@ -28,7 +27,7 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  refetch,
+  refetchPost,
   forceRerender,
   setForceRerender,
 }) => {
@@ -96,7 +95,7 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
-                refetch: refetch,
+                refetchPost: refetchPost,
                 forceRerender: forceRerender,
                 setForceRerender: setForceRerender,
               })
@@ -113,7 +112,7 @@ const FeedCardItem = ({
                     employeeId: employeeId,
                     loggedEmployeeId: loggedEmployeeId,
                     loggedEmployeeImage: loggedEmployeeImage,
-                    refetch: refetch,
+                    refetchPost: refetchPost,
                     forceRerender: forceRerender,
                     setForceRerender: setForceRerender,
                   })
