@@ -11,7 +11,6 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import PageHeader from "../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
