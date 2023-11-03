@@ -30,6 +30,7 @@ const NewLeaveRequest = ({ route }) => {
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
   const { data: leaveType } = useFetch("/hr/leaves");
@@ -128,7 +129,6 @@ const NewLeaveRequest = ({ route }) => {
         render: ({ id }) => {
           return <SuccessToast message={`Request Created`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -138,7 +138,6 @@ const NewLeaveRequest = ({ route }) => {
         render: ({ id }) => {
           return <ErrorToast message={`Creating failed,${err.response.data.message}`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };

@@ -22,8 +22,6 @@ const LeaveRequestList = ({
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
-  const toast = useToast();
-
   return (
     <Flex gap={10}>
       {/* Pending Leave */}
