@@ -44,14 +44,13 @@ const FeedCardItem = ({
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
-
       setTotalLike((prevState) => prevState + 1);
     } else {
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
-    setForceRerender(true);
+    setForceRerender(!forceRerender);
   };
 
   /**
@@ -115,6 +114,8 @@ const FeedCardItem = ({
                     loggedEmployeeId: loggedEmployeeId,
                     loggedEmployeeImage: loggedEmployeeImage,
                     refetch: refetch,
+                    forceRerender: forceRerender,
+                    setForceRerender: setForceRerender,
                   })
                 }
                 fontSize={15}
