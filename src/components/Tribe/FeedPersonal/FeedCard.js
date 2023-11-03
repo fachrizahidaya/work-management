@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Image, Text, useToast } from "native-base";
+import { Box, Flex, Image, Spinner, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -14,6 +14,7 @@ import EmployeeTeammates from "../Employee/EmployeeTeammates";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../shared/ToastDialog";
+import { useEffect } from "react";
 
 const FeedCard = ({
   posts,
@@ -23,6 +24,7 @@ const FeedCard = ({
   postRefetchHandler,
   postEndReachedHandler,
   personalFeedsIsFetching,
+  personalFeedsIsLoading,
   refetchPersonalFeeds,
   refetchFeeds,
   employee,
@@ -33,14 +35,12 @@ const FeedCard = ({
   setHasBeenScrolled,
   reload,
   setReload,
-  forceRerender,
-  setForceRerender,
 }) => {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [currentOffset, setCurrentOffset] = useState(0);
-  // const [forceRerender, setForceRerender] = useState(false);
+  const [forceRerender, setForceRerender] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -103,7 +103,7 @@ const FeedCard = ({
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPersonalFeeds();
-    setForceRerender(!forceRerender);
+    setForceRerender(true);
   };
 
   /**
@@ -126,6 +126,10 @@ const FeedCard = ({
       });
     }
   };
+
+  useEffect(() => {
+    setForceRerender(!forceRerender);
+  }, []);
 
   return (
     <Box flex={1}>
