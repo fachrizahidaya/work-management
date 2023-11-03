@@ -25,6 +25,8 @@ const FeedComment = ({
   refetchCommentData,
   commentEndReachedHandler,
   commentRefetchHandler,
+  reload,
+  setReload,
 }) => {
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
@@ -43,8 +45,13 @@ const FeedComment = ({
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       setCommentParentId(null);
       commentAddHandler(postId);
-      postRefetchHandler();
+      setReload(!reload);
+      refetchCommentData();
       commentRefetchHandler();
+      setTimeout(() => {
+        postRefetchHandler();
+        refetchFeeds();
+      }, 500);
       setSubmitting(false);
       setStatus("success");
     } catch (err) {

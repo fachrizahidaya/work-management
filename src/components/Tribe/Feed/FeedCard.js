@@ -25,7 +25,6 @@ const FeedCard = ({
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [reload, setReload] = useState(false);
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [editedPost, setEditedPost] = useState(null);
 
@@ -85,6 +84,7 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
+    refetchFeeds();
   };
 
   return (
@@ -155,6 +155,8 @@ const FeedCard = ({
           commentRefetchHandler={commentRefetchHandler}
           comments={comments}
           setComments={setComments}
+          reload={reload}
+          setReload={setReload}
         />
       )}
     </Box>

@@ -35,6 +35,7 @@ const FeedScreen = () => {
     refetch: refetchFeeds,
     isFetching: feedsIsFetching,
   } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
+  console.log("all posts", feeds?.data);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -65,9 +66,8 @@ const FeedScreen = () => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      setTimeout(() => {
-        console.log("Process success");
-      }, 500);
+      console.log("Process success");
+      refetchFeeds();
     } catch (err) {
       console.log(err);
       toast.show({
@@ -86,7 +86,7 @@ const FeedScreen = () => {
         setPosts((prevData) => [...prevData, ...feeds?.data]);
       }
     }
-  }, [feedsIsFetching]);
+  }, [feedsIsFetching, reload]);
 
   return (
     <>
@@ -136,6 +136,8 @@ const FeedScreen = () => {
             refetchFeeds={refetchFeeds}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
+            reload={reload}
+            setReload={setReload}
           />
         </Box>
       </SafeAreaView>

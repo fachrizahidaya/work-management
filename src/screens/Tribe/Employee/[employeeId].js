@@ -48,6 +48,7 @@ const EmployeeProfileScreen = ({ route }) => {
     refetch: refetchPersonalFeeds,
     isFetching: personalFeedsIsFetching,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reload, currentOffset], postFetchParameters);
+  console.log(personalFeeds?.data);
 
   /**
    * Fetch more Posts handler
@@ -75,9 +76,10 @@ const EmployeeProfileScreen = ({ route }) => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      setTimeout(() => {
-        console.log("Process success");
-      }, 500);
+      console.log("Process success");
+
+      refetchPersonalFeeds();
+      refetch();
     } catch (err) {
       console.log(err);
       toast.show({
