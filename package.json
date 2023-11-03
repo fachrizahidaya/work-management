@@ -36,6 +36,7 @@
     "native-base": "^3.4.28",
     "pusher-js": "^8.3.0",
     "react": "18.2.0",
+    "react-mentions": "^4.4.10",
     "react-native": "0.72.4",
     "react-native-calendars": "^1.1301.0",
     "react-native-chart-kit": "^6.12.0",
@@ -47,9 +48,11 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^13.6.2",
     "react-native-wheel-color-picker": "^1.2.0",
     "react-query": "^3.39.3",
     "react-redux": "^8.1.1",
+    "react-social-media-embed": "^2.3.6",
     "yup": "^1.2.0"
   },
   "devDependencies": {

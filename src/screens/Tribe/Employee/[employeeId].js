@@ -15,12 +15,13 @@ import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
-  const [posts, setPosts] = useState([]);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [personalPosts, setPersonalPosts] = useState([]);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [reload, setReload] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [fetchingMore, setFetchingMore] = useState(false);
+  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetch, forceRerender, setForceRerender } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
@@ -46,25 +47,16 @@ const EmployeeProfileScreen = ({ route }) => {
     data: personalFeeds,
     refetch: refetchPersonalFeeds,
     isFetching: personalFeedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
-
-  /**
-   * Header when screen scrolling handler
-   */
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+  } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reload, currentOffset], postFetchParameters);
+  console.log(personalFeeds?.data);
 
   /**
    * Fetch more Posts handler
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (!fetchingMore && !fetchIsDone) {
-      setFetchingMore(true);
-      if (posts.length !== posts.length + personalFeeds?.data.length) {
-        setCurrentOffset(currentOffset + 10);
-      } else {
-        setFetchIsDone(true);
-      }
+    if (personalPosts.length !== personalPosts.length + personalFeeds?.data.length) {
+      setCurrentOffset(currentOffset + 10);
     }
   };
 
@@ -73,43 +65,18 @@ const EmployeeProfileScreen = ({ route }) => {
    */
   const postRefetchHandler = () => {
     setCurrentOffset(0);
-    setFetchIsDone(false);
-  };
-
-  /**
-   * Like a Post handler
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      // refetch();
-      // refetchPersonalFeeds();
-      setTimeout(() => {
-        console.log("Process success");
-      }, 500);
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
-        placement: "top",
-      });
-    }
+    setReload(!reload);
   };
 
   useEffect(() => {
-    if (personalFeeds?.data) {
+    if (personalFeeds?.data && personalFeedsIsFetching === false) {
       if (currentOffset === 0) {
-        setPosts(personalFeeds?.data);
+        setPersonalPosts(personalFeeds?.data);
       } else {
-        setPosts((prevData) => [...prevData, ...personalFeeds?.data]);
+        setPersonalPosts((prevData) => [...prevData, ...personalFeeds?.data]);
       }
-      setFetchingMore(false);
     }
-  }, [personalFeeds?.data]);
+  }, [personalFeedsIsFetching]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -145,13 +112,12 @@ const EmployeeProfileScreen = ({ route }) => {
       <Flex flex={1} minHeight={2} gap={2} height={height}>
         {/* Content here */}
         <FeedCard
-          posts={posts}
+          posts={personalPosts}
           loggedEmployeeId={loggedEmployeeId}
           loggedEmployeeName={userSelector?.name}
           loggedEmployeeImage={loggedEmployeeImage}
-          onToggleLike={postLikeToggleHandler}
           postRefetchHandler={postRefetchHandler}
-          handleEndReached={postEndReachedHandler}
+          postEndReachedHandler={postEndReachedHandler}
           personalFeedsIsFetching={personalFeedsIsFetching}
           refetchPersonalFeeds={refetchPersonalFeeds}
           refetchFeeds={refetch}
@@ -159,6 +125,12 @@ const EmployeeProfileScreen = ({ route }) => {
           toggleTeammates={toggleTeammates}
           teammates={teammates}
           teammatesIsOpen={teammatesIsOpen}
+          hasBeenScrolled={hasBeenScrolled}
+          setHasBeenScrolled={setHasBeenScrolled}
+          reload={reload}
+          setReload={setReload}
+          forceRerender={forceRerender}
+          setForceRerender={setForceRerender}
         />
       </Flex>
     </SafeAreaView>

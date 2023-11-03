@@ -3,12 +3,16 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Spinner, Text, TextArea } from "native-base";
+import { MentionsInput, Mention } from "react-mentions";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import FormButton from "../../../shared/FormButton";
+import MentionInput from "./MentionInput";
+import { TextInput } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
 
 const NewFeedForm = ({
   formik,
@@ -23,6 +27,9 @@ const NewFeedForm = ({
   dateShown,
   endDateAnnouncementHandler,
   loggedEmployeeDivision,
+  employees,
+  mentionSelectHandler,
+  inputRef,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,7 +38,14 @@ const NewFeedForm = ({
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
       <FormControl isInvalid={formik.errors.content}>
-        <TextArea
+        <MentionInput
+          employees={employees}
+          formik={formik}
+          name="content"
+          onMentionSelect={mentionSelectHandler}
+          inputRef={inputRef}
+        />
+        {/* <TextArea
           minH={100}
           maxH={500}
           variant="unstyled"
@@ -40,7 +54,7 @@ const NewFeedForm = ({
           onChangeText={(value) => formik.setFieldValue("content", value)}
           value={formik.values.content}
           fontSize="lg"
-        />
+        /> */}
 
         <Flex p={2} flexDir="column" justifyContent="space-between">
           {image ? (
