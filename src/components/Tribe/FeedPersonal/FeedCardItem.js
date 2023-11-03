@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
-import WebView from "react-native-webview";
 
 import { Flex, Image, Text, Icon, Pressable, Modal, Badge, Actionsheet } from "native-base";
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
