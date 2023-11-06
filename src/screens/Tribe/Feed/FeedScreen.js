@@ -9,8 +9,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
-import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -31,9 +29,9 @@ const FeedScreen = () => {
   };
 
   const {
-    data: feeds,
-    refetch: refetchFeeds,
-    isFetching: feedsIsFetching,
+    data: post,
+    refetch: refetchPost,
+    isFetching: postIsFetching,
   } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
@@ -43,7 +41,7 @@ const FeedScreen = () => {
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
-    if (posts.length !== posts.length + feeds?.data.length) {
+    if (posts.length !== posts.length + post?.data.length) {
       setCurrentOffset(currentOffset + 10);
     }
   };
@@ -58,14 +56,14 @@ const FeedScreen = () => {
   };
 
   useEffect(() => {
-    if (feeds?.data && feedsIsFetching === false) {
+    if (post?.data && postIsFetching === false) {
       if (currentOffset === 0) {
-        setPosts(feeds?.data);
+        setPosts(post?.data);
       } else {
-        setPosts((prevData) => [...prevData, ...feeds?.data]);
+        setPosts((prevData) => [...prevData, ...post?.data]);
       }
     }
-  }, [feedsIsFetching, reload]);
+  }, [postIsFetching, reload]);
 
   return (
     <>
@@ -111,8 +109,8 @@ const FeedScreen = () => {
             // onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             postEndReachedHandler={postEndReachedHandler}
-            feedsIsFetching={feedsIsFetching}
-            refetchFeeds={refetchFeeds}
+            postIsFetching={postIsFetching}
+            refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
             reload={reload}
