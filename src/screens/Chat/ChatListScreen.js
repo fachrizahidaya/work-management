@@ -11,6 +11,7 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
+import { StyleSheet } from "react-native";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
