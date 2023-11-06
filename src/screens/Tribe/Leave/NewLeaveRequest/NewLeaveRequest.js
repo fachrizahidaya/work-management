@@ -59,6 +59,7 @@ const NewLeaveRequest = ({ route }) => {
     refetch: refetchLeaveHistory,
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
+  console.log(leaveHistory?.data);
 
   /**
    * Calculate available leave quota and day-off
