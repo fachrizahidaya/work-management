@@ -44,14 +44,14 @@ const NewLeaveRequest = ({ route }) => {
       backgroundColor: "#E8E9EB",
       iconColor: "#377893",
     },
-    {
-      id: 2,
-      name: "Available Day-off",
-      icon: "clipboard-pulse-outline",
-      qty: availableLeaves?.day_off_leave,
-      backgroundColor: "#FAF6E8",
-      iconColor: "#FFD240",
-    },
+    // {
+    //   id: 2,
+    //   name: "Available Day-off",
+    //   icon: "clipboard-pulse-outline",
+    //   qty: availableLeaves?.day_off_leave,
+    //   backgroundColor: "#FAF6E8",
+    //   iconColor: "#FFD240",
+    // },
   ];
 
   const {
@@ -59,29 +59,23 @@ const NewLeaveRequest = ({ route }) => {
     refetch: refetchLeaveHistory,
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
-  console.log(leaveHistory?.data);
 
   /**
    * Calculate available leave quota and day-off
    */
   const filterAvailableLeaveHistory = () => {
     let sumAvailableLeave = 0;
-    let sumDayOffLeave = 0;
-    const availableLeave = leaveHistory?.data.filter((leave) => leave.leave_id === 1 && leave.active);
+
+    const availableLeave = leaveHistory?.data.filter((leave) => leave.active);
 
     if (availableLeave?.length > 0) {
       sumAvailableLeave = availableLeave?.reduce((val, obj) => {
         return Number(val) + Number(obj.quota);
       }, 0);
     }
-    const dayOffLeave = leaveHistory?.data.filter((leave) => leave.leave_id === 10 && leave.active);
-    if (dayOffLeave?.length > 0) {
-      sumDayOffLeave = dayOffLeave?.reduce((val, obj) => {
-        return Number(val) + Number(obj.quota);
-      }, 0);
-    }
+
     setAvailableLeaves(() => {
-      return { available_leave: sumAvailableLeave, day_off_leave: sumDayOffLeave };
+      return { available_leave: sumAvailableLeave };
     });
   };
 
