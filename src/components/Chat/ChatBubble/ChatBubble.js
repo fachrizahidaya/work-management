@@ -46,7 +46,7 @@ const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
         >
           <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
           <Text mt={2.5} alignSelf="flex-end" fontSize={10} color="#578A90">
-            14:05
+            {time}
           </Text>
         </Flex>
       </Flex>

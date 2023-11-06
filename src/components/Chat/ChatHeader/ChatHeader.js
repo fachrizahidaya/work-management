@@ -25,6 +25,8 @@ const ChatHeader = ({ navigation, name, image, userId }) => {
 
       <Flex direction="row" alignItems="center" gap={4}>
         <Menu
+          w={160}
+          mt={8}
           trigger={(trigger) => {
             return (
               <Pressable {...trigger} mr={1}>
@@ -33,7 +35,7 @@ const ChatHeader = ({ navigation, name, image, userId }) => {
             );
           }}
         >
-          <Menu.Item onPress={toggleDeleteModal}>
+          <Menu.Item>
             <Text>Search</Text>
           </Menu.Item>
           <Menu.Item onPress={toggleDeleteModal}>

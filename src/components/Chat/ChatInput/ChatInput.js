@@ -3,12 +3,18 @@ import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Flex, FormControl, Icon, IconButton, Input, Pressable } from "native-base";
+import { Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import axiosInstance from "../../../config/api";
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ChatInput = ({ userId }) => {
+  const { isOpen: attachmentIsOpen, toggle: toggleAttachment } = useDisclosure(false);
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
   /**
    * Handles submission of chat message
    * @param {Object} form - message to submit
@@ -49,7 +55,7 @@ const ChatInput = ({ userId }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <FormControl borderTopWidth={1} borderColor="#E8E9EB" px={4}>
+    <FormControl borderTopWidth={1} borderColor="#E8E9EB" px={2}>
       <Input
         h={73}
         size="2xl"
@@ -59,18 +65,41 @@ const ChatInput = ({ userId }) => {
         onChangeText={(value) => formik.setFieldValue("message", value)}
         InputLeftElement={
           <Flex direction="row" justifyContent="space-between" px={2} gap={4}>
-            <Pressable>
+            {/* <Pressable>
               <Icon
                 as={<MaterialIcons name={"attach-file"} />}
                 size={6}
                 style={{ transform: [{ rotate: "45deg" }] }}
                 color="#8A9099"
               />
-            </Pressable>
+            </Pressable> */}
+            <Menu
+              w={160}
+              mb={7}
+              trigger={(trigger) => {
+                return (
+                  <Pressable {...trigger} mr={1}>
+                    <Icon
+                      as={<MaterialIcons name="add" />}
+                      size={6}
+                      // style={{ transform: [{ rotate: "45deg" }] }}
+                      color="#8A9099"
+                    />
+                  </Pressable>
+                );
+              }}
+            >
+              <Menu.Item onPress={toggleAttachment}>
+                <Text>Document</Text>
+              </Menu.Item>
+              <Menu.Item onPress={toggleAttachment}>
+                <Text>Photo</Text>
+              </Menu.Item>
+            </Menu>
 
-            <Pressable>
+            {/* <Pressable>
               <Icon as={<MaterialIcons name={"insert-emoticon"} />} size={6} color="#8A9099" />
-            </Pressable>
+            </Pressable> */}
           </Flex>
         }
         InputRightElement={
