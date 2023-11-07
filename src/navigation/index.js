@@ -11,6 +11,7 @@ export const Navigations = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
 
+  // Redirects user to chat room if app opens after pressing the push notification
   useEffect(() => {
     messaging().onNotificationOpenedApp((message) => {
       if (message.data.type === "Chat") {
@@ -21,20 +22,6 @@ export const Navigations = () => {
         });
       }
     });
-
-    messaging()
-      .getInitialNotification()
-      .then((message) => {
-        // if (message) {
-        //   if (message.data.type === "Chat") {
-        //     navigation.navigate("Chat Room", {
-        //       name: message.data.name,
-        //       userId: message.data.user_id,
-        //       image: message.data.image,
-        //     });
-        //   }
-        // }
-      });
   }, []);
 
   return <>{userSelector.id === 0 ? <AuthStack /> : <HomeStack />}</>;

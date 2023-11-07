@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
+import messaging from "@react-native-firebase/messaging";
 
 import { useSelector } from "react-redux";
 
@@ -42,6 +45,24 @@ const Stack = createStackNavigator();
 
 const HomeStack = () => {
   const moduleSelector = useSelector((state) => state.module);
+  const navigation = useNavigation();
+
+  // Redirects user to chat room if app opens after pressing the push notification
+  useEffect(() => {
+    messaging()
+      .getInitialNotification()
+      .then((message) => {
+        if (message) {
+          if (message.data.type === "Chat") {
+            navigation.navigate("Chat Room", {
+              name: message.data.name,
+              userId: message.data.user_id,
+              image: message.data.image,
+            });
+          }
+        }
+      });
+  }, []);
 
   return (
     // Includes screens after user log in

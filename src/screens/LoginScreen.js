@@ -105,32 +105,29 @@ const LoginScreen = () => {
         // Extract user data from the response
         const userData = res.data.data;
 
-        // Check if user has firebase token already or not, if not generate one and then patch user data with the token
-        if (!userData.firebase_token) {
-          const userToken = userData.access_token.replace(/"/g, "");
-          // Get firebase messaging token for push notification
-          const fbtoken = await messaging().getToken();
+        const userToken = userData.access_token.replace(/"/g, "");
 
-          await axios
-            .patch(
-              `${process.env.EXPO_PUBLIC_API}/auth/change-firebase-token`,
-              {
-                firebase_token: fbtoken,
+        // Get firebase messaging token for push notification
+        const fbtoken = await messaging().getToken();
+
+        await axios
+          .post(
+            `${process.env.EXPO_PUBLIC_API}/auth/create-firebase-token`,
+            {
+              firebase_token: fbtoken,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${userToken}`,
               },
-              {
-                headers: {
-                  Authorization: `Bearer ${userToken}`,
-                },
-              }
-            )
-            .then(() => {
-              navigation.navigate("Loading", { userData });
-            });
-        } else {
-          navigation.navigate("Loading", { userData });
-        }
+            }
+          )
+          .then(async () => {
+            await SecureStore.setItemAsync("firebase_token", fbtoken);
+            navigation.navigate("Loading", { userData });
+          });
 
-        // navigation.navigate("Loading", { userData });
+        navigation.navigate("Loading", { userData });
         formik.setSubmitting(false);
       })
       .catch((error) => {
