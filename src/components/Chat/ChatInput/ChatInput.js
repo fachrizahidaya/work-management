@@ -1,24 +1,33 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Flex, FormControl, Icon, IconButton, Input, Pressable } from "native-base";
+import { Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import axiosInstance from "../../../config/api";
 
-const ChatInput = ({ userId }) => {
+const ChatInput = ({ userId, imageAttachment, type, fileAttachment, selectFile, pickImageHandler }) => {
   /**
    * Handles submission of chat message
    * @param {Object} form - message to submit
    */
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
-      await axiosInstance.post("/chat/personal/message", {
-        to_user_id: userId,
-        ...form,
-      });
+      if (typeof userId === "number") {
+        await axiosInstance.post(`/chat/${type}/message`, {
+          to_user_id: userId,
+          ...form,
+        });
+      } else if (typeof userId === "string") {
+        await axiosInstance.post(`/chat/${type}/message`, {
+          group_id: userId,
+          ...form,
+        });
+      }
       setSubmitting(false);
       setStatus("success");
     } catch (error) {
@@ -49,44 +58,58 @@ const ChatInput = ({ userId }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <FormControl borderTopWidth={1} borderColor="#E8E9EB" px={4}>
-      <Input
-        h={73}
-        size="2xl"
-        variant="unstyled"
-        placeholder="Type a message..."
-        value={formik.values.message}
-        onChangeText={(value) => formik.setFieldValue("message", value)}
-        InputLeftElement={
-          <Flex direction="row" justifyContent="space-between" px={2} gap={4}>
-            <Pressable>
-              <Icon
-                as={<MaterialIcons name={"attach-file"} />}
-                size={6}
-                style={{ transform: [{ rotate: "45deg" }] }}
-                color="#8A9099"
-              />
-            </Pressable>
-
-            <Pressable>
-              <Icon as={<MaterialIcons name={"insert-emoticon"} />} size={6} color="#8A9099" />
-            </Pressable>
-          </Flex>
-        }
-        InputRightElement={
-          <IconButton
-            mx={3}
-            bgColor="#176688"
-            size="md"
-            borderRadius="full"
-            onPress={formik.handleSubmit}
-            icon={
-              <Icon as={<MaterialIcons name="send" />} color="white" style={{ transform: [{ rotate: "-35deg" }] }} />
-            }
-          />
-        }
-      />
-    </FormControl>
+    <>
+      <FormControl borderTopWidth={1} borderColor="#E8E9EB" px={2}>
+        <Input
+          h={70}
+          size="xl"
+          variant="unstyled"
+          placeholder="Type a message..."
+          multiline={true}
+          value={formik.values.message}
+          onChangeText={(value) => formik.setFieldValue("message", value)}
+          InputLeftElement={
+            <Flex direction="row" justifyContent="space-between" px={2} gap={4}>
+              <Menu
+                w={160}
+                mb={7}
+                trigger={(trigger) => {
+                  return fileAttachment || imageAttachment ? null : (
+                    <Pressable {...trigger} mr={1}>
+                      <Icon as={<MaterialIcons name="add" />} size={6} />
+                    </Pressable>
+                  );
+                }}
+              >
+                <Menu.Item onPress={selectFile}>
+                  <Icon as={<MaterialCommunityIcons name="file-document-outline" />} />
+                  <Text>Document</Text>
+                </Menu.Item>
+                <Menu.Item onPress={pickImageHandler}>
+                  <Icon as={<MaterialIcons name="photo" />} />
+                  <Text>Photo</Text>
+                </Menu.Item>
+                <Menu.Item>
+                  <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
+                  <Text>Project</Text>
+                </Menu.Item>
+                <Menu.Item>
+                  <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
+                  <Text>Task</Text>
+                </Menu.Item>
+              </Menu>
+            </Flex>
+          }
+          InputRightElement={
+            <IconButton
+              onPress={formik.handleSubmit}
+              opacity={formik.values.message === "" && imageAttachment === null && fileAttachment === null ? 0.5 : 1}
+              icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
+            />
+          }
+        />
+      </FormControl>
+    </>
   );
 };
 

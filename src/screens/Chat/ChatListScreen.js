@@ -5,13 +5,14 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Icon, Input, Pressable, VStack } from "native-base";
+import { SafeAreaView, StyleSheet } from "react-native";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import axiosInstance from "../../config/api";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import { StyleSheet } from "react-native";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
