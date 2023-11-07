@@ -1,18 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
-import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import axiosInstance from "../../../config/api";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ImageAttachment from "../Attachment/ImageAttachment";
 
 const ChatInput = ({ userId, imageAttachment, type, fileAttachment, selectFile, pickImageHandler }) => {
   /**

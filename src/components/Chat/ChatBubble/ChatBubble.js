@@ -1,9 +1,7 @@
 import { useSelector } from "react-redux";
-import dayjs from "dayjs";
 
 import { Linking, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Flex, Text } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";

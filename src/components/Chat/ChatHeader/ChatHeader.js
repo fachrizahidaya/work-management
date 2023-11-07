@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { Box, Flex, Icon, Input, Menu, Pressable, Text } from "native-base";
-import Animated, { Easing, withSpring, withTiming } from "react-native-reanimated";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
