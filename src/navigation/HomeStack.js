@@ -46,6 +46,7 @@ const Stack = createStackNavigator();
 const HomeStack = () => {
   const moduleSelector = useSelector((state) => state.module);
   const navigation = useNavigation();
+  navigation.removeListener();
 
   // Redirects user to chat room if app opens after pressing the push notification
   useEffect(() => {
