@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Box, Flex, Icon, Input, Menu, Pressable, Text } from "native-base";
+import Animated, { Easing, withSpring, withTiming } from "react-native-reanimated";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -9,7 +10,7 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ConfirmationModal from "../../shared/ConfirmationModal";
 
-const ChatHeader = ({ navigation, name, image, userId }) => {
+const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAttachment }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
@@ -41,7 +42,7 @@ const ChatHeader = ({ navigation, name, image, userId }) => {
             w={160}
             mt={8}
             trigger={(trigger) => {
-              return (
+              return fileAttachment || imageAttachment ? null : (
                 <Pressable {...trigger} mr={1}>
                   <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
                 </Pressable>
@@ -75,7 +76,7 @@ const ChatHeader = ({ navigation, name, image, userId }) => {
       </Flex>
       {searchVisible && (
         <Input
-          // value={inputToShow}
+          value={inputToShow}
           InputLeftElement={
             <Pressable>
               <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
@@ -83,25 +84,30 @@ const ChatHeader = ({ navigation, name, image, userId }) => {
           }
           InputRightElement={
             <Pressable
-
-            // onPress={() => {
-            //   setInputToShow("");
-            //   setSearchInput("");
-            // }}
+              onPress={
+                searchInput === ""
+                  ? () => toggleSearch()
+                  : () => {
+                      setInputToShow("");
+                      setSearchInput("");
+                    }
+              }
             >
               <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
             </Pressable>
           }
-          // onChangeText={(value) => {
-          //   handleSearch(value);
-          //   setInputToShow(value);
-          // }}
+          onChangeText={(value) => {
+            setInputToShow(value);
+            setSearchInput(value);
+          }}
           variant="unstyled"
           size="md"
           placeholder="Search contact"
           borderRadius={15}
           borderWidth={1}
-          style={{ height: 40 }}
+          height={10}
+          my={3}
+          mx={3}
         />
       )}
     </>
