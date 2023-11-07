@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import axiosInstance from "../../../config/api";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
@@ -47,6 +50,98 @@ const ChatInput = ({ userId }) => {
       sendMessage(values, setSubmitting, setStatus);
     },
   });
+
+  /**
+   * Pick an image Handler
+   */
+  const pickImageHandler = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // Handling for name
+    var filename = result.assets[0].uri.substring(
+      result.assets[0].uri.lastIndexOf("/") + 1,
+      result.assets[0].uri.length
+    );
+
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
+
+    if (result) {
+      setImage({
+        name: filename,
+        size: fileInfo.size,
+        type: `${result.assets[0].type}/jpg`,
+        webkitRelativePath: "",
+        uri: result.assets[0].uri,
+      });
+    }
+  };
+
+  // const handleUploadFile = async (formData) => {
+  //   try {
+  //     // Sending the formData to backend
+  //     await axiosInstance.post("/pm/projects/attachment", formData, {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     });
+  //     // Refetch project's attachments
+  //     refetchAttachments();
+
+  //     // Display toast if success
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     // Display toast if error
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   }
+  // };
+
+  /**
+   * Select file handler
+   */
+  const selectFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
+
+      // Check if there is selected file
+      if (result) {
+        if (result.assets[0].size < 3000001) {
+          // formData format
+          const formData = new FormData();
+          formData.append("attachment", {
+            name: result.assets[0].name,
+            size: result.assets[0].size,
+            type: result.assets[0].mimeType,
+            uri: result.assets[0].uri,
+            webkitRelativePath: "",
+          });
+          formData.append("project_id", projectId);
+
+          // Call upload handler and send formData to the api
+          // handleUploadFile(formData);
+        } else {
+          Alert.alert("Max file size is 3MB");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -89,11 +184,17 @@ const ChatInput = ({ userId }) => {
                 );
               }}
             >
-              <Menu.Item onPress={toggleAttachment}>
+              <Menu.Item onPress={selectFile}>
                 <Text>Document</Text>
               </Menu.Item>
-              <Menu.Item onPress={toggleAttachment}>
+              <Menu.Item onPress={pickImageHandler}>
                 <Text>Photo</Text>
+              </Menu.Item>
+              <Menu.Item>
+                <Text>Task</Text>
+              </Menu.Item>
+              <Menu.Item>
+                <Text>Project</Text>
               </Menu.Item>
             </Menu>
 

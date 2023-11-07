@@ -6,26 +6,57 @@ import { Box, Flex, Icon, Pressable, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { CopyToClipboard } from "../../shared/CopyToClipboard";
 
 const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector.id === fromUserId;
 
-  const words = content.split(" ");
-  const styledTexts = words.map((item, index) => {
-    let textStyle = styles.defaultText;
-    if (item.includes("https")) {
-      textStyle = styles.highlightedText;
-    }
-    return (
-      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-        {item}{" "}
-      </Text>
-    );
-  });
+  if (typeof content !== "number" || content.length > 1) {
+    const words = content.split(" ");
+    var styledTexts = words.map((item, index) => {
+      let textStyle = styles.defaultText;
+      if (item.includes("https")) {
+        textStyle = styles.highlightedText;
+        return (
+          <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (item.includes("08") || item.includes("62")) {
+        textStyle = styles.highlightedText;
+        return (
+          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (item.includes("@gmail.com")) {
+        textStyle = styles.highlightedText;
+        return (
+          <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+            {item}{" "}
+          </Text>
+        );
+      }
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
+    });
+  }
 
   const handleLinkPress = (url) => {
     Linking.openURL(url);
+  };
+
+  const handleEmailPress = (email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -44,7 +75,11 @@ const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
           // borderWidth={!myMessage ? 1 : 0}
           // borderColor={!myMessage && "#E8E9EB"}
         >
-          <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+          {typeof content === "number" ? (
+            <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
+          ) : (
+            <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+          )}
           <Text mt={2.5} alignSelf="flex-end" fontSize={10} color="#578A90">
             {time}
           </Text>

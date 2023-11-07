@@ -15,6 +15,7 @@ import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import ChatSearch from "./ChatSearch";
 
 const ChatRoom = () => {
   window.Pusher = Pusher;
@@ -120,8 +121,9 @@ const ChatRoom = () => {
         paddingX={2}
         // style={{ display: "flex", flexDirection: "column-reverse" }}
       >
+        {/* <ChatSearch/> */}
         <FlashList
-          inverted
+          // inverted
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           // onEndReached={getPersonalMessage}
