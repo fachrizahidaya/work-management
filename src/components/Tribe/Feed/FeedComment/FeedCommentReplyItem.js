@@ -20,19 +20,6 @@ const FeedCommentReplyItem = ({
 }) => {
   const [filteredComment, setFilteredComment] = useState();
 
-  const filterComment = () => {
-    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    setFilteredComment(() => {
-      return comments.replace(urlRegex, function (url) {
-        return '<a href="' + url + '" target="_blank">' + url + "</a>";
-      });
-    });
-  };
-
-  useEffect(() => {
-    filterComment();
-  }, [comments]);
-
   return (
     <Flex mx={10} my={2}>
       <Flex my={1} minHeight={1}>

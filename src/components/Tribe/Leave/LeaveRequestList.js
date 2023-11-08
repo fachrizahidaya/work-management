@@ -22,8 +22,6 @@ const LeaveRequestList = ({
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
-  const toast = useToast();
-
   return (
     <Flex gap={10}>
       {/* Pending Leave */}
@@ -57,7 +55,6 @@ const LeaveRequestList = ({
                         isOpen={cancelModalIsOpen}
                         toggle={toggleCancelModal}
                         apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
-                        color="red.800"
                         hasSuccessFunc={true}
                         header="Cancel Leave Request"
                         onSuccess={() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { Linking, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -22,8 +22,6 @@ const FeedCommentItem = ({
   comments,
 }) => {
   const [commentReplies, setCommentReplies] = useState(false);
-  const [filteredComment, setFileteredComment] = useState(false);
-  const [replyFetchDone, setReplyFetchDone] = useState(false);
   const [viewReplyToggle, setViewReplyToggle] = useState(false);
   const [hideReplies, setHideReplies] = useState(false);
 
