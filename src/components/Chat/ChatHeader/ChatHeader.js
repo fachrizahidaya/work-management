@@ -101,7 +101,7 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
           }}
           variant="unstyled"
           size="md"
-          placeholder="Search contact"
+          placeholder="Search"
           borderRadius={15}
           borderWidth={1}
           height={10}
