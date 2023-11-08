@@ -55,7 +55,6 @@ const LeaveRequestList = ({
                         isOpen={cancelModalIsOpen}
                         toggle={toggleCancelModal}
                         apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
-                        color="red.800"
                         hasSuccessFunc={true}
                         header="Cancel Leave Request"
                         onSuccess={() => {
