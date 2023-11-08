@@ -7,7 +7,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
 const ContactListItem = ({ type, id, name, image, message, isDeleted, fileName, project, task }) => {
-  const [forceRerendered, setForceRerendered] = useState(false);
   const navigation = useNavigation();
 
   const generateIcon = () => {

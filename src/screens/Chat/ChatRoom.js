@@ -25,93 +25,108 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
 
 const ChatRoom = () => {
-  const [imageAttachment, setImageAttachment] = useState(null);
-  const [fileAttachment, setFileAttachment] = useState(null);
-  const [chatMessages, setChatMessages] = useState([]);
-  window.Pusher = Pusher;
-  const route = useRoute();
-  const { name, userId, image, type } = route.params;
-  const navigation = useNavigation();
-  const userSelector = useSelector((state) => state.auth);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const [chatList, setChatList] = useState([]);
-  const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [fileAttachment, setFileAttachment] = useState(null);
+  const [previousUser, setPreviousUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentGroup, setCurrentGroup] = useState(null);
+  const [previousGroup, setPreviousGroup] = useState(null);
+  const [bandAttachment, setBandAttachment] = useState(null);
+  const [bandAttachmentType, setBandAttachmentType] = useState(null);
+  const [messageToReply, setMessageToReply] = useState(null);
+  const [messageToDelete, setMessageToDelete] = useState(null);
+  const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
+
+  window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const { isOpen: attachmentIsOpen, toggle: toggleAttachment } = useDisclosure(false);
+
+  const userSelector = useSelector((state) => state.auth);
+
+  const route = useRoute();
+
+  const navigation = useNavigation();
+
+  const { name, userId, image, type, selectedUser, selectedGroup } = route.params;
 
   /**
    * Event listener for new personal chat messages
    */
   const getPersonalChat = () => {
-    laravelEcho.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
-      setChatList((currentChats) => [...currentChats, event.data]);
-    });
+    if (userSelector?.id && previousUser) {
+      laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${previousUser}`);
+    }
+    if (userSelector?.id && currentUser) {
+      laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
+        console.log(event);
+        if (event.data.type === "New") {
+          setChatList((currentChats) => [...currentChats, event.data]);
+        }
+      });
+    }
   };
 
   /**
    * Event listener for new group chat messages
    */
   const groupChatMessageEvent = () => {
-    laravelEcho.channel(`group.chat.${userId}`).listen(".group.chat", (event) => {
-      setChatMessages((prevState) => [...prevState, event.data]);
-    });
-  };
-
-  /**
-   * Fetch personal chat messages
-   */
-  const getPersonalMessage = async () => {
-    try {
-      if (hasMore) {
-        const res = await axiosInstance.get(`/chat/${type}/${userId}/message`, {
-          params: {
-            offset: offset,
-            limit: 20,
-          },
-        });
-        setChatList((currentChats) => [...res.data.data, ...currentChats]);
-        // setChatList((currentChats) => {
-        //   if (currentChats.length !== currentChats.length + res.data.data.length) {
-        //     return [...res.data.data, ...currentChats];
-        //   } else {
-        //     setHasMore(false);
-        //     return currentChats;
-        //   }
-        // });
-        // setOffset((prevState) => prevState + 20);
-      }
-    } catch (error) {
-      console.log(error);
+    if (userSelector?.id && previousGroup) {
+      laravelEcho.leaveChannel(`group.chat.${previousGroup}`);
+    }
+    if (userSelector?.id && currentGroup) {
+      laravelEcho.channel(`group.chat.${currentGroup}`).listen(".group.chat", (event) => {
+        console.log(event);
+        if (event.data.tye) {
+          setChatList((prevState) => [...prevState, event.data]);
+        }
+      });
     }
   };
 
   /**
-   * Fetch group chat messages
+   * Fetch Chat Messages
+   * @param {*} type
+   * @param {*} id
+   * @param {*} setHasBeenScrolled
    */
-  const fetchGroupChatMessages = async () => {
+  const getPersonalMessage = async (type, id, setHasBeenScrolled) => {
     if (hasMore) {
       try {
-        const res = await axiosInstance.get(`/chat/${type}/${userId}/message`, {
+        const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
           params: {
             offset: offset,
             limit: 20,
           },
         });
-        setChatMessages((currentChats) => [...res.data.data, ...currentChats]);
-
-        // setChatMessages((prevState) => {
-        //   if (prevState.length !== prevState.length + res.data.data.length) {
-        //     return [...res.data.data, ...prevState];
-        //   } else {
-        //     setHasMore(false);
-        //     return prevState;
-        //   }
-        // });
-        // setOffset((prevState) => prevState + 20);
-      } catch (err) {
-        console.log(err);
+        setChatList((currentChats) => {
+          if (currentChats.length !== currentChats.length + res.data.data.length) {
+            return [...res.data.data, ...currentChats];
+          } else {
+            setHasMore(false);
+            return currentChats;
+          }
+        });
+        setOffset((prevState) => prevState + 20);
+      } catch (error) {
+        console.log(error);
       }
+    }
+  };
+
+  /**
+   * Set all messages to read after opening up the chat
+   * @param {*} type
+   * @param {*} id
+   */
+  const messageReadHandler = async (type, id) => {
+    try {
+      await axiosInstance.get(`/chat/${type}/${id}/read-message`);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -135,7 +150,7 @@ const ChatRoom = () => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (result) {
-      setImageAttachment({
+      setFileAttachment({
         name: filename,
         size: fileInfo.size,
         type: `${result.assets[0].type}/jpg`,
@@ -144,34 +159,6 @@ const ChatRoom = () => {
       });
     }
   };
-
-  // const handleUploadFile = async (formData) => {
-  //   try {
-  //     // Sending the formData to backend
-  //     await axiosInstance.post("/pm/projects/attachment", formData, {
-  //       headers: {
-  //         "content-type": "multipart/form-data",
-  //       },
-  //     });
-  //     // Refetch project's attachments
-  //     refetchAttachments();
-
-  //     // Display toast if success
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     // Display toast if error
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   }
-  // };
 
   /**
    * Select file handler
@@ -205,25 +192,111 @@ const ChatRoom = () => {
     }
   };
 
-  useEffect(() => {
-    if (userId) {
-      getPersonalMessage();
-      fetchGroupChatMessages();
+  // const handleUploadFile = async (formData) => {
+  //   try {
+  //     // Sending the formData to backend
+  //     await axiosInstance.post("/pm/projects/attachment", formData, {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     });
+  //     // Refetch project's attachments
+  //     refetchAttachments();
+
+  //     // Display toast if success
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     // Display toast if error
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   }
+  // };
+
+  /**
+   * Handles submission of chat message
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const sendMessage = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (error) {
+      console.log(error);
+      setSubmitting(false);
+      setStatus("error");
     }
+  };
+
+  const clearAdditionalContentActionState = () => {
+    setFileAttachment(null);
+    setBandAttachment(null);
+    setBandAttachmentType(null);
+    setMessageToReply(null);
+    setMessageToDelete(null);
+  };
+
+  const fetchChatMessageHandler = (read) => {
+    if (type === "personal") {
+      if (currentUser) {
+        getPersonalMessage(type, currentUser);
+        if (read) {
+          messageReadHandler(type, currentUser);
+        }
+      }
+    } else if (type === "group") {
+      if (currentGroup) {
+        getPersonalMessage(type, currentGroup);
+        if (read) {
+          messageReadHandler(type, currentGroup);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
     getPersonalChat();
+  }, [currentUser]);
+
+  useEffect(() => {
     groupChatMessageEvent();
+  }, [currentGroup]);
+
+  useEffect(() => {
+    setChatList([]);
+    setCurrentUser(userId);
+    setPreviousUser(currentUser);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
   }, [userId]);
+
+  useEffect(() => {
+    setChatList([]);
+    setCurrentGroup(userId);
+    setPreviousGroup(currentGroup);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
+  }, [userId]);
+
+  useEffect(() => {
+    fetchChatMessageHandler(true);
+  }, [currentUser, currentGroup, type]);
 
   return (
     <SafeAreaView style={[styles.container, { paddingBottom: Platform.OS === "ios" && keyboardHeight }]}>
-      <ChatHeader
-        name={name}
-        image={image}
-        navigation={navigation}
-        userId={userId}
-        imageAttachment={imageAttachment}
-        fileAttachment={fileAttachment}
-      />
+      <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
 
       <Flex
         flex={1}
@@ -251,15 +324,18 @@ const ChatRoom = () => {
             />
           )}
         />
-        {imageAttachment || fileAttachment ? (
+        {fileAttachment ? (
           <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
             <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
-              <Pressable onPress={imageAttachment ? () => setImageAttachment(null) : () => setFileAttachment(null)}>
+              <Pressable onPress={() => setFileAttachment(null)}>
                 <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
               </Pressable>
             </Flex>
-            {fileAttachment && <FileAttachment file={fileAttachment} setFile={setFileAttachment} />}
-            {imageAttachment && <ImageAttachment image={imageAttachment} setImage={setImageAttachment} />}
+            {fileAttachment.type === "image/jpg" ? (
+              <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
+            ) : (
+              <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
+            )}
           </Flex>
         ) : null}
       </Flex>
@@ -267,10 +343,24 @@ const ChatRoom = () => {
       <ChatInput
         userId={userId}
         type={type}
-        imageAttachment={imageAttachment}
         fileAttachment={fileAttachment}
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
+        sendMessage={sendMessage}
+        setFileAttachment={(file) => {
+          setFileAttachment(file);
+          setBandAttachment(null);
+          setBandAttachmentType(null);
+        }}
+        bandAttachment={bandAttachment}
+        setBandAttachment={setBandAttachment}
+        bandAttachmentType={bandAttachmentType}
+        setBandAttachmentType={(type) => {
+          setBandAttachmentType(type);
+          setFileAttachment(null);
+        }}
+        messageToReply={messageToReply}
+        setMessageToReply={setMessageToReply}
       />
     </SafeAreaView>
   );
