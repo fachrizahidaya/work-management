@@ -41,7 +41,7 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
             w={160}
             mt={8}
             trigger={(trigger) => {
-              return fileAttachment || imageAttachment ? null : (
+              return fileAttachment ? null : (
                 <Pressable {...trigger} mr={1}>
                   <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
                 </Pressable>
