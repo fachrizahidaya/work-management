@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
 import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, Clipboard } from "react-native";
 import { YouTubeEmbed, TwitterEmbed } from "react-social-media-embed";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -32,7 +32,6 @@ const FeedCardItem = ({
   setForceRerender,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
-  const [filteredContent, setFilteredContent] = useState(null);
 
   const navigation = useNavigation();
 
@@ -65,16 +64,59 @@ const FeedCardItem = ({
     let textStyle = styles.defaultText;
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("08") || item.includes("62")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("@") && item.includes(".com")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else {
+      textStyle = styles.defaultText;
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
     }
-    return (
-      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-        {item}{" "}
-      </Text>
-    );
   });
 
   const handleLinkPress = (url) => {
     Linking.openURL(url);
+  };
+
+  const handleEmailPress = (email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {

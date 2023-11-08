@@ -106,7 +106,6 @@ const FeedScreen = () => {
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
             loggedEmployeeName={userSelector?.name}
-            // onToggleLike={postLikeToggleHandler}
             postRefetchHandler={postRefetchHandler}
             postEndReachedHandler={postEndReachedHandler}
             postIsFetching={postIsFetching}
