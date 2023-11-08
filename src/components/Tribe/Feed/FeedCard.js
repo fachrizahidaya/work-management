@@ -9,20 +9,14 @@ import FeedComment from "./FeedComment/FeedComment";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../shared/ToastDialog";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/core";
-import { useCallback } from "react";
 
 const FeedCard = ({
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
   loggedEmployeeName,
-  onToggleLike,
   postRefetchHandler,
   postEndReachedHandler,
-
   hasBeenScrolled,
   setHasBeenScrolled,
   reload,
@@ -37,8 +31,6 @@ const FeedCard = ({
   const [forceRerender, setForceRerender] = useState(false);
 
   const toast = useToast();
-
-  const firstTimeRef = useRef(true);
 
   // Parameters for fetch comments
   const commentsFetchParameters = {
@@ -179,8 +171,6 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
-          refetchPost={refetchPost}
-          postRefetchHandler={postRefetchHandler}
           commentAddHandler={commentAddHandler}
           currentOffset={currentOffset}
           comment={comment}

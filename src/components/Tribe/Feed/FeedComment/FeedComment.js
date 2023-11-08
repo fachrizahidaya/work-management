@@ -5,7 +5,6 @@ import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
 import axiosInstance from "../../../../config/api";
-import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedComment = ({
   postId,
@@ -19,9 +18,7 @@ const FeedComment = ({
   setComments,
   handleOpen,
   handleClose,
-  postRefetchHandler,
   commentAddHandler,
-  refetchPost,
   refetchComment,
   commentEndReachedHandler,
   commentRefetchHandler,
