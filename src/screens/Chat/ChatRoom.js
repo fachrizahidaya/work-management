@@ -12,7 +12,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useSelector } from "react-redux";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex, Icon, Pressable } from "native-base";
+import { Flex, Icon, Pressable, Spinner } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 
 import ChatBubble from "../../components/Chat/ChatBubble/ChatBubble";
@@ -24,11 +24,14 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
+import { useFetch } from "../../hooks/useFetch";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
+  const [chatList2, setChatList2] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [reload, setReload] = useState(false);
   const [fileAttachment, setFileAttachment] = useState(null);
   const [previousUser, setPreviousUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -39,6 +42,7 @@ const ChatRoom = () => {
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -52,7 +56,12 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
 
-  const { name, userId, image, type, selectedUser, selectedGroup } = route.params;
+  const { name, userId, image, type } = route.params;
+
+  const chatMessageFetchParameters = {
+    offset: offset,
+    limit: 20,
+  };
 
   /**
    * Message delete dialog control
@@ -78,6 +87,7 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.type === "New") {
           setChatList((currentChats) => [...currentChats, event.data]);
+          // setChatList2((currentChats) => [...currentChats, event.data]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -97,6 +107,7 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.tye) {
           setChatList((prevState) => [...prevState, event.data]);
+          // setChatList2((prevState) => [...prevState, event.data]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -119,9 +130,10 @@ const ChatRoom = () => {
             limit: 20,
           },
         });
+
         setChatList((currentChats) => {
           if (currentChats.length !== currentChats.length + res.data.data.length) {
-            return [...res.data.data, ...currentChats];
+            return [...res?.data?.data, ...currentChats].reverse();
           } else {
             setHasMore(false);
             return currentChats;
@@ -132,6 +144,27 @@ const ChatRoom = () => {
         console.log(error);
       }
     }
+  };
+
+  const {
+    data: chatMessage,
+    refetch: refetchChatMessage,
+    isFetching: chatMessageIsFetching,
+  } = useFetch(
+    `/chat/${type}/${userId}/message`,
+    [reload, offset, currentUser, currentGroup, type],
+    chatMessageFetchParameters
+  );
+
+  const chatEndReachedHandler = () => {
+    if (chatList2.length !== chatList2.length + chatMessage?.data.length) {
+      setOffset(offset + 20);
+    }
+  };
+
+  const chatRefetchHandler = () => {
+    setOffset(0);
+    setReload(!reload);
   };
 
   /**
@@ -168,7 +201,8 @@ const ChatRoom = () => {
    * @param {*} chatMessageObj
    */
   const deleteChatFromChatMessages = (chatMessageObj) => {
-    setChatList((prevState) => {
+    // setChatList((prevState) => {
+    setChatList2((prevState) => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
       if (chatMessageObj.type === "Delete For Me") {
         prevState.splice(index, 1);
@@ -218,7 +252,10 @@ const ChatRoom = () => {
         return currentMessage?.user?.image;
       }
     },
-    [chatList]
+    [
+      chatList,
+      // chatList2,
+    ]
   );
 
   /**
@@ -242,7 +279,10 @@ const ChatRoom = () => {
         return currentMessage?.user?.name;
       }
     },
-    [chatList]
+    [
+      chatList,
+      // chatList2,
+    ]
   );
 
   /**
@@ -263,7 +303,10 @@ const ChatRoom = () => {
         return false;
       }
     },
-    [chatList]
+    [
+      chatList,
+      // chatList2,
+    ]
   );
 
   /**
@@ -392,6 +435,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     setChatList([]);
+    // setChatList2([]);
     setCurrentUser(userId);
     setPreviousUser(currentUser);
     setHasMore(true);
@@ -401,6 +445,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     setChatList([]);
+    // setChatList2([]);
     setCurrentGroup(userId);
     setPreviousGroup(currentGroup);
     setHasMore(true);
@@ -411,6 +456,16 @@ const ChatRoom = () => {
   useEffect(() => {
     fetchChatMessageHandler(true);
   }, [currentUser, currentGroup, type]);
+
+  useEffect(() => {
+    if (chatMessage?.data && chatMessageIsFetching === false) {
+      if (offset === 0) {
+        setChatList2(chatMessage?.data);
+      } else {
+        setChatList2((prevData) => [...chatMessage?.data, ...prevData]);
+      }
+    }
+  }, [chatMessageIsFetching, reload]);
 
   useEffect(() => {
     const { routes } = navigation.getState();
@@ -424,35 +479,48 @@ const ChatRoom = () => {
     <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
       <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
 
-      <Flex
-        flex={1}
-        bg="#FAFAFA"
-        paddingX={2}
-        position="relative"
-        // style={{ display: "flex", flexDirection: "column-reverse" }}
-      >
+      <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
         <FlashList
-          // inverted
+          inverted // scroll to top to load older message
+          // ListFooterComponent={<Spinner size="lg" />}
           keyExtractor={(item, index) => index}
+          onScrollBeginDrag={() => setHasBeenScrolled(true)}
           onEndReachedThreshold={0.1}
-          // onEndReached={getPersonalMessage}
           estimatedItemSize={200}
-          data={chatList}
+          data={
+            chatList
+            // chatList2
+          }
           renderItem={({ item, index }) => (
             <ChatBubble
               index={index}
               chat={item}
-              image={userImageRenderCheck(item, chatList[index + 1])}
-              name={userNameRenderCheck(chatList[index - 1], item)}
+              image={userImageRenderCheck(
+                item,
+                chatList[index - 1]
+                // chatList2[index + 1]
+              )}
+              name={userNameRenderCheck(
+                chatList[index + 1],
+                // chatList2[index - 1],
+                item
+              )}
               fromUserId={item.from_user_id}
               id={item.id}
               content={item.message}
               type={type}
               time={item.created_time}
-              chatList={chatList}
+              chatList={
+                chatList
+                // chatList2
+              }
               onMessageReply={setMessageToReply}
               onMessageDelete={deleteMessageDialogOpenHandler}
-              isGrouped={messageIsGrouped(item, chatList[index + 1])}
+              isGrouped={messageIsGrouped(
+                item,
+                chatList[index - 1]
+                // chatList2[index + 1]
+              )}
             />
           )}
         />

@@ -105,28 +105,18 @@ const ChatBubble = ({
 
   return (
     <>
+      {chatList[index + 1] ? (
+        !dayjs(chat?.created_at).isSame(dayjs(chatList[index + 1]?.created_at), "date") ? (
+          <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
+        ) : (
+          ""
+        )
+      ) : (
+        <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
+      )}
       <Box>
-        <>
-          {/* {chatList.map((item, index) => {
-            return (
-              <> */}
-          {chat[index - 1] ? (
-            !dayjs(chat?.created_at).isSame(dayjs(chat[index - 1]?.created_at), "date") ? (
-              <>
-                <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
-              </>
-            ) : (
-              ""
-            )
-          ) : (
-            <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
-          )}
-          {/* </>
-            );
-          })} */}
-        </>
-
-        <Flex alignItems="center" my={3} gap={1} flexDirection={!myMessage ? "row" : "row-reverse"}>
+        {/* {isGrouped} */}
+        <Flex alignItems="center" my={1} gap={1} flexDirection={!myMessage ? "row" : "row-reverse"}>
           {type === "group" && !myMessage && image ? (
             <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
           ) : type === "group" && !myMessage ? (
@@ -145,9 +135,7 @@ const ChatBubble = ({
               // borderWidth={!myMessage ? 1 : 0}
               // borderColor={!myMessage && "#E8E9EB"}
             >
-              {type === "group" && name && !myMessage && (
-                <Text color={!myMessage ? "primary.600" : "white"}>{name}</Text>
-              )}
+              {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
               {typeof content === "number" ? (
                 <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
               ) : (
@@ -163,20 +151,21 @@ const ChatBubble = ({
               </Text>
             </Flex>
           </Flex>
+          {!isGrouped && (
+            <Box
+              position="absolute"
+              bottom={0}
+              left={0}
+              width={15}
+              height={10}
+              backgroundColor="#FFFFFF"
+              borderBottomRadius={50}
+              borderWidth={1}
+              style={{ transform: [{ rotate: "180deg" }] }}
+              zIndex={-1}
+            ></Box>
+          )}
         </Flex>
-        {!isGrouped && (
-          <Box
-            position="absolute"
-            bottom={0}
-            left={0}
-            width={15}
-            height={10}
-            backgroundColor="#FFFFFF"
-            borderBottomRadius={50}
-            // style={{ transform: "rotate: 180deg" }}
-            zIndex={-1}
-          ></Box>
-        )}
       </Box>
     </>
   );
