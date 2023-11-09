@@ -158,9 +158,8 @@ const ChatBubble = ({
               left={0}
               width={15}
               height={10}
-              backgroundColor="#FFFFFF"
+              backgroundColor={!myMessage ? "#FFFFFF" : "primary.600"}
               borderBottomRadius={50}
-              borderWidth={1}
               style={{ transform: [{ rotate: "180deg" }] }}
               zIndex={-1}
             ></Box>
