@@ -22,7 +22,7 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
   };
 
   return (
-    <Flex p={4}>
+    <Flex p={4} borderBottomWidth={1} borderColor="#E8E9EB">
       {group ? (
         <>
           <HStack justifyContent="space-between">
