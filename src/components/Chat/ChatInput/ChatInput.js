@@ -105,9 +105,9 @@ const ChatInput = ({
 
   return (
     <>
-      <FormControl borderTopWidth={1} borderColor="#E8E9EB" px={2}>
+      <FormControl justifyContent="center" borderTopWidth={1} borderColor="#E8E9EB" px={2}>
         <Input
-          h={70}
+          h={60}
           size="xl"
           variant="unstyled"
           placeholder="Type a message..."
@@ -115,7 +115,7 @@ const ChatInput = ({
           value={formik.values.message}
           onChangeText={(value) => formik.setFieldValue("message", value)}
           InputLeftElement={
-            <Flex direction="row" justifyContent="space-between" px={2} gap={4}>
+            <Flex direction="row" justifyContent="space-between" px={2}>
               <Menu
                 w={160}
                 mb={7}
