@@ -1,14 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
+import RenderHtml from "react-native-render-html";
 import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
 
-const ContactListItem = ({ type, id, name, image, message, isDeleted, fileName, project, task }) => {
-  const [forceRerendered, setForceRerendered] = useState(false);
+const ContactListItem = ({
+  type,
+  id,
+  name,
+  image,
+  message,
+  isDeleted,
+  fileName,
+  project,
+  task,
+  time,
+  timestamp,
+  searchKeyword,
+}) => {
   const navigation = useNavigation();
+
+  const boldMatchCharacters = (sentence = "", characters = "") => {
+    const regex = new RegExp(characters, "gi");
+    return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
+  };
+
+  const renderName = () => {
+    return boldMatchCharacters(name, searchKeyword);
+  };
 
   const generateIcon = () => {
     let iconName = "";
@@ -71,11 +94,24 @@ const ContactListItem = ({ type, id, name, image, message, isDeleted, fileName, 
       }}
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-        <Flex flexDir="row" gap={4} alignItems="center">
+        <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
           <AvatarPlaceholder name={name} image={image} size="md" />
 
-          <Box>
-            <Text fontSize={16}>{name}</Text>
+          <Box flex={1}>
+            <HStack justifyContent="space-between">
+              {!searchKeyword ? (
+                <Text>{name}</Text>
+              ) : (
+                <RenderHtml
+                  contentWidth={400}
+                  source={{
+                    html: renderName(),
+                  }}
+                />
+              )}
+
+              <ChatTimeStamp time={time} timestamp={timestamp} />
+            </HStack>
 
             <Flex flexDir="row" alignItems="center" gap={1}>
               {!isDeleted ? (
