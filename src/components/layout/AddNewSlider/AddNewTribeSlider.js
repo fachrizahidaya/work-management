@@ -65,14 +65,12 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
               />
             );
           },
-          placement: "top",
         });
       } else {
         toast.show({
           render: ({ id }) => {
             return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
           },
-          placement: "top",
         });
       }
     } catch (err) {
@@ -81,7 +79,6 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         render: ({ id }) => {
           return <ErrorToast message={`You're not connected to the proper connection`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };
