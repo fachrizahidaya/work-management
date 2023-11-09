@@ -88,8 +88,6 @@ const ChatListScreen = () => {
     });
   }, []);
 
-  console.log(searchResult);
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
