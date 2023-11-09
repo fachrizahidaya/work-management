@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
+import dayjs from "dayjs";
 
 import Pusher from "pusher-js/react-native";
 
@@ -54,9 +55,21 @@ const ChatRoom = () => {
   const { name, userId, image, type, selectedUser, selectedGroup } = route.params;
 
   /**
+   * Message delete dialog control
+   * @param {*} message
+   */
+  const deleteMessageDialogOpenHandler = (message) => {
+    setMessageToDelete(message);
+    setDeleteMessageDialogOpen(true);
+  };
+  const deleteMessageDialogCloseHandler = () => {
+    setDeleteMessageDialogOpen(true);
+  };
+
+  /**
    * Event listener for new personal chat messages
    */
-  const getPersonalChat = () => {
+  const personalChatMessageEvent = () => {
     if (userSelector?.id && previousUser) {
       laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${previousUser}`);
     }
@@ -65,6 +78,8 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.type === "New") {
           setChatList((currentChats) => [...currentChats, event.data]);
+        } else {
+          deleteChatFromChatMessages(event.data);
         }
       });
     }
@@ -82,6 +97,8 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.tye) {
           setChatList((prevState) => [...prevState, event.data]);
+        } else {
+          deleteChatFromChatMessages(event.data);
         }
       });
     }
@@ -93,7 +110,7 @@ const ChatRoom = () => {
    * @param {*} id
    * @param {*} setHasBeenScrolled
    */
-  const getPersonalMessage = async (type, id, setHasBeenScrolled) => {
+  const fetchChatMessage = async (type, id, setHasBeenScrolled) => {
     if (hasMore) {
       try {
         const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
@@ -129,6 +146,125 @@ const ChatRoom = () => {
       console.log(err);
     }
   };
+
+  /**
+   * Personal message delete handler
+   * @param {*} chat_message_id
+   * @param {*} delete_type
+   * @param {*} setIsLoading
+   */
+  const messagedeleteHandler = async (chat_message_id, delete_type, setIsLoading) => {
+    try {
+      const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Handle message delete event
+   * @param {*} chatMessageObj
+   */
+  const deleteChatFromChatMessages = (chatMessageObj) => {
+    setChatList((prevState) => {
+      const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
+      if (chatMessageObj.type === "Delete For Me") {
+        prevState.splice(index, 1);
+      } else if (chatMessageObj.type === "Delete for Everyone") {
+        prevState[index].delete_for_everyone = 1;
+        return [...prevState];
+      }
+    });
+  };
+
+  /**
+   * Handles submission of chat message
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const sendMessage = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (error) {
+      console.log(error);
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
+  /**
+   * Decide when user avatar should be rendered at
+   */
+  const userImageRenderCheck = useCallback(
+    (currentMessage, nextMessage) => {
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
+
+      if (nextMessage) {
+        if (currentMessage?.from_user_id !== nextMessage?.from_user_id) {
+          return currentMessage?.user?.image;
+        } else {
+          if (dayjs(currentMessageDate).isBefore(dayjs(nextMessageDate))) {
+            return currentMessage?.user?.image;
+          }
+          return;
+        }
+      } else {
+        return currentMessage?.user?.image;
+      }
+    },
+    [chatList]
+  );
+
+  /**
+   * Decide when username should be rendered at
+   */
+  const userNameRenderCheck = useCallback(
+    (prevMessage, currentMessage) => {
+      const prevMessageDate = dayjs(prevMessage?.created_at).format("YYYY-MM-DD");
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+
+      if (prevMessage) {
+        if (prevMessage?.from_user_id !== currentMessage?.from_user_id) {
+          return currentMessage?.user?.name;
+        } else {
+          if (dayjs(prevMessageDate).isBefore(dayjs(currentMessageDate))) {
+            return currentMessage?.user?.name;
+          }
+          return;
+        }
+      } else {
+        return currentMessage?.user?.name;
+      }
+    },
+    [chatList]
+  );
+
+  /**
+   * Decide when messages should be grouped closer together or not
+   */
+  const messageIsGrouped = useCallback(
+    (currentMessage, nextMessage) => {
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
+
+      if (
+        nextMessage &&
+        currentMessage?.from_user_id == nextMessage?.from_user_id &&
+        dayjs(currentMessageDate).isSame(dayjs(nextMessageDate))
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [chatList]
+  );
 
   /**
    * Pick an image Handler
@@ -220,24 +356,6 @@ const ChatRoom = () => {
   //   }
   // };
 
-  /**
-   * Handles submission of chat message
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const sendMessage = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/chat/${type}/message`, form);
-      setSubmitting(false);
-      setStatus("success");
-    } catch (error) {
-      console.log(error);
-      setSubmitting(false);
-      setStatus("error");
-    }
-  };
-
   const clearAdditionalContentActionState = () => {
     setFileAttachment(null);
     setBandAttachment(null);
@@ -249,14 +367,14 @@ const ChatRoom = () => {
   const fetchChatMessageHandler = (read) => {
     if (type === "personal") {
       if (currentUser) {
-        getPersonalMessage(type, currentUser);
+        fetchChatMessage(type, currentUser);
         if (read) {
           messageReadHandler(type, currentUser);
         }
       }
     } else if (type === "group") {
       if (currentGroup) {
-        getPersonalMessage(type, currentGroup);
+        fetchChatMessage(type, currentGroup);
         if (read) {
           messageReadHandler(type, currentGroup);
         }
@@ -265,7 +383,7 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {
-    getPersonalChat();
+    personalChatMessageEvent();
   }, [currentUser]);
 
   useEffect(() => {
@@ -294,8 +412,16 @@ const ChatRoom = () => {
     fetchChatMessageHandler(true);
   }, [currentUser, currentGroup, type]);
 
+  useEffect(() => {
+    const { routes } = navigation.getState();
+    const filteredRoutes = routes.filter(
+      (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
+    );
+    navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
+  }, []);
+
   return (
-    <SafeAreaView style={[styles.container, { paddingBottom: Platform.OS === "ios" && keyboardHeight }]}>
+    <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
       <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
 
       <Flex
@@ -312,15 +438,21 @@ const ChatRoom = () => {
           // onEndReached={getPersonalMessage}
           estimatedItemSize={200}
           data={chatList}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <ChatBubble
+              index={index}
               chat={item}
-              image={image}
-              name={name}
+              image={userImageRenderCheck(item, chatList[index + 1])}
+              name={userNameRenderCheck(chatList[index - 1], item)}
               fromUserId={item.from_user_id}
               id={item.id}
               content={item.message}
+              type={type}
               time={item.created_time}
+              chatList={chatList}
+              onMessageReply={setMessageToReply}
+              onMessageDelete={deleteMessageDialogOpenHandler}
+              isGrouped={messageIsGrouped(item, chatList[index + 1])}
             />
           )}
         />

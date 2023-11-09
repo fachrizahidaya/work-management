@@ -1,14 +1,60 @@
+import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 import { Linking, StyleSheet } from "react-native";
-import { Flex, Text } from "native-base";
+import { Box, Flex, Text } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 
-const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
+const ChatBubble = ({
+  chat,
+  image,
+  name,
+  fromUserId,
+  id,
+  content,
+  time,
+  onMessageDelete,
+  onMessageReply,
+  chatList,
+  type,
+  isGrouped,
+  index,
+}) => {
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector.id === fromUserId;
+
+  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
+  const imgTypes = ["jpg", "jpeg", "png"];
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setMenuOpen(false);
+  };
+
+  /**
+   * Handle delete message click from context menu
+   */
+  const messagDeleteHandler = () => {
+    if (selectedMessage) {
+      onMessageDelete(selectedMessage);
+      handleClose();
+    }
+  };
+
+  const messageReplyHandler = () => {
+    if (selectedMessage) {
+      onMessageReply(selectedMessage);
+      handleClose();
+    }
+  };
 
   if (typeof content !== "number" || content.length > 1) {
     const words = content?.split(" ");
@@ -58,40 +104,81 @@ const ChatBubble = ({ chat, image, name, fromUserId, id, content, time }) => {
   };
 
   return (
-    <Flex m={2} flexDirection={!myMessage ? "row" : "row-reverse"}>
-      {!myMessage && <AvatarPlaceholder name={name} image={chat.user?.image} size="md" isThumb={false} />}
-
-      <Flex flexDirection={!myMessage ? "row" : "row-reverse"}>
-        <Flex
-          borderRadius={15}
-          py={2}
-          px={4}
-          bgColor={!myMessage ? "white" : "primary.600"}
-          maxW={280}
-          flexDirection={name !== chat.user?.name && !myMessage ? "column" : "row"}
-          justifyContent="center"
-          // borderWidth={!myMessage ? 1 : 0}
-          // borderColor={!myMessage && "#E8E9EB"}
-        >
-          {name !== chat.user?.name && !myMessage && (
-            <Text color={!myMessage ? "primary.600" : "white"}>{chat.user?.name}</Text>
-          )}
-          {typeof content === "number" ? (
-            <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
+    <>
+      <Box>
+        <>
+          {/* {chatList.map((item, index) => {
+            return (
+              <> */}
+          {chat[index - 1] ? (
+            !dayjs(chat?.created_at).isSame(dayjs(chat[index - 1]?.created_at), "date") ? (
+              <>
+                <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
+              </>
+            ) : (
+              ""
+            )
           ) : (
-            <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+            <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
           )}
-          <Text
-            mt={name !== chat.user?.name && !myMessage ? null : 2.5}
-            alignSelf="flex-end"
-            fontSize={10}
-            color="#578A90"
-          >
-            {time}
-          </Text>
+          {/* </>
+            );
+          })} */}
+        </>
+
+        <Flex alignItems="center" my={3} gap={1} flexDirection={!myMessage ? "row" : "row-reverse"}>
+          {type === "group" && !myMessage && image ? (
+            <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
+          ) : type === "group" && !myMessage ? (
+            <Box ml={8}></Box>
+          ) : null}
+
+          <Flex flexDirection={!myMessage ? "row" : "row-reverse"}>
+            <Flex
+              borderRadius={10}
+              py={2}
+              px={4}
+              bgColor={!myMessage ? "white" : "primary.600"}
+              maxW={280}
+              flexDirection={type === "group" && name && !myMessage ? "column" : "row"}
+              justifyContent="center"
+              // borderWidth={!myMessage ? 1 : 0}
+              // borderColor={!myMessage && "#E8E9EB"}
+            >
+              {type === "group" && name && !myMessage && (
+                <Text color={!myMessage ? "primary.600" : "white"}>{name}</Text>
+              )}
+              {typeof content === "number" ? (
+                <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
+              ) : (
+                <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+              )}
+              <Text
+                mt={type === "group" && name && !myMessage ? null : 2.5}
+                alignSelf="flex-end"
+                fontSize={10}
+                color="#578A90"
+              >
+                {time}
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
-      </Flex>
-    </Flex>
+        {!isGrouped && (
+          <Box
+            position="absolute"
+            bottom={0}
+            left={0}
+            width={15}
+            height={10}
+            backgroundColor="#FFFFFF"
+            borderBottomRadius={50}
+            // style={{ transform: "rotate: 180deg" }}
+            zIndex={-1}
+          ></Box>
+        )}
+      </Box>
+    </>
   );
 };
 

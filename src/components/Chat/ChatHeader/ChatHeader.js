@@ -36,7 +36,7 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
           </Box>
         </Flex>
 
-        <Flex direction="row" alignItems="center" gap={4}>
+        <Flex direction="row" alignItems="center">
           <Menu
             w={160}
             mt={8}
