@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { Button, FormControl, Icon, Input, Modal, Select, Spinner, Text, VStack } from "native-base";
+import { Button, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -66,6 +66,10 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
               // pb={keyboardHeight}
             >
               <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Clock-in Time</FormControl.Label>
+                  <Text>{date?.timeIn}</Text>
+                </FormControl>
                 <FormControl isInvalid={formik.errors.late_type}>
                   <FormControl.Label>Late Type</FormControl.Label>
                 </FormControl>
@@ -86,8 +90,8 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                   <FormControl.ErrorMessage>{formik.errors.late_type}</FormControl.ErrorMessage>
                 </FormControl>
 
-                <FormControl.Label>Reason</FormControl.Label>
                 <FormControl isInvalid={formik.errors.late_reason}>
+                  <FormControl.Label>Reason</FormControl.Label>
                   <Input
                     variant="outline"
                     placeholder="Enter your reason"
@@ -110,6 +114,10 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
               // pb={keyboardHeight}
             >
               <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Clock-out Time</FormControl.Label>
+                  <Text>{date?.timeOut}</Text>
+                </FormControl>
                 <FormControl isInvalid={formik.errors.early_type}>
                   <FormControl.Label>Early Type</FormControl.Label>
                 </FormControl>
@@ -129,9 +137,9 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
                 <FormControl mt={-2} isInvalid={formik.errors.early_type}>
                   <FormControl.ErrorMessage>{formik.errors.early_type}</FormControl.ErrorMessage>
                 </FormControl>
-                <FormControl.Label>Reason</FormControl.Label>
 
                 <FormControl isInvalid={formik.errors.early_reason}>
+                  <FormControl.Label>Reason</FormControl.Label>
                   <Input
                     variant="outline"
                     placeholder="Enter your reason"
@@ -150,6 +158,10 @@ const AttendanceModal = ({ reportIsOpen, toggleReport, date, formik }) => {
           <Modal.Body>
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Clock-in Time</FormControl.Label>
+                  <Text>{date?.timeIn}</Text>
+                </FormControl>
                 <FormControl>
                   <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
                   {/* <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text> */}
