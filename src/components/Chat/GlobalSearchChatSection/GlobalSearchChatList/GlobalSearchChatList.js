@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import RenderHtml from "react-native-render-html";
 import { Box, Flex, HStack, Text, VStack } from "native-base";
 import { Dimensions } from "react-native";
-import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+
+import ChatTimeStamp from "../../ChatTimeStamp/ChatTimeStamp";
 
 const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
   const { width } = Dimensions.get("screen");

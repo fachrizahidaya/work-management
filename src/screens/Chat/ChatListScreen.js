@@ -12,7 +12,8 @@ import axiosInstance from "../../config/api";
 import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import GlobalSearchChatList from "../../components/Chat/GlobalSearchChatList/GlobalSearchChatList";
+import GlobalSearchChatList from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatList/GlobalSearchChatList";
+import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
@@ -101,10 +102,9 @@ const ChatListScreen = () => {
           searchResult={searchResult?.personal}
         />
 
-        {searchResult?.message?.length > 0 &&
-          searchResult.message.map((chat) => {
-            return <GlobalSearchChatList key={chat.id} chat={chat} searchKeyword={globalKeyword} group={chat?.group} />;
-          })}
+        {searchResult?.message?.length > 0 && (
+          <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

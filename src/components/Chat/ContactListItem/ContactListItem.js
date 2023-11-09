@@ -95,7 +95,7 @@ const ContactListItem = ({
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
         <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
-          <AvatarPlaceholder name={name} image={image} size="md" />
+          <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
           <Box flex={1}>
             <HStack justifyContent="space-between">
