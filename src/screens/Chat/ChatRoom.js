@@ -55,11 +55,6 @@ const ChatRoom = () => {
 
   const { name, userId, image, type } = route.params;
 
-  const chatMessageFetchParameters = {
-    offset: offset,
-    limit: 20,
-  };
-
   /**
    * Message delete dialog control
    * @param {*} message
@@ -73,16 +68,6 @@ const ChatRoom = () => {
   };
 
   /**
-   * Trigger scroll to bottom for chat box
-   */
-  const scrollToBottom = () => {
-    var chatBoxListElement = document.getElementById("chatBoxList");
-    if (chatBoxListElement) {
-      chatBoxListElement.scrollTop = chatBoxListElement.scrollHeight + 20;
-    }
-  };
-
-  /**
    * Event listener for new personal chat messages
    */
   const personalChatMessageEvent = () => {
@@ -93,7 +78,7 @@ const ChatRoom = () => {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
         console.log(event);
         if (event.data.type === "New") {
-          setChatList((currentChats) => [...currentChats, event.data]);
+          setChatList((prevState) => [...prevState, event.data]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -152,6 +137,24 @@ const ChatRoom = () => {
   };
 
   /**
+   * Handles submission of chat message
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const sendMessage = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (error) {
+      console.log(error);
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
+  /**
    * Set all messages to read after opening up the chat
    * @param {*} type
    * @param {*} id
@@ -194,24 +197,6 @@ const ChatRoom = () => {
         return [...prevState];
       }
     });
-  };
-
-  /**
-   * Handles submission of chat message
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const sendMessage = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/chat/${type}/message`, form);
-      setSubmitting(false);
-      setStatus("success");
-    } catch (error) {
-      console.log(error);
-      setSubmitting(false);
-      setStatus("error");
-    }
   };
 
   /**
@@ -441,7 +426,7 @@ const ChatRoom = () => {
     <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
       <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
 
-      <Flex id="chatBoxList" flex={1} bg="#FAFAFA" paddingX={2} position="relative">
+      <Flex flex={1} bg="#FAFAFA" paddingX={3} position="relative">
         <FlashList
           // inverted
           keyExtractor={(item, index) => index}

@@ -24,7 +24,6 @@ const ChatInput = ({
   setMessageToReply,
 }) => {
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       to_user_id: userId || "",
       group_id: userId || "",
@@ -38,9 +37,7 @@ const ChatInput = ({
       task_no: "",
       task_title: "",
     },
-    validationSchema: yup.object().shape({
-      message: yup.string().required("Message can't be empty"),
-    }),
+
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       if (
         formik.values.message !== "" ||
@@ -50,16 +47,15 @@ const ChatInput = ({
       ) {
         const formData = new FormData();
         for (let key in values) {
-          if (values[key] !== "") {
-            formData.append(key, values[key]);
-          }
+          formData.append(key, values[key]);
         }
         formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
+
         setStatus("processing");
         // if (type === "personal") {
-        // formData.delete("group_id");
+        //   formData.delete("group_id");
         // } else {
-        // formData.delete("to_user_id");
+        //   formData.delete("to_user_id");
         // }
         sendMessage(values, setSubmitting, setStatus);
         resetForm();
@@ -69,6 +65,7 @@ const ChatInput = ({
         setMessageToReply(null);
       }
     },
+    enableReinitialize: true,
   });
 
   const bandAttachmentSelectHandler = (attachment) => {
