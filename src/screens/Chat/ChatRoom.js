@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
+import dayjs from "dayjs";
 
 import Pusher from "pusher-js/react-native";
 
@@ -11,7 +12,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useSelector } from "react-redux";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex, Icon, Pressable } from "native-base";
+import { Flex, Icon, Pressable, Spinner } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 
 import ChatBubble from "../../components/Chat/ChatBubble/ChatBubble";
@@ -23,97 +24,264 @@ import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
+import { useFetch } from "../../hooks/useFetch";
 
 const ChatRoom = () => {
-  const [imageAttachment, setImageAttachment] = useState(null);
-  const [fileAttachment, setFileAttachment] = useState(null);
-  const [chatMessages, setChatMessages] = useState([]);
-  window.Pusher = Pusher;
-  const route = useRoute();
-  const { name, userId, image, type } = route.params;
-  const navigation = useNavigation();
-  const userSelector = useSelector((state) => state.auth);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const [chatList, setChatList] = useState([]);
-  const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [fileAttachment, setFileAttachment] = useState(null);
+  const [previousUser, setPreviousUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentGroup, setCurrentGroup] = useState(null);
+  const [previousGroup, setPreviousGroup] = useState(null);
+  const [bandAttachment, setBandAttachment] = useState(null);
+  const [bandAttachmentType, setBandAttachmentType] = useState(null);
+  const [messageToReply, setMessageToReply] = useState(null);
+  const [messageToDelete, setMessageToDelete] = useState(null);
+  const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+
+  window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
-  const { isOpen: attachmentIsOpen, toggle: toggleAttachment } = useDisclosure(false);
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
+  const userSelector = useSelector((state) => state.auth);
+
+  const route = useRoute();
+
+  const navigation = useNavigation();
+
+  const { name, userId, image, type } = route.params;
+
+  const chatMessageFetchParameters = {
+    offset: offset,
+    limit: 20,
+  };
+
+  /**
+   * Message delete dialog control
+   * @param {*} message
+   */
+  const deleteMessageDialogOpenHandler = (message) => {
+    setMessageToDelete(message);
+    setDeleteMessageDialogOpen(true);
+  };
+  const deleteMessageDialogCloseHandler = () => {
+    setDeleteMessageDialogOpen(true);
+  };
+
+  /**
+   * Trigger scroll to bottom for chat box
+   */
+  const scrollToBottom = () => {
+    var chatBoxListElement = document.getElementById("chatBoxList");
+    if (chatBoxListElement) {
+      chatBoxListElement.scrollTop = chatBoxListElement.scrollHeight + 20;
+    }
+  };
 
   /**
    * Event listener for new personal chat messages
    */
-  const getPersonalChat = () => {
-    laravelEcho.channel(`personal.chat.${userSelector.id}.${userId}`).listen(".personal.chat", (event) => {
-      setChatList((currentChats) => [...currentChats, event.data]);
-    });
+  const personalChatMessageEvent = () => {
+    if (userSelector?.id && previousUser) {
+      laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${previousUser}`);
+    }
+    if (userSelector?.id && currentUser) {
+      laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
+        console.log(event);
+        if (event.data.type === "New") {
+          setChatList((currentChats) => [...currentChats, event.data]);
+        } else {
+          deleteChatFromChatMessages(event.data);
+        }
+      });
+    }
   };
 
   /**
    * Event listener for new group chat messages
    */
   const groupChatMessageEvent = () => {
-    laravelEcho.channel(`group.chat.${userId}`).listen(".group.chat", (event) => {
-      setChatMessages((prevState) => [...prevState, event.data]);
+    if (userSelector?.id && previousGroup) {
+      laravelEcho.leaveChannel(`group.chat.${previousGroup}`);
+    }
+    if (userSelector?.id && currentGroup) {
+      laravelEcho.channel(`group.chat.${currentGroup}`).listen(".group.chat", (event) => {
+        console.log(event);
+        if (event.data.tye) {
+          setChatList((prevState) => [...prevState, event.data]);
+        } else {
+          deleteChatFromChatMessages(event.data);
+        }
+      });
+    }
+  };
+
+  /**
+   * Fetch Chat Messages
+   * @param {*} type
+   * @param {*} id
+   * @param {*} setHasBeenScrolled
+   */
+  const fetchChatMessage = async (type, id, setHasBeenScrolled) => {
+    if (hasMore) {
+      try {
+        const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
+          params: {
+            offset: offset,
+            limit: 20,
+          },
+        });
+
+        setChatList((currentChats) => {
+          if (currentChats.length !== currentChats.length + res.data.data.length) {
+            return [...res?.data?.data, ...currentChats];
+          } else {
+            setHasMore(false);
+            return currentChats;
+          }
+        });
+        setOffset((prevState) => prevState + 20);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  /**
+   * Set all messages to read after opening up the chat
+   * @param {*} type
+   * @param {*} id
+   */
+  const messageReadHandler = async (type, id) => {
+    try {
+      await axiosInstance.get(`/chat/${type}/${id}/read-message`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Personal message delete handler
+   * @param {*} chat_message_id
+   * @param {*} delete_type
+   * @param {*} setIsLoading
+   */
+  const messagedeleteHandler = async (chat_message_id, delete_type, setIsLoading) => {
+    try {
+      const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Handle message delete event
+   * @param {*} chatMessageObj
+   */
+  const deleteChatFromChatMessages = (chatMessageObj) => {
+    setChatList((prevState) => {
+      const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
+      if (chatMessageObj.type === "Delete For Me") {
+        prevState.splice(index, 1);
+      } else if (chatMessageObj.type === "Delete for Everyone") {
+        prevState[index].delete_for_everyone = 1;
+        return [...prevState];
+      }
     });
   };
 
   /**
-   * Fetch personal chat messages
+   * Handles submission of chat message
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
    */
-  const getPersonalMessage = async () => {
+  const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
-      if (hasMore) {
-        const res = await axiosInstance.get(`/chat/${type}/${userId}/message`, {
-          params: {
-            offset: offset,
-            limit: 20,
-          },
-        });
-        setChatList((currentChats) => [...res.data.data, ...currentChats]);
-        // setChatList((currentChats) => {
-        //   if (currentChats.length !== currentChats.length + res.data.data.length) {
-        //     return [...res.data.data, ...currentChats];
-        //   } else {
-        //     setHasMore(false);
-        //     return currentChats;
-        //   }
-        // });
-        // setOffset((prevState) => prevState + 20);
-      }
+      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      setSubmitting(false);
+      setStatus("success");
     } catch (error) {
       console.log(error);
+      setSubmitting(false);
+      setStatus("error");
     }
   };
 
   /**
-   * Fetch group chat messages
+   * Decide when user avatar should be rendered at
    */
-  const fetchGroupChatMessages = async () => {
-    if (hasMore) {
-      try {
-        const res = await axiosInstance.get(`/chat/${type}/${userId}/message`, {
-          params: {
-            offset: offset,
-            limit: 20,
-          },
-        });
-        setChatMessages((currentChats) => [...res.data.data, ...currentChats]);
+  const userImageRenderCheck = useCallback(
+    (currentMessage, nextMessage) => {
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
 
-        // setChatMessages((prevState) => {
-        //   if (prevState.length !== prevState.length + res.data.data.length) {
-        //     return [...res.data.data, ...prevState];
-        //   } else {
-        //     setHasMore(false);
-        //     return prevState;
-        //   }
-        // });
-        // setOffset((prevState) => prevState + 20);
-      } catch (err) {
-        console.log(err);
+      if (nextMessage) {
+        if (currentMessage?.from_user_id !== nextMessage?.from_user_id) {
+          return currentMessage?.user?.image;
+        } else {
+          if (dayjs(currentMessageDate).isBefore(dayjs(nextMessageDate))) {
+            return currentMessage?.user?.image;
+          }
+          return;
+        }
+      } else {
+        return currentMessage?.user?.image;
       }
-    }
-  };
+    },
+    [chatList]
+  );
+
+  /**
+   * Decide when username should be rendered at
+   */
+  const userNameRenderCheck = useCallback(
+    (prevMessage, currentMessage) => {
+      const prevMessageDate = dayjs(prevMessage?.created_at).format("YYYY-MM-DD");
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+
+      if (prevMessage) {
+        if (prevMessage?.from_user_id !== currentMessage?.from_user_id) {
+          return currentMessage?.user?.name;
+        } else {
+          if (dayjs(prevMessageDate).isBefore(dayjs(currentMessageDate))) {
+            return currentMessage?.user?.name;
+          }
+          return;
+        }
+      } else {
+        return currentMessage?.user?.name;
+      }
+    },
+    [chatList]
+  );
+
+  /**
+   * Decide when messages should be grouped closer together or not
+   */
+  const messageIsGrouped = useCallback(
+    (currentMessage, nextMessage) => {
+      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
+      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
+
+      if (
+        nextMessage &&
+        currentMessage?.from_user_id == nextMessage?.from_user_id &&
+        dayjs(currentMessageDate).isSame(dayjs(nextMessageDate))
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [chatList]
+  );
 
   /**
    * Pick an image Handler
@@ -135,7 +303,7 @@ const ChatRoom = () => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (result) {
-      setImageAttachment({
+      setFileAttachment({
         name: filename,
         size: fileInfo.size,
         type: `${result.assets[0].type}/jpg`,
@@ -144,34 +312,6 @@ const ChatRoom = () => {
       });
     }
   };
-
-  // const handleUploadFile = async (formData) => {
-  //   try {
-  //     // Sending the formData to backend
-  //     await axiosInstance.post("/pm/projects/attachment", formData, {
-  //       headers: {
-  //         "content-type": "multipart/form-data",
-  //       },
-  //     });
-  //     // Refetch project's attachments
-  //     refetchAttachments();
-
-  //     // Display toast if success
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     // Display toast if error
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   }
-  // };
 
   /**
    * Select file handler
@@ -205,61 +345,140 @@ const ChatRoom = () => {
     }
   };
 
-  useEffect(() => {
-    if (userId) {
-      getPersonalMessage();
-      fetchGroupChatMessages();
+  // const handleUploadFile = async (formData) => {
+  //   try {
+  //     // Sending the formData to backend
+  //     await axiosInstance.post("/pm/projects/attachment", formData, {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     });
+  //     // Refetch project's attachments
+  //     refetchAttachments();
+
+  //     // Display toast if success
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     // Display toast if error
+  //     toast.show({
+  //       render: ({ id }) => {
+  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+  //       },
+  //     });
+  //   }
+  // };
+
+  const clearAdditionalContentActionState = () => {
+    setFileAttachment(null);
+    setBandAttachment(null);
+    setBandAttachmentType(null);
+    setMessageToReply(null);
+    setMessageToDelete(null);
+  };
+
+  const fetchChatMessageHandler = (read) => {
+    if (type === "personal") {
+      if (currentUser) {
+        fetchChatMessage(type, currentUser);
+        if (read) {
+          messageReadHandler(type, currentUser);
+        }
+      }
+    } else if (type === "group") {
+      if (currentGroup) {
+        fetchChatMessage(type, currentGroup);
+        if (read) {
+          messageReadHandler(type, currentGroup);
+        }
+      }
     }
-    getPersonalChat();
+  };
+
+  useEffect(() => {
+    personalChatMessageEvent();
+  }, [currentUser]);
+
+  useEffect(() => {
     groupChatMessageEvent();
+  }, [currentGroup]);
+
+  useEffect(() => {
+    setChatList([]);
+    setCurrentUser(userId);
+    setPreviousUser(currentUser);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
   }, [userId]);
 
-  return (
-    <SafeAreaView style={[styles.container, { paddingBottom: Platform.OS === "ios" && keyboardHeight }]}>
-      <ChatHeader
-        name={name}
-        image={image}
-        navigation={navigation}
-        userId={userId}
-        imageAttachment={imageAttachment}
-        fileAttachment={fileAttachment}
-      />
+  useEffect(() => {
+    setChatList([]);
+    setCurrentGroup(userId);
+    setPreviousGroup(currentGroup);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
+  }, [userId]);
 
-      <Flex
-        flex={1}
-        bg="#FAFAFA"
-        paddingX={2}
-        position="relative"
-        // style={{ display: "flex", flexDirection: "column-reverse" }}
-      >
+  useEffect(() => {
+    fetchChatMessageHandler(true);
+  }, [currentUser, currentGroup, type]);
+
+  useEffect(() => {
+    const { routes } = navigation.getState();
+    const filteredRoutes = routes.filter(
+      (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
+    );
+    navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
+  }, []);
+
+  return (
+    <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
+      <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
+
+      <Flex id="chatBoxList" flex={1} bg="#FAFAFA" paddingX={2} position="relative">
         <FlashList
           // inverted
           keyExtractor={(item, index) => index}
+          onScrollBeginDrag={() => setHasBeenScrolled(true)}
           onEndReachedThreshold={0.1}
-          // onEndReached={getPersonalMessage}
           estimatedItemSize={200}
           data={chatList}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <ChatBubble
+              index={index}
               chat={item}
-              image={image}
-              name={name}
+              image={userImageRenderCheck(item, chatList[index + 1])}
+              name={userNameRenderCheck(chatList[index - 1], item)}
               fromUserId={item.from_user_id}
               id={item.id}
               content={item.message}
+              type={type}
               time={item.created_time}
+              chatList={chatList}
+              onMessageReply={setMessageToReply}
+              onMessageDelete={deleteMessageDialogOpenHandler}
+              isGrouped={messageIsGrouped(item, chatList[index + 1])}
             />
           )}
         />
-        {imageAttachment || fileAttachment ? (
+        {fileAttachment ? (
           <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
             <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
-              <Pressable onPress={imageAttachment ? () => setImageAttachment(null) : () => setFileAttachment(null)}>
+              <Pressable onPress={() => setFileAttachment(null)}>
                 <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
               </Pressable>
             </Flex>
-            {fileAttachment && <FileAttachment file={fileAttachment} setFile={setFileAttachment} />}
-            {imageAttachment && <ImageAttachment image={imageAttachment} setImage={setImageAttachment} />}
+            {fileAttachment.type === "image/jpg" ? (
+              <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
+            ) : (
+              <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
+            )}
           </Flex>
         ) : null}
       </Flex>
@@ -267,10 +486,24 @@ const ChatRoom = () => {
       <ChatInput
         userId={userId}
         type={type}
-        imageAttachment={imageAttachment}
         fileAttachment={fileAttachment}
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
+        sendMessage={sendMessage}
+        setFileAttachment={(file) => {
+          setFileAttachment(file);
+          setBandAttachment(null);
+          setBandAttachmentType(null);
+        }}
+        bandAttachment={bandAttachment}
+        setBandAttachment={setBandAttachment}
+        bandAttachmentType={bandAttachmentType}
+        setBandAttachmentType={(type) => {
+          setBandAttachmentType(type);
+          setFileAttachment(null);
+        }}
+        messageToReply={messageToReply}
+        setMessageToReply={setMessageToReply}
       />
     </SafeAreaView>
   );

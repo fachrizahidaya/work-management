@@ -36,12 +36,12 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
           </Box>
         </Flex>
 
-        <Flex direction="row" alignItems="center" gap={4}>
+        <Flex direction="row" alignItems="center">
           <Menu
             w={160}
             mt={8}
             trigger={(trigger) => {
-              return fileAttachment || imageAttachment ? null : (
+              return fileAttachment ? null : (
                 <Pressable {...trigger} mr={1}>
                   <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
                 </Pressable>
@@ -101,7 +101,7 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
           }}
           variant="unstyled"
           size="md"
-          placeholder="Search contact"
+          placeholder="Search"
           borderRadius={15}
           borderWidth={1}
           height={10}
