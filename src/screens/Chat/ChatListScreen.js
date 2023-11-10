@@ -12,7 +12,6 @@ import axiosInstance from "../../config/api";
 import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import GlobalSearchChatList from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatList/GlobalSearchChatList";
 import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 
 const ChatListScreen = () => {
