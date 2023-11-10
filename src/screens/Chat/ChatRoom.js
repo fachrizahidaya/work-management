@@ -431,6 +431,7 @@ const ChatRoom = () => {
           // inverted
           keyExtractor={(item, index) => index}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
+          onEndReached={hasBeenScrolled ? () => fetchChatMessageHandler() : null}
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}
           data={chatList}

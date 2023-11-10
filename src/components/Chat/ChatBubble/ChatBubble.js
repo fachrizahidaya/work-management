@@ -142,9 +142,13 @@ const ChatBubble = ({
           >
             {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
             {typeof content === "number" ? (
-              <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
+              <Text fontWeight={10} color={!myMessage ? "#000000" : "white"}>
+                {content}
+              </Text>
             ) : (
-              <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+              <Text fontWeight={10} color={!myMessage ? "#000000" : "white"}>
+                {styledTexts}
+              </Text>
             )}
             <Text
               mt={type === "group" && name && !myMessage ? null : 2.5}
