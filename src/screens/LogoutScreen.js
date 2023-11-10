@@ -73,12 +73,15 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
+      const fbtoken = await SecureStore.getItemAsync("firebase_token");
+      await axiosInstance.post("/auth/logout", {
+        firebase_token: fbtoken,
+      });
 
-      await axiosInstance.post("/auth/logout");
-
-      // Delete user data and token from SecureStore
+      // Delete user data and tokens from SecureStore
       await SecureStore.deleteItemAsync("user_data");
       await SecureStore.deleteItemAsync("user_token");
+      await SecureStore.deleteItemAsync("firebase_token");
       // await signOut(auth);
 
       // Clear react query caches

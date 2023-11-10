@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>994028386897-itikuckthrbv49qe3sd9mskcnuto7ock.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.994028386897-itikuckthrbv49qe3sd9mskcnuto7ock</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>994028386897-4cpf51v45q0fpctv9v0vl0n5nievdnf7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB8MYOURlID7SHC2xA9_w8x0yoNkQeIpPE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>994028386897</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kolabora.kssmobileapp</string>
+	<key>PROJECT_ID</key>
+	<string>kolabora-auth</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kolabora-auth.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:994028386897:ios:0db10154200e0f972e1670</string>
+</dict>
+</plist>

@@ -1,167 +1,119 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
+
+import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Avatar, Box, Center, Flex, Icon, Image, Input, Pressable, Skeleton, Text } from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { SafeAreaView, StyleSheet } from "react-native";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
+import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import { useFetch } from "../../hooks/useFetch";
+import axiosInstance from "../../config/api";
+import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
+import GroupSection from "../../components/Chat/GroupSection/GroupSection";
+import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
+import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
+  const userSelector = useSelector((state) => state.auth);
+  const [personalChats, setPersonalChats] = useState([]);
+  const [groupChats, setGroupChats] = useState([]);
+  const { laravelEcho } = useWebsocketContext();
+  const [globalKeyword, setGlobalKeyword] = useState("");
 
-  const users = [
-    { id: 17, name: "Huda Azzuhri" },
-    { id: 27, name: "Bryan Wangsa" },
-    { id: 25, name: "Indra Oei" },
-    { id: 68, name: "Fachriza" },
-    { id: 7, name: "Jeremy Gerald" },
-  ];
+  const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
-  const teams = [
-    {
-      username: "Tech Team",
-      image: "https://avatars.githubusercontent.com/u/9055180?s=80&v=4",
-      chat: "Hey wanna hang out?",
-    },
-    {
-      username: "Developers",
-      image: "https://avatars.githubusercontent.com/u/11680611?s=80&v=4",
-      chat: "You wont believe what Susan just told me!",
-    },
-    {
-      username: "Designers",
-      image: "https://avatars.githubusercontent.com/u/3666047?v=4",
-      chat: "Yoo.. have you tried the new Starbucks coffee?",
-    },
-  ];
+  /**
+   * Event listener for new chats
+   */
+  const personalChatEvent = () => {
+    laravelEcho.channel(`personal.list.${userSelector?.id}`).listen(".personal.list", (event) => {
+      setPersonalChats(event.data);
+    });
+  };
 
-  const isReady = false;
-  return isReady ? (
-    <Box bgColor="white" flex={1}>
+  /**
+   * Event listener for new group chats
+   */
+  const groupChatEvent = () => {
+    laravelEcho.channel(`group.list.${userSelector.id}`).listen(".group.list", (event) => {
+      setGroupChats(event.data);
+    });
+  };
+
+  /**
+   * Fetch all personal chats
+   */
+  const fetchPersonalChats = async () => {
+    try {
+      const res = await axiosInstance.get("/chat/personal");
+      setPersonalChats(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Fetch all personal chats
+   */
+  const fetchGroupChats = async () => {
+    try {
+      const res = await axiosInstance.get("/chat/group");
+      setGroupChats(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPersonalChats();
+    fetchGroupChats();
+  }, []);
+
+  useEffect(() => {
+    personalChatEvent();
+    groupChatEvent();
+  }, [userSelector.id]);
+
+  // Removes chat room screen from stack if app opens by pressing push notification
+  useEffect(() => {
+    const { routes } = navigation.getState();
+
+    const filteredRoutes = routes.filter((route) => route.name !== "Chat Room");
+
+    navigation.reset({
+      index: filteredRoutes.length - 1,
+      routes: filteredRoutes,
+    });
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Box p={4}>
-          <Input
-            variant="unstyled"
-            size="lg"
-            InputLeftElement={
-              <Pressable>
-                <Icon as={<MaterialIcons name="search" />} size="lg" ml={2} color="muted.400" />
-              </Pressable>
-            }
-            placeholder="Search..."
-            borderColor="white"
-            bgColor="#F8F8F8"
-            borderRadius={15}
-            style={{ height: 40 }}
-          />
-        </Box>
+        <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-        <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-          <Text opacity={0.5} fontWeight={500}>
-            TEAMS
-          </Text>
+        <GroupSection groupChats={groupChats} searchKeyword={globalKeyword} searchResult={searchResult?.group} />
 
-          <Box bg="#f1f2f3" alignItems="center" justifyContent="center" p={2} borderRadius={10}>
-            <Icon as={<MaterialIcons name="add" />} color="black" />
-          </Box>
-        </Flex>
-        {teams.length > 0 &&
-          teams.map((team, idx) => {
-            return (
-              <Pressable
-                key={idx}
-                onPress={() => {
-                  navigation.navigate("Chat Room", { name: team.username, image: team.image });
-                }}
-              >
-                <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-                  <Flex flexDir="row" gap={4} alignItems="center">
-                    {isLoading ? (
-                      <Skeleton h={12} w={12} rounded="full" />
-                    ) : (
-                      <Avatar size="md" source={{ uri: team.image }}>
-                        SS
-                        {team.username === "Tech Team" && <Avatar.Badge bg="green.500" />}
-                      </Avatar>
-                    )}
+        <PersonalSection
+          personalChats={personalChats}
+          searchKeyword={globalKeyword}
+          searchResult={searchResult?.personal}
+        />
 
-                    <Box>
-                      {isLoading ? (
-                        <Skeleton h={3} w={20} rounded="full" />
-                      ) : (
-                        <Text fontSize={16}>#{team.username}</Text>
-                      )}
-                      <Flex flexDir="row" alignItems="center" gap={1}>
-                        {isLoading ? (
-                          <Skeleton h={3} w={"48"} rounded="full" mt={1} />
-                        ) : (
-                          <Text opacity={0.5}>
-                            {team.chat.length > 35 ? team.chat.slice(0, 35) + "..." : team.chat}
-                          </Text>
-                        )}
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Flex>
-              </Pressable>
-            );
-          })}
-
-        {/* ==================================================================== */}
-
-        <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-          <Text opacity={0.5} fontWeight={500}>
-            PEOPLE
-          </Text>
-
-          <Box bg="#f1f2f3" alignItems="center" justifyContent="center" p={2} borderRadius={10}>
-            <Icon as={<MaterialIcons name="add" />} color="black" />
-          </Box>
-        </Flex>
-        {users.length > 0 &&
-          users.map((user, idx) => {
-            return (
-              <Pressable
-                key={idx}
-                onPress={() => {
-                  navigation.navigate("Chat Room", { name: user.name, userId: user.id, image: "" });
-                }}
-              >
-                <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-                  <Flex flexDir="row" gap={4} alignItems="center">
-                    {isLoading ? (
-                      <Skeleton h={12} w={12} rounded="full" />
-                    ) : (
-                      <AvatarPlaceholder name={user.name} size="md" />
-                    )}
-
-                    <Box>
-                      {isLoading ? <Skeleton h={3} w={20} rounded="full" /> : <Text fontSize={16}>{user.name}</Text>}
-                      <Flex flexDir="row" alignItems="center" gap={1}>
-                        {isLoading ? (
-                          <Skeleton h={3} w={"48"} rounded="full" mt={1} />
-                        ) : (
-                          <Text opacity={0.5}>
-                            {user?.chat?.length > 35 ? user?.chat.slice(0, 35) + "..." : user.chat}
-                          </Text>
-                        )}
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Flex>
-              </Pressable>
-            );
-          })}
+        {searchResult?.message?.length > 0 && (
+          <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+        )}
       </ScrollView>
-    </Box>
-  ) : (
-    <Center flex={1} bgColor="white">
-      <Image source={require("../../assets/vectors/chat.jpg")} alt="chat-app" h={180} w={250} resizeMode="contain" />
-      <Text fontSize={22}>This feature is coming soon!</Text>
-    </Center>
+    </SafeAreaView>
   );
 };
 
 export default ChatListScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+});
