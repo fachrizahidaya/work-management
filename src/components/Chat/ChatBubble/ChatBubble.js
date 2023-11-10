@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
@@ -105,8 +105,8 @@ const ChatBubble = ({
 
   return (
     <>
-      {chatList[index + 1] ? (
-        !dayjs(chat?.created_at).isSame(dayjs(chatList[index + 1]?.created_at), "date") ? (
+      {chatList[index - 1] ? (
+        !dayjs(chat?.created_at).isSame(dayjs(chatList[index - 1]?.created_at), "date") ? (
           <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
         ) : (
           ""
@@ -114,42 +114,46 @@ const ChatBubble = ({
       ) : (
         <ChatMessageTimeStamp key={`${chat.id}_${index}_timestamp-group`} timestamp={chat?.created_at} />
       )}
-      <Box>
-        {/* {isGrouped} */}
-        <Flex alignItems="center" my={1} gap={1} flexDirection={!myMessage ? "row" : "row-reverse"}>
-          {type === "group" && !myMessage && image ? (
-            <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
-          ) : type === "group" && !myMessage ? (
-            <Box ml={8}></Box>
-          ) : null}
 
-          <Flex flexDirection={!myMessage ? "row" : "row-reverse"}>
-            <Flex
-              borderRadius={10}
-              py={2}
-              px={4}
-              bgColor={!myMessage ? "white" : "primary.600"}
-              maxW={280}
-              flexDirection={type === "group" && name && !myMessage ? "column" : "row"}
-              justifyContent="center"
-              // borderWidth={!myMessage ? 1 : 0}
-              // borderColor={!myMessage && "#E8E9EB"}
+      <Flex
+        alignItems="center"
+        my={1}
+        gap={1}
+        mb={isGrouped ? 1 : null}
+        flexDirection={!myMessage ? "row" : "row-reverse"}
+      >
+        {type === "group" && !myMessage && image ? (
+          <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
+        ) : type === "group" && !myMessage ? (
+          <Box ml={8}></Box>
+        ) : null}
+
+        <Flex flexDirection={!myMessage ? "row" : "row-reverse"}>
+          <Flex
+            borderRadius={10}
+            py={2}
+            px={4}
+            bgColor={!myMessage ? "white" : "primary.600"}
+            maxW={280}
+            flexDirection={type === "group" && name && !myMessage ? "column" : "row"}
+            justifyContent="center"
+            // borderWidth={!myMessage ? 1 : 0}
+            // borderColor={!myMessage && "#E8E9EB"}
+          >
+            {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
+            {typeof content === "number" ? (
+              <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
+            ) : (
+              <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
+            )}
+            <Text
+              mt={type === "group" && name && !myMessage ? null : 2.5}
+              alignSelf="flex-end"
+              fontSize={10}
+              color="#578A90"
             >
-              {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
-              {typeof content === "number" ? (
-                <Text color={!myMessage ? "primary.600" : "white"}>{content}</Text>
-              ) : (
-                <Text color={!myMessage ? "primary.600" : "white"}>{styledTexts}</Text>
-              )}
-              <Text
-                mt={type === "group" && name && !myMessage ? null : 2.5}
-                alignSelf="flex-end"
-                fontSize={10}
-                color="#578A90"
-              >
-                {time}
-              </Text>
-            </Flex>
+              {time}
+            </Text>
           </Flex>
           {!isGrouped && (
             <Box
@@ -165,7 +169,7 @@ const ChatBubble = ({
             ></Box>
           )}
         </Flex>
-      </Box>
+      </Flex>
     </>
   );
 };
