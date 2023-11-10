@@ -94,7 +94,6 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.type === "New") {
           setChatList((currentChats) => [...currentChats, event.data]);
-          scrollToBottom();
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -114,7 +113,6 @@ const ChatRoom = () => {
         console.log(event);
         if (event.data.tye) {
           setChatList((prevState) => [...prevState, event.data]);
-          scrollToBottom();
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -207,7 +205,6 @@ const ChatRoom = () => {
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/${type}/message`, form);
-      scrollToBottom();
       setSubmitting(false);
       setStatus("success");
     } catch (error) {
