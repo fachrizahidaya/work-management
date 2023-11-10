@@ -4,22 +4,26 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Icon, Input, Pressable, VStack } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import { useFetch } from "../../hooks/useFetch";
 import axiosInstance from "../../config/api";
+import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
+import GlobalSearchChatList from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatList/GlobalSearchChatList";
+import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
-  const { laravelEcho, setLaravelEcho } = useWebsocketContext();
+  const { laravelEcho } = useWebsocketContext();
+  const [globalKeyword, setGlobalKeyword] = useState("");
+
+  const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
   /**
    * Event listener for new chats
@@ -88,24 +92,19 @@ const ChatListScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <VStack p={4} space={2}>
-          <Input
-            variant="unstyled"
-            size="lg"
-            InputLeftElement={
-              <Pressable>
-                <Icon as={<MaterialIcons name="search" />} size="lg" ml={2} color="muted.400" />
-              </Pressable>
-            }
-            placeholder="Search..."
-            borderColor="white"
-            bgColor="#F8F8F8"
-          />
-        </VStack>
+        <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-        <GroupSection groupChats={groupChats} />
+        <GroupSection groupChats={groupChats} searchKeyword={globalKeyword} searchResult={searchResult?.group} />
 
-        <PersonalSection personalChats={personalChats} />
+        <PersonalSection
+          personalChats={personalChats}
+          searchKeyword={globalKeyword}
+          searchResult={searchResult?.personal}
+        />
+
+        {searchResult?.message?.length > 0 && (
+          <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

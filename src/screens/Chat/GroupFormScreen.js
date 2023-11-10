@@ -65,7 +65,7 @@ const GroupFormScreen = ({ route }) => {
       name: groupData?.name || "",
     },
     validationSchema: yup.object().shape({
-      name: yup.string().required("Group name is required"),
+      name: yup.string().max(30, "30 characters maximum").required("Group name is required"),
     }),
     validateOnChange: false,
     onSubmit: (values, { setSubmitting }) => {
@@ -123,16 +123,23 @@ const GroupFormScreen = ({ route }) => {
             )}
           </TouchableOpacity>
 
-          <Input
-            autoCapitalize="words"
-            isInvalid={formik.errors.name}
-            flex={1}
-            variant="underlined"
-            placeholder="Group name"
-            size="lg"
-            value={formik.values.name}
-            onChangeText={(value) => formik.setFieldValue("name", value)}
-          />
+          <VStack flex={1}>
+            <Input
+              autoCapitalize="words"
+              isInvalid={formik.errors.name}
+              flex={1}
+              variant="underlined"
+              placeholder="Group name"
+              size="lg"
+              value={formik.values.name}
+              onChangeText={(value) => formik.setFieldValue("name", value)}
+            />
+            {formik.errors.name && (
+              <Text color="red.500" fontSize={12}>
+                {formik.errors.name}
+              </Text>
+            )}
+          </VStack>
         </HStack>
 
         <Text>Participants: {userArray?.length}</Text>
