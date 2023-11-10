@@ -51,7 +51,6 @@ const TeamLeaveRequestList = ({
             />
           );
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -61,7 +60,6 @@ const TeamLeaveRequestList = ({
         render: ({ id }) => {
           return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };

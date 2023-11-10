@@ -1,6 +1,3 @@
-import { useRef } from "react";
-
-import { Keyboard } from "react-native";
 import { Flex, FormControl, Icon, Select, Text, TextArea } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

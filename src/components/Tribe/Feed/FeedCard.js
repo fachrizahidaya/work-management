@@ -15,15 +15,14 @@ const FeedCard = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   loggedEmployeeName,
-  onToggleLike,
   postRefetchHandler,
   postEndReachedHandler,
-  feedsIsFetching,
-  refetchFeeds,
   hasBeenScrolled,
   setHasBeenScrolled,
   reload,
   setReload,
+  postIsFetching,
+  refetchPost,
 }) => {
   const [comments, setComments] = useState([]);
   const [postTotalComment, setPostTotalComment] = useState(0);
@@ -40,18 +39,17 @@ const FeedCard = ({
   };
 
   const {
-    data: commentData,
-    isFetching: commentDataIsFetching,
-    refetch: refetchCommentData,
+    data: comment,
+    isFetching: commentIsFetching,
+    refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
-  console.log(commentData?.data);
 
   /**
    * Fetch more Comments handler
    * After end of scroll reached, it will added other earlier comments
    */
   const commentEndReachedHandler = () => {
-    if (comments.length !== comments.length + commentData?.data.length) {
+    if (comments.length !== comments.length + comment?.data.length) {
       setCurrentOffset(currentOffset + 10);
     }
   };
@@ -90,7 +88,7 @@ const FeedCard = ({
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    setForceRerender(true);
+    setForceRerender(!forceRerender);
   };
 
   /**
@@ -101,7 +99,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchFeeds();
+      refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -132,10 +130,10 @@ const FeedCard = ({
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
-            refreshing={feedsIsFetching}
+            refreshing={postIsFetching}
             onRefresh={() => {
               postRefetchHandler();
-              refetchFeeds();
+              refetchPost();
             }}
           />
         }
@@ -158,7 +156,7 @@ const FeedCard = ({
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
             onCommentToggle={commentsOpenHandler}
-            refetch={refetchFeeds}
+            refetchPost={refetchPost}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
           />
@@ -173,13 +171,11 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
-          refetchFeeds={refetchFeeds}
-          postRefetchHandler={postRefetchHandler}
           commentAddHandler={commentAddHandler}
           currentOffset={currentOffset}
-          commentData={commentData}
-          commentDataIsFetching={commentDataIsFetching}
-          refetchCommentData={refetchCommentData}
+          comment={comment}
+          commentIsFetching={commentIsFetching}
+          refetchComment={refetchComment}
           commentEndReachedHandler={commentEndReachedHandler}
           commentRefetchHandler={commentRefetchHandler}
           comments={comments}

@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
+
 import { TextArea } from "native-base";
-import { useEffect } from "react";
-import { useState } from "react";
-import MentionSelect from "./MentionSelect";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+import MentionSelect from "./MentionSelect";
 
 const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) => {
   const [mentionOpen, setMentionOpen] = useState(false);

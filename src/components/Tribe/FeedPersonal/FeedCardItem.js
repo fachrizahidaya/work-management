@@ -29,7 +29,11 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  refetch,
+  refetchPersonalPost,
+  forceRerender,
+  setForceRerender,
+  forceRerenderPersonal,
+  setForceRerenderPersonal,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
@@ -53,6 +57,8 @@ const FeedCardItem = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
+    setForceRerenderPersonal(!forceRerenderPersonal);
+    setForceRerender(!forceRerender);
   };
 
   /**
@@ -92,33 +98,11 @@ const FeedCardItem = ({
     <Flex flexDir="column" my={2}>
       <Flex gap={5} style={card.card}>
         <Flex alignItems="center" direction="row" gap={3}>
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: employeeId,
-                loggedEmployeeId: loggedEmployeeId,
-                loggedEmployeeImage: loggedEmployeeImage,
-                refetch: refetch,
-              })
-            }
-          >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
-          </Pressable>
+          <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
 
           <Flex flex={1}>
             <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
-              <Text
-                onPress={() =>
-                  navigation.navigate("Employee Profile", {
-                    employeeId: employeeId,
-                    loggedEmployeeId: loggedEmployeeId,
-                    loggedEmployeeImage: loggedEmployeeImage,
-                    refetch: refetch,
-                  })
-                }
-                fontSize={15}
-                fontWeight={500}
-              >
+              <Text fontSize={15} fontWeight={500}>
                 {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
               </Text>
               <Flex flexDir="row" alignItems="center" gap={1}>
@@ -127,37 +111,40 @@ const FeedCardItem = ({
                     <Text fontSize={10}>Announcement</Text>
                   </Badge>
                 ) : null}
-                <Pressable onPress={toggleAction}>
-                  <Icon
-                    as={<MaterialCommunityIcons name="dots-vertical" />}
-                    size="md"
-                    borderRadius="full"
-                    color="#000000"
-                  />
-                </Pressable>
-                <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-                  <Actionsheet.Content>
-                    <Actionsheet.Item onPress={toggleDeleteModal}>Delete Post</Actionsheet.Item>
-                  </Actionsheet.Content>
-                </Actionsheet>
-
-                <ConfirmationModal
-                  isOpen={deleteModalIsOpen}
-                  toggle={toggleDeleteModal}
-                  apiUrl={`/hr/posts/${id}`}
-                  color="red.800"
-                  hasSuccessFunc={true}
-                  header="Cancel Leave Request"
-                  onSuccess={() => {
-                    toggleAction();
-                    refetch();
-                  }}
-                  description="Are you sure to delete this post?"
-                  successMessage="Post deleted"
-                  isDelete={true}
-                  isPatch={false}
-                  placement="top"
-                />
+                {loggedEmployeeId === employeeId && (
+                  <>
+                    <Pressable onPress={toggleAction}>
+                      <Icon
+                        as={<MaterialCommunityIcons name="dots-vertical" />}
+                        size="md"
+                        borderRadius="full"
+                        color="#000000"
+                      />
+                    </Pressable>
+                    <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
+                      <Actionsheet.Content>
+                        <Actionsheet.Item onPress={toggleDeleteModal}>Delete Post</Actionsheet.Item>
+                      </Actionsheet.Content>
+                    </Actionsheet>
+                    <ConfirmationModal
+                      isOpen={deleteModalIsOpen}
+                      toggle={toggleDeleteModal}
+                      apiUrl={`/hr/posts/${id}`}
+                      color="red.800"
+                      hasSuccessFunc={true}
+                      header="Cancel Leave Request"
+                      onSuccess={() => {
+                        toggleAction();
+                        refetchPersonalPost();
+                      }}
+                      description="Are you sure to delete this post?"
+                      successMessage="Post deleted"
+                      isDelete={true}
+                      isPatch={false}
+                      placement="top"
+                    />
+                  </>
+                )}
               </Flex>
             </Flex>
             <Text fontSize={12} fontWeight={400} color="#8A9099">

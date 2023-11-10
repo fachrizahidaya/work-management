@@ -5,24 +5,21 @@ import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
 import axiosInstance from "../../../../config/api";
-import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedComment = ({
   postId,
   loggedEmployeeId,
   loggedEmployeeName,
   loggedEmployeeImage,
-  commentData,
-  commentDataIsFetching,
+  comment,
+  commentIsFetching,
   currentOffset,
   comments,
   setComments,
   handleOpen,
   handleClose,
-  postRefetchHandler,
   commentAddHandler,
-  refetchFeeds,
-  refetchCommentData,
+  refetchComment,
   commentEndReachedHandler,
   commentRefetchHandler,
 }) => {
@@ -41,7 +38,7 @@ const FeedComment = ({
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
-      refetchCommentData();
+      refetchComment();
       commentRefetchHandler();
       setCommentParentId(null);
       commentAddHandler(postId);
@@ -66,15 +63,15 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      if (commentData?.data && commentDataIsFetching === false) {
+      if (comment?.data && commentIsFetching === false) {
         if (currentOffset === 0) {
-          setComments(commentData?.data);
+          setComments(comment?.data);
         } else {
-          setComments((prevData) => [...prevData, ...commentData?.data]);
+          setComments((prevData) => [...prevData, ...comment?.data]);
         }
       }
     }
-  }, [handleOpen, commentDataIsFetching]);
+  }, [handleOpen, commentIsFetching]);
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
@@ -103,8 +100,8 @@ const FeedComment = ({
                 latestExpandedReply={latestExpandedReply}
                 commentEndReachedHandler={commentEndReachedHandler}
                 commentsRefetchHandler={commentRefetchHandler}
-                commentIsFetching={commentDataIsFetching}
-                refetchComment={refetchCommentData}
+                commentIsFetching={commentIsFetching}
+                refetchComment={refetchComment}
                 hasBeenScrolled={hasBeenScrolled}
                 setHasBeenScrolled={setHasBeenScrolled}
               />
@@ -118,7 +115,6 @@ const FeedComment = ({
             parentId={commentParentId}
             inputRef={inputRef}
             onSubmit={commentSubmitHandler}
-            refetchFeeds={refetchFeeds}
           />
         </Flex>
       </Actionsheet.Content>

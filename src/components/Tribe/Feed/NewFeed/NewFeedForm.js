@@ -1,18 +1,13 @@
 import { useState } from "react";
-import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Spinner, Text, TextArea } from "native-base";
-import { MentionsInput, Mention } from "react-mentions";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
-import FormButton from "../../../shared/FormButton";
 import MentionInput from "./MentionInput";
-import { TextInput } from "react-native-gesture-handler";
-import { FlashList } from "@shopify/flash-list";
 
 const NewFeedForm = ({
   formik,
@@ -81,6 +76,7 @@ const NewFeedForm = ({
             </Box>
           ) : null}
         </Flex>
+        <FormControl.ErrorMessage px={3}>{formik.errors.content}</FormControl.ErrorMessage>
 
         <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
           <Actionsheet.Content>
@@ -149,10 +145,14 @@ const NewFeedForm = ({
           width={50}
           height={50}
           opacity={formik.values.content === "" ? 0.5 : 1}
-          onPress={() => {
-            setIsLoading(true);
-            formik.handleSubmit();
-          }}
+          onPress={
+            formik.values.content === ""
+              ? null
+              : () => {
+                  setIsLoading(true);
+                  formik.handleSubmit();
+                }
+          }
         >
           {isLoading ? (
             <Spinner color="#FFFFFF" />

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -9,7 +8,6 @@ import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
@@ -43,11 +41,11 @@ const LeaveScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
 
-          {teamLeaveRequestData?.data.length && approvalLeaveRequestCheckAccess ? (
+          {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
             <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
               My Team
             </Button>
-          ) : null}
+          )}
         </Flex>
         {!personalLeaveRequestIsLoading ? (
           personalLeaveRequest?.data.length > 0 ? (

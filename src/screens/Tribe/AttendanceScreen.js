@@ -58,7 +58,6 @@ const AttendanceScreen = () => {
         render: ({ id }) => {
           return <SuccessToast message={"Report Submitted"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -68,7 +67,6 @@ const AttendanceScreen = () => {
         render: ({ id }) => {
           return <ErrorToast message={"Submit failed, please try again later"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   }, []);

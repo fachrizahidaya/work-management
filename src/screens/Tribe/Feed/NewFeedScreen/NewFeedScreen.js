@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -18,7 +18,6 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useFetch } from "../../../../hooks/useFetch";
-import { useRef } from "react";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -80,7 +79,7 @@ const NewFeedScreen = ({ route }) => {
    */
   const postSubmitHandler = async (form, setSubmitting, setStatus) => {
     try {
-      await axiosInstance.post("/hr/posts", form, {
+      const res = await axiosInstance.post("/hr/posts", form, {
         headers: {
           "content-type": "multipart/form-data",
         },
@@ -182,7 +181,7 @@ const NewFeedScreen = ({ route }) => {
       <PageHeader
         title="New Post"
         onPress={
-          formik.values.content
+          formik.values.content || image !== null
             ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
             : () => {
                 !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
