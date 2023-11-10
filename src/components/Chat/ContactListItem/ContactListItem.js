@@ -2,11 +2,12 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
+import { Box, Flex, HStack, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+import { TouchableOpacity } from "react-native";
 
 const ContactListItem = ({
   type,
@@ -83,7 +84,7 @@ const ContactListItem = ({
     return text;
   };
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
           name: name,
@@ -133,7 +134,7 @@ const ContactListItem = ({
           </Box>
         </Flex>
       </Flex>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
