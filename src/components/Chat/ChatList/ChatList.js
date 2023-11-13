@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ImageAttachment from "../Attachment/ImageAttachment";
 import FileAttachment from "../Attachment/FileAttachment";
+import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 
 const ChatList = ({
   name,
@@ -22,13 +23,14 @@ const ChatList = ({
   deleteMessageDialogOpenHandler,
   fileAttachment,
   setFileAttachment,
+  fetchChataMessageHandler,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [elementsRendered, setElementsRendered] = useState(0);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [chatReversed, setChatReversed] = useState(null);
 
   const chatBoxRef = useRef;
 
@@ -85,7 +87,7 @@ const ChatList = ({
         return currentMessage?.user?.image;
       }
     },
-    [chatList]
+    [chatReversed]
   );
 
   /**
@@ -109,7 +111,7 @@ const ChatList = ({
         return currentMessage?.user?.name;
       }
     },
-    [chatList]
+    [chatReversed]
   );
 
   /**
@@ -130,7 +132,7 @@ const ChatList = ({
         return false;
       }
     },
-    [chatList]
+    [chatReversed]
   );
 
   //   useEffect(() => {
@@ -146,31 +148,59 @@ const ChatList = ({
   //     }
   //   }, [elementsRendered, offset]);
 
+  useEffect(() => {
+    setChatReversed([...chatList].reverse());
+  }, [chatList]);
+
   return (
-    <Flex id="chatBoxList" flex={1} bg="#FAFAFA" paddingX={2} position="relative">
+    <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
       <FlashList
-        // inverted
+        inverted
         keyExtractor={(item, index) => index}
-        onScrollBeginDrag={() => setScrolled(true)}
+        onScrollBeginDrag={() => setHasBeenScrolled(true)}
+        onEndReached={hasBeenScrolled ? () => fetchChataMessageHandler() : null}
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
-        data={chatList}
+        data={chatReversed}
         renderItem={({ item, index }) => (
-          <ChatBubble
-            index={index}
-            chat={item}
-            image={userImageRenderCheck(item, chatList[index + 1])}
-            name={userNameRenderCheck(chatList[index - 1], item)}
-            fromUserId={item.from_user_id}
-            id={item.id}
-            content={item.message}
-            type={type}
-            time={item.created_time}
-            chatList={chatList}
-            isGrouped={messageIsGrouped(item, chatList[index + 1])}
-          />
+          <>
+            {chatReversed[index + 1] ? (
+              !dayjs(item?.created_at).isSame(dayjs(chatReversed[index + 1]?.created_at), "date") ? (
+                <>
+                  <ChatMessageTimeStamp key={`${item.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
+                </>
+              ) : (
+                ""
+              )
+            ) : (
+              <ChatMessageTimeStamp key={`${item.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
+            )}
+            <ChatBubble
+              index={index}
+              chat={item}
+              name={userNameRenderCheck(chatReversed[index + 1], item)}
+              image={userImageRenderCheck(item, chatReversed[index - 1])}
+              fromUserId={item.from_user_id}
+              id={item.id}
+              content={item.message}
+              type={type}
+              time={item.created_time}
+              file_path={item?.file_path}
+              file_name={item?.file_name}
+              file_type={item?.mime_type}
+              file_size={item?.file_size}
+              band_attachment_id={item?.project_id ? item?.project_id : item?.task_id}
+              band_attachment_no={item?.project_no ? item?.project_no : item?.task_no}
+              band_attachment_type={item?.project_id ? "Project" : "Task"}
+              band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
+              chatList={chatList}
+              isGrouped={messageIsGrouped(item, chatReversed[index - 1])}
+              fileAttachment={fileAttachment}
+            />
+          </>
         )}
       />
+
       {fileAttachment ? (
         <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
           <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
