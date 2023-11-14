@@ -33,8 +33,6 @@ const ChatRoom = () => {
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
-  console.log("type", bandAttachmentType);
-
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 

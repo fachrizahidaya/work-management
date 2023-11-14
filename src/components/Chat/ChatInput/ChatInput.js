@@ -27,7 +27,6 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
 }) => {
-  console.log(bandAttachment);
   const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
   const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const formik = useFormik({

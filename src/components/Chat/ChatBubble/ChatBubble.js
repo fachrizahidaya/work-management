@@ -180,10 +180,10 @@ const ChatBubble = ({
                   ) : null;
                 }}
               >
-                <Menu.Item onPress={() => console.log("reply")}>
+                <Menu.Item>
                   <Text>Reply</Text>
                 </Menu.Item>
-                <Menu.Item onPress={() => console.log("delete")}>
+                <Menu.Item>
                   <Text color="red.600">Delete</Text>
                 </Menu.Item>
               </Menu>
