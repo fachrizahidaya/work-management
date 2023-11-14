@@ -66,7 +66,6 @@ const LeaveRequestList = ({
                         successMessage="Request canceled"
                         isDelete={false}
                         isPatch={true}
-                        placement="top"
                       />
                     </Flex>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
