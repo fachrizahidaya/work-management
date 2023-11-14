@@ -33,6 +33,8 @@ const ChatRoom = () => {
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
+  console.log("type", bandAttachmentType);
+
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 
@@ -136,6 +138,7 @@ const ChatRoom = () => {
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/${type}/message`, form);
+
       setSubmitting(false);
       setStatus("success");
     } catch (error) {
@@ -196,7 +199,7 @@ const ChatRoom = () => {
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [3, 4],
       quality: 1,
     });

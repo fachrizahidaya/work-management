@@ -3,10 +3,14 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
+import { Flex, FormControl, Icon, IconButton, Input, Menu, Modal, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { FlashList } from "@shopify/flash-list";
+import ProjectAttachment from "../Attachment/ProjectAttachment";
+import TaskAttachment from "../Attachment/TaskAttachment";
 
 const ChatInput = ({
   userId,
@@ -23,6 +27,9 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
 }) => {
+  console.log(bandAttachment);
+  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
+  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const formik = useFormik({
     initialValues: {
       to_user_id: userId || "",
@@ -39,31 +46,31 @@ const ChatInput = ({
     },
 
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      if (
-        formik.values.message !== "" ||
-        formik.values.file !== "" ||
-        formik.values.project_id !== "" ||
-        formik.values.task_id !== ""
-      ) {
-        const formData = new FormData();
-        for (let key in values) {
-          formData.append(key, values[key]);
-        }
-        formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
-
-        setStatus("processing");
-        // if (type === "personal") {
-        //   formData.delete("group_id");
-        // } else {
-        //   formData.delete("to_user_id");
-        // }
-        sendMessage(values, setSubmitting, setStatus);
-        resetForm();
-        setFileAttachment(null);
-        setBandAttachment(null);
-        setBandAttachmentType(null);
-        setMessageToReply(null);
-      }
+      // if (
+      //   formik.values.message !== "" ||
+      //   formik.values.file !== "" ||
+      //   formik.values.project_id !== "" ||
+      //   formik.values.task_id !== ""
+      // )
+      // {
+      //   const formData = new FormData();
+      //   for (let key in values) {
+      //     formData.append(key, values[key]);
+      //   }
+      //   formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
+      //   setStatus("processing");
+      //   if (type === "personal") {
+      //     formData.delete("group_id", null);
+      //   } else {
+      //     formData.delete("to_user_id", null);
+      //   }
+      // }
+      sendMessage(values, setSubmitting, setStatus);
+      resetForm();
+      setFileAttachment(null);
+      setBandAttachment(null);
+      setBandAttachmentType(null);
+      setMessageToReply(null);
     },
     enableReinitialize: true,
   });
@@ -132,15 +139,31 @@ const ChatInput = ({
                   <Icon as={<MaterialIcons name="photo" />} />
                   <Text>Photo</Text>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item onPress={toggleProjectList}>
                   <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
                   <Text>Project</Text>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item onPress={toggleTaskList}>
                   <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
                   <Text>Task</Text>
                 </Menu.Item>
               </Menu>
+
+              <ProjectAttachment
+                projectListIsOpen={projectListIsOpen}
+                toggleProjectList={toggleProjectList}
+                bandAttachmentType={bandAttachmentType}
+                setBandAttachmentType={setBandAttachmentType}
+                onSelectBandAttachment={bandAttachmentSelectHandler}
+              />
+
+              <TaskAttachment
+                taskListIsOpen={taskListIsOpen}
+                toggleTaskList={toggleTaskList}
+                bandAttachmentType={bandAttachmentType}
+                setBandAttachmentType={setBandAttachmentType}
+                onSelectBandAttachment={bandAttachmentSelectHandler}
+              />
             </Flex>
           }
           InputRightElement={

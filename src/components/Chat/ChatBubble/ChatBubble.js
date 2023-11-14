@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
-import { Box, Flex, Image, Modal, Text } from "native-base";
+import { Box, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "native-base";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
@@ -11,6 +13,8 @@ import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 import FileAttachment from "../Attachment/FileAttachment";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
+import ChatReplyInfo from "./ChatReplyInfo";
+import ConfirmationModal from "../../shared/ConfirmationModal";
 
 const ChatBubble = ({
   chat,
@@ -24,7 +28,6 @@ const ChatBubble = ({
   onMessageReply,
   chatList,
   type,
-  isGrouped,
   index,
   fileAttachment,
   file_path,
@@ -35,6 +38,10 @@ const ChatBubble = ({
   band_attachment_no,
   band_attachment_type,
   band_attachment_title,
+  isDeleted,
+  isActiveMember,
+  isGrouped,
+  reply_to,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -80,6 +87,7 @@ const ChatBubble = ({
     const words = content?.split(" ");
     var styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
+
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
@@ -160,63 +168,116 @@ const ChatBubble = ({
             }
             justifyContent="center"
           >
-            {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
-            {file_path && (
+            <Flex flexDirection="row-reverse">
+              <Menu
+                w={160}
+                mt={8}
+                trigger={(trigger) => {
+                  return !isDeleted ? (
+                    <Pressable {...trigger} mr={1}>
+                      <Icon as={<MaterialCommunityIcons name="chevron-down" />} color="black" size="md" />
+                    </Pressable>
+                  ) : null;
+                }}
+              >
+                <Menu.Item onPress={() => console.log("reply")}>
+                  <Text>Reply</Text>
+                </Menu.Item>
+                <Menu.Item onPress={() => console.log("delete")}>
+                  <Text color="red.600">Delete</Text>
+                </Menu.Item>
+              </Menu>
+              {/* <ConfirmationModal
+          isOpen={deleteModalIsOpen}
+          toggle={toggleDeleteModal}
+          header="Delete Chat"
+          description="Are you sure want to delete this chat?"
+          isDelete={true}
+          isPatch={false}
+          hasSuccessFunc={true}
+          apiUrl={`/chat/personal/${userId}`}
+          onSuccess={() => {
+            toggleDeleteModal();
+            navigation.goBack();
+          }}
+          successMessage="Chat Deleted"
+        /> */}
+            </Flex>
+            {!isDeleted ? (
               <>
-                {imgTypes.includes(formatMimeType(file_type)) && (
+                {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} />}
+                {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
+                {file_path && (
                   <>
-                    <TouchableOpacity onPress={toggleFullScreen}>
-                      <Image
-                        source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                        width={300}
-                        height={150}
-                        alt="Feed Image"
-                        resizeMode="contain"
-                      />
-                    </TouchableOpacity>
-                    <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-                      <Modal.Content backgroundColor="#000000">
-                        <Modal.CloseButton />
-                        <Modal.Body alignContent="center">
+                    {imgTypes.includes(formatMimeType(file_type)) && (
+                      <>
+                        <TouchableOpacity onPress={toggleFullScreen}>
                           <Image
                             source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                            height={500}
-                            width={500}
+                            width={300}
+                            height={150}
                             alt="Feed Image"
                             resizeMode="contain"
                           />
-                        </Modal.Body>
-                      </Modal.Content>
-                    </Modal>
+                        </TouchableOpacity>
+                        <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+                          <Modal.Content backgroundColor="#000000">
+                            <Modal.CloseButton />
+                            <Modal.Body alignContent="center">
+                              <Image
+                                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
+                                height={500}
+                                width={500}
+                                alt="Feed Image"
+                                resizeMode="contain"
+                              />
+                            </Modal.Body>
+                          </Modal.Content>
+                        </Modal>
+                      </>
+                    )}
+                    {docTypes.includes(formatMimeType(file_type)) && (
+                      <FileAttachmentBubble
+                        file_type={file_type}
+                        file_name={file_name}
+                        file_path={file_path}
+                        file_size={file_size}
+                        myMessage={myMessage}
+                      />
+                    )}
                   </>
                 )}
-                {docTypes.includes(formatMimeType(file_type)) && (
-                  <FileAttachmentBubble
-                    file_type={file_type}
-                    file_name={file_name}
-                    file_path={file_path}
-                    file_size={file_size}
+                {band_attachment_id && (
+                  <BandAttachmentBubble
+                    id={band_attachment_id}
+                    title={band_attachment_title}
+                    number_id={band_attachment_no}
+                    type={band_attachment_type}
+                    myMessage={myMessage}
                   />
                 )}
+                {typeof content === "number" ? (
+                  <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                    {content}
+                  </Text>
+                ) : (
+                  <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                    {styledTexts}
+                  </Text>
+                )}
               </>
-            )}
-            {band_attachment_id && (
-              <BandAttachmentBubble
-                id={band_attachment_id}
-                title={band_attachment_title}
-                number_id={band_attachment_no}
-                type={band_attachment_type}
-              />
-            )}
-            {typeof content === "number" ? (
-              <Text fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                {content}
+            ) : isDeleted && myMessage ? (
+              <Text fontSize={12} fontWeight={400} color="#f1f1f1">
+                You have deleted this message
+              </Text>
+            ) : isDeleted && !myMessage ? (
+              <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                This message has been deleted
               </Text>
             ) : (
-              <Text fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                {styledTexts}
-              </Text>
+              ""
             )}
+
             <Text
               mt={type === "group" && name && !myMessage ? null : 2.5}
               alignSelf="flex-end"
