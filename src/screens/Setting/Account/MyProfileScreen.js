@@ -58,7 +58,6 @@ const MyProfileScreen = ({ route }) => {
         render: ({ id }) => {
           return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -66,7 +65,6 @@ const MyProfileScreen = ({ route }) => {
         render: ({ id }) => {
           return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
       setSubmitting(false);
       setStatus("error");
@@ -112,7 +110,7 @@ const MyProfileScreen = ({ route }) => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (fileInfo.size >= 1000000) {
-      toast.show({ description: "Image size is too large", placement: "top" });
+      toast.show({ description: "Image size is too large" });
       return;
     }
 
@@ -146,7 +144,6 @@ const MyProfileScreen = ({ route }) => {
         render: ({ id }) => {
           return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -154,7 +151,6 @@ const MyProfileScreen = ({ route }) => {
         render: ({ id }) => {
           return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };
