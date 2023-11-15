@@ -19,12 +19,12 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
     <Pressable
       onPress={() => generateUrl(id, type)}
       gap={1}
-      px={1}
+      px={2}
       py={2}
       flexDirection="row"
       alignItems="center"
       justifyContent="space-evenly"
-      borderRadius={10}
+      borderRadius={5}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
     >
       {type === "Project" && (
@@ -36,7 +36,7 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
       )}
       {type === "Task" && (
         <Icon
-          as={<MaterialCommunityIcons name="check-underline" />}
+          as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
           size={5}
           color={!myMessage ? "#000000" : "#FFFFFF"}
         />

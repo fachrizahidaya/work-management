@@ -12,11 +12,7 @@ import FileAttachment from "../Attachment/FileAttachment";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 
 const ChatList = ({
-  name,
-  userId,
-  image,
   type,
-  offset,
   chatList,
   messageToReply,
   setMessageToReply,
@@ -24,6 +20,7 @@ const ChatList = ({
   fileAttachment,
   setFileAttachment,
   fetchChataMessageHandler,
+  forceRerender,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -162,18 +159,19 @@ const ChatList = ({
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
         data={chatReversed}
+        extraData={forceRerender}
         renderItem={({ item, index }) => (
           <>
             {chatReversed[index + 1] ? (
               !dayjs(item?.created_at).isSame(dayjs(chatReversed[index + 1]?.created_at), "date") ? (
                 <>
-                  <ChatMessageTimeStamp key={`${item.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
+                  <ChatMessageTimeStamp key={`${item?.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
                 </>
               ) : (
                 ""
               )
             ) : (
-              <ChatMessageTimeStamp key={`${item.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
+              <ChatMessageTimeStamp key={`${item?.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
             )}
             <ChatBubble
               index={index}

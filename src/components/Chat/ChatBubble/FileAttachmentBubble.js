@@ -58,10 +58,9 @@ const FileAttachmentBubble = ({
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
       gap={1}
-      px={1}
       py={2}
       width={250}
-      borderRadius={10}
+      borderRadius={5}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
       alignItems="center"

@@ -31,7 +31,7 @@ const ChatRoom = () => {
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [forceRerender, setForceRerender] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -67,7 +67,6 @@ const ChatRoom = () => {
     }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        console.log(event);
         if (event.data.type === "New") {
           setChatList((prevState) => [...prevState, event.data]);
         } else {
@@ -82,12 +81,11 @@ const ChatRoom = () => {
    */
   const groupChatMessageEvent = () => {
     if (userSelector?.id && previousGroup) {
-      laravelEcho.leaveChannel(`group.chat.${previousGroup}`);
+      laravelEcho.leaveChannel(`group.chat.${previousGroup}.${userSelector?.id}`);
     }
     if (userSelector?.id && currentGroup) {
-      laravelEcho.channel(`group.chat.${currentGroup}`).listen(".group.chat", (event) => {
-        console.log(event);
-        if (event.data.tye) {
+      laravelEcho.channel(`group.chat.${currentGroup}.${userSelector?.id}`).listen(".group.chat", (event) => {
+        if (event.data.type === "New") {
           setChatList((prevState) => [...prevState, event.data]);
         } else {
           deleteChatFromChatMessages(event.data);
@@ -136,9 +134,10 @@ const ChatRoom = () => {
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/${type}/message`, form);
-
+      fetchChatMessageHandler();
       setSubmitting(false);
       setStatus("success");
+      setForceRerender(!forceRerender);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
@@ -357,11 +356,7 @@ const ChatRoom = () => {
       <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
 
       <ChatList
-        name={name}
-        userId={userId}
-        image={image}
         type={type}
-        offset={offset}
         chatList={chatList}
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}

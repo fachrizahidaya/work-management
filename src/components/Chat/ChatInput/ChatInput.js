@@ -108,70 +108,74 @@ const ChatInput = ({
 
   return (
     <>
-      <FormControl justifyContent="center" borderTopWidth={1} borderColor="#E8E9EB" px={2}>
+      <FormControl
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        py={1}
+        backgroundColor="#E8E9EB"
+        px={3}
+      >
+        <Menu
+          w={160}
+          mb={7}
+          trigger={(trigger) => {
+            return fileAttachment ? null : (
+              <Pressable {...trigger}>
+                <Icon as={<MaterialIcons name="add" />} size={6} />
+              </Pressable>
+            );
+          }}
+        >
+          <Menu.Item onPress={selectFile}>
+            <Icon as={<MaterialCommunityIcons name="file-document-outline" />} />
+            <Text>Document</Text>
+          </Menu.Item>
+          <Menu.Item onPress={pickImageHandler}>
+            <Icon as={<MaterialIcons name="photo" />} />
+            <Text>Photo</Text>
+          </Menu.Item>
+          <Menu.Item onPress={toggleProjectList}>
+            <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
+            <Text>Project</Text>
+          </Menu.Item>
+          <Menu.Item onPress={toggleTaskList}>
+            <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
+            <Text>Task</Text>
+          </Menu.Item>
+        </Menu>
+
+        <ProjectAttachment
+          projectListIsOpen={projectListIsOpen}
+          toggleProjectList={toggleProjectList}
+          bandAttachmentType={bandAttachmentType}
+          setBandAttachmentType={setBandAttachmentType}
+          onSelectBandAttachment={bandAttachmentSelectHandler}
+        />
+
+        <TaskAttachment
+          taskListIsOpen={taskListIsOpen}
+          toggleTaskList={toggleTaskList}
+          bandAttachmentType={bandAttachmentType}
+          setBandAttachmentType={setBandAttachmentType}
+          onSelectBandAttachment={bandAttachmentSelectHandler}
+        />
         <Input
-          h={60}
-          size="xl"
+          backgroundColor="#FFFFFF"
+          maxHeight={100}
+          width={300}
+          size="md"
           variant="unstyled"
           placeholder="Type a message..."
           multiline={true}
           value={formik.values.message}
           onChangeText={(value) => formik.setFieldValue("message", value)}
-          InputLeftElement={
-            <Flex direction="row" justifyContent="space-between" px={2}>
-              <Menu
-                w={160}
-                mb={7}
-                trigger={(trigger) => {
-                  return fileAttachment ? null : (
-                    <Pressable {...trigger} mr={1}>
-                      <Icon as={<MaterialIcons name="add" />} size={6} />
-                    </Pressable>
-                  );
-                }}
-              >
-                <Menu.Item onPress={selectFile}>
-                  <Icon as={<MaterialCommunityIcons name="file-document-outline" />} />
-                  <Text>Document</Text>
-                </Menu.Item>
-                <Menu.Item onPress={pickImageHandler}>
-                  <Icon as={<MaterialIcons name="photo" />} />
-                  <Text>Photo</Text>
-                </Menu.Item>
-                <Menu.Item onPress={toggleProjectList}>
-                  <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
-                  <Text>Project</Text>
-                </Menu.Item>
-                <Menu.Item onPress={toggleTaskList}>
-                  <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
-                  <Text>Task</Text>
-                </Menu.Item>
-              </Menu>
-
-              <ProjectAttachment
-                projectListIsOpen={projectListIsOpen}
-                toggleProjectList={toggleProjectList}
-                bandAttachmentType={bandAttachmentType}
-                setBandAttachmentType={setBandAttachmentType}
-                onSelectBandAttachment={bandAttachmentSelectHandler}
-              />
-
-              <TaskAttachment
-                taskListIsOpen={taskListIsOpen}
-                toggleTaskList={toggleTaskList}
-                bandAttachmentType={bandAttachmentType}
-                setBandAttachmentType={setBandAttachmentType}
-                onSelectBandAttachment={bandAttachmentSelectHandler}
-              />
-            </Flex>
-          }
-          InputRightElement={
-            <IconButton
-              onPress={formik.handleSubmit}
-              opacity={formik.values.message === "" && fileAttachment === null ? 0.5 : 1}
-              icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
-            />
-          }
+        />
+        <IconButton
+          onPress={formik.values.message === "" ? null : formik.handleSubmit}
+          opacity={formik.values.message === "" && fileAttachment === null ? 0.5 : 1}
+          icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
         />
       </FormControl>
     </>

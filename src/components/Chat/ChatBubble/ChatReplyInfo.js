@@ -17,9 +17,19 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView }) => {
   }, [message]);
 
   return (
-    <Flex px={2} py={2} backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"} flexDirection="row" alignItems="center">
-      <Flex>
-        <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+    <Flex
+      borderLeftColor="#37b4ea"
+      borderLeftWidth={5}
+      borderRadius={5}
+      px={2}
+      py={2}
+      gap={2}
+      backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
+      flexDirection="row"
+      alignItems="center"
+    >
+      <Flex width={mimeTypeInfo?.file_type === "image" ? 200 : null}>
+        <Text fontSize={12} fontWeight={700} color={!myMessage ? "#000000" : "#FFFFFF"}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
         <ChatMessageText message={message} myMessage={myMessage} />

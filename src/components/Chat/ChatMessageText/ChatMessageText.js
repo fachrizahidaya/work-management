@@ -35,34 +35,41 @@ const ChatMessageText = ({ message, myMessage, keyword = "" }) => {
       );
     } else if (attachment_type === "document") {
       return (
-        <>
-          <Icon as={<MaterialCommunityIcons name="file-outline" />} color={!myMessage ? "#000000" : "#FFFFFF"} />
+        <Flex alignItems="flex-start" flexDirection="row">
           <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+            <Icon as={<MaterialCommunityIcons name="file-outline" />} color={!myMessage ? "#000000" : "#FFFFFF"} />
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
-        </>
+        </Flex>
       );
     } else {
       if (message?.project_id) {
         return (
-          <>
-            <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color={!myMessage ? "#000000" : "#FFFFFF"} />
+          <Flex alignItems="flex-start" flexDirection="row">
             <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+              <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color={!myMessage ? "#000000" : "#FFFFFF"} />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
-          </>
+          </Flex>
         );
       } else if (message?.task_id) {
         return (
-          <>
-            <Icon as={<MaterialCommunityIcons name="check-underline" />} color={!myMessage ? "#000000" : "#FFFFFF"} />
+          <Flex alignItems="flex-start" flexDirection="row">
             <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+              <Icon
+                as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
+                color={!myMessage ? "#000000" : "#FFFFFF"}
+              />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
-          </>
+          </Flex>
         );
       } else {
-        return <Text color="#FFFFFF">{renderDangerouslyInnerHTMLContent(message?.message)}</Text>;
+        return (
+          <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+            {renderDangerouslyInnerHTMLContent(message?.message)}
+          </Text>
+        );
       }
     }
   };
