@@ -9,7 +9,7 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ConfirmationModal from "../../shared/ConfirmationModal";
 
-const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAttachment }) => {
+const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAttachment, type }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
@@ -51,9 +51,15 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
             <Menu.Item onPress={toggleSearch}>
               <Text>Search</Text>
             </Menu.Item>
-            <Menu.Item onPress={toggleDeleteModal}>
-              <Text color="red.600">Delete Chat</Text>
-            </Menu.Item>
+            {type === "group" ? (
+              <Menu.Item>
+                <Text>Exit Group</Text>
+              </Menu.Item>
+            ) : (
+              <Menu.Item onPress={toggleDeleteModal}>
+                <Text>Delete Chat</Text>
+              </Menu.Item>
+            )}
           </Menu>
 
           <ConfirmationModal

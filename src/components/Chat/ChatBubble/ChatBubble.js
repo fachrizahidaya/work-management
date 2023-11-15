@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
-import { Box, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "native-base";
+import { Box, Button, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,6 +14,7 @@ import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
 import ConfirmationModal from "../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import FormButton from "../../shared/FormButton";
 
 const ChatBubble = ({
   chat,
@@ -41,13 +42,15 @@ const ChatBubble = ({
   isActiveMember,
   isGrouped,
   reply_to,
+  deleteMessage,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
-  const myMessage = userSelector.id === fromUserId;
+  const myMessage = userSelector?.id === fromUserId;
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
@@ -60,28 +63,11 @@ const ChatBubble = ({
   };
 
   /**
-   * Handle delete message click from context menu
-   */
-  const messagDeleteHandler = () => {
-    if (selectedMessage) {
-      onMessageDelete(selectedMessage);
-      handleClose();
-    }
-  };
-
-  /**
    * Toggle fullscreen image
    */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
-  };
-
-  const messageReplyHandler = () => {
-    if (selectedMessage) {
-      onMessageReply(selectedMessage);
-      handleClose();
-    }
   };
 
   if (typeof content !== "number" || content.length > 1) {
@@ -175,7 +161,7 @@ const ChatBubble = ({
                     <Icon
                       as={<MaterialCommunityIcons name="chevron-down" />}
                       color={!myMessage ? "#000000" : "#FFFFFF"}
-                      size="sm"
+                      size="md"
                     />
                   </Pressable>
                 ) : null;
@@ -184,25 +170,57 @@ const ChatBubble = ({
               <Menu.Item>
                 <Text>Reply</Text>
               </Menu.Item>
-              <Menu.Item>
-                <Text color="red.600">Delete</Text>
+              <Menu.Item onPress={toggleDeleteModal}>
+                <Text>Delete</Text>
               </Menu.Item>
             </Menu>
-            <ConfirmationModal
-              isOpen={deleteModalIsOpen}
-              toggle={toggleDeleteModal}
-              header="Delete Chat"
-              description="Are you sure want to delete this chat?"
-              isDelete={true}
-              isPatch={false}
-              hasSuccessFunc={true}
-              apiUrl={`/chat/personal/${userId}`}
-              onSuccess={() => {
-                toggleDeleteModal();
-                navigation.goBack();
-              }}
-              successMessage="Chat Deleted"
-            />
+            <Modal isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
+              <Modal.Content>
+                <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="center">
+                  <Button onPress={toggleDeleteModal}>cancel</Button>
+                  <Button
+                    onPress={async () => {
+                      await deleteMessage(id, "me", setIsLoading);
+                      !isLoading && toggleDeleteModal();
+                    }}
+                  >
+                    <Text fontSize={10} fontWeight={400}>
+                      Delete for Me
+                    </Text>
+                  </Button>
+                  {/* <FormButton
+                    children="Delete for Me"
+                    isSubmitting={isLoading}
+                    onPress={async () => {
+                      await deleteMessage(id, "me", setIsLoading);
+                      !isLoading && toggleDeleteModal();
+                    }}
+                    setLoadingIndicator={setIsLoading}
+                  /> */}
+                  {myMessage && !isDeleted && (
+                    <Button
+                      onPress={async () => {
+                        await deleteMessage(id, "everyone", setIsLoading);
+                        !isLoading && toggleDeleteModal();
+                      }}
+                    >
+                      <Text fontSize={10} fontWeight={400}>
+                        Delete for Everyone
+                      </Text>
+                    </Button>
+                    // <FormButton
+                    //   isSubmitting={isLoading}
+                    //   children="Delete for Everyone"
+                    //   onPress={async () => {
+                    //     await deleteMessage(id, "everyone", setIsLoading);
+                    //     !isLoading && toggleDeleteModal();
+                    //   }}
+                    //   setLoadingIndicator={setIsLoading}
+                    // />
+                  )}
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
           </Flex>
           {!isDeleted ? (
             <>
@@ -293,7 +311,7 @@ const ChatBubble = ({
           <Box
             position="absolute"
             bottom={0}
-            left={0}
+            left={type === "group" && !myMessage ? 10 : 0}
             width={15}
             height={5}
             backgroundColor={!myMessage ? "#FFFFFF" : "primary.600"}

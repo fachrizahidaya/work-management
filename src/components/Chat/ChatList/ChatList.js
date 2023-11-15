@@ -20,7 +20,7 @@ const ChatList = ({
   fileAttachment,
   setFileAttachment,
   fetchChataMessageHandler,
-  forceRerender,
+  deleteMessage,
 }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -159,7 +159,6 @@ const ChatList = ({
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
         data={chatReversed}
-        extraData={forceRerender}
         renderItem={({ item, index }) => (
           <>
             {chatReversed[index + 1] ? (
@@ -197,6 +196,7 @@ const ChatList = ({
               // isActiveMember={}
               isGrouped={messageIsGrouped(item, chatReversed[index - 1])}
               fileAttachment={fileAttachment}
+              deleteMessage={deleteMessage}
             />
           </>
         )}

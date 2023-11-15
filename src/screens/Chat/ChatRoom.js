@@ -111,7 +111,7 @@ const ChatRoom = () => {
         });
 
         setChatList((currentChats) => {
-          if (currentChats.length !== currentChats.length + res.data.data.length) {
+          if (currentChats.length !== currentChats.length + res?.data?.data.length) {
             return [...res?.data?.data, ...currentChats];
           } else {
             setHasMore(false);
@@ -134,10 +134,8 @@ const ChatRoom = () => {
   const sendMessage = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/${type}/message`, form);
-      fetchChatMessageHandler();
       setSubmitting(false);
       setStatus("success");
-      setForceRerender(!forceRerender);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
@@ -185,8 +183,8 @@ const ChatRoom = () => {
         prevState.splice(index, 1);
       } else if (chatMessageObj.type === "Delete for Everyone") {
         prevState[index].delete_for_everyone = 1;
-        return [...prevState];
       }
+      return [...prevState];
     });
   };
 
@@ -353,7 +351,14 @@ const ChatRoom = () => {
 
   return (
     <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
-      <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
+      <ChatHeader
+        name={name}
+        image={image}
+        navigation={navigation}
+        userId={userId}
+        fileAttachment={fileAttachment}
+        type={type}
+      />
 
       <ChatList
         type={type}
@@ -361,6 +366,7 @@ const ChatRoom = () => {
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}
         deleteMessageDialogOpenHandler={deleteMessageDialogOpenHandler}
+        deleteMessage={messagedeleteHandler}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
         fetchChataMessageHandler={fetchChatMessageHandler}
