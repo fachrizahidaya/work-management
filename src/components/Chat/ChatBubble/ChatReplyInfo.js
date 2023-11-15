@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+import { Flex, Image, Text } from "native-base";
+
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
-import { Box, Flex, Image, Text } from "native-base";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
 const ChatReplyInfo = ({ message, myMessage, chatBubbleView }) => {

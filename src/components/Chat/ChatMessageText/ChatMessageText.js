@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Flex, Icon, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
 const ChatMessageText = ({ message, myMessage, keyword = "" }) => {

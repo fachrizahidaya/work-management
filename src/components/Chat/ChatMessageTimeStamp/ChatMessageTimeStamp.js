@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 import { Badge, Box } from "native-base";
-import dayjs from "dayjs";
+
 var isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
 

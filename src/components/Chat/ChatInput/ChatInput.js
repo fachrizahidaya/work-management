@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Flex, FormControl, Icon, IconButton, Input, Menu, Modal, Pressable, Text } from "native-base";
+import { FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
+import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import { FlashList } from "@shopify/flash-list";
 import ProjectAttachment from "../Attachment/ProjectAttachment";
 import TaskAttachment from "../Attachment/TaskAttachment";
 

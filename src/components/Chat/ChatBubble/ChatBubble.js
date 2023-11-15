@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import dayjs from "dayjs";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { Box, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "native-base";
@@ -9,12 +8,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
-import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 import FileAttachment from "../Attachment/FileAttachment";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
 import ConfirmationModal from "../../shared/ConfirmationModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ChatBubble = ({
   chat,
@@ -52,6 +51,8 @@ const ChatBubble = ({
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
+
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -187,21 +188,21 @@ const ChatBubble = ({
                 <Text color="red.600">Delete</Text>
               </Menu.Item>
             </Menu>
-            {/* <ConfirmationModal
-          isOpen={deleteModalIsOpen}
-          toggle={toggleDeleteModal}
-          header="Delete Chat"
-          description="Are you sure want to delete this chat?"
-          isDelete={true}
-          isPatch={false}
-          hasSuccessFunc={true}
-          apiUrl={`/chat/personal/${userId}`}
-          onSuccess={() => {
-            toggleDeleteModal();
-            navigation.goBack();
-          }}
-          successMessage="Chat Deleted"
-        /> */}
+            <ConfirmationModal
+              isOpen={deleteModalIsOpen}
+              toggle={toggleDeleteModal}
+              header="Delete Chat"
+              description="Are you sure want to delete this chat?"
+              isDelete={true}
+              isPatch={false}
+              hasSuccessFunc={true}
+              apiUrl={`/chat/personal/${userId}`}
+              onSuccess={() => {
+                toggleDeleteModal();
+                navigation.goBack();
+              }}
+              successMessage="Chat Deleted"
+            />
           </Flex>
           {!isDeleted ? (
             <>

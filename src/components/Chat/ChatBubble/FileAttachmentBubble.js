@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import { Flex, Icon, Image, Pressable, Text } from "native-base";
 import { Linking } from "react-native";
+import { Flex, Icon, Image, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
