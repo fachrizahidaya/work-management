@@ -6,7 +6,7 @@ import { Flex, Image, Text } from "native-base";
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, chatBubbleView }) => {
+const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const loggedInUser = useSelector((state) => state.auth);
 
@@ -34,7 +34,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView }) => {
         <Text fontSize={12} fontWeight={700} color={!myMessage ? "#000000" : "#FFFFFF"}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
-        <ChatMessageText message={message} myMessage={myMessage} />
+        <ChatMessageText message={message} myMessage={myMessage} type={type} />
       </Flex>
       {mimeTypeInfo?.file_type === "image" && (
         <Image

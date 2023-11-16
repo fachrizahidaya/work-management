@@ -32,6 +32,7 @@ const ChatRoom = () => {
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
   const [forceRerender, setForceRerender] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -44,19 +45,7 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
 
-  const { name, userId, image, type } = route.params;
-
-  /**
-   * Message delete dialog control
-   * @param {*} message
-   */
-  const deleteMessageDialogOpenHandler = (message) => {
-    setMessageToDelete(message);
-    setDeleteMessageDialogOpen(true);
-  };
-  const deleteMessageDialogCloseHandler = () => {
-    setDeleteMessageDialogOpen(true);
-  };
+  const { name, userId, image, type, active_member, setForceRender, forceRender } = route.params;
 
   /**
    * Event listener for new personal chat messages
@@ -68,7 +57,7 @@ const ChatRoom = () => {
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
         if (event.data.type === "New") {
-          setChatList((prevState) => [...prevState, event.data]);
+          setChatList((prevState) => [event.data, ...prevState]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -86,7 +75,7 @@ const ChatRoom = () => {
     if (userSelector?.id && currentGroup) {
       laravelEcho.channel(`group.chat.${currentGroup}.${userSelector?.id}`).listen(".group.chat", (event) => {
         if (event.data.type === "New") {
-          setChatList((prevState) => [...prevState, event.data]);
+          setChatList((prevState) => [event.data, ...prevState]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -107,12 +96,13 @@ const ChatRoom = () => {
           params: {
             offset: offset,
             limit: 20,
+            sort: "desc",
           },
         });
 
         setChatList((currentChats) => {
           if (currentChats.length !== currentChats.length + res?.data?.data.length) {
-            return [...res?.data?.data, ...currentChats];
+            return [...currentChats, ...res?.data?.data];
           } else {
             setHasMore(false);
             return currentChats;
@@ -131,7 +121,7 @@ const ChatRoom = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const sendMessage = async (form, setSubmitting, setStatus) => {
+  const sendMessageHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/${type}/message`, form);
       setSubmitting(false);
@@ -181,7 +171,7 @@ const ChatRoom = () => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
       if (chatMessageObj.type === "Delete For Me") {
         prevState.splice(index, 1);
-      } else if (chatMessageObj.type === "Delete for Everyone") {
+      } else if (chatMessageObj.type === "Delete For Everyone") {
         prevState[index].delete_for_everyone = 1;
       }
       return [...prevState];
@@ -358,6 +348,9 @@ const ChatRoom = () => {
         userId={userId}
         fileAttachment={fileAttachment}
         type={type}
+        active_member={active_member}
+        setForceRender={setForceRender}
+        forceRender={forceRender}
       />
 
       <ChatList
@@ -365,11 +358,11 @@ const ChatRoom = () => {
         chatList={chatList}
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}
-        deleteMessageDialogOpenHandler={deleteMessageDialogOpenHandler}
         deleteMessage={messagedeleteHandler}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
-        fetchChataMessageHandler={fetchChatMessageHandler}
+        fetchChatMessageHandler={fetchChatMessageHandler}
+        forceRerender={forceRerender}
       />
 
       <ChatInput
@@ -378,7 +371,7 @@ const ChatRoom = () => {
         fileAttachment={fileAttachment}
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
-        sendMessage={sendMessage}
+        sendMessage={sendMessageHandler}
         setFileAttachment={(file) => {
           setFileAttachment(file);
           setBandAttachment(null);
@@ -393,6 +386,7 @@ const ChatRoom = () => {
         }}
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}
+        active_member={active_member}
       />
     </SafeAreaView>
   );

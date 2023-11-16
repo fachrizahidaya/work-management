@@ -8,13 +8,10 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
-import FileAttachment from "../Attachment/FileAttachment";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
-import ConfirmationModal from "../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import FormButton from "../../shared/FormButton";
 
 const ChatBubble = ({
   chat,
@@ -24,11 +21,7 @@ const ChatBubble = ({
   id,
   content,
   time,
-  onMessageDelete,
-  onMessageReply,
-  chatList,
   type,
-  index,
   fileAttachment,
   file_path,
   file_name,
@@ -39,12 +32,12 @@ const ChatBubble = ({
   band_attachment_type,
   band_attachment_title,
   isDeleted,
-  isActiveMember,
   isGrouped,
   reply_to,
   deleteMessage,
+  messageToReply,
+  setMessageToReply,
 }) => {
-  const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,11 +50,6 @@ const ChatBubble = ({
 
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMenuOpen(false);
-  };
-
   /**
    * Toggle fullscreen image
    */
@@ -70,9 +58,10 @@ const ChatBubble = ({
     setIsFullScreen(!isFullScreen);
   };
 
+  let styledTexts = null;
   if (typeof content !== "number" || content.length > 1) {
     const words = content?.split(" ");
-    var styledTexts = words?.map((item, index) => {
+    styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
 
       if (item.includes("https")) {
@@ -139,6 +128,7 @@ const ChatBubble = ({
           px={1.5}
           bgColor={!myMessage ? "white" : "primary.600"}
           maxW={280}
+          justifyContent="center"
           flexDirection={
             type === "group" && name && !myMessage
               ? "column"
@@ -150,7 +140,6 @@ const ChatBubble = ({
               ? "column"
               : "row"
           }
-          justifyContent="center"
         >
           <Flex flexDirection="row-reverse">
             <Menu
@@ -167,7 +156,11 @@ const ChatBubble = ({
                 ) : null;
               }}
             >
-              <Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  setMessageToReply(chat);
+                }}
+              >
                 <Text>Reply</Text>
               </Menu.Item>
               <Menu.Item onPress={toggleDeleteModal}>
@@ -177,26 +170,22 @@ const ChatBubble = ({
             <Modal isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
               <Modal.Content>
                 <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="center">
-                  <Button onPress={toggleDeleteModal}>cancel</Button>
+                  <Button onPress={toggleDeleteModal}>
+                    <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+                      Cancel
+                    </Text>
+                  </Button>
                   <Button
                     onPress={async () => {
                       await deleteMessage(id, "me", setIsLoading);
                       !isLoading && toggleDeleteModal();
                     }}
                   >
-                    <Text fontSize={10} fontWeight={400}>
+                    <Text fontSize={12} fontWeight={400} color="#FFFFFF">
                       Delete for Me
                     </Text>
                   </Button>
-                  {/* <FormButton
-                    children="Delete for Me"
-                    isSubmitting={isLoading}
-                    onPress={async () => {
-                      await deleteMessage(id, "me", setIsLoading);
-                      !isLoading && toggleDeleteModal();
-                    }}
-                    setLoadingIndicator={setIsLoading}
-                  /> */}
+
                   {myMessage && !isDeleted && (
                     <Button
                       onPress={async () => {
@@ -204,19 +193,10 @@ const ChatBubble = ({
                         !isLoading && toggleDeleteModal();
                       }}
                     >
-                      <Text fontSize={10} fontWeight={400}>
+                      <Text fontSize={12} fontWeight={400} color="#FFFFFF">
                         Delete for Everyone
                       </Text>
                     </Button>
-                    // <FormButton
-                    //   isSubmitting={isLoading}
-                    //   children="Delete for Everyone"
-                    //   onPress={async () => {
-                    //     await deleteMessage(id, "everyone", setIsLoading);
-                    //     !isLoading && toggleDeleteModal();
-                    //   }}
-                    //   setLoadingIndicator={setIsLoading}
-                    // />
                   )}
                 </Modal.Body>
               </Modal.Content>
@@ -224,7 +204,7 @@ const ChatBubble = ({
           </Flex>
           {!isDeleted ? (
             <>
-              {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} />}
+              {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />}
               {type === "group" && name && !myMessage && <Text color={!myMessage ? "grey" : "white"}>{name}</Text>}
               {file_path && (
                 <>

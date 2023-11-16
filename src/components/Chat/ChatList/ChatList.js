@@ -16,13 +16,12 @@ const ChatList = ({
   chatList,
   messageToReply,
   setMessageToReply,
-  deleteMessageDialogOpenHandler,
   fileAttachment,
   setFileAttachment,
-  fetchChataMessageHandler,
+  fetchChatMessageHandler,
   deleteMessage,
+  forceRerender,
 }) => {
-  const [selectedMessage, setSelectedMessage] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [elementsRendered, setElementsRendered] = useState(0);
@@ -30,38 +29,6 @@ const ChatList = ({
   const [chatReversed, setChatReversed] = useState(null);
 
   const chatBoxRef = useRef;
-
-  const handleClick = (index, event, selected_message) => {
-    setAnchorEl({ [index]: event.currentTarget });
-    setMenuOpen(true);
-    setSelectedMessage(selected_message);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMenuOpen(false);
-  };
-
-  const messageDeleteHandler = () => {
-    if (selectedMessage) {
-      deleteMessageDialogOpenHandler(selectedMessage);
-      handleClose();
-    }
-  };
-
-  const messageReplyHandler = () => {
-    if (selectedMessage) {
-      setMessageToReply(selectedMessage);
-      handleClose();
-    }
-  };
-
-  const scrollToBottom = () => {
-    if (chatBoxRef.current) {
-      const element = chatBoxRef.current;
-      element.scrollTop = element.scrollHeight + 10;
-    }
-  };
 
   /**
    * Decide when user avatar should be rendered at
@@ -84,7 +51,7 @@ const ChatList = ({
         return currentMessage?.user?.image;
       }
     },
-    [chatReversed]
+    [chatList]
   );
 
   /**
@@ -108,7 +75,7 @@ const ChatList = ({
         return currentMessage?.user?.name;
       }
     },
-    [chatReversed]
+    [chatList]
   );
 
   /**
@@ -129,25 +96,8 @@ const ChatList = ({
         return false;
       }
     },
-    [chatReversed]
+    [chatList]
   );
-
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       setElementsRendered(chatList.length);
-  //     }, 150);
-  //     setHasBeenScrolled(false);
-  //   }, [chatList]);
-
-  //   useEffect(() => {
-  //     if (elementsRendered === chatList.length && offset === 20) {
-  //       scrollToBottom();
-  //     }
-  //   }, [elementsRendered, offset]);
-
-  useEffect(() => {
-    setChatReversed([...chatList].reverse());
-  }, [chatList]);
 
   return (
     <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
@@ -155,14 +105,15 @@ const ChatList = ({
         inverted
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
-        onEndReached={hasBeenScrolled ? () => fetchChataMessageHandler() : null}
+        onEndReached={hasBeenScrolled ? () => fetchChatMessageHandler() : null}
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
-        data={chatReversed}
+        data={chatList}
+        extraData={forceRerender}
         renderItem={({ item, index }) => (
           <>
-            {chatReversed[index + 1] ? (
-              !dayjs(item?.created_at).isSame(dayjs(chatReversed[index + 1]?.created_at), "date") ? (
+            {chatList[index + 1] ? (
+              !dayjs(item?.created_at).isSame(dayjs(chatList[index + 1]?.created_at), "date") ? (
                 <>
                   <ChatMessageTimeStamp key={`${item?.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
                 </>
@@ -173,10 +124,9 @@ const ChatList = ({
               <ChatMessageTimeStamp key={`${item?.id}_${index}_timestamp-group`} timestamp={item?.created_at} />
             )}
             <ChatBubble
-              index={index}
               chat={item}
-              name={userNameRenderCheck(chatReversed[index + 1], item)}
-              image={userImageRenderCheck(item, chatReversed[index - 1])}
+              name={userNameRenderCheck(chatList[index + 1], item)}
+              image={userImageRenderCheck(item, chatList[index - 1])}
               fromUserId={item?.from_user_id}
               id={item?.id}
               content={item?.message}
@@ -190,13 +140,14 @@ const ChatList = ({
               band_attachment_no={item?.project_no ? item?.project_no : item?.task_no}
               band_attachment_type={item?.project_id ? "Project" : "Task"}
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
-              chatList={chatList}
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
               // isActiveMember={}
-              isGrouped={messageIsGrouped(item, chatReversed[index - 1])}
+              isGrouped={messageIsGrouped(item, chatList[index - 1])}
               fileAttachment={fileAttachment}
               deleteMessage={deleteMessage}
+              messageToReply={messageToReply}
+              setMessageToReply={setMessageToReply}
             />
           </>
         )}

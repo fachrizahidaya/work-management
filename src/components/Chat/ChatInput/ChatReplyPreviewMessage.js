@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
-const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
+const ChatReplyPreviewMessage = ({ message, myMessage, keyword = "", type }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
@@ -28,11 +28,8 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     if (attachment_type === "image") {
       return (
         <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-            <Icon
-              as={<MaterialCommunityIcons name="image" />}
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
-            />
+          <Text fontSize={12} fontWeight={400} color="#000000">
+            <Icon as={<MaterialCommunityIcons name="image" />} color="#000000" />
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
           </Text>
         </Flex>
@@ -40,11 +37,8 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     } else if (attachment_type === "document") {
       return (
         <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-            <Icon
-              as={<MaterialCommunityIcons name="file-outline" />}
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
-            />
+          <Text fontSize={12} fontWeight={400} color="#000000">
+            <Icon as={<MaterialCommunityIcons name="file-outline" />} color="#000000" />
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
         </Flex>
@@ -53,11 +47,8 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       if (message?.project_id) {
         return (
           <Flex alignItems="flex-start" flexDirection="row">
-            <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-              <Icon
-                as={<MaterialCommunityIcons name="lightning-bolt" />}
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
-              />
+            <Text fontSize={12} fontWeight={400} color="#000000">
+              <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color="#000000" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
           </Flex>
@@ -65,26 +56,15 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       } else if (message?.task_id) {
         return (
           <Flex alignItems="flex-start" flexDirection="row">
-            <Text
-              fontSize={12}
-              fontWeight={400}
-              color={!myMessage ? "#000000" : type === "group" ? "#000000" : "#FFFFFF"}
-            >
-              <Icon
-                as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
-              />
+            <Text fontSize={12} fontWeight={400} color="#000000">
+              <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} color="#000000" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
           </Flex>
         );
       } else {
         return (
-          <Text
-            fontSize={12}
-            fontWeight={400}
-            color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
-          >
+          <Text fontSize={12} fontWeight={400} color="#000000">
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
         );
@@ -103,4 +83,4 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
   );
 };
 
-export default ChatMessageText;
+export default ChatReplyPreviewMessage;

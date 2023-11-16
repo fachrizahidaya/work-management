@@ -2,7 +2,6 @@ import { FlashList } from "@shopify/flash-list";
 import { Box, Flex, Input, Modal, Text } from "native-base";
 import React, { useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
-import ProjectTaskAttachmentItem from "./ProjectTaskAttachmentItem";
 
 const ProjectAttachment = ({
   projectListIsOpen,
