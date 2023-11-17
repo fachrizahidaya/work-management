@@ -29,6 +29,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
             id={group.id}
             name={group.name}
             image={group.image}
+            position={null}
             message={group.latest_message?.message}
             fileName={group.latest_message?.file_name}
             project={group.latest_message?.project_id}

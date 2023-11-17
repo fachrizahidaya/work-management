@@ -30,8 +30,6 @@ const ChatRoom = () => {
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
-  const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
-  const [forceRerender, setForceRerender] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   window.Pusher = Pusher;
@@ -45,7 +43,7 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
 
-  const { name, userId, image, type, active_member, setForceRender, forceRender } = route.params;
+  const { name, userId, image, type, active_member, setForceRender, forceRender, position } = route.params;
 
   /**
    * Event listener for new personal chat messages
@@ -109,8 +107,8 @@ const ChatRoom = () => {
           }
         });
         setOffset((prevState) => prevState + 20);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     }
   };
@@ -123,11 +121,15 @@ const ChatRoom = () => {
    */
   const sendMessageHandler = async (form, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      const res = await axiosInstance.post(`/chat/${type}/message`, form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
       setSubmitting(false);
       setStatus("success");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       setSubmitting(false);
       setStatus("error");
     }
@@ -220,7 +222,6 @@ const ChatRoom = () => {
       // Check if there is selected file
       if (result) {
         if (result.assets[0].size < 3000001) {
-          // formData format
           setFileAttachment({
             name: result.assets[0].name,
             size: result.assets[0].size,
@@ -228,45 +229,14 @@ const ChatRoom = () => {
             uri: result.assets[0].uri,
             webkitRelativePath: "",
           });
-
-          // Call upload handler and send formData to the api
-          // handleUploadFile(formData);
         } else {
           Alert.alert("Max file size is 3MB");
         }
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
-
-  // const handleUploadFile = async (formData) => {
-  //   try {
-  //     // Sending the formData to backend
-  //     await axiosInstance.post("/pm/projects/attachment", formData, {
-  //       headers: {
-  //         "content-type": "multipart/form-data",
-  //       },
-  //     });
-  //     // Refetch project's attachments
-  //     refetchAttachments();
-
-  //     // Display toast if success
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     // Display toast if error
-  //     toast.show({
-  //       render: ({ id }) => {
-  //         return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-  //       },
-  //     });
-  //   }
-  // };
 
   /**
    * Clean all state after change chat
@@ -344,6 +314,7 @@ const ChatRoom = () => {
       <ChatHeader
         name={name}
         image={image}
+        position={position}
         navigation={navigation}
         userId={userId}
         fileAttachment={fileAttachment}
@@ -362,7 +333,10 @@ const ChatRoom = () => {
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
         fetchChatMessageHandler={fetchChatMessageHandler}
-        forceRerender={forceRerender}
+        bandAttachment={bandAttachment}
+        setBandAttachment={setBandAttachment}
+        bandAttachmentType={bandAttachmentType}
+        setBandAttachmentType={setBandAttachmentType}
       />
 
       <ChatInput

@@ -16,6 +16,7 @@ const ChatHeader = ({
   navigation,
   name,
   image,
+  position,
   userId,
   fileAttachment,
   type,
@@ -25,8 +26,8 @@ const ChatHeader = ({
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
+
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -90,7 +91,7 @@ const ChatHeader = ({
 
           <Box>
             <Text fontSize={16}>{name}</Text>
-            <Text>Project Analyst</Text>
+            {type === "personal" ? <Text>{position}</Text> : <Text></Text>}
           </Box>
         </Flex>
 
