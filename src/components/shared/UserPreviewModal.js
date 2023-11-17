@@ -5,8 +5,8 @@ import { Avatar, Modal, Text, VStack } from "native-base";
 const UserPreviewModal = ({ isOpen, onClose, name, image, email, stringToColor, userInitialGenerator }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <Modal.Content>
-        <Modal.Body bgColor="white">
+      <Modal.Content py={25} bgColor="white">
+        <Modal.Body>
           <VStack alignItems="center" space={2}>
             {image ? (
               <Avatar
