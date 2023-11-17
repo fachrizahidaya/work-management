@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { useSelector } from "react-redux";
-
 import { SafeAreaView, StyleSheet } from "react-native";
 
 import axiosInstance from "../../config/api";
-import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
-import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
+import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
+import { useCallback } from "react";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -24,13 +24,10 @@ const ChatRoom = () => {
   const [fileAttachment, setFileAttachment] = useState(null);
   const [previousUser, setPreviousUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [currentGroup, setCurrentGroup] = useState(null);
-  const [previousGroup, setPreviousGroup] = useState(null);
   const [bandAttachment, setBandAttachment] = useState(null);
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
-  const [selectedMessage, setSelectedMessage] = useState(null);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -67,11 +64,11 @@ const ChatRoom = () => {
    * Event listener for new group chat messages
    */
   const groupChatMessageEvent = () => {
-    if (userSelector?.id && previousGroup) {
-      laravelEcho.leaveChannel(`group.chat.${previousGroup}.${userSelector?.id}`);
+    if (userSelector?.id && previousUser) {
+      laravelEcho.leaveChannel(`group.chat.${previousUser}.${userSelector?.id}`);
     }
-    if (userSelector?.id && currentGroup) {
-      laravelEcho.channel(`group.chat.${currentGroup}.${userSelector?.id}`).listen(".group.chat", (event) => {
+    if (userSelector?.id && currentUser) {
+      laravelEcho.channel(`group.chat.${currentUser}.${userSelector?.id}`).listen(".group.chat", (event) => {
         if (event.data.type === "New") {
           setChatList((prevState) => [event.data, ...prevState]);
         } else {
@@ -262,44 +259,18 @@ const ChatRoom = () => {
         }
       }
     } else if (type === "group") {
-      if (currentGroup) {
-        fetchChatMessage(type, currentGroup);
+      if (currentUser) {
+        fetchChatMessage(type, currentUser);
         if (read) {
-          messageReadHandler(type, currentGroup);
+          messageReadHandler(type, currentUser);
         }
       }
     }
   };
 
   useEffect(() => {
-    personalChatMessageEvent();
-  }, [currentUser]);
-
-  useEffect(() => {
-    groupChatMessageEvent();
-  }, [currentGroup]);
-
-  useEffect(() => {
-    setChatList([]);
-    setCurrentUser(userId);
-    setPreviousUser(currentUser);
-    setHasMore(true);
-    setOffset(0);
-    clearAdditionalContentActionState();
-  }, [userId]);
-
-  useEffect(() => {
-    setChatList([]);
-    setCurrentGroup(userId);
-    setPreviousGroup(currentGroup);
-    setHasMore(true);
-    setOffset(0);
-    clearAdditionalContentActionState();
-  }, [userId]);
-
-  useEffect(() => {
     fetchChatMessageHandler(true);
-  }, [currentUser, currentGroup, type]);
+  }, [currentUser, type]);
 
   useEffect(() => {
     const { routes } = navigation.getState();
@@ -308,6 +279,34 @@ const ChatRoom = () => {
     );
     navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      /**
+       * When screen is focused
+       */
+      setCurrentUser(userId);
+      setPreviousUser(currentUser);
+      setHasMore(true);
+      setOffset(0);
+      clearAdditionalContentActionState();
+      personalChatMessageEvent();
+      groupChatMessageEvent();
+
+      // Clean up function (optional)
+      return () => {
+        /**
+         * When screen is unfocused
+         */
+        setChatList([]);
+        setCurrentUser(null);
+        setPreviousUser(currentUser);
+        setHasMore(true);
+        setOffset(0);
+        clearAdditionalContentActionState();
+      };
+    }, [userId, currentUser])
+  );
 
   return (
     <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>

@@ -182,7 +182,7 @@ const ChatBubble = ({
                     </Text>
                   </Button>
 
-                  {myMessage && !isDeleted && (
+                  {myMessage && (
                     <Button
                       onPress={async () => {
                         await deleteMessage(id, "everyone", setIsLoading);
