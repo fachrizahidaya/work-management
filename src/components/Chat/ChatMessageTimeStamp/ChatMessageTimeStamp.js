@@ -3,6 +3,9 @@ import dayjs from "dayjs";
 
 import { Badge, Box } from "native-base";
 
+/**
+ * this import to run isBetween from dayjs
+ */
 var isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
 

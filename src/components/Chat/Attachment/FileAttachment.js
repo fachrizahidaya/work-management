@@ -1,4 +1,4 @@
-import { Box, Icon, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -19,11 +19,18 @@ const FileAttachment = ({ file, setFile }) => {
   };
 
   return (
-    <Box alignItems="center">
-      <Icon as={<MaterialCommunityIcons name="file-pdf-box" />} size={250} />
-      <Text>No Preview Available</Text>
-      <Text>{formatBytes(file.size)}</Text>
-    </Box>
+    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
+      <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
+        <Pressable onPress={() => setFile(null)}>
+          <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
+        </Pressable>
+      </Flex>
+      <Box alignItems="center">
+        <Icon as={<MaterialCommunityIcons name="file-pdf-box" />} size={250} />
+        <Text>No Preview Available</Text>
+        <Text>{formatBytes(file.size)}</Text>
+      </Box>
+    </Flex>
   );
 };
 

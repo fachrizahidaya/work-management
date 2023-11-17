@@ -6,12 +6,12 @@ import { Box, Button, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "na
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ChatBubble = ({
   chat,
@@ -22,7 +22,6 @@ const ChatBubble = ({
   content,
   time,
   type,
-  fileAttachment,
   file_path,
   file_name,
   file_type,
@@ -35,11 +34,8 @@ const ChatBubble = ({
   isGrouped,
   reply_to,
   deleteMessage,
-  messageToReply,
   setMessageToReply,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
@@ -186,7 +182,7 @@ const ChatBubble = ({
                     </Text>
                   </Button>
 
-                  {myMessage && !isDeleted && (
+                  {myMessage && (
                     <Button
                       onPress={async () => {
                         await deleteMessage(id, "everyone", setIsLoading);
