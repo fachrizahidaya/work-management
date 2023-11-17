@@ -118,7 +118,7 @@ const ChatBubble = ({
           <Box ml={8}></Box>
         ) : null}
         <Flex
-          borderRadius={5}
+          borderRadius={10}
           my={1}
           py={1.5}
           px={1.5}
@@ -137,67 +137,7 @@ const ChatBubble = ({
               : "row"
           }
         >
-          <Flex flexDirection="row-reverse">
-            <Menu
-              ml={12}
-              trigger={(trigger) => {
-                return !isDeleted ? (
-                  <Pressable {...trigger}>
-                    <Icon
-                      as={<MaterialCommunityIcons name="chevron-down" />}
-                      color={!myMessage ? "#000000" : "#FFFFFF"}
-                      size="md"
-                    />
-                  </Pressable>
-                ) : null;
-              }}
-            >
-              <Menu.Item
-                onPress={() => {
-                  setMessageToReply(chat);
-                }}
-              >
-                <Text>Reply</Text>
-              </Menu.Item>
-              <Menu.Item onPress={toggleDeleteModal}>
-                <Text>Delete</Text>
-              </Menu.Item>
-            </Menu>
-            <Modal isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
-              <Modal.Content>
-                <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="center">
-                  <Button onPress={toggleDeleteModal}>
-                    <Text fontSize={12} fontWeight={400} color="#FFFFFF">
-                      Cancel
-                    </Text>
-                  </Button>
-                  <Button
-                    onPress={async () => {
-                      await deleteMessage(id, "me", setIsLoading);
-                      !isLoading && toggleDeleteModal();
-                    }}
-                  >
-                    <Text fontSize={12} fontWeight={400} color="#FFFFFF">
-                      Delete for Me
-                    </Text>
-                  </Button>
-
-                  {myMessage && (
-                    <Button
-                      onPress={async () => {
-                        await deleteMessage(id, "everyone", setIsLoading);
-                        !isLoading && toggleDeleteModal();
-                      }}
-                    >
-                      <Text fontSize={12} fontWeight={400} color="#FFFFFF">
-                        Delete for Everyone
-                      </Text>
-                    </Button>
-                  )}
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
-          </Flex>
+          <Flex flexDirection="row-reverse"></Flex>
           {!isDeleted ? (
             <>
               {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />}
@@ -274,25 +214,107 @@ const ChatBubble = ({
             ""
           )}
 
-          <Text
-            mt={type === "group" && name && !myMessage ? null : 2.5}
-            alignSelf="flex-end"
-            fontSize={10}
-            color="#578A90"
-          >
-            {time}
-          </Text>
+          <Flex flexDirection="row" alignItems="center" justifyContent="flex-end">
+            <Text
+              mt={type === "group" && name && !myMessage ? null : 1.5}
+              alignSelf="flex-end"
+              fontSize={10}
+              color="#578A90"
+            >
+              {time}
+            </Text>
+            <Menu
+              ml={12}
+              trigger={(trigger) => {
+                return !isDeleted ? (
+                  <Pressable {...trigger}>
+                    <Icon
+                      as={<MaterialCommunityIcons name="chevron-down" />}
+                      color={!myMessage ? "#000000" : "#FFFFFF"}
+                      size="md"
+                    />
+                  </Pressable>
+                ) : null;
+              }}
+            >
+              <Menu.Item
+                onPress={() => {
+                  setMessageToReply(chat);
+                }}
+              >
+                <Text>Reply</Text>
+              </Menu.Item>
+              <Menu.Item onPress={toggleDeleteModal}>
+                <Text>Delete</Text>
+              </Menu.Item>
+            </Menu>
+          </Flex>
+          <Modal isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
+            <Modal.Content>
+              <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="center">
+                <Button onPress={toggleDeleteModal}>
+                  <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+                    Cancel
+                  </Text>
+                </Button>
+                <Button
+                  onPress={async () => {
+                    await deleteMessage(id, "me", setIsLoading);
+                    !isLoading && toggleDeleteModal();
+                  }}
+                >
+                  <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+                    Delete for Me
+                  </Text>
+                </Button>
+
+                {myMessage && (
+                  <Button
+                    onPress={async () => {
+                      await deleteMessage(id, "everyone", setIsLoading);
+                      !isLoading && toggleDeleteModal();
+                    }}
+                  >
+                    <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+                      Delete for Everyone
+                    </Text>
+                  </Button>
+                )}
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
         </Flex>
         {!isGrouped && (
           <Box
             position="absolute"
-            bottom={0}
-            left={type === "group" && !myMessage ? 10 : 0}
+            bottom={1}
+            left={
+              type === "group" && !myMessage
+                ? 9
+                : type === "group" && myMessage
+                ? 0
+                : type === "personal" && !myMessage
+                ? 0
+                : 0
+            }
             width={15}
             height={5}
             backgroundColor={!myMessage ? "#FFFFFF" : "primary.600"}
             borderBottomRadius={50}
-            style={{ transform: [{ rotate: !myMessage ? "250deg" : "100deg" }] }}
+            style={{
+              transform: [
+                {
+                  rotate:
+                    type === "personal" && !myMessage
+                      ? "180deg"
+                      : type === "group" && !myMessage
+                      ? "180deg"
+                      : type === "group" && myMessage
+                      ? "180deg"
+                      : "180deg",
+                },
+              ],
+            }}
             zIndex={-1}
           ></Box>
         )}
