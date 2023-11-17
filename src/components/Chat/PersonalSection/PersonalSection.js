@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
+const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -37,6 +37,9 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
               isDeleted={personal.latest_message?.delete_for_everyone}
               time={personal.latest_message?.created_time}
               timestamp={personal.latest_message?.created_at}
+              active_member={0}
+              setForceRerender={setForceRerender}
+              forceRerender={forceRerender}
             />
           );
         })}

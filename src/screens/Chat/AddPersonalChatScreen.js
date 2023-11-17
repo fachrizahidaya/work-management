@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import _ from "lodash";
 
-import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Flex, HStack, Icon, IconButton, Input, Spinner, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,9 +13,7 @@ import PageHeader from "../../components/shared/PageHeader";
 import UserListItem from "../../components/Chat/UserSelection/UserListItem";
 
 const AddPersonalChatScreen = () => {
-  const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
-  const [searchModeIsOn, setSearchModeIsOn] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -66,73 +64,41 @@ const AddPersonalChatScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flex={1} position="relative">
-        <HStack alignItems="center" justifyContent="space-between" paddingHorizontal={16} paddingBottom={13}>
+      <Flex flex={1} gap={2}>
+        <HStack alignItems="center" justifyContent="space-between" paddingHorizontal={16}>
           <VStack>
             <PageHeader title="Select User" onPress={() => navigation.goBack()} />
             <Text fontSize={12} ml={9}>
-              {data?.data?.total - 1} users
+              {data?.data?.total} users
             </Text>
           </VStack>
-
-          <TouchableOpacity onPress={() => setSearchModeIsOn(!searchModeIsOn)}>
-            <Icon as={<MaterialCommunityIcons name="magnify" />} size="lg" />
-          </TouchableOpacity>
-
-          {searchModeIsOn && (
-            <Box
-              position="absolute"
-              top={0}
-              bgColor="white"
-              width={width}
-              h={50}
-              zIndex={1}
-              alignItems="center"
-              paddingHorizontal={16}
-            >
-              <Input
-                autoFocus
-                flex={1}
-                value={inputToShow}
-                placeholder="Search user..."
-                size="lg"
-                onChangeText={(value) => {
-                  searchHandler(value);
-                  setInputToShow(value);
-                }}
-                InputLeftElement={
-                  <IconButton
-                    onPress={() => {
-                      setSearchModeIsOn(!searchModeIsOn);
-                      setSearchKeyword("");
-                      setInputToShow("");
-                    }}
-                    ml={2}
-                    mb={1}
-                    rounded="full"
-                  >
-                    <Icon as={<MaterialCommunityIcons name="arrow-left" />} size="lg" />
-                  </IconButton>
-                }
-                InputRightElement={
-                  inputToShow && (
-                    <IconButton
-                      onPress={() => {
-                        setSearchKeyword("");
-                        setInputToShow("");
-                      }}
-                      icon={<Icon as={<MaterialCommunityIcons name="close" />} size="lg" />}
-                      rounded="full"
-                      mr={2}
-                    />
-                  )
-                }
-              />
-            </Box>
-          )}
         </HStack>
 
-        <Box flex={1} paddingHorizontal={16}>
+        <VStack flex={1} paddingHorizontal={16} space={2}>
+          <Input
+            autoFocus
+            value={inputToShow}
+            placeholder="Search user..."
+            size="lg"
+            onChangeText={(value) => {
+              searchHandler(value);
+              setInputToShow(value);
+            }}
+            InputRightElement={
+              inputToShow && (
+                <IconButton
+                  onPress={() => {
+                    setSearchKeyword("");
+                    setInputToShow("");
+                  }}
+                  icon={<Icon as={<MaterialCommunityIcons name="close" />} size="lg" />}
+                  rounded="full"
+                  mr={2}
+                />
+              )
+            }
+          />
+
           <FlashList
             ListFooterComponent={isLoading && <Spinner size="lg" color="primary.600" />}
             estimatedItemSize={200}
@@ -153,7 +119,7 @@ const AddPersonalChatScreen = () => {
               </Box>
             )}
           />
-        </Box>
+        </VStack>
       </Flex>
     </SafeAreaView>
   );
