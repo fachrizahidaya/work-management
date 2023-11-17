@@ -187,7 +187,7 @@ const ChatInput = ({
 
           <Input
             backgroundColor="#FFFFFF"
-            maxHeight={100}
+            justifyContent="center"
             width={300}
             size="md"
             variant="unstyled"
