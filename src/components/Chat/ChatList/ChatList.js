@@ -1,15 +1,14 @@
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex, Icon, Pressable } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Flex } from "native-base";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ImageAttachment from "../Attachment/ImageAttachment";
 import FileAttachment from "../Attachment/FileAttachment";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
+import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
 
 const ChatList = ({
   type,
@@ -20,15 +19,12 @@ const ChatList = ({
   setFileAttachment,
   fetchChatMessageHandler,
   deleteMessage,
-  forceRerender,
+  bandAttachment,
+  setBandAttachment,
+  bandAttachmentType,
+  setBandAttachmentType,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [elementsRendered, setElementsRendered] = useState(0);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [chatReversed, setChatReversed] = useState(null);
-
-  const chatBoxRef = useRef;
 
   /**
    * Decide when user avatar should be rendered at
@@ -109,7 +105,6 @@ const ChatList = ({
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
         data={chatList}
-        extraData={forceRerender}
         renderItem={({ item, index }) => (
           <>
             {chatList[index + 1] ? (
@@ -137,16 +132,13 @@ const ChatList = ({
               file_type={item?.mime_type}
               file_size={item?.file_size}
               band_attachment_id={item?.project_id ? item?.project_id : item?.task_id}
-              band_attachment_no={item?.project_no ? item?.project_no : item?.task_no}
+              band_attachment_no={item?.project?.project_no ? item?.project?.project_no : item?.task?.task_no}
               band_attachment_type={item?.project_id ? "Project" : "Task"}
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
-              // isActiveMember={}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
-              fileAttachment={fileAttachment}
               deleteMessage={deleteMessage}
-              messageToReply={messageToReply}
               setMessageToReply={setMessageToReply}
             />
           </>
@@ -154,19 +146,22 @@ const ChatList = ({
       />
 
       {fileAttachment ? (
-        <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-          <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
-            <Pressable onPress={() => setFileAttachment(null)}>
-              <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
-            </Pressable>
-          </Flex>
+        <>
           {fileAttachment.type === "image/jpg" ? (
             <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
           ) : (
             <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
           )}
-        </Flex>
+        </>
       ) : null}
+
+      {bandAttachment && (
+        <ProjectTaskAttachmentPreview
+          bandAttachmentType={bandAttachmentType}
+          bandAttachment={bandAttachment}
+          setBandAttachment={setBandAttachment}
+        />
+      )}
     </Flex>
   );
 };

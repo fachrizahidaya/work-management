@@ -30,6 +30,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               id={personal.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
+              position={personal.user?.user_type}
               message={personal.latest_message?.message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}

@@ -48,27 +48,25 @@ const ChatInput = ({
     },
 
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      // if (
-      //   formik.values.message !== "" ||
-      //   formik.values.file !== "" ||
-      //   formik.values.project_id !== "" ||
-      //   formik.values.task_id !== ""
-      // ) {
-      //   const formData = new FormData();
-      //   for (let key in values) {
-      //     formData.append(key, values[key]);
-      //   }
-      //   formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
-      //   setStatus("processing");
-      //   if (type === "group") {
-      //     formData.set("to_user_id", null);
-      //     sendMessage(formData, setSubmitting, setStatus);
-      //   } else {
-      //     formData.set("group_id", null);
-      //     sendMessage(formData, setSubmitting, setStatus);
-      //   }
-      // }
-      sendMessage(values, setSubmitting, setStatus);
+      if (
+        formik.values.message !== "" ||
+        formik.values.file !== "" ||
+        formik.values.project_id !== "" ||
+        formik.values.task_id !== ""
+      ) {
+        const formData = new FormData();
+        for (let key in values) {
+          formData.append(key, values[key]);
+        }
+        formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
+        setStatus("processing");
+        // if (type === "group") {
+        //   formData.delete("to_user_id");
+        // } else {
+        //   formData.delete("group_id");
+        // }
+        sendMessage(formData, setSubmitting, setStatus);
+      }
       resetForm();
       setFileAttachment(null);
       setBandAttachment(null);
@@ -76,6 +74,16 @@ const ChatInput = ({
       setMessageToReply(null);
     },
   });
+
+  const selectProjectHandler = (bandType) => {
+    toggleProjectList();
+    setBandAttachmentType(bandType);
+  };
+
+  const selectTaskHandler = (bandType) => {
+    toggleTaskList();
+    setBandAttachmentType(bandType);
+  };
 
   const bandAttachmentSelectHandler = (attachment) => {
     setBandAttachment(attachment);
@@ -97,9 +105,9 @@ const ChatInput = ({
   useEffect(() => {
     resetBandAttachment();
     if (bandAttachment) {
-      formik.setFieldValue(`${bandAttachmentType.toLowerCase()}_id`, bandAttachment?.id);
-      formik.setFieldValue(`${bandAttachmentType.toLowerCase()}_no`, bandAttachment?.number_id);
-      formik.setFieldValue(`${bandAttachmentType.toLowerCase()}_title`, bandAttachment?.title);
+      formik.setFieldValue(`${bandAttachmentType}_id`, bandAttachment?.id);
+      formik.setFieldValue(`${bandAttachmentType}_no`, bandAttachment?.number_id);
+      formik.setFieldValue(`${bandAttachmentType}_title`, bandAttachment?.title);
     }
   }, [bandAttachment, bandAttachmentType]);
 
@@ -144,14 +152,14 @@ const ChatInput = ({
               <Text>Document</Text>
             </Menu.Item>
             <Menu.Item onPress={pickImageHandler}>
-              <Icon as={<MaterialIcons name="photo" />} />
+              <Icon as={<MaterialIcons name="image" />} />
               <Text>Photo</Text>
             </Menu.Item>
-            <Menu.Item onPress={toggleProjectList}>
+            <Menu.Item onPress={() => selectProjectHandler("project")}>
               <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
               <Text>Project</Text>
             </Menu.Item>
-            <Menu.Item onPress={toggleTaskList}>
+            <Menu.Item onPress={() => selectTaskHandler("task")}>
               <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
               <Text>Task</Text>
             </Menu.Item>
@@ -163,6 +171,8 @@ const ChatInput = ({
             bandAttachmentType={bandAttachmentType}
             setBandAttachmentType={setBandAttachmentType}
             onSelectBandAttachment={bandAttachmentSelectHandler}
+            bandAttachment={bandAttachment}
+            setBandAttachment={setBandAttachment}
           />
 
           <TaskAttachment
@@ -171,6 +181,8 @@ const ChatInput = ({
             bandAttachmentType={bandAttachmentType}
             setBandAttachmentType={setBandAttachmentType}
             onSelectBandAttachment={bandAttachmentSelectHandler}
+            bandAttachment={bandAttachment}
+            setBandAttachment={setBandAttachment}
           />
 
           <Input
@@ -186,8 +198,15 @@ const ChatInput = ({
           />
 
           <IconButton
-            onPress={formik.values.message === "" ? null : formik.handleSubmit}
-            opacity={formik.values.message === "" && fileAttachment === null ? 0.5 : 1}
+            onPress={
+              formik.values.message !== "" ||
+              formik.values.file !== "" ||
+              formik.values.project_id ||
+              formik.values.task_id
+                ? formik.handleSubmit
+                : null
+            }
+            opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
             icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
           />
         </FormControl>
