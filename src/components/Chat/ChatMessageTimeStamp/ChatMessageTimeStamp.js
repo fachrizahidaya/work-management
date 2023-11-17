@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-
-import { Badge } from "native-base";
 import dayjs from "dayjs";
+
+import { Badge, Box } from "native-base";
+
 var isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
 
@@ -30,7 +31,7 @@ const ChatMessageTimeStamp = ({ timestamp }) => {
     setCurrentTimeStamp(dayjs(dayjs(timestamp).format("YYYY-MM-DD")));
   }, [timestamp]);
 
-  return <>{currentTimeStamp && <Badge alignSelf="center">{formatTimeStamp()}</Badge>}</>;
+  return <Box my={2}>{currentTimeStamp && <Badge alignSelf="center">{formatTimeStamp()}</Badge>}</Box>;
 };
 
 export default ChatMessageTimeStamp;

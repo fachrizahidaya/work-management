@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult }) => {
+const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
@@ -36,6 +36,9 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult }) => {
             time={group.latest_message?.created_time}
             timestamp={group.latest_message?.created_at}
             type="group"
+            active_member={group?.active_member}
+            setForceRerender={setForceRerender}
+            forceRerender={forceRerender}
           />
         ))}
     </>

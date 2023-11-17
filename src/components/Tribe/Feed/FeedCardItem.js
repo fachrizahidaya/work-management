@@ -31,6 +31,7 @@ const FeedCardItem = ({
   forceRerender,
   setForceRerender,
 }) => {
+  console.log("image", attachment);
   const [totalLike, setTotalLike] = useState(total_like);
 
   const navigation = useNavigation();
@@ -186,6 +187,7 @@ const FeedCardItem = ({
               <Image
                 source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                 borderRadius={15}
+                width="100%"
                 height={200}
                 alt="Feed Image"
                 resizeMode="contain"

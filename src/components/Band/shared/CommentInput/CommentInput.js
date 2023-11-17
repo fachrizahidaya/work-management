@@ -28,6 +28,7 @@ const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
 const CommentInput = ({ taskId, projectId, data }) => {
+  console.log("doc", doc);
   const toast = useToast();
   const [files, setFiles] = useState([]);
 

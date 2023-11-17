@@ -21,6 +21,7 @@ const ChatListScreen = () => {
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho } = useWebsocketContext();
   const [globalKeyword, setGlobalKeyword] = useState("");
+  const [forceRerender, setForceRerender] = useState(false);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
@@ -69,12 +70,12 @@ const ChatListScreen = () => {
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
-  }, []);
+  }, [forceRerender]);
 
   useEffect(() => {
     personalChatEvent();
     groupChatEvent();
-  }, [userSelector.id]);
+  }, [userSelector.id, groupChats, personalChats]);
 
   // Removes chat room screen from stack if app opens by pressing push notification
   useEffect(() => {
@@ -93,12 +94,20 @@ const ChatListScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-        <GroupSection groupChats={groupChats} searchKeyword={globalKeyword} searchResult={searchResult?.group} />
+        <GroupSection
+          groupChats={groupChats}
+          searchKeyword={globalKeyword}
+          searchResult={searchResult?.group}
+          setForceRerender={setForceRerender}
+          forceRerender={forceRerender}
+        />
 
         <PersonalSection
           personalChats={personalChats}
           searchKeyword={globalKeyword}
           searchResult={searchResult?.personal}
+          setForceRerender={setForceRerender}
+          forceRerender={forceRerender}
         />
 
         {searchResult?.message?.length > 0 && (

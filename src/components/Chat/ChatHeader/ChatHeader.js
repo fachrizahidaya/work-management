@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Icon, Input, Menu, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Input, Menu, Pressable, Text, useToast } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -8,16 +8,74 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ConfirmationModal from "../../shared/ConfirmationModal";
+import axiosInstance from "../../../config/api";
+import ReturnConfirmationModal from "../../shared/ReturnConfirmationModal";
+import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
 
-const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAttachment }) => {
+const ChatHeader = ({
+  navigation,
+  name,
+  image,
+  userId,
+  fileAttachment,
+  type,
+  active_member,
+  setForceRender,
+  forceRender,
+}) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
+
+  const toast = useToast();
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
+  };
+
+  const groupExitHandler = async (group_id, setIsLoading) => {
+    try {
+      const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      setForceRender(!forceRender);
+      toggleExitModal();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  const groupDeleteHandler = async (group_id, setIsLoading) => {
+    try {
+      const res = await axiosInstance.delete(`/chat/group/${group_id}`);
+      toggleDeleteGroupModal();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   return (
@@ -51,10 +109,46 @@ const ChatHeader = ({ navigation, name, image, userId, imageAttachment, fileAtta
             <Menu.Item onPress={toggleSearch}>
               <Text>Search</Text>
             </Menu.Item>
-            <Menu.Item onPress={toggleDeleteModal}>
-              <Text color="red.600">Delete Chat</Text>
-            </Menu.Item>
+            {type === "group" ? (
+              <>
+                {active_member === 1 ? (
+                  <Menu.Item onPress={toggleExitModal}>
+                    <Text>Exit Group</Text>
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item onPress={toggleDeleteGroupModal}>
+                    <Text>Delete Group</Text>
+                  </Menu.Item>
+                )}
+              </>
+            ) : (
+              <Menu.Item onPress={toggleDeleteModal}>
+                <Text>Delete Chat</Text>
+              </Menu.Item>
+            )}
           </Menu>
+
+          {type === "group" && active_member === 1 && (
+            <>
+              <ReturnConfirmationModal
+                isOpen={exitModalIsOpen}
+                toggle={toggleExitModal}
+                description="Are you sure want to exit this group?"
+                onPress={() => groupExitHandler(userId)}
+              />
+            </>
+          )}
+
+          {type === "group" && active_member === 0 && (
+            <>
+              <ReturnConfirmationModal
+                isOpen={deleteGroupModalIsOpen}
+                toggle={toggleDeleteGroupModal}
+                description="Are you sure want to delete this group?"
+                onPress={() => groupDeleteHandler(userId)}
+              />
+            </>
+          )}
 
           <ConfirmationModal
             isOpen={deleteModalIsOpen}

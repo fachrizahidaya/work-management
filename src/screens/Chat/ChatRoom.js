@@ -1,30 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
-import dayjs from "dayjs";
 
 import Pusher from "pusher-js/react-native";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { useSelector } from "react-redux";
 
-import { FlashList } from "@shopify/flash-list";
-import { Flex, Icon, Pressable, Spinner } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 
-import ChatBubble from "../../components/Chat/ChatBubble/ChatBubble";
 import axiosInstance from "../../config/api";
 import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
-import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
-import { useFetch } from "../../hooks/useFetch";
+import ChatList from "../../components/Chat/ChatList/ChatList";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -40,7 +31,8 @@ const ChatRoom = () => {
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [deleteMessageDialogOpen, setDeleteMessageDialogOpen] = useState(false);
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [forceRerender, setForceRerender] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -53,34 +45,7 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
 
-  const { name, userId, image, type } = route.params;
-
-  const chatMessageFetchParameters = {
-    offset: offset,
-    limit: 20,
-  };
-
-  /**
-   * Message delete dialog control
-   * @param {*} message
-   */
-  const deleteMessageDialogOpenHandler = (message) => {
-    setMessageToDelete(message);
-    setDeleteMessageDialogOpen(true);
-  };
-  const deleteMessageDialogCloseHandler = () => {
-    setDeleteMessageDialogOpen(true);
-  };
-
-  /**
-   * Trigger scroll to bottom for chat box
-   */
-  const scrollToBottom = () => {
-    var chatBoxListElement = document.getElementById("chatBoxList");
-    if (chatBoxListElement) {
-      chatBoxListElement.scrollTop = chatBoxListElement.scrollHeight + 20;
-    }
-  };
+  const { name, userId, image, type, active_member, setForceRender, forceRender } = route.params;
 
   /**
    * Event listener for new personal chat messages
@@ -91,9 +56,8 @@ const ChatRoom = () => {
     }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        console.log(event);
         if (event.data.type === "New") {
-          setChatList((currentChats) => [...currentChats, event.data]);
+          setChatList((prevState) => [event.data, ...prevState]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -106,13 +70,12 @@ const ChatRoom = () => {
    */
   const groupChatMessageEvent = () => {
     if (userSelector?.id && previousGroup) {
-      laravelEcho.leaveChannel(`group.chat.${previousGroup}`);
+      laravelEcho.leaveChannel(`group.chat.${previousGroup}.${userSelector?.id}`);
     }
     if (userSelector?.id && currentGroup) {
-      laravelEcho.channel(`group.chat.${currentGroup}`).listen(".group.chat", (event) => {
-        console.log(event);
-        if (event.data.tye) {
-          setChatList((prevState) => [...prevState, event.data]);
+      laravelEcho.channel(`group.chat.${currentGroup}.${userSelector?.id}`).listen(".group.chat", (event) => {
+        if (event.data.type === "New") {
+          setChatList((prevState) => [event.data, ...prevState]);
         } else {
           deleteChatFromChatMessages(event.data);
         }
@@ -133,12 +96,13 @@ const ChatRoom = () => {
           params: {
             offset: offset,
             limit: 20,
+            sort: "desc",
           },
         });
 
         setChatList((currentChats) => {
-          if (currentChats.length !== currentChats.length + res.data.data.length) {
-            return [...res?.data?.data, ...currentChats];
+          if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+            return [...currentChats, ...res?.data?.data];
           } else {
             setHasMore(false);
             return currentChats;
@@ -148,6 +112,24 @@ const ChatRoom = () => {
       } catch (error) {
         console.log(error);
       }
+    }
+  };
+
+  /**
+   * Handles submission of chat message
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const sendMessageHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/chat/${type}/message`, form);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (error) {
+      console.log(error);
+      setSubmitting(false);
+      setStatus("error");
     }
   };
 
@@ -189,99 +171,12 @@ const ChatRoom = () => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
       if (chatMessageObj.type === "Delete For Me") {
         prevState.splice(index, 1);
-      } else if (chatMessageObj.type === "Delete for Everyone") {
+      } else if (chatMessageObj.type === "Delete For Everyone") {
         prevState[index].delete_for_everyone = 1;
-        return [...prevState];
       }
+      return [...prevState];
     });
   };
-
-  /**
-   * Handles submission of chat message
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const sendMessage = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/chat/${type}/message`, form);
-      setSubmitting(false);
-      setStatus("success");
-    } catch (error) {
-      console.log(error);
-      setSubmitting(false);
-      setStatus("error");
-    }
-  };
-
-  /**
-   * Decide when user avatar should be rendered at
-   */
-  const userImageRenderCheck = useCallback(
-    (currentMessage, nextMessage) => {
-      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
-      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
-
-      if (nextMessage) {
-        if (currentMessage?.from_user_id !== nextMessage?.from_user_id) {
-          return currentMessage?.user?.image;
-        } else {
-          if (dayjs(currentMessageDate).isBefore(dayjs(nextMessageDate))) {
-            return currentMessage?.user?.image;
-          }
-          return;
-        }
-      } else {
-        return currentMessage?.user?.image;
-      }
-    },
-    [chatList]
-  );
-
-  /**
-   * Decide when username should be rendered at
-   */
-  const userNameRenderCheck = useCallback(
-    (prevMessage, currentMessage) => {
-      const prevMessageDate = dayjs(prevMessage?.created_at).format("YYYY-MM-DD");
-      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
-
-      if (prevMessage) {
-        if (prevMessage?.from_user_id !== currentMessage?.from_user_id) {
-          return currentMessage?.user?.name;
-        } else {
-          if (dayjs(prevMessageDate).isBefore(dayjs(currentMessageDate))) {
-            return currentMessage?.user?.name;
-          }
-          return;
-        }
-      } else {
-        return currentMessage?.user?.name;
-      }
-    },
-    [chatList]
-  );
-
-  /**
-   * Decide when messages should be grouped closer together or not
-   */
-  const messageIsGrouped = useCallback(
-    (currentMessage, nextMessage) => {
-      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
-      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
-
-      if (
-        nextMessage &&
-        currentMessage?.from_user_id == nextMessage?.from_user_id &&
-        dayjs(currentMessageDate).isSame(dayjs(nextMessageDate))
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    [chatList]
-  );
 
   /**
    * Pick an image Handler
@@ -289,7 +184,7 @@ const ChatRoom = () => {
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [3, 4],
       quality: 1,
     });
@@ -373,6 +268,9 @@ const ChatRoom = () => {
   //   }
   // };
 
+  /**
+   * Clean all state after change chat
+   */
   const clearAdditionalContentActionState = () => {
     setFileAttachment(null);
     setBandAttachment(null);
@@ -381,6 +279,10 @@ const ChatRoom = () => {
     setMessageToDelete(null);
   };
 
+  /**
+   * Trigger fetch all chat messages
+   * @param {*} read
+   */
   const fetchChatMessageHandler = (read) => {
     if (type === "personal") {
       if (currentUser) {
@@ -439,49 +341,29 @@ const ChatRoom = () => {
 
   return (
     <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
-      <ChatHeader name={name} image={image} navigation={navigation} userId={userId} fileAttachment={fileAttachment} />
+      <ChatHeader
+        name={name}
+        image={image}
+        navigation={navigation}
+        userId={userId}
+        fileAttachment={fileAttachment}
+        type={type}
+        active_member={active_member}
+        setForceRender={setForceRender}
+        forceRender={forceRender}
+      />
 
-      <Flex id="chatBoxList" flex={1} bg="#FAFAFA" paddingX={2} position="relative">
-        <FlashList
-          // inverted
-          keyExtractor={(item, index) => index}
-          onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
-          data={chatList}
-          renderItem={({ item, index }) => (
-            <ChatBubble
-              index={index}
-              chat={item}
-              image={userImageRenderCheck(item, chatList[index + 1])}
-              name={userNameRenderCheck(chatList[index - 1], item)}
-              fromUserId={item.from_user_id}
-              id={item.id}
-              content={item.message}
-              type={type}
-              time={item.created_time}
-              chatList={chatList}
-              onMessageReply={setMessageToReply}
-              onMessageDelete={deleteMessageDialogOpenHandler}
-              isGrouped={messageIsGrouped(item, chatList[index + 1])}
-            />
-          )}
-        />
-        {fileAttachment ? (
-          <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-            <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
-              <Pressable onPress={() => setFileAttachment(null)}>
-                <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
-              </Pressable>
-            </Flex>
-            {fileAttachment.type === "image/jpg" ? (
-              <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
-            ) : (
-              <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
-            )}
-          </Flex>
-        ) : null}
-      </Flex>
+      <ChatList
+        type={type}
+        chatList={chatList}
+        messageToReply={messageToReply}
+        setMessageToReply={setMessageToReply}
+        deleteMessage={messagedeleteHandler}
+        fileAttachment={fileAttachment}
+        setFileAttachment={setFileAttachment}
+        fetchChatMessageHandler={fetchChatMessageHandler}
+        forceRerender={forceRerender}
+      />
 
       <ChatInput
         userId={userId}
@@ -489,7 +371,7 @@ const ChatRoom = () => {
         fileAttachment={fileAttachment}
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
-        sendMessage={sendMessage}
+        sendMessage={sendMessageHandler}
         setFileAttachment={(file) => {
           setFileAttachment(file);
           setBandAttachment(null);
@@ -504,6 +386,7 @@ const ChatRoom = () => {
         }}
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}
+        active_member={active_member}
       />
     </SafeAreaView>
   );

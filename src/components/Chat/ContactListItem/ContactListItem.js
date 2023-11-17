@@ -22,6 +22,9 @@ const ContactListItem = ({
   time,
   timestamp,
   searchKeyword,
+  active_member,
+  setForceRerender,
+  forceRerender,
 }) => {
   const navigation = useNavigation();
 
@@ -91,6 +94,9 @@ const ContactListItem = ({
           userId: id,
           image: image,
           type: type,
+          active_member: active_member,
+          setForceRender: setForceRerender,
+          forceRender: forceRerender,
         });
       }}
     >
