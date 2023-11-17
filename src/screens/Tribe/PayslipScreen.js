@@ -70,7 +70,6 @@ const PayslipScreen = () => {
         render: ({ id }) => {
           return <SuccessToast message={"Password Updated"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
@@ -81,7 +80,6 @@ const PayslipScreen = () => {
         render: ({ id }) => {
           return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     }
   };

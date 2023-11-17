@@ -141,7 +141,6 @@ const FeedCardItem = ({
                       successMessage="Post deleted"
                       isDelete={true}
                       isPatch={false}
-                      placement="top"
                     />
                   </>
                 )}
