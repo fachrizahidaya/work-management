@@ -97,8 +97,8 @@ const TaskFilter = ({
                   defaultValue={responsibleId}
                   dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
                 >
-                  <Select.Item label="All Member" value="" />
-                  <Select.Item label="Not Assigned" value="null" />
+                  <Select.Item label="All Member" value="all" />
+                  <Select.Item label="Not Assigned" value="" />
                   {members?.length > 0 &&
                     members.map((member, index) => {
                       return (

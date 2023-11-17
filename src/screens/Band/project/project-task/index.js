@@ -25,7 +25,7 @@ const ProjectTaskScreen = ({ route }) => {
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [searchInput, setSearchInput] = useState("");
-  const [responsibleId, setResponsibleId] = useState("");
+  const [responsibleId, setResponsibleId] = useState("all");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
