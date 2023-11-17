@@ -1,20 +1,22 @@
+import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { StyleSheet } from "react-native";
-import { Box, Button, FormControl, Input, KeyboardAvoidingView } from "native-base";
+import { Box, FormControl, Input } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 import { useFetch } from "../../../../hooks/useFetch";
+import FormButton from "../../../shared/FormButton";
 
-const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSubmit, loggedEmployeeName }) => {
+const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
-  const { data: employees } = useFetch("/hr/employees");
+  const { data: employeeData } = useFetch("/hr/employees");
 
   /**
-   * Form comments Handler
+   * Create a new post handler
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -29,9 +31,14 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       onSubmit(values, setSubmitting, setStatus);
-      resetForm();
     },
   });
+
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      formik.resetForm();
+    }
+  }, [formik.isSubmitting, formik.status]);
 
   return (
     <FormControl alignItems="center" pb={12} paddingBottom={Platform.OS === "ios" && keyboardHeight}>
@@ -43,18 +50,22 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, inputRef, onSu
         value={formik.values.comments}
         InputLeftElement={
           <Box pl={1}>
-            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" />
+            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
           </Box>
         }
         InputRightElement={
-          <Button
-            opacity={formik.values.comments === "" ? 0.5 : 1}
-            variant="unstyled"
-            size="sm"
-            onPress={formik.handleSubmit}
-          >
-            {parentId ? "Reply" : "Post"}
-          </Button>
+          <Box pr={0.5} py={0.5}>
+            <FormButton
+              children={parentId ? "Reply" : "Post"}
+              onPress={formik.handleSubmit}
+              isSubmitting={formik.isSubmitting}
+              opacity={formik.values.comments === "" ? 0.5 : 1}
+              variant="unstyled"
+              size="sm"
+              fontColor="white"
+              fontSize={12}
+            />
+          </Box>
         }
       />
     </FormControl>

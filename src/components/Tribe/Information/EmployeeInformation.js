@@ -1,16 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 
 import { TouchableOpacity } from "react-native";
-import { Box, Divider, Flex, Icon, Pressable, Text } from "native-base";
+import { Box, Divider, Flex, Text } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
 
-const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
+const EmployeeInformation = ({ id, name, position, email, phone, image, refetch }) => {
   const navigation = useNavigation();
-
-  const phoneNumber = `0${phone}`;
 
   return (
     <Flex mt={3} gap={5} style={card.card}>
@@ -22,10 +20,12 @@ const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
                 employeeId: id,
                 returnPage: "My Information",
                 loggedEmployeeImage: image,
+                refetch: refetch,
+                loggedEmployeeId: id,
               })
             }
           >
-            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={10} />
+            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={"full"} isThumb={false} />
           </TouchableOpacity>
           <Flex>
             <Text fontWeight={500} fontSize={14} color="#3F434A">
@@ -46,8 +46,8 @@ const EmployeeInformation = ({ id, name, position, email, phone, image }) => {
             Phone:
           </Text>
           <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(phoneNumber)} fontWeight={400} fontSize={12} color="#8A9099">
-              0{phone}
+            <Text onPress={() => CopyToClipboard(phone)} fontWeight={400} fontSize={12} color="#8A9099">
+              {phone}
             </Text>
           </Flex>
         </Flex>

@@ -1,6 +1,4 @@
 import React, { memo, useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
-import * as Share from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import dayjs from "dayjs";
@@ -9,29 +7,15 @@ dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Alert } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import {
-  Avatar,
-  Box,
-  Flex,
-  FormControl,
-  Icon,
-  IconButton,
-  Image,
-  Input,
-  Pressable,
-  Text,
-  TextArea,
-  useToast,
-} from "native-base";
-import { FlashList } from "@shopify/flash-list";
+import { Alert, Linking } from "react-native";
+import { Box, Flex, FormControl, Icon, IconButton, Image, Pressable, Text, TextArea, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
+import CommentList from "./CommentList/CommentList";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -43,7 +27,8 @@ const rar = "../../../../assets/doc-icons/rar-format.png";
 const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
-const CommentInput = ({ taskId, projectId }) => {
+const CommentInput = ({ taskId, projectId, data }) => {
+  console.log("doc", doc);
   const toast = useToast();
   const [files, setFiles] = useState([]);
 
@@ -82,8 +67,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Comment added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Comment added`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -91,8 +76,8 @@ const CommentInput = ({ taskId, projectId }) => {
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -123,39 +108,6 @@ const CommentInput = ({ taskId, projectId }) => {
       submitComment(formData, setSubmitting, setStatus);
     },
   });
-
-  /**
-   * Handle deletion comment
-   * @param {string} commentId - id to delete
-   */
-  const deleteComment = async (commentId) => {
-    try {
-      let apiURL = "";
-
-      if (projectId) {
-        apiURL = `/pm/projects/comment/${commentId}`;
-      } else if (taskId) {
-        apiURL = `/pm/tasks/comment/${commentId}`;
-      }
-
-      await axiosInstance.delete(apiURL);
-
-      refetchComments();
-      refetchAttachments();
-      toast.show({
-        render: () => {
-          return <SuccessToast message={`Comment deleted`} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
-      });
-    }
-  };
 
   /**
    * Select file handler
@@ -211,22 +163,10 @@ const CommentInput = ({ taskId, projectId }) => {
   /**
    * Download Attachment
    */
-  const downloadAttachment = async (attachmentId, attachmentName) => {
+  const downloadAttachment = async (attachment) => {
     try {
-      let apiURL = "";
-      if (projectId) {
-        apiURL = `/pm/projects/comment/attachment/${attachmentId}/download`;
-      } else if (taskId) {
-        apiURL = `/pm/tasks/comment/attachment/${attachmentId}/download`;
-      }
-      const res = await axiosInstance.get(apiURL);
-      const base64Code = res.data.file.split(",")[1];
-      const fileName = FileSystem.documentDirectory + attachmentName;
-      await FileSystem.writeAsStringAsync(fileName, base64Code, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      await Share.shareAsync(fileName);
+      await axiosInstance.get(`/download/${attachment}`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
       toast.show({
@@ -269,21 +209,21 @@ const CommentInput = ({ taskId, projectId }) => {
                   <Image
                     alt="file"
                     source={
-                      file.mimeType.includes("doc")
+                      file.type.includes("doc")
                         ? require(doc)
-                        : file.mimeType.includes("gif")
+                        : file.type.includes("gif")
                         ? require(gif)
-                        : file.mimeType.includes("key")
+                        : file.type.includes("key")
                         ? require(key)
-                        : file.mimeType.includes("pdf")
+                        : file.type.includes("pdf")
                         ? require(pdf)
-                        : file.mimeType.includes("ppt") || file.mimeType.includes("pptx")
+                        : file.type.includes("ppt") || file.type.includes("pptx")
                         ? require(ppt)
-                        : file.mimeType.includes("rar")
+                        : file.type.includes("rar")
                         ? require(rar)
-                        : file.mimeType.includes("xls") || file.mimeType.includes("xlsx")
+                        : file.type.includes("xls") || file.type.includes("xlsx")
                         ? require(xls)
-                        : file.mimeType.includes("zip")
+                        : file.type.includes("zip")
                         ? require(zip)
                         : require(other)
                     }
@@ -331,69 +271,24 @@ const CommentInput = ({ taskId, projectId }) => {
           </Flex>
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} color="white">
-            <Icon as={<MaterialCommunityIcons name="send" />} style={{ transform: [{ rotate: "-45deg" }] }} />
+            <Icon
+              as={<MaterialCommunityIcons name="send" />}
+              style={{ transform: [{ rotate: "-45deg" }] }}
+              color="gray.500"
+            />
           </FormButton>
         </Flex>
       </Box>
 
       {/* Comment list */}
-      <ScrollView style={{ maxHeight: 300 }}>
-        <Box flex={1} minHeight={2}>
-          <FlashList
-            data={comments?.data}
-            keyExtractor={(item) => item.id}
-            onEndReachedThreshold={0.1}
-            estimatedItemSize={200}
-            renderItem={({ item }) => (
-              <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-                <Flex flexDir="row" alignItems="center" gap={1.5} mb={2}>
-                  <Avatar
-                    size="xs"
-                    source={{
-                      uri: `${process.env.EXPO_PUBLIC_API}/image/${item.comment_image}/thumb`,
-                    }}
-                  />
-
-                  <Box>
-                    <Flex flexDir="row" gap={1} alignItems="center">
-                      <Text>{item?.comment_name.split(" ")[0]}</Text>
-                      <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
-                    </Flex>
-
-                    <Text fontWeight={400}>{item?.comments}</Text>
-
-                    <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
-                      {item.attachments.length > 0 &&
-                        item.attachments.map((attachment) => {
-                          return (
-                            <Pressable
-                              key={attachment.id}
-                              borderWidth={1}
-                              borderColor="#8A9099"
-                              borderRadius={10}
-                              p={1}
-                              onPress={() => downloadAttachment(attachment.id, attachment.file_name)}
-                            >
-                              <Text>
-                                {attachment.file_name.length > 15
-                                  ? attachment.file_name.slice(0, 15)
-                                  : attachment.file_name}
-                              </Text>
-                            </Pressable>
-                          );
-                        })}
-                    </Flex>
-                  </Box>
-                </Flex>
-
-                <Pressable mr={5} onPress={() => deleteComment(item.id)}>
-                  <Icon as={<MaterialCommunityIcons name="close" />} color="red.600" />
-                </Pressable>
-              </Flex>
-            )}
-          />
-        </Box>
-      </ScrollView>
+      <CommentList
+        comments={comments}
+        projectId={projectId}
+        parentData={data}
+        refetchAttachments={refetchAttachments}
+        refetchComments={refetchComments}
+        downloadAttachment={downloadAttachment}
+      />
     </Flex>
   );
 };

@@ -14,6 +14,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const ProjectTaskScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -23,12 +24,21 @@ const ProjectTaskScreen = ({ route }) => {
   const [view, setView] = useState(viewType);
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [responsibleId, setResponsibleId] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+  const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
+  const createCheckAccess = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
+    search: searchInput,
+    responsible_id: responsibleId,
+    priority: selectedPriority,
+    sort_deadline: deadlineSort,
   };
+
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
   const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
@@ -38,7 +48,11 @@ const ProjectTaskScreen = ({ route }) => {
     isLoading: taskIsLoading,
     isFetching: taskIsFetching,
     refetch: refetchTasks,
-  } = useFetch(`/pm/tasks/project/${projectId}`, [selectedLabelId], fetchTaskParameters);
+  } = useFetch(
+    `/pm/tasks/project/${projectId}`,
+    [selectedLabelId, searchInput, responsibleId, selectedPriority, deadlineSort],
+    fetchTaskParameters
+  );
   const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
   const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
@@ -84,15 +98,23 @@ const ProjectTaskScreen = ({ route }) => {
               onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
             />
 
-            <TaskViewSection changeView={changeView} view={view} />
+            {/* <TaskViewSection changeView={changeView} view={view} /> */}
 
             <Flex flexDir="row" mt={11} mb={21}>
               <TaskFilter
                 data={tasks?.data}
                 members={members?.data}
                 labels={labels}
+                searchInput={searchInput}
+                responsibleId={responsibleId}
+                deadlineSort={deadlineSort}
+                selectedPriority={selectedPriority}
+                selectedLabelId={selectedLabelId}
                 setSelectedLabelId={setSelectedLabelId}
-                setFilteredData={setFilteredData}
+                setSearchInput={setSearchInput}
+                setResponsibleId={setResponsibleId}
+                setDeadlineSort={setDeadlineSort}
+                setSelectedPriority={setSelectedPriority}
               />
             </Flex>
           </Flex>
@@ -106,7 +128,7 @@ const ProjectTaskScreen = ({ route }) => {
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList
-              tasks={filteredData}
+              tasks={tasks?.data}
               isLoading={taskIsLoading}
               openNewTaskForm={onOpenTaskFormWithStatus}
               openCloseTaskConfirmation={onOpenCloseConfirmation}
@@ -117,7 +139,7 @@ const ProjectTaskScreen = ({ route }) => {
             <Center>
               <Image
                 source={require("../../../../assets/vectors/desktop.jpg")}
-                h={250}
+                h={180}
                 w={250}
                 alt="desktop-only"
                 resizeMode="contain"
@@ -127,21 +149,23 @@ const ProjectTaskScreen = ({ route }) => {
           )}
         </ScrollView>
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={81}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleTaskForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createCheckAccess && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={81}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleTaskForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {/* Task Form */}

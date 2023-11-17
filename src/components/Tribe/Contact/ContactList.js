@@ -13,7 +13,7 @@ import PhoneButton from "../../shared/PhoneButton";
 import WhatsappButton from "../../shared/WhatsappButton";
 import PersonalNestButton from "../../shared/PersonalNestButton";
 
-const ContactList = ({ id, name, position, division, status, image, phone, email }) => {
+const ContactList = ({ id, name, position, division, status, image, phone, email, refetch, loggedEmployeeId }) => {
   const navigation = useNavigation();
 
   return (
@@ -25,11 +25,13 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
               navigation.navigate("Employee Profile", {
                 employeeId: id,
                 returnPage: "Contact",
+                refetch: refetch,
+                loggedEmployeeId: loggedEmployeeId,
               })
             }
           >
             <Flex flexDir="row" alignItems="center" gap={3}>
-              <AvatarPlaceholder image={image} name={name} size="sm" borderRadius="full" />
+              <AvatarPlaceholder image={image} name={name} size="sm" borderRadius="full" isThumb={false} />
               <Flex>
                 <Text fontWeight={500} fontSize={12} color="#3F434A">
                   {name.length > 30 ? name.split(" ")[0] : name}

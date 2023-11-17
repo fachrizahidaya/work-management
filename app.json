@@ -13,12 +13,14 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.kolabora.kssmobileapp"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/nest-android.png",
+        "foregroundImage": "./assets/adaptive-icon-adr.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.kolabora.kssmobileapp"
@@ -32,6 +34,17 @@
       }
     },
     "scheme": "kss-mobile-app",
-    "owner": "dev.kss"
+    "owner": "dev.kss",
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }

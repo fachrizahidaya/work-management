@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -6,33 +6,39 @@ import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
-import { Dimensions } from "react-native";
 import { Box, Flex, Icon, Text, useToast, Button } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import { SuccessToast } from "../../../components/shared/ToastDialog";
-import axiosInstance from "../../../config/api";
-import PageHeader from "../../../components/shared/PageHeader";
-import NewFeedForm from "../../../components/Tribe/Feed/NewFeed/NewFeedForm";
+import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
+import axiosInstance from "../../../../config/api";
+import PageHeader from "../../../../components/shared/PageHeader";
+import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import { useFetch } from "../../../../hooks/useFetch";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
 
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure();
-  const { width, height } = Dimensions.get("window");
+  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
-  const { toggleNewFeed, refetch, loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision } = route.params;
+  const inputRef = useRef(null);
+
+  const { loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
+
+  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
   /**
-   *
+   * Create a new post handler
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -45,19 +51,19 @@ const NewFeedScreen = ({ route }) => {
       content: yup.string().required("Content is required"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
         formData.append(key, values[key]);
       }
 
       formData.append("file", image);
+
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
-        resetForm();
       } else {
         if (values.end_date) {
-          postSubmitHandler(formData);
-          resetForm();
+          postSubmitHandler(formData, setSubmitting, setStatus);
         } else {
           throw new Error("For Announcement type, end date is required");
         }
@@ -66,42 +72,50 @@ const NewFeedScreen = ({ route }) => {
   });
 
   /**
-   * Submit a Post Handler
+   * Submit a post handler
    * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
    */
   const postSubmitHandler = async (form, setSubmitting, setStatus) => {
     try {
-      await axiosInstance.post("/hr/posts", form, {
+      const res = await axiosInstance.post("/hr/posts", form, {
         headers: {
           "content-type": "multipart/form-data",
         },
       });
-      navigation.navigate("Feed");
+      postRefetchHandler();
       setSubmitting(false);
       setStatus("success");
-      refetch();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Posted succesfuly!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
+  /**
+   * End date of announcement handler
+   * @param {*} value
+   */
   const endDateAnnouncementHandler = (value) => {
     formik.setFieldValue("end_date", value);
   };
 
   /**
-   * Handler for date
+   * Date for announcement handler
    */
   const [dateShown, setDateShown] = useState(false);
-
   const announcementToggleHandler = () => {
     setDateShown(true);
     setIsAnnouncementSelected(true);
@@ -112,7 +126,6 @@ const NewFeedScreen = ({ route }) => {
   /**
    * Toggle to Public Handler
    */
-
   const publicToggleHandler = () => {
     setSelectedOption("Public");
     formik.setFieldValue("type", "Public");
@@ -120,6 +133,10 @@ const NewFeedScreen = ({ route }) => {
     setDateShown(false);
     setIsAnnouncementSelected(false);
     togglePostType();
+  };
+
+  const mentionSelectHandler = (updatedContent) => {
+    formik.setFieldValue("content", updatedContent);
   };
 
   /**
@@ -139,8 +156,7 @@ const NewFeedScreen = ({ route }) => {
       result.assets[0].uri.length
     );
 
-    // Handling for file information
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (result) {
       setImage({
@@ -154,25 +170,40 @@ const NewFeedScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if (formik.isSubmitting && formik.status === "success") {
+    if (!formik.isSubmitting && formik.status === "success") {
       formik.resetForm();
+      navigation.goBack();
     }
   }, [formik.isSubmitting, formik.status]);
 
   return (
     <Box flex={1} bgColor="#FFFFFF" p={5}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-        <PageHeader
-          title="New Post"
-          onPress={() => {
-            navigation.navigate("Feed");
-            setImage(null);
-          }}
-        />
-      </Flex>
+      <PageHeader
+        title="New Post"
+        onPress={
+          formik.values.content || image !== null
+            ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+            : () => {
+                !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                formik.resetForm();
+                setImage(null);
+              }
+        }
+      />
+
+      <ReturnConfirmationModal
+        isOpen={returnModalIsOpen}
+        toggle={toggleReturnModal}
+        onPress={() => {
+          toggleReturnModal();
+          navigation.goBack();
+          setImage(null);
+        }}
+        description="Are you sure want to exit? It will be deleted."
+      />
 
       <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
-        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" />
+        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
         <Flex gap={1}>
           <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
             <Flex alignItems="center" flexDir="row">
@@ -192,6 +223,7 @@ const NewFeedScreen = ({ route }) => {
           )}
         </Flex>
       </Flex>
+
       <NewFeedForm
         formik={formik}
         image={image}
@@ -205,6 +237,9 @@ const NewFeedScreen = ({ route }) => {
         dateShown={dateShown}
         endDateAnnouncementHandler={endDateAnnouncementHandler}
         loggedEmployeeDivision={loggedEmployeeDivision}
+        employees={employees?.data}
+        mentionSelectHandler={mentionSelectHandler}
+        inputRef={inputRef}
       />
     </Box>
   );

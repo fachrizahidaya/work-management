@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
+import messaging from "@react-native-firebase/messaging";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -12,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 // import auth from "@react-native-firebase/auth";
 // import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
+import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -76,8 +78,8 @@ const LoginScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "jeremy@kolabora.com",
-      password: "Password123!",
+      email: "",
+      password: "",
     },
     validationSchema: yup.object().shape({
       email: yup.string().email("Please use correct email format").required("Email is required"),
@@ -93,48 +95,50 @@ const LoginScreen = () => {
    * Handles the login process by sending a POST request to the authentication endpoint.
    * @function loginHandler
    * @param {Object} form - The login form data to be sent in the request.
+   * Some how i need to make it .then .catch format because the error wont be catched if i use
+   * the try catch format. Weird...
    */
   const loginHandler = async (form) => {
-    try {
-      // Send a POST request to the authentication endpoint
-      const res = await axiosInstance.post("/auth/login", form);
+    await axiosInstance
+      .post("/auth/login", form)
+      .then(async (res) => {
+        // Extract user data from the response
+        const userData = res.data.data;
 
-      // Extract user data from the response
-      const userData = res.data.data;
+        const userToken = userData.access_token.replace(/"/g, "");
 
-      // Navigate to the "Loading" screen with user data
-      navigation.navigate("Loading", { userData });
-      formik.setSubmitting(false);
-    } catch (error) {
-      // Log any errors that occur during the login process
-      console.log(error);
-      formik.setSubmitting(false);
-    }
-  };
+        // Get firebase messaging token for push notification
+        const fbtoken = await messaging().getToken();
 
-  /**
-   * Retrieves user data securely from storage and initiates the login process if data is found.
-   */
-  const getUserData = async () => {
-    try {
-      // Retrieve user data from SecureStore
-      const userData = await SecureStore.getItemAsync("user_data");
+        await axios
+          .post(
+            `${process.env.EXPO_PUBLIC_API}/auth/create-firebase-token`,
+            {
+              firebase_token: fbtoken,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            }
+          )
+          .then(async () => {
+            await SecureStore.setItemAsync("firebase_token", fbtoken);
+            navigation.navigate("Loading", { userData });
+          });
 
-      // If user data exists, initiate the login process
-      if (userData) {
-        // Parse the retrieved user data
-        const parsedUserData = JSON.parse(userData);
-
-        // Initiate login with email and password from user data
-        loginHandler({
-          email: parsedUserData.email,
-          password: parsedUserData.password_real,
+        navigation.navigate("Loading", { userData });
+        formik.setSubmitting(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        formik.setSubmitting(false);
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+          },
         });
-      }
-    } catch (error) {
-      // Handle any errors that occur during the process
-      throw new Error("Failed to retrieve user data: " + error.message);
-    }
+      });
   };
 
   // const signInWithGoogle = async (user) => {
@@ -160,9 +164,6 @@ const LoginScreen = () => {
   // };
 
   // Initiate the getUserData function
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   // useEffect(() => {
   //   if (response?.type == "success") {
@@ -187,14 +188,14 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
-      <Flex bg="white" borderRadius={15} py={38} style={{ paddingHorizontal: 16 }} gap={36}>
+      <Flex bg="white" borderRadius={15} py={38} gap={36} w="full" maxWidth={500} style={{ paddingHorizontal: 16 }}>
         <Flex gap={22} w="100%">
           <Flex gap={15} alignItems="center">
             <Image resizeMode="contain" source={require("../assets/icons/kss_logo.png")} alt="KSS_LOGO" h={45} w={45} />
             <Text fontSize={20}>Login</Text>
           </Flex>
 
-          <Flex position="relative">
+          {/* <Flex position="relative">
             <Image
               resizeMode="contain"
               source={require("../assets/icons/google.png")}
@@ -228,9 +229,9 @@ const LoginScreen = () => {
                 {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
             </Button>
-          </Flex>
+          </Flex> */}
         </Flex>
-
+        {/* 
         <Flex position="relative" w="100%" alignItems="center" justifyContent="center">
           <Divider />
           <Box style={{ paddingHorizontal: 16 }} position="absolute" top={-10} bg="white">
@@ -238,19 +239,25 @@ const LoginScreen = () => {
               OR LOGIN WITH EMAIL
             </Text>
           </Box>
-        </Flex>
+        </Flex> */}
 
         <Flex w="100%" style={{ gap: 20 }}>
           <FormControl width="100%" isInvalid={formik.errors.email}>
             <FormControl.Label>Email</FormControl.Label>
-            <Input size="lg" onChangeText={(value) => formik.setFieldValue("email", value)} />
+            <Input
+              size="md"
+              placeholder="Insert your email..."
+              onChangeText={(value) => formik.setFieldValue("email", value)}
+              autoCapitalize="none"
+            />
             <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl width="100%" isInvalid={formik.errors.password}>
             <FormControl.Label>Password</FormControl.Label>
             <Input
-              size="lg"
+              size="md"
+              placeholder="Insert your password..."
               type={!hidePassword ? "text" : "password"}
               onChangeText={(value) => formik.setFieldValue("password", value)}
               InputRightElement={
@@ -267,7 +274,7 @@ const LoginScreen = () => {
             <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
           </FormControl>
 
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+          {/* <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <Flex>
               <Checkbox color="primary.600">
                 <Text fontWeight={400}>Remember Me</Text>
@@ -277,7 +284,7 @@ const LoginScreen = () => {
             <Text color="primary.600" fontWeight={400}>
               Forgot Password?
             </Text>
-          </Flex>
+          </Flex> */}
         </Flex>
 
         <Flex w="100%">
@@ -292,10 +299,10 @@ const LoginScreen = () => {
           </Button>
         </Flex>
 
-        <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
+        {/* <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
           <Text>Don't have an account?</Text>
           <Text color="primary.600">Sign Up</Text>
-        </Flex>
+        </Flex> */}
       </Flex>
     </KeyboardAvoidingView>
   );
@@ -308,6 +315,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 100,
     justifyContent: "center",
+    alignItems: "center",
   },
 });
 

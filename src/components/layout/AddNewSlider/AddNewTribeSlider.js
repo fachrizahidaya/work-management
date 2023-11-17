@@ -1,49 +1,53 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { Dimensions } from "react-native";
-import { Actionsheet, Box, FlatList, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Actionsheet, Box, Flex, Icon, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { SuccessToast, ErrorToast } from "../../shared/ToastDialog";
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
 
 const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
+  const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
-  const { data: attendance, refetch } = useFetch("/hr/timesheets/personal/attendance-today");
+  const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
   const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
   const { data: userIp } = useFetch("https://jsonip.com/");
 
   const toast = useToast();
+
   const navigation = useNavigation();
 
-  const { isOpen: newLeaveRequestIsOpen, toggle: toggleNewLeaveRequest } = useDisclosure(false);
   const { isOpen: newReimbursementIsOpen, toggle: toggleNewReimbursement } = useDisclosure(false);
 
   const items = [
-    {
+    createLeaveRequestCheckAccess && {
       icons: "clipboard-clock-outline",
-      title: "New Leave Request",
+      title: `New Leave Request`,
     },
-    {
-      icons: "clipboard-minus-outline",
-      title: "New Reimbursement",
-    },
+    // {
+    //   icons: "clipboard-minus-outline",
+    //   title: "New Reimbursement",
+    // },
     {
       icons: "clock-outline",
-      title: "Clock in",
+      title: `Clock in`,
     },
   ];
 
+  /**
+   * Attendance check-in and check-out handler
+   */
   const attendanceCheckHandler = async () => {
     try {
       if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
@@ -51,20 +55,31 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           ip: userIp?.ip,
         });
         toggle();
+        refetchAttendance();
         toast.show({
-          description: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
-          placement: "top",
+          render: ({ id }) => {
+            return (
+              <SuccessToast
+                message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
+                close={() => toast.close(id)}
+              />
+            );
+          },
         });
-        refetch();
       } else {
-        toast.show({ description: "You already checked out at this time", placement: "top" });
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+          },
+        });
       }
     } catch (err) {
-      toast.show({
-        description: `You're not connected to the proper connection`,
-        placement: "top",
-      });
       console.log(err.response.data.message);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`You're not connected to the proper connection`} close={() => toast.close(id)} />;
+        },
+      });
     }
   };
 
@@ -76,6 +91,9 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
     }
   }, [userIp?.ip, isLoading]);
 
+  /**
+   * Clock Handler
+   */
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentTime(dayjs().format("HH:mm"));
@@ -98,14 +116,8 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                 onPress={() => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
-                      onClose: toggleNewLeaveRequest,
-                      availableLeavePersonal: profile?.data?.leave_quota,
-                      pendingApproval: profile?.data?.pending_leave_request,
-                      approved: profile?.data?.approved_leave_request,
-                      refetchPersonalLeave: refetchPersonalLeave,
-                      approver: profile?.data?.supervisor_name,
-                      approverImage: profile?.data?.supervisor_image,
                       employeeId: profile?.data?.id,
+                      refetchPersonalLeave: refetchPersonalLeave,
                     });
                     toggle();
                   } else if (item.title === "New Reimbursement") {

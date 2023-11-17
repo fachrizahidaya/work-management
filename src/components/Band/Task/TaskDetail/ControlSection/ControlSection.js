@@ -12,6 +12,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
+import useCheckAccess from "../../../../../hooks/useCheckAccess";
 
 const ControlSection = ({
   taskStatus,
@@ -28,6 +29,8 @@ const ControlSection = ({
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: sheetIsOpen, toggle: toggleSheet } = useDisclosure(false);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const editCheckAccess = useCheckAccess("update", "Tasks");
+  const deleteCheckAccess = useCheckAccess("delete", "Tasks");
   const isDisabled = taskStatus === "Closed";
 
   /**
@@ -47,16 +50,17 @@ const ControlSection = ({
         });
       }
       refetchResponsible();
+      refetchTask();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -72,8 +76,8 @@ const ControlSection = ({
         id: selectedTask?.id,
       });
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task ${status}ed`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task ${status}ed`} close={() => toast.close(id)} />;
         },
       });
       toggleLoading();
@@ -83,8 +87,8 @@ const ControlSection = ({
       console.log(error);
       toggleLoading();
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -97,16 +101,23 @@ const ControlSection = ({
           trigger={(triggerProps) => {
             return (
               <TouchableOpacity {...triggerProps} disabled={disabled}>
-                <Icon as={<MaterialCommunityIcons name="dots-horizontal" />} size="xl" color="#3F434A" />
+                <Icon
+                  as={<MaterialCommunityIcons name="dots-horizontal" />}
+                  size="xl"
+                  color="#3F434A"
+                  opacity={disabled ? 0.5 : 1}
+                />
               </TouchableOpacity>
             );
           }}
         >
           <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-          <Menu.Item onPress={openEditForm}>Edit</Menu.Item>
-          <Menu.Item onPress={toggleDeleteModal}>
-            <Text color="red.600">Delete</Text>
-          </Menu.Item>
+          {editCheckAccess && <Menu.Item onPress={openEditForm}>Edit</Menu.Item>}
+          {deleteCheckAccess && (
+            <Menu.Item onPress={toggleDeleteModal}>
+              <Text color="red.600">Delete</Text>
+            </Menu.Item>
+          )}
         </Menu>
 
         <Button

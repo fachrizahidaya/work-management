@@ -1,10 +1,9 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useState, useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 import _ from "lodash";
-import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Text, VStack } from "native-base";
+import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Spinner, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -18,16 +17,12 @@ const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [isGridView, setIsGridView] = useState(false);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Handler for search input
-  const firstTimeRef = useRef(true);
+  const userSelector = useSelector((state) => state.auth);
 
-  const dependencies = [currentPage, searchInput];
-
+  // Paremeters for fetch contact
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
@@ -39,14 +34,20 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch("/hr/employees", dependencies, fetchEmployeeContactParameters);
+  } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
 
+  /**
+   * Fetch employee contact Handler
+   */
   const fetchMoreEmployeeContact = () => {
     if (currentPage < employeeData?.data?.last_page) {
       setCurrentPage(currentPage + 1);
     }
   };
 
+  /**
+   * Search contact name handler
+   */
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
@@ -54,13 +55,6 @@ const ContactScreen = () => {
     }, 1000),
     []
   );
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      search: "",
-    },
-  });
 
   useEffect(() => {
     if (employeeData?.data?.data.length) {
@@ -122,47 +116,45 @@ const ContactScreen = () => {
         />
       </Box>
 
-      {isLoading ? (
-        <VStack mt={3} px={3} space={2}>
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-          <Skeleton h={60} />
-        </VStack>
-      ) : (
-        <Flex px={3} flex={1} flexDir="column">
-          {/* Content here */}
-          {employeeData?.data?.data.length > 0 ? (
-            <FlashList
-              data={contacts.length ? contacts : filteredDataArray}
-              keyExtractor={(item, index) => index}
-              onEndReachedThreshold={0.1}
-              estimatedItemSize={200}
-              onEndReached={fetchMoreEmployeeContact}
-              renderItem={({ item }) => (
-                <ContactList
-                  key={item?.id}
-                  id={item?.id}
-                  name={item?.name}
-                  position={item?.position_name}
-                  division={item?.division_name}
-                  status={item?.status}
-                  image={item?.image}
-                  phone={item?.phone_number}
-                  email={item?.email}
-                />
-              )}
+      <Flex px={3} flex={1} flexDir="column">
+        {/* Content here */}
+        <FlashList
+          data={contacts.length ? contacts : filteredDataArray}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          updateCellsBatchingPeriod={50}
+          windowSize={5}
+          keyExtractor={(item, index) => index}
+          onEndReachedThreshold={0.1}
+          estimatedItemSize={200}
+          onEndReached={fetchMoreEmployeeContact}
+          renderItem={({ item }) => (
+            <ContactList
+              key={item?.id}
+              id={item?.id}
+              name={item?.name}
+              position={item?.position_name}
+              division={item?.division_name}
+              status={item?.status}
+              image={item?.image}
+              phone={item?.phone_number}
+              email={item?.email}
+              refetch={refetchEmployeeData}
+              loggedEmployeeId={userSelector?.user_role_id}
             />
-          ) : (
+          )}
+        />
+
+        <>
+          {/* If there are no data handler */}
+          {employeeData?.data?.data.length === 0 && (
             <VStack space={2} alignItems="center" justifyContent="center">
               <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
               <Text>No Data</Text>
             </VStack>
           )}
-        </Flex>
-      )}
+        </>
+      </Flex>
     </SafeAreaView>
   );
 };

@@ -15,7 +15,7 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { TouchableOpacity } from "react-native";
 
-const MemberSection = ({ projectId, projectData, members, refetchMember, reRender }) => {
+const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
@@ -48,8 +48,8 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       setIsLoading(false);
       refetchMember();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`New member added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`New member added`} close={() => toast.close(id)} />;
         },
       });
       toggleMemberModal();
@@ -57,8 +57,8 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleMemberModal();
@@ -87,7 +87,12 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, reRende
       </Flex>
 
       {memberModalIsOpen && (
-        <AddMemberModal isOpen={memberModalIsOpen} onClose={closeMemberModal} onPressHandler={addMember} />
+        <AddMemberModal
+          header="New Member"
+          isOpen={memberModalIsOpen}
+          onClose={closeMemberModal}
+          onPressHandler={addMember}
+        />
       )}
 
       <ScrollView style={{ maxHeight: 200 }}>

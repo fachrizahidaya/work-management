@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import * as yup from "yup";
 
 import { Platform, Pressable } from "react-native";
 import { Actionsheet, FormControl, Icon, Input, Text, VStack } from "native-base";
@@ -10,33 +8,21 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 
-const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
-  const [hideNewPassword, setHideNewPassword] = useState(true);
-  const [hideOldPassword, setHideOldPassword] = useState(true);
-  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-
+const PayslipPasswordEdit = ({
+  formIsOpen,
+  toggleForm,
+  onSubmit,
+  passwordError,
+  setPasswordError,
+  formik,
+  hideNewPassword,
+  setHideNewPassword,
+  hideOldPassword,
+  setHideOldPassword,
+  hideConfirmPassword,
+  setHideConfirmPassword,
+}) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
-    },
-    validationSchema: yup.object().shape({
-      old_password: yup.string().required("Old Password is required"),
-      new_password: yup.string().required("New Password is required"),
-      confirm_password: yup
-        .string()
-        .oneOf([yup.ref("new_password"), null], "Password doesn't match")
-        .required("Confirm Password is required"),
-    }),
-    onSubmit: (values, { setSubmitting, setStatus }) => {
-      setStatus("processing");
-      onSubmit(values, setSubmitting, setStatus);
-    },
-  });
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -50,6 +36,7 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
       onClose={() => {
         toggleForm();
         formik.resetForm();
+        setPasswordError("");
       }}
     >
       <Actionsheet.Content>
@@ -57,7 +44,7 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
           <VStack w="100%" space={3}>
             <FormControl.Label>Old Password</FormControl.Label>
 
-            <FormControl isInvalid={formik.errors.old_password}>
+            <FormControl isInvalid={formik.errors.old_password || !!passwordError}>
               <Input
                 variant="outline"
                 type={!hideOldPassword ? "text" : "password"}
@@ -75,7 +62,7 @@ const PayslipPasswordEdit = ({ formIsOpen, toggleForm, onSubmit }) => {
                   </Pressable>
                 }
               />
-              <FormControl.ErrorMessage>{formik.errors.old_password}</FormControl.ErrorMessage>
+              <FormControl.ErrorMessage>{formik.errors.old_password || passwordError}</FormControl.ErrorMessage>
             </FormControl>
             <FormControl.Label>New Password</FormControl.Label>
 

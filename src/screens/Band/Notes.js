@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Flex, Icon, Pressable, Skeleton, VStack, View, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
@@ -15,6 +15,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NewNoteSlider from "../../components/Band/Note/NewNoteSlider/NewNoteSlider";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const NotesScreen = () => {
   const { height } = Dimensions.get("screen");
@@ -25,7 +26,7 @@ const NotesScreen = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: editFormIsOpen, toggle: toggleEditForm } = useDisclosure(false);
   const { isOpen: newFormIsOpen, toggle: toggleNewForm } = useDisclosure(false);
-
+  const createCheckAccess = useCheckAccess("create", "Notes");
   const { data: notes, isLoading, isFetching, refetch } = useFetch("/pm/notes");
 
   const openDeleteModalHandler = (note) => {
@@ -54,15 +55,15 @@ const NotesScreen = () => {
       await axiosInstance.patch(`/pm/notes/${noteId}/${status}`);
       refetch();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Note ${status}`} toast={toast} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Note ${status}`} toast={toast} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} toast={toast} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} toast={toast} close={() => toast.close(id)} />;
         },
       });
     }
@@ -71,58 +72,61 @@ const NotesScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <VStack space={21} flex={1}>
-          <PageHeader backButton={false} title="Notes" />
-          <Flex flexDir="row">
-            <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
-          </Flex>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <VStack space={21} flex={1}>
+            <PageHeader backButton={false} title="Notes" />
+            <Flex flexDir="row">
+              <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
+            </Flex>
 
-          <ScrollView
-            style={{ maxHeight: height }}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            <ScrollView
+              style={{ maxHeight: height }}
+              refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            >
+              <View flex={1} minH={2}>
+                {!isLoading ? (
+                  <FlashList
+                    data={filteredData}
+                    keyExtractor={(item) => item.id}
+                    estimatedItemSize={270}
+                    renderItem={({ item }) => (
+                      <NoteItem
+                        note={item}
+                        id={item.id}
+                        title={item.title}
+                        date={item.created_at}
+                        isPinned={item.pinned}
+                        onPress={pinHandler}
+                        openDeleteModal={openDeleteModalHandler}
+                        openEditForm={openEditFormHandler}
+                      />
+                    )}
+                  />
+                ) : (
+                  <Skeleton height={270} />
+                )}
+              </View>
+            </ScrollView>
+          </VStack>
+        </TouchableWithoutFeedback>
+
+        {createCheckAccess && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={5}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleNewForm}
           >
-            <View flex={1} minH={2}>
-              {!isLoading ? (
-                <FlashList
-                  data={filteredData}
-                  keyExtractor={(item) => item.id}
-                  estimatedItemSize={270}
-                  renderItem={({ item }) => (
-                    <NoteItem
-                      note={item}
-                      id={item.id}
-                      title={item.title}
-                      content={item.content}
-                      date={item.created_at}
-                      isPinned={item.pinned}
-                      onPress={pinHandler}
-                      openDeleteModal={openDeleteModalHandler}
-                      openEditForm={openEditFormHandler}
-                    />
-                  )}
-                />
-              ) : (
-                <Skeleton height={270} />
-              )}
-            </View>
-          </ScrollView>
-        </VStack>
-
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleNewForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {deleteModalIsOpen && (

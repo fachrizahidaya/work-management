@@ -14,6 +14,8 @@ import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectLi
 import { useFetch } from "../../hooks/useFetch";
 import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
+import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
+import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 
 const ProjectList = () => {
   const firstTimeRef = useRef(true);
@@ -48,8 +50,8 @@ const ProjectList = () => {
 
   const renderSkeletons = () => {
     const skeletons = [];
-    for (let i = 0; i < 5; i++) {
-      skeletons.push(<Skeleton height={41} key={i} />);
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<ProjectSkeleton key={i} />);
     }
     return skeletons;
   };
@@ -125,32 +127,37 @@ const ProjectList = () => {
         <Divider></Divider>
 
         {!isLoading ? (
-          <>
-            <Box flex={1}>
-              <FlashList
-                refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-                data={data?.data.data}
-                keyExtractor={(item) => item.id}
-                onEndReachedThreshold={0.1}
-                estimatedItemSize={200}
-                renderItem={({ item }) => (
-                  <ProjectListItem
-                    id={item.id}
-                    title={item.title}
-                    status={item.status}
-                    deadline={item.deadline}
-                    isArchive={item.archive}
-                    image={item.owner_image}
-                    ownerName={item.owner_name}
-                  />
-                )}
-              />
-            </Box>
+          data?.data?.data?.length > 0 ? (
+            <>
+              <Box flex={1}>
+                <FlashList
+                  refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+                  data={data?.data.data}
+                  keyExtractor={(item) => item.id}
+                  onEndReachedThreshold={0.1}
+                  estimatedItemSize={200}
+                  renderItem={({ item }) => (
+                    <ProjectListItem
+                      id={item.id}
+                      title={item.title}
+                      status={item.status}
+                      deadline={item.deadline}
+                      isArchive={item.archive}
+                      image={item.owner_image}
+                      ownerName={item.owner_name}
+                      ownerEmail={item.owner_email}
+                    />
+                  )}
+                />
+              </Box>
 
-            {data?.data?.last_page > 1 && (
-              <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
-            )}
-          </>
+              {data?.data?.last_page > 1 && (
+                <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+              )}
+            </>
+          ) : (
+            <EmptyPlaceholder height={200} width={240} text="No project" />
+          )
         ) : (
           <VStack px={2} space={2}>
             {renderSkeletons()}

@@ -2,13 +2,17 @@ import React, { memo } from "react";
 
 import dayjs from "dayjs";
 
-import { Platform, StyleSheet } from "react-native";
-import { Flex, HStack, Icon, IconButton, Menu, Pressable, Text, View } from "native-base";
+import { Platform, StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, HStack, Icon, IconButton, Menu, Text, View } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDeleteModal, openEditForm }) => {
+import useCheckAccess from "../../../../hooks/useCheckAccess";
+
+const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, openEditForm }) => {
+  const deleteCheckAccess = useCheckAccess("delete", "Notes");
+
   return (
-    <Pressable onPress={() => openEditForm(note)}>
+    <TouchableOpacity onPress={() => openEditForm(note)}>
       <Flex style={styles.card} gap={18}>
         <Flex
           flexDir="row"
@@ -49,12 +53,14 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
                 );
               }}
             >
-              <Menu.Item onPress={() => openDeleteModal(note)}>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon as={<MaterialCommunityIcons name="delete-outline" />} color="red.500" />
-                  <Text color="red.500">Delete</Text>
-                </Flex>
-              </Menu.Item>
+              {deleteCheckAccess && (
+                <Menu.Item onPress={() => openDeleteModal(note)}>
+                  <Flex flexDir="row" alignItems="center" gap={2}>
+                    <Icon as={<MaterialCommunityIcons name="delete-outline" />} color="red.500" />
+                    <Text color="red.500">Delete</Text>
+                  </Flex>
+                </Menu.Item>
+              )}
             </Menu>
           </HStack>
         </Flex>
@@ -74,11 +80,9 @@ const NoteItem = ({ note, id, title, date, content, isPinned, onPress, openDelet
           </View>
         )}
 
-        <Text fontWeight={700}>{title}</Text>
-
-        <Text height={120}>{content}</Text>
+        <Text>{title}</Text>
       </Flex>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
@@ -95,6 +99,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
-    height: 270,
+    // height: 270,
   },
 });

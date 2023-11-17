@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, HStack, Icon, Menu, Pressable, Text, useToast } from "native-base";
+import { Box, Button, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -27,6 +27,7 @@ import PageHeader from "../../../components/shared/PageHeader";
 import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const ProjectDetailScreen = ({ route }) => {
   const toast = useToast();
@@ -41,6 +42,8 @@ const ProjectDetailScreen = ({ route }) => {
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
   const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const deleteCheckAccess = useCheckAccess("delete", "Projects");
+  const editCheckAccess = useCheckAccess("update", "Projects");
 
   const tabs = useMemo(() => {
     return [{ title: "comments" }, { title: "activity" }];
@@ -116,7 +119,7 @@ const ProjectDetailScreen = ({ route }) => {
               withLoading
               isLoading={isLoading}
               width={width / 1.3}
-              onPress={() => navigation.navigate("Project List")}
+              onPress={() => navigation.navigate("Projects")}
             />
 
             {projectData?.owner_id === userSelector.id && (
@@ -130,10 +133,12 @@ const ProjectDetailScreen = ({ route }) => {
                 }}
               >
                 <Menu.Item onPress={toggleUserModal}>Change Ownership</Menu.Item>
-                <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>
-                <Menu.Item onPress={toggle}>
-                  <Text color="red.600">Delete</Text>
-                </Menu.Item>
+                {editCheckAccess && <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>}
+                {deleteCheckAccess && (
+                  <Menu.Item onPress={toggle}>
+                    <Text color="red.600">Delete</Text>
+                  </Menu.Item>
+                )}
               </Menu>
             )}
 
@@ -146,7 +151,7 @@ const ProjectDetailScreen = ({ route }) => {
                 color="red.600"
                 successMessage={`${projectData?.title} deleted`}
                 hasSuccessFunc={true}
-                onSuccess={() => navigation.navigate("Project List")}
+                onSuccess={() => navigation.navigate("Projects")}
                 header="Delete Project"
                 description="Are you sure to delete this project?"
               />
@@ -154,6 +159,7 @@ const ProjectDetailScreen = ({ route }) => {
 
             {userModalIsOpen && (
               <AddMemberModal
+                header="New Project Owner"
                 isOpen={userModalIsOpen}
                 onClose={closeUserModal}
                 multiSelect={false}
@@ -194,7 +200,7 @@ const ProjectDetailScreen = ({ route }) => {
                 <Text>Task List</Text>
               </Flex>
             </Button>
-            <Button
+            {/* <Button
               flex={1}
               variant="outline"
               onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Kanban" })}
@@ -213,7 +219,7 @@ const ProjectDetailScreen = ({ route }) => {
                 <Icon as={<MaterialCommunityIcons name="chart-gantt" />} color="#3F434A" size="md" />
                 <Text>Gantt</Text>
               </Flex>
-            </Button>
+            </Button> */}
           </Flex>
 
           <FileSection projectId={projectId} projectData={projectData} />
@@ -228,7 +234,7 @@ const ProjectDetailScreen = ({ route }) => {
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
           {tabValue === "comments" ? (
-            <CommentInput projectId={projectId} />
+            <CommentInput projectId={projectId} data={projectData} />
           ) : (
             <ScrollView style={{ maxHeight: 400 }}>
               <Box flex={1} minHeight={2}>
@@ -252,7 +258,7 @@ const ProjectDetailScreen = ({ route }) => {
                       }}
                     >
                       <Flex flexDir="row" gap={1.5} mb={2}>
-                        <AvatarPlaceholder name={item.user_name} image={item.user_image} />
+                        <AvatarPlaceholder name={item.user_name} image={item.user_image} style={{ marginTop: 4 }} />
 
                         <Box>
                           <Flex flexDir="row" gap={1} alignItems="center">
@@ -263,10 +269,13 @@ const ProjectDetailScreen = ({ route }) => {
                           <Flex>
                             <Text fontWeight={400}>{item?.description}</Text>
 
-                            <HStack space={1}>
-                              <Text fontWeight={400}>{item.object_title}</Text>
-                              <Text color="#377893">#{item.reference_id}</Text>
-                            </HStack>
+                            <Text fontWeight={400} width={300} numberOfLines={2}>
+                              {item.object_title}
+                              <Text color="#377893" fontWeight={500}>
+                                {" "}
+                                #{item.reference_no}
+                              </Text>
+                            </Text>
                           </Flex>
                         </Box>
                       </Flex>

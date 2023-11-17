@@ -70,7 +70,7 @@ const BandTab = () => {
           tabBarStyle: { height: 80 },
           tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
-          tabBarButton: ["Project List", "Task List", "My Team", "Notes", "Calendar"].includes(route.name)
+          tabBarButton: ["Projects", "Tasks", "My Team", "Notes", "Calendar Band"].includes(route.name)
             ? () => {
                 return null;
               }
@@ -93,7 +93,7 @@ const BandTab = () => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
@@ -113,7 +113,7 @@ const BandTab = () => {
               </TouchableOpacity>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="Add"
           component={EmptyScreen}
@@ -136,7 +136,7 @@ const BandTab = () => {
           }}
         />
         <Tab.Screen
-          name="Setting"
+          name="Setting Band"
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
@@ -163,15 +163,15 @@ const BandTab = () => {
             ),
           }}
         />
-        <Tab.Screen name="Project List" component={ProjectList} />
+        <Tab.Screen name="Projects" component={ProjectList} />
 
-        <Tab.Screen name="Task List" component={AdHocScreen} />
+        <Tab.Screen name="Tasks" component={AdHocScreen} />
 
         <Tab.Screen name="My Team" component={MyTeamScreen} />
 
         <Tab.Screen name="Notes" component={NotesScreen} />
 
-        <Tab.Screen name="Calendar" component={CalendarScreen} />
+        <Tab.Screen name="Calendar Band" component={CalendarScreen} />
       </Tab.Navigator>
 
       {/* Sliders */}

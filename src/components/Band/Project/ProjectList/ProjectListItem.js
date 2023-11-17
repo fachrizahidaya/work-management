@@ -8,9 +8,11 @@ dayjs.extend(relativeTime);
 import { Box, Flex, Pressable, Text } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { Dimensions } from "react-native";
 
-const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName }) => {
+const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName, ownerEmail }) => {
   const navigation = useNavigation();
+  const { width } = Dimensions.get("screen");
 
   return (
     <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: id })}>
@@ -24,7 +26,7 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
         px={4}
       >
         <Flex gap={0.5}>
-          <Text width={190} numberOfLines={1}>
+          <Text width={width / 2} numberOfLines={1}>
             {title}
           </Text>
 
@@ -37,7 +39,9 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
             {isArchive ? "Archived" : status}
           </Text>
 
-          <AvatarPlaceholder name={ownerName || "Jason Tatum"} image={image} />
+          <Box alignSelf="flex-start">
+            <AvatarPlaceholder name={ownerName} image={image} email={ownerEmail} isPressable={true} />
+          </Box>
         </Flex>
         <Box
           alignItems="center"

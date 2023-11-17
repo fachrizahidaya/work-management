@@ -15,29 +15,17 @@ const FeedCommentReplyItem = ({
   totalReplies,
   postId,
   onReply,
+  parentId,
   authorImage,
 }) => {
   const [filteredComment, setFilteredComment] = useState();
-
-  const filterComment = () => {
-    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    setFilteredComment(() => {
-      return comments.replace(urlRegex, function (url) {
-        return '<a href="' + url + '" target="_blank">' + url + "</a>";
-      });
-    });
-  };
-
-  useEffect(() => {
-    filterComment();
-  }, [comments]);
 
   return (
     <Flex mx={10} my={2}>
       <Flex my={1} minHeight={1}>
         <Flex direction="row" gap={2}>
           <Flex>
-            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" />
+            <AvatarPlaceholder image={authorImage} name={authorName} size="sm" isThumb={false} />
           </Flex>
           <Flex flex={1} gap={1}>
             <Text fontSize={12} fontWeight={500}>
@@ -47,8 +35,9 @@ const FeedCommentReplyItem = ({
               {comments}
             </Text>
             <Pressable
-              disabled
-              // onPress={() => onReply(parentId)}
+              onPress={() => {
+                onReply(parentId);
+              }}
             >
               <Text fontSize={12} fontWeight={500} color="#8A7373">
                 Reply

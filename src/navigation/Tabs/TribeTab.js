@@ -74,13 +74,11 @@ const TribeTab = ({ setSelectedModule }) => {
           tabBarButton: [
             "My Information",
             "Attendance",
-            "Leave Request",
+            "Leave Requests",
             "Reimbursement",
-            "Team Leave Request",
-            "Reimbursement",
-            "My Payslip",
+            "Payslip",
             "My KPI",
-            "Calendar",
+            "Calendar Tribe",
             "Contact",
           ].includes(route.name)
             ? () => {
@@ -90,7 +88,7 @@ const TribeTab = ({ setSelectedModule }) => {
         })}
       >
         <Tab.Screen
-          name="Feed"
+          name="Dashboard"
           component={FeedScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
@@ -105,12 +103,12 @@ const TribeTab = ({ setSelectedModule }) => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#186688" />
               </Box>
             ),
@@ -125,13 +123,13 @@ const TribeTab = ({ setSelectedModule }) => {
               </TouchableOpacity>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="Add"
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
+              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
                 <Icon as={<MaterialCommunityIcons name="plus" />} size={size} color="#186688" />
               </Box>
             ),
@@ -148,11 +146,11 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen
-          name="Setting"
+          name="Setting Tribe"
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2} position="fixed">
+              <Box bg="#FBFBFB" borderRadius="full" padding={2} position="fixed">
                 <Icon as={<MaterialCommunityIcons name="cog-outline" />} size={size} color="#186688" />
               </Box>
             ),
@@ -178,12 +176,19 @@ const TribeTab = ({ setSelectedModule }) => {
           }}
         />
         <Tab.Screen name="My Information" component={InformationScreen} />
+
         <Tab.Screen name="Attendance" component={AttendanceScreen} />
-        <Tab.Screen name="Leave Request" component={LeaveScreen} />
+
+        <Tab.Screen name="Leave Requests" component={LeaveScreen} />
+
         <Tab.Screen name="Reimbursement" component={ReimbursementScreen} />
-        <Tab.Screen name="My Payslip" component={PayslipScreen} />
+
+        <Tab.Screen name="Payslip" component={PayslipScreen} />
+
         <Tab.Screen name="My KPI" component={EmptyScreen} />
-        <Tab.Screen name="Calendar" component={CalendarScreen} />
+
+        <Tab.Screen name="Calendar Tribe" component={CalendarScreen} />
+
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 

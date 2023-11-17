@@ -40,13 +40,15 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
       }
-      refetch();
+      if (refetch) {
+        refetch();
+      }
       setSubmitting(false);
       setStatus("success");
 
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task saved!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task saved!`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -54,8 +56,8 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -99,7 +101,10 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
       <Box position="absolute" zIndex={3}>
         <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
           <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-            <PageHeader title="New Task" onPress={() => onClose(formik.resetForm)} />
+            <PageHeader
+              title="New Task"
+              onPress={() => !formik.isSubmitting && formik.status !== "processing" && onClose(formik.resetForm)}
+            />
 
             <Flex gap={17} mt={22}>
               <FormControl isInvalid={formik.errors.title}>

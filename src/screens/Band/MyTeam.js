@@ -18,6 +18,7 @@ import NewProjectSlider from "../../components/Band/Project/NewProjectSlider/New
 import AddMemberModal from "../../components/Band/shared/AddMemberModal/AddMemberModal";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const MyTeamScreen = () => {
   const toast = useToast();
@@ -32,6 +33,10 @@ const MyTeamScreen = () => {
   const { isOpen: projectFormIsOpen, toggle: toggleProjectForm } = useDisclosure(false);
   const { isOpen: addMemberModalIsOpen, toggle: toggleAddMemberModal } = useDisclosure(false);
   const { isOpen: removeMemberModalIsOpen, toggle: toggleRemoveMemberModal } = useDisclosure(false);
+  const createCheckAccess = useCheckAccess("create", "My Team");
+  const editCheckAccess = useCheckAccess("update", "My Team");
+  const deleteCheckAccess = useCheckAccess("delete", "My Team");
+  const createProjectCheckAccess = useCheckAccess("create", "Projects");
 
   const openNewTeamFormHandler = () => {
     toggleNewTeamForm();
@@ -97,8 +102,8 @@ const MyTeamScreen = () => {
       refetchMembers();
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Team Saved"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Team Saved"} close={() => toast.close(id)} />;
         },
       });
       toggleAddMemberModal();
@@ -106,8 +111,8 @@ const MyTeamScreen = () => {
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleAddMemberModal();
@@ -130,11 +135,13 @@ const MyTeamScreen = () => {
             {teams?.data?.length > 0 ? (
               <TeamSelection onChange={onPressTeam} selectedTeamId={selectedTeamId} teams={teams?.data} />
             ) : (
-              <VStack space={2} alignItems="center">
-                <Image h={230} w={300} source={require("../../assets/vectors/team.jpg")} alt="team" />
-                <Text fontSize={22}>You don't have teams yet...</Text>
-                <Button>Create here</Button>
-              </VStack>
+              createCheckAccess && (
+                <VStack space={2} alignItems="center">
+                  <Image h={230} w={300} source={require("../../assets/vectors/team.jpg")} alt="team" />
+                  <Text fontSize={22}>You don't have teams yet...</Text>
+                  <Button onPress={toggleNewTeamForm}>Create here</Button>
+                </VStack>
+              )
             )}
           </>
         ) : (
@@ -167,12 +174,21 @@ const MyTeamScreen = () => {
             <Skeleton h={10} />
           )
         ) : (
-          <VStack alignItems="center" position="relative">
-            <Image source={require("../../assets/vectors/member.jpg")} alt="member" resizeMode="contain" size="2xl" />
-            <Text fontSize={22} position="absolute" bottom={0}>
-              Select team to show
-            </Text>
-          </VStack>
+          <>
+            {teams?.data?.length > 0 && (
+              <VStack alignItems="center" position="relative">
+                <Image
+                  source={require("../../assets/vectors/member.jpg")}
+                  alt="member"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text fontSize={22} position="absolute" bottom={0}>
+                  Select team to show
+                </Text>
+              </VStack>
+            )}
+          </>
         )}
       </Box>
 
@@ -195,20 +211,30 @@ const MyTeamScreen = () => {
       <Actionsheet isOpen={menuIsOpen} onClose={toggleMenu}>
         <Actionsheet.Content>
           <VStack w="95%">
-            <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>
+            {createCheckAccess && <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>}
             {team && (
               <>
-                <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
+                {createProjectCheckAccess && (
+                  <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
+                )}
 
                 {team?.owner_id === userSelector.id && (
                   <>
-                    <Actionsheet.Item onPress={openMemberModalHandler}>Add new member to this team</Actionsheet.Item>
-                    <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
-                    <Actionsheet.Item onPress={toggleDeleteModal}>
-                      <Text color="red.500" fontSize={16}>
-                        Delete this team
-                      </Text>
-                    </Actionsheet.Item>
+                    {editCheckAccess && (
+                      <>
+                        <Actionsheet.Item onPress={openMemberModalHandler}>
+                          Add new member to this team
+                        </Actionsheet.Item>
+                        <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
+                      </>
+                    )}
+                    {deleteCheckAccess && (
+                      <Actionsheet.Item onPress={toggleDeleteModal}>
+                        <Text color="red.500" fontSize={16}>
+                          Delete this team
+                        </Text>
+                      </Actionsheet.Item>
+                    )}
                   </>
                 )}
               </>
@@ -246,7 +272,12 @@ const MyTeamScreen = () => {
 
       {/* Add member modal */}
       {addMemberModalIsOpen && (
-        <AddMemberModal isOpen={addMemberModalIsOpen} onClose={toggleAddMemberModal} onPressHandler={addNewMember} />
+        <AddMemberModal
+          header="New Member"
+          isOpen={addMemberModalIsOpen}
+          onClose={toggleAddMemberModal}
+          onPressHandler={addNewMember}
+        />
       )}
 
       {/* Remove member confirmation modal */}

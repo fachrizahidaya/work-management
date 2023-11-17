@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
@@ -6,9 +6,12 @@ import { useDispatch } from "react-redux";
 
 import { Box, Flex, Progress, Text } from "native-base";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
+
 import { login } from "../redux/reducer/auth";
+import { setModule } from "../redux/reducer/module";
 
 const LoadingScreen = ({ route }) => {
+  const maxValue = Platform.OS === "android" ? 150 : 140;
   const userData = route.params;
   const dispatch = useDispatch();
   const [loadingValue, setLoadingValue] = useState(0);
@@ -82,6 +85,9 @@ const LoadingScreen = ({ route }) => {
       // Store user token in SecureStore
       await SecureStore.setItemAsync("user_token", userData.userData.access_token);
 
+      // Dispatch band module to firstly be rendered
+      dispatch(setModule("BAND"));
+
       // Dispatch a login action with the provided user data
       dispatch(login(userData.userData));
     } catch (error) {
@@ -93,7 +99,7 @@ const LoadingScreen = ({ route }) => {
   useEffect(() => {
     // Effect to update loadingValue at regular intervals
     const interval = setInterval(() => {
-      if (loadingValue < 130) {
+      if (loadingValue < maxValue) {
         updateLoadingValue();
       } else {
         clearInterval(interval);
@@ -106,8 +112,8 @@ const LoadingScreen = ({ route }) => {
   }, [loadingValue]);
 
   useEffect(() => {
-    // Effect to trigger user data update when loadingValue reaches 130
-    if (loadingValue === 130) {
+    // Effect to trigger user data update when loadingValue reaches maxValue
+    if (loadingValue === maxValue) {
       const timeout = setTimeout(() => {
         setUserData();
       }, 0);

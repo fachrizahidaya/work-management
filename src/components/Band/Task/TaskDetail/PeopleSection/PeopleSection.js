@@ -2,7 +2,8 @@ import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
 
-import { Flex, FormControl, Icon, IconButton, Pressable, useToast } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { Actionsheet, Flex, FormControl, Icon, IconButton, Pressable, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
@@ -11,6 +12,7 @@ import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
+import { useFetch } from "../../../../../hooks/useFetch";
 
 const PeopleSection = ({
   observers,
@@ -18,10 +20,12 @@ const PeopleSection = ({
   ownerId,
   ownerName,
   ownerImage,
+  ownerEmail,
   refetchObservers,
   disabled,
   selectedTask,
   refetchResponsible,
+  refetchTask,
 }) => {
   const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
@@ -29,12 +33,15 @@ const PeopleSection = ({
 
   const { isOpen: deleteObserverModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: observerModalIsOpen, toggle: toggleObserverModal, close: closeObserverMocal } = useDisclosure(false);
+  const { isOpen: memberSelectIsOpen, toggle: toggleMemberSelect } = useDisclosure(false);
+
+  const { data: members } = useFetch(selectedTask?.project_id && `/pm/projects/${selectedTask?.project_id}/member`);
 
   const getSelectedObserver = (id) => {
     toggle();
 
     // Filter team members which has the same id value of the selected member
-    const filteredObserver = observers?.data.filter((observer) => {
+    const filteredObserver = observers?.filter((observer) => {
       return observer.id === id;
     });
 
@@ -44,23 +51,31 @@ const PeopleSection = ({
   /**
    * Handles take task as responsible
    */
-  const takeTask = async () => {
+  const takeTask = async (userId) => {
     try {
-      await axiosInstance.post("/pm/tasks/responsible", {
-        task_id: selectedTask.id,
-        user_id: userSelector.id,
-      });
+      if (selectedTask?.responsible_id) {
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsibleArr[0]?.id}`, {
+          user_id: userId,
+        });
+      } else {
+        await axiosInstance.post("/pm/tasks/responsible", {
+          task_id: selectedTask.id,
+          user_id: userId,
+        });
+      }
+      toggleMemberSelect();
       refetchResponsible();
+      refetchTask();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Task assigned`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -81,8 +96,8 @@ const PeopleSection = ({
       refetchObservers();
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <SuccessToast message={`New observer added`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`New observer added`} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();
@@ -90,8 +105,8 @@ const PeopleSection = ({
       console.log(error);
       setIsLoading(false);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
       toggleObserverModal();
@@ -108,17 +123,18 @@ const PeopleSection = ({
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
-                  <AvatarPlaceholder
-                    key={responsible.id}
-                    name={responsible.responsible_name}
-                    image={responsible.responsible_image}
-                    size="sm"
-                  />
+                  <TouchableOpacity key={responsible.id} onPress={toggleMemberSelect}>
+                    <AvatarPlaceholder
+                      name={responsible.responsible_name}
+                      image={responsible.responsible_image}
+                      size="sm"
+                    />
+                  </TouchableOpacity>
                 );
               })
             ) : (
               <IconButton
-                onPress={takeTask}
+                onPress={toggleMemberSelect}
                 size="md"
                 borderRadius="full"
                 icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
@@ -130,7 +146,9 @@ const PeopleSection = ({
           <FormControl flex={1}>
             <FormControl.Label>CREATED BY</FormControl.Label>
 
-            {ownerId && <AvatarPlaceholder name={ownerName} image={ownerImage} size="sm" />}
+            {ownerId && (
+              <AvatarPlaceholder name={ownerName} image={ownerImage} email={ownerEmail} size="sm" isPressable={true} />
+            )}
           </FormControl>
         </Flex>
 
@@ -176,7 +194,12 @@ const PeopleSection = ({
       </Flex>
 
       {observerModalIsOpen && (
-        <AddMemberModal isOpen={observerModalIsOpen} onClose={closeObserverMocal} onPressHandler={addObserverToTask} />
+        <AddMemberModal
+          header="New Observer"
+          isOpen={observerModalIsOpen}
+          onClose={closeObserverMocal}
+          onPressHandler={addObserverToTask}
+        />
       )}
 
       <ConfirmationModal
@@ -189,6 +212,22 @@ const PeopleSection = ({
         hasSuccessFunc={true}
         onSuccess={refetchObservers}
       />
+
+      <Actionsheet isOpen={memberSelectIsOpen} onClose={toggleMemberSelect}>
+        <Actionsheet.Content>
+          {members?.data?.length > 0 ? (
+            members.data.map((member) => {
+              return (
+                <Actionsheet.Item key={member.id} onPress={() => takeTask(member.user_id)}>
+                  {member.member_name}
+                </Actionsheet.Item>
+              );
+            })
+          ) : (
+            <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>{userSelector.name}</Actionsheet.Item>
+          )}
+        </Actionsheet.Content>
+      </Actionsheet>
     </>
   );
 };

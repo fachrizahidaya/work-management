@@ -55,8 +55,8 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       setSubmitting(false);
       setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Project saved!`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Project saved!`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
@@ -64,8 +64,8 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       setSubmitting(false);
       setStatus("error");
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }
@@ -107,7 +107,10 @@ const NewProjectSlider = ({ isOpen, onClose, projectData, refetchSelectedProject
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Box position="absolute" zIndex={3}>
           <Box w={width} height={height} bgColor="white" style={{ marginTop: 13, paddingHorizontal: 16 }}>
-            <PageHeader title="New Project" onPress={() => onClose(formik.resetForm)} />
+            <PageHeader
+              title="New Project"
+              onPress={() => !formik.isSubmitting && formik.status !== "processing" && onClose(formik.resetForm)}
+            />
 
             <Flex gap={17} mt={22}>
               <FormControl isInvalid={formik.errors.title}>

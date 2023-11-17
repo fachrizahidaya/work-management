@@ -1,34 +1,70 @@
 import { useState } from "react";
 
-import { Box, Skeleton, VStack } from "native-base";
+import { Box, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCardItem from "./FeedCardItem";
 import FeedComment from "./FeedComment/FeedComment";
-import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
+import { ErrorToast } from "../../shared/ToastDialog";
 
 const FeedCard = ({
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
   loggedEmployeeName,
-  onToggleLike,
   postRefetchHandler,
-  handleEndReached,
-  feedsIsFetching,
-  refetchFeeds,
-  feedsIsLoading,
+  postEndReachedHandler,
+  hasBeenScrolled,
+  setHasBeenScrolled,
+  reload,
+  setReload,
+  postIsFetching,
+  refetchPost,
 }) => {
+  const [comments, setComments] = useState([]);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [postId, setPostId] = useState(null);
-  const [postEditOpen, setPostEditOpen] = useState(false);
-  const [editedPost, setEditedPost] = useState(null);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [forceRerender, setForceRerender] = useState(false);
 
-  const { isOpen: commentIsOpen, toggle: toggleComment } = useDisclosure(false);
+  const toast = useToast();
+
+  // Parameters for fetch comments
+  const commentsFetchParameters = {
+    offset: currentOffset,
+    limit: 50,
+  };
+
+  const {
+    data: comment,
+    isFetching: commentIsFetching,
+    refetch: refetchComment,
+  } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
 
   /**
-   * Action sheet control
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + comment?.data.length) {
+      setCurrentOffset(currentOffset + 10);
+    }
+  };
+
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
+  const commentRefetchHandler = () => {
+    setCurrentOffset(0);
+    setReload(!reload);
+  };
+
+  /**
+   * Action sheet for comment handler
    */
   const [commentsOpen, setCommentsOpen] = useState(false);
   const commentsOpenHandler = (post_id) => {
@@ -37,33 +73,75 @@ const FeedCard = ({
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
+
   const commentsCloseHandler = () => {
     setCommentsOpen(false);
     setPostId(null);
   };
 
-  const commentSubmitHandler = () => {
+  /**
+   * Submit comment handler
+   */
+  const commentAddHandler = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
+    setForceRerender(!forceRerender);
+  };
+
+  /**
+   * Like a Post handler
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchPost();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   return (
     <Box flex={1}>
       <FlashList
         data={posts}
+        extraData={forceRerender} // re-render data handler
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={100}
+        windowSize={10}
         onEndReachedThreshold={0.1}
-        onEndReached={posts.length ? handleEndReached : null}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
-        refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
+        refreshing={true}
+        onScrollBeginDrag={() => {
+          setHasBeenScrolled(true); // user has scrolled handler
+        }}
+        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
+        refreshControl={
+          <RefreshControl
+            refreshing={postIsFetching}
+            onRefresh={() => {
+              postRefetchHandler();
+              refetchPost();
+            }}
+          />
+        }
         renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
-            post={item}
             id={item?.id}
+            post={item}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
             createdAt={item?.created_at}
@@ -74,25 +152,34 @@ const FeedCard = ({
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            // like post
+            onToggleLike={postLikeToggleHandler}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            onToggleLike={onToggleLike}
-            // toggle Comment
             onCommentToggle={commentsOpenHandler}
+            refetchPost={refetchPost}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
           />
         )}
       />
+
       {commentsOpen && (
         <FeedComment
-          handleOpen={commentsOpen}
-          handleClose={commentsCloseHandler}
           postId={postId}
-          total_comments={postTotalComment}
-          onSubmit={commentSubmitHandler}
-          loggedEmployeeImage={loggedEmployeeImage}
+          loggedEmployeeId={loggedEmployeeId}
           loggedEmployeeName={loggedEmployeeName}
-          postRefetchHandler={postRefetchHandler}
+          loggedEmployeeImage={loggedEmployeeImage}
+          handleOpen={commentsOpenHandler}
+          handleClose={commentsCloseHandler}
+          commentAddHandler={commentAddHandler}
+          currentOffset={currentOffset}
+          comment={comment}
+          commentIsFetching={commentIsFetching}
+          refetchComment={refetchComment}
+          commentEndReachedHandler={commentEndReachedHandler}
+          commentRefetchHandler={commentRefetchHandler}
+          comments={comments}
+          setComments={setComments}
         />
       )}
     </Box>

@@ -1,59 +1,47 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Flex, ScrollView, Text, Actionsheet, KeyboardAvoidingView } from "native-base";
+import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
 import axiosInstance from "../../../../config/api";
-import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedComment = ({
+  postId,
+  loggedEmployeeId,
+  loggedEmployeeName,
+  loggedEmployeeImage,
+  comment,
+  commentIsFetching,
+  currentOffset,
+  comments,
+  setComments,
   handleOpen,
   handleClose,
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  loggedEmployeeName,
-  postId,
-  total_comments,
-  onSubmit,
-  postRefetchHandler,
+  commentAddHandler,
+  refetchComment,
+  commentEndReachedHandler,
+  commentRefetchHandler,
 }) => {
-  const [comments, setComments] = useState([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   const inputRef = useRef();
 
   /**
-   *
-   * Fetch Comment Handler
+   * Submit a comment handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
    */
-  const commentsFetchParameters = {
-    offset: currentOffset,
-    limit: 30,
-  };
-  const {
-    data: commentData,
-    isLoading: commentIsLoading,
-    isFetching: commentIsFetching,
-    refetch: refetchComment,
-  } = useFetch(`/hr/posts/${postId}/comment`, [currentOffset], commentsFetchParameters);
-
-  const fetchComment = async (offset = 0, limit = 10, fetchMore = false) => {
-    try {
-      setComments(commentData?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
-      setCommentParentId(null);
-      onSubmit(postId);
-      postRefetchHandler();
       refetchComment();
+      commentRefetchHandler();
+      setCommentParentId(null);
+      commentAddHandler(postId);
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -66,7 +54,6 @@ const FeedComment = ({
   /**
    * Control for reply a comment
    */
-  const [commentParentId, setCommentParentId] = useState(null);
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
@@ -76,9 +63,15 @@ const FeedComment = ({
     if (!handleOpen) {
       setCommentParentId(null);
     } else {
-      refetchComment();
+      if (comment?.data && commentIsFetching === false) {
+        if (currentOffset === 0) {
+          setComments(comment?.data);
+        } else {
+          setComments((prevData) => [...prevData, ...comment?.data]);
+        }
+      }
     }
-  }, [handleOpen]);
+  }, [handleOpen, commentIsFetching]);
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
@@ -100,12 +93,17 @@ const FeedComment = ({
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
-                comments={commentData?.data}
+                comments={comments}
                 onReply={replyHandler}
                 loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
                 latestExpandedReply={latestExpandedReply}
-                commentIsLoading={commentIsLoading}
+                commentEndReachedHandler={commentEndReachedHandler}
+                commentsRefetchHandler={commentRefetchHandler}
+                commentIsFetching={commentIsFetching}
+                refetchComment={refetchComment}
+                hasBeenScrolled={hasBeenScrolled}
+                setHasBeenScrolled={setHasBeenScrolled}
               />
             </Flex>
           </ScrollView>

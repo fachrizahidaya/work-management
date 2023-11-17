@@ -1,22 +1,25 @@
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Text, useToast } from "native-base";
+import { Flex, useToast } from "native-base";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
-import Schedule from "../../components/Tribe/Calendar/Schedule";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import { SuccessToast } from "../../components/shared/ToastDialog";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
   });
+
+  const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
 
@@ -30,29 +33,43 @@ const AttendanceScreen = () => {
     refetch: refetchAttendanceData,
   } = useFetch(`/hr/timesheets/personal`, [filter], attendanceFetchParameters);
 
-  const handleMonthChange = (newMonth) => {
+  /**
+   * Switch month handler
+   */
+  const handleMonthChange = useCallback((newMonth) => {
     setFilter(newMonth);
-  };
+  }, []);
 
-  const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
+  /**
+   * Submit attendance report handler
+   * @param {*} attendance_id
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const attendanceReportSubmitHandler = useCallback(async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      refetchAttendanceData();
-      setStatus("success");
-      setSubmitting(false);
       toggleReport();
+      refetchAttendanceData();
+      setSubmitting(false);
+      setStatus("success");
       toast.show({
-        render: () => {
-          return <SuccessToast message={"Report Submitted"} />;
+        render: ({ id }) => {
+          return <SuccessToast message={"Report Submitted"} close={() => toast.close(id)} />;
         },
-        placement: "top",
       });
     } catch (err) {
       console.log(err);
-      setStatus("error");
       setSubmitting(false);
+      setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Submit failed, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
     }
-  };
+  }, []);
 
   return (
     <>
@@ -60,13 +77,18 @@ const AttendanceScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
-        <AttendanceCalendar
-          attendance={attendanceData?.data}
-          onMonthChange={handleMonthChange}
-          onSubmit={attendanceReportSubmitHandler}
-          reportIsOpen={reportIsOpen}
-          toggleReport={toggleReport}
-        />
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={attendanceDataIsFetching} onRefresh={refetchAttendanceData} />}
+        >
+          <AttendanceCalendar
+            attendance={attendanceData?.data}
+            onMonthChange={handleMonthChange}
+            onSubmit={attendanceReportSubmitHandler}
+            reportIsOpen={reportIsOpen}
+            toggleReport={toggleReport}
+            updateAttendanceCheckAccess={updateAttendanceCheckAccess}
+          />
+        </ScrollView>
       </SafeAreaView>
     </>
   );

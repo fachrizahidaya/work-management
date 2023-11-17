@@ -3,13 +3,13 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
 import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, Clipboard } from "react-native";
+import { YouTubeEmbed, TwitterEmbed } from "react-social-media-embed";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import { useFetch } from "../../../hooks/useFetch";
 
 const FeedCardItem = ({
   id,
@@ -27,10 +27,12 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  onOpen,
+  refetchPost,
+  forceRerender,
+  setForceRerender,
 }) => {
+  console.log("image", attachment);
   const [totalLike, setTotalLike] = useState(total_like);
-  const [postIsFetching, setPostIsFetching] = useState(false);
 
   const navigation = useNavigation();
 
@@ -47,15 +49,75 @@ const FeedCardItem = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
+    setForceRerender(!forceRerender);
   };
 
   /**
-   *
-   * Control for fullscreen image
+   * Toggle fullscreen image
    */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
+  };
+
+  const words = content.split(" ");
+  const styledTexts = words.map((item, index) => {
+    let textStyle = styles.defaultText;
+    if (item.includes("https")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("08") || item.includes("62")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("@") && item.includes(".com")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else {
+      textStyle = styles.defaultText;
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
+    }
+  });
+
+  const handleLinkPress = (url) => {
+    Linking.openURL(url);
+  };
+
+  const handleEmailPress = (email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -74,12 +136,15 @@ const FeedCardItem = ({
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
-                returnPage: "Feed",
+                loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
+                refetchPost: refetchPost,
+                forceRerender: forceRerender,
+                setForceRerender: setForceRerender,
               })
             }
           >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} />
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
           </Pressable>
 
           <Flex flex={1}>
@@ -88,7 +153,11 @@ const FeedCardItem = ({
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
-                    returnPage: "Feed",
+                    loggedEmployeeId: loggedEmployeeId,
+                    loggedEmployeeImage: loggedEmployeeImage,
+                    refetchPost: refetchPost,
+                    forceRerender: forceRerender,
+                    setForceRerender: setForceRerender,
                   })
                 }
                 fontSize={15}
@@ -108,16 +177,17 @@ const FeedCardItem = ({
           </Flex>
         </Flex>
 
-        <Text fontSize={12} fontWeight={500} color="#595F69">
-          {content}
+        <Text fontSize={12} fontWeight={500}>
+          {styledTexts}
         </Text>
 
         {attachment ? (
           <>
             <TouchableOpacity key={id} onPress={toggleFullScreen}>
               <Image
-                source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                 borderRadius={15}
+                width="100%"
                 height={200}
                 alt="Feed Image"
                 resizeMode="contain"
@@ -128,7 +198,7 @@ const FeedCardItem = ({
                 <Modal.CloseButton />
                 <Modal.Body alignContent="center">
                   <Image
-                    source={{ uri: `https://api-dev.kolabora-app.com/image/${attachment}/thumb` }}
+                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                     height={500}
                     width={500}
                     alt="Feed Image"
@@ -139,6 +209,20 @@ const FeedCardItem = ({
             </Modal>
           </>
         ) : null}
+
+        {/* {styledTexts.filter((item) => {
+          if (item?.props?.children[0].includes("youtube") === true) {
+            return (
+              <Flex>
+                <YouTubeEmbed url={item?.props?.children[0]} width={300} height={200} />;
+              </Flex>
+            );
+          } else if (item?.props?.children[0].includes("twitter") === true) {
+            <Flex>
+              <TwitterEmbed url={item?.props?.children[0]} width={250} />;
+            </Flex>;
+          }
+        })} */}
 
         <Flex alignItems="center" direction="row" gap={4}>
           <Flex alignItems="center" direction="row" gap={2}>
@@ -176,3 +260,12 @@ const FeedCardItem = ({
 };
 
 export default FeedCardItem;
+
+const styles = StyleSheet.create({
+  defaultText: {
+    color: "black",
+  },
+  highlightedText: {
+    color: "#72acdc",
+  },
+});

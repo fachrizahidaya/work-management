@@ -14,6 +14,8 @@ const SupervisorInformation = ({
   supervisorPhone,
   supervisorImage,
   supervisorPosition,
+  refetch,
+  id,
 }) => {
   const phoneNumber = supervisorPhone;
   const phoneUrl = `tel:0${phoneNumber}`;
@@ -33,10 +35,18 @@ const SupervisorInformation = ({
               navigation.navigate("Employee Profile", {
                 employeeId: supervisorId,
                 returnPage: "My Information",
+                refetch: refetch,
+                loggedEmployeeId: id,
               })
             }
           >
-            <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" borderRadius={10} />
+            <AvatarPlaceholder
+              image={supervisorImage}
+              name={supervisorName}
+              size="lg"
+              borderRadius={10}
+              isThumb={false}
+            />
           </TouchableOpacity>
           <Box>
             <Text fontWeight={500} fontSize={14} color="#3F434A">

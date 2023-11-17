@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Spinner } from "native-base";
+import { Button, Spinner, Text } from "native-base";
 
 const FormButton = ({
   children,
@@ -12,6 +12,8 @@ const FormButton = ({
   setLoadingIndicator,
   variant,
   opacity,
+  fontSize,
+  fontColor,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 

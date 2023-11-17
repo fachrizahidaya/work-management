@@ -6,11 +6,17 @@ const EmployeeTeammates = ({ teammatesIsOpen, toggleTeammates, teammates }) => {
     <Actionsheet isOpen={teammatesIsOpen} onClose={toggleTeammates}>
       <Actionsheet.Content>
         <VStack w="95%">
-          {teammates?.data.map((item) => {
+          {teammates?.data.map((item, index) => {
             return (
               <Actionsheet.Item px={-1}>
-                <Flex flexDir="row" alignItems="center" gap={3}>
-                  <AvatarPlaceholder image={item?.image} name={item?.name} size="md" borderRadius="full" />
+                <Flex key={index} flexDir="row" alignItems="center" gap={3}>
+                  <AvatarPlaceholder
+                    image={item?.image}
+                    name={item?.name}
+                    size="md"
+                    borderRadius="full"
+                    isThumb={false}
+                  />
                   <Flex>
                     <Text fontWeight={500} fontSize={14} color="#3F434A">
                       {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}

@@ -2,182 +2,139 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Image, Pressable } from "native-base";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
+import { Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import FeedCardItem from "../../../components/Tribe/Feed/FeedCardItem";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import EmployeeContact from "../../../components/Tribe/Employee/EmployeeContact";
-import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
-import EmployeeProfile from "../../../components/Tribe/Employee/EmployeeProfile";
-import EmployeeSelfProfile from "../../../components/Tribe/Employee/EmployeeSelfProfile";
+import axiosInstance from "../../../config/api";
+import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [fetchIsDone, setFetchIsDone] = useState(false);
+  const [personalPosts, setPersonalPosts] = useState([]);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [reload, setReload] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
+  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-  const { employeeId, returnPage, loggedEmployeeImage } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchPost, forceRerender, setForceRerender } =
+    route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
-  const { isOpen: newFeedIsOpen, close: closeNewFeed, toggle: toggleNewFeed } = useDisclosure(false);
 
-  const userSelector = useSelector((state) => state.auth);
+  const { height } = Dimensions.get("screen");
 
   const navigation = useNavigation();
 
+  const toast = useToast();
+
+  const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
+
+  // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffset,
     limit: 10,
   };
 
-  const {
-    data: employee,
-    isFetching: employeeIsFetching,
-    refetch: refetchEmployee,
-  } = useFetch(`/hr/employees/${employeeId}`);
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
+
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const {
-    data: teammates,
-    refetch: refetchTeammates,
-    isFetching: teammatesIsFetching,
-  } = useFetch(`/hr/employees/${employeeId}/team`);
+    data: personalPost,
+    refetch: refetchPersonalPost,
+    isFetching: personalPostIsFetching,
+    isLoading: personalPostIsLoading,
+  } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reload, currentOffset], postFetchParameters);
 
-  const {
-    data: feeds,
-    refetch: refetchFeeds,
-    isFetching: feedsIsFetching,
-  } = useFetch(!fetchIsDone && `/hr/posts/personal/${employee?.data?.id}`, [currentOffset], postFetchParameters);
-
-  const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > 0) {
-      setIsHeaderSticky(true);
-    } else {
-      setIsHeaderSticky(false);
-    }
-  };
-
+  /**
+   * Fetch more Posts handler
+   * After end of scroll reached, it will added other earlier posts
+   */
   const postEndReachedHandler = () => {
-    if (!fetchIsDone) {
-      if (posts.length !== posts.length + feeds?.data.length) {
-        setCurrentOffset(currentOffset + 10);
-      } else {
-        setFetchIsDone(true);
-      }
+    if (personalPosts.length !== personalPosts.length + personalPost?.data.length) {
+      setCurrentOffset(currentOffset + 10);
     }
   };
 
+  /**
+   * Reset current offset after create a new feed
+   */
   const postRefetchHandler = () => {
     setCurrentOffset(0);
-    setFetchIsDone(false);
+    setReload(!reload);
   };
 
   useEffect(() => {
-    if (feeds?.data) {
+    if (personalPost?.data && personalPostIsFetching === false) {
       if (currentOffset === 0) {
-        setPosts(feeds?.data);
+        setPersonalPosts(personalPost?.data);
       } else {
-        setPosts((prevData) => [...prevData, ...feeds?.data]);
+        setPersonalPosts((prevData) => [...prevData, ...personalPost?.data]);
       }
     }
-  }, [feeds?.data]);
-
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
+  }, [personalPostIsFetching]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
         <PageHeader
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-          onPress={() => navigation.navigate(returnPage)}
+          onPress={() => {
+            navigation.goBack();
+            refetchPost();
+          }}
         />
       </Flex>
 
       <Pressable
-        style={styles.createIcon}
+        style={styles.createPostIcon}
         shadow="0"
         borderRadius="full"
         borderWidth={3}
         borderColor="#FFFFFF"
         onPress={() => {
           navigation.navigate("New Feed", {
-            toggleNewFeed: toggleNewFeed,
-            refetch: postRefetchHandler,
+            refetch: refetchPersonalPost,
+            postRefetchHandler: postRefetchHandler,
             loggedEmployeeImage: loggedEmployeeImage,
             loggedEmployeeName: userSelector?.name,
+            employeeId: employeeId,
           });
         }}
       >
         <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
       </Pressable>
 
-      <ScrollView onScroll={handleScroll}>
-        <Image
-          source={require("../../../assets/profile_banner.jpg")}
-          alignSelf="center"
-          h={200}
-          w={500}
-          alt="empty"
-          resizeMode="cover"
+      <Flex flex={1} minHeight={2} gap={2} height={height}>
+        {/* Content here */}
+        <FeedCard
+          posts={personalPosts}
+          loggedEmployeeId={loggedEmployeeId}
+          loggedEmployeeName={userSelector?.name}
+          loggedEmployeeImage={loggedEmployeeImage}
+          postRefetchHandler={postRefetchHandler}
+          postEndReachedHandler={postEndReachedHandler}
+          personalPostIsFetching={personalPostIsFetching}
+          personalPostIsLoading={personalPostIsLoading}
+          refetchPersonalPost={refetchPersonalPost}
+          refetchPost={refetchPost}
+          employee={employee}
+          toggleTeammates={toggleTeammates}
+          teammates={teammates}
+          teammatesIsOpen={teammatesIsOpen}
+          hasBeenScrolled={hasBeenScrolled}
+          setHasBeenScrolled={setHasBeenScrolled}
+          reload={reload}
+          setReload={setReload}
+          forceRerender={forceRerender}
+          setForceRerender={setForceRerender}
         />
-        <Flex flex={1} gap={5}>
-          <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
-            {userSelector?.id !== employee?.data?.user_id ? (
-              <>
-                <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
-                  <EmployeeContact employee={employee} />
-                </Flex>
-
-                <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-              </>
-            ) : (
-              <EmployeeSelfProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-            )}
-
-            <EmployeeTeammates
-              teammatesIsOpen={teammatesIsOpen}
-              toggleTeammates={toggleTeammates}
-              teammates={teammates}
-            />
-          </Flex>
-
-          <Flex px={3} minHeight={2} flex={1} flexDir="column" gap={2}>
-            <FlashList
-              data={posts}
-              keyExtractor={(item, index) => index}
-              onEndReached={posts.length ? postEndReachedHandler : null}
-              onEndReachedThreshold={0.1}
-              refreshControl={<RefreshControl refreshing={feedsIsFetching} onRefresh={refetchFeeds} />}
-              estimatedItemSize={100}
-              renderItem={({ item }) => (
-                <FeedCardItem
-                  key={item?.id}
-                  id={item?.id}
-                  employeeId={item?.author_id}
-                  employeeName={item?.employee_name}
-                  createdAt={item?.created_at}
-                  employeeImage={item?.employee_image}
-                  content={item?.content}
-                  total_like={item?.total_like}
-                  totalComment={item?.total_comment}
-                  likedBy={item?.liked_by}
-                  attachment={item?.file_path}
-                  type={item?.type}
-                />
-              )}
-            />
-          </Flex>
-        </Flex>
-      </ScrollView>
+      </Flex>
     </SafeAreaView>
   );
 };
@@ -206,7 +163,11 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1,
   },
-  createIcon: {
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",
@@ -216,9 +177,5 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
-  },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 16,
   },
 });

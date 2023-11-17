@@ -1,20 +1,58 @@
 import React from "react";
 
-import { Box, Text } from "native-base";
+import { Alert, Box, HStack, Icon, Pressable, Text } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Dimensions } from "react-native";
 
-const SuccessToast = ({ message }) => {
+const { width } = Dimensions.get("screen");
+
+const SuccessToast = ({ message, close }) => {
   return (
-    <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-      <Text color="white">{message}</Text>
-    </Box>
+    <Alert
+      variant="left-accent"
+      status="success"
+      w={width - 40}
+      display="flex"
+      flexDir="row"
+      justifyContent="space-between"
+      alignItems="center"
+      gap={2}
+    >
+      <HStack alignItems="center" space={2}>
+        <Icon as={<MaterialCommunityIcons name="check-circle" />} color="green.600" size="lg" />
+        <Text width={200} numberOfLines={2}>
+          {message}
+        </Text>
+      </HStack>
+      <Pressable onPress={close}>
+        <Icon as={<MaterialCommunityIcons name="close" />} size="lg" />
+      </Pressable>
+    </Alert>
   );
 };
 
-const ErrorToast = ({ message }) => {
+const ErrorToast = ({ message, close }) => {
   return (
-    <Box bg="danger.500" px="2" py="1" rounded="sm" mb={5}>
-      <Text color="white">{message}</Text>
-    </Box>
+    <Alert
+      variant="left-accent"
+      status="error"
+      w={width - 40}
+      display="flex"
+      flexDir="row"
+      justifyContent="space-between"
+      alignItems="center"
+      gap={2}
+    >
+      <HStack alignItems="center" space={2}>
+        <Icon as={<MaterialCommunityIcons name="alert" />} color="red.600" size="lg" />
+        <Text width={200} numberOfLines={2}>
+          {message}
+        </Text>
+      </HStack>
+      <Pressable onPress={close}>
+        <Icon as={<MaterialCommunityIcons name="close" />} size="lg" />
+      </Pressable>
+    </Alert>
   );
 };
 

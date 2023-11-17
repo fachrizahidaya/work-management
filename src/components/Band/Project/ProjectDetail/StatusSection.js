@@ -27,15 +27,15 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
       });
       refetch();
       toast.show({
-        render: () => {
-          return <SuccessToast message={`Project ${status}ed`} />;
+        render: ({ id }) => {
+          return <SuccessToast message={`Project ${status}ed`} close={() => toast.close(id)} />;
         },
       });
     } catch (error) {
       console.log(error);
       toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
+        render: ({ id }) => {
+          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
         },
       });
     }

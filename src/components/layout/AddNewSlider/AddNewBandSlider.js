@@ -6,11 +6,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import NewProjectSlider from "../../Band/Project/NewProjectSlider/NewProjectSlider";
 import NewTaskSlider from "../../Band/Task/NewTaskSlider/NewTaskSlider";
 import NewNoteSlider from "../../Band/Note/NewNoteSlider/NewNoteSlider";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const AddNewBandSlider = ({ isOpen, toggle }) => {
   const [newProjectIsOpen, setNewProjectIsOpen] = useState(false);
   const [newTaskIsOpen, setNewTaskIsOpen] = useState(false);
   const [newNoteIsOpen, setNewNoteIsOpen] = useState(false);
+  const createProjectAccess = useCheckAccess("create", "Projects");
+  const createTaskAccess = useCheckAccess("create", "Tasks");
+  const createNoteAccess = useCheckAccess("create", "Notes");
 
   const onCloseTaskForm = useCallback(() => {
     setNewTaskIsOpen(false);
@@ -27,15 +31,15 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
   const items = [
     {
       icons: "view-grid-outline",
-      title: "New Project",
+      title: `New Project ${createProjectAccess ? "" : "(No access)"}`,
     },
     {
       icons: "plus",
-      title: "New Task | ad hoc",
+      title: `New Task | ad hoc ${createTaskAccess ? "" : "(No access"}`,
     },
     {
       icons: "pencil-outline",
-      title: "New Notes",
+      title: `New Notes ${createNoteAccess ? "" : "(No access)"}`,
     },
   ];
   return (
@@ -49,12 +53,12 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
                 borderColor="#E8E9EB"
                 borderBottomWidth={1}
                 onPress={() => {
-                  if (item.title === "New Project") {
-                    setNewProjectIsOpen(!newProjectIsOpen);
-                  } else if (item.title === "New Task | ad hoc") {
-                    setNewTaskIsOpen(!newTaskIsOpen);
+                  if (item.title.includes("New Project")) {
+                    createProjectAccess && setNewProjectIsOpen(!newProjectIsOpen);
+                  } else if (item.title.includes("New Task | ad hoc")) {
+                    createTaskAccess && setNewTaskIsOpen(!newTaskIsOpen);
                   } else {
-                    setNewNoteIsOpen(!newNoteIsOpen);
+                    createNoteAccess && setNewNoteIsOpen(!newNoteIsOpen);
                   }
                   toggle();
                 }}

@@ -75,7 +75,7 @@ const TaskDetailScreen = ({ route }) => {
             <Flex flexDir="row" alignItems="end" justifyContent="space-between">
               <PageHeader
                 title={selectedTask?.data?.title}
-                subTitle={selectedTask?.data?.id}
+                subTitle={selectedTask?.data?.task_no}
                 onPress={() => navigation.goBack()}
                 width={width / 2.2}
               />
@@ -98,7 +98,9 @@ const TaskDetailScreen = ({ route }) => {
               ownerId={selectedTask?.data?.owner_id}
               ownerImage={selectedTask?.data?.owner_image}
               ownerName={selectedTask?.data?.owner_name}
+              ownerEmail={selectedTask?.data?.owner_email}
               refetchObservers={refetchObservers}
+              refetchTask={refetchSelectedTask}
               disabled={inputIsDisabled}
               selectedTask={selectedTask?.data}
               refetchResponsible={refetchResponsible}
@@ -134,7 +136,7 @@ const TaskDetailScreen = ({ route }) => {
             {/* Comments */}
             <FormControl>
               <FormControl.Label>COMMENTS</FormControl.Label>
-              <CommentInput taskId={taskId} />
+              <CommentInput taskId={taskId} data={selectedTask?.data} />
             </FormControl>
           </Flex>
         </KeyboardAwareScrollView>
@@ -154,7 +156,7 @@ const TaskDetailScreen = ({ route }) => {
           isOpen={taskFormIsOpen}
           taskData={selectedTask?.data}
           onClose={onCloseTaskForm}
-          refetchCurrentTask={refetchSelectedTask}
+          refetch={refetchSelectedTask}
         />
       )}
     </SafeAreaView>

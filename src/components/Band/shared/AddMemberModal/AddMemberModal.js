@@ -10,7 +10,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 import FormButton from "../../../shared/FormButton";
 
-const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true }) => {
+const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, header }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -42,7 +42,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true })
     _.debounce((value) => {
       setSearchKeyword(value);
       setCurrentPage(1);
-    }, 1000),
+    }, 300),
     []
   );
 
@@ -65,6 +65,10 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true })
   };
 
   useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchKeyword]);
+
+  useEffect(() => {
     if (data?.data?.data?.length) {
       if (!searchKeyword) {
         setCumulativeData((prevData) => [...prevData, ...data?.data?.data]);
@@ -85,7 +89,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true })
       size="xl"
     >
       <Modal.Content>
-        <Modal.Header>New Member</Modal.Header>
+        <Modal.Header>{header}</Modal.Header>
         <Modal.Body>
           <Input
             value={inputToShow}

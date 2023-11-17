@@ -7,14 +7,18 @@ import * as SecureStore from "expo-secure-store";
 // import { auth } from "../config/firebase";
 
 import { useDispatch, useSelector } from "react-redux";
+import { QueryCache } from "react-query";
 
 import { Box, Flex, Progress, Text } from "native-base";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 
 import axiosInstance from "../config/api";
 import { logout } from "../redux/reducer/auth";
+import { resetModule } from "../redux/reducer/module";
+import { remove } from "../redux/reducer/user_menu";
 
 const LogoutScreen = () => {
+  const queryCache = new QueryCache();
   const dispatch = useDispatch();
   const userSelector = useSelector((state) => state.auth);
   const [loadingValue, setLoadingValue] = useState(0);
@@ -69,13 +73,23 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
+      const fbtoken = await SecureStore.getItemAsync("firebase_token");
+      await axiosInstance.post("/auth/logout", {
+        firebase_token: fbtoken,
+      });
 
-      await axiosInstance.post("/auth/logout");
-
-      // Delete user data and token from SecureStore
+      // Delete user data and tokens from SecureStore
       await SecureStore.deleteItemAsync("user_data");
       await SecureStore.deleteItemAsync("user_token");
+      await SecureStore.deleteItemAsync("firebase_token");
       // await signOut(auth);
+
+      // Clear react query caches
+      queryCache.clear();
+      // Dispatch user menu back to empty object
+      dispatch(remove());
+      // Dispatch module to empty string again
+      dispatch(resetModule());
       // Dispatch a logout action
       dispatch(logout());
     } catch (error) {

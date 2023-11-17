@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Center, Flex, Icon, Pressable, Text } from "native-base";
+import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -14,18 +14,27 @@ import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [responsibleId, setResponsibleId] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+  const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
+  const createActionCheck = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
     label_id: selectedLabelId,
+    search: searchInput,
+    responsible_id: responsibleId,
+    priority: selectedPriority,
+    sort_deadline: deadlineSort,
   };
 
   const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
@@ -35,14 +44,27 @@ const AdHocScreen = () => {
     isLoading: taskIsLoading,
     isFetching: taskIsFetching,
     refetch: refetchTasks,
-  } = useFetch(`/pm/tasks`, [selectedLabelId], fetchTaskParameters);
+  } = useFetch(
+    `/pm/tasks`,
+    [selectedLabelId, searchInput, responsibleId, selectedPriority, deadlineSort],
+    fetchTaskParameters
+  );
   const { data: labels } = useFetch(`/pm/labels`);
 
   // Get every task's responsible with no duplicates
-  const responsibleArr = tasks?.data.map((val) => val.responsible_name);
-  const noDuplicateResponsibleArr = [...new Set(responsibleArr)].filter((val) => {
-    return val !== null;
+  const responsibleArr = tasks?.data?.map((val) => {
+    return { responsible_name: val.responsible_name, responsible_id: val.responsible_id };
   });
+
+  const noDuplicateResponsibleArr = responsibleArr?.reduce((acc, current) => {
+    const isDuplicate = acc.some((item) => item.responsible_id === current.responsible_id);
+
+    if (!isDuplicate && current.responsible_name !== null) {
+      acc.push(current);
+    }
+
+    return acc;
+  }, []);
 
   const onOpenTaskFormWithStatus = useCallback((status) => {
     toggleTaskForm();
@@ -79,15 +101,23 @@ const AdHocScreen = () => {
         <Flex gap={15} style={{ marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
 
-          <TaskViewSection changeView={changeView} view={view} />
+          {/* <TaskViewSection changeView={changeView} view={view} /> */}
 
           <Flex flexDir="row" mt={11} mb={21}>
             <TaskFilter
               data={tasks?.data}
               members={noDuplicateResponsibleArr}
               labels={labels}
+              searchInput={searchInput}
+              responsibleId={responsibleId}
+              deadlineSort={deadlineSort}
+              selectedPriority={selectedPriority}
+              selectedLabelId={selectedLabelId}
               setSelectedLabelId={setSelectedLabelId}
-              setFilteredData={setFilteredData}
+              setSearchInput={setSearchInput}
+              setResponsibleId={setResponsibleId}
+              setDeadlineSort={setDeadlineSort}
+              setSelectedPriority={setSelectedPriority}
             />
           </Flex>
         </Flex>
@@ -100,7 +130,7 @@ const AdHocScreen = () => {
           {/* Task List view */}
           {view === "Task List" && (
             <TaskList
-              tasks={filteredData}
+              tasks={tasks?.data}
               isLoading={taskIsLoading}
               openNewTaskForm={onOpenTaskFormWithStatus}
               openCloseTaskConfirmation={onOpenCloseConfirmation}
@@ -111,7 +141,7 @@ const AdHocScreen = () => {
             <Center>
               <Image
                 source={require("../../assets/vectors/desktop.jpg")}
-                h={250}
+                h={180}
                 w={250}
                 alt="desktop-only"
                 resizeMode="contain"
@@ -131,21 +161,23 @@ const AdHocScreen = () => {
           />
         )}
 
-        <Pressable
-          position="absolute"
-          right={5}
-          bottom={5}
-          rounded="full"
-          bgColor="primary.600"
-          p={15}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
-          onPress={toggleTaskForm}
-        >
-          <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
-        </Pressable>
+        {createActionCheck && (
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={5}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={toggleTaskForm}
+          >
+            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          </Pressable>
+        )}
       </SafeAreaView>
 
       {closeConfirmationIsOpen && (
