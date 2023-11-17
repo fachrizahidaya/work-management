@@ -38,6 +38,7 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
             name: chat.user.name,
             userId: chat.user.id,
             image: chat.user.image,
+            type: "personal",
           });
         }
       }}
