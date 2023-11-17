@@ -97,7 +97,7 @@ const AdHocScreen = () => {
   );
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <Flex style={styles.container}>
         <Flex gap={15} style={{ marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
 
@@ -178,7 +178,7 @@ const AdHocScreen = () => {
             <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
           </Pressable>
         )}
-      </SafeAreaView>
+      </Flex>
 
       {closeConfirmationIsOpen && (
         <ConfirmationModal
