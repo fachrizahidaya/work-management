@@ -26,6 +26,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
       px={2}
       py={2}
       gap={2}
+      mb={2}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
       alignItems="center"
