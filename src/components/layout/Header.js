@@ -9,16 +9,29 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
 import { useFetch } from "../../hooks/useFetch";
+import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 
 const Header = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const moduleSelector = useSelector((state) => state.module);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
+  const { laravelEcho } = useWebsocketContext();
   const { data: myProfile } = useFetch("/hr/my-profile");
   const { data: notifications, refetch: refetchNotifications } = useFetch(
     moduleSelector.module_name === "BAND" ? "/pm/notifications/new" : "/hr/notifications/new"
   );
+  const { data: unreads } = useFetch("/chat/unread-message");
+
+  /**
+   * Unread messages changes event listener
+   */
+  const unreadMessagesEvent = () => {
+    laravelEcho.channel(`unread.message.${userSelector?.id}`).listen(".unread.message", (event) => {
+      setUnreadMessages(event.data.total_unread);
+    });
+  };
 
   useEffect(() => {
     const unreadData = notifications?.data.filter((val) => {
@@ -33,6 +46,18 @@ const Header = () => {
     }, 300000);
     refetchNotifications();
   }, [moduleSelector.module_name]);
+
+  useEffect(() => {
+    if (unreads) {
+      setUnreadMessages(unreads.data.total_unread);
+    }
+  }, [unreads]);
+
+  useEffect(() => {
+    if (userSelector.id) {
+      unreadMessagesEvent();
+    }
+  }, []);
 
   return (
     <SafeAreaView style={{ backgroundColor: "white" }}>
@@ -74,23 +99,50 @@ const Header = () => {
 
             {unreadNotificationList?.length > 0 && (
               <Box
-                position="absolute"
-                top={-2}
-                right={-4}
-                borderRadius="full"
-                bgColor="#FD7972"
-                borderWidth={1}
-                borderColor="white"
                 style={{
-                  height: 12,
-                  width: 12,
+                  height: 22,
+                  width: 22,
                 }}
-              />
+                position="absolute"
+                top={-12}
+                right={-8}
+                bgColor="#FD7972"
+                borderRadius="full"
+                zIndex={1}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Text fontSize={12} textAlign="center" color="white">
+                  {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
+                </Text>
+              </Box>
             )}
           </Box>
           {/* )} */}
 
-          <Pressable onPress={() => navigation.navigate("Chat List")}>
+          <Pressable onPress={() => navigation.navigate("Chat List")} position="relative">
+            {unreadMessages > 0 && (
+              <Box
+                style={{
+                  height: 22,
+                  width: 22,
+                }}
+                position="absolute"
+                top={-12}
+                right={-8}
+                bgColor="#FD7972"
+                borderRadius="full"
+                zIndex={1}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Text fontSize={12} textAlign="center" color="white">
+                  {unreadMessages <= 5 ? unreadMessages : "5+"}
+                </Text>
+              </Box>
+            )}
             <Image source={require("../../assets/icons/nest_logo.png")} alt="nest" style={{ height: 25, width: 25 }} />
           </Pressable>
         </Flex>

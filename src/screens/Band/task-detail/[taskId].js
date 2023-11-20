@@ -33,11 +33,7 @@ const TaskDetailScreen = ({ route }) => {
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
   const { data: responsible, refetch: refetchResponsible } = useFetch(taskId && `/pm/tasks/${taskId}/responsible`);
 
-  const taskUserRights = [
-    selectedTask?.data?.project_owner_id,
-    selectedTask?.data?.owner_id,
-    selectedTask?.data?.responsible_id,
-  ];
+  const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
   const onOpenTaskForm = useCallback(() => {

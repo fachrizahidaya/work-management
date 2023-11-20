@@ -16,6 +16,7 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import NewNoteSlider from "../../components/Band/Note/NewNoteSlider/NewNoteSlider";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import { useMutation } from "react-query";
 
 const NotesScreen = () => {
   const { height } = Dimensions.get("screen");
@@ -50,24 +51,49 @@ const NotesScreen = () => {
     resetForm();
   };
 
-  const pinHandler = async (noteId, status) => {
-    try {
-      await axiosInstance.patch(`/pm/notes/${noteId}/${status}`);
-      refetch();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Note ${status}`} toast={toast} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} toast={toast} close={() => toast.close(id)} />;
-        },
-      });
+  const {
+    mutate,
+    isLoading: pinIsLoading,
+    variables,
+  } = useMutation(
+    (note) => {
+      return axiosInstance.patch(`/pm/notes/${note.id}/${note.status}`);
+    },
+    {
+      onSuccess: () => {
+        refetch();
+        toast.show({
+          render: ({ id }) => {
+            return <SuccessToast message={`Note updated!`} toast={toast} close={() => toast.close(id)} />;
+          },
+        });
+      },
+      onError: (error) => {
+        toast.show({
+          render: ({ id }) => {
+            return <ErrorToast message={error?.response?.data?.message} toast={toast} close={() => toast.close(id)} />;
+          },
+        });
+      },
     }
-  };
+  );
+
+  let optimisticList = [];
+  const index = filteredData?.findIndex((note) => note.id === variables?.id);
+
+  if (variables?.status === "pinned") {
+    optimisticList =
+      index !== -1
+        ? [...filteredData?.slice(0, index), { ...variables, pinned: 1 }, ...filteredData?.slice(index + 1)]
+        : [...filteredData, { ...variables, pinned: 1 }];
+  } else {
+    optimisticList =
+      index !== -1
+        ? [...filteredData?.slice(0, index), { ...variables, pinned: 0 }, ...filteredData?.slice(index + 1)]
+        : [...filteredData, { ...variables, pinned: 0 }];
+  }
+
+  const renderList = pinIsLoading ? optimisticList : filteredData;
 
   return (
     <>
@@ -81,12 +107,12 @@ const NotesScreen = () => {
 
             <ScrollView
               style={{ maxHeight: height }}
-              refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+              // refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
             >
               <View flex={1} minH={2}>
                 {!isLoading ? (
                   <FlashList
-                    data={filteredData}
+                    data={renderList}
                     keyExtractor={(item) => item.id}
                     estimatedItemSize={270}
                     renderItem={({ item }) => (
@@ -96,7 +122,7 @@ const NotesScreen = () => {
                         title={item.title}
                         date={item.created_at}
                         isPinned={item.pinned}
-                        onPress={pinHandler}
+                        onPress={mutate}
                         openDeleteModal={openDeleteModalHandler}
                         openEditForm={openEditFormHandler}
                       />

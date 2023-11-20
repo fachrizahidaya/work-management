@@ -36,6 +36,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
             task={group.latest_message?.task_id}
             time={group.latest_message?.created_time}
             timestamp={group.latest_message?.created_at}
+            isRead={group.unread}
             type="group"
             active_member={group?.active_member}
             setForceRerender={setForceRerender}
@@ -69,6 +70,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
               task={group.latest_message?.task_id}
               time={group.latest_message?.created_time}
               timestamp={group.latest_message?.created_at}
+              isRead={group.unread}
               type="group"
               searchKeyword={searchKeyword}
             />

@@ -118,7 +118,7 @@ const CostSection = ({ taskId, disabled }) => {
 
           <Input
             isReadOnly
-            value={`Rp ${totalCostCalculation?.toLocaleString()}`}
+            value={`Rp ${totalCostCalculation?.toLocaleString() || 0}`}
             placeholder="Task's cost"
             editable={false}
           />
