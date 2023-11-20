@@ -28,7 +28,7 @@ const NotesScreen = () => {
   const { isOpen: editFormIsOpen, toggle: toggleEditForm } = useDisclosure(false);
   const { isOpen: newFormIsOpen, toggle: toggleNewForm } = useDisclosure(false);
   const createCheckAccess = useCheckAccess("create", "Notes");
-  const { data: notes, isLoading, isFetching, refetch } = useFetch("/pm/notes");
+  const { data: notes, isLoading, refetch } = useFetch("/pm/notes");
 
   const openDeleteModalHandler = (note) => {
     setNoteToDelete(note);
@@ -107,7 +107,7 @@ const NotesScreen = () => {
 
             <ScrollView
               style={{ maxHeight: height }}
-              // refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+              refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
             >
               <View flex={1} minH={2}>
                 {!isLoading ? (
