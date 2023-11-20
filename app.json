@@ -7,9 +7,9 @@
     "icon": "./assets/nest-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/kss-splash-screen.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0B3F54"
+      "backgroundColor": "#E5E5E5"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
