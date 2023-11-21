@@ -183,15 +183,10 @@ const ProjectDetailScreen = ({ route }) => {
             )}
           </Flex>
 
-          <StatusSection projectId={projectId} projectData={projectData} refetch={refetch} />
-
-          <Box>
-            <Text>{projectData?.description}</Text>
-          </Box>
-
           <Flex flexDir="row" style={{ gap: 8 }}>
+            <StatusSection projectId={projectId} projectData={projectData} refetch={refetch} />
+
             <Button
-              flex={1}
               variant="outline"
               onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
             >
@@ -200,27 +195,11 @@ const ProjectDetailScreen = ({ route }) => {
                 <Text>Task List</Text>
               </Flex>
             </Button>
-            {/* <Button
-              flex={1}
-              variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Kanban" })}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon as={<MaterialCommunityIcons name="map-outline" />} color="#3F434A" size="md" />
-                <Text>Kanban</Text>
-              </Flex>
-            </Button>
-            <Button
-              flex={1}
-              variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Gantt Chart" })}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon as={<MaterialCommunityIcons name="chart-gantt" />} color="#3F434A" size="md" />
-                <Text>Gantt</Text>
-              </Flex>
-            </Button> */}
           </Flex>
+
+          <Box>
+            <Text>{projectData?.description}</Text>
+          </Box>
 
           <FileSection projectId={projectId} projectData={projectData} />
 

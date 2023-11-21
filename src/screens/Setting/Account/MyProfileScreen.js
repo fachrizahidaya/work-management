@@ -97,7 +97,7 @@ const MyProfileScreen = ({ route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
 
@@ -179,7 +179,7 @@ const MyProfileScreen = ({ route }) => {
               source={{
                 uri: !image ? `${process.env.EXPO_PUBLIC_API}/image/${userSelector?.image}` : image.uri,
               }}
-              resizeMethod="contain"
+              resizeMode="contain"
               borderRadius={20}
               w={120}
               h={120}

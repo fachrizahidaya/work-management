@@ -38,6 +38,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               isDeleted={personal.latest_message?.delete_for_everyone}
               time={personal.latest_message?.created_time}
               timestamp={personal.latest_message?.created_at}
+              isRead={personal.unread}
               active_member={0}
               setForceRerender={setForceRerender}
               forceRerender={forceRerender}
@@ -72,6 +73,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               task={personal.latest_message?.task_id}
               isDeleted={personal.latest_message?.delete_for_everyone}
               time={personal.latest_message?.created_time}
+              isRead={personal.unread}
               timestamp={personal.latest_message?.created_at}
               searchKeyword={searchKeyword}
             />

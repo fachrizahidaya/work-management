@@ -26,6 +26,7 @@ const ContactListItem = ({
   active_member,
   setForceRerender,
   forceRerender,
+  isRead,
 }) => {
   const navigation = useNavigation();
 
@@ -87,6 +88,7 @@ const ContactListItem = ({
 
     return text;
   };
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -125,7 +127,26 @@ const ContactListItem = ({
             <Flex flexDir="row" alignItems="center" gap={1}>
               {!isDeleted ? (
                 <>
-                  {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
+                  <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                    {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
+                    {!!isRead && (
+                      <Box
+                        style={{
+                          height: 25,
+                          width: 25,
+                        }}
+                        bgColor="#FD7972"
+                        borderRadius="full"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text fontSize={12} textAlign="center" color="white">
+                          {isRead > 20 ? "20+" : isRead}
+                        </Text>
+                      </Box>
+                    )}
+                  </HStack>
                   {message === null && (project || task || fileName) && (
                     <HStack alignItems="center" space={1}>
                       <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
