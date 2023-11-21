@@ -33,7 +33,6 @@ const ChatRoom = () => {
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -44,7 +43,18 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const { name, userId, image, position, type, active_member, setForceRender, forceRender } = route.params;
+  const {
+    name,
+    userId,
+    image,
+    position,
+    email,
+    type,
+    active_member,
+    setForceRender,
+    forceRender,
+    selectedGroupMembers,
+  } = route.params;
 
   const navigation = useNavigation();
 
@@ -121,15 +131,6 @@ const ChatRoom = () => {
       } finally {
         setIsLoading(false);
       }
-    }
-  };
-
-  const fetchSelectedGroupMembers = async () => {
-    try {
-      const res = await axiosInstance.get(`/chat/group/${currentUser}/member`);
-      setSelectedGroupMembers(res.data.data);
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -334,7 +335,6 @@ const ChatRoom = () => {
 
   useEffect(() => {
     fetchChatMessageHandler(true);
-    fetchSelectedGroupMembers();
   }, [currentUser, type]);
 
   useEffect(() => {
@@ -378,6 +378,7 @@ const ChatRoom = () => {
         name={name}
         image={image}
         position={position}
+        email={email}
         navigation={navigation}
         userId={userId}
         fileAttachment={fileAttachment}
