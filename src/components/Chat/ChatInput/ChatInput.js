@@ -70,7 +70,7 @@ const ChatInput = ({
       task_title: "",
     },
 
-    onSubmit: (values, { setSubmitting, setStatus }) => {
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       if (
         formik.values.message !== "" ||
         formik.values.file !== "" ||
@@ -85,6 +85,7 @@ const ChatInput = ({
         setStatus("processing");
         sendMessage(formData, setSubmitting, setStatus);
       }
+      resetForm();
       setFileAttachment(null);
       setBandAttachment(null);
       setBandAttachmentType(null);
