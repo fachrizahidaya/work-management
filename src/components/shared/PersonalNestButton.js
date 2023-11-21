@@ -2,11 +2,19 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 
-const PersonalNestButton = ({ height, width }) => {
+const PersonalNestButton = ({ height, width, id, name, image, email }) => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("Chat List")}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Chat Room", {
+          name: name,
+          userId: id,
+          image: image,
+        })
+      }
+    >
       <Image
         source={require("../../assets/icons/nest_logo.png")}
         alt="nest"

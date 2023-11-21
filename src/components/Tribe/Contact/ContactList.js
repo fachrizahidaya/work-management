@@ -46,7 +46,7 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
             <WhatsappButton phone={phone} size={5} />
             <EmailButton email={email} size={5} />
             <PhoneButton phone={phone} size={5} />
-            <PersonalNestButton />
+            <PersonalNestButton id={id} name={name} image={image} email={email} />
           </Flex>
         </Flex>
       </Flex>
