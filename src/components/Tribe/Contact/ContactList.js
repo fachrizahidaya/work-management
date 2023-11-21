@@ -13,7 +13,22 @@ import PhoneButton from "../../shared/PhoneButton";
 import WhatsappButton from "../../shared/WhatsappButton";
 import PersonalNestButton from "../../shared/PersonalNestButton";
 
-const ContactList = ({ id, name, position, division, status, image, phone, email, refetch, loggedEmployeeId }) => {
+const ContactList = ({
+  id,
+  name,
+  position,
+  division,
+  status,
+  image,
+  phone,
+  email,
+  refetch,
+  loggedEmployeeId,
+  user_id,
+  user_name,
+  user_type,
+  user_image,
+}) => {
   const navigation = useNavigation();
 
   return (
@@ -46,7 +61,16 @@ const ContactList = ({ id, name, position, division, status, image, phone, email
             <WhatsappButton phone={phone} size={5} />
             <EmailButton email={email} size={5} />
             <PhoneButton phone={phone} size={5} />
-            <PersonalNestButton />
+            <PersonalNestButton
+              id={id}
+              name={name}
+              image={image}
+              email={email}
+              user_id={user_id}
+              user_name={user_name}
+              user_type={user_type}
+              user_image={user_image}
+            />
           </Flex>
         </Flex>
       </Flex>

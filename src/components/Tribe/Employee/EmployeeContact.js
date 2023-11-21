@@ -18,7 +18,16 @@ const EmployeeContact = ({ employee }) => {
     },
     {
       id: 3,
-      component: <PersonalNestButton height={25} width={25} />,
+      component: (
+        <PersonalNestButton
+          height={25}
+          width={25}
+          user_id={employee?.data?.user?.id}
+          user_name={employee?.data?.user?.name}
+          user_type={employee?.data?.user?.user_type}
+          user_image={employee?.data?.user?.image}
+        />
+      ),
     },
   ];
 
