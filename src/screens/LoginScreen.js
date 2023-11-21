@@ -109,7 +109,6 @@ const LoginScreen = () => {
 
         // Get firebase messaging token for push notification
         const fbtoken = await messaging().getToken();
-        console.log(fbtoken);
 
         await axios
           .post(
