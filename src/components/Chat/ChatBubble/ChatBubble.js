@@ -159,7 +159,7 @@ const ChatBubble = ({
                             height={200}
                             borderRadius={5}
                             source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                            alt="Feed Image"
+                            alt="Chat Image"
                             resizeMode="contain"
                           />
                         </TouchableOpacity>

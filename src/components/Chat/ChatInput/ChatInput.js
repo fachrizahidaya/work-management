@@ -70,7 +70,7 @@ const ChatInput = ({
       task_title: "",
     },
 
-    onSubmit: (values, { setSubmitting, setStatus }) => {
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       if (
         formik.values.message !== "" ||
         formik.values.file !== "" ||
@@ -85,6 +85,7 @@ const ChatInput = ({
         setStatus("processing");
         sendMessage(formData, setSubmitting, setStatus);
       }
+      resetForm();
       setFileAttachment(null);
       setBandAttachment(null);
       setBandAttachmentType(null);
@@ -127,12 +128,6 @@ const ChatInput = ({
     }
   }, [bandAttachment, bandAttachmentType]);
 
-  useEffect(() => {
-    if (!formik.isSubmitting && formik.status === "success") {
-      formik.resetForm();
-    }
-  }, [formik.isSubmitting, formik.status]);
-
   return (
     <Box>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
@@ -172,7 +167,6 @@ const ChatInput = ({
                 size="md"
                 variant="unstyled"
                 placeholder="Type a message..."
-                multiline={true}
                 value={formik.values.message}
                 onChangeText={(value) => formik.setFieldValue("message", value)}
               />

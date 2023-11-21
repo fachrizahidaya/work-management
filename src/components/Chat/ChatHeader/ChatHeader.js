@@ -15,6 +15,7 @@ const ChatHeader = ({
   name,
   image,
   position,
+  email,
   userId,
   fileAttachment,
   type,
@@ -56,31 +57,42 @@ const ChatHeader = ({
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
 
-          <AvatarPlaceholder name={name} image={image} size="md" />
+          <Pressable
+            onPress={() =>
+              navigation.navigate("User Detail", {
+                navigation: navigation,
+                name: name,
+                image: image,
+                position: position,
+                email: email,
+                type: type,
+                selectedGroupMembers: selectedGroupMembers,
+              })
+            }
+            display="flex"
+            gap={4}
+            flexDirection="row"
+          >
+            <AvatarPlaceholder name={name} image={image} size="md" />
 
-          <Box>
-            <Text fontSize={16}>{name}</Text>
-            {type === "personal" ? (
-              <Text>{position}</Text>
-            ) : (
-              <Flex flexDirection="row">
-                {selectedGroupMembers.map((member, index) => {
-                  return (
-                    <Text
-                      fontSize={10}
-                      fontWeight={400}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{ maxWidth: 80, overflow: "hidden" }}
-                    >
-                      {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
-                      {index < selectedGroupMembers.length - 1 && `${", "}`}
-                    </Text>
-                  );
-                })}
-              </Flex>
-            )}
-          </Box>
+            <Box>
+              <Text fontSize={16}>{name}</Text>
+              {type === "personal" ? (
+                <Text>{position}</Text>
+              ) : (
+                <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
+                  {selectedGroupMembers?.map((member, index) => {
+                    return (
+                      <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                        {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                        {index < selectedGroupMembers.length - 1 && `${", "}`}
+                      </Text>
+                    );
+                  })}
+                </Flex>
+              )}
+            </Box>
+          </Pressable>
         </Flex>
 
         <Flex direction="row" alignItems="center">
