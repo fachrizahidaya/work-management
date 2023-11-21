@@ -335,7 +335,6 @@ const ChatRoom = () => {
 
   useEffect(() => {
     fetchChatMessageHandler(true);
-    fetchSelectedGroupMembers();
   }, [currentUser, type]);
 
   useEffect(() => {
