@@ -97,7 +97,7 @@ const ContactListItem = ({
   const fetchSelectedGroupMembers = async () => {
     try {
       const res = await axiosInstance.get(`/chat/group/${id}/member`);
-      setSelectedGroupMembers(res.data.data);
+      setSelectedGroupMembers(res?.data?.data);
     } catch (err) {
       console.log(err);
     }
