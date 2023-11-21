@@ -172,7 +172,6 @@ const ChatInput = ({
                 size="md"
                 variant="unstyled"
                 placeholder="Type a message..."
-                multiline={true}
                 value={formik.values.message}
                 onChangeText={(value) => formik.setFieldValue("message", value)}
               />

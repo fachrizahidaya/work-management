@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -30,6 +30,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
             name={group.name}
             image={group.image}
             position={null}
+            email={null}
             message={group.latest_message?.message}
             fileName={group.latest_message?.file_name}
             project={group.latest_message?.project_id}
