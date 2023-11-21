@@ -81,7 +81,7 @@ const ChatHeader = ({
                 <Text>{position}</Text>
               ) : (
                 <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
-                  {selectedGroupMembers.map((member, index) => {
+                  {selectedGroupMembers?.map((member, index) => {
                     return (
                       <Text fontSize={10} fontWeight={400} numberOfLines={1}>
                         {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
