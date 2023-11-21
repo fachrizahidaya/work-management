@@ -16,6 +16,10 @@ import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
 import { useCallback } from "react";
+import { useFetch } from "../../hooks/useFetch";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import { useToast } from "native-base";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -28,6 +32,8 @@ const ChatRoom = () => {
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
   const [messageToReply, setMessageToReply] = useState(null);
   const [messageToDelete, setMessageToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -38,9 +44,14 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
+  const { name, userId, image, position, type, active_member, setForceRender, forceRender } = route.params;
+
   const navigation = useNavigation();
 
-  const { name, userId, image, type, active_member, setForceRender, forceRender, position } = route.params;
+  const toast = useToast();
+
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
 
   /**
    * Event listener for new personal chat messages
@@ -85,7 +96,8 @@ const ChatRoom = () => {
    * @param {*} setHasBeenScrolled
    */
   const fetchChatMessage = async (type, id, setHasBeenScrolled) => {
-    if (hasMore) {
+    if (hasMore && !isLoading) {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
           params: {
@@ -106,7 +118,18 @@ const ChatRoom = () => {
         setOffset((prevState) => prevState + 20);
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
+    }
+  };
+
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${currentUser}/member`);
+      setSelectedGroupMembers(res.data.data);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -268,8 +291,50 @@ const ChatRoom = () => {
     }
   };
 
+  const groupExitHandler = async (group_id, setIsLoading) => {
+    try {
+      const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      setForceRender(!forceRender);
+      toggleExitModal();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  const groupDeleteHandler = async (group_id, setIsLoading) => {
+    try {
+      const res = await axiosInstance.delete(`/chat/group/${group_id}`);
+      toggleDeleteGroupModal();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     fetchChatMessageHandler(true);
+    fetchSelectedGroupMembers();
   }, [currentUser, type]);
 
   useEffect(() => {
@@ -293,7 +358,6 @@ const ChatRoom = () => {
       personalChatMessageEvent();
       groupChatMessageEvent();
 
-      // Clean up function (optional)
       return () => {
         /**
          * When screen is unfocused
@@ -319,8 +383,14 @@ const ChatRoom = () => {
         fileAttachment={fileAttachment}
         type={type}
         active_member={active_member}
-        setForceRender={setForceRender}
-        forceRender={forceRender}
+        groupExitHandler={groupExitHandler}
+        groupDeleteHandler={groupDeleteHandler}
+        exitModalIsOpen={exitModalIsOpen}
+        deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+        toggleExitModal={toggleExitModal}
+        toggleDeleteGroupModal={toggleDeleteGroupModal}
+        selectedGroupMembers={selectedGroupMembers}
+        loggedInUser={userSelector?.id}
       />
 
       <ChatList
@@ -336,6 +406,7 @@ const ChatRoom = () => {
         setBandAttachment={setBandAttachment}
         bandAttachmentType={bandAttachmentType}
         setBandAttachmentType={setBandAttachmentType}
+        isLoading={isLoading}
       />
 
       <ChatInput
@@ -345,18 +416,11 @@ const ChatRoom = () => {
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
         sendMessage={sendMessageHandler}
-        setFileAttachment={(file) => {
-          setFileAttachment(file);
-          setBandAttachment(null);
-          setBandAttachmentType(null);
-        }}
+        setFileAttachment={setFileAttachment}
         bandAttachment={bandAttachment}
         setBandAttachment={setBandAttachment}
         bandAttachmentType={bandAttachmentType}
-        setBandAttachmentType={(type) => {
-          setBandAttachmentType(type);
-          setFileAttachment(null);
-        }}
+        setBandAttachmentType={setBandAttachmentType}
         messageToReply={messageToReply}
         setMessageToReply={setMessageToReply}
         active_member={active_member}

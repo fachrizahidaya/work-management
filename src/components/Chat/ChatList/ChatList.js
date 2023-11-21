@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, PureComponent } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex } from "native-base";
+import { Flex, Spinner } from "native-base";
+import { FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ImageAttachment from "../Attachment/ImageAttachment";
@@ -23,6 +24,7 @@ const ChatList = ({
   setBandAttachment,
   bandAttachmentType,
   setBandAttachmentType,
+  isLoading,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -99,9 +101,14 @@ const ChatList = ({
     <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
       <FlashList
         inverted
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        initialNumToRender={20}
+        ListFooterComponent={() => isLoading && <Spinner size="sm" />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
-        onEndReached={hasBeenScrolled ? () => fetchChatMessageHandler() : null}
+        onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
         data={chatList}
@@ -120,8 +127,6 @@ const ChatList = ({
             )}
             <ChatBubble
               chat={item}
-              name={userNameRenderCheck(chatList[index + 1], item)}
-              image={userImageRenderCheck(item, chatList[index - 1])}
               fromUserId={item?.from_user_id}
               id={item?.id}
               content={item?.message}
@@ -137,6 +142,8 @@ const ChatList = ({
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
+              name={userNameRenderCheck(chatList[index + 1], item)}
+              image={userImageRenderCheck(item, chatList[index - 1])}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               deleteMessage={deleteMessage}
               setMessageToReply={setMessageToReply}

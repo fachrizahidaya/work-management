@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Icon, Input, Menu, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Input, Menu, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -8,9 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ConfirmationModal from "../../shared/ConfirmationModal";
-import axiosInstance from "../../../config/api";
 import ReturnConfirmationModal from "../../shared/ReturnConfirmationModal";
-import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
 
 const ChatHeader = ({
   navigation,
@@ -21,62 +19,33 @@ const ChatHeader = ({
   fileAttachment,
   type,
   active_member,
-  setForceRender,
-  forceRender,
+  groupExitHandler,
+  groupDeleteHandler,
+  exitModalIsOpen,
+  deleteGroupModalIsOpen,
+  toggleExitModal,
+  toggleDeleteGroupModal,
+  selectedGroupMembers,
+  loggedInUser,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
 
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
-
-  const toast = useToast();
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
 
-  const groupExitHandler = async (group_id, setIsLoading) => {
-    try {
-      const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      setForceRender(!forceRender);
-      toggleExitModal();
-      navigation.goBack();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
+  const clearSearch = () => {
+    setInputToShow("");
+    setSearchInput("");
   };
 
-  const groupDeleteHandler = async (group_id, setIsLoading) => {
-    try {
-      const res = await axiosInstance.delete(`/chat/group/${group_id}`);
-      toggleDeleteGroupModal();
-      navigation.goBack();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
+  const closeDeleteModalHandler = () => {
+    toggleDeleteModal();
+    navigation.goBack();
   };
 
   return (
@@ -91,7 +60,26 @@ const ChatHeader = ({
 
           <Box>
             <Text fontSize={16}>{name}</Text>
-            {type === "personal" ? <Text>{position}</Text> : <Text></Text>}
+            {type === "personal" ? (
+              <Text>{position}</Text>
+            ) : (
+              <Flex flexDirection="row">
+                {selectedGroupMembers.map((member, index) => {
+                  return (
+                    <Text
+                      fontSize={10}
+                      fontWeight={400}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={{ maxWidth: 80, overflow: "hidden" }}
+                    >
+                      {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                      {index < selectedGroupMembers.length - 1 && `${", "}`}
+                    </Text>
+                  );
+                })}
+              </Flex>
+            )}
           </Box>
         </Flex>
 
@@ -160,10 +148,7 @@ const ChatHeader = ({
             isPatch={false}
             hasSuccessFunc={true}
             apiUrl={`/chat/personal/${userId}`}
-            onSuccess={() => {
-              toggleDeleteModal();
-              navigation.goBack();
-            }}
+            onSuccess={() => closeDeleteModalHandler()}
             successMessage="Chat Deleted"
           />
         </Flex>
@@ -177,16 +162,7 @@ const ChatHeader = ({
             </Pressable>
           }
           InputRightElement={
-            <Pressable
-              onPress={
-                searchInput === ""
-                  ? () => toggleSearch()
-                  : () => {
-                      setInputToShow("");
-                      setSearchInput("");
-                    }
-              }
-            >
+            <Pressable onPress={() => (searchInput === "" ? toggleSearch() : clearSearch())}>
               <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
             </Pressable>
           }
