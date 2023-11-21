@@ -23,7 +23,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
   return (
     <>
       {messageToReply && (
-        <Flex flexDirection="row" alignItems="center" py={3} px={3} justifyContent="space-between">
+        <Flex flexDirection="row" alignItems="center" py={3} px={4} justifyContent="space-between">
           <Flex
             borderLeftColor="#37b4ea"
             borderLeftWidth={5}
@@ -31,6 +31,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
             px={2}
             py={2}
             gap={2}
+            width={300}
             backgroundColor="#f1f1f1"
             flexDirection="row"
             alignItems="center"
@@ -55,7 +56,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
               />
             )}
           </Flex>
-          <Icon onPress={() => setMessageToReply(null)} as={<MaterialCommunityIcons name="close" />} />
+          <Icon onPress={() => setMessageToReply(null)} as={<MaterialCommunityIcons name="close" />} size={5} />
         </Flex>
       )}
     </>
