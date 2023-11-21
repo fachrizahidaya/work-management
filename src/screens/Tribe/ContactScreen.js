@@ -141,6 +141,10 @@ const ContactScreen = () => {
               email={item?.email}
               refetch={refetchEmployeeData}
               loggedEmployeeId={userSelector?.user_role_id}
+              user_id={item?.user?.id}
+              user_name={item?.user?.name}
+              user_type={item?.user?.type}
+              user_image={item?.user?.image}
             />
           )}
         />
