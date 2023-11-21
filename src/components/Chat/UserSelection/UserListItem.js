@@ -19,6 +19,12 @@ const UserListItem = ({
   onPressRemoveHandler,
   selectedUsers,
   multiSelect,
+  email,
+  type,
+  active_member,
+  setForceRender,
+  forceRender,
+  selectedGroupMembers,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
@@ -40,6 +46,13 @@ const UserListItem = ({
               name: name,
               userId: id,
               image: image,
+              position: userType,
+              email: email,
+              type: type,
+              active_member: active_member,
+              setForceRender: setForceRender,
+              forceRender: forceRender,
+              selectedGroupMembers: selectedGroupMembers,
             });
           }
         }}

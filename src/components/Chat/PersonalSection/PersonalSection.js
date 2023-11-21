@@ -16,7 +16,12 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
           PEOPLE
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() =>
+            navigation.navigate("New Chat", { forceRerender: forceRerender, setForceRerender: setForceRerender })
+          }
+        >
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
