@@ -1,13 +1,13 @@
 import { Actionsheet } from "native-base";
 
-const ChatOptionMenu = ({ optionIsOpen, toggleOption, setMessageToReply, chat, toggleDeleteModal }) => {
+const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggleDeleteModal }) => {
   return (
-    <Actionsheet isOpen={optionIsOpen} onClose={toggleOption}>
+    <Actionsheet isOpen={optionIsOpen} onClose={onClose}>
       <Actionsheet.Content>
         <Actionsheet.Item
           onPress={() => {
             setMessageToReply(chat);
-            toggleOption();
+            onClose();
           }}
         >
           Reply
@@ -15,7 +15,6 @@ const ChatOptionMenu = ({ optionIsOpen, toggleOption, setMessageToReply, chat, t
         <Actionsheet.Item
           onPress={() => {
             toggleDeleteModal();
-            toggleOption();
           }}
         >
           Delete

@@ -2,24 +2,19 @@ import { Button, Modal, Spinner, Text } from "native-base";
 
 const ChatMessageDeleteModal = ({
   id,
-  deleteModalIsOpen,
-  toggleDeleteModal,
+  deleteModalChatIsOpen,
+  toggleDeleteModalChat,
   deleteMessage,
   myMessage,
-  isLoadingForMe,
-  setIsLoadingForMe,
-  isLoadingForEveryone,
-  setIsLoadingForEveryone,
   isLoading,
-  setIsLoading,
   isDeleted,
 }) => {
   return (
-    <Modal size="xl" isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
+    <Modal size="xl" isOpen={deleteModalChatIsOpen} onClose={toggleDeleteModalChat}>
       <Modal.Content>
         <Modal.Header>Delete message?</Modal.Header>
         <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outline" onPress={toggleDeleteModal}>
+          <Button variant="outline" onPress={toggleDeleteModalChat}>
             <Text fontSize={12} fontWeight={400} color="primary.600">
               Cancel
             </Text>
@@ -28,13 +23,11 @@ const ChatMessageDeleteModal = ({
           <Button
             variant="outline"
             onPress={async () => {
-              setIsLoadingForMe(true);
-              await deleteMessage(id, "me", setIsLoadingForMe);
-              toggleDeleteModal();
+              await deleteMessage(id, "me");
             }}
           >
             <Text fontSize={12} fontWeight={400} color="primary.600">
-              {isLoadingForMe ? <Spinner color="primary.600" /> : "Delete for Me"}
+              {isLoading ? <Spinner color="primary.600" /> : "Delete for Me"}
             </Text>
           </Button>
 
@@ -42,13 +35,11 @@ const ChatMessageDeleteModal = ({
             <Button
               variant="outline"
               onPress={async () => {
-                setIsLoadingForEveryone(true);
-                await deleteMessage(id, "everyone", setIsLoadingForEveryone);
-                toggleDeleteModal();
+                await deleteMessage(id, "everyone");
               }}
             >
               <Text fontSize={12} fontWeight={400} color="primary.600">
-                {isLoadingForEveryone ? <Spinner color="primary.600" /> : "Delete for Everyone"}
+                {isLoading ? <Spinner color="primary.600" /> : "Delete for Everyone"}
               </Text>
             </Button>
           )}
