@@ -25,6 +25,8 @@ const ChatList = ({
   bandAttachmentType,
   setBandAttachmentType,
   isLoading,
+  openChatBubbleHandler,
+  toggleFullScreen,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -147,6 +149,8 @@ const ChatList = ({
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               deleteMessage={deleteMessage}
               setMessageToReply={setMessageToReply}
+              openChatBubbleHandler={openChatBubbleHandler}
+              toggleFullScreen={toggleFullScreen}
             />
           </>
         )}

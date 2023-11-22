@@ -1,6 +1,7 @@
 import { Image, Modal } from "native-base";
 
 const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
+  console.log("modal", file_path);
   return (
     <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
       <Modal.Content backgroundColor="#000000">
