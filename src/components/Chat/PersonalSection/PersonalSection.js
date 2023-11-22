@@ -32,7 +32,8 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal?.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               position={personal.user?.user_type}
@@ -70,7 +71,8 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               message={personal.latest_message?.message}
