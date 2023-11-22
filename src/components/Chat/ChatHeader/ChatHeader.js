@@ -63,6 +63,7 @@ const ChatHeader = ({
                 email: email,
                 type: type,
                 selectedGroupMembers: selectedGroupMembers,
+                loggedInUser: loggedInUser,
               })
             }
             display="flex"

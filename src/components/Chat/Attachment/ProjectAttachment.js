@@ -1,10 +1,13 @@
+import { useCallback, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
-import { Box, Flex, Icon, Input, Modal, Text } from "native-base";
+import _ from "lodash";
+
+import { TouchableOpacity } from "react-native";
+import { Box, Flex, Icon, Input, Modal, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
-import { TouchableOpacity } from "react-native";
 
 const ProjectAttachment = ({
   projectListIsOpen,
@@ -15,16 +18,35 @@ const ProjectAttachment = ({
   bandAttachment,
   setBandAttachment,
 }) => {
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inputToShow, setInputToShow] = useState("");
+
+  const fetchProjectParameters = {
+    page: currentPage,
+    search: searchInput,
+    limit: 100,
+  };
+
   const {
     data: projectList,
     isFetching: projectListIsFetching,
     refetch: refetchProjectList,
-  } = useFetch("/chat/project");
+  } = useFetch("/chat/project", [currentPage, searchInput], fetchProjectParameters);
 
   const selectProjectHandler = (project) => {
     setBandAttachment(project);
     toggleProjectList();
   };
+
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
 
   return (
     <Modal isOpen={projectListIsOpen} onClose={toggleProjectList} size="xl">
@@ -32,7 +54,31 @@ const ProjectAttachment = ({
         <Modal.CloseButton />
         <Modal.Header>Choose Project</Modal.Header>
         <Modal.Body>
-          <Input placeholder="Search here..." />
+          <Input
+            value={inputToShow}
+            placeholder="Search here..."
+            InputRightElement={
+              inputToShow && (
+                <Pressable
+                  onPress={() => {
+                    setInputToShow("");
+                    setSearchInput("");
+                  }}
+                >
+                  <Icon
+                    as={<MaterialCommunityIcons name="close-circle-outline" />}
+                    size="md"
+                    mr={2}
+                    color="muted.400"
+                  />
+                </Pressable>
+              )
+            }
+            onChangeText={(value) => {
+              handleSearch(value);
+              setInputToShow(value);
+            }}
+          />
           <Box flex={1} height={300} mt={4}>
             <FlashList
               data={projectList?.data}
@@ -42,15 +88,15 @@ const ProjectAttachment = ({
               onEndReachedThreshold={0.1}
               renderItem={({ item }) => (
                 <Flex my={1} gap={2} flexDirection="row">
-                  <Flex
-                    rounded="full"
+                  <Pressable
+                    borderRadius="full"
                     alignItems="center"
                     justifyContent="center"
-                    backgroundColor="#f1f1f1"
+                    backgroundColor="#bdbdbd"
                     padding={1}
                   >
-                    <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} size={5} />
-                  </Flex>
+                    <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color="#FFFFFF" size={5} />
+                  </Pressable>
                   <TouchableOpacity onPress={() => selectProjectHandler(item)}>
                     <Text fontSize={14} fontWeight={400} color="#000000">
                       {item?.title}

@@ -24,9 +24,12 @@ const MenuHeader = ({
           );
         }}
       >
-        <Menu.Item onPress={toggleSearch}>
+        {/* <Menu.Item onPress={toggleSearch}>
           <Text>Search</Text>
-        </Menu.Item>
+        </Menu.Item> */}
+        {/* <Menu.Item onPress={toggleDeleteModal}>
+          <Text>Pin Chat</Text>
+        </Menu.Item> */}
         {type === "group" ? (
           <>
             {active_member === 1 ? (
@@ -40,9 +43,11 @@ const MenuHeader = ({
             )}
           </>
         ) : (
-          <Menu.Item onPress={toggleDeleteModal}>
-            <Text>Delete Chat</Text>
-          </Menu.Item>
+          <>
+            <Menu.Item onPress={toggleDeleteModal}>
+              <Text>Delete Chat</Text>
+            </Menu.Item>
+          </>
         )}
       </Menu>
     </Flex>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState, useCallback } from "react";
+import _ from "lodash";
 
 import { TouchableOpacity } from "react-native";
-import { Box, Flex, Icon, Input, Modal, Text } from "native-base";
+import { Box, Flex, Icon, Input, Modal, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -18,12 +19,34 @@ const TaskAttachment = ({
   onSelectBandAttachment,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const { data: taskList, isFetching: taskListIsFetching, refetch: refetchTaskList } = useFetch("/chat/task");
+  const [searchInput, setSearchInput] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inputToShow, setInputToShow] = useState("");
+
+  const fetchTaskParameters = {
+    page: currentPage,
+    search: searchInput,
+    limit: 100,
+  };
+
+  const {
+    data: taskList,
+    isFetching: taskListIsFetching,
+    refetch: refetchTaskList,
+  } = useFetch("/chat/task", [currentPage, searchInput], fetchTaskParameters);
 
   const selectTaskHandler = (task) => {
     setBandAttachment(task);
     toggleTaskList();
   };
+
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
 
   return (
     <Modal isOpen={taskListIsOpen} onClose={toggleTaskList} size="xl">
@@ -31,7 +54,31 @@ const TaskAttachment = ({
         <Modal.CloseButton />
         <Modal.Header>Choose Task</Modal.Header>
         <Modal.Body>
-          <Input placeholder="Search here..." />
+          <Input
+            value={inputToShow}
+            placeholder="Search here..."
+            InputRightElement={
+              inputToShow && (
+                <Pressable
+                  onPress={() => {
+                    setInputToShow("");
+                    setSearchInput("");
+                  }}
+                >
+                  <Icon
+                    as={<MaterialCommunityIcons name="close-circle-outline" />}
+                    size="md"
+                    mr={2}
+                    color="muted.400"
+                  />
+                </Pressable>
+              )
+            }
+            onChangeText={(value) => {
+              handleSearch(value);
+              setInputToShow(value);
+            }}
+          />
           <Box flex={1} height={300} mt={4}>
             <FlashList
               data={taskList?.data}
