@@ -1,17 +1,13 @@
-import { useState } from "react";
+import { memo } from "react";
 import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { Flex, Image, Pressable, Text } from "native-base";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
-import ChatMessageDeleteModal from "./ChatMessageDeleteModal";
-import ImageFullScreenModal from "./ImageFullScreenModal";
-import ChatOptionMenu from "./ChatOptionMenu";
 
 const ChatBubble = ({
   chat,
@@ -35,27 +31,14 @@ const ChatBubble = ({
   reply_to,
   deleteMessage,
   setMessageToReply,
+  openChatBubbleHandler,
+  toggleFullScreen,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingForMe, setIsLoadingForMe] = useState(false);
-  const [isLoadingForEveryone, setIsLoadingForEveryone] = useState(false);
-
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
-
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
-
-  /**
-   * Toggle fullscreen image
-   */
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
 
   let styledTexts = null;
   if (content?.length > 1) {
@@ -130,7 +113,7 @@ const ChatBubble = ({
         <Pressable
           minWidth={10}
           maxWidth={300}
-          onLongPress={toggleOption}
+          onLongPress={() => openChatBubbleHandler(chat)}
           borderRadius={10}
           display="flex"
           justifyContent="center"
@@ -151,7 +134,7 @@ const ChatBubble = ({
                 <>
                   {imgTypes.includes(formatMimeType(file_type)) && (
                     <>
-                      <TouchableOpacity onPress={toggleFullScreen}>
+                      <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
                         <Image
                           width={260}
                           height={200}
@@ -161,12 +144,6 @@ const ChatBubble = ({
                           resizeMode="contain"
                         />
                       </TouchableOpacity>
-
-                      <ImageFullScreenModal
-                        isFullScreen={isFullScreen}
-                        setIsFullScreen={setIsFullScreen}
-                        file_path={file_path}
-                      />
                     </>
                   )}
                   {docTypes.includes(formatMimeType(file_type)) && (
@@ -251,35 +228,12 @@ const ChatBubble = ({
             zIndex={-1}
           ></Box>
         )} */}
-
-        <ChatOptionMenu
-          optionIsOpen={optionIsOpen}
-          toggleOption={toggleOption}
-          setMessageToReply={setMessageToReply}
-          chat={chat}
-          toggleDeleteModal={toggleDeleteModal}
-        />
-
-        <ChatMessageDeleteModal
-          id={id}
-          deleteMessage={deleteMessage}
-          deleteModalIsOpen={deleteModalIsOpen}
-          toggleDeleteModal={toggleDeleteModal}
-          myMessage={myMessage}
-          isDeleted={isDeleted}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          isLoadingForMe={isLoadingForMe}
-          setIsLoadingForMe={setIsLoadingForMe}
-          isLoadingForEveryone={isLoadingForEveryone}
-          setIsLoadingForEveryone={setIsLoadingForEveryone}
-        />
       </Flex>
     </>
   );
 };
 
-export default ChatBubble;
+export default memo(ChatBubble);
 
 const styles = StyleSheet.create({
   defaultText: {},
