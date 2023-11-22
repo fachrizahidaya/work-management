@@ -17,9 +17,10 @@ import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
 
 const GroupFormScreen = ({ route }) => {
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const toast = useToast();
   const navigation = useNavigation();
-  const { userArray, groupData } = route.params;
+  const { userArray, groupData, forceRender, setForceRender } = route.params;
   const [image, setImage] = useState(null);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
@@ -40,11 +41,19 @@ const GroupFormScreen = ({ route }) => {
         });
       }
 
+      setSelectedGroupMembers(userArray);
+
       navigation.navigate("Chat Room", {
         name: res.data.data.name,
         userId: res.data.data.id,
         image: res.data.data.image,
         type: "group",
+        position: null,
+        email: null,
+        active_member: 1,
+        forceRender: forceRender,
+        setForceRender: setForceRender,
+        selectedGroupMembers: selectedGroupMembers,
       });
       setSubmitting(false);
       toast.show({
