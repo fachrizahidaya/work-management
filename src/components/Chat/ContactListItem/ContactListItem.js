@@ -13,6 +13,7 @@ import axiosInstance from "../../../config/api";
 const ContactListItem = ({
   type,
   id,
+  userId,
   name,
   image,
   position,
@@ -112,8 +113,9 @@ const ContactListItem = ({
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
+          userId,
           name: name,
-          userId: id,
+          roomId: id,
           image: image,
           position: position,
           email: email,

@@ -9,6 +9,7 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
   const navigation = useNavigation();
+  console.log("groups", groupChats);
 
   return !searchKeyword ? (
     <>
@@ -31,7 +32,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
         groupChats.map((group) => (
           <ContactListItem
             key={group.id}
-            id={group.id}
+            roomId={group.id}
             name={group.name}
             image={group.image}
             position={null}
@@ -67,7 +68,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
           {searchResult.map((group) => (
             <ContactListItem
               key={group.id}
-              id={group.id}
+              roomId={group.id}
               name={group.name}
               image={group.image}
               message={group.latest_message?.message}
