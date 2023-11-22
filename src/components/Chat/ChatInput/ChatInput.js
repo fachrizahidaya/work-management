@@ -132,7 +132,7 @@ const ChatInput = ({
     <Box>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
 
-      <Flex gap={1} backgroundColor="#E8E9EB" flexDirection="row" alignItems="center" p={2}>
+      <Flex gap={1} backgroundColor="#E8E9EB" flexDirection="row" alignItems="center" justifyContent="center" p={2}>
         {type === "group" && !active_member ? (
           <Text textAlign="center" fontSize={12} fontWeight={500}>
             You can't send message to this group because you're no longer a participant
