@@ -31,7 +31,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
         groupChats.map((group) => (
           <ContactListItem
             key={group.id}
-            roomId={group.id}
+            id={group.id}
             name={group.name}
             image={group.image}
             position={null}
@@ -67,7 +67,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
           {searchResult.map((group) => (
             <ContactListItem
               key={group.id}
-              roomId={group.id}
+              id={group.id}
               name={group.name}
               image={group.image}
               message={group.latest_message?.message}
