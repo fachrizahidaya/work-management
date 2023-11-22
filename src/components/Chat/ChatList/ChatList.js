@@ -1,4 +1,4 @@
-import { useCallback, useState, PureComponent } from "react";
+import { useCallback, useState, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
@@ -177,4 +177,4 @@ const ChatList = ({
   );
 };
 
-export default ChatList;
+export default memo(ChatList);

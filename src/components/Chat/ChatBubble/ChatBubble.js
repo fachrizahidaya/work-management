@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
@@ -232,7 +233,7 @@ const ChatBubble = ({
   );
 };
 
-export default ChatBubble;
+export default memo(ChatBubble);
 
 const styles = StyleSheet.create({
   defaultText: {},
