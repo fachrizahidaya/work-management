@@ -9,7 +9,6 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
   const navigation = useNavigation();
-  console.log("groups", groupChats);
 
   return !searchKeyword ? (
     <>
