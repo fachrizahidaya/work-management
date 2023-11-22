@@ -1,5 +1,4 @@
 import { Button, Modal, Spinner, Text } from "native-base";
-import React from "react";
 
 const ChatMessageDeleteModal = ({
   id,

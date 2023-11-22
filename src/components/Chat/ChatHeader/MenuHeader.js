@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Box, Flex, Icon, Menu, Pressable, Text } from "native-base";
+import { Flex, Icon, Menu, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 

@@ -6,9 +6,6 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ConfirmationModal from "../../shared/ConfirmationModal";
-import ReturnConfirmationModal from "../../shared/ReturnConfirmationModal";
 import MenuHeader from "./MenuHeader";
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
@@ -84,7 +81,7 @@ const ChatHeader = ({
                 <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
                   {selectedGroupMembers?.map((member, index) => {
                     return (
-                      <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                      <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
                         {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
                         {index < selectedGroupMembers.length - 1 && `${", "}`}
                       </Text>

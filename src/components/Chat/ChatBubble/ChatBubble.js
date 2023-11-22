@@ -2,13 +2,10 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
-import { Actionsheet, Box, Button, Flex, Icon, Image, Menu, Modal, Pressable, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Flex, Image, Pressable, Text } from "native-base";
 
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
@@ -42,7 +39,6 @@ const ChatBubble = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingForMe, setIsLoadingForMe] = useState(false);
   const [isLoadingForEveryone, setIsLoadingForEveryone] = useState(false);
-  const [optionVisible, setOptionVisible] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
@@ -131,112 +127,109 @@ const ChatBubble = ({
           <Box ml={8}></Box>
         ) : null} */}
 
-        <Flex>
-          <Pressable
-            minWidth={100}
-            maxWidth={300}
-            onLongPress={toggleOption}
-            borderRadius={10}
-            display="flex"
-            justifyContent="center"
-            py={1.5}
-            px={1.5}
-            bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
-          >
-            {type === "group" && name && !myMessage && (
-              <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
-                {name}
-              </Text>
-            )}
-            {!isDeleted ? (
-              <>
-                {reply_to && (
-                  <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />
-                )}
-                {file_path && (
-                  <>
-                    {imgTypes.includes(formatMimeType(file_type)) && (
-                      <>
-                        <TouchableOpacity onPress={toggleFullScreen}>
-                          <Image
-                            width={260}
-                            height={200}
-                            borderRadius={5}
-                            source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                            alt="Chat Image"
-                            resizeMode="contain"
-                          />
-                        </TouchableOpacity>
-
-                        <ImageFullScreenModal
-                          isFullScreen={isFullScreen}
-                          setIsFullScreen={setIsFullScreen}
-                          file_path={file_path}
+        <Pressable
+          minWidth={10}
+          maxWidth={300}
+          onLongPress={toggleOption}
+          borderRadius={10}
+          display="flex"
+          justifyContent="center"
+          py={1.5}
+          px={1.5}
+          bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
+          gap={1}
+        >
+          {type === "group" && name && !myMessage && (
+            <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
+              {name}
+            </Text>
+          )}
+          {!isDeleted ? (
+            <>
+              {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />}
+              {file_path && (
+                <>
+                  {imgTypes.includes(formatMimeType(file_type)) && (
+                    <>
+                      <TouchableOpacity onPress={toggleFullScreen}>
+                        <Image
+                          width={260}
+                          height={200}
+                          borderRadius={5}
+                          source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
+                          alt="Chat Image"
+                          resizeMode="contain"
                         />
-                      </>
-                    )}
-                    {docTypes.includes(formatMimeType(file_type)) && (
-                      <FileAttachmentBubble
-                        file_type={file_type}
-                        file_name={file_name}
+                      </TouchableOpacity>
+
+                      <ImageFullScreenModal
+                        isFullScreen={isFullScreen}
+                        setIsFullScreen={setIsFullScreen}
                         file_path={file_path}
-                        file_size={file_size}
-                        myMessage={myMessage}
                       />
-                    )}
-                  </>
-                )}
-                {band_attachment_id && (
-                  <BandAttachmentBubble
-                    id={band_attachment_id}
-                    title={band_attachment_title}
-                    number_id={band_attachment_no}
-                    type={band_attachment_type}
-                    myMessage={myMessage}
-                  />
-                )}
-              </>
-            ) : null}
+                    </>
+                  )}
+                  {docTypes.includes(formatMimeType(file_type)) && (
+                    <FileAttachmentBubble
+                      file_type={file_type}
+                      file_name={file_name}
+                      file_path={file_path}
+                      file_size={file_size}
+                      myMessage={myMessage}
+                    />
+                  )}
+                </>
+              )}
+              {band_attachment_id && (
+                <BandAttachmentBubble
+                  id={band_attachment_id}
+                  title={band_attachment_title}
+                  number_id={band_attachment_no}
+                  type={band_attachment_type}
+                  myMessage={myMessage}
+                />
+              )}
+            </>
+          ) : null}
 
-            <Flex
-              gap={2}
-              maxWidth={280}
-              minWidth={100}
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Flex maxWidth={240} minWidth={100}>
-                {typeof content === "number" && !isDeleted ? (
-                  <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                    {content}
-                  </Text>
-                ) : typeof content !== "number" && !isDeleted ? (
-                  <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                    {styledTexts}
-                  </Text>
-                ) : myMessage && isDeleted ? (
-                  <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
-                    You have deleted this message
-                  </Text>
-                ) : !myMessage && isDeleted ? (
-                  <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
-                    You have deleted this message
-                  </Text>
-                ) : null}
-              </Flex>
-
-              <Text
-                mt={type === "group" && name && !myMessage ? null : 1.5}
-                alignSelf="flex-end"
-                fontSize={10}
-                color="#578A90"
-              >
-                {time}
-              </Text>
+          <Flex
+            gap={2}
+            maxWidth={280}
+            minWidth={100}
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Flex maxWidth={240} minWidth={100}>
+              {typeof content === "number" && !isDeleted ? (
+                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                  {content}
+                </Text>
+              ) : typeof content !== "number" && !isDeleted ? (
+                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                  {styledTexts}
+                </Text>
+              ) : myMessage && isDeleted ? (
+                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                  You have deleted this message
+                </Text>
+              ) : !myMessage && isDeleted ? (
+                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
+                  This message has been deleted
+                </Text>
+              ) : null}
             </Flex>
-          </Pressable>
-        </Flex>
+
+            <Text
+              mt={type === "group" && name && !myMessage ? null : 1.5}
+              alignSelf="flex-end"
+              fontSize={10}
+              color="#578A90"
+            >
+              {time}
+            </Text>
+          </Flex>
+        </Pressable>
 
         {/* {!isGrouped && (
           <Box

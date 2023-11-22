@@ -1,5 +1,4 @@
 import { Actionsheet } from "native-base";
-import React from "react";
 
 const ChatOptionMenu = ({ optionIsOpen, toggleOption, setMessageToReply, chat, toggleDeleteModal }) => {
   return (
