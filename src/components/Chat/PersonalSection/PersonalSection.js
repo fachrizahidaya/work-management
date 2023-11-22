@@ -9,7 +9,6 @@ import ContactListItem from "../ContactListItem/ContactListItem";
 
 const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
   const navigation = useNavigation();
-  console.log("personal", personalChats);
   return !searchKeyword ? (
     <>
       <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
