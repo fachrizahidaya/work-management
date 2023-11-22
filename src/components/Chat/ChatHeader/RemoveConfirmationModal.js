@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button, Image, Modal, Spinner, Text, VStack } from "native-base";
 
 const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoading }) => {

@@ -16,7 +16,6 @@ import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
 import { useCallback } from "react";
-import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useToast } from "native-base";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
