@@ -62,6 +62,12 @@ const ChatRoom = () => {
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+
+  const closeDeleteChatModalHandler = () => {
+    toggleDeleteModal();
+    navigation.goBack();
+  };
 
   /**
    * Event listener for new personal chat messages
@@ -177,6 +183,7 @@ const ChatRoom = () => {
    */
   const messagedeleteHandler = async (chat_message_id, delete_type, setIsLoading) => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
       setIsLoading(false);
     } catch (err) {
@@ -199,6 +206,29 @@ const ChatRoom = () => {
       }
       return [...prevState];
     });
+  };
+
+  const deleteChatPersonal = async (id, setIsLoading) => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.delete(`/chat/personal/${id}`);
+      setIsLoading(false);
+      toggleDeleteModal();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Deleted" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   /**
@@ -294,8 +324,10 @@ const ChatRoom = () => {
 
   const groupExitHandler = async (group_id, setIsLoading) => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
       setForceRender(!forceRender);
+      setIsLoading(false);
       toggleExitModal();
       navigation.goBack();
       toast.show({
@@ -305,6 +337,7 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -315,7 +348,9 @@ const ChatRoom = () => {
 
   const groupDeleteHandler = async (group_id, setIsLoading) => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.delete(`/chat/group/${group_id}`);
+      setIsLoading(false);
       toggleDeleteGroupModal();
       navigation.goBack();
       toast.show({
@@ -325,6 +360,7 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -392,6 +428,9 @@ const ChatRoom = () => {
         toggleDeleteGroupModal={toggleDeleteGroupModal}
         selectedGroupMembers={selectedGroupMembers}
         loggedInUser={userSelector?.id}
+        deleteChatPersonal={deleteChatPersonal}
+        toggleDeleteModal={toggleDeleteModal}
+        deleteModalIsOpen={deleteModalIsOpen}
       />
 
       <ChatList

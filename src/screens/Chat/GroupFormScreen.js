@@ -25,7 +25,11 @@ const GroupFormScreen = ({ route }) => {
 
   const createGroupHandler = async (form, setSubmitting) => {
     try {
-      const res = await axiosInstance.post("/chat/group", form);
+      const res = await axiosInstance.post("/chat/group", form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
       // Loop through selected user arrays to be added to the group
       for (let i = 0; i < userArray.length; i++) {

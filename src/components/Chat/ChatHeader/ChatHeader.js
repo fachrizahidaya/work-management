@@ -9,6 +9,8 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ConfirmationModal from "../../shared/ConfirmationModal";
 import ReturnConfirmationModal from "../../shared/ReturnConfirmationModal";
+import MenuHeader from "./MenuHeader";
+import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
 const ChatHeader = ({
   navigation,
@@ -28,12 +30,14 @@ const ChatHeader = ({
   toggleDeleteGroupModal,
   selectedGroupMembers,
   loggedInUser,
+  deleteChatPersonal,
+  toggleDeleteModal,
+  deleteModalIsOpen,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -42,11 +46,6 @@ const ChatHeader = ({
   const clearSearch = () => {
     setInputToShow("");
     setSearchInput("");
-  };
-
-  const closeDeleteModalHandler = () => {
-    toggleDeleteModal();
-    navigation.goBack();
   };
 
   return (
@@ -78,7 +77,9 @@ const ChatHeader = ({
             <Box>
               <Text fontSize={16}>{name}</Text>
               {type === "personal" ? (
-                <Text>{position}</Text>
+                <Text fontSize={12} fontWeight={400}>
+                  {position}
+                </Text>
               ) : (
                 <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
                   {selectedGroupMembers?.map((member, index) => {
@@ -95,75 +96,47 @@ const ChatHeader = ({
           </Pressable>
         </Flex>
 
-        <Flex direction="row" alignItems="center">
-          <Menu
-            w={160}
-            mt={8}
-            trigger={(trigger) => {
-              return fileAttachment ? null : (
-                <Pressable {...trigger} mr={1}>
-                  <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
-                </Pressable>
-              );
-            }}
-          >
-            <Menu.Item onPress={toggleSearch}>
-              <Text>Search</Text>
-            </Menu.Item>
-            {type === "group" ? (
-              <>
-                {active_member === 1 ? (
-                  <Menu.Item onPress={toggleExitModal}>
-                    <Text>Exit Group</Text>
-                  </Menu.Item>
-                ) : (
-                  <Menu.Item onPress={toggleDeleteGroupModal}>
-                    <Text>Delete Group</Text>
-                  </Menu.Item>
-                )}
-              </>
-            ) : (
-              <Menu.Item onPress={toggleDeleteModal}>
-                <Text>Delete Chat</Text>
-              </Menu.Item>
-            )}
-          </Menu>
+        <MenuHeader
+          fileAttachment={fileAttachment}
+          toggleDeleteGroupModal={toggleDeleteGroupModal}
+          toggleDeleteModal={toggleDeleteModal}
+          toggleExitModal={toggleExitModal}
+          toggleSearch={toggleSearch}
+          type={type}
+          active_member={active_member}
+        />
 
-          {type === "group" && active_member === 1 && (
-            <>
-              <ReturnConfirmationModal
-                isOpen={exitModalIsOpen}
-                toggle={toggleExitModal}
-                description="Are you sure want to exit this group?"
-                onPress={() => groupExitHandler(userId)}
-              />
-            </>
-          )}
+        {type === "group" && active_member === 1 && (
+          <>
+            <RemoveConfirmationModal
+              isOpen={exitModalIsOpen}
+              toggle={toggleExitModal}
+              description="Are you sure want to exit this group?"
+              onPress={() => groupExitHandler(userId, setIsLoading)}
+              isLoading={isLoading}
+            />
+          </>
+        )}
 
-          {type === "group" && active_member === 0 && (
-            <>
-              <ReturnConfirmationModal
-                isOpen={deleteGroupModalIsOpen}
-                toggle={toggleDeleteGroupModal}
-                description="Are you sure want to delete this group?"
-                onPress={() => groupDeleteHandler(userId)}
-              />
-            </>
-          )}
+        {type === "group" && active_member === 0 && (
+          <>
+            <RemoveConfirmationModal
+              isOpen={deleteGroupModalIsOpen}
+              toggle={toggleDeleteGroupModal}
+              description="Are you sure want to delete this group?"
+              onPress={() => groupDeleteHandler(userId, setIsLoading)}
+              isLoading={isLoading}
+            />
+          </>
+        )}
 
-          <ConfirmationModal
-            isOpen={deleteModalIsOpen}
-            toggle={toggleDeleteModal}
-            header="Delete Chat"
-            description="Are you sure want to delete this chat?"
-            isDelete={true}
-            isPatch={false}
-            hasSuccessFunc={true}
-            apiUrl={`/chat/personal/${userId}`}
-            onSuccess={() => closeDeleteModalHandler()}
-            successMessage="Chat Deleted"
-          />
-        </Flex>
+        <RemoveConfirmationModal
+          isOpen={deleteModalIsOpen}
+          toggle={toggleDeleteModal}
+          description="Are you sure want to delete this chat?"
+          onPress={() => deleteChatPersonal(userId, setIsLoading)}
+          isLoading={isLoading}
+        />
       </Flex>
       {searchVisible && (
         <Input

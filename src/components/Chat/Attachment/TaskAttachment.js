@@ -28,6 +28,7 @@ const TaskAttachment = ({
   return (
     <Modal isOpen={taskListIsOpen} onClose={toggleTaskList} size="xl">
       <Modal.Content>
+        <Modal.CloseButton />
         <Modal.Header>Choose Task</Modal.Header>
         <Modal.Body>
           <Input placeholder="Search here..." />
