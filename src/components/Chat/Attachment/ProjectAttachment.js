@@ -29,6 +29,7 @@ const ProjectAttachment = ({
   return (
     <Modal isOpen={projectListIsOpen} onClose={toggleProjectList} size="xl">
       <Modal.Content>
+        <Modal.CloseButton />
         <Modal.Header>Choose Project</Modal.Header>
         <Modal.Body>
           <Input placeholder="Search here..." />

@@ -13,6 +13,8 @@ import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
 import ChatMessageDeleteModal from "./ChatMessageDeleteModal";
+import ImageFullScreenModal from "./ImageFullScreenModal";
+import ChatOptionMenu from "./ChatOptionMenu";
 
 const ChatBubble = ({
   chat,
@@ -38,6 +40,8 @@ const ChatBubble = ({
   setMessageToReply,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingForMe, setIsLoadingForMe] = useState(false);
+  const [isLoadingForEveryone, setIsLoadingForEveryone] = useState(false);
   const [optionVisible, setOptionVisible] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
@@ -58,7 +62,7 @@ const ChatBubble = ({
   };
 
   let styledTexts = null;
-  if (typeof content !== "number" || content.length > 1) {
+  if (content?.length > 1) {
     const words = content?.split(" ");
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
@@ -121,16 +125,16 @@ const ChatBubble = ({
         px={2}
         flexDirection={!myMessage ? "row" : "row-reverse"}
       >
-        {type === "group" && !myMessage && image ? (
+        {/* {type === "group" && !myMessage && image ? (
           <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
         ) : type === "group" && !myMessage ? (
           <Box ml={8}></Box>
-        ) : null}
+        ) : null} */}
 
         <Flex>
           <Pressable
             minWidth={100}
-            maxWidth={280}
+            maxWidth={300}
             onLongPress={toggleOption}
             borderRadius={10}
             display="flex"
@@ -153,7 +157,7 @@ const ChatBubble = ({
                   <>
                     {imgTypes.includes(formatMimeType(file_type)) && (
                       <>
-                        <TouchableOpacity onLongPress={toggleFullScreen}>
+                        <TouchableOpacity onPress={toggleFullScreen}>
                           <Image
                             width={260}
                             height={200}
@@ -163,20 +167,12 @@ const ChatBubble = ({
                             resizeMode="contain"
                           />
                         </TouchableOpacity>
-                        <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-                          <Modal.Content backgroundColor="#000000">
-                            <Modal.CloseButton />
-                            <Modal.Body alignContent="center">
-                              <Image
-                                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                                height={500}
-                                width={500}
-                                alt="Feed Image"
-                                resizeMode="contain"
-                              />
-                            </Modal.Body>
-                          </Modal.Content>
-                        </Modal>
+
+                        <ImageFullScreenModal
+                          isFullScreen={isFullScreen}
+                          setIsFullScreen={setIsFullScreen}
+                          file_path={file_path}
+                        />
                       </>
                     )}
                     {docTypes.includes(formatMimeType(file_type)) && (
@@ -200,52 +196,53 @@ const ChatBubble = ({
                   />
                 )}
               </>
-            ) : isDeleted && myMessage ? (
-              <Text fontStyle="italic" fontSize={12} fontWeight={400} color="#f1f1f1">
-                You have deleted this message
-              </Text>
-            ) : isDeleted && !myMessage ? (
-              <Text fontStyle="italic" fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-                This message has been deleted
-              </Text>
-            ) : (
-              ""
-            )}
+            ) : null}
 
-            <Flex justifyContent="space-between" flexDirection="row">
-              <Flex maxWidth={200}>
+            <Flex
+              gap={2}
+              maxWidth={280}
+              minWidth={100}
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Flex maxWidth={240} minWidth={100}>
                 {typeof content === "number" && !isDeleted ? (
-                  <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                  <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
                     {content}
                   </Text>
                 ) : typeof content !== "number" && !isDeleted ? (
-                  <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                  <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
                     {styledTexts}
                   </Text>
-                ) : (
-                  ""
-                )}
+                ) : myMessage && isDeleted ? (
+                  <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                    You have deleted this message
+                  </Text>
+                ) : !myMessage && isDeleted ? (
+                  <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                    You have deleted this message
+                  </Text>
+                ) : null}
               </Flex>
 
-              <Flex flexDirection="row" alignItems="flex-end" justifyContent="flex-end">
-                <Text
-                  mt={type === "group" && name && !myMessage ? null : 1.5}
-                  alignSelf="flex-end"
-                  fontSize={10}
-                  color="#578A90"
-                >
-                  {time}
-                </Text>
-              </Flex>
+              <Text
+                mt={type === "group" && name && !myMessage ? null : 1.5}
+                alignSelf="flex-end"
+                fontSize={10}
+                color="#578A90"
+              >
+                {time}
+              </Text>
             </Flex>
           </Pressable>
         </Flex>
 
-        {!isGrouped && (
+        {/* {!isGrouped && (
           <Box
             position="absolute"
             bottom="0.1px"
-            left={type === "group" && !myMessage ? "44px" : type === "personal" && !myMessage ? "8px" : "8px"}
+            left={type === "group" && myMessage ? "8px" : type === "personal" && myMessage ? "8px" : null}
             right={0}
             width={15}
             height={5}
@@ -260,38 +257,30 @@ const ChatBubble = ({
             }}
             zIndex={-1}
           ></Box>
-        )}
+        )} */}
+
+        <ChatOptionMenu
+          optionIsOpen={optionIsOpen}
+          toggleOption={toggleOption}
+          setMessageToReply={setMessageToReply}
+          chat={chat}
+          toggleDeleteModal={toggleDeleteModal}
+        />
 
         <ChatMessageDeleteModal
           id={id}
           deleteMessage={deleteMessage}
           deleteModalIsOpen={deleteModalIsOpen}
           toggleDeleteModal={toggleDeleteModal}
-          isLoading={isLoading}
           myMessage={myMessage}
+          isDeleted={isDeleted}
+          isLoading={isLoading}
           setIsLoading={setIsLoading}
+          isLoadingForMe={isLoadingForMe}
+          setIsLoadingForMe={setIsLoadingForMe}
+          isLoadingForEveryone={isLoadingForEveryone}
+          setIsLoadingForEveryone={setIsLoadingForEveryone}
         />
-
-        <Actionsheet isOpen={optionIsOpen} onClose={toggleOption}>
-          <Actionsheet.Content>
-            <Actionsheet.Item
-              onPress={() => {
-                setMessageToReply(chat);
-                toggleOption();
-              }}
-            >
-              Reply
-            </Actionsheet.Item>
-            <Actionsheet.Item
-              onPress={() => {
-                toggleDeleteModal();
-                toggleOption();
-              }}
-            >
-              Delete
-            </Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
       </Flex>
     </>
   );

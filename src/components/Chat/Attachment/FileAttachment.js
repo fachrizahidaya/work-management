@@ -20,7 +20,10 @@ const FileAttachment = ({ file, setFile }) => {
 
   return (
     <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-      <Flex flexDir="row" justifyContent="end" alignItems="flex-end">
+      <Flex flexDirection="row" justifyContent="space-between">
+        <Text numberOfLines={1} width={300} overflow="hidden">
+          {file.name}
+        </Text>
         <Pressable onPress={() => setFile(null)}>
           <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
         </Pressable>
