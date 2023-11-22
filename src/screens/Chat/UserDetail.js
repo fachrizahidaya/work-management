@@ -10,7 +10,9 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const UserDetail = () => {
   const route = useRoute();
-  const { navigation, name, image, position, email, type, selectedGroupMembers } = route.params;
+  const { navigation, name, image, position, email, type, selectedGroupMembers, loggedInUser } = route.params;
+
+  console.log("group members", selectedGroupMembers);
 
   return (
     <>
@@ -53,9 +55,14 @@ const UserDetail = () => {
                 {selectedGroupMembers.map((member, index) => {
                   return (
                     <Badge borderRadius={15}>
-                      <Flex gap={2} flexDirection="row">
+                      <Flex gap={2} alignItems="center" flexDirection="row">
                         <AvatarPlaceholder name={member?.user?.name} image={member?.user?.image} />
-                        {member?.user?.name}
+                        {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                        {member?.is_admin ? (
+                          <Badge borderRadius={15} colorScheme="#186688">
+                            Admin
+                          </Badge>
+                        ) : null}
                       </Flex>
                     </Badge>
                   );
