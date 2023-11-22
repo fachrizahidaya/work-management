@@ -17,7 +17,12 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
           TEAMS
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() =>
+            navigation.navigate("Group Participant", { setForceRender: setForceRerender, forceRender: forceRerender })
+          }
+        >
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>

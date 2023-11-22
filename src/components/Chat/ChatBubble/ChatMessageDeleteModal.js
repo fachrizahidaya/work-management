@@ -1,45 +1,54 @@
-import { Button, Modal, Text } from "native-base";
-import React from "react";
+import { Button, Modal, Spinner, Text } from "native-base";
 
 const ChatMessageDeleteModal = ({
   id,
   deleteModalIsOpen,
   toggleDeleteModal,
   deleteMessage,
+  myMessage,
+  isLoadingForMe,
+  setIsLoadingForMe,
+  isLoadingForEveryone,
+  setIsLoadingForEveryone,
   isLoading,
   setIsLoading,
-  myMessage,
+  isDeleted,
 }) => {
   return (
-    <Modal isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
+    <Modal size="xl" isOpen={deleteModalIsOpen} onClose={toggleDeleteModal}>
       <Modal.Content>
         <Modal.Header>Delete message?</Modal.Header>
-        <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="center">
-          <Button onPress={toggleDeleteModal}>
-            <Text fontSize={12} fontWeight={400} color="#FFFFFF">
+        <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="flex-end">
+          <Button variant="outline" onPress={toggleDeleteModal}>
+            <Text fontSize={12} fontWeight={400} color="primary.600">
               Cancel
             </Text>
           </Button>
+
           <Button
+            variant="outline"
             onPress={async () => {
-              await deleteMessage(id, "me", setIsLoading);
-              !isLoading && toggleDeleteModal();
+              setIsLoadingForMe(true);
+              await deleteMessage(id, "me", setIsLoadingForMe);
+              toggleDeleteModal();
             }}
           >
-            <Text fontSize={12} fontWeight={400} color="#FFFFFF">
-              Delete for Me
+            <Text fontSize={12} fontWeight={400} color="primary.600">
+              {isLoadingForMe ? <Spinner color="primary.600" /> : "Delete for Me"}
             </Text>
           </Button>
 
-          {myMessage && (
+          {myMessage && !isDeleted && (
             <Button
+              variant="outline"
               onPress={async () => {
-                await deleteMessage(id, "everyone", setIsLoading);
-                !isLoading && toggleDeleteModal();
+                setIsLoadingForEveryone(true);
+                await deleteMessage(id, "everyone", setIsLoadingForEveryone);
+                toggleDeleteModal();
               }}
             >
-              <Text fontSize={12} fontWeight={400} color="#FFFFFF">
-                Delete for Everyone
+              <Text fontSize={12} fontWeight={400} color="primary.600">
+                {isLoadingForEveryone ? <Spinner color="primary.600" /> : "Delete for Everyone"}
               </Text>
             </Button>
           )}
