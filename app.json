@@ -47,6 +47,12 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/sounds/nest_notification_sound.wav"]
+        }
       ]
     ]
   }
