@@ -24,21 +24,14 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
+        "EXPO_PUBLIC_API": "https://api.ksshub.com"
       },
       "distribution": "internal"
     },
     "production": {
-      "ios": {
-        "enterpriseProvisioning": "adhoc"
-      },
-      "android": {
-        "buildType": "apk"
-      },
       "env": {
         "EXPO_PUBLIC_API": "https://api.ksshub.com"
-      },
-      "distribution": "internal"
+      }
     }
   },
   "submit": {
