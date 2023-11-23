@@ -9,15 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useFetch } from "../../../hooks/useFetch";
 
-const TaskAttachment = ({
-  taskListIsOpen,
-  toggleTaskList,
-  bandAttachment,
-  setBandAttachment,
-  bandAttachmentType,
-  setBandAttachmentType,
-  onSelectBandAttachment,
-}) => {
+const TaskAttachment = ({ taskListIsOpen, toggleTaskList, setBandAttachment }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
