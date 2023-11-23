@@ -24,7 +24,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API": "https://api.ksshub.com"
+        "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
       },
       "distribution": "internal"
     },
