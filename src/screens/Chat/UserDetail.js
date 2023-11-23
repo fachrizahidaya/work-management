@@ -12,8 +12,6 @@ const UserDetail = () => {
   const route = useRoute();
   const { navigation, name, image, position, email, type, selectedGroupMembers, loggedInUser } = route.params;
 
-  console.log("group members", selectedGroupMembers);
-
   return (
     <>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>

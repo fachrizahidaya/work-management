@@ -372,7 +372,6 @@ const ChatRoom = () => {
     try {
       toggleChatRoom();
       const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      console.log(res.data);
       setForceRender(!forceRender);
       toggleChatRoom();
       toggleExitModal();
@@ -458,8 +457,6 @@ const ChatRoom = () => {
       };
     }, [roomId, currentUser])
   );
-
-  console.log("list", chatList);
 
   return (
     <>
