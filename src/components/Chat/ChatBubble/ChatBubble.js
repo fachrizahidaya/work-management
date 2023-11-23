@@ -29,8 +29,6 @@ const ChatBubble = ({
   isDeleted,
   isGrouped,
   reply_to,
-  deleteMessage,
-  setMessageToReply,
   openChatBubbleHandler,
   toggleFullScreen,
 }) => {
@@ -43,6 +41,7 @@ const ChatBubble = ({
   let styledTexts = null;
   if (content?.length > 1) {
     const words = content?.split(" ");
+
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
 
@@ -55,6 +54,13 @@ const ChatBubble = ({
         );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
+        return (
+          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (typeof item === "bigint") {
+        textStyle = styles.defaultText;
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
             {item}{" "}
@@ -111,7 +117,7 @@ const ChatBubble = ({
         ) : null} */}
 
         <Pressable
-          minWidth={10}
+          minWidth={100}
           maxWidth={300}
           onLongPress={() => openChatBubbleHandler(chat)}
           borderRadius={10}
@@ -178,11 +184,7 @@ const ChatBubble = ({
             justifyContent="space-between"
           >
             <Flex maxWidth={240} minWidth={100}>
-              {typeof content === "number" && !isDeleted ? (
-                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                  {content}
-                </Text>
-              ) : typeof content !== "number" && !isDeleted ? (
+              {!isDeleted ? (
                 <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
                   {styledTexts}
                 </Text>
