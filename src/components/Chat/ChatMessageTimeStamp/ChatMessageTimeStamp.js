@@ -34,7 +34,15 @@ const ChatMessageTimeStamp = ({ timestamp }) => {
     setCurrentTimeStamp(dayjs(dayjs(timestamp).format("YYYY-MM-DD")));
   }, [timestamp]);
 
-  return <Box my={2}>{currentTimeStamp && <Badge alignSelf="center">{formatTimeStamp()}</Badge>}</Box>;
+  return (
+    <Box my={2}>
+      {currentTimeStamp && (
+        <Badge borderRadius={10} alignSelf="center">
+          {formatTimeStamp()}
+        </Badge>
+      )}
+    </Box>
+  );
 };
 
 export default ChatMessageTimeStamp;

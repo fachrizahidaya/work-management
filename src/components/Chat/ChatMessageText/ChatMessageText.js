@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Flex, Icon, Text } from "native-base";
 
@@ -99,7 +99,15 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
   }, [message]);
 
   return (
-    <>{message?.delete_for_everyone ? <Text>Message has been deleted</Text> : renderMessage(mimeTypeInfo?.file_type)}</>
+    <>
+      {message?.delete_for_everyone ? (
+        <Text fontSize={12} fontWeight={400} color={!myMessage ? "black" : "white"} fontStyle="italic">
+          Message has been deleted
+        </Text>
+      ) : (
+        renderMessage(mimeTypeInfo?.file_type)
+      )}
+    </>
   );
 };
 

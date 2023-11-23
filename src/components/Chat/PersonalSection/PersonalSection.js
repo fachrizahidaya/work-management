@@ -16,7 +16,12 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
           PEOPLE
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() =>
+            navigation.navigate("New Chat", { forceRerender: forceRerender, setForceRerender: setForceRerender })
+          }
+        >
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
@@ -27,10 +32,12 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal?.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               position={personal.user?.user_type}
+              email={personal.user?.email}
               message={personal.latest_message?.message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}
@@ -64,7 +71,8 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               message={personal.latest_message?.message}

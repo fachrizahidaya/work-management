@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
@@ -8,13 +8,16 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
 import { TouchableOpacity } from "react-native";
+import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
   type,
   id,
+  userId,
   name,
   image,
   position,
+  email,
   message,
   isDeleted,
   fileName,
@@ -28,6 +31,7 @@ const ContactListItem = ({
   forceRerender,
   isRead,
 }) => {
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const navigation = useNavigation();
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
@@ -89,18 +93,37 @@ const ContactListItem = ({
     return text;
   };
 
+  /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${id}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSelectedGroupMembers();
+  }, [id]);
+
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
+          userId,
           name: name,
-          userId: id,
+          roomId: id,
           image: image,
           position: position,
+          email: email,
           type: type,
           active_member: active_member,
           setForceRender: setForceRerender,
           forceRender: forceRerender,
+          selectedGroupMembers: selectedGroupMembers,
         });
       }}
     >

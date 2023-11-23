@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -17,30 +17,34 @@ import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
 
 const GroupFormScreen = ({ route }) => {
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const toast = useToast();
   const navigation = useNavigation();
-  const { userArray, groupData } = route.params;
+  const { userArray, groupData, forceRender, setForceRender } = route.params;
   const [image, setImage] = useState(null);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const createGroupHandler = async (form, setSubmitting) => {
     try {
-      const res = await axiosInstance.post("/chat/group", form);
+      const res = await axiosInstance.post("/chat/group", form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
-      // Loop through selected user arrays to be added to the group
-      for (let i = 0; i < userArray.length; i++) {
-        await axiosInstance.post("/chat/group/member", {
-          group_id: res.data.data.id,
-          user_id: userArray[i].id,
-          is_admin: 0,
-        });
-      }
+      setSelectedGroupMembers(userArray);
 
       navigation.navigate("Chat Room", {
         name: res.data.data.name,
         userId: res.data.data.id,
         image: res.data.data.image,
         type: "group",
+        position: null,
+        email: null,
+        active_member: 1,
+        forceRender: forceRender,
+        setForceRender: setForceRender,
+        selectedGroupMembers: selectedGroupMembers,
       });
       setSubmitting(false);
       toast.show({
@@ -63,6 +67,8 @@ const GroupFormScreen = ({ route }) => {
     enableReinitialize: groupData ? true : false,
     initialValues: {
       name: groupData?.name || "",
+      image: groupData?.image || "",
+      member: userArray,
     },
     validationSchema: yup.object().shape({
       name: yup.string().max(30, "30 characters maximum").required("Group name is required"),
@@ -71,8 +77,17 @@ const GroupFormScreen = ({ route }) => {
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
 
-      formData.append("name", values.name);
-      formData.append("image", image);
+      for (let prop in values) {
+        if (Array.isArray(values[prop])) {
+          values[prop].forEach((item, index) => {
+            Object.keys(item).forEach((key) => {
+              formData.append(`${prop}[${index}][${key}]`, item[key]);
+            });
+          });
+        } else {
+          formData.append(prop, values[prop]);
+        }
+      }
 
       createGroupHandler(formData, setSubmitting);
     },
