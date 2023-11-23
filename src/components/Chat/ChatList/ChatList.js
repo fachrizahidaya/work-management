@@ -6,24 +6,14 @@ import { Flex, Spinner } from "native-base";
 import { FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
-import ImageAttachment from "../Attachment/ImageAttachment";
-import FileAttachment from "../Attachment/FileAttachment";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
-import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
 
 const ChatList = ({
   type,
   chatList,
-  messageToReply,
   setMessageToReply,
-  fileAttachment,
-  setFileAttachment,
   fetchChatMessageHandler,
   deleteMessage,
-  bandAttachment,
-  setBandAttachment,
-  bandAttachmentType,
-  setBandAttachmentType,
   isLoading,
   openChatBubbleHandler,
   toggleFullScreen,
@@ -147,32 +137,12 @@ const ChatList = ({
               name={userNameRenderCheck(chatList[index + 1], item)}
               image={userImageRenderCheck(item, chatList[index - 1])}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
-              deleteMessage={deleteMessage}
-              setMessageToReply={setMessageToReply}
               openChatBubbleHandler={openChatBubbleHandler}
               toggleFullScreen={toggleFullScreen}
             />
           </>
         )}
       />
-
-      {fileAttachment ? (
-        <>
-          {fileAttachment.type === "image/jpg" ? (
-            <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
-          ) : (
-            <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
-          )}
-        </>
-      ) : null}
-
-      {bandAttachment && (
-        <ProjectTaskAttachmentPreview
-          bandAttachmentType={bandAttachmentType}
-          bandAttachment={bandAttachment}
-          setBandAttachment={setBandAttachment}
-        />
-      )}
     </Flex>
   );
 };

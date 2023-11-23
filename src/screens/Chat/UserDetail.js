@@ -6,13 +6,32 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRoute } from "@react-navigation/native";
 
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import ConfirmationModal from "../../components/shared/ConfirmationModal";
+import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 
 const UserDetail = () => {
   const route = useRoute();
-  const { navigation, name, image, position, email, type, selectedGroupMembers, loggedInUser } = route.params;
-
-  console.log("group members", selectedGroupMembers);
+  const {
+    navigation,
+    name,
+    image,
+    position,
+    email,
+    type,
+    selectedGroupMembers,
+    loggedInUser,
+    active_member,
+    toggleDeleteModal,
+    toggleExitModal,
+    toggleDeleteGroupModal,
+    deleteModalIsOpen,
+    exitModalIsOpen,
+    deleteGroupModalIsOpen,
+    deleteChatPersonal,
+    roomId,
+    isLoadingDeleteChatMessage,
+    isLoadingChatRoom,
+    toggleDeleteChatMessage,
+  } = route.params;
 
   return (
     <>
@@ -51,7 +70,7 @@ const UserDetail = () => {
                 Active
               </Text>
             ) : (
-              <Flex gap={2} flexDirection="row" flexWrap="wrap">
+              <Flex gap={2} flexDirection="row" flexWrap="wrap" alignItems="center">
                 {selectedGroupMembers.map((member, index) => {
                   return (
                     <Badge borderRadius={15}>
@@ -67,30 +86,70 @@ const UserDetail = () => {
                     </Badge>
                   );
                 })}
+                <Badge borderRadius="full">
+                  <Icon as={<MaterialIcons name={"add"} />} size={5} />
+                </Badge>
               </Flex>
             )}
           </Box>
         </Flex>
         <Flex flex={1} px={16} py={2} gap={2} bg="#FFFFFF">
-          <Pressable display="flex" gap={2} flexDirection="row" alignItems="center">
-            <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
-            <Text fontSize={14} fontWeight={400}>
-              {type === "personal" ? "Delete Chat" : "Exit Group"}
-            </Text>
-          </Pressable>
+          {type === "personal" && (
+            <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleDeleteModal}>
+              <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
+              <Text fontSize={14} fontWeight={400}>
+                Delete Chat
+              </Text>
+            </Pressable>
+          )}
+          {type === "group" && active_member === 1 ? (
+            <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleExitModal}>
+              <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
+              <Text fontSize={14} fontWeight={400}>
+                Exit Group
+              </Text>
+            </Pressable>
+          ) : (
+            <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleDeleteGroupModal}>
+              <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
+              <Text fontSize={14} fontWeight={400}>
+                Delete Group
+              </Text>
+            </Pressable>
+          )}
         </Flex>
       </Flex>
-      <ConfirmationModal
+      <RemoveConfirmationModal
         // isOpen={deleteModalIsOpen}
         // toggle={toggleDeleteModal}
-        header="Delete Chat"
-        description="Are you sure want to delete this chat?"
-        isDelete={true}
-        isPatch={false}
-        hasSuccessFunc={true}
-        // apiUrl={`/chat/personal/${userId}`}
-        // onSuccess={() => closeDeleteModalHandler()}
-        successMessage="Chat Deleted"
+        // description="Are you sure want to delete this chat?"
+        // onPress={() => deleteChatPersonal(roomId, toggleDeleteChatMessage)}
+        // isLoading={isLoadingDeleteChatMessage}
+        isOpen={
+          type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+        }
+        toggle={
+          type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+        }
+        description={
+          type === "personal"
+            ? "Are you sure want to delete this chat?"
+            : type === "group" && active_member === 1
+            ? "Are you sure want to exit this group?"
+            : type === "group" && active_member === 0
+            ? "Are you sure want to delete this group?"
+            : null
+        }
+        onPress={() =>
+          type === "personal"
+            ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
+            : type === "group" && active_member === 1
+            ? groupExitHandler(roomId, toggleChatRoom)
+            : type === "group" && active_member === 0
+            ? groupDeleteHandler(roomId, toggleChatRoom)
+            : null
+        }
+        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
       />
     </>
   );
