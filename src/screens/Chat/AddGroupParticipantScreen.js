@@ -32,7 +32,7 @@ const AddGroupParticipantScreen = () => {
 
   const route = useRoute();
 
-  const { data, isLoading } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
+  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
   const { forceRender, setForceRender } = route.params;
 
@@ -57,7 +57,7 @@ const AddGroupParticipantScreen = () => {
   const addSelectedUserToArray = (user) => {
     setSelectedUsers((prevState) => {
       if (!prevState.find((val) => val.id === user.id)) {
-        return [...prevState, user];
+        return [...prevState, { ...user, is_admin: 0 }];
       }
       return prevState;
     });

@@ -28,7 +28,7 @@ const AddPersonalChatScreen = () => {
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
+  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
   const { forceRerender, setForceRerender } = route.params;
 
