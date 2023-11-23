@@ -61,6 +61,7 @@ const HomeStack = () => {
               userId: message.data.user_id,
               roomId: message.data.chat_id,
               image: message.data.image,
+              type: message.data.type,
             });
           }
         }
