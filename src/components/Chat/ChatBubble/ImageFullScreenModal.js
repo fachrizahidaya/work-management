@@ -11,8 +11,8 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
   };
 
   return (
-    <Modal background="transparent" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-      <Modal.Content>
+    <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+      <Modal.Content backgroundColor="#000000">
         <Modal.CloseButton />
         <Modal.Body alignContent="center">
           <Image
