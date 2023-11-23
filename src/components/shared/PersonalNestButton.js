@@ -2,7 +2,19 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 
-const PersonalNestButton = ({ height, width, id, name, image, email, user_id, user_name, user_type, user_image }) => {
+const PersonalNestButton = ({
+  height,
+  width,
+  id,
+  name,
+  image,
+  email,
+  user_id,
+  user_name,
+  user_type,
+  user_image,
+  room_id,
+}) => {
   const navigation = useNavigation();
 
   return (
@@ -11,8 +23,15 @@ const PersonalNestButton = ({ height, width, id, name, image, email, user_id, us
         navigation.navigate("Chat Room", {
           name: user_name,
           userId: user_id,
+          roomId: room_id,
           image: user_image,
-          type: user_type,
+          type: "personal",
+          email: email,
+          position: user_type,
+          active_member: null,
+          setForceRender: null,
+          forceRender: null,
+          selectedGroupMembers: null,
         })
       }
     >
