@@ -6,9 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/nest-icon.png",
     "userInterfaceStyle": "light",
-    "notification": {
-      "sound": "./NestNotificationSound.wav"
-    },
     "splash": {
       "image": "./assets/kss-splash-screen.png",
       "resizeMode": "contain",
