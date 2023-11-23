@@ -1,13 +1,12 @@
 import { useState } from "react";
 
-import { Box, Flex, Icon, Input, Menu, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import MenuHeader from "./MenuHeader";
-import RemoveConfirmationModal from "./RemoveConfirmationModal";
+import SearchBox from "./SearchBox";
 
 const ChatHeader = ({
   navigation,
@@ -15,26 +14,18 @@ const ChatHeader = ({
   image,
   position,
   email,
-  userId,
   fileAttachment,
   type,
   active_member,
-  groupExitHandler,
-  groupDeleteHandler,
-  exitModalIsOpen,
-  deleteGroupModalIsOpen,
   toggleExitModal,
   toggleDeleteGroupModal,
   selectedGroupMembers,
   loggedInUser,
-  deleteChatPersonal,
   toggleDeleteModal,
-  deleteModalIsOpen,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -103,64 +94,16 @@ const ChatHeader = ({
           type={type}
           active_member={active_member}
         />
-
-        {type === "group" && active_member === 1 && (
-          <>
-            <RemoveConfirmationModal
-              isOpen={exitModalIsOpen}
-              toggle={toggleExitModal}
-              description="Are you sure want to exit this group?"
-              onPress={() => groupExitHandler(userId, setIsLoading)}
-              isLoading={isLoading}
-            />
-          </>
-        )}
-
-        {type === "group" && active_member === 0 && (
-          <>
-            <RemoveConfirmationModal
-              isOpen={deleteGroupModalIsOpen}
-              toggle={toggleDeleteGroupModal}
-              description="Are you sure want to delete this group?"
-              onPress={() => groupDeleteHandler(userId, setIsLoading)}
-              isLoading={isLoading}
-            />
-          </>
-        )}
-
-        <RemoveConfirmationModal
-          isOpen={deleteModalIsOpen}
-          toggle={toggleDeleteModal}
-          description="Are you sure want to delete this chat?"
-          onPress={() => deleteChatPersonal(userId, setIsLoading)}
-          isLoading={isLoading}
-        />
       </Flex>
+
       {searchVisible && (
-        <Input
-          value={inputToShow}
-          InputLeftElement={
-            <Pressable>
-              <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
-            </Pressable>
-          }
-          InputRightElement={
-            <Pressable onPress={() => (searchInput === "" ? toggleSearch() : clearSearch())}>
-              <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
-            </Pressable>
-          }
-          onChangeText={(value) => {
-            setInputToShow(value);
-            setSearchInput(value);
-          }}
-          variant="unstyled"
-          size="md"
-          placeholder="Search"
-          borderRadius={15}
-          borderWidth={1}
-          height={10}
-          my={3}
-          mx={3}
+        <SearchBox
+          inputToShow={inputToShow}
+          searchInput={searchInput}
+          toggleSearch={toggleSearch}
+          clearSearch={clearSearch}
+          setInputToShow={setInputToShow}
+          setSearchInput={setSearchInput}
         />
       )}
     </>

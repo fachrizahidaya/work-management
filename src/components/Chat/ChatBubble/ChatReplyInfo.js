@@ -31,6 +31,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
       width={260}
+      justifyContent="space-between"
     >
       <Flex width={mimeTypeInfo?.file_type === "image" ? 200 : null}>
         <Text fontSize={12} fontWeight={700} color={!myMessage ? "#000000" : "#FFFFFF"}>
@@ -42,7 +43,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${message?.file_path}` }}
           alt="Attachment Preview"
-          width={10}
+          width={9}
           height={10}
           resizeMode="contain"
         />

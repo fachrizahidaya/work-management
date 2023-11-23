@@ -7,9 +7,6 @@ import { Box, Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ProjectAttachment from "../Attachment/ProjectAttachment";
-import TaskAttachment from "../Attachment/TaskAttachment";
 import ChatReplyPreview from "./ChatReplyPreview";
 
 const ChatInput = ({
@@ -27,10 +24,9 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
+  toggleProjectList,
+  toggleTaskList,
 }) => {
-  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
-  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
-
   const attachmentOptions = [
     {
       icon: "file-document-outline",
@@ -102,10 +98,6 @@ const ChatInput = ({
     setBandAttachmentType(bandType);
   };
 
-  const bandAttachmentSelectHandler = (attachment) => {
-    setBandAttachment(attachment);
-  };
-
   const resetBandAttachment = () => {
     formik.setFieldValue(`task_id`, "");
     formik.setFieldValue(`task_no`, "");
@@ -161,6 +153,7 @@ const ChatInput = ({
                 );
               })}
             </Menu>
+
             <FormControl display="flex" flex={1} justifyContent="center">
               <Input
                 backgroundColor="#FFFFFF"
@@ -171,6 +164,7 @@ const ChatInput = ({
                 onChangeText={(value) => formik.setFieldValue("message", value)}
               />
             </FormControl>
+
             <IconButton
               onPress={
                 formik.values.message !== "" ||
@@ -186,26 +180,6 @@ const ChatInput = ({
           </>
         )}
       </Flex>
-
-      <ProjectAttachment
-        projectListIsOpen={projectListIsOpen}
-        toggleProjectList={toggleProjectList}
-        bandAttachmentType={bandAttachmentType}
-        setBandAttachmentType={setBandAttachmentType}
-        onSelectBandAttachment={bandAttachmentSelectHandler}
-        bandAttachment={bandAttachment}
-        setBandAttachment={setBandAttachment}
-      />
-
-      <TaskAttachment
-        taskListIsOpen={taskListIsOpen}
-        toggleTaskList={toggleTaskList}
-        bandAttachmentType={bandAttachmentType}
-        setBandAttachmentType={setBandAttachmentType}
-        onSelectBandAttachment={bandAttachmentSelectHandler}
-        bandAttachment={bandAttachment}
-        setBandAttachment={setBandAttachment}
-      />
     </Box>
   );
 };
