@@ -55,7 +55,7 @@ const HomeStack = () => {
       .getInitialNotification()
       .then((message) => {
         if (message) {
-          if (message.data.type === "Chat") {
+          if (message.data.type === "personal" || message.data.type === "group") {
             navigation.navigate("Chat Room", {
               name: message.data.name,
               userId: message.data.user_id,
