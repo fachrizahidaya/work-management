@@ -151,6 +151,38 @@ const FeedCard = ({
             }}
           />
         }
+        // Employee Information
+        ListHeaderComponent={
+          <Box>
+            <Image
+              source={require("../../../assets/profile_banner.jpg")}
+              alignSelf="center"
+              h={200}
+              w={500}
+              alt="empty"
+              resizeMode="cover"
+            />
+            {/* When the employee id is not equal, it will appear the contacts of employee */}
+            <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+              {userSelector?.id !== employee?.data?.user_id ? (
+                <>
+                  <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
+                    <EmployeeContact employee={employee} />
+                  </Flex>
+                  <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
+                </>
+              ) : (
+                <EmployeeSelfProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
+              )}
+
+              <EmployeeTeammates
+                teammatesIsOpen={teammatesIsOpen}
+                toggleTeammates={toggleTeammates}
+                teammates={teammates}
+              />
+            </Flex>
+          </Box>
+        }
         // Employee Posts
         renderItem={({ item }) => {
           if (item.id === "no-posts") {
@@ -190,38 +222,6 @@ const FeedCard = ({
             </Box>
           );
         }}
-        // Employee Information
-        ListHeaderComponent={
-          <Box>
-            <Image
-              source={require("../../../assets/profile_banner.jpg")}
-              alignSelf="center"
-              h={200}
-              w={500}
-              alt="empty"
-              resizeMode="cover"
-            />
-            {/* When the employee id is not equal, it will appear the contacts of employee */}
-            <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
-              {userSelector?.id !== employee?.data?.user_id ? (
-                <>
-                  <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
-                    <EmployeeContact employee={employee} />
-                  </Flex>
-                  <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-                </>
-              ) : (
-                <EmployeeSelfProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
-              )}
-
-              <EmployeeTeammates
-                teammatesIsOpen={teammatesIsOpen}
-                toggleTeammates={toggleTeammates}
-                teammates={teammates}
-              />
-            </Flex>
-          </Box>
-        }
       />
 
       {commentsOpen && (
