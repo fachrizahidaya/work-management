@@ -124,7 +124,6 @@ const ChatBubble = ({
         ) : null} */}
 
         <Pressable
-          minWidth={100}
           maxWidth={300}
           onLongPress={() => !isDeleted && openChatBubbleHandler(chat)}
           borderRadius={10}
@@ -182,39 +181,25 @@ const ChatBubble = ({
             </>
           ) : null}
 
-          <Flex
-            gap={2}
-            maxWidth={280}
-            minWidth={100}
-            flexDirection="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Flex maxWidth={240} minWidth={100}>
-              {!isDeleted ? (
-                // <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                //   {styledTexts}
-                // </Text>
-                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                  {content}
-                </Text>
-              ) : myMessage && isDeleted ? (
-                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
-                  You have deleted this message
-                </Text>
-              ) : !myMessage && isDeleted ? (
-                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
-                  This message has been deleted
-                </Text>
-              ) : null}
-            </Flex>
+          <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
+            {!isDeleted ? (
+              // <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+              //   {styledTexts}
+              // </Text>
+              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"} flexShrink={1}>
+                {content}
+              </Text>
+            ) : myMessage && isDeleted ? (
+              <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                You have deleted this message
+              </Text>
+            ) : !myMessage && isDeleted ? (
+              <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
+                This message has been deleted
+              </Text>
+            ) : null}
 
-            <Text
-              mt={type === "group" && name && !myMessage ? null : 1.5}
-              alignSelf="flex-end"
-              fontSize={10}
-              color="#578A90"
-            >
+            <Text alignSelf="flex-end" fontSize={10} color="#578A90">
               {time}
             </Text>
           </Flex>

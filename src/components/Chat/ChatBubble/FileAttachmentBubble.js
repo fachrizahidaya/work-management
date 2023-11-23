@@ -58,13 +58,12 @@ const FileAttachmentBubble = ({
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
       gap={3}
-      width={260}
-      p={3}
+      p={2}
       borderRadius={5}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
       alignItems="center"
-      justifyContent="space-evenly"
+      justifyContent="space-between"
     >
       <Image
         source={
@@ -85,8 +84,18 @@ const FileAttachmentBubble = ({
         alt={`${file_type} format`}
       />
 
-      <Flex width={200}>
-        <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+      <Flex
+      // width={200}
+      >
+        <Text
+          width={160}
+          numberOfLines={2}
+          overflow="hidden"
+          ellipsizeMode="tail"
+          fontSize={12}
+          fontWeight={400}
+          color={!myMessage ? "#000000" : "#FFFFFF"}
+        >
           {file_name}
         </Text>
         <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>

@@ -29,7 +29,6 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
       gap={2}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
-      width={260}
       justifyContent="space-between"
     >
       <Flex width={mimeTypeInfo?.file_type === "image" ? 200 : null}>

@@ -21,7 +21,6 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
       gap={1}
       px={2}
       py={2}
-      width={260}
       flexDirection="row"
       alignItems="center"
       justifyContent="flex-start"
