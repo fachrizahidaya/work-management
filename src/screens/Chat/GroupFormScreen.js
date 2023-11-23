@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -31,15 +31,6 @@ const GroupFormScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-
-      // Loop through selected user arrays to be added to the group
-      for (let i = 0; i < userArray.length; i++) {
-        await axiosInstance.post("/chat/group/member", {
-          group_id: res.data.data.id,
-          user_id: userArray[i].id,
-          is_admin: 0,
-        });
-      }
 
       setSelectedGroupMembers(userArray);
 
@@ -76,6 +67,8 @@ const GroupFormScreen = ({ route }) => {
     enableReinitialize: groupData ? true : false,
     initialValues: {
       name: groupData?.name || "",
+      image: groupData?.image || "",
+      member: userArray,
     },
     validationSchema: yup.object().shape({
       name: yup.string().max(30, "30 characters maximum").required("Group name is required"),
@@ -84,8 +77,17 @@ const GroupFormScreen = ({ route }) => {
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
 
-      formData.append("name", values.name);
-      formData.append("image", image);
+      for (let prop in values) {
+        if (Array.isArray(values[prop])) {
+          values[prop].forEach((item, index) => {
+            Object.keys(item).forEach((key) => {
+              formData.append(`${prop}[${index}][${key}]`, item[key]);
+            });
+          });
+        } else {
+          formData.append(prop, values[prop]);
+        }
+      }
 
       createGroupHandler(formData, setSubmitting);
     },
