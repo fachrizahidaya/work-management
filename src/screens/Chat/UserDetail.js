@@ -49,7 +49,7 @@ const UserDetail = () => {
                 Active
               </Text>
             ) : (
-              <Flex gap={2} flexDirection="row" flexWrap="wrap">
+              <Flex gap={2} flexDirection="row" flexWrap="wrap" alignItems="center">
                 {selectedGroupMembers.map((member, index) => {
                   return (
                     <Badge borderRadius={15}>
@@ -65,6 +65,9 @@ const UserDetail = () => {
                     </Badge>
                   );
                 })}
+                <Badge borderRadius="full">
+                  <Icon as={<MaterialIcons name={"add"} />} size={5} />
+                </Badge>
               </Flex>
             )}
           </Box>
@@ -78,18 +81,6 @@ const UserDetail = () => {
           </Pressable>
         </Flex>
       </Flex>
-      <ConfirmationModal
-        // isOpen={deleteModalIsOpen}
-        // toggle={toggleDeleteModal}
-        header="Delete Chat"
-        description="Are you sure want to delete this chat?"
-        isDelete={true}
-        isPatch={false}
-        hasSuccessFunc={true}
-        // apiUrl={`/chat/personal/${userId}`}
-        // onSuccess={() => closeDeleteModalHandler()}
-        successMessage="Chat Deleted"
-      />
     </>
   );
 };

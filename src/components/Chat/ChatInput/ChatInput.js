@@ -11,6 +11,7 @@ import ChatReplyPreview from "./ChatReplyPreview";
 
 const ChatInput = ({
   userId,
+  roomId,
   type,
   fileAttachment,
   selectFile,
@@ -54,7 +55,7 @@ const ChatInput = ({
     enableReinitialize: true,
     initialValues: {
       to_user_id: userId || "",
-      group_id: userId || "",
+      group_id: roomId || "",
       reply_to_id: messageToReply?.id || "",
       message: "",
       file: "",

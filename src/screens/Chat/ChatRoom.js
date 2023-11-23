@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, useToast } from "native-base";
+import { Button, HStack, Skeleton, Spinner, VStack, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
@@ -41,6 +41,7 @@ const ChatRoom = () => {
   const [messageToReply, setMessageToReply] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -221,7 +222,7 @@ const ChatRoom = () => {
   const messagedeleteHandler = async (chat_message_id, delete_type) => {
     try {
       toggleDeleteChatMessage();
-      const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
       toggleOption();
       toggleDeleteModalChat();
       toggleDeleteChatMessage();
@@ -254,7 +255,7 @@ const ChatRoom = () => {
   const deleteChatPersonal = async (id) => {
     try {
       toggleChatRoom();
-      const res = await axiosInstance.delete(`/chat/personal/${id}`);
+      await axiosInstance.delete(`/chat/personal/${id}`);
       toggleChatRoom();
       toggleDeleteModal();
       navigation.goBack();
@@ -371,7 +372,7 @@ const ChatRoom = () => {
   const groupExitHandler = async (group_id) => {
     try {
       toggleChatRoom();
-      const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
       setForceRender(!forceRender);
       toggleChatRoom();
       toggleExitModal();
@@ -399,7 +400,7 @@ const ChatRoom = () => {
   const groupDeleteHandler = async (group_id) => {
     try {
       toggleChatRoom();
-      const res = await axiosInstance.delete(`/chat/group/${group_id}`);
+      await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.goBack();
@@ -458,61 +459,76 @@ const ChatRoom = () => {
     }, [roomId, currentUser])
   );
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 150);
+  }, []);
+
   return (
     <>
       <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
-        <ChatHeader
-          name={name}
-          image={image}
-          position={position}
-          email={email}
-          navigation={navigation}
-          fileAttachment={fileAttachment}
-          type={type}
-          active_member={active_member}
-          toggleExitModal={toggleExitModal}
-          toggleDeleteGroupModal={toggleDeleteGroupModal}
-          selectedGroupMembers={selectedGroupMembers}
-          loggedInUser={userSelector?.id}
-          toggleDeleteModal={toggleDeleteModal}
-        />
+        {isReady ? (
+          <>
+            <ChatHeader
+              name={name}
+              image={image}
+              position={position}
+              email={email}
+              navigation={navigation}
+              fileAttachment={fileAttachment}
+              type={type}
+              active_member={active_member}
+              toggleExitModal={toggleExitModal}
+              toggleDeleteGroupModal={toggleDeleteGroupModal}
+              selectedGroupMembers={selectedGroupMembers}
+              loggedInUser={userSelector?.id}
+              toggleDeleteModal={toggleDeleteModal}
+            />
 
-        <ChatList
-          type={type}
-          chatList={chatList}
-          messageToReply={messageToReply}
-          setMessageToReply={setMessageToReply}
-          deleteMessage={messagedeleteHandler}
-          fileAttachment={fileAttachment}
-          setFileAttachment={setFileAttachment}
-          fetchChatMessageHandler={fetchChatMessageHandler}
-          bandAttachment={bandAttachment}
-          setBandAttachment={setBandAttachment}
-          bandAttachmentType={bandAttachmentType}
-          setBandAttachmentType={setBandAttachmentType}
-          isLoading={isLoading}
-          openChatBubbleHandler={openChatBubbleHandler}
-          toggleFullScreen={toggleFullScreen}
-        />
+            <ChatList
+              type={type}
+              chatList={chatList}
+              messageToReply={messageToReply}
+              setMessageToReply={setMessageToReply}
+              deleteMessage={messagedeleteHandler}
+              fileAttachment={fileAttachment}
+              setFileAttachment={setFileAttachment}
+              fetchChatMessageHandler={fetchChatMessageHandler}
+              bandAttachment={bandAttachment}
+              setBandAttachment={setBandAttachment}
+              bandAttachmentType={bandAttachmentType}
+              setBandAttachmentType={setBandAttachmentType}
+              isLoading={isLoading}
+              openChatBubbleHandler={openChatBubbleHandler}
+              toggleFullScreen={toggleFullScreen}
+            />
 
-        <ChatInput
-          userId={userId}
-          type={type}
-          fileAttachment={fileAttachment}
-          selectFile={selectFile}
-          pickImageHandler={pickImageHandler}
-          sendMessage={sendMessageHandler}
-          setFileAttachment={setFileAttachment}
-          bandAttachment={bandAttachment}
-          setBandAttachment={setBandAttachment}
-          bandAttachmentType={bandAttachmentType}
-          setBandAttachmentType={setBandAttachmentType}
-          messageToReply={messageToReply}
-          setMessageToReply={setMessageToReply}
-          active_member={active_member}
-          toggleProjectList={toggleProjectList}
-          toggleTaskList={toggleTaskList}
-        />
+            <ChatInput
+              userId={userId}
+              roomId={roomId}
+              type={type}
+              fileAttachment={fileAttachment}
+              selectFile={selectFile}
+              pickImageHandler={pickImageHandler}
+              sendMessage={sendMessageHandler}
+              setFileAttachment={setFileAttachment}
+              bandAttachment={bandAttachment}
+              setBandAttachment={setBandAttachment}
+              bandAttachmentType={bandAttachmentType}
+              setBandAttachmentType={setBandAttachmentType}
+              messageToReply={messageToReply}
+              setMessageToReply={setMessageToReply}
+              active_member={active_member}
+              toggleProjectList={toggleProjectList}
+              toggleTaskList={toggleTaskList}
+            />
+          </>
+        ) : (
+          <VStack mt={10} px={4} space={2}>
+            <Spinner color="primary.600" size="lg" />
+          </VStack>
+        )}
       </SafeAreaView>
 
       <RemoveConfirmationModal
