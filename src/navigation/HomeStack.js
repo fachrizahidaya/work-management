@@ -59,6 +59,7 @@ const HomeStack = () => {
             navigation.navigate("Chat Room", {
               name: message.data.name,
               userId: message.data.user_id,
+              roomId: message.data.chat_id,
               image: message.data.image,
             });
           }
