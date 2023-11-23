@@ -22,6 +22,14 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
+  deleteModalIsOpen,
+  exitModalIsOpen,
+  deleteGroupModalIsOpen,
+  deleteChatPersonal,
+  roomId,
+  isLoadingDeleteChatMessage,
+  isLoadingChatRoom,
+  toggleDeleteChatMessage,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -55,6 +63,18 @@ const ChatHeader = ({
                 type: type,
                 selectedGroupMembers: selectedGroupMembers,
                 loggedInUser: loggedInUser,
+                active_member: active_member,
+                toggleDeleteModal: toggleDeleteModal,
+                toggleExitModal: toggleExitModal,
+                toggleDeleteGroupModal: toggleDeleteGroupModal,
+                deleteModalIsOpen: deleteModalIsOpen,
+                exitModalIsOpen: exitModalIsOpen,
+                deleteGroupModalIsOpen: deleteGroupModalIsOpen,
+                deleteChatPersonal: deleteChatPersonal,
+                roomId: roomId,
+                isLoadingDeleteChatMessage: isLoadingDeleteChatMessage,
+                isLoadingChatRoom: isLoadingChatRoom,
+                toggleDeleteChatMessage: toggleDeleteChatMessage,
               })
             }
             display="flex"
@@ -63,25 +83,31 @@ const ChatHeader = ({
           >
             <AvatarPlaceholder name={name} image={image} size="md" />
 
-            <Box>
+            <Flex>
               <Text fontSize={16}>{name}</Text>
               {type === "personal" ? (
                 <Text fontSize={12} fontWeight={400}>
                   {position}
                 </Text>
               ) : (
-                <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
-                  {selectedGroupMembers?.map((member, index) => {
-                    return (
-                      <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
-                        {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
-                        {index < selectedGroupMembers.length - 1 && `${", "}`}
-                      </Text>
-                    );
-                  })}
+                <Flex alignItems="center" flexDirection="row">
+                  <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
+                    {selectedGroupMembers?.map((member, index) => {
+                      return (
+                        <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
+                          {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                          {index < selectedGroupMembers.length - 1 && `${", "}`}
+                        </Text>
+                      );
+                    })}
+                  </Flex>
+                  {/* Handle if members overflow the flex size */}
+                  <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                    ...
+                  </Text>
                 </Flex>
               )}
-            </Box>
+            </Flex>
           </Pressable>
         </Flex>
 

@@ -44,10 +44,8 @@ const ChatBubble = ({
 
     if (typeof content === "number" || typeof content === "bigint") {
       words = content.toString().split(" ");
-      console.log("this", words);
     } else {
       words = content?.split(" ");
-      console.log("this", words);
     }
 
     styledTexts = words?.map((item, index) => {
