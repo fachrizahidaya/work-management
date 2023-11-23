@@ -258,7 +258,7 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/personal/${id}`);
       toggleChatRoom();
       toggleDeleteModal();
-      navigation.goBack();
+      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Chat Deleted" close={() => toast.close(id)} />;
@@ -376,7 +376,7 @@ const ChatRoom = () => {
       setForceRender(!forceRender);
       toggleChatRoom();
       toggleExitModal();
-      navigation.goBack();
+      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
@@ -462,7 +462,7 @@ const ChatRoom = () => {
   useEffect(() => {
     setTimeout(() => {
       setIsReady(true);
-    }, 150);
+    }, 100);
   }, []);
 
   return (
@@ -484,6 +484,14 @@ const ChatRoom = () => {
               selectedGroupMembers={selectedGroupMembers}
               loggedInUser={userSelector?.id}
               toggleDeleteModal={toggleDeleteModal}
+              deleteModalIsOpen={deleteModalIsOpen}
+              exitModalIsOpen={exitModalIsOpen}
+              deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+              deleteChatPersonal={deleteChatPersonal}
+              roomId={roomId}
+              isLoadingDeleteChatMessage={isLoadingDeleteChatMessage}
+              isLoadingChatRoom={isLoadingChatRoom}
+              toggleDeleteChatMessage={toggleDeleteChatMessage}
             />
 
             <ChatList
@@ -549,14 +557,14 @@ const ChatRoom = () => {
         }
         onPress={() =>
           type === "personal"
-            ? deleteChatPersonal(roomId, toggleChatRoom)
+            ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
             : type === "group" && active_member === 1
             ? groupExitHandler(roomId, toggleChatRoom)
             : type === "group" && active_member === 0
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={isLoadingChatRoom}
+        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
       />
 
       <ImageFullScreenModal
