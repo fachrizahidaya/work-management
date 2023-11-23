@@ -54,8 +54,8 @@ const ChatInput = ({
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      to_user_id: userId || "",
-      group_id: roomId || "",
+      to_user_id: type === "personal" ? userId : null || "",
+      group_id: type === "group" ? roomId : null || "",
       reply_to_id: messageToReply?.id || "",
       message: "",
       file: "",
