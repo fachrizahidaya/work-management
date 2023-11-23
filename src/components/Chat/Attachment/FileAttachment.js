@@ -19,7 +19,7 @@ const FileAttachment = ({ file, setFile }) => {
   };
 
   return (
-    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
+    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top="80px" bottom="60px" left={0} right={0}>
       <Flex flexDirection="row" justifyContent="space-between">
         <Text numberOfLines={1} width={300} overflow="hidden">
           {file.name}
@@ -28,7 +28,7 @@ const FileAttachment = ({ file, setFile }) => {
           <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
         </Pressable>
       </Flex>
-      <Box alignItems="center">
+      <Box mt={100} alignItems="center">
         <Icon as={<MaterialCommunityIcons name="file-pdf-box" />} size={250} />
         <Text>No Preview Available</Text>
         <Text>{formatBytes(file.size)}</Text>

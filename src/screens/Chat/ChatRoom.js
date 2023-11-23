@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -8,21 +8,26 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
+import { Button, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import { useLoading } from "../../hooks/useLoading";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
-import { useCallback } from "react";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { Button, useToast } from "native-base";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import ChatOptionMenu from "../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../components/Chat/ChatBubble/ChatMessageDeleteModal";
-import { useLoading } from "../../hooks/useLoading";
 import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScreenModal";
+import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
+import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
+import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
+import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
+import ProjectTaskAttachmentPreview from "../../components/Chat/Attachment/ProjectTaskAttachmentPreview";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -34,10 +39,8 @@ const ChatRoom = () => {
   const [bandAttachment, setBandAttachment] = useState(null);
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
   const [messageToReply, setMessageToReply] = useState(null);
-  const [messageToDelete, setMessageToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
-  console.log("selected", selectedChatBubble);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -71,19 +74,24 @@ const ChatRoom = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
+  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
 
-  const { isLoading: isLoadingDeleteChat, toggle: toggleDeleteChat } = useLoading(false);
+  const { isLoading: isLoadingDeleteChatMessage, toggle: toggleDeleteChatMessage } = useLoading(false);
+  const { isLoading: isLoadingChatRoom, toggle: toggleChatRoom } = useLoading(false);
 
-  const closeDeleteChatModalHandler = () => {
-    toggleDeleteModal();
-    navigation.goBack();
-  };
-
+  /**
+   * Open chat options handler
+   * @param {*} chat
+   */
   const openChatBubbleHandler = (chat) => {
     setSelectedChatBubble(chat);
     toggleOption();
   };
 
+  /**
+   * Close chat options handler
+   */
   const closeChatBubbleHandler = () => {
     setSelectedChatBubble(null);
     toggleOption();
@@ -94,7 +102,6 @@ const ChatRoom = () => {
    */
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = (chat) => {
-    console.log("chat", chat);
     setSelectedChatBubble(chat);
     setIsFullScreen(!isFullScreen);
   };
@@ -148,7 +155,7 @@ const ChatRoom = () => {
         const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
           params: {
             offset: offset,
-            limit: 20,
+            limit: 50,
             sort: "desc",
           },
         });
@@ -161,7 +168,7 @@ const ChatRoom = () => {
             return currentChats;
           }
         });
-        setOffset((prevState) => prevState + 20);
+        setOffset((prevState) => prevState + 50);
       } catch (err) {
         console.log(err);
       } finally {
@@ -213,14 +220,14 @@ const ChatRoom = () => {
    */
   const messagedeleteHandler = async (chat_message_id, delete_type) => {
     try {
-      toggleDeleteChat();
+      toggleDeleteChatMessage();
       const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
       toggleOption();
       toggleDeleteModalChat();
-      toggleDeleteChat();
+      toggleDeleteChatMessage();
     } catch (err) {
       console.log(err);
-      toggleDeleteChat();
+      toggleDeleteChatMessage();
     }
   };
 
@@ -240,11 +247,15 @@ const ChatRoom = () => {
     });
   };
 
-  const deleteChatPersonal = async (id, setIsLoading) => {
+  /**
+   * Delete chat room personal handler
+   * @param {*} id
+   */
+  const deleteChatPersonal = async (id) => {
     try {
-      setIsLoading(true);
+      toggleChatRoom();
       const res = await axiosInstance.delete(`/chat/personal/${id}`);
-      setIsLoading(false);
+      toggleChatRoom();
       toggleDeleteModal();
       navigation.goBack();
       toast.show({
@@ -254,7 +265,7 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
+      toggleChatRoom();
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -329,7 +340,6 @@ const ChatRoom = () => {
     setBandAttachment(null);
     setBandAttachmentType(null);
     setMessageToReply(null);
-    setMessageToDelete(null);
   };
 
   /**
@@ -354,12 +364,17 @@ const ChatRoom = () => {
     }
   };
 
-  const groupExitHandler = async (group_id, setIsLoading) => {
+  /**
+   * Exit group handler
+   * @param {*} group_id
+   */
+  const groupExitHandler = async (group_id) => {
     try {
-      setIsLoading(true);
+      toggleChatRoom();
       const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      console.log(res.data);
       setForceRender(!forceRender);
-      setIsLoading(false);
+      toggleChatRoom();
       toggleExitModal();
       navigation.goBack();
       toast.show({
@@ -369,7 +384,7 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
+      toggleChatRoom();
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -378,11 +393,15 @@ const ChatRoom = () => {
     }
   };
 
-  const groupDeleteHandler = async (group_id, setIsLoading) => {
+  /**
+   * Delete group after exit group handler
+   * @param {*} group_id
+   */
+  const groupDeleteHandler = async (group_id) => {
     try {
-      toggleDeleteModal(true);
+      toggleChatRoom();
       const res = await axiosInstance.delete(`/chat/group/${group_id}`);
-      setIsLoading(false);
+      toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.goBack();
       toast.show({
@@ -392,7 +411,7 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
+      toggleChatRoom(false);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -440,6 +459,8 @@ const ChatRoom = () => {
     }, [roomId, currentUser])
   );
 
+  console.log("list", chatList);
+
   return (
     <>
       <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
@@ -449,21 +470,14 @@ const ChatRoom = () => {
           position={position}
           email={email}
           navigation={navigation}
-          userId={userId}
           fileAttachment={fileAttachment}
           type={type}
           active_member={active_member}
-          groupExitHandler={groupExitHandler}
-          groupDeleteHandler={groupDeleteHandler}
-          exitModalIsOpen={exitModalIsOpen}
-          deleteGroupModalIsOpen={deleteGroupModalIsOpen}
           toggleExitModal={toggleExitModal}
           toggleDeleteGroupModal={toggleDeleteGroupModal}
           selectedGroupMembers={selectedGroupMembers}
           loggedInUser={userSelector?.id}
-          deleteChatPersonal={deleteChatPersonal}
           toggleDeleteModal={toggleDeleteModal}
-          deleteModalIsOpen={deleteModalIsOpen}
         />
 
         <ChatList
@@ -499,8 +513,38 @@ const ChatRoom = () => {
           messageToReply={messageToReply}
           setMessageToReply={setMessageToReply}
           active_member={active_member}
+          toggleProjectList={toggleProjectList}
+          toggleTaskList={toggleTaskList}
         />
       </SafeAreaView>
+
+      <RemoveConfirmationModal
+        isOpen={
+          type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+        }
+        toggle={
+          type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+        }
+        description={
+          type === "personal"
+            ? "Are you sure want to delete this chat?"
+            : type === "group" && active_member === 1
+            ? "Are you sure want to exit this group?"
+            : type === "group" && active_member === 0
+            ? "Are you sure want to delete this group?"
+            : null
+        }
+        onPress={() =>
+          type === "personal"
+            ? deleteChatPersonal(roomId, toggleChatRoom)
+            : type === "group" && active_member === 1
+            ? groupExitHandler(roomId, toggleChatRoom)
+            : type === "group" && active_member === 0
+            ? groupDeleteHandler(roomId, toggleChatRoom)
+            : null
+        }
+        isLoading={isLoadingChatRoom}
+      />
 
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
@@ -523,7 +567,37 @@ const ChatRoom = () => {
         toggleDeleteModalChat={toggleDeleteModalChat}
         myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
         isDeleted={selectedChatBubble?.delete_for_everyone}
-        isLoading={isLoadingDeleteChat}
+        isLoading={isLoadingDeleteChatMessage}
+      />
+
+      {fileAttachment && (
+        <>
+          {fileAttachment.type === "image/jpg" ? (
+            <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
+          ) : (
+            <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
+          )}
+        </>
+      )}
+
+      {bandAttachment && (
+        <ProjectTaskAttachmentPreview
+          bandAttachmentType={bandAttachmentType}
+          bandAttachment={bandAttachment}
+          setBandAttachment={setBandAttachment}
+        />
+      )}
+
+      <ProjectAttachment
+        projectListIsOpen={projectListIsOpen}
+        toggleProjectList={toggleProjectList}
+        setBandAttachment={setBandAttachment}
+      />
+
+      <TaskAttachment
+        taskListIsOpen={taskListIsOpen}
+        toggleTaskList={toggleTaskList}
+        setBandAttachment={setBandAttachment}
       />
     </>
   );

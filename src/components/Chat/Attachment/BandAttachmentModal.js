@@ -1,45 +1,6 @@
-import { useCallback, useState } from "react";
-import { FlashList } from "@shopify/flash-list";
-import _ from "lodash";
+import React from "react";
 
-import { TouchableOpacity } from "react-native";
-import { Box, Flex, Icon, Input, Modal, Pressable, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import { useFetch } from "../../../hooks/useFetch";
-
-const ProjectAttachment = ({ projectListIsOpen, toggleProjectList, setBandAttachment }) => {
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [inputToShow, setInputToShow] = useState("");
-
-  const fetchProjectParameters = {
-    page: currentPage,
-    search: searchInput,
-    limit: 100,
-  };
-
-  const {
-    data: projectList,
-    isFetching: projectListIsFetching,
-    refetch: refetchProjectList,
-  } = useFetch("/chat/project", [currentPage, searchInput], fetchProjectParameters);
-
-  const selectProjectHandler = (project) => {
-    setBandAttachment(project);
-    toggleProjectList();
-  };
-
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      setCurrentPage(1);
-    }, 1000),
-    []
-  );
-
+const BandAttachmentModal = () => {
   return (
     <Modal isOpen={projectListIsOpen} onClose={toggleProjectList} size="xl">
       <Modal.Content>
@@ -107,4 +68,4 @@ const ProjectAttachment = ({ projectListIsOpen, toggleProjectList, setBandAttach
   );
 };
 
-export default ProjectAttachment;
+export default BandAttachmentModal;
