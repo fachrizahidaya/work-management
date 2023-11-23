@@ -40,7 +40,15 @@ const ChatBubble = ({
 
   let styledTexts = null;
   if (content?.length > 1) {
-    const words = content?.split(" ");
+    let words;
+
+    if (typeof content === "number" || typeof content === "bigint") {
+      words = content.toString().split(" ");
+      console.log("this", words);
+    } else {
+      words = content?.split(" ");
+      console.log("this", words);
+    }
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
@@ -59,11 +67,12 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (typeof item === "bigint") {
+      } else if (typeof item === "bigint" || typeof item === "number") {
+        const itemString = item.toString();
         textStyle = styles.defaultText;
         return (
-          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
-            {item}{" "}
+          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(itemString)}>
+            {itemString}{" "}
           </Text>
         );
       } else if (item.includes("@gmail.com")) {
@@ -119,7 +128,7 @@ const ChatBubble = ({
         <Pressable
           minWidth={100}
           maxWidth={300}
-          onLongPress={() => openChatBubbleHandler(chat)}
+          onLongPress={() => !isDeleted && openChatBubbleHandler(chat)}
           borderRadius={10}
           display="flex"
           justifyContent="center"
@@ -185,8 +194,11 @@ const ChatBubble = ({
           >
             <Flex maxWidth={240} minWidth={100}>
               {!isDeleted ? (
+                // <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                //   {styledTexts}
+                // </Text>
                 <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-                  {styledTexts}
+                  {content}
                 </Text>
               ) : myMessage && isDeleted ? (
                 <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
