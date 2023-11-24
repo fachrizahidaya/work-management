@@ -21,6 +21,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
         res = await axiosInstance.patch(`/pm/teams/${teamData.id}`, form);
         setSelectedTeam({
           ...teamData,
+          ...form,
           owner_id: userSelector.id,
           owner_name: userSelector.name,
         });
