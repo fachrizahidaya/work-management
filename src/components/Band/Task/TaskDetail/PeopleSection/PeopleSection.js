@@ -3,7 +3,7 @@ import React, { memo, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { TouchableOpacity } from "react-native";
-import { Actionsheet, Flex, FormControl, Icon, IconButton, Pressable, useToast } from "native-base";
+import { Actionsheet, Flex, FormControl, Icon, Pressable, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
@@ -133,13 +133,19 @@ const PeopleSection = ({
                 );
               })
             ) : (
-              <IconButton
+              <TouchableOpacity
                 onPress={toggleMemberSelect}
-                size="md"
-                borderRadius="full"
-                icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                alignSelf="flex-start"
-              />
+                style={{
+                  backgroundColor: "#f1f2f3",
+                  alignItems: "center",
+                  alignSelf: "flex-start",
+                  justifyContent: "center",
+                  padding: 8,
+                  borderRadius: 10,
+                }}
+              >
+                <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+              </TouchableOpacity>
             )}
           </FormControl>
 
@@ -168,25 +174,35 @@ const PeopleSection = ({
                   })}
 
                   {!disabled && (
-                    <IconButton
+                    <TouchableOpacity
                       onPress={toggleObserverModal}
-                      size="md"
-                      borderRadius="full"
-                      icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                      alignSelf="flex-start"
-                    />
+                      style={{
+                        backgroundColor: "#f1f2f3",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 8,
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                    </TouchableOpacity>
                   )}
                 </Flex>
               </>
             ) : (
               !disabled && (
-                <IconButton
+                <TouchableOpacity
                   onPress={toggleObserverModal}
-                  size="md"
-                  borderRadius="full"
-                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                  alignSelf="flex-start"
-                />
+                  style={{
+                    backgroundColor: "#f1f2f3",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 8,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                </TouchableOpacity>
               )
             )}
           </Flex>

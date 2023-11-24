@@ -19,6 +19,8 @@ import CommentInput from "../../../components/Band/shared/CommentInput/CommentIn
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import NewTaskSlider from "../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import PageHeader from "../../../components/shared/PageHeader";
+import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/MenuSection";
+import { LinkFormatter } from "../../../helpers/LinkFormatter";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -26,13 +28,14 @@ const TaskDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
   const { taskId } = route.params;
   const loggedUser = userSelector.id;
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
   const [isReady, setIsReady] = useState(false);
+  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const { data: selectedTask, refetch: refetchSelectedTask } = useFetch(taskId && `/pm/tasks/${taskId}`);
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
   const { data: responsible, refetch: refetchResponsible } = useFetch(taskId && `/pm/tasks/${taskId}/responsible`);
 
+  const { formattedText } = LinkFormatter(selectedTask?.data?.description);
   const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
@@ -68,22 +71,30 @@ const TaskDetailScreen = ({ route }) => {
               paddingHorizontal: 16,
             }}
           >
-            <Flex flexDir="row" alignItems="end" justifyContent="space-between">
-              <PageHeader
-                title={selectedTask?.data?.title}
-                subTitle={selectedTask?.data?.task_no}
-                onPress={() => navigation.goBack()}
-                width={width / 2.2}
-              />
+            <Flex gap={2}>
+              <HStack justifyContent="space-between">
+                <PageHeader
+                  title={selectedTask?.data?.title}
+                  subTitle={selectedTask?.data?.task_no}
+                  onPress={() => navigation.goBack()}
+                  width={width - 100}
+                />
+
+                {!inputIsDisabled && (
+                  <MenuSection
+                    selectedTask={selectedTask?.data}
+                    disabled={inputIsDisabled}
+                    openEditForm={onOpenTaskForm}
+                    refetchResponsible={refetchResponsible}
+                    responsible={responsible?.data}
+                  />
+                )}
+              </HStack>
 
               <ControlSection
                 taskStatus={selectedTask?.data?.status}
                 selectedTask={selectedTask?.data}
-                refetchResponsible={refetchResponsible}
-                responsible={responsible?.data}
-                openEditForm={onOpenTaskForm}
                 refetchTask={refetchSelectedTask}
-                disabled={inputIsDisabled}
               />
             </Flex>
 

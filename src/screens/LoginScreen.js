@@ -258,6 +258,7 @@ const LoginScreen = () => {
             <Input
               size="md"
               placeholder="Insert your password..."
+              autoCapitalize="none"
               type={!hidePassword ? "text" : "password"}
               onChangeText={(value) => formik.setFieldValue("password", value)}
               InputRightElement={

@@ -7,7 +7,7 @@ import { Dimensions } from "react-native";
 const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, isLoading, onPress }) => {
   const { width: screenWidth } = Dimensions.get("screen");
   return (
-    <Flex flexDir="row" style={{ gap: 6 }} maxWidth={width ? width : screenWidth - 45}>
+    <Flex flexDir="row" style={{ gap: 6 }} maxWidth={width ? width : screenWidth - 45} alignItems="center">
       {backButton && (
         <Pressable onPress={onPress}>
           <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
