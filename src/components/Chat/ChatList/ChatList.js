@@ -3,20 +3,25 @@ import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
 import { Flex, Spinner } from "native-base";
-import { FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
+import ImageAttachment from "../Attachment/ImageAttachment";
+import FileAttachment from "../Attachment/FileAttachment";
+import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
 
 const ChatList = ({
   type,
   chatList,
-  setMessageToReply,
   fetchChatMessageHandler,
-  deleteMessage,
   isLoading,
   openChatBubbleHandler,
   toggleFullScreen,
+  fileAttachment,
+  setFileAttachment,
+  bandAttachment,
+  bandAttachmentType,
+  setBandAttachment,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -143,6 +148,24 @@ const ChatList = ({
           </>
         )}
       />
+
+      {fileAttachment && (
+        <>
+          {fileAttachment.type === "image/jpg" ? (
+            <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
+          ) : (
+            <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
+          )}
+        </>
+      )}
+
+      {bandAttachment && (
+        <ProjectTaskAttachmentPreview
+          bandAttachmentType={bandAttachmentType}
+          bandAttachment={bandAttachment}
+          setBandAttachment={setBandAttachment}
+        />
+      )}
     </Flex>
   );
 };

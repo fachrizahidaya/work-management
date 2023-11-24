@@ -133,6 +133,7 @@ const ChatInput = ({
         ) : (
           <>
             <Menu
+              mb={10}
               trigger={(trigger) => {
                 return fileAttachment || bandAttachment ? null : (
                   <Pressable {...trigger}>

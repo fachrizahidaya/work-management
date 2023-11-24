@@ -45,6 +45,7 @@ const UserListItem = ({
             navigation.navigate("Chat Room", {
               name: name,
               userId: id,
+              roomId: null,
               image: image,
               position: userType,
               email: email,
