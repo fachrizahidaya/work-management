@@ -153,7 +153,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                 justifyContent="space-between"
                 bgColor={selectedComments.includes(item.id) ? "muted.200" : "white"}
               >
-                <Flex flexDir="row" gap={1.5} mb={2}>
+                <Flex flexDir="row" gap={1.5} mb={2} flex={1}>
                   <AvatarPlaceholder
                     name={item?.comment_name}
                     image={item?.comment_image}
@@ -161,18 +161,20 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                     style={{ marginTop: 4 }}
                   />
 
-                  <Box>
+                  <Box flex={1}>
                     <Flex flexDir="row" gap={1} alignItems="center">
                       <Text>{item?.comment_name.split(" ")[0]}</Text>
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 
-                    <RenderHTML
-                      contentWidth={width}
-                      source={{
-                        html: hyperlinkConverter(item?.comments) || "",
-                      }}
-                    />
+                    <Box>
+                      <RenderHTML
+                        contentWidth={width}
+                        source={{
+                          html: hyperlinkConverter(item?.comments) || "",
+                        }}
+                      />
+                    </Box>
 
                     <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
                       {item.attachments.length > 0 &&
