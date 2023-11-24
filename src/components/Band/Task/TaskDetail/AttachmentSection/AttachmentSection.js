@@ -157,6 +157,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
                     deleteFileHandler={deleteFileHandler}
                     downloadFileHandler={downloadAttachment}
                     path={item.file_path}
+                    disabled={disabled}
                   />
                 )}
               />

@@ -52,6 +52,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
@@ -104,6 +105,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
@@ -156,6 +158,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}

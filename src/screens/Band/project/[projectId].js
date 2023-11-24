@@ -28,6 +28,7 @@ import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMe
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import Description from "../../../components/Band/Project/ProjectDetail/Description";
 
 const ProjectDetailScreen = ({ route }) => {
   const toast = useToast();
@@ -197,9 +198,7 @@ const ProjectDetailScreen = ({ route }) => {
             </Button>
           </Flex>
 
-          <Box>
-            <Text>{projectData?.description}</Text>
-          </Box>
+          <Description description={projectData?.description} />
 
           <FileSection projectId={projectId} projectData={projectData} />
 

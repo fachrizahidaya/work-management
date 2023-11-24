@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { FormControl, IconButton, Icon, Flex, useToast, Text } from "native-base";
+import { FormControl, Icon, Flex, useToast, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../../hooks/useFetch";
@@ -11,6 +11,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { TouchableOpacity } from "react-native";
 
 const LabelSection = ({ projectId, taskId, disabled }) => {
   const toast = useToast();
@@ -89,13 +90,19 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
               ))}
 
               {!disabled && (
-                <IconButton
+                <TouchableOpacity
                   onPress={openModal}
-                  size="md"
-                  borderRadius="full"
-                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                  alignSelf="flex-start"
-                />
+                  style={{
+                    backgroundColor: "#f1f2f3",
+                    alignItems: "center",
+                    alignSelf: "flex-start",
+                    justifyContent: "center",
+                    padding: 8,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                </TouchableOpacity>
               )}
             </Flex>
             <Text color="gray.500" mt={1}>
@@ -104,13 +111,19 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
           </>
         ) : (
           !disabled && (
-            <IconButton
+            <TouchableOpacity
               onPress={openModal}
-              size="md"
-              borderRadius="full"
-              icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-              alignSelf="flex-start"
-            />
+              style={{
+                backgroundColor: "#f1f2f3",
+                alignItems: "center",
+                alignSelf: "flex-start",
+                justifyContent: "center",
+                padding: 8,
+                borderRadius: 10,
+              }}
+            >
+              <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+            </TouchableOpacity>
           )
         )}
       </FormControl>
