@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
+import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Flex, FormControl, HStack, Skeleton, Text, VStack } from "native-base";
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
@@ -20,7 +21,7 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import NewTaskSlider from "../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import PageHeader from "../../../components/shared/PageHeader";
 import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/MenuSection";
-import { LinkFormatter } from "../../../helpers/LinkFormatter";
+import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -35,7 +36,6 @@ const TaskDetailScreen = ({ route }) => {
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
   const { data: responsible, refetch: refetchResponsible } = useFetch(taskId && `/pm/tasks/${taskId}/responsible`);
 
-  const { formattedText } = LinkFormatter(selectedTask?.data?.description);
   const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
@@ -131,7 +131,13 @@ const TaskDetailScreen = ({ route }) => {
             {/* Description */}
             <FormControl>
               <FormControl.Label>DESCRIPTION</FormControl.Label>
-              <Text>{selectedTask?.data?.description}</Text>
+
+              <RenderHtml
+                contentWidth={width}
+                source={{
+                  html: hyperlinkConverter(selectedTask?.data?.description) || "",
+                }}
+              />
             </FormControl>
 
             {/* Checklists */}

@@ -5,8 +5,10 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+import RenderHTML from "react-native-render-html";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, Pressable, Spinner, Text, useToast } from "native-base";
+import { Dimensions } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,9 +16,11 @@ import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { hyperlinkConverter } from "../../../../../helpers/hyperlinkConverter";
 
 const CommentList = ({ comments, parentData, refetchComments, refetchAttachments, downloadAttachment, projectId }) => {
   const toast = useToast();
+  const { width } = Dimensions.get("screen");
   const userSelector = useSelector((state) => state.auth);
   const [selectedComments, setSelectedComments] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
@@ -163,7 +167,12 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 
-                    <Text fontWeight={400}>{item?.comments}</Text>
+                    <RenderHTML
+                      contentWidth={width}
+                      source={{
+                        html: hyperlinkConverter(item?.comments) || "",
+                      }}
+                    />
 
                     <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
                       {item.attachments.length > 0 &&
