@@ -7,7 +7,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
+const PersonalSection = ({
+  personalChats,
+  searchKeyword,
+  searchResult,
+  setForceRerender,
+  forceRerender,
+  onUpdatePinHandler,
+}) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -46,9 +53,11 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               time={personal.latest_message?.created_time}
               timestamp={personal.latest_message?.created_at}
               isRead={personal.unread}
+              isPinned={personal?.pin_personal}
               active_member={0}
               setForceRerender={setForceRerender}
               forceRerender={forceRerender}
+              onUpdatePinHandler={onUpdatePinHandler}
             />
           );
         })}
