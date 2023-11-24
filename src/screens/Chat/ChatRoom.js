@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -58,6 +58,8 @@ const ChatRoom = () => {
   const navigation = useNavigation();
 
   const toast = useToast();
+
+  const currentUserRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -654,15 +656,7 @@ const ChatRoom = () => {
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
-      />
-
-      <RemoveConfirmationModal
-        isOpen={clearChatMessageIsOpen}
-        toggle={toggleClearChatMessage}
-        description="Are you sure want to clear chat?"
-        isLoading={clearMessageIsLoading}
-        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
+        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
       />
 
       <ImageFullScreenModal

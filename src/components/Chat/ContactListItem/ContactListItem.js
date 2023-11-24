@@ -29,6 +29,9 @@ const ContactListItem = ({
   isPinned,
 }) => {
   const navigation = useNavigation();
+  const toast = useToast();
+
+  const { isLoading: isLoadingRemoveMember, toggle: toggleRemoveMember } = useLoading(false);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
