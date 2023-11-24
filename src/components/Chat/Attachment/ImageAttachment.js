@@ -4,7 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 const ImageAttachment = ({ image, setImage }) => {
   return (
-    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top="80px" bottom="60px" left={0} right={0}>
+    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
       <Flex flexDir="row-reverse">
         <Pressable onPress={() => setImage(null)}>
           <Icon as={<MaterialCommunityIcons name="close" />} size={5} />

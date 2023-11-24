@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
+import { useToast } from "native-base";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import { useFetch } from "../../hooks/useFetch";
@@ -13,6 +14,7 @@ import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSea
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
 import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
+import { ErrorToast } from "../../components/shared/ToastDialog";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
@@ -24,6 +26,8 @@ const ChatListScreen = () => {
   const [forceRerender, setForceRerender] = useState(false);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
+
+  const toast = useToast();
 
   /**
    * Event listener for new chats
@@ -67,6 +71,25 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Handle chat pin update event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   * @param {*} action - either pin/unpin
+   */
+  const chatPinUpdateHandler = async (chatType, id, action) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
@@ -100,6 +123,7 @@ const ChatListScreen = () => {
           searchResult={searchResult?.group}
           setForceRerender={setForceRerender}
           forceRerender={forceRerender}
+          onUpdatePinHandler={chatPinUpdateHandler}
         />
 
         <PersonalSection
@@ -108,6 +132,7 @@ const ChatListScreen = () => {
           searchResult={searchResult?.personal}
           setForceRerender={setForceRerender}
           forceRerender={forceRerender}
+          onUpdatePinHandler={chatPinUpdateHandler}
         />
 
         {searchResult?.message?.length > 0 && (

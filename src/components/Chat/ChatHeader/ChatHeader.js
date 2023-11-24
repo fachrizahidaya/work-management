@@ -22,6 +22,7 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
+  toggleClearChatMessage,
   deleteModalIsOpen,
   exitModalIsOpen,
   deleteGroupModalIsOpen,
@@ -30,6 +31,11 @@ const ChatHeader = ({
   isLoadingDeleteChatMessage,
   isLoadingChatRoom,
   toggleDeleteChatMessage,
+  onUpdatePinHandler,
+  onUpdateAdminStatus,
+  isPinned,
+  onMemberDelete,
+  isLoadingRemoveMember,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -75,6 +81,10 @@ const ChatHeader = ({
                 isLoadingDeleteChatMessage: isLoadingDeleteChatMessage,
                 isLoadingChatRoom: isLoadingChatRoom,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
+                toggleClearChatMessage: toggleClearChatMessage,
+                onUpdateAdminStatus: onUpdateAdminStatus,
+                onMemberDelete: onMemberDelete,
+                isLoadingRemoveMember: isLoadingRemoveMember,
               })
             }
             display="flex"
@@ -95,7 +105,13 @@ const ChatHeader = ({
                     {selectedGroupMembers?.map((member, index) => {
                       return (
                         <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
-                          {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                          {!member?.user
+                            ? loggedInUser === member?.id
+                              ? "You"
+                              : member?.name
+                            : loggedInUser === member?.user?.id
+                            ? "You"
+                            : member?.user?.name}
                           {index < selectedGroupMembers.length - 1 && `${", "}`}
                         </Text>
                       );
@@ -117,8 +133,12 @@ const ChatHeader = ({
           toggleDeleteModal={toggleDeleteModal}
           toggleExitModal={toggleExitModal}
           toggleSearch={toggleSearch}
+          toggleClearChatMessage={toggleClearChatMessage}
           type={type}
           active_member={active_member}
+          onUpdatePinHandler={onUpdatePinHandler}
+          roomId={roomId}
+          isPinned={isPinned}
         />
       </Flex>
 
