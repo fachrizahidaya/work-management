@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, HStack, Skeleton, Spinner, VStack, useToast } from "native-base";
+import { Spinner, VStack, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
@@ -25,9 +25,6 @@ import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScre
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
-import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
-import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
-import ProjectTaskAttachmentPreview from "../../components/Chat/Attachment/ProjectTaskAttachmentPreview";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -42,7 +39,8 @@ const ChatRoom = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
-  const [newRoomId, setNewRoomId] = useState(null);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  console.log("current user", currentUser);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -53,29 +51,12 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const {
-    name,
-    userId,
-    roomId,
-    image,
-    position,
-    email,
-    type,
-    active_member,
-    setForceRender,
-    forceRender,
-    selectedGroupMembers,
-    onUpdatePinHandler,
-    onUpdateAdminStatus,
-    isPinned,
-    onMemberDelete,
-  } = route.params;
+  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
+  console.log("user ID", userId);
 
   const navigation = useNavigation();
 
   const toast = useToast();
-
-  const currentUserRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -125,6 +106,7 @@ const ChatRoom = () => {
     }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
+        console.log("event", event);
         if (event.data.type === "New") {
           setChatList((prevState) => [event.data, ...prevState]);
         } else {
@@ -316,6 +298,25 @@ const ChatRoom = () => {
   };
 
   /**
+   * Handle chat pin update event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   * @param {*} action - either pin/unpin
+   */
+  const chatPinUpdateHandler = async (chatType, id, action) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
    * Pick an image Handler
    */
   const pickImageHandler = async () => {
@@ -406,6 +407,18 @@ const ChatRoom = () => {
   };
 
   /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${roomId}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
    * Exit group handler
    * @param {*} group_id
    */
@@ -413,7 +426,6 @@ const ChatRoom = () => {
     try {
       toggleChatRoom();
       await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      setForceRender(!forceRender);
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
@@ -467,12 +479,8 @@ const ChatRoom = () => {
   }, [currentUser, type]);
 
   useEffect(() => {
-    const { routes } = navigation.getState();
-    const filteredRoutes = routes.filter(
-      (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
-    );
-    navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
-  }, []);
+    fetchSelectedGroupMembers();
+  }, [roomId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -505,37 +513,18 @@ const ChatRoom = () => {
     groupChatMessageEvent();
   }, [roomId, currentUser]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     /**
-  //      * When screen is focused
-  //      */
-  //     setPreviousUser(currentUser);
-  //     setCurrentUser(roomId);
-  //     setHasMore(true);
-  //     setOffset(0);
-  //     clearAdditionalContentActionState();
-  //     personalChatMessageEvent();
-  //     groupChatMessageEvent();
-
-  //     return () => {
-  //       /**
-  //        * When screen is unfocused
-  //        */
-  //       setChatList([]);
-  //       setCurrentUser(null);
-  //       setPreviousUser(currentUser);
-  //       setHasMore(true);
-  //       setOffset(0);
-  //       clearAdditionalContentActionState();
-  //     };
-  //   }, [roomId, currentUser])
-  // );
-
   useEffect(() => {
     setTimeout(() => {
       setIsReady(true);
     }, 100);
+  }, []);
+
+  useEffect(() => {
+    const { routes } = navigation.getState();
+    const filteredRoutes = routes.filter(
+      (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
+    );
+    navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
   }, []);
 
   return (
@@ -566,9 +555,7 @@ const ChatRoom = () => {
               isLoadingDeleteChatMessage={isLoadingDeleteChatMessage}
               isLoadingChatRoom={isLoadingChatRoom}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
-              onUpdatePinHandler={onUpdatePinHandler}
-              onUpdateAdminStatus={onUpdateAdminStatus}
-              onMemberDelete={onMemberDelete}
+              onUpdatePinHandler={chatPinUpdateHandler}
               isPinned={isPinned}
             />
 
