@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 import { Flex, Icon, Pressable, Text, useToast } from "native-base";
 
@@ -31,6 +33,8 @@ const UserDetail = () => {
   const [cumulativeData, setCumulativeData] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [imageAttachment, setImageAttachment] = useState(null);
 
   const route = useRoute();
   const {
@@ -170,6 +174,97 @@ const UserDetail = () => {
     }
   };
 
+  /**
+   * Handle group update event
+   *
+   * @param {*} group_id
+   * @param {*} data
+   */
+  const groupUpdateHandler = async (group_id, data, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/group/${group_id}`, data);
+      setSubmitting(false);
+      setStatus("success");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Name Updated" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  const editGroupPictureHandler = async (group_id) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", imageAttachment);
+      formData.append("_method", "PATCH");
+      const res = await axiosInstance.patch(`/chat/group/${group_id}`, formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      setImageAttachment(null);
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  const pickImageHandler = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    // Handling for name
+    var filename = result.assets[0].uri.substring(
+      result.assets[0].uri.lastIndexOf("/") + 1,
+      result.assets[0].uri.length
+    );
+
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
+
+    if (fileInfo.size >= 1000000) {
+      toast.show({ description: "Image size is too large" });
+      return;
+    }
+
+    if (result) {
+      setImageAttachment({
+        name: filename,
+        size: fileInfo.size,
+        type: `${result.assets[0].type}/jpg`,
+        webkitRelativePath: "",
+        uri: result.assets[0].uri,
+      });
+    }
+  };
+
+  /**
+   * Handle filter from member registered for add new member to group
+   * @param {*} users
+   * @returns
+   */
   const usersWithoutMembers = (users) => {
     if (selectedGroupMembers) {
       return users.filter((user) => {
@@ -206,7 +301,7 @@ const UserDetail = () => {
     setForceRerender((prev) => !prev);
   };
 
-  const removeSelectedUsrFromArray = (user) => {
+  const removeSelectedUserToArray = (user) => {
     const newUserArray = selectedUsers.filter((val) => {
       return val.id !== user.id;
     });
@@ -250,7 +345,21 @@ const UserDetail = () => {
         </Flex>
       </Flex>
       <Flex gap={2} flex={1} bg="#FAFAFA" position="relative">
-        <UserAvatar type={type} name={name} image={image} position={position} email={email} />
+        <UserAvatar
+          roomId={roomId}
+          type={type}
+          name={name}
+          image={image}
+          position={position}
+          email={email}
+          onUpdateGroup={groupUpdateHandler}
+          selectedMembers={selectedMembers}
+          setSelectedMembers={setSelectedMembers}
+          imageAttachment={imageAttachment}
+          setImageAttachment={setImageAttachment}
+          pickImageHandler={pickImageHandler}
+          onEditGroupPicture={editGroupPictureHandler}
+        />
         <UserInformation
           type={type}
           selectedGroupMembers={selectedGroupMembers}
@@ -325,7 +434,7 @@ const UserDetail = () => {
         filteredDataArray={filteredDataArray}
         userListIsLoading={userListIsLoading}
         onPressAddHandler={addSelectedUserToArray}
-        onPressRemoveHandler={removeSelectedUsrFromArray}
+        onPressRemoveHandler={removeSelectedUserToArray}
         selectedUsers={selectedUsers}
         setSelectedUsers={setSelectedUsers}
         forceRerender={forceRerender}
