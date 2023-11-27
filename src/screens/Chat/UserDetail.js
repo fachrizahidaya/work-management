@@ -31,8 +31,6 @@ const UserDetail = () => {
   const [cumulativeData, setCumulativeData] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  console.log("selected", selectedGroupMembers);
-  console.log("cumulative", cumulativeData);
 
   const route = useRoute();
   const {

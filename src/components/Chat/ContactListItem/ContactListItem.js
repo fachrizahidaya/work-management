@@ -27,7 +27,6 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
-  onUpdatePinHandler,
 }) => {
   const navigation = useNavigation();
 
@@ -133,6 +132,12 @@ const ContactListItem = ({
                 <>
                   <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
+                    {message === null && (project || task || fileName) && (
+                      <HStack alignItems="center" space={1}>
+                        <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                        <Text>{generateAttachmentText()}</Text>
+                      </HStack>
+                    )}
                     {!!isRead && (
                       <Box
                         style={{
@@ -151,12 +156,6 @@ const ContactListItem = ({
                       </Box>
                     )}
                   </HStack>
-                  {message === null && (project || task || fileName) && (
-                    <HStack alignItems="center" space={1}>
-                      <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
-                      <Text>{generateAttachmentText()}</Text>
-                    </HStack>
-                  )}
                 </>
               ) : (
                 <Text fontStyle="italic" opacity={0.5}>
