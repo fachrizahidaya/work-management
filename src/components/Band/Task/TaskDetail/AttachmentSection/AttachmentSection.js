@@ -166,14 +166,12 @@ const AttachmentSection = ({ taskId, disabled }) => {
         )}
       </FormControl>
 
-      {!disabled && (
-        <TouchableOpacity onPress={selectFile}>
-          <Flex flexDir="row" alignItems="center" gap={3}>
-            <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-            <Text color="blue.600">Add attachment</Text>
-          </Flex>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity onPress={selectFile}>
+        <Flex flexDir="row" alignItems="center" gap={3}>
+          <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
+          <Text color="blue.600">Add attachment</Text>
+        </Flex>
+      </TouchableOpacity>
     </Flex>
   );
 };
