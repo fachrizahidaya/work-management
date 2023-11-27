@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -32,10 +32,7 @@ const ChatHeader = ({
   isLoadingChatRoom,
   toggleDeleteChatMessage,
   onUpdatePinHandler,
-  onUpdateAdminStatus,
   isPinned,
-  onMemberDelete,
-  isLoadingRemoveMember,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -67,7 +64,7 @@ const ChatHeader = ({
                 position: position,
                 email: email,
                 type: type,
-                selectedGroupMembers: selectedGroupMembers,
+                roomId: roomId,
                 loggedInUser: loggedInUser,
                 active_member: active_member,
                 toggleDeleteModal: toggleDeleteModal,
@@ -77,14 +74,10 @@ const ChatHeader = ({
                 exitModalIsOpen: exitModalIsOpen,
                 deleteGroupModalIsOpen: deleteGroupModalIsOpen,
                 deleteChatPersonal: deleteChatPersonal,
-                roomId: roomId,
                 isLoadingDeleteChatMessage: isLoadingDeleteChatMessage,
                 isLoadingChatRoom: isLoadingChatRoom,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
                 toggleClearChatMessage: toggleClearChatMessage,
-                onUpdateAdminStatus: onUpdateAdminStatus,
-                onMemberDelete: onMemberDelete,
-                isLoadingRemoveMember: isLoadingRemoveMember,
               })
             }
             display="flex"

@@ -30,21 +30,25 @@ const ChatInput = ({
 }) => {
   const attachmentOptions = [
     {
+      id: 1,
       icon: "file-document-outline",
       name: "Document",
       onPress: () => selectFile(),
     },
     {
+      id: 2,
       icon: "image",
       name: "Photo",
       onPress: () => pickImageHandler(),
     },
     {
+      id: 3,
       icon: "lightning-bolt",
       name: "Project",
       onPress: () => selectBandHandler("project"),
     },
     {
+      id: 4,
       icon: "checkbox-marked-circle-outline",
       name: "Task",
       onPress: () => selectBandHandler("task"),
@@ -148,7 +152,7 @@ const ChatInput = ({
             >
               {attachmentOptions.map((option) => {
                 return (
-                  <Menu.Item onPress={option.onPress}>
+                  <Menu.Item key={option.id} onPress={option.onPress}>
                     <Icon as={<MaterialCommunityIcons name={option.icon} />} />
                     <Text>{option.name}</Text>
                   </Menu.Item>

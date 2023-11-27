@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
@@ -8,9 +7,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
 import { TouchableOpacity } from "react-native";
-import axiosInstance from "../../../config/api";
-import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
-import { useLoading } from "../../../hooks/useLoading";
 
 const ContactListItem = ({
   type,
@@ -29,17 +25,11 @@ const ContactListItem = ({
   timestamp,
   searchKeyword,
   active_member,
-  setForceRerender,
-  forceRerender,
   isRead,
   isPinned,
   onUpdatePinHandler,
 }) => {
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const navigation = useNavigation();
-  const toast = useToast();
-
-  const { isLoading: isLoadingRemoveMember, toggle: toggleRemoveMember } = useLoading(false);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -100,99 +90,11 @@ const ContactListItem = ({
     return text;
   };
 
-  /**
-   * Fetch members of selected group
-   */
-  const fetchSelectedGroupMembers = async () => {
-    try {
-      const res = await axiosInstance.get(`/chat/group/${id}/member`);
-      setSelectedGroupMembers(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  /**
-   * Handle group member add event
-   *
-   * @param {*} data
-   */
-  const groupMemberAddHandler = async (group_id, new_members, setIsLoading) => {
-    try {
-      const res = await axiosInstance.post(`/chat/group/member`, {
-        group_id: group_id,
-        member: new_members,
-      });
-
-      fetchSelectedGroupMembers();
-      setIsLoading(false);
-    } catch (err) {
-      enqueueSnackbar("Something went wrong", {
-        autoHideDuration: 3000,
-        content: (key, message) => <Error id={key} message={message} subMessage={err.response.data.message} />,
-      });
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Handle group member admin status changes event
-   *
-   * @param {*} group_member_id
-   * @param {*} data
-   */
-  const groupMemberUpdateHandler = async (group_member_id, data) => {
-    try {
-      const res = await axiosInstance.patch(`/chat/group/member/${group_member_id}`, {
-        is_admin: data,
-      });
-      fetchSelectedGroupMembers();
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
-  /**
-   * Handle group member removal event
-   *
-   * @param {*} group_member_id
-   */
-  const groupMemberDeleteHandler = async (group_member_id, item_name) => {
-    try {
-      toggleRemoveMember();
-      const res = await axiosInstance.delete(`/chat/group/member/${group_member_id}`);
-      fetchSelectedGroupMembers();
-      toggleRemoveMember();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Member Removed" close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toggleRemoveMember();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchSelectedGroupMembers();
-  }, [id]);
-
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
-          userId,
+          userId: userId,
           name: name,
           roomId: id,
           image: image,
@@ -200,13 +102,6 @@ const ContactListItem = ({
           email: email,
           type: type,
           active_member: active_member,
-          setForceRender: setForceRerender,
-          forceRender: forceRerender,
-          selectedGroupMembers: selectedGroupMembers,
-          onUpdatePinHandler: onUpdatePinHandler,
-          onUpdateAdminStatus: groupMemberUpdateHandler,
-          onMemberDelete: groupMemberDeleteHandler,
-          isLoadingRemoveMember: isLoadingRemoveMember,
           isPinned: isPinned,
         });
       }}

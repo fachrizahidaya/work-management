@@ -30,8 +30,6 @@ const AddPersonalChatScreen = () => {
 
   const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
-  const { forceRerender, setForceRerender } = route.params;
-
   /**
    * Function that runs when user scrolled to the bottom of FlastList
    * Fetches more user data by incrementing currentPage by 1
@@ -114,6 +112,7 @@ const AddPersonalChatScreen = () => {
               <Box marginBottom={2}>
                 <UserListItem
                   user={item}
+                  roomId={item?.chat_personal_id}
                   id={item?.id}
                   image={item?.image}
                   name={item?.name}
@@ -122,9 +121,6 @@ const AddPersonalChatScreen = () => {
                   email={item?.email}
                   type="personal"
                   active_member={0}
-                  setForceRender={setForceRerender}
-                  forceRender={forceRerender}
-                  selectedGroupMembers={null}
                 />
               </Box>
             )}

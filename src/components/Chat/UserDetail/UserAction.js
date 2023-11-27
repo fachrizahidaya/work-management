@@ -10,7 +10,7 @@ const UserAction = ({
   toggleDeleteGroupModal,
 }) => {
   return (
-    <Flex flex={1} px={16} py={2} gap={2} bg="#FFFFFF">
+    <Flex flex={1} px={4} py={2} gap={2} bg="#FFFFFF">
       <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
         <Icon as={<MaterialIcons name="close" />} size={5} />
         <Text fontSize={14} fontWeight={400}>

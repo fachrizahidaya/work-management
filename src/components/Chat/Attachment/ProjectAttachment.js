@@ -36,7 +36,7 @@ const ProjectAttachment = ({ projectListIsOpen, toggleProjectList, setBandAttach
     _.debounce((value) => {
       setSearchInput(value);
       setCurrentPage(1);
-    }, 1000),
+    }, 300),
     []
   );
 

@@ -7,14 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({
-  personalChats,
-  searchKeyword,
-  searchResult,
-  setForceRerender,
-  forceRerender,
-  onUpdatePinHandler,
-}) => {
+const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -23,12 +16,7 @@ const PersonalSection = ({
           PEOPLE
         </Text>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() =>
-            navigation.navigate("New Chat", { forceRerender: forceRerender, setForceRerender: setForceRerender })
-          }
-        >
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
@@ -55,9 +43,6 @@ const PersonalSection = ({
               isRead={personal.unread}
               isPinned={personal?.pin_personal}
               active_member={0}
-              setForceRerender={setForceRerender}
-              forceRerender={forceRerender}
-              onUpdatePinHandler={onUpdatePinHandler}
             />
           );
         })}

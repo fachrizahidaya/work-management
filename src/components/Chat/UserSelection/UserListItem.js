@@ -12,6 +12,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 const UserListItem = ({
   user,
   id,
+  roomId,
   image,
   name,
   userType,
@@ -22,9 +23,6 @@ const UserListItem = ({
   email,
   type,
   active_member,
-  setForceRender,
-  forceRender,
-  selectedGroupMembers,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
@@ -45,15 +43,12 @@ const UserListItem = ({
             navigation.navigate("Chat Room", {
               name: name,
               userId: id,
-              roomId: null,
+              roomId: roomId,
               image: image,
               position: userType,
               email: email,
               type: type,
               active_member: active_member,
-              setForceRender: setForceRender,
-              forceRender: forceRender,
-              selectedGroupMembers: selectedGroupMembers,
             });
           }
         }}
@@ -70,11 +65,11 @@ const UserListItem = ({
           </Flex>
 
           {multiSelect && (
-            <>
+            <Box borderWidth={1}>
               {selectedUsers.find((val) => val.id === id) && (
                 <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
               )}
-            </>
+            </Box>
           )}
         </Flex>
       </TouchableOpacity>
