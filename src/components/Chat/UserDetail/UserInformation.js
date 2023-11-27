@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Badge, Box, Flex, Icon, Menu, Pressable, Text } from "native-base";
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TouchableOpacity } from "react-native";
+import { Badge, Box, Flex, Icon, Text } from "native-base";
+
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const UserInformation = ({
   type,
@@ -20,7 +21,7 @@ const UserInformation = ({
   setMemberAdminStatus,
 }) => {
   return (
-    <Flex px={16} py={2} gap={2} bg="#FFFFFF">
+    <Flex px={4} py={2} gap={2} bg="#FFFFFF">
       <Box gap={2}>
         <Text color="#b8a9a3" fontSize={12} fontWeight={400}>
           {type === "personal" ? "Status" : "Group participant"}

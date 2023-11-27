@@ -1,16 +1,11 @@
-import { Button, Modal, Text } from "native-base";
-import React from "react";
+import { Button, Modal } from "native-base";
 
 const MemberListActionModal = ({
   memberListActionIsopen,
   toggleMemberListAction,
   memberId,
-  setMemberId,
   memberName,
-  setMemberName,
   memberAdminStatus,
-  setMemberAdminStatus,
-  currentUserIsAdmin,
   onUpdateAdminStatus = () => {},
   toggleRemoveMemberAction,
 }) => {

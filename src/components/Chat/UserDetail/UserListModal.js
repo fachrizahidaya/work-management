@@ -1,11 +1,16 @@
-import { Box, Flex, Icon, Input, Modal, Pressable, Text } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
+import { Box, Flex, Icon, Input, Modal, Pressable, Spinner, Text } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { TouchableOpacity } from "react-native";
 
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import UserListItemModal from "./UserListItemModal";
+
 const UserListModal = ({
+  roomId,
   memberListIsopen,
   toggleMemberList,
   handleSearch,
@@ -13,16 +18,28 @@ const UserListModal = ({
   setInputToShow,
   setSearchInput,
   userList,
-  hasBeenScrolled,
-  setHasBeenScrolled,
+  fetchMoreData,
+  cumulativeData,
+  filteredDataArray,
+  userListIsLoading,
+  onPressAddHandler,
+  onPressRemoveHandler,
+  selectedUsers,
+  setSelectedUsers,
+  forceRerender,
+  onAddMoreMember,
+  addMemberIsLoading,
 }) => {
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const userSelector = useSelector((state) => state.auth);
+
   return (
     <Modal isOpen={memberListIsopen} onClose={toggleMemberList} size="xl">
       <Modal.Content>
         <Modal.CloseButton />
         <Modal.Header>Choose User</Modal.Header>
         <Modal.Body>
-          {/* <Input
+          <Input
             value={inputToShow}
             placeholder="Search here..."
             InputRightElement={
@@ -46,37 +63,57 @@ const UserListModal = ({
               handleSearch(value);
               setInputToShow(value);
             }}
-          /> */}
-          {/* <Box flex={1} height={300} mt={4}>
+          />
+          <Box flex={1} height={300} mt={4}>
             <FlashList
-              data={userList?.data}
+              data={cumulativeData.length ? cumulativeData : filteredDataArray}
+              extraData={forceRerender}
               estimatedItemSize={100}
               keyExtractor={(item, index) => index}
               onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+              onEndReached={hasBeenScrolled ? fetchMoreData : null}
               onEndReachedThreshold={0.1}
+              ListFooterComponent={userListIsLoading && <Spinner color="primary.600" />}
               renderItem={({ item }) => (
-                <Flex my={1} gap={2} flexDirection="row">
-                  <Flex
-                    rounded="full"
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor="#f1f1f1"
-                    padding={1}
-                  >
-                    <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} size={5} />
-                  </Flex>
-                  <TouchableOpacity onPress={() => selectTaskHandler(item)}>
-                    <Text fontSize={14} fontWeight={400} color="#000000">
-                      {item?.title}
-                    </Text>
-                    <Text fontSize={12} fontWeight={400} color="#b2b2b2">
-                      #{item?.task_no}
-                    </Text>
-                  </TouchableOpacity>
-                </Flex>
+                <UserListItemModal
+                  id={item?.id}
+                  user={item}
+                  name={item?.name}
+                  userType={item?.user_type}
+                  image={item?.image}
+                  multiSelect={true}
+                  type="group"
+                  onPressAddHandler={onPressAddHandler}
+                  onPressRemoveHandler={onPressRemoveHandler}
+                  userSelector={userSelector}
+                  selectedUsers={selectedUsers}
+                  setSelectedUsers={setSelectedUsers}
+                />
               )}
             />
-          </Box> */}
+          </Box>
+          <Pressable
+            position="absolute"
+            right={5}
+            bottom={10}
+            rounded="full"
+            bgColor="primary.600"
+            p={15}
+            shadow="0"
+            borderRadius="full"
+            borderWidth={3}
+            borderColor="#FFFFFF"
+            onPress={() => {
+              onAddMoreMember(roomId, selectedUsers, toggleAddMember);
+              toggleMemberList();
+            }}
+          >
+            {addMemberIsLoading ? (
+              <Spinner size="lg" color="#FFFFFF" />
+            ) : (
+              <Icon as={<MaterialCommunityIcons name="arrow-right" />} size="md" color="white" />
+            )}
+          </Pressable>
         </Modal.Body>
       </Modal.Content>
     </Modal>
