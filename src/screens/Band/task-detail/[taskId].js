@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
@@ -53,6 +53,11 @@ const TaskDetailScreen = ({ route }) => {
       setIsReady(true);
     }, 150);
   }, []);
+
+  const baseStyles = {
+    color: "#3F434A",
+    fontWeight: 500,
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,6 +139,7 @@ const TaskDetailScreen = ({ route }) => {
 
               <RenderHtml
                 contentWidth={width}
+                baseStyle={baseStyles}
                 source={{
                   html: hyperlinkConverter(selectedTask?.data?.description) || "",
                 }}
@@ -183,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskDetailScreen;
+export default memo(TaskDetailScreen);

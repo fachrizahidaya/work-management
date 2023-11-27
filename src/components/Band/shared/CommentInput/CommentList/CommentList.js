@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
@@ -99,13 +99,17 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
     }
   };
 
+  const baseStyles = {
+    color: "#3F434A",
+    fontWeight: 500,
+  };
+
   useEffect(() => {
     if (selectedComments.length == 0) {
       setBulkModeIsOn(false);
       setForceRerender((prev) => !prev);
     }
   }, [selectedComments.length]);
-
   return (
     <ScrollView style={{ maxHeight: 300 }}>
       <Box flex={1} minHeight={2}>
@@ -172,6 +176,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                     <Box>
                       <RenderHTML
                         contentWidth={width}
+                        baseStyle={baseStyles}
                         source={{
                           html: hyperlinkConverter(item?.comments) || "",
                         }}
@@ -210,4 +215,4 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
   );
 };
 
-export default CommentList;
+export default memo(CommentList);

@@ -123,7 +123,14 @@ const PeopleSection = ({
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
-                  <TouchableOpacity key={responsible.id} onPress={!disabled && toggleMemberSelect}>
+                  <TouchableOpacity
+                    key={responsible.id}
+                    onPress={() => {
+                      if (!disabled) {
+                        toggleMemberSelect();
+                      }
+                    }}
+                  >
                     <AvatarPlaceholder
                       name={responsible.responsible_name}
                       image={responsible.responsible_image}
@@ -159,54 +166,60 @@ const PeopleSection = ({
         </Flex>
 
         {/* Observers */}
-        <FormControl>
-          <FormControl.Label>OBSERVER</FormControl.Label>
-          <Flex flexDir="row" gap={1}>
-            {observers?.length > 0 ? (
-              <>
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  {observers.map((observer) => {
-                    return (
-                      <Pressable key={observer.id} onPress={() => getSelectedObserver(observer.id)} disabled={disabled}>
-                        <AvatarPlaceholder image={observer.observer_image} name={observer.observer_name} size="sm" />
-                      </Pressable>
-                    );
-                  })}
+        {(!disabled || (disabled && observers?.length > 0)) && (
+          <FormControl>
+            <FormControl.Label>OBSERVER</FormControl.Label>
+            <Flex flexDir="row" gap={1}>
+              {observers?.length > 0 ? (
+                <>
+                  <Flex flexDir="row" alignItems="center" gap={1}>
+                    {observers.map((observer) => {
+                      return (
+                        <Pressable
+                          key={observer.id}
+                          onPress={() => getSelectedObserver(observer.id)}
+                          disabled={disabled}
+                        >
+                          <AvatarPlaceholder image={observer.observer_image} name={observer.observer_name} size="sm" />
+                        </Pressable>
+                      );
+                    })}
 
-                  {!disabled && (
-                    <TouchableOpacity
-                      onPress={toggleObserverModal}
-                      style={{
-                        backgroundColor: "#f1f2f3",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: 8,
-                        borderRadius: 10,
-                      }}
-                    >
-                      <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
-                    </TouchableOpacity>
-                  )}
-                </Flex>
-              </>
-            ) : (
-              !disabled && (
-                <TouchableOpacity
-                  onPress={toggleObserverModal}
-                  style={{
-                    backgroundColor: "#f1f2f3",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 8,
-                    borderRadius: 10,
-                  }}
-                >
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
-                </TouchableOpacity>
-              )
-            )}
-          </Flex>
-        </FormControl>
+                    {!disabled && (
+                      <TouchableOpacity
+                        onPress={toggleObserverModal}
+                        style={{
+                          backgroundColor: "#f1f2f3",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: 8,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  </Flex>
+                </>
+              ) : (
+                !disabled && (
+                  <TouchableOpacity
+                    onPress={toggleObserverModal}
+                    style={{
+                      backgroundColor: "#f1f2f3",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 8,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                  </TouchableOpacity>
+                )
+              )}
+            </Flex>
+          </FormControl>
+        )}
       </Flex>
 
       {observerModalIsOpen && (
