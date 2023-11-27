@@ -89,7 +89,7 @@ const AttachmentList = ({
           </Flex>
         </Menu.Item>
 
-        {disabled && (
+        {!disabled && (
           <Menu.Item onPress={() => deleteFileHandler(id, from)}>
             <Flex flexDir="row" alignItems="center" gap={2}>
               <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
