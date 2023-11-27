@@ -125,7 +125,6 @@ const ChatRoom = () => {
     }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        console.log("event", event);
         if (event.data.type === "New") {
           setChatList((prevState) => [event.data, ...prevState]);
         } else {
@@ -655,7 +654,7 @@ const ChatRoom = () => {
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
+        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
       <ImageFullScreenModal
