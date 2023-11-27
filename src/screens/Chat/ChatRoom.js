@@ -40,7 +40,6 @@ const ChatRoom = () => {
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  console.log("current user", currentUser);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -52,7 +51,6 @@ const ChatRoom = () => {
   const route = useRoute();
 
   const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
-  console.log("user ID", userId);
 
   const navigation = useNavigation();
 
@@ -67,9 +65,9 @@ const ChatRoom = () => {
   const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
 
-  const { isLoading: isLoadingDeleteChatMessage, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: isLoadingChatRoom, toggle: toggleChatRoom } = useLoading(false);
-  const { isLoading: isLoadingClearMessage, toggle: toggleClearMessage } = useLoading(false);
+  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
 
   /**
    * Open chat options handler
@@ -106,7 +104,6 @@ const ChatRoom = () => {
     }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        console.log("event", event);
         if (event.data.type === "New") {
           setChatList((prevState) => [event.data, ...prevState]);
         } else {
@@ -519,6 +516,9 @@ const ChatRoom = () => {
     }, 100);
   }, []);
 
+  /**
+   * Handle return after create new message group or personal
+   */
   useEffect(() => {
     const { routes } = navigation.getState();
     const filteredRoutes = routes.filter(
@@ -552,8 +552,8 @@ const ChatRoom = () => {
               deleteGroupModalIsOpen={deleteGroupModalIsOpen}
               deleteChatPersonal={deleteChatPersonal}
               roomId={roomId}
-              isLoadingDeleteChatMessage={isLoadingDeleteChatMessage}
-              isLoadingChatRoom={isLoadingChatRoom}
+              deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+              chatRoomIsLoading={chatRoomIsLoading}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
               onUpdatePinHandler={chatPinUpdateHandler}
               isPinned={isPinned}
@@ -627,14 +627,14 @@ const ChatRoom = () => {
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
+        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
       <RemoveConfirmationModal
         isOpen={clearChatMessageIsOpen}
         toggle={toggleClearChatMessage}
         description="Are you sure want to clear chat?"
-        isLoading={isLoadingClearMessage}
+        isLoading={clearMessageIsLoading}
         onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
       />
 
@@ -659,7 +659,7 @@ const ChatRoom = () => {
         toggleDeleteModalChat={toggleDeleteModalChat}
         myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
         isDeleted={selectedChatBubble?.delete_for_everyone}
-        isLoading={isLoadingDeleteChatMessage}
+        isLoading={deleteChatMessageIsLoading}
       />
 
       <ProjectAttachment
