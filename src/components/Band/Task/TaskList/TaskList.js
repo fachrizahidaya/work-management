@@ -38,7 +38,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}
@@ -91,7 +90,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}
@@ -144,7 +142,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}

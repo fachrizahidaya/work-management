@@ -123,7 +123,7 @@ const PeopleSection = ({
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
-                  <TouchableOpacity key={responsible.id} onPress={toggleMemberSelect}>
+                  <TouchableOpacity key={responsible.id} onPress={!disabled && toggleMemberSelect}>
                     <AvatarPlaceholder
                       name={responsible.responsible_name}
                       image={responsible.responsible_image}

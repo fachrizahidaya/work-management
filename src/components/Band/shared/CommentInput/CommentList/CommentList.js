@@ -140,10 +140,12 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
               }}
               onPress={() => {
                 if (bulkModeIsOn) {
-                  if (!selectedComments.includes(item.id)) {
-                    addCommentToArray(item.id);
-                  } else {
-                    removeSelectedCommentFromArray(item.id);
+                  if (ownerPrivilage || item.user_id === userSelector.id) {
+                    if (!selectedComments.includes(item.id)) {
+                      addCommentToArray(item.id);
+                    } else {
+                      removeSelectedCommentFromArray(item.id);
+                    }
                   }
                 }
               }}
