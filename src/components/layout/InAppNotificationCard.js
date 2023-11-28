@@ -12,7 +12,7 @@ const InAppNotificationCard = ({ message, isOpen, close }) => {
   const tStyle = useAnimatedStyle(() => ({
     opacity: withTiming(isOpen && message ? 1 : 0),
     left: withTiming(isOpen && message ? 0 : -100),
-    width: width,
+    width: withTiming(isOpen && message ? width : 0),
   }));
 
   // Clear the timeout when the close button is pressed
