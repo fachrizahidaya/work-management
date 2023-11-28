@@ -24,6 +24,7 @@ const ContactList = ({
   email,
   refetch,
   loggedEmployeeId,
+  user,
   user_id,
   user_name,
   user_type,
@@ -62,17 +63,19 @@ const ContactList = ({
             <WhatsappButton phone={phone} size={5} />
             <EmailButton email={email} size={5} />
             <PhoneButton phone={phone} size={5} />
-            <PersonalNestButton
-              id={id}
-              name={name}
-              image={image}
-              email={email}
-              user_id={user_id}
-              user_name={user_name}
-              user_type={user_type}
-              user_image={user_image}
-              room_id={room_id}
-            />
+            {user && (
+              <PersonalNestButton
+                id={id}
+                name={name}
+                image={image}
+                email={email}
+                user_id={user_id}
+                user_name={user_name}
+                user_type={user_type}
+                user_image={user_image}
+                room_id={room_id}
+              />
+            )}
           </Flex>
         </Flex>
       </Flex>
