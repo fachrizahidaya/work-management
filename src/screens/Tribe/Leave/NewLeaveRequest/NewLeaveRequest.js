@@ -95,8 +95,6 @@ const NewLeaveRequest = ({ route }) => {
     // });
   };
 
-  console.log("available leave", availableLeaves);
-
   /**
    * Calculate leave quota handler
    * @param {*} action
