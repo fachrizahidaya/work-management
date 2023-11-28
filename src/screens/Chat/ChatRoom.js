@@ -657,6 +657,14 @@ const ChatRoom = () => {
         isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
+      <RemoveConfirmationModal
+        isOpen={clearChatMessageIsOpen}
+        toggle={toggleClearChatMessage}
+        description="Are you sure want to clear chat?"
+        isLoading={clearMessageIsLoading}
+        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
+      />
+
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
