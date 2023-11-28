@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { FormControl, IconButton, Icon, Flex, useToast, Text } from "native-base";
+import { FormControl, Icon, Flex, useToast, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../../hooks/useFetch";
@@ -11,6 +11,7 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { TouchableOpacity } from "react-native";
 
 const LabelSection = ({ projectId, taskId, disabled }) => {
   const toast = useToast();
@@ -72,48 +73,64 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
 
   return (
     <>
-      <FormControl>
-        <FormControl.Label>LABELS</FormControl.Label>
-        {taskLabels?.data.length > 0 ? (
-          <>
-            <Flex flexDir="row" alignItems="center" gap={1}>
-              {taskLabels.data.map((label) => (
-                <LabelItem
-                  disabled={isLoading || disabled}
-                  key={label.id}
-                  id={label.id}
-                  color={label.label_color}
-                  name={label.label_name}
-                  onPress={removeLabel}
-                />
-              ))}
+      {(!disabled || (disabled && taskLabels?.data?.length > 0)) && (
+        <FormControl>
+          <FormControl.Label>LABELS</FormControl.Label>
+          {taskLabels?.data.length > 0 ? (
+            <>
+              <Flex flexDir="row" alignItems="center" gap={1}>
+                {taskLabels.data.map((label) => (
+                  <LabelItem
+                    disabled={isLoading || disabled}
+                    key={label.id}
+                    id={label.id}
+                    color={label.label_color}
+                    name={label.label_name}
+                    onPress={removeLabel}
+                  />
+                ))}
 
+                {!disabled && (
+                  <TouchableOpacity
+                    onPress={openModal}
+                    style={{
+                      backgroundColor: "#f1f2f3",
+                      alignItems: "center",
+                      alignSelf: "flex-start",
+                      justifyContent: "center",
+                      padding: 8,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                  </TouchableOpacity>
+                )}
+              </Flex>
               {!disabled && (
-                <IconButton
-                  onPress={openModal}
-                  size="md"
-                  borderRadius="full"
-                  icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-                  alignSelf="flex-start"
-                />
+                <Text color="gray.500" mt={1}>
+                  Press any label to remove.
+                </Text>
               )}
-            </Flex>
-            <Text color="gray.500" mt={1}>
-              Press any label to remove.
-            </Text>
-          </>
-        ) : (
-          !disabled && (
-            <IconButton
-              onPress={openModal}
-              size="md"
-              borderRadius="full"
-              icon={<Icon as={<MaterialCommunityIcons name="plus-circle-outline" />} color="#3F434A" />}
-              alignSelf="flex-start"
-            />
-          )
-        )}
-      </FormControl>
+            </>
+          ) : (
+            !disabled && (
+              <TouchableOpacity
+                onPress={openModal}
+                style={{
+                  backgroundColor: "#f1f2f3",
+                  alignItems: "center",
+                  alignSelf: "flex-start",
+                  justifyContent: "center",
+                  padding: 8,
+                  borderRadius: 10,
+                }}
+              >
+                <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+              </TouchableOpacity>
+            )
+          )}
+        </FormControl>
+      )}
 
       {modalIsOpen && (
         <LabelModal

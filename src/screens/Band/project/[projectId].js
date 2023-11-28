@@ -28,6 +28,7 @@ import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMe
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import Description from "../../../components/Band/Project/ProjectDetail/Description";
 
 const ProjectDetailScreen = ({ route }) => {
   const toast = useToast();
@@ -35,7 +36,6 @@ const ProjectDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
   const { projectId } = route.params;
-  const [projectData, setProjectData] = useState({});
   const [tabValue, setTabValue] = useState("comments");
   const [openEditForm, setOpenEditForm] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -49,9 +49,11 @@ const ProjectDetailScreen = ({ route }) => {
     return [{ title: "comments" }, { title: "activity" }];
   }, []);
 
-  const { data, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
+  const { data: projectData, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
   const { data: activities } = useFetch("/pm/logs/", [], { project_id: projectId });
   const { data: members, refetch: refetchMember } = useFetch(`/pm/projects/${projectId}/member`);
+
+  const isAllowed = projectData?.data?.owner_id === userSelector.id;
 
   const onDelegateSuccess = async () => {
     try {
@@ -95,10 +97,6 @@ const ProjectDetailScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    setProjectData(data?.data);
-  }, [data]);
-
-  useEffect(() => {
     return () => {
       setTabValue("comments");
     };
@@ -115,14 +113,14 @@ const ProjectDetailScreen = ({ route }) => {
         <Flex gap={15} marginHorizontal={16} marginVertical={13}>
           <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <PageHeader
-              title={projectData?.title}
+              title={projectData?.data?.title}
               withLoading
               isLoading={isLoading}
               width={width / 1.3}
               onPress={() => navigation.navigate("Projects")}
             />
 
-            {projectData?.owner_id === userSelector.id && (
+            {isAllowed && (
               <Menu
                 trigger={(triggerProps) => {
                   return (
@@ -149,7 +147,7 @@ const ProjectDetailScreen = ({ route }) => {
                 toggle={toggle}
                 apiUrl={`/pm/projects/${projectId}`}
                 color="red.600"
-                successMessage={`${projectData?.title} deleted`}
+                successMessage="Project deleted"
                 hasSuccessFunc={true}
                 onSuccess={() => navigation.navigate("Projects")}
                 header="Delete Project"
@@ -184,7 +182,7 @@ const ProjectDetailScreen = ({ route }) => {
           </Flex>
 
           <Flex flexDir="row" style={{ gap: 8 }}>
-            <StatusSection projectId={projectId} projectData={projectData} refetch={refetch} />
+            <StatusSection projectId={projectId} projectData={projectData?.data} refetch={refetch} />
 
             <Button
               variant="outline"
@@ -197,23 +195,22 @@ const ProjectDetailScreen = ({ route }) => {
             </Button>
           </Flex>
 
-          <Box>
-            <Text>{projectData?.description}</Text>
-          </Box>
+          <Description description={projectData?.data?.description} />
 
-          <FileSection projectId={projectId} projectData={projectData} />
+          <FileSection projectId={projectId} isAllowed={isAllowed} />
 
           <MemberSection
             projectId={projectId}
-            projectData={projectData}
+            projectData={projectData?.data}
             members={members}
             refetchMember={refetchMember}
+            isAllowed={isAllowed}
           />
 
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
           {tabValue === "comments" ? (
-            <CommentInput projectId={projectId} data={projectData} />
+            <CommentInput projectId={projectId} data={projectData?.data} />
           ) : (
             <ScrollView style={{ maxHeight: 400 }}>
               <Box flex={1} minHeight={2}>
@@ -270,7 +267,7 @@ const ProjectDetailScreen = ({ route }) => {
       {openEditForm && (
         <ProjectForm
           isOpen={openEditForm}
-          projectData={projectData}
+          projectData={projectData?.data}
           refetchSelectedProject={refetch}
           onClose={onCloseEditForm}
         />

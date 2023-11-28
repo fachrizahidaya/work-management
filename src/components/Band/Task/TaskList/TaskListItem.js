@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,9 +24,11 @@ const TaskListItem = ({
   totalComments,
   status,
   responsible,
+  responsibleId,
   openCloseTaskConfirmation,
 }) => {
   const navigation = useNavigation();
+  const userSelector = useSelector((state) => state.auth);
 
   return (
     <Pressable style={styles.wrapper} onPress={() => navigation.navigate("Task Detail", { taskId: id })}>
@@ -34,7 +37,11 @@ const TaskListItem = ({
           <Flex flexDir="row" gap={3} alignItems="center">
             <Pressable
               display={status !== "Closed" && status !== "Finish" ? "none" : "block"}
-              onPress={() => openCloseTaskConfirmation(task)}
+              onPress={() => {
+                if (status === "Finish" && userSelector.id === responsibleId) {
+                  openCloseTaskConfirmation(task);
+                }
+              }}
             >
               <Icon
                 as={<MaterialCommunityIcons name={status === "Closed" ? "check-circle-outline" : "circle-outline"} />}

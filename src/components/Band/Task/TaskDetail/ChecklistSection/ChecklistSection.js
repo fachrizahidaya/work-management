@@ -158,6 +158,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
                     isLoading={isLoading}
                     onPress={checkAndUncheckChecklist}
                     onPressDelete={openDeleteModal}
+                    disabled={disabled}
                   />
                 )}
               />

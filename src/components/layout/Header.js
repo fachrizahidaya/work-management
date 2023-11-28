@@ -3,13 +3,15 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, Vibration } from "react-native";
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
 import { useFetch } from "../../hooks/useFetch";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import InAppNotificationCard from "./InAppNotificationCard";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const Header = () => {
   const navigation = useNavigation();
@@ -17,6 +19,11 @@ const Header = () => {
   const moduleSelector = useSelector((state) => state.module);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
+  const {
+    isOpen: notificationCardIsOpen,
+    open: openNotificationCard,
+    toggle: toggleNotificationCard,
+  } = useDisclosure(false);
   const { laravelEcho } = useWebsocketContext();
   const { data: myProfile } = useFetch("/hr/my-profile");
   const { data: notifications, refetch: refetchNotifications } = useFetch(
@@ -29,7 +36,9 @@ const Header = () => {
    */
   const unreadMessagesEvent = () => {
     laravelEcho.channel(`unread.message.${userSelector?.id}`).listen(".unread.message", (event) => {
-      setUnreadMessages(event.data.total_unread);
+      openNotificationCard();
+      Vibration.vibrate();
+      setUnreadMessages(event);
     });
   };
 
@@ -49,7 +58,7 @@ const Header = () => {
 
   useEffect(() => {
     if (unreads) {
-      setUnreadMessages(unreads.data.total_unread);
+      setUnreadMessages({ data: { total_unread: unreads.data.total_unread } });
     }
   }, [unreads]);
 
@@ -70,6 +79,7 @@ const Header = () => {
         py={3}
         borderBottomWidth={1}
         borderColor="#E8E9EB"
+        position="relative"
       >
         <Flex direction="row" alignItems="center" gap={2}>
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
@@ -122,7 +132,7 @@ const Header = () => {
           {/* )} */}
 
           <Pressable onPress={() => navigation.navigate("Chat List")} position="relative">
-            {unreadMessages > 0 && (
+            {unreadMessages?.data?.total_unread > 0 && (
               <Box
                 style={{
                   height: 22,
@@ -139,13 +149,19 @@ const Header = () => {
                 justifyContent="center"
               >
                 <Text fontSize={12} textAlign="center" color="white">
-                  {unreadMessages <= 5 ? unreadMessages : "5+"}
+                  {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
                 </Text>
               </Box>
             )}
             <Image source={require("../../assets/icons/nest_logo.png")} alt="nest" style={{ height: 25, width: 25 }} />
           </Pressable>
         </Flex>
+
+        <InAppNotificationCard
+          message={unreadMessages?.notification}
+          isOpen={notificationCardIsOpen}
+          close={toggleNotificationCard}
+        />
       </Flex>
     </SafeAreaView>
   );
