@@ -79,31 +79,31 @@ const UserAvatar = ({
           onPress={!imageAttachment ? pickImageHandler : () => setImageAttachment(null)}
         >
           <Icon
-            as={<MaterialCommunityIcons name={!imageAttachment ? "pencil-outline" : "close"} />}
+            as={<MaterialCommunityIcons name={!imageAttachment ? "camera-outline" : "close"} />}
             size={5}
             color="#3F434A"
           />
         </Pressable>
       </Box>
-      {imageAttachment && <FormButton onPress={formik.handleSubmit} children="Save" />}
+      {imageAttachment && <FormButton disabled={true} onPress={onEditGroupPicture} children="Save" />}
 
       {type === "personal" ? (
         <Text fontSize={16} fontWeight={500}>
           {name.length > 30 ? name.split(" ")[0] : name}
         </Text>
       ) : (
-        <Flex alignItems="center">
+        <Flex px={10} alignItems="center">
           {editName ? (
             <Input
               type="text"
               InputRightElement={
-                <Icon
+                <FormButton
                   onPress={
                     !formik.values.name.length || formik.values.name === name
                       ? editGroupNameHandler
                       : formik.handleSubmit
                   }
-                  as={<MaterialCommunityIcons name="check" />}
+                  children={<Icon as={<MaterialCommunityIcons name="check" />} />}
                 />
               }
               textAlign="center"
@@ -118,7 +118,7 @@ const UserAvatar = ({
               <Text fontSize={16} fontWeight={500}>
                 {name}
               </Text>
-              <Icon onPress={editGroupNameHandler} as={<MaterialCommunityIcons name="pencil" />} />
+              <Icon onPress={editGroupNameHandler} as={<MaterialCommunityIcons name="pencil" />} size={5} />
             </Flex>
           )}
         </Flex>

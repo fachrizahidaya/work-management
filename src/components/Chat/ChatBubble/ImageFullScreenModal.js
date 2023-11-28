@@ -1,4 +1,4 @@
-import { Flex, Icon, IconButton, Image, Modal } from "native-base";
+import { Flex, Icon, Image, Modal } from "native-base";
 import { Linking } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
