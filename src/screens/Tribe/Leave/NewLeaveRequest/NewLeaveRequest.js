@@ -64,20 +64,38 @@ const NewLeaveRequest = ({ route }) => {
    * Calculate available leave quota and day-off
    */
   const filterAvailableLeaveHistory = () => {
-    let sumAvailableLeave = 0;
+    let availableLeave = [];
+    leaveHistory?.data.map((item) => {
+      if (item?.active) {
+        const index = availableLeave.findIndex((leave) => leave?.leave_name === item?.name); // Fix: use item?.name instead of leaveHistory?.name
+        if (availableLeave.length > 0 && index > -1) {
+          availableLeave[index].quota += item?.quota;
+        } else {
+          availableLeave.push({ leave_name: item?.leave_name, quota: item?.quota });
+        }
+      }
+    });
 
-    const availableLeave = leaveHistory?.data.filter((leave) => leave.active);
-
-    if (availableLeave?.length > 0) {
-      sumAvailableLeave = availableLeave?.reduce((val, obj) => {
-        return Number(val) + Number(obj.quota);
-      }, 0);
+    if (availableLeave.length > 0) {
+      setAvailableLeaves(availableLeave);
     }
 
-    setAvailableLeaves(() => {
-      return { available_leave: sumAvailableLeave };
-    });
+    // let sumAvailableLeave = 0;
+
+    // const availableLeave = leaveHistory?.data.filter((leave) => leave.active);
+
+    // if (availableLeave?.length > 0) {
+    //   sumAvailableLeave = availableLeave?.reduce((val, obj) => {
+    //     return Number(val) + Number(obj.quota);
+    //   }, 0);
+    // }
+
+    // setAvailableLeaves(() => {
+    //   return { available_leave: sumAvailableLeave };
+    // });
   };
+
+  console.log("available leave", availableLeaves);
 
   /**
    * Calculate leave quota handler
@@ -234,24 +252,14 @@ const NewLeaveRequest = ({ route }) => {
         />
 
         <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
-          {personalLeaveData.map((item) => {
+          {availableLeaves?.map((item, index) => {
             return (
-              <Box key={item.id} alignItems="center" justifyContent="center" gap={2}>
-                <Box
-                  backgroundColor={item.backgroundColor}
-                  alignItems="center"
-                  justifyContent="center"
-                  width={60}
-                  height={60}
-                  borderRadius={15}
-                >
-                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
-                </Box>
+              <Box key={index} alignItems="center" justifyContent="center" gap={2}>
                 <Text fontWeight={500} fontSize={20}>
-                  {item.qty}
+                  {item.quota}
                 </Text>
                 <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
-                  {item.name}
+                  {item.leave_name}
                 </Text>
               </Box>
             );
