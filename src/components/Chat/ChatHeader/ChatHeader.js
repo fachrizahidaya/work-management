@@ -111,9 +111,11 @@ const ChatHeader = ({
                     })}
                   </Flex>
                   {/* Handle if members overflow the flex size */}
-                  <Text fontSize={10} fontWeight={400} numberOfLines={1}>
-                    ...
-                  </Text>
+                  {selectedGroupMembers.length > 2 ? (
+                    <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                      ...
+                    </Text>
+                  ) : null}
                 </Flex>
               )}
             </Flex>
