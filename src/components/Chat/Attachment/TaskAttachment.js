@@ -7,25 +7,18 @@ import { FlashList } from "@shopify/flash-list";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../../hooks/useFetch";
-
-const TaskAttachment = ({ taskListIsOpen, toggleTaskList, setBandAttachment }) => {
+const TaskAttachment = ({
+  taskList,
+  taskListIsFetching,
+  refetchTaskList,
+  taskListIsOpen,
+  toggleTaskList,
+  setBandAttachment,
+  setSearchInput,
+  setCurrentPage,
+}) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [inputToShow, setInputToShow] = useState("");
-
-  const fetchTaskParameters = {
-    page: currentPage,
-    search: searchInput,
-    limit: 100,
-  };
-
-  const {
-    data: taskList,
-    isFetching: taskListIsFetching,
-    refetch: refetchTaskList,
-  } = useFetch("/chat/task", [currentPage, searchInput], fetchTaskParameters);
 
   const selectTaskHandler = (task) => {
     setBandAttachment(task);

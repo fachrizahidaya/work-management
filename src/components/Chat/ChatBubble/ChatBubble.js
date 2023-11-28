@@ -39,7 +39,7 @@ const ChatBubble = ({
   const imgTypes = ["jpg", "jpeg", "png"];
 
   let styledTexts = null;
-  if (content?.length > 1) {
+  if (content?.length !== 0) {
     let words;
 
     if (typeof content === "number" || typeof content === "bigint") {
@@ -63,14 +63,6 @@ const ChatBubble = ({
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
             {item}{" "}
-          </Text>
-        );
-      } else if (typeof item === "bigint" || typeof item === "number") {
-        const itemString = item.toString();
-        textStyle = styles.defaultText;
-        return (
-          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(itemString)}>
-            {itemString}{" "}
           </Text>
         );
       } else if (item.includes("@gmail.com")) {
@@ -183,11 +175,8 @@ const ChatBubble = ({
 
           <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
             {!isDeleted ? (
-              // <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
-              //   {styledTexts}
-              // </Text>
-              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"} flexShrink={1}>
-                {content}
+              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"}>
+                {styledTexts}
               </Text>
             ) : myMessage && isDeleted ? (
               <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
@@ -208,8 +197,8 @@ const ChatBubble = ({
         {/* {!isGrouped && (
           <Box
             position="absolute"
-            bottom="0.1px"
-            left={type === "group" && myMessage ? "8px" : type === "personal" && myMessage ? "8px" : null}
+            bottom={1}
+            left={type === "group" && myMessage ? 10 : type === "personal" && myMessage ? 10 : null}
             right={0}
             width={15}
             height={5}
