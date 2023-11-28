@@ -21,7 +21,6 @@ const ChatListScreen = () => {
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho } = useWebsocketContext();
   const [globalKeyword, setGlobalKeyword] = useState("");
-  const [forceRerender, setForceRerender] = useState(false);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
@@ -70,7 +69,7 @@ const ChatListScreen = () => {
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
-  }, [forceRerender]);
+  }, []);
 
   useEffect(() => {
     personalChatEvent();
@@ -94,20 +93,12 @@ const ChatListScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-        <GroupSection
-          groupChats={groupChats}
-          searchKeyword={globalKeyword}
-          searchResult={searchResult?.group}
-          setForceRerender={setForceRerender}
-          forceRerender={forceRerender}
-        />
+        <GroupSection groupChats={groupChats} searchKeyword={globalKeyword} searchResult={searchResult?.group} />
 
         <PersonalSection
           personalChats={personalChats}
           searchKeyword={globalKeyword}
           searchResult={searchResult?.personal}
-          setForceRerender={setForceRerender}
-          forceRerender={forceRerender}
         />
 
         {searchResult?.message?.length > 0 && (

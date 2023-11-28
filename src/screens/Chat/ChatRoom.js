@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, HStack, Skeleton, Spinner, VStack, useToast } from "native-base";
+import { Spinner, VStack, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
@@ -25,9 +25,6 @@ import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScre
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
-import ImageAttachment from "../../components/Chat/Attachment/ImageAttachment";
-import FileAttachment from "../../components/Chat/Attachment/FileAttachment";
-import ProjectTaskAttachmentPreview from "../../components/Chat/Attachment/ProjectTaskAttachmentPreview";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -42,6 +39,7 @@ const ChatRoom = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -52,19 +50,7 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const {
-    name,
-    userId,
-    roomId,
-    image,
-    position,
-    email,
-    type,
-    active_member,
-    setForceRender,
-    forceRender,
-    selectedGroupMembers,
-  } = route.params;
+  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
 
   const navigation = useNavigation();
 
@@ -77,9 +63,11 @@ const ChatRoom = () => {
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
   const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
   const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
 
-  const { isLoading: isLoadingDeleteChatMessage, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: isLoadingChatRoom, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
 
   /**
    * Open chat options handler
@@ -191,6 +179,9 @@ const ChatRoom = () => {
           "content-type": "multipart/form-data",
         },
       });
+      if (currentUser === null) {
+        setCurrentUser(res.data.data?.chat_personal_id);
+      }
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -254,9 +245,9 @@ const ChatRoom = () => {
    */
   const deleteChatPersonal = async (id) => {
     try {
-      toggleChatRoom();
+      toggleDeleteChatMessage();
       await axiosInstance.delete(`/chat/personal/${id}`);
-      toggleChatRoom();
+      toggleDeleteChatMessage();
       toggleDeleteModal();
       navigation.navigate("Chat List");
       toast.show({
@@ -266,7 +257,55 @@ const ChatRoom = () => {
       });
     } catch (err) {
       console.log(err);
-      toggleChatRoom();
+      toggleDeleteChatMessage();
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handle chat message clear event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   */
+  const clearChatMessageHandler = async (id, type, itemName) => {
+    try {
+      toggleClearMessage();
+      await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
+      toggleClearMessage();
+      toggleClearChatMessage();
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleClearMessage();
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handle chat pin update event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   * @param {*} action - either pin/unpin
+   */
+  const chatPinUpdateHandler = async (chatType, id, action) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      navigation.goBack();
+    } catch (err) {
+      console.log(err);
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -366,6 +405,18 @@ const ChatRoom = () => {
   };
 
   /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${roomId}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
    * Exit group handler
    * @param {*} group_id
    */
@@ -373,7 +424,6 @@ const ChatRoom = () => {
     try {
       toggleChatRoom();
       await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      setForceRender(!forceRender);
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
@@ -403,7 +453,7 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
-      navigation.goBack();
+      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
@@ -421,48 +471,59 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {
-    fetchChatMessageHandler(true);
-  }, [currentUser, type]);
+    if (currentUser) {
+      fetchChatMessageHandler(true);
+    }
+  }, [currentUser, type, isPinned]);
 
+  useEffect(() => {
+    fetchSelectedGroupMembers();
+  }, [roomId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        /**
+         * To reset all state
+         */
+        setPreviousUser(currentUser);
+        setHasMore(true);
+        setOffset(0);
+        clearAdditionalContentActionState();
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    /**
+     * To fill all state
+     */
+    if (roomId) {
+      setCurrentUser(roomId);
+    }
+    setPreviousUser(currentUser);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
+    personalChatMessageEvent();
+    groupChatMessageEvent();
+  }, [roomId, currentUser]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+  }, []);
+
+  /**
+   * Handle return after create new message group or personal
+   */
   useEffect(() => {
     const { routes } = navigation.getState();
     const filteredRoutes = routes.filter(
       (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
     );
     navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      /**
-       * When screen is focused
-       */
-      setCurrentUser(roomId);
-      setPreviousUser(currentUser);
-      setHasMore(true);
-      setOffset(0);
-      clearAdditionalContentActionState();
-      personalChatMessageEvent();
-      groupChatMessageEvent();
-
-      return () => {
-        /**
-         * When screen is unfocused
-         */
-        setChatList([]);
-        setCurrentUser(null);
-        setPreviousUser(currentUser);
-        setHasMore(true);
-        setOffset(0);
-        clearAdditionalContentActionState();
-      };
-    }, [roomId, currentUser])
-  );
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsReady(true);
-    }, 100);
   }, []);
 
   return (
@@ -484,22 +545,23 @@ const ChatRoom = () => {
               selectedGroupMembers={selectedGroupMembers}
               loggedInUser={userSelector?.id}
               toggleDeleteModal={toggleDeleteModal}
+              toggleClearChatMessage={toggleClearChatMessage}
               deleteModalIsOpen={deleteModalIsOpen}
               exitModalIsOpen={exitModalIsOpen}
               deleteGroupModalIsOpen={deleteGroupModalIsOpen}
               deleteChatPersonal={deleteChatPersonal}
               roomId={roomId}
-              isLoadingDeleteChatMessage={isLoadingDeleteChatMessage}
-              isLoadingChatRoom={isLoadingChatRoom}
+              deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+              chatRoomIsLoading={chatRoomIsLoading}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
+              onUpdatePinHandler={chatPinUpdateHandler}
+              isPinned={isPinned}
             />
 
             <ChatList
               type={type}
               chatList={chatList}
               messageToReply={messageToReply}
-              setMessageToReply={setMessageToReply}
-              deleteMessage={messagedeleteHandler}
               fileAttachment={fileAttachment}
               setFileAttachment={setFileAttachment}
               fetchChatMessageHandler={fetchChatMessageHandler}
@@ -564,7 +626,15 @@ const ChatRoom = () => {
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
+        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
+      />
+
+      <RemoveConfirmationModal
+        isOpen={clearChatMessageIsOpen}
+        toggle={toggleClearChatMessage}
+        description="Are you sure want to clear chat?"
+        isLoading={clearMessageIsLoading}
+        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
       />
 
       <ImageFullScreenModal
@@ -588,26 +658,8 @@ const ChatRoom = () => {
         toggleDeleteModalChat={toggleDeleteModalChat}
         myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
         isDeleted={selectedChatBubble?.delete_for_everyone}
-        isLoading={isLoadingDeleteChatMessage}
+        isLoading={deleteChatMessageIsLoading}
       />
-
-      {fileAttachment && (
-        <>
-          {fileAttachment.type === "image/jpg" ? (
-            <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
-          ) : (
-            <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
-          )}
-        </>
-      )}
-
-      {bandAttachment && (
-        <ProjectTaskAttachmentPreview
-          bandAttachmentType={bandAttachmentType}
-          bandAttachment={bandAttachment}
-          setBandAttachment={setBandAttachment}
-        />
-      )}
 
       <ProjectAttachment
         projectListIsOpen={projectListIsOpen}

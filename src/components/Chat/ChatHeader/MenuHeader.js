@@ -10,12 +10,15 @@ const MenuHeader = ({
   toggleDeleteModal,
   type,
   active_member,
+  onUpdatePinHandler,
+  roomId,
+  isPinned,
 }) => {
   return (
     <Flex flexDirection="row" alignItems="center">
       <Menu
         w={160}
-        mt={8}
+        mt={10}
         trigger={(trigger) => {
           return fileAttachment ? null : (
             <Pressable {...trigger} mr={1}>
@@ -27,9 +30,10 @@ const MenuHeader = ({
         {/* <Menu.Item onPress={toggleSearch}>
           <Text>Search</Text>
         </Menu.Item> */}
-        {/* <Menu.Item onPress={toggleDeleteModal}>
-          <Text>Pin Chat</Text>
-        </Menu.Item> */}
+        <Menu.Item onPress={() => onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin")}>
+          <Text>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+        </Menu.Item>
+
         {type === "group" ? (
           <>
             {active_member === 1 ? (
