@@ -29,9 +29,6 @@ const PersonalNestButton = ({
           email: email,
           position: user_type,
           active_member: null,
-          setForceRender: null,
-          forceRender: null,
-          selectedGroupMembers: null,
         })
       }
     >
