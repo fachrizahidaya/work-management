@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
   const navigation = useNavigation();
 
-  const generateUrl = (id, type) => {
+  const redirectPage = (id, type) => {
     if (type === "Project") {
       return navigation.navigate("Project Detail", { projectId: id });
     } else {
@@ -17,7 +17,7 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
 
   return (
     <Pressable
-      onPress={() => generateUrl(id, type)}
+      onPress={() => redirectPage(id, type)}
       gap={1}
       px={2}
       py={2}

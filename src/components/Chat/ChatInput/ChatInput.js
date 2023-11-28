@@ -120,7 +120,10 @@ const ChatInput = ({
     resetBandAttachment();
     if (bandAttachment) {
       formik.setFieldValue(`${bandAttachmentType}_id`, bandAttachment?.id);
-      formik.setFieldValue(`${bandAttachmentType}_no`, bandAttachment?.number_id);
+      formik.setFieldValue(
+        `${bandAttachmentType}_no`,
+        bandAttachmentType === "project" ? bandAttachment?.project_no : bandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
+      );
       formik.setFieldValue(`${bandAttachmentType}_title`, bandAttachment?.title);
     }
   }, [bandAttachment, bandAttachmentType]);

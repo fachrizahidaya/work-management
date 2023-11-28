@@ -188,7 +188,7 @@ const UserDetail = () => {
       navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
-          return <SuccessToast message="Name Updated" close={() => toast.close(id)} />;
+          return <SuccessToast message="Group Profile Updated" close={() => toast.close(id)} />;
         },
       });
     } catch (err) {
