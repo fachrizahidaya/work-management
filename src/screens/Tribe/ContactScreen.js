@@ -19,6 +19,7 @@ const ContactScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -120,6 +121,7 @@ const ContactScreen = () => {
         {/* Content here */}
         <FlashList
           data={contacts.length ? contacts : filteredDataArray}
+          onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           updateCellsBatchingPeriod={50}
@@ -127,7 +129,7 @@ const ContactScreen = () => {
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={200}
-          onEndReached={fetchMoreEmployeeContact}
+          onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
           renderItem={({ item }) => (
             <ContactList
               key={item?.id}
@@ -141,8 +143,9 @@ const ContactScreen = () => {
               email={item?.email}
               refetch={refetchEmployeeData}
               loggedEmployeeId={userSelector?.user_role_id}
+              user={item?.user}
               user_id={item?.user?.id}
-              room_id={item?.user?.id}
+              room_id={item?.chat_personal_id}
               user_name={item?.user?.name}
               user_type={item?.user?.user_type}
               user_image={item?.user?.image}
