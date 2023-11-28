@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const AttachmentPreview = ({ handleClose, file, bandAttachment }) => {
+const AttachmentPreview = ({ file }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const imgTypes = ["jpg", "jpeg", "png"];
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];

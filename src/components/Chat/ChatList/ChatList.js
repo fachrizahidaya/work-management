@@ -3,20 +3,25 @@ import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
 import { Flex, Spinner } from "native-base";
-import { FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
+import ImageAttachment from "../Attachment/ImageAttachment";
+import FileAttachment from "../Attachment/FileAttachment";
+import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
 
 const ChatList = ({
   type,
   chatList,
-  setMessageToReply,
   fetchChatMessageHandler,
-  deleteMessage,
   isLoading,
   openChatBubbleHandler,
   toggleFullScreen,
+  fileAttachment,
+  setFileAttachment,
+  bandAttachment,
+  bandAttachmentType,
+  setBandAttachment,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -129,7 +134,7 @@ const ChatList = ({
               file_type={item?.mime_type}
               file_size={item?.file_size}
               band_attachment_id={item?.project_id ? item?.project_id : item?.task_id}
-              band_attachment_no={item?.project?.project_no ? item?.project?.project_no : item?.task?.task_no}
+              band_attachment_no={item?.project_no ? item?.project_no : item?.task_no}
               band_attachment_type={item?.project_id ? "Project" : "Task"}
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
               reply_to={item?.reply_to}
@@ -143,6 +148,24 @@ const ChatList = ({
           </>
         )}
       />
+
+      {fileAttachment && (
+        <>
+          {fileAttachment.type === "image/jpg" ? (
+            <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
+          ) : (
+            <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
+          )}
+        </>
+      )}
+
+      {bandAttachment && (
+        <ProjectTaskAttachmentPreview
+          bandAttachmentType={bandAttachmentType}
+          bandAttachment={bandAttachment}
+          setBandAttachment={setBandAttachment}
+        />
+      )}
     </Flex>
   );
 };

@@ -44,7 +44,7 @@ const GroupFormScreen = ({ route }) => {
         active_member: 1,
         forceRender: forceRender,
         setForceRender: setForceRender,
-        selectedGroupMembers: selectedGroupMembers,
+        selectedGroupMembers: userArray,
       });
       setSubmitting(false);
       toast.show({

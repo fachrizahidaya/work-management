@@ -84,9 +84,7 @@ const FileAttachmentBubble = ({
         alt={`${file_type} format`}
       />
 
-      <Flex
-      // width={200}
-      >
+      <Flex>
         <Text
           width={160}
           numberOfLines={2}

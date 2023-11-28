@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
+const GroupSection = ({ groupChats, searchKeyword, searchResult }) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
@@ -17,12 +17,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
           TEAMS
         </Text>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() =>
-            navigation.navigate("Group Participant", { setForceRender: setForceRerender, forceRender: forceRerender })
-          }
-        >
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
@@ -44,10 +39,9 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
             time={group.latest_message?.created_time}
             timestamp={group.latest_message?.created_at}
             isRead={group.unread}
+            isPinned={group?.pin_group}
             type="group"
             active_member={group?.active_member}
-            setForceRerender={setForceRerender}
-            forceRerender={forceRerender}
           />
         ))}
     </>
