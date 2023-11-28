@@ -25,6 +25,7 @@ import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScre
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
+import { useFetch } from "../../hooks/useFetch";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -40,6 +41,8 @@ const ChatRoom = () => {
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -68,6 +71,24 @@ const ChatRoom = () => {
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
   const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+
+  const fetchBandParameters = {
+    page: currentPage,
+    search: searchInput,
+    limit: 100,
+  };
+
+  const {
+    data: taskList,
+    isFetching: taskListIsFetching,
+    refetch: refetchTaskList,
+  } = useFetch("/chat/task", [currentPage, searchInput], fetchBandParameters);
+
+  const {
+    data: projectList,
+    isFetching: projectListIsFetching,
+    refetch: refetchProjectList,
+  } = useFetch("/chat/project", [currentPage, searchInput], fetchBandParameters);
 
   /**
    * Open chat options handler
@@ -303,6 +324,12 @@ const ChatRoom = () => {
   const chatPinUpdateHandler = async (chatType, id, action) => {
     try {
       const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      navigation.goBack();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Pinned" close={() => toast.close(id)} />;
+        },
+      });
     } catch (err) {
       console.log(err);
       toast.show({
@@ -473,7 +500,7 @@ const ChatRoom = () => {
     if (currentUser) {
       fetchChatMessageHandler(true);
     }
-  }, [currentUser, type]);
+  }, [currentUser, type, isPinned]);
 
   useEffect(() => {
     fetchSelectedGroupMembers();
@@ -663,15 +690,25 @@ const ChatRoom = () => {
       />
 
       <ProjectAttachment
+        projectList={projectList}
+        projectListIsFetching={projectListIsFetching}
+        refetchProjectList={refetchProjectList}
         projectListIsOpen={projectListIsOpen}
         toggleProjectList={toggleProjectList}
         setBandAttachment={setBandAttachment}
+        setCurrentPage={setCurrentPage}
+        setSearchInput={setSearchInput}
       />
 
       <TaskAttachment
+        taskList={taskList}
+        taskListIsFetching={taskListIsFetching}
+        refetchTaskList={refetchTaskList}
         taskListIsOpen={taskListIsOpen}
         toggleTaskList={toggleTaskList}
         setBandAttachment={setBandAttachment}
+        setCurrentPage={setCurrentPage}
+        setSearchInput={setSearchInput}
       />
     </>
   );

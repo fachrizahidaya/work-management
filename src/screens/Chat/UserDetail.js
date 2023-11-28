@@ -185,6 +185,7 @@ const UserDetail = () => {
       const res = await axiosInstance.patch(`/chat/group/${group_id}`, data);
       setSubmitting(false);
       setStatus("success");
+      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Name Updated" close={() => toast.close(id)} />;

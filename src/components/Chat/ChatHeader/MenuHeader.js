@@ -18,7 +18,7 @@ const MenuHeader = ({
     <Flex flexDirection="row" alignItems="center">
       <Menu
         w={160}
-        mt={8}
+        mt={10}
         trigger={(trigger) => {
           return fileAttachment ? null : (
             <Pressable {...trigger} mr={1}>
