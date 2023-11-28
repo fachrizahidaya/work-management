@@ -102,7 +102,7 @@ const TaskAttachment = ({ taskListIsOpen, toggleTaskList, setBandAttachment }) =
             }}
           />
           <GestureHandlerRootView>
-            <Box flex={1} height={400} mt={4}>
+            <Box flex={1} height={300} mt={4}>
               <FlashList
                 data={tasks.length ? tasks : filteredDataArray}
                 estimatedItemSize={100}
@@ -113,13 +113,17 @@ const TaskAttachment = ({ taskListIsOpen, toggleTaskList, setBandAttachment }) =
                 renderItem={({ item }) => (
                   <Flex my={1} gap={2} flexDirection="row">
                     <Flex
-                      rounded="full"
+                      borderRadius="full"
                       alignItems="center"
                       justifyContent="center"
                       backgroundColor="#f1f1f1"
                       padding={1}
                     >
-                      <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} size={5} />
+                      <Icon
+                        as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
+                        borderRadius="full"
+                        size={5}
+                      />
                     </Flex>
                     <TouchableOpacity onPress={() => selectTaskHandler(item)}>
                       <Text fontSize={14} fontWeight={400} color="#000000">

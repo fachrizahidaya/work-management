@@ -112,15 +112,20 @@ const ProjectAttachment = ({ projectListIsOpen, toggleProjectList, setBandAttach
                 onEndReachedThreshold={0.1}
                 renderItem={({ item }) => (
                   <Flex my={1} gap={2} flexDirection="row">
-                    <Pressable
+                    <Flex
                       borderRadius="full"
                       alignItems="center"
                       justifyContent="center"
-                      backgroundColor="#bdbdbd"
+                      backgroundColor="#f1f1f1"
                       padding={1}
                     >
-                      <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color="#FFFFFF" size={5} />
-                    </Pressable>
+                      <Icon
+                        as={<MaterialCommunityIcons name="lightning-bolt" />}
+                        color="#FFFFFF"
+                        size={5}
+                        borderRadius="full"
+                      />
+                    </Flex>
                     <TouchableOpacity onPress={() => selectProjectHandler(item)}>
                       <Text fontSize={14} fontWeight={400} color="#000000">
                         {item?.title}
