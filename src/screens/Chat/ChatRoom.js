@@ -276,8 +276,7 @@ const ChatRoom = () => {
       toggleClearMessage();
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
-      toggleClearChatMessage();
-      navigation.goBack();
+      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
@@ -553,6 +552,7 @@ const ChatRoom = () => {
               roomId={roomId}
               deleteChatMessageIsLoading={deleteChatMessageIsLoading}
               chatRoomIsLoading={chatRoomIsLoading}
+              isLoading={isLoading}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
               onUpdatePinHandler={chatPinUpdateHandler}
               isPinned={isPinned}

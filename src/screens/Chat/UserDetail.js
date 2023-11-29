@@ -54,8 +54,8 @@ const UserDetail = () => {
     deleteGroupModalIsOpen,
     deleteChatPersonal,
     roomId,
-    isLoadingDeleteChatMessage,
-    isLoadingChatRoom,
+    deleteChatMessageIsLoading,
+    chatRoomIsLoading,
     toggleDeleteChatMessage,
     toggleClearChatMessage,
   } = route.params;
@@ -358,8 +358,6 @@ const UserDetail = () => {
           setSelectedMembers={setSelectedMembers}
           imageAttachment={imageAttachment}
           setImageAttachment={setImageAttachment}
-          pickImageHandler={pickImageHandler}
-          onEditGroupPicture={editGroupPictureHandler}
         />
         <UserInformation
           type={type}
@@ -410,7 +408,7 @@ const UserDetail = () => {
             ? groupDeleteHandler(roomId, toggleChatRoom)
             : null
         }
-        isLoading={type === "group" ? isLoadingChatRoom : isLoadingDeleteChatMessage}
+        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
       <RemoveConfirmationModal
         isOpen={removeMemberActionIsopen}
