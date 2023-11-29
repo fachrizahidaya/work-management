@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { Box, Flex, HStack, Icon, Text } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { Box, Flex, HStack, Icon, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import { TouchableOpacity } from "react-native";
 import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
+  chat,
   type,
   id,
   userId,
@@ -27,11 +28,10 @@ const ContactListItem = ({
   timestamp,
   searchKeyword,
   active_member,
-  setForceRerender,
-  forceRerender,
   isRead,
+  isPinned,
+  toggleDeleteModal,
 }) => {
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const navigation = useNavigation();
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
@@ -93,27 +93,11 @@ const ContactListItem = ({
     return text;
   };
 
-  /**
-   * Fetch members of selected group
-   */
-  const fetchSelectedGroupMembers = async () => {
-    try {
-      const res = await axiosInstance.get(`/chat/group/${id}/member`);
-      setSelectedGroupMembers(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchSelectedGroupMembers();
-  }, [id]);
-
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
-          userId,
+          userId: userId,
           name: name,
           roomId: id,
           image: image,
@@ -121,10 +105,11 @@ const ContactListItem = ({
           email: email,
           type: type,
           active_member: active_member,
-          setForceRender: setForceRerender,
-          forceRender: forceRerender,
-          selectedGroupMembers: selectedGroupMembers,
+          isPinned: isPinned,
         });
+      }}
+      onLongPress={() => {
+        type === "group" && active_member ? null : toggleDeleteModal(chat);
       }}
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
@@ -144,14 +129,22 @@ const ContactListItem = ({
                 />
               )}
 
-              <ChatTimeStamp time={time} timestamp={timestamp} />
+              <Flex flexDirection="row">
+                <ChatTimeStamp time={time} timestamp={timestamp} />
+              </Flex>
             </HStack>
 
             <Flex flexDir="row" alignItems="center" gap={1}>
               {!isDeleted ? (
                 <>
                   <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                    {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
+                    {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                    {message === null && (project || task || fileName) && (
+                      <HStack alignItems="center" space={1}>
+                        <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                        <Text>{generateAttachmentText()}</Text>
+                      </HStack>
+                    )}
                     {!!isRead && (
                       <Box
                         style={{
@@ -170,18 +163,19 @@ const ContactListItem = ({
                       </Box>
                     )}
                   </HStack>
-                  {message === null && (project || task || fileName) && (
-                    <HStack alignItems="center" space={1}>
-                      <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
-                      <Text>{generateAttachmentText()}</Text>
-                    </HStack>
-                  )}
                 </>
               ) : (
                 <Text fontStyle="italic" opacity={0.5}>
                   Message has been deleted
                 </Text>
               )}
+              {isPinned?.pin_chat ? (
+                <Icon
+                  as={<MaterialCommunityIcons name="pin" />}
+                  size="md"
+                  style={{ transform: [{ rotate: "45deg" }] }}
+                />
+              ) : null}
             </Flex>
           </Box>
         </Flex>

@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
+const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleDeleteModal }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -16,12 +16,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
           PEOPLE
         </Text>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() =>
-            navigation.navigate("New Chat", { forceRerender: forceRerender, setForceRerender: setForceRerender })
-          }
-        >
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
@@ -30,6 +25,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
         personalChats.map((personal) => {
           return (
             <ContactListItem
+              chat={personal}
               type="personal"
               key={personal.id}
               id={personal.id}
@@ -46,9 +42,9 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               time={personal.latest_message?.created_time}
               timestamp={personal.latest_message?.created_at}
               isRead={personal.unread}
+              isPinned={personal?.pin_personal}
               active_member={0}
-              setForceRerender={setForceRerender}
-              forceRerender={forceRerender}
+              toggleDeleteModal={toggleDeleteModal}
             />
           );
         })}

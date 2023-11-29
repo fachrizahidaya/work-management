@@ -16,7 +16,7 @@ const ChatInput = ({
   fileAttachment,
   selectFile,
   pickImageHandler,
-  sendMessage,
+  onSendMessage,
   setFileAttachment,
   bandAttachment,
   setBandAttachment,
@@ -30,21 +30,25 @@ const ChatInput = ({
 }) => {
   const attachmentOptions = [
     {
+      id: 1,
       icon: "file-document-outline",
       name: "Document",
       onPress: () => selectFile(),
     },
     {
+      id: 2,
       icon: "image",
       name: "Photo",
       onPress: () => pickImageHandler(),
     },
     {
+      id: 3,
       icon: "lightning-bolt",
       name: "Project",
       onPress: () => selectBandHandler("project"),
     },
     {
+      id: 4,
       icon: "checkbox-marked-circle-outline",
       name: "Task",
       onPress: () => selectBandHandler("task"),
@@ -80,7 +84,7 @@ const ChatInput = ({
         }
         formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
         setStatus("processing");
-        sendMessage(formData, setSubmitting, setStatus);
+        onSendMessage(formData, setSubmitting, setStatus);
       }
       resetForm();
       setFileAttachment(null);
@@ -116,7 +120,10 @@ const ChatInput = ({
     resetBandAttachment();
     if (bandAttachment) {
       formik.setFieldValue(`${bandAttachmentType}_id`, bandAttachment?.id);
-      formik.setFieldValue(`${bandAttachmentType}_no`, bandAttachment?.number_id);
+      formik.setFieldValue(
+        `${bandAttachmentType}_no`,
+        bandAttachmentType === "project" ? bandAttachment?.project_no : bandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
+      );
       formik.setFieldValue(`${bandAttachmentType}_title`, bandAttachment?.title);
     }
   }, [bandAttachment, bandAttachmentType]);
@@ -133,6 +140,7 @@ const ChatInput = ({
         ) : (
           <>
             <Menu
+              mb={10}
               trigger={(trigger) => {
                 return fileAttachment || bandAttachment ? null : (
                   <Pressable {...trigger}>
@@ -147,7 +155,7 @@ const ChatInput = ({
             >
               {attachmentOptions.map((option) => {
                 return (
-                  <Menu.Item onPress={option.onPress}>
+                  <Menu.Item key={option.id} onPress={option.onPress}>
                     <Icon as={<MaterialCommunityIcons name={option.icon} />} />
                     <Text>{option.name}</Text>
                   </Menu.Item>
@@ -171,7 +179,7 @@ const ChatInput = ({
                 formik.values.message !== "" ||
                 formik.values.file !== "" ||
                 formik.values.project_id ||
-                formik.values.task_id
+                (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
                   ? formik.handleSubmit
                   : null
               }

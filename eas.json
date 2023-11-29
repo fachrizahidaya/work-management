@@ -40,6 +40,9 @@
         "appleId": "developer@kolabora.com",
         "ascAppId": "6470588893",
         "appleTeamId": "RP9L4Q9H5J"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../../keys and certificate/kolabora-service-account.json"
       }
     }
   }

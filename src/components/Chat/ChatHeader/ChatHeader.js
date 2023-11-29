@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -9,7 +10,6 @@ import MenuHeader from "./MenuHeader";
 import SearchBox from "./SearchBox";
 
 const ChatHeader = ({
-  navigation,
   name,
   image,
   position,
@@ -22,18 +22,24 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
+  toggleClearChatMessage,
   deleteModalIsOpen,
   exitModalIsOpen,
   deleteGroupModalIsOpen,
   deleteChatPersonal,
   roomId,
-  isLoadingDeleteChatMessage,
-  isLoadingChatRoom,
+  deleteChatMessageIsLoading,
+  chatRoomIsLoading,
+  isLoading,
   toggleDeleteChatMessage,
+  onUpdatePinHandler,
+  isPinned,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
+
+  const navigation = useNavigation();
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -48,7 +54,7 @@ const ChatHeader = ({
     <>
       <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
-          <Pressable onPress={() => navigation.navigate("Chat List")}>
+          <Pressable onPress={() => !isLoading && navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
 
@@ -61,7 +67,7 @@ const ChatHeader = ({
                 position: position,
                 email: email,
                 type: type,
-                selectedGroupMembers: selectedGroupMembers,
+                roomId: roomId,
                 loggedInUser: loggedInUser,
                 active_member: active_member,
                 toggleDeleteModal: toggleDeleteModal,
@@ -71,10 +77,10 @@ const ChatHeader = ({
                 exitModalIsOpen: exitModalIsOpen,
                 deleteGroupModalIsOpen: deleteGroupModalIsOpen,
                 deleteChatPersonal: deleteChatPersonal,
-                roomId: roomId,
-                isLoadingDeleteChatMessage: isLoadingDeleteChatMessage,
-                isLoadingChatRoom: isLoadingChatRoom,
+                deleteChatMessageIsLoading: deleteChatMessageIsLoading,
+                chatRoomIsLoading: chatRoomIsLoading,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
+                toggleClearChatMessage: toggleClearChatMessage,
               })
             }
             display="flex"
@@ -95,16 +101,24 @@ const ChatHeader = ({
                     {selectedGroupMembers?.map((member, index) => {
                       return (
                         <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
-                          {loggedInUser === member?.user?.id ? "You" : member?.user?.name}
+                          {!member?.user
+                            ? loggedInUser === member?.id
+                              ? "You"
+                              : member?.name
+                            : loggedInUser === member?.user?.id
+                            ? "You"
+                            : member?.user?.name}
                           {index < selectedGroupMembers.length - 1 && `${", "}`}
                         </Text>
                       );
                     })}
                   </Flex>
                   {/* Handle if members overflow the flex size */}
-                  <Text fontSize={10} fontWeight={400} numberOfLines={1}>
-                    ...
-                  </Text>
+                  {selectedGroupMembers.length > 2 ? (
+                    <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                      ...
+                    </Text>
+                  ) : null}
                 </Flex>
               )}
             </Flex>
@@ -117,8 +131,12 @@ const ChatHeader = ({
           toggleDeleteModal={toggleDeleteModal}
           toggleExitModal={toggleExitModal}
           toggleSearch={toggleSearch}
+          toggleClearChatMessage={toggleClearChatMessage}
           type={type}
           active_member={active_member}
+          onUpdatePinHandler={onUpdatePinHandler}
+          roomId={roomId}
+          isPinned={isPinned}
         />
       </Flex>
 
