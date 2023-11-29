@@ -11,10 +11,8 @@ import ChatReplyInfo from "./ChatReplyInfo";
 
 const ChatBubble = ({
   chat,
-  image,
   name,
   fromUserId,
-  id,
   content,
   time,
   type,

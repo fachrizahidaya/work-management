@@ -6,7 +6,7 @@ import { Flex, Image, Text } from "native-base";
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
+const ChatReplyInfo = ({ message, myMessage, type }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const loggedInUser = useSelector((state) => state.auth);
 

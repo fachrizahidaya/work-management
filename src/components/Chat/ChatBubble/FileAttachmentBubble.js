@@ -10,16 +10,7 @@ const pdf = "../../../assets/doc-icons/pdf-format.png";
 const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
 
-const FileAttachmentBubble = ({
-  fileAttachement,
-  id,
-  image,
-  file_type,
-  file_name,
-  file_path,
-  file_size,
-  myMessage,
-}) => {
+const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
   const [fileImage, setFileImage] = useState("");
   const fileDict = [
     { type: "docx", image: doc },

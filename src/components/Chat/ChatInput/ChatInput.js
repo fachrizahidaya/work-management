@@ -16,7 +16,7 @@ const ChatInput = ({
   fileAttachment,
   selectFile,
   pickImageHandler,
-  sendMessage,
+  onSendMessage,
   setFileAttachment,
   bandAttachment,
   setBandAttachment,
@@ -84,7 +84,7 @@ const ChatInput = ({
         }
         formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
         setStatus("processing");
-        sendMessage(formData, setSubmitting, setStatus);
+        onSendMessage(formData, setSubmitting, setStatus);
       }
       resetForm();
       setFileAttachment(null);
