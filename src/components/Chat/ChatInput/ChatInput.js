@@ -179,7 +179,7 @@ const ChatInput = ({
                 formik.values.message !== "" ||
                 formik.values.file !== "" ||
                 formik.values.project_id ||
-                formik.values.task_id
+                (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
                   ? formik.handleSubmit
                   : null
               }

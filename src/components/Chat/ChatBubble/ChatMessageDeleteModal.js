@@ -21,6 +21,7 @@ const ChatMessageDeleteModal = ({
           </Button>
 
           <Button
+            disabled={isLoading}
             variant="outline"
             onPress={async () => {
               await deleteMessage(id, "me");
@@ -33,6 +34,7 @@ const ChatMessageDeleteModal = ({
 
           {myMessage && !isDeleted && (
             <Button
+              disabled={isLoading}
               variant="outline"
               onPress={async () => {
                 await deleteMessage(id, "everyone");

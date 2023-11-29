@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { Flex, Icon, Pressable, Text } from "native-base";
 
@@ -9,7 +10,6 @@ import MenuHeader from "./MenuHeader";
 import SearchBox from "./SearchBox";
 
 const ChatHeader = ({
-  navigation,
   name,
   image,
   position,
@@ -28,8 +28,9 @@ const ChatHeader = ({
   deleteGroupModalIsOpen,
   deleteChatPersonal,
   roomId,
-  isLoadingDeleteChatMessage,
-  isLoadingChatRoom,
+  deleteChatMessageIsLoading,
+  chatRoomIsLoading,
+  isLoading,
   toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
@@ -37,6 +38,8 @@ const ChatHeader = ({
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
+
+  const navigation = useNavigation();
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -51,7 +54,7 @@ const ChatHeader = ({
     <>
       <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
-          <Pressable onPress={() => navigation.navigate("Chat List")}>
+          <Pressable onPress={() => !isLoading && navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
 
@@ -74,8 +77,8 @@ const ChatHeader = ({
                 exitModalIsOpen: exitModalIsOpen,
                 deleteGroupModalIsOpen: deleteGroupModalIsOpen,
                 deleteChatPersonal: deleteChatPersonal,
-                isLoadingDeleteChatMessage: isLoadingDeleteChatMessage,
-                isLoadingChatRoom: isLoadingChatRoom,
+                deleteChatMessageIsLoading: deleteChatMessageIsLoading,
+                chatRoomIsLoading: chatRoomIsLoading,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
                 toggleClearChatMessage: toggleClearChatMessage,
               })
