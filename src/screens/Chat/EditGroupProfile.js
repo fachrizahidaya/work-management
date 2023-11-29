@@ -128,7 +128,7 @@ const EditGroupProfile = () => {
     <>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
           <Text>Edit Profile</Text>
