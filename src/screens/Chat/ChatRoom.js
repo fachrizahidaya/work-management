@@ -477,7 +477,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     fetchSelectedGroupMembers();
-  }, [roomId]);
+  }, [currentUser, roomId]);
 
   useFocusEffect(
     useCallback(() => {

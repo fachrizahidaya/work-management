@@ -20,7 +20,7 @@ const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const toast = useToast();
   const navigation = useNavigation();
-  const { userArray, groupData, forceRender, setForceRender } = route.params;
+  const { userArray, groupData } = route.params;
   const [image, setImage] = useState(null);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
@@ -42,9 +42,7 @@ const GroupFormScreen = ({ route }) => {
         position: null,
         email: null,
         active_member: 1,
-        forceRender: forceRender,
-        setForceRender: setForceRender,
-        selectedGroupMembers: userArray,
+        roomId: res.data.data.id,
       });
       setSubmitting(false);
       toast.show({
@@ -88,7 +86,6 @@ const GroupFormScreen = ({ route }) => {
           formData.append(prop, values[prop]);
         }
       }
-
       createGroupHandler(formData, setSubmitting);
     },
   });

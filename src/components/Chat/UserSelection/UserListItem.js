@@ -65,7 +65,7 @@ const UserListItem = ({
           </Flex>
 
           {multiSelect && (
-            <Box borderWidth={1}>
+            <Box>
               {selectedUsers.find((val) => val.id === id) && (
                 <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
               )}
