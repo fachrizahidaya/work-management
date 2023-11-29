@@ -25,6 +25,7 @@ import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScre
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
+import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -64,6 +65,7 @@ const ChatRoom = () => {
   const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
   const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: menuIsOpen, toggle: toggleMenu } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -589,6 +591,8 @@ const ChatRoom = () => {
               onSendMessage={sendMessageHandler}
               toggleProjectList={toggleProjectList}
               toggleTaskList={toggleTaskList}
+              menuIsOpen={menuIsOpen}
+              toggleMenu={toggleMenu}
             />
           </>
         ) : (
@@ -669,6 +673,8 @@ const ChatRoom = () => {
         toggleTaskList={toggleTaskList}
         setBandAttachment={setBandAttachment}
       />
+
+      <MenuAttachment isOpen={menuIsOpen} onClose={toggleMenu} />
     </>
   );
 };
