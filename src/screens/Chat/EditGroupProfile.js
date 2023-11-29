@@ -5,7 +5,7 @@ import * as FileSystem from "expo-file-system";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Flex, Icon, Image, Input, Pressable, Text, useToast } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -125,7 +125,7 @@ const EditGroupProfile = () => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <>
+    <SafeAreaView>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
           <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
@@ -213,7 +213,7 @@ const EditGroupProfile = () => {
           <FormButton opacity={0.5} onPress={null} children="Save" />
         )}
       </Flex>
-    </>
+    </SafeAreaView>
   );
 };
 
