@@ -27,6 +27,8 @@ const ChatInput = ({
   active_member,
   toggleProjectList,
   toggleTaskList,
+  menuIsOpen,
+  toggleMenu,
 }) => {
   const attachmentOptions = [
     {
@@ -139,7 +141,14 @@ const ChatInput = ({
           </Text>
         ) : (
           <>
-            <Menu
+            <Pressable onPress={toggleMenu}>
+              <Icon
+                as={<MaterialCommunityIcons name="plus" />}
+                size={6}
+                style={{ transform: [{ rotate: "270deg" }] }}
+              />
+            </Pressable>
+            {/* <Menu
               mb={10}
               trigger={(trigger) => {
                 return fileAttachment || bandAttachment ? null : (
@@ -161,7 +170,7 @@ const ChatInput = ({
                   </Menu.Item>
                 );
               })}
-            </Menu>
+            </Menu> */}
 
             <FormControl display="flex" flex={1} justifyContent="center">
               <Input
