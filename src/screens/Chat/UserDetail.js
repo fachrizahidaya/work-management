@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
 import { Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { SafeAreaView } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRoute } from "@react-navigation/native";
@@ -336,7 +337,7 @@ const UserDetail = () => {
   }, [userList]);
 
   return (
-    <>
+    <SafeAreaView>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
           <Pressable onPress={() => navigation.goBack()}>
@@ -454,7 +455,7 @@ const UserDetail = () => {
         currentUserIsAdmin={currentUserIsAdmin}
         toggleRemoveMemberAction={toggleRemoveMemberAction}
       />
-    </>
+    </SafeAreaView>
   );
 };
 
