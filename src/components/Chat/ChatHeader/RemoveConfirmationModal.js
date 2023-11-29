@@ -19,7 +19,7 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
 
         <Modal.Footer bgColor="white">
           <Button.Group space={2} width="full">
-            <Button onPress={toggle} bgColor={"red.600"} flex={1}>
+            <Button onPress={!isLoading && toggle} bgColor={"red.600"} flex={1}>
               Cancel
             </Button>
             <Button disabled={isLoading} bgColor={"primary.600"} onPress={onPress} flex={1}>
