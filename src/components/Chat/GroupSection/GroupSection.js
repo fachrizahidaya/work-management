@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
+const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleDeleteModal }) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
@@ -25,21 +25,25 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
       {groupChats.length > 0 &&
         groupChats.map((group) => (
           <ContactListItem
+            chat={group}
             key={group.id}
             id={group.id}
             name={group.name}
             image={group.image}
             position={null}
+            email={null}
             message={group.latest_message?.message}
             fileName={group.latest_message?.file_name}
             project={group.latest_message?.project_id}
             task={group.latest_message?.task_id}
+            isDeleted={group.latest_message?.delete_for_everyone}
             time={group.latest_message?.created_time}
             timestamp={group.latest_message?.created_at}
+            isRead={group.unread}
+            isPinned={group?.pin_group}
             type="group"
             active_member={group?.active_member}
-            setForceRerender={setForceRerender}
-            forceRerender={forceRerender}
+            toggleDeleteModal={toggleDeleteModal}
           />
         ))}
     </>
@@ -67,8 +71,10 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, setForceRerende
               fileName={group.latest_message?.file_name}
               project={group.latest_message?.project_id}
               task={group.latest_message?.task_id}
+              isDeleted={group.latest_message?.delete_for_everyone}
               time={group.latest_message?.created_time}
               timestamp={group.latest_message?.created_at}
+              isRead={group.unread}
               type="group"
               searchKeyword={searchKeyword}
             />

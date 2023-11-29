@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import _ from "lodash";
 
@@ -30,7 +30,7 @@ const AddGroupParticipantScreen = () => {
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
+  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -53,7 +53,7 @@ const AddGroupParticipantScreen = () => {
   const addSelectedUserToArray = (user) => {
     setSelectedUsers((prevState) => {
       if (!prevState.find((val) => val.id === user.id)) {
-        return [...prevState, user];
+        return [...prevState, { ...user, is_admin: 0 }];
       }
       return prevState;
     });
@@ -76,7 +76,9 @@ const AddGroupParticipantScreen = () => {
         },
       });
     } else {
-      navigation.navigate("Group Form", { userArray: selectedUsers });
+      navigation.navigate("Group Form", {
+        userArray: selectedUsers,
+      });
     }
   };
 
@@ -150,8 +152,12 @@ const AddGroupParticipantScreen = () => {
                   userType={item?.user_type}
                   selectedUsers={selectedUsers}
                   multiSelect={true}
+                  email={item?.email}
+                  type="group"
+                  active_member={1}
                   onPressAddHandler={addSelectedUserToArray}
                   onPressRemoveHandler={removeSelectedUserFromArray}
+                  selectedGroupMembers={selectedUsers}
                 />
               </Box>
             )}

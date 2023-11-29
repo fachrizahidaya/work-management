@@ -52,7 +52,7 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
   }, [projectData]);
   return (
     <>
-      <Pressable onPress={toggle} disabled={projectData?.owner_id !== userSelector.id}>
+      <Pressable flex={1} onPress={toggle} disabled={projectData?.owner_id !== userSelector.id}>
         <Flex
           borderWidth={1}
           borderColor="#cbcbcb"
@@ -64,6 +64,7 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
           flexDir="row"
           alignItems="center"
           justifyContent="space-between"
+          flex={1}
         >
           <Flex flexDir="row" alignItems="center" style={{ gap: 10 }}>
             <Box

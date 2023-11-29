@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
+import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Flex, FormControl, HStack, Skeleton, Text, VStack } from "native-base";
 import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
@@ -19,6 +20,8 @@ import CommentInput from "../../../components/Band/shared/CommentInput/CommentIn
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import NewTaskSlider from "../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import PageHeader from "../../../components/shared/PageHeader";
+import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/MenuSection";
+import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -26,18 +29,14 @@ const TaskDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
   const { taskId } = route.params;
   const loggedUser = userSelector.id;
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
   const [isReady, setIsReady] = useState(false);
+  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const { data: selectedTask, refetch: refetchSelectedTask } = useFetch(taskId && `/pm/tasks/${taskId}`);
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
   const { data: responsible, refetch: refetchResponsible } = useFetch(taskId && `/pm/tasks/${taskId}/responsible`);
 
-  const taskUserRights = [
-    selectedTask?.data?.project_owner_id,
-    selectedTask?.data?.owner_id,
-    selectedTask?.data?.responsible_id,
-  ];
+  const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
   const onOpenTaskForm = useCallback(() => {
@@ -54,6 +53,11 @@ const TaskDetailScreen = ({ route }) => {
       setIsReady(true);
     }, 150);
   }, []);
+
+  const baseStyles = {
+    color: "#3F434A",
+    fontWeight: 500,
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,22 +76,30 @@ const TaskDetailScreen = ({ route }) => {
               paddingHorizontal: 16,
             }}
           >
-            <Flex flexDir="row" alignItems="end" justifyContent="space-between">
-              <PageHeader
-                title={selectedTask?.data?.title}
-                subTitle={selectedTask?.data?.task_no}
-                onPress={() => navigation.goBack()}
-                width={width / 2.2}
-              />
+            <Flex gap={2}>
+              <HStack justifyContent="space-between">
+                <PageHeader
+                  title={selectedTask?.data?.title}
+                  subTitle={selectedTask?.data?.task_no}
+                  onPress={() => navigation.goBack()}
+                  width={width - 100}
+                />
+
+                {!inputIsDisabled && (
+                  <MenuSection
+                    selectedTask={selectedTask?.data}
+                    disabled={inputIsDisabled}
+                    openEditForm={onOpenTaskForm}
+                    refetchResponsible={refetchResponsible}
+                    responsible={responsible?.data}
+                  />
+                )}
+              </HStack>
 
               <ControlSection
                 taskStatus={selectedTask?.data?.status}
                 selectedTask={selectedTask?.data}
-                refetchResponsible={refetchResponsible}
-                responsible={responsible?.data}
-                openEditForm={onOpenTaskForm}
                 refetchTask={refetchSelectedTask}
-                disabled={inputIsDisabled}
               />
             </Flex>
 
@@ -124,7 +136,14 @@ const TaskDetailScreen = ({ route }) => {
             {/* Description */}
             <FormControl>
               <FormControl.Label>DESCRIPTION</FormControl.Label>
-              <Text>{selectedTask?.data?.description}</Text>
+
+              <RenderHtml
+                contentWidth={width}
+                baseStyle={baseStyles}
+                source={{
+                  html: hyperlinkConverter(selectedTask?.data?.description) || "",
+                }}
+              />
             </FormControl>
 
             {/* Checklists */}
@@ -170,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskDetailScreen;
+export default memo(TaskDetailScreen);

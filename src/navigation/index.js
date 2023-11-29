@@ -14,11 +14,13 @@ export const Navigations = () => {
   // Redirects user to chat room if app opens after pressing the push notification
   useEffect(() => {
     messaging().onNotificationOpenedApp((message) => {
-      if (message.data.type === "Chat") {
+      if (message.data.type === "personal" || message.data.type === "group") {
         navigation.navigate("Chat Room", {
           name: message.data.name,
           userId: message.data.user_id,
+          roomId: message.data.chat_id,
           image: message.data.image,
+          type: message.data.type,
         });
       }
     });

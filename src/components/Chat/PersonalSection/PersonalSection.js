@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceRerender, forceRerender }) => {
+const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleDeleteModal }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -25,12 +25,15 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
         personalChats.map((personal) => {
           return (
             <ContactListItem
+              chat={personal}
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal?.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               position={personal.user?.user_type}
+              email={personal.user?.email}
               message={personal.latest_message?.message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}
@@ -38,9 +41,10 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               isDeleted={personal.latest_message?.delete_for_everyone}
               time={personal.latest_message?.created_time}
               timestamp={personal.latest_message?.created_at}
+              isRead={personal.unread}
+              isPinned={personal?.pin_personal}
               active_member={0}
-              setForceRerender={setForceRerender}
-              forceRerender={forceRerender}
+              toggleDeleteModal={toggleDeleteModal}
             />
           );
         })}
@@ -63,7 +67,8 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
             <ContactListItem
               type="personal"
               key={personal.id}
-              id={personal.user?.id}
+              id={personal.id}
+              userId={personal.user?.id}
               name={personal.user?.name}
               image={personal.user?.image}
               message={personal.latest_message?.message}
@@ -72,6 +77,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, setForceR
               task={personal.latest_message?.task_id}
               isDeleted={personal.latest_message?.delete_for_everyone}
               time={personal.latest_message?.created_time}
+              isRead={personal.unread}
               timestamp={personal.latest_message?.created_at}
               searchKeyword={searchKeyword}
             />

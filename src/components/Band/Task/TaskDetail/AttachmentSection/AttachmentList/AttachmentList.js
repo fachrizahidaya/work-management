@@ -15,6 +15,7 @@ const AttachmentList = ({
   iconHeight,
   iconWidth,
   path,
+  disabled,
 }) => {
   const doc = "../../../../../../assets/doc-icons/doc-format.png";
   const gif = "../../../../../../assets/doc-icons/gif-format.png";
@@ -88,12 +89,14 @@ const AttachmentList = ({
           </Flex>
         </Menu.Item>
 
-        <Menu.Item onPress={() => deleteFileHandler(id, from)}>
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
-            <Text color="red.500">Delete</Text>
-          </Flex>
-        </Menu.Item>
+        {!disabled && (
+          <Menu.Item onPress={() => deleteFileHandler(id, from)}>
+            <Flex flexDir="row" alignItems="center" gap={2}>
+              <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
+              <Text color="red.500">Delete</Text>
+            </Flex>
+          </Menu.Item>
+        )}
       </Menu>
     </Flex>
   );

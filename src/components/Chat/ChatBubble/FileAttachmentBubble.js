@@ -10,16 +10,7 @@ const pdf = "../../../assets/doc-icons/pdf-format.png";
 const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
 
-const FileAttachmentBubble = ({
-  fileAttachement,
-  id,
-  image,
-  file_type,
-  file_name,
-  file_path,
-  file_size,
-  myMessage,
-}) => {
+const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
   const [fileImage, setFileImage] = useState("");
   const fileDict = [
     { type: "docx", image: doc },
@@ -57,14 +48,13 @@ const FileAttachmentBubble = ({
   return (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
-      gap={1}
-      py={2}
-      width={250}
+      gap={3}
+      p={2}
       borderRadius={5}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
       alignItems="center"
-      justifyContent="space-evenly"
+      justifyContent="space-between"
     >
       <Image
         source={
@@ -79,14 +69,22 @@ const FileAttachmentBubble = ({
             : null
         }
         alignSelf="center"
-        h={10}
-        w={10}
+        h={8}
+        w={8}
         resizeMode="cover"
         alt={`${file_type} format`}
       />
 
-      <Flex width={150}>
-        <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+      <Flex>
+        <Text
+          width={160}
+          numberOfLines={2}
+          overflow="hidden"
+          ellipsizeMode="tail"
+          fontSize={12}
+          fontWeight={400}
+          color={!myMessage ? "#000000" : "#FFFFFF"}
+        >
           {file_name}
         </Text>
         <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>

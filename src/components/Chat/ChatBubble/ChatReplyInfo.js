@@ -6,7 +6,7 @@ import { Flex, Image, Text } from "native-base";
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
+const ChatReplyInfo = ({ message, myMessage, type }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const loggedInUser = useSelector((state) => state.auth);
 
@@ -20,6 +20,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
 
   return (
     <Flex
+      position="relative"
       borderLeftColor="#37b4ea"
       borderLeftWidth={5}
       borderRadius={5}
@@ -28,7 +29,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
       gap={2}
       backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
       flexDirection="row"
-      alignItems="center"
+      justifyContent="space-between"
     >
       <Flex width={mimeTypeInfo?.file_type === "image" ? 200 : null}>
         <Text fontSize={12} fontWeight={700} color={!myMessage ? "#000000" : "#FFFFFF"}>
@@ -40,7 +41,7 @@ const ChatReplyInfo = ({ message, myMessage, chatBubbleView, type }) => {
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${message?.file_path}` }}
           alt="Attachment Preview"
-          width={10}
+          width={9}
           height={10}
           resizeMode="contain"
         />

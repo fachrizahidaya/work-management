@@ -7,18 +7,16 @@ import { Box, Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ProjectAttachment from "../Attachment/ProjectAttachment";
-import TaskAttachment from "../Attachment/TaskAttachment";
 import ChatReplyPreview from "./ChatReplyPreview";
 
 const ChatInput = ({
   userId,
+  roomId,
   type,
   fileAttachment,
   selectFile,
   pickImageHandler,
-  sendMessage,
+  onSendMessage,
   setFileAttachment,
   bandAttachment,
   setBandAttachment,
@@ -27,15 +25,41 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
+  toggleProjectList,
+  toggleTaskList,
 }) => {
-  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
-  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
+  const attachmentOptions = [
+    {
+      id: 1,
+      icon: "file-document-outline",
+      name: "Document",
+      onPress: () => selectFile(),
+    },
+    {
+      id: 2,
+      icon: "image",
+      name: "Photo",
+      onPress: () => pickImageHandler(),
+    },
+    {
+      id: 3,
+      icon: "lightning-bolt",
+      name: "Project",
+      onPress: () => selectBandHandler("project"),
+    },
+    {
+      id: 4,
+      icon: "checkbox-marked-circle-outline",
+      name: "Task",
+      onPress: () => selectBandHandler("task"),
+    },
+  ];
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      to_user_id: userId || "",
-      group_id: userId || "",
+      to_user_id: type === "personal" ? userId : null || "",
+      group_id: type === "group" ? roomId : null || "",
       reply_to_id: messageToReply?.id || "",
       message: "",
       file: "",
@@ -60,12 +84,7 @@ const ChatInput = ({
         }
         formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
         setStatus("processing");
-        // if (type === "group") {
-        //   formData.delete("to_user_id");
-        // } else {
-        //   formData.delete("group_id");
-        // }
-        sendMessage(formData, setSubmitting, setStatus);
+        onSendMessage(formData, setSubmitting, setStatus);
       }
       resetForm();
       setFileAttachment(null);
@@ -75,18 +94,13 @@ const ChatInput = ({
     },
   });
 
-  const selectProjectHandler = (bandType) => {
-    toggleProjectList();
+  const selectBandHandler = (bandType) => {
+    if (bandType === "project") {
+      toggleProjectList();
+    } else {
+      toggleTaskList();
+    }
     setBandAttachmentType(bandType);
-  };
-
-  const selectTaskHandler = (bandType) => {
-    toggleTaskList();
-    setBandAttachmentType(bandType);
-  };
-
-  const bandAttachmentSelectHandler = (attachment) => {
-    setBandAttachment(attachment);
   };
 
   const resetBandAttachment = () => {
@@ -106,111 +120,75 @@ const ChatInput = ({
     resetBandAttachment();
     if (bandAttachment) {
       formik.setFieldValue(`${bandAttachmentType}_id`, bandAttachment?.id);
-      formik.setFieldValue(`${bandAttachmentType}_no`, bandAttachment?.number_id);
+      formik.setFieldValue(
+        `${bandAttachmentType}_no`,
+        bandAttachmentType === "project" ? bandAttachment?.project_no : bandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
+      );
       formik.setFieldValue(`${bandAttachmentType}_title`, bandAttachment?.title);
     }
   }, [bandAttachment, bandAttachmentType]);
 
-  useEffect(() => {
-    if (!formik.isSubmitting && formik.status === "success") {
-      formik.resetForm();
-    }
-  }, [formik.isSubmitting, formik.status]);
-
   return (
     <Box>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
-      {type === "group" && !active_member ? (
-        <Flex flexDirection="row" alignItems="center" justifyContent="center" py={1} backgroundColor="#E8E9EB" px={3}>
+
+      <Flex gap={1} backgroundColor="#E8E9EB" flexDirection="row" alignItems="center" justifyContent="center" p={2}>
+        {type === "group" && !active_member ? (
           <Text textAlign="center" fontSize={12} fontWeight={500}>
             You can't send message to this group because you're no longer a participant
           </Text>
-        </Flex>
-      ) : (
-        <FormControl
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-          py={1}
-          backgroundColor="#E8E9EB"
-          px={3}
-        >
-          <Menu
-            w={160}
-            mb={7}
-            trigger={(trigger) => {
-              return fileAttachment ? null : (
-                <Pressable {...trigger}>
-                  <Icon as={<MaterialIcons name="add" />} size={6} />
-                </Pressable>
-              );
-            }}
-          >
-            <Menu.Item onPress={selectFile}>
-              <Icon as={<MaterialCommunityIcons name="file-document-outline" />} />
-              <Text>Document</Text>
-            </Menu.Item>
-            <Menu.Item onPress={pickImageHandler}>
-              <Icon as={<MaterialIcons name="image" />} />
-              <Text>Photo</Text>
-            </Menu.Item>
-            <Menu.Item onPress={() => selectProjectHandler("project")}>
-              <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} />
-              <Text>Project</Text>
-            </Menu.Item>
-            <Menu.Item onPress={() => selectTaskHandler("task")}>
-              <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} />
-              <Text>Task</Text>
-            </Menu.Item>
-          </Menu>
+        ) : (
+          <>
+            <Menu
+              mb={10}
+              trigger={(trigger) => {
+                return fileAttachment || bandAttachment ? null : (
+                  <Pressable {...trigger}>
+                    <Icon
+                      as={<MaterialCommunityIcons name="attachment" />}
+                      size={6}
+                      style={{ transform: [{ rotate: "270deg" }] }}
+                    />
+                  </Pressable>
+                );
+              }}
+            >
+              {attachmentOptions.map((option) => {
+                return (
+                  <Menu.Item key={option.id} onPress={option.onPress}>
+                    <Icon as={<MaterialCommunityIcons name={option.icon} />} />
+                    <Text>{option.name}</Text>
+                  </Menu.Item>
+                );
+              })}
+            </Menu>
 
-          <ProjectAttachment
-            projectListIsOpen={projectListIsOpen}
-            toggleProjectList={toggleProjectList}
-            bandAttachmentType={bandAttachmentType}
-            setBandAttachmentType={setBandAttachmentType}
-            onSelectBandAttachment={bandAttachmentSelectHandler}
-            bandAttachment={bandAttachment}
-            setBandAttachment={setBandAttachment}
-          />
+            <FormControl display="flex" flex={1} justifyContent="center">
+              <Input
+                backgroundColor="#FFFFFF"
+                size="md"
+                variant="unstyled"
+                placeholder="Type a message..."
+                value={formik.values.message}
+                onChangeText={(value) => formik.setFieldValue("message", value)}
+              />
+            </FormControl>
 
-          <TaskAttachment
-            taskListIsOpen={taskListIsOpen}
-            toggleTaskList={toggleTaskList}
-            bandAttachmentType={bandAttachmentType}
-            setBandAttachmentType={setBandAttachmentType}
-            onSelectBandAttachment={bandAttachmentSelectHandler}
-            bandAttachment={bandAttachment}
-            setBandAttachment={setBandAttachment}
-          />
-
-          <Input
-            backgroundColor="#FFFFFF"
-            maxHeight={100}
-            width={300}
-            size="md"
-            variant="unstyled"
-            placeholder="Type a message..."
-            multiline={true}
-            value={formik.values.message}
-            onChangeText={(value) => formik.setFieldValue("message", value)}
-          />
-
-          <IconButton
-            onPress={
-              formik.values.message !== "" ||
-              formik.values.file !== "" ||
-              formik.values.project_id ||
-              formik.values.task_id
-                ? formik.handleSubmit
-                : null
-            }
-            opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
-            icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
-          />
-        </FormControl>
-      )}
+            <IconButton
+              onPress={
+                formik.values.message !== "" ||
+                formik.values.file !== "" ||
+                formik.values.project_id ||
+                (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
+                  ? formik.handleSubmit
+                  : null
+              }
+              opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
+              icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
+            />
+          </>
+        )}
+      </Flex>
     </Box>
   );
 };

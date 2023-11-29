@@ -12,7 +12,7 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import AttachmentList from "../../Task/TaskDetail/AttachmentSection/AttachmentList/AttachmentList";
 
-const FileSection = ({ projectId }) => {
+const FileSection = ({ projectId, isAllowed }) => {
   const toast = useToast();
 
   const {
@@ -181,6 +181,7 @@ const FileSection = ({ projectId }) => {
                       title={item.file_name}
                       type={item.mime_type}
                       path={item.file_path}
+                      disabled={!isAllowed}
                     />
                   )}
                 />

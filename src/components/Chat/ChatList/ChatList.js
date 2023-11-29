@@ -1,28 +1,27 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex } from "native-base";
+import { Flex, Spinner } from "native-base";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
+import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 import ImageAttachment from "../Attachment/ImageAttachment";
 import FileAttachment from "../Attachment/FileAttachment";
-import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
 
 const ChatList = ({
   type,
   chatList,
-  messageToReply,
-  setMessageToReply,
+  fetchChatMessageHandler,
+  isLoading,
+  openChatBubbleHandler,
+  toggleFullScreen,
   fileAttachment,
   setFileAttachment,
-  fetchChatMessageHandler,
-  deleteMessage,
   bandAttachment,
-  setBandAttachment,
   bandAttachmentType,
-  setBandAttachmentType,
+  setBandAttachment,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -99,9 +98,14 @@ const ChatList = ({
     <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
       <FlashList
         inverted
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        initialNumToRender={20}
+        ListFooterComponent={() => isLoading && <Spinner size="sm" />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
-        onEndReached={hasBeenScrolled ? () => fetchChatMessageHandler() : null}
+        onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
         onEndReachedThreshold={0.1}
         estimatedItemSize={200}
         data={chatList}
@@ -120,32 +124,30 @@ const ChatList = ({
             )}
             <ChatBubble
               chat={item}
-              name={userNameRenderCheck(chatList[index + 1], item)}
-              image={userImageRenderCheck(item, chatList[index - 1])}
               fromUserId={item?.from_user_id}
-              id={item?.id}
               content={item?.message}
-              type={type}
               time={item?.created_time}
               file_path={item?.file_path}
               file_name={item?.file_name}
               file_type={item?.mime_type}
               file_size={item?.file_size}
               band_attachment_id={item?.project_id ? item?.project_id : item?.task_id}
-              band_attachment_no={item?.project?.project_no ? item?.project?.project_no : item?.task?.task_no}
+              band_attachment_no={item?.project_no ? item?.project_no : item?.task_no}
               band_attachment_type={item?.project_id ? "Project" : "Task"}
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
+              type={type}
+              toggleFullScreen={toggleFullScreen}
+              name={userNameRenderCheck(chatList[index + 1], item)}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
-              deleteMessage={deleteMessage}
-              setMessageToReply={setMessageToReply}
+              openChatBubbleHandler={openChatBubbleHandler}
             />
           </>
         )}
       />
 
-      {fileAttachment ? (
+      {fileAttachment && (
         <>
           {fileAttachment.type === "image/jpg" ? (
             <ImageAttachment image={fileAttachment} setImage={setFileAttachment} />
@@ -153,7 +155,7 @@ const ChatList = ({
             <FileAttachment file={fileAttachment} setFile={setFileAttachment} />
           )}
         </>
-      ) : null}
+      )}
 
       {bandAttachment && (
         <ProjectTaskAttachmentPreview
@@ -166,4 +168,4 @@ const ChatList = ({
   );
 };
 
-export default ChatList;
+export default memo(ChatList);

@@ -31,7 +31,6 @@ const FeedCardItem = ({
   forceRerender,
   setForceRerender,
 }) => {
-  console.log("image", attachment);
   const [totalLike, setTotalLike] = useState(total_like);
 
   const navigation = useNavigation();

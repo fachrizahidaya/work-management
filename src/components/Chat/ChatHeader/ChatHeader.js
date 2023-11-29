@@ -1,207 +1,153 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
-import { Box, Flex, Icon, Input, Menu, Pressable, Text, useToast } from "native-base";
+import { Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ConfirmationModal from "../../shared/ConfirmationModal";
-import axiosInstance from "../../../config/api";
-import ReturnConfirmationModal from "../../shared/ReturnConfirmationModal";
-import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
+import MenuHeader from "./MenuHeader";
+import SearchBox from "./SearchBox";
 
 const ChatHeader = ({
-  navigation,
   name,
   image,
   position,
-  userId,
+  email,
   fileAttachment,
   type,
   active_member,
-  setForceRender,
-  forceRender,
+  toggleExitModal,
+  toggleDeleteGroupModal,
+  selectedGroupMembers,
+  loggedInUser,
+  toggleDeleteModal,
+  toggleClearChatMessage,
+  deleteModalIsOpen,
+  exitModalIsOpen,
+  deleteGroupModalIsOpen,
+  deleteChatPersonal,
+  roomId,
+  deleteChatMessageIsLoading,
+  chatRoomIsLoading,
+  isLoading,
+  toggleDeleteChatMessage,
+  onUpdatePinHandler,
+  isPinned,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
 
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
-
-  const toast = useToast();
+  const navigation = useNavigation();
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
 
-  const groupExitHandler = async (group_id, setIsLoading) => {
-    try {
-      const res = await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      setForceRender(!forceRender);
-      toggleExitModal();
-      navigation.goBack();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
-  const groupDeleteHandler = async (group_id, setIsLoading) => {
-    try {
-      const res = await axiosInstance.delete(`/chat/group/${group_id}`);
-      toggleDeleteGroupModal();
-      navigation.goBack();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
-    }
+  const clearSearch = () => {
+    setInputToShow("");
+    setSearchInput("");
   };
 
   return (
     <>
       <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
-          <Pressable onPress={() => navigation.navigate("Chat List")}>
+          <Pressable onPress={() => !isLoading && navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
 
-          <AvatarPlaceholder name={name} image={image} size="md" />
-
-          <Box>
-            <Text fontSize={16}>{name}</Text>
-            {type === "personal" ? <Text>{position}</Text> : <Text></Text>}
-          </Box>
-        </Flex>
-
-        <Flex direction="row" alignItems="center">
-          <Menu
-            w={160}
-            mt={8}
-            trigger={(trigger) => {
-              return fileAttachment ? null : (
-                <Pressable {...trigger} mr={1}>
-                  <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
-                </Pressable>
-              );
-            }}
+          <Pressable
+            onPress={() =>
+              navigation.navigate("User Detail", {
+                navigation: navigation,
+                name: name,
+                image: image,
+                position: position,
+                email: email,
+                type: type,
+                roomId: roomId,
+                loggedInUser: loggedInUser,
+                active_member: active_member,
+                toggleDeleteModal: toggleDeleteModal,
+                toggleExitModal: toggleExitModal,
+                toggleDeleteGroupModal: toggleDeleteGroupModal,
+                deleteModalIsOpen: deleteModalIsOpen,
+                exitModalIsOpen: exitModalIsOpen,
+                deleteGroupModalIsOpen: deleteGroupModalIsOpen,
+                deleteChatPersonal: deleteChatPersonal,
+                deleteChatMessageIsLoading: deleteChatMessageIsLoading,
+                chatRoomIsLoading: chatRoomIsLoading,
+                toggleDeleteChatMessage: toggleDeleteChatMessage,
+                toggleClearChatMessage: toggleClearChatMessage,
+              })
+            }
+            display="flex"
+            gap={4}
+            flexDirection="row"
           >
-            <Menu.Item onPress={toggleSearch}>
-              <Text>Search</Text>
-            </Menu.Item>
-            {type === "group" ? (
-              <>
-                {active_member === 1 ? (
-                  <Menu.Item onPress={toggleExitModal}>
-                    <Text>Exit Group</Text>
-                  </Menu.Item>
-                ) : (
-                  <Menu.Item onPress={toggleDeleteGroupModal}>
-                    <Text>Delete Group</Text>
-                  </Menu.Item>
-                )}
-              </>
-            ) : (
-              <Menu.Item onPress={toggleDeleteModal}>
-                <Text>Delete Chat</Text>
-              </Menu.Item>
-            )}
-          </Menu>
+            <AvatarPlaceholder name={name} image={image} size="md" />
 
-          {type === "group" && active_member === 1 && (
-            <>
-              <ReturnConfirmationModal
-                isOpen={exitModalIsOpen}
-                toggle={toggleExitModal}
-                description="Are you sure want to exit this group?"
-                onPress={() => groupExitHandler(userId)}
-              />
-            </>
-          )}
-
-          {type === "group" && active_member === 0 && (
-            <>
-              <ReturnConfirmationModal
-                isOpen={deleteGroupModalIsOpen}
-                toggle={toggleDeleteGroupModal}
-                description="Are you sure want to delete this group?"
-                onPress={() => groupDeleteHandler(userId)}
-              />
-            </>
-          )}
-
-          <ConfirmationModal
-            isOpen={deleteModalIsOpen}
-            toggle={toggleDeleteModal}
-            header="Delete Chat"
-            description="Are you sure want to delete this chat?"
-            isDelete={true}
-            isPatch={false}
-            hasSuccessFunc={true}
-            apiUrl={`/chat/personal/${userId}`}
-            onSuccess={() => {
-              toggleDeleteModal();
-              navigation.goBack();
-            }}
-            successMessage="Chat Deleted"
-          />
+            <Flex>
+              <Text fontSize={16}>{name}</Text>
+              {type === "personal" ? (
+                <Text fontSize={12} fontWeight={400}>
+                  {position}
+                </Text>
+              ) : (
+                <Flex alignItems="center" flexDirection="row">
+                  <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
+                    {selectedGroupMembers?.map((member, index) => {
+                      return (
+                        <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
+                          {!member?.user
+                            ? loggedInUser === member?.id
+                              ? "You"
+                              : member?.name
+                            : loggedInUser === member?.user?.id
+                            ? "You"
+                            : member?.user?.name}
+                          {index < selectedGroupMembers.length - 1 && `${", "}`}
+                        </Text>
+                      );
+                    })}
+                  </Flex>
+                  {/* Handle if members overflow the flex size */}
+                  {selectedGroupMembers.length > 2 ? (
+                    <Text fontSize={10} fontWeight={400} numberOfLines={1}>
+                      ...
+                    </Text>
+                  ) : null}
+                </Flex>
+              )}
+            </Flex>
+          </Pressable>
         </Flex>
+
+        <MenuHeader
+          fileAttachment={fileAttachment}
+          toggleDeleteGroupModal={toggleDeleteGroupModal}
+          toggleDeleteModal={toggleDeleteModal}
+          toggleExitModal={toggleExitModal}
+          toggleSearch={toggleSearch}
+          toggleClearChatMessage={toggleClearChatMessage}
+          type={type}
+          active_member={active_member}
+          onUpdatePinHandler={onUpdatePinHandler}
+          roomId={roomId}
+          isPinned={isPinned}
+        />
       </Flex>
+
       {searchVisible && (
-        <Input
-          value={inputToShow}
-          InputLeftElement={
-            <Pressable>
-              <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
-            </Pressable>
-          }
-          InputRightElement={
-            <Pressable
-              onPress={
-                searchInput === ""
-                  ? () => toggleSearch()
-                  : () => {
-                      setInputToShow("");
-                      setSearchInput("");
-                    }
-              }
-            >
-              <Icon as={<MaterialCommunityIcons name="close-circle-outline" />} size="md" mr={2} color="muted.400" />
-            </Pressable>
-          }
-          onChangeText={(value) => {
-            setInputToShow(value);
-            setSearchInput(value);
-          }}
-          variant="unstyled"
-          size="md"
-          placeholder="Search"
-          borderRadius={15}
-          borderWidth={1}
-          height={10}
-          my={3}
-          mx={3}
+        <SearchBox
+          inputToShow={inputToShow}
+          searchInput={searchInput}
+          toggleSearch={toggleSearch}
+          clearSearch={clearSearch}
+          setInputToShow={setInputToShow}
+          setSearchInput={setSearchInput}
         />
       )}
     </>

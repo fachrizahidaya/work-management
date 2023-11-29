@@ -95,9 +95,9 @@ const MyProfileScreen = ({ route }) => {
    */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
 
@@ -179,7 +179,7 @@ const MyProfileScreen = ({ route }) => {
               source={{
                 uri: !image ? `${process.env.EXPO_PUBLIC_API}/image/${userSelector?.image}` : image.uri,
               }}
-              resizeMethod="contain"
+              resizeMode="contain"
               borderRadius={20}
               w={120}
               h={120}
@@ -217,7 +217,7 @@ const MyProfileScreen = ({ route }) => {
 
           {forms.map((form) => {
             return (
-              <FormControl>
+              <FormControl key={form.title}>
                 <FormControl.Label>{form.title}</FormControl.Label>
                 <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
                   <Text fontSize={12} fontWeight={400} color="gray.400">

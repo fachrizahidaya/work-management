@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+import RenderHTML from "react-native-render-html";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Button, Flex, Icon, Pressable, Spinner, Text, useToast } from "native-base";
+import { Dimensions } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,9 +16,11 @@ import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { hyperlinkConverter } from "../../../../../helpers/hyperlinkConverter";
 
 const CommentList = ({ comments, parentData, refetchComments, refetchAttachments, downloadAttachment, projectId }) => {
   const toast = useToast();
+  const { width } = Dimensions.get("screen");
   const userSelector = useSelector((state) => state.auth);
   const [selectedComments, setSelectedComments] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
@@ -95,13 +99,17 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
     }
   };
 
+  const baseStyles = {
+    color: "#3F434A",
+    fontWeight: 500,
+  };
+
   useEffect(() => {
     if (selectedComments.length == 0) {
       setBulkModeIsOn(false);
       setForceRerender((prev) => !prev);
     }
   }, [selectedComments.length]);
-
   return (
     <ScrollView style={{ maxHeight: 300 }}>
       <Box flex={1} minHeight={2}>
@@ -136,10 +144,12 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
               }}
               onPress={() => {
                 if (bulkModeIsOn) {
-                  if (!selectedComments.includes(item.id)) {
-                    addCommentToArray(item.id);
-                  } else {
-                    removeSelectedCommentFromArray(item.id);
+                  if (ownerPrivilage || item.user_id === userSelector.id) {
+                    if (!selectedComments.includes(item.id)) {
+                      addCommentToArray(item.id);
+                    } else {
+                      removeSelectedCommentFromArray(item.id);
+                    }
                   }
                 }
               }}
@@ -149,7 +159,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                 justifyContent="space-between"
                 bgColor={selectedComments.includes(item.id) ? "muted.200" : "white"}
               >
-                <Flex flexDir="row" gap={1.5} mb={2}>
+                <Flex flexDir="row" gap={1.5} mb={2} flex={1}>
                   <AvatarPlaceholder
                     name={item?.comment_name}
                     image={item?.comment_image}
@@ -157,13 +167,21 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                     style={{ marginTop: 4 }}
                   />
 
-                  <Box>
+                  <Box flex={1}>
                     <Flex flexDir="row" gap={1} alignItems="center">
                       <Text>{item?.comment_name.split(" ")[0]}</Text>
                       <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
                     </Flex>
 
-                    <Text fontWeight={400}>{item?.comments}</Text>
+                    <Box>
+                      <RenderHTML
+                        contentWidth={width}
+                        baseStyle={baseStyles}
+                        source={{
+                          html: hyperlinkConverter(item?.comments) || "",
+                        }}
+                      />
+                    </Box>
 
                     <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
                       {item.attachments.length > 0 &&
@@ -197,4 +215,4 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
   );
 };
 
-export default CommentList;
+export default memo(CommentList);

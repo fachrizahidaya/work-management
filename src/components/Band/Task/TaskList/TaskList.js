@@ -38,7 +38,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}
@@ -52,6 +51,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
@@ -90,7 +90,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}
@@ -104,6 +103,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}
@@ -142,7 +142,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   estimatedItemSize={200}
                   renderItem={({ item }) => (
                     <TaskListItem
-                      key={item.id}
                       id={item.id}
                       no={item.task_no}
                       task={item}
@@ -156,6 +155,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                       totalComments={item.total_comment}
                       status={item.status}
                       responsible={item.responsible_name}
+                      responsibleId={item.responsible_id}
                       openCloseTaskConfirmation={openCloseTaskConfirmation}
                     />
                   )}

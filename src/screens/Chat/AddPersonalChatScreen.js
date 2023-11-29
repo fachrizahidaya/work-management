@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import _ from "lodash";
 
@@ -20,13 +20,15 @@ const AddPersonalChatScreen = () => {
   const [cumulativeData, setCumulativeData] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
 
+  const route = useRoute();
+
   const userFetchParameters = {
     page: currentPage,
     search: searchKeyword,
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch("/setting/users", [currentPage, searchKeyword], userFetchParameters);
+  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -110,11 +112,15 @@ const AddPersonalChatScreen = () => {
               <Box marginBottom={2}>
                 <UserListItem
                   user={item}
+                  roomId={item?.chat_personal_id}
                   id={item?.id}
                   image={item?.image}
                   name={item?.name}
                   userType={item?.user_type}
                   multiSelect={false}
+                  email={item?.email}
+                  type="personal"
+                  active_member={0}
                 />
               </Box>
             )}

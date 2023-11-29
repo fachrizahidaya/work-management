@@ -1,20 +1,24 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { Box, Flex, HStack, Icon, Text } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { Box, Flex, HStack, Icon, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import { TouchableOpacity } from "react-native";
+import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
+  chat,
   type,
   id,
+  userId,
   name,
   image,
   position,
+  email,
   message,
   isDeleted,
   fileName,
@@ -24,8 +28,9 @@ const ContactListItem = ({
   timestamp,
   searchKeyword,
   active_member,
-  setForceRerender,
-  forceRerender,
+  isRead,
+  isPinned,
+  toggleDeleteModal,
 }) => {
   const navigation = useNavigation();
 
@@ -87,19 +92,24 @@ const ContactListItem = ({
 
     return text;
   };
+
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Chat Room", {
+          userId: userId,
           name: name,
-          userId: id,
+          roomId: id,
           image: image,
           position: position,
+          email: email,
           type: type,
           active_member: active_member,
-          setForceRender: setForceRerender,
-          forceRender: forceRerender,
+          isPinned: isPinned,
         });
+      }}
+      onLongPress={() => {
+        type === "group" && active_member ? null : toggleDeleteModal(chat);
       }}
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
@@ -119,25 +129,53 @@ const ContactListItem = ({
                 />
               )}
 
-              <ChatTimeStamp time={time} timestamp={timestamp} />
+              <Flex flexDirection="row">
+                <ChatTimeStamp time={time} timestamp={timestamp} />
+              </Flex>
             </HStack>
 
             <Flex flexDir="row" alignItems="center" gap={1}>
               {!isDeleted ? (
                 <>
-                  {message && <Text>{message.length > 35 ? message.slice(0, 35) + "..." : message}</Text>}
-                  {message === null && (project || task || fileName) && (
-                    <HStack alignItems="center" space={1}>
-                      <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
-                      <Text>{generateAttachmentText()}</Text>
-                    </HStack>
-                  )}
+                  <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                    {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                    {message === null && (project || task || fileName) && (
+                      <HStack alignItems="center" space={1}>
+                        <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                        <Text>{generateAttachmentText()}</Text>
+                      </HStack>
+                    )}
+                    {!!isRead && (
+                      <Box
+                        style={{
+                          height: 25,
+                          width: 25,
+                        }}
+                        bgColor="#FD7972"
+                        borderRadius="full"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text fontSize={12} textAlign="center" color="white">
+                          {isRead > 20 ? "20+" : isRead}
+                        </Text>
+                      </Box>
+                    )}
+                  </HStack>
                 </>
               ) : (
                 <Text fontStyle="italic" opacity={0.5}>
                   Message has been deleted
                 </Text>
               )}
+              {isPinned?.pin_chat ? (
+                <Icon
+                  as={<MaterialCommunityIcons name="pin" />}
+                  size="md"
+                  style={{ transform: [{ rotate: "45deg" }] }}
+                />
+              ) : null}
             </Flex>
           </Box>
         </Flex>

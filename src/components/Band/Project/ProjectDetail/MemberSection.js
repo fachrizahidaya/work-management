@@ -1,7 +1,6 @@
 import React, { memo, useState } from "react";
 
-import { useSelector } from "react-redux";
-
+import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Box, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
@@ -13,11 +12,9 @@ import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { TouchableOpacity } from "react-native";
 
-const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
+const MemberSection = ({ projectId, projectData, members, refetchMember, isAllowed }) => {
   const toast = useToast();
-  const userSelector = useSelector((state) => state.auth);
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
   const [selectedMember, setSelectedMember] = useState({});
   const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
@@ -70,7 +67,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Text fontSize={16}>MEMBERS</Text>
 
-        {projectData?.owner_id === userSelector.id && (
+        {isAllowed && (
           <TouchableOpacity
             onPress={toggleMemberModal}
             style={{
@@ -120,9 +117,9 @@ const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
                   </Box>
                 </Flex>
 
-                {userSelector.name === projectData?.owner_name && (
+                {isAllowed && (
                   <>
-                    {item?.member_name !== projectData?.owner_name && (
+                    {item?.user_id !== projectData?.owner_id && (
                       <Menu
                         trigger={(triggerProps) => {
                           return (
@@ -132,7 +129,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember }) => {
                           );
                         }}
                       >
-                        {item?.member_name !== projectData?.owner_name && (
+                        {item?.user_id !== projectData?.owner_id && (
                           <Menu.Item onPress={() => getSelectedMember(item.id)}>
                             <Flex flexDir="row" alignItems="center" gap={2}>
                               <Icon

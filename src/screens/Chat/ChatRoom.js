@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -8,14 +8,23 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
+import { Spinner, VStack, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import { useLoading } from "../../hooks/useLoading";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
-import { useCallback } from "react";
+import ChatOptionMenu from "../../components/Chat/ChatBubble/ChatOptionMenu";
+import ChatMessageDeleteModal from "../../components/Chat/ChatBubble/ChatMessageDeleteModal";
+import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScreenModal";
+import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
+import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -27,7 +36,10 @@ const ChatRoom = () => {
   const [bandAttachment, setBandAttachment] = useState(null);
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
   const [messageToReply, setMessageToReply] = useState(null);
-  const [messageToDelete, setMessageToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedChatBubble, setSelectedChatBubble] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -38,9 +50,50 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
+  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
+
   const navigation = useNavigation();
 
-  const { name, userId, image, type, active_member, setForceRender, forceRender, position } = route.params;
+  const toast = useToast();
+
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
+  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
+  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+
+  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+
+  /**
+   * Open chat options handler
+   * @param {*} chat
+   */
+  const openChatBubbleHandler = (chat) => {
+    setSelectedChatBubble(chat);
+    toggleOption();
+  };
+
+  /**
+   * Close chat options handler
+   */
+  const closeChatBubbleHandler = () => {
+    setSelectedChatBubble(null);
+    toggleOption();
+  };
+
+  /**
+   * Toggle fullscreen image
+   */
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const toggleFullScreen = (chat) => {
+    setSelectedChatBubble(chat);
+    setIsFullScreen(!isFullScreen);
+  };
 
   /**
    * Event listener for new personal chat messages
@@ -85,12 +138,13 @@ const ChatRoom = () => {
    * @param {*} setHasBeenScrolled
    */
   const fetchChatMessage = async (type, id, setHasBeenScrolled) => {
-    if (hasMore) {
+    if (hasMore && !isLoading) {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/chat/${type}/${id}/message`, {
           params: {
             offset: offset,
-            limit: 20,
+            limit: 50,
             sort: "desc",
           },
         });
@@ -103,9 +157,11 @@ const ChatRoom = () => {
             return currentChats;
           }
         });
-        setOffset((prevState) => prevState + 20);
+        setOffset((prevState) => prevState + 50);
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -123,6 +179,9 @@ const ChatRoom = () => {
           "content-type": "multipart/form-data",
         },
       });
+      if (currentUser === null) {
+        setCurrentUser(res.data.data?.chat_personal_id);
+      }
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -151,13 +210,16 @@ const ChatRoom = () => {
    * @param {*} delete_type
    * @param {*} setIsLoading
    */
-  const messagedeleteHandler = async (chat_message_id, delete_type, setIsLoading) => {
+  const messagedeleteHandler = async (chat_message_id, delete_type) => {
     try {
-      const res = await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
-      setIsLoading(false);
+      toggleDeleteChatMessage();
+      await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      toggleOption();
+      toggleDeleteModalChat();
+      toggleDeleteChatMessage();
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
+      toggleDeleteChatMessage();
     }
   };
 
@@ -175,6 +237,80 @@ const ChatRoom = () => {
       }
       return [...prevState];
     });
+  };
+
+  /**
+   * Delete chat room personal handler
+   * @param {*} id
+   */
+  const deleteChatPersonal = async (id) => {
+    try {
+      toggleDeleteChatMessage();
+      await axiosInstance.delete(`/chat/personal/${id}`);
+      toggleDeleteChatMessage();
+      toggleDeleteModal();
+      navigation.navigate("Chat List");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Deleted" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleDeleteChatMessage();
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handle chat message clear event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   */
+  const clearChatMessageHandler = async (id, type, itemName) => {
+    try {
+      toggleClearMessage();
+      await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
+      toggleClearMessage();
+      navigation.navigate("Chat List");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleClearMessage();
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Handle chat pin update event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   * @param {*} action - either pin/unpin
+   */
+  const chatPinUpdateHandler = async (chatType, id, action) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      navigation.goBack();
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
   };
 
   /**
@@ -243,7 +379,6 @@ const ChatRoom = () => {
     setBandAttachment(null);
     setBandAttachmentType(null);
     setMessageToReply(null);
-    setMessageToDelete(null);
   };
 
   /**
@@ -268,10 +403,120 @@ const ChatRoom = () => {
     }
   };
 
-  useEffect(() => {
-    fetchChatMessageHandler(true);
-  }, [currentUser, type]);
+  /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${roomId}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  /**
+   * Exit group handler
+   * @param {*} group_id
+   */
+  const groupExitHandler = async (group_id) => {
+    try {
+      toggleChatRoom();
+      await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      toggleChatRoom();
+      toggleExitModal();
+      navigation.navigate("Chat List");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleChatRoom();
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Delete group after exit group handler
+   * @param {*} group_id
+   */
+  const groupDeleteHandler = async (group_id) => {
+    try {
+      toggleChatRoom();
+      await axiosInstance.delete(`/chat/group/${group_id}`);
+      toggleChatRoom();
+      toggleDeleteGroupModal();
+      navigation.navigate("Chat List");
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleChatRoom(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchChatMessageHandler(true);
+    }
+  }, [currentUser, type, isPinned]);
+
+  useEffect(() => {
+    fetchSelectedGroupMembers();
+  }, [currentUser, roomId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        /**
+         * To reset all state
+         */
+        setPreviousUser(currentUser);
+        setHasMore(true);
+        setOffset(0);
+        clearAdditionalContentActionState();
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    /**
+     * To fill all state
+     */
+    if (roomId) {
+      setCurrentUser(roomId);
+    }
+    setPreviousUser(currentUser);
+    setHasMore(true);
+    setOffset(0);
+    clearAdditionalContentActionState();
+    personalChatMessageEvent();
+    groupChatMessageEvent();
+  }, [roomId, currentUser]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+  }, []);
+
+  /**
+   * Handle return after create new message group or personal
+   */
   useEffect(() => {
     const { routes } = navigation.getState();
     const filteredRoutes = routes.filter(
@@ -280,88 +525,151 @@ const ChatRoom = () => {
     navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      /**
-       * When screen is focused
-       */
-      setCurrentUser(userId);
-      setPreviousUser(currentUser);
-      setHasMore(true);
-      setOffset(0);
-      clearAdditionalContentActionState();
-      personalChatMessageEvent();
-      groupChatMessageEvent();
-
-      // Clean up function (optional)
-      return () => {
-        /**
-         * When screen is unfocused
-         */
-        setChatList([]);
-        setCurrentUser(null);
-        setPreviousUser(currentUser);
-        setHasMore(true);
-        setOffset(0);
-        clearAdditionalContentActionState();
-      };
-    }, [userId, currentUser])
-  );
-
   return (
-    <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
-      <ChatHeader
-        name={name}
-        image={image}
-        position={position}
-        navigation={navigation}
-        userId={userId}
-        fileAttachment={fileAttachment}
-        type={type}
-        active_member={active_member}
-        setForceRender={setForceRender}
-        forceRender={forceRender}
+    <>
+      <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
+        {isReady ? (
+          <>
+            <ChatHeader
+              name={name}
+              image={image}
+              position={position}
+              email={email}
+              fileAttachment={fileAttachment}
+              type={type}
+              active_member={active_member}
+              roomId={roomId}
+              isPinned={isPinned}
+              isLoading={isLoading}
+              loggedInUser={userSelector?.id}
+              toggleExitModal={toggleExitModal}
+              toggleDeleteGroupModal={toggleDeleteGroupModal}
+              toggleDeleteModal={toggleDeleteModal}
+              toggleClearChatMessage={toggleClearChatMessage}
+              toggleDeleteChatMessage={toggleDeleteChatMessage}
+              selectedGroupMembers={selectedGroupMembers}
+              deleteModalIsOpen={deleteModalIsOpen}
+              exitModalIsOpen={exitModalIsOpen}
+              deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+              deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+              chatRoomIsLoading={chatRoomIsLoading}
+              deleteChatPersonal={deleteChatPersonal}
+              onUpdatePinHandler={chatPinUpdateHandler}
+            />
+
+            <ChatList
+              type={type}
+              chatList={chatList}
+              fileAttachment={fileAttachment}
+              setFileAttachment={setFileAttachment}
+              fetchChatMessageHandler={fetchChatMessageHandler}
+              bandAttachment={bandAttachment}
+              setBandAttachment={setBandAttachment}
+              bandAttachmentType={bandAttachmentType}
+              isLoading={isLoading}
+              openChatBubbleHandler={openChatBubbleHandler}
+              toggleFullScreen={toggleFullScreen}
+            />
+
+            <ChatInput
+              userId={userId}
+              roomId={roomId}
+              type={type}
+              active_member={active_member}
+              selectFile={selectFile}
+              fileAttachment={fileAttachment}
+              setFileAttachment={setFileAttachment}
+              bandAttachment={bandAttachment}
+              setBandAttachment={setBandAttachment}
+              bandAttachmentType={bandAttachmentType}
+              setBandAttachmentType={setBandAttachmentType}
+              messageToReply={messageToReply}
+              setMessageToReply={setMessageToReply}
+              pickImageHandler={pickImageHandler}
+              onSendMessage={sendMessageHandler}
+              toggleProjectList={toggleProjectList}
+              toggleTaskList={toggleTaskList}
+            />
+          </>
+        ) : (
+          <VStack mt={10} px={4} space={2}>
+            <Spinner color="primary.600" size="lg" />
+          </VStack>
+        )}
+      </SafeAreaView>
+
+      <RemoveConfirmationModal
+        isOpen={
+          type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+        }
+        toggle={
+          type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+        }
+        description={
+          type === "personal"
+            ? "Are you sure want to delete this chat?"
+            : type === "group" && active_member === 1
+            ? "Are you sure want to exit this group?"
+            : type === "group" && active_member === 0
+            ? "Are you sure want to delete this group?"
+            : null
+        }
+        onPress={() =>
+          type === "personal"
+            ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
+            : type === "group" && active_member === 1
+            ? groupExitHandler(roomId, toggleChatRoom)
+            : type === "group" && active_member === 0
+            ? groupDeleteHandler(roomId, toggleChatRoom)
+            : null
+        }
+        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
-      <ChatList
-        type={type}
-        chatList={chatList}
-        messageToReply={messageToReply}
-        setMessageToReply={setMessageToReply}
-        deleteMessage={messagedeleteHandler}
-        fileAttachment={fileAttachment}
-        setFileAttachment={setFileAttachment}
-        fetchChatMessageHandler={fetchChatMessageHandler}
-        bandAttachment={bandAttachment}
-        setBandAttachment={setBandAttachment}
-        bandAttachmentType={bandAttachmentType}
-        setBandAttachmentType={setBandAttachmentType}
+      <RemoveConfirmationModal
+        isOpen={clearChatMessageIsOpen}
+        toggle={toggleClearChatMessage}
+        description="Are you sure want to clear chat?"
+        isLoading={clearMessageIsLoading}
+        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
       />
 
-      <ChatInput
-        userId={userId}
-        type={type}
-        fileAttachment={fileAttachment}
-        selectFile={selectFile}
-        pickImageHandler={pickImageHandler}
-        sendMessage={sendMessageHandler}
-        setFileAttachment={(file) => {
-          setFileAttachment(file);
-          setBandAttachment(null);
-          setBandAttachmentType(null);
-        }}
-        bandAttachment={bandAttachment}
-        setBandAttachment={setBandAttachment}
-        bandAttachmentType={bandAttachmentType}
-        setBandAttachmentType={(type) => {
-          setBandAttachmentType(type);
-          setFileAttachment(null);
-        }}
-        messageToReply={messageToReply}
-        setMessageToReply={setMessageToReply}
-        active_member={active_member}
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedChatBubble}
       />
-    </SafeAreaView>
+
+      <ChatOptionMenu
+        optionIsOpen={optionIsOpen}
+        onClose={closeChatBubbleHandler}
+        setMessageToReply={setMessageToReply}
+        chat={selectedChatBubble}
+        toggleDeleteModal={toggleDeleteModalChat}
+      />
+
+      <ChatMessageDeleteModal
+        id={selectedChatBubble?.id}
+        isDeleted={selectedChatBubble?.delete_for_everyone}
+        deleteModalChatIsOpen={deleteModalChatIsOpen}
+        toggleDeleteModalChat={toggleDeleteModalChat}
+        myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
+        isLoading={deleteChatMessageIsLoading}
+        onDeleteMessage={messagedeleteHandler}
+      />
+
+      <ProjectAttachment
+        projectListIsOpen={projectListIsOpen}
+        toggleProjectList={toggleProjectList}
+        setBandAttachment={setBandAttachment}
+      />
+
+      <TaskAttachment
+        taskListIsOpen={taskListIsOpen}
+        toggleTaskList={toggleTaskList}
+        setBandAttachment={setBandAttachment}
+      />
+    </>
   );
 };
 

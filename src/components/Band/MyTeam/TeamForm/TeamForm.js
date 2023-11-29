@@ -21,6 +21,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
         res = await axiosInstance.patch(`/pm/teams/${teamData.id}`, form);
         setSelectedTeam({
           ...teamData,
+          ...form,
           owner_id: userSelector.id,
           owner_name: userSelector.name,
         });
@@ -61,7 +62,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       name: teamData?.name || "",
     },
     validationSchema: yup.object().shape({
-      name: yup.string().required("Team name is required"),
+      name: yup.string().max(20, "Max 20 characters").required("Team name is required"),
     }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
