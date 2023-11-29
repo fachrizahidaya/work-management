@@ -125,9 +125,7 @@ const ChatList = ({
             <ChatBubble
               chat={item}
               fromUserId={item?.from_user_id}
-              id={item?.id}
               content={item?.message}
-              type={type}
               time={item?.created_time}
               file_path={item?.file_path}
               file_name={item?.file_name}
@@ -139,11 +137,11 @@ const ChatList = ({
               band_attachment_title={item?.project_title ? item?.project_title : item?.task_title}
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
+              type={type}
+              toggleFullScreen={toggleFullScreen}
               name={userNameRenderCheck(chatList[index + 1], item)}
-              image={userImageRenderCheck(item, chatList[index - 1])}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               openChatBubbleHandler={openChatBubbleHandler}
-              toggleFullScreen={toggleFullScreen}
             />
           </>
         )}

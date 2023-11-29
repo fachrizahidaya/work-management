@@ -535,40 +535,37 @@ const ChatRoom = () => {
               image={image}
               position={position}
               email={email}
-              navigation={navigation}
               fileAttachment={fileAttachment}
               type={type}
               active_member={active_member}
+              roomId={roomId}
+              isPinned={isPinned}
+              isLoading={isLoading}
+              loggedInUser={userSelector?.id}
               toggleExitModal={toggleExitModal}
               toggleDeleteGroupModal={toggleDeleteGroupModal}
-              selectedGroupMembers={selectedGroupMembers}
-              loggedInUser={userSelector?.id}
               toggleDeleteModal={toggleDeleteModal}
               toggleClearChatMessage={toggleClearChatMessage}
+              toggleDeleteChatMessage={toggleDeleteChatMessage}
+              selectedGroupMembers={selectedGroupMembers}
               deleteModalIsOpen={deleteModalIsOpen}
               exitModalIsOpen={exitModalIsOpen}
               deleteGroupModalIsOpen={deleteGroupModalIsOpen}
-              deleteChatPersonal={deleteChatPersonal}
-              roomId={roomId}
               deleteChatMessageIsLoading={deleteChatMessageIsLoading}
               chatRoomIsLoading={chatRoomIsLoading}
-              isLoading={isLoading}
-              toggleDeleteChatMessage={toggleDeleteChatMessage}
+              deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
-              isPinned={isPinned}
             />
 
             <ChatList
               type={type}
               chatList={chatList}
-              messageToReply={messageToReply}
               fileAttachment={fileAttachment}
               setFileAttachment={setFileAttachment}
               fetchChatMessageHandler={fetchChatMessageHandler}
               bandAttachment={bandAttachment}
               setBandAttachment={setBandAttachment}
               bandAttachmentType={bandAttachmentType}
-              setBandAttachmentType={setBandAttachmentType}
               isLoading={isLoading}
               openChatBubbleHandler={openChatBubbleHandler}
               toggleFullScreen={toggleFullScreen}
@@ -578,10 +575,9 @@ const ChatRoom = () => {
               userId={userId}
               roomId={roomId}
               type={type}
-              fileAttachment={fileAttachment}
+              active_member={active_member}
               selectFile={selectFile}
-              pickImageHandler={pickImageHandler}
-              sendMessage={sendMessageHandler}
+              fileAttachment={fileAttachment}
               setFileAttachment={setFileAttachment}
               bandAttachment={bandAttachment}
               setBandAttachment={setBandAttachment}
@@ -589,7 +585,8 @@ const ChatRoom = () => {
               setBandAttachmentType={setBandAttachmentType}
               messageToReply={messageToReply}
               setMessageToReply={setMessageToReply}
-              active_member={active_member}
+              pickImageHandler={pickImageHandler}
+              onSendMessage={sendMessageHandler}
               toggleProjectList={toggleProjectList}
               toggleTaskList={toggleTaskList}
             />
@@ -653,12 +650,12 @@ const ChatRoom = () => {
 
       <ChatMessageDeleteModal
         id={selectedChatBubble?.id}
-        deleteMessage={messagedeleteHandler}
+        isDeleted={selectedChatBubble?.delete_for_everyone}
         deleteModalChatIsOpen={deleteModalChatIsOpen}
         toggleDeleteModalChat={toggleDeleteModalChat}
         myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
-        isDeleted={selectedChatBubble?.delete_for_everyone}
         isLoading={deleteChatMessageIsLoading}
+        onDeleteMessage={messagedeleteHandler}
       />
 
       <ProjectAttachment

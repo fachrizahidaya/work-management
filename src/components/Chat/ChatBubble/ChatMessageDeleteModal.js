@@ -2,10 +2,10 @@ import { Button, Modal, Spinner, Text } from "native-base";
 
 const ChatMessageDeleteModal = ({
   id,
+  myMessage,
   deleteModalChatIsOpen,
   toggleDeleteModalChat,
-  deleteMessage,
-  myMessage,
+  onDeleteMessage,
   isLoading,
   isDeleted,
 }) => {
@@ -24,7 +24,7 @@ const ChatMessageDeleteModal = ({
             disabled={isLoading}
             variant="outline"
             onPress={async () => {
-              await deleteMessage(id, "me");
+              await onDeleteMessage(id, "me");
             }}
           >
             <Text fontSize={12} fontWeight={400} color="primary.600">
@@ -37,7 +37,7 @@ const ChatMessageDeleteModal = ({
               disabled={isLoading}
               variant="outline"
               onPress={async () => {
-                await deleteMessage(id, "everyone");
+                await onDeleteMessage(id, "everyone");
               }}
             >
               <Text fontSize={12} fontWeight={400} color="primary.600">
