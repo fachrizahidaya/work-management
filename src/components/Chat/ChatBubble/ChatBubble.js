@@ -146,6 +146,7 @@ const ChatBubble = ({
                           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
                           alt="Chat Image"
                           resizeMode="contain"
+                          resizeMethod="auto"
                         />
                       </TouchableOpacity>
                     </>
