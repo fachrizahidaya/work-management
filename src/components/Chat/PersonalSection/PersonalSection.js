@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
+const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleDeleteModal }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -25,6 +25,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
         personalChats.map((personal) => {
           return (
             <ContactListItem
+              chat={personal}
               type="personal"
               key={personal.id}
               id={personal.id}
@@ -43,6 +44,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult }) => {
               isRead={personal.unread}
               isPinned={personal?.pin_personal}
               active_member={0}
+              toggleDeleteModal={toggleDeleteModal}
             />
           );
         })}

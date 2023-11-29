@@ -1,14 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
+import { TouchableOpacity } from "react-native";
 import { Box, Flex, HStack, Icon, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import { TouchableOpacity } from "react-native";
 
 const ContactListItem = ({
+  chat,
   type,
   id,
   userId,
@@ -27,6 +28,7 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
+  toggleDeleteModal,
 }) => {
   const navigation = useNavigation();
 
@@ -103,6 +105,9 @@ const ContactListItem = ({
           active_member: active_member,
           isPinned: isPinned,
         });
+      }}
+      onLongPress={() => {
+        type === "group" && active_member ? null : toggleDeleteModal(chat);
       }}
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">

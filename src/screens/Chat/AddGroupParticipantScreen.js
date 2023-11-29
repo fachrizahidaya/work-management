@@ -30,11 +30,7 @@ const AddGroupParticipantScreen = () => {
     limit: 20,
   };
 
-  const route = useRoute();
-
   const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
-
-  const { forceRender, setForceRender } = route.params;
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -82,8 +78,6 @@ const AddGroupParticipantScreen = () => {
     } else {
       navigation.navigate("Group Form", {
         userArray: selectedUsers,
-        forceRender: forceRender,
-        setForceRender: setForceRender,
       });
     }
   };
@@ -161,8 +155,6 @@ const AddGroupParticipantScreen = () => {
                   email={item?.email}
                   type="group"
                   active_member={1}
-                  setForceRender={setForceRerender}
-                  forceRender={forceRerender}
                   onPressAddHandler={addSelectedUserToArray}
                   onPressRemoveHandler={removeSelectedUserFromArray}
                   selectedGroupMembers={selectedUsers}

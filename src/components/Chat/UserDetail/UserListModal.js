@@ -13,6 +13,7 @@ const UserListModal = ({
   roomId,
   memberListIsopen,
   toggleMemberList,
+  toggleAddMember,
   handleSearch,
   inputToShow,
   setInputToShow,
@@ -105,11 +106,10 @@ const UserListModal = ({
             borderColor="#FFFFFF"
             onPress={() => {
               onAddMoreMember(roomId, selectedUsers, toggleAddMember);
-              toggleMemberList();
             }}
           >
             {addMemberIsLoading ? (
-              <Spinner size="lg" color="#FFFFFF" />
+              <Spinner size="md" color="#FFFFFF" />
             ) : (
               <Icon as={<MaterialCommunityIcons name="arrow-right" />} size="md" color="white" />
             )}
