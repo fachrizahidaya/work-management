@@ -125,7 +125,7 @@ const EditGroupProfile = () => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
           <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
