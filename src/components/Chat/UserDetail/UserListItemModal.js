@@ -24,7 +24,7 @@ const UserListItemModal = ({
       <TouchableOpacity
         onPress={() => {
           if (multiSelect) {
-            if (selectedUsers.find((val) => val.id === id)) {
+            if (selectedUsers?.find((val) => val.id === id)) {
               onPressRemoveHandler(user);
             } else {
               onPressAddHandler(user);
@@ -47,7 +47,7 @@ const UserListItemModal = ({
           </Flex>
           {multiSelect && (
             <Flex>
-              {selectedUsers.find((val) => val.id === id) && (
+              {selectedUsers?.find((val) => val.id === id) && (
                 <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
               )}
             </Flex>

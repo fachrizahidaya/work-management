@@ -110,6 +110,8 @@ const UserDetail = () => {
       });
       fetchSelectedGroupMembers();
       toggleAddMember();
+      toggleMemberList();
+      setSelectedUsers(null);
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Member Added" close={() => toast.close(id)} />;
@@ -159,6 +161,7 @@ const UserDetail = () => {
       const res = await axiosInstance.delete(`/chat/group/member/${group_member_id}`);
       fetchSelectedGroupMembers();
       toggleRemoveMember();
+      toggleRemoveMemberAction();
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Member Removed" close={() => toast.close(id)} />;
@@ -204,64 +207,6 @@ const UserDetail = () => {
     }
   };
 
-  const editGroupPictureHandler = async (group_id) => {
-    try {
-      const formData = new FormData();
-      formData.append("image", imageAttachment);
-      formData.append("_method", "PATCH");
-      const res = await axiosInstance.patch(`/chat/group/${group_id}`, formData, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      setImageAttachment(null);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
-
-    if (fileInfo.size >= 1000000) {
-      toast.show({ description: "Image size is too large" });
-      return;
-    }
-
-    if (result) {
-      setImageAttachment({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
-    }
-  };
-
   /**
    * Handle filter from member registered for add new member to group
    * @param {*} users
@@ -295,7 +240,7 @@ const UserDetail = () => {
 
   const addSelectedUserToArray = (user) => {
     setSelectedUsers((prevState) => {
-      if (!prevState.find((val) => val.id === user.id)) {
+      if (!prevState?.find((val) => val.id === user.id)) {
         return [...prevState, { ...user, is_admin: 0 }];
       }
       return prevState;
@@ -304,7 +249,7 @@ const UserDetail = () => {
   };
 
   const removeSelectedUserToArray = (user) => {
-    const newUserArray = selectedUsers.filter((val) => {
+    const newUserArray = selectedUsers?.filter((val) => {
       return val.id !== user.id;
     });
     setSelectedUsers(newUserArray);
@@ -312,7 +257,7 @@ const UserDetail = () => {
   };
 
   useEffect(() => {
-    const myMemberObj = selectedGroupMembers.find((groupMember) => groupMember.user_id === loggedInUser);
+    const myMemberObj = selectedGroupMembers?.find((groupMember) => groupMember.user_id === loggedInUser);
     setCurrentUserIsAdmin(myMemberObj?.is_admin ? true : false);
   }, [selectedGroupMembers, loggedInUser]);
 
@@ -334,7 +279,7 @@ const UserDetail = () => {
         setCumulativeData([]);
       }
     }
-  }, [userList]);
+  }, [userList, searchInput, selectedGroupMembers]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -425,6 +370,7 @@ const UserDetail = () => {
         roomId={roomId}
         memberListIsopen={memberListIsopen}
         toggleMemberList={toggleMemberList}
+        toggleAddMember={toggleAddMember}
         userList={userList}
         handleSearch={handleSearch}
         inputToShow={inputToShow}
