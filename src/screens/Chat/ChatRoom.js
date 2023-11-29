@@ -40,7 +40,6 @@ const ChatRoom = () => {
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  const [groupExitCompleted, setGroupExitCompleted] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -424,7 +423,6 @@ const ChatRoom = () => {
     try {
       toggleChatRoom();
       await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
-      setGroupExitCompleted(true);
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
@@ -479,7 +477,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     fetchSelectedGroupMembers();
-  }, [currentUser, roomId, active_member]);
+  }, [currentUser, roomId]);
 
   useFocusEffect(
     useCallback(() => {
