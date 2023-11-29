@@ -84,8 +84,6 @@ const ChatListScreen = () => {
     toggleDeleteModal();
   };
 
-  console.log("selected", selectedChat);
-
   const closeSelectedChatHandler = () => {
     setSelectedChat(null);
     toggleDeleteModal();

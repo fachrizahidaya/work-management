@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
@@ -7,6 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
   chat,
@@ -30,7 +32,20 @@ const ContactListItem = ({
   isPinned,
   toggleDeleteModal,
 }) => {
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const navigation = useNavigation();
+
+  /**
+   * Fetch members of selected group
+   */
+  // const fetchSelectedGroupMembers = async () => {
+  //   try {
+  //     const res = await axiosInstance.get(`/chat/group/${id}/member`);
+  //     setSelectedGroupMembers(res?.data?.data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -90,6 +105,10 @@ const ContactListItem = ({
 
     return text;
   };
+
+  // useEffect(() => {
+  //   fetchSelectedGroupMembers();
+  // }, [id, active_member]);
 
   return (
     <TouchableOpacity
