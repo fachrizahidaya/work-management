@@ -358,6 +358,7 @@ const UserDetail = () => {
           setSelectedMembers={setSelectedMembers}
           imageAttachment={imageAttachment}
           setImageAttachment={setImageAttachment}
+          currentUserIsAdmin={currentUserIsAdmin}
         />
         <UserInformation
           type={type}
