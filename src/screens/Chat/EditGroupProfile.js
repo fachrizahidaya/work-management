@@ -134,7 +134,7 @@ const EditGroupProfile = () => {
           <Text>Edit Profile</Text>
         </Flex>
       </Flex>
-      <Flex flex={1} px={4} py={2} gap={2} bg="#FFFFFF">
+      <Flex flex={1} px={4} py={2} gap={5} bg="#FFFFFF">
         <Flex gap={5} px={3} flexDirection="row" alignItems="center" justifyContent="space-between">
           <Flex flexDirection="row" alignItems="center">
             <Box>
@@ -208,10 +208,10 @@ const EditGroupProfile = () => {
           </Flex>
         </Flex>
         {imageAttachment || formik.values.name !== name ? (
-          <Box>
-            <FormButton onPress={formik.handleSubmit} children="Save" />
-          </Box>
-        ) : null}
+          <FormButton onPress={formik.handleSubmit} children="Save" />
+        ) : (
+          <FormButton opacity={0.5} onPress={null} children="Save" />
+        )}
       </Flex>
     </>
   );
