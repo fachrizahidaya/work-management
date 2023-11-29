@@ -337,7 +337,7 @@ const UserDetail = () => {
   }, [userList]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Flex direction="row" alignItems="center" gap={4}>
           <Pressable onPress={() => navigation.goBack()}>
