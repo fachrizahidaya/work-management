@@ -2,11 +2,11 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Image, Text, VStack } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
+import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import EmployeeLeaveDashboard from "../../components/Tribe/Information/EmployeeLeaveDashboard";
 import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
-import { useFetch } from "../../hooks/useFetch";
 
 const InformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");

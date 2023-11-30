@@ -17,8 +17,6 @@ const ContactList = ({
   id,
   name,
   position,
-  division,
-  status,
   image,
   phone,
   email,
@@ -65,9 +63,6 @@ const ContactList = ({
             <PhoneButton phone={phone} size={5} />
             {user && (
               <PersonalNestButton
-                id={id}
-                name={name}
-                image={image}
                 email={email}
                 user_id={user_id}
                 user_name={user_name}

@@ -17,7 +17,6 @@ const LeaveRequestList = ({
   rejectedCount,
   refetchPersonalLeaveRequest,
   refetchProfile,
-  personalLeaveRequestIsFetching,
 }) => {
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);

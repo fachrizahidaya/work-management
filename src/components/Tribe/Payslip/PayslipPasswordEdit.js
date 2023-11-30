@@ -11,7 +11,6 @@ import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 const PayslipPasswordEdit = ({
   formIsOpen,
   toggleForm,
-  onSubmit,
   passwordError,
   setPasswordError,
   formik,

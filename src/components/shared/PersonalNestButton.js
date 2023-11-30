@@ -2,19 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 
-const PersonalNestButton = ({
-  height,
-  width,
-  id,
-  name,
-  image,
-  email,
-  user_id,
-  user_name,
-  user_type,
-  user_image,
-  room_id,
-}) => {
+const PersonalNestButton = ({ height, width, email, user_id, user_name, user_type, user_image, room_id }) => {
   const navigation = useNavigation();
 
   return (

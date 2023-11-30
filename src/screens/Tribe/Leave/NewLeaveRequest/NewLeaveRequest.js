@@ -35,25 +35,6 @@ const NewLeaveRequest = ({ route }) => {
 
   const { data: leaveType } = useFetch("/hr/leaves");
 
-  const personalLeaveData = [
-    {
-      id: 1,
-      name: "Available Leave",
-      icon: "clipboard-outline",
-      qty: availableLeaves?.available_leave,
-      backgroundColor: "#E8E9EB",
-      iconColor: "#377893",
-    },
-    // {
-    //   id: 2,
-    //   name: "Available Day-off",
-    //   icon: "clipboard-pulse-outline",
-    //   qty: availableLeaves?.day_off_leave,
-    //   backgroundColor: "#FAF6E8",
-    //   iconColor: "#FFD240",
-    // },
-  ];
-
   const {
     data: leaveHistory,
     refetch: refetchLeaveHistory,
@@ -79,20 +60,6 @@ const NewLeaveRequest = ({ route }) => {
     if (availableLeave.length > 0) {
       setAvailableLeaves(availableLeave);
     }
-
-    // let sumAvailableLeave = 0;
-
-    // const availableLeave = leaveHistory?.data.filter((leave) => leave.active);
-
-    // if (availableLeave?.length > 0) {
-    //   sumAvailableLeave = availableLeave?.reduce((val, obj) => {
-    //     return Number(val) + Number(obj.quota);
-    //   }, 0);
-    // }
-
-    // setAvailableLeaves(() => {
-    //   return { available_leave: sumAvailableLeave };
-    // });
   };
 
   /**
