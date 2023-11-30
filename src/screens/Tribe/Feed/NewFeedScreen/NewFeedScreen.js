@@ -18,6 +18,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useFetch } from "../../../../hooks/useFetch";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -32,6 +33,10 @@ const NewFeedScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const inputRef = useRef(null);
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
   const {
     loggedEmployeeImage,
@@ -185,71 +190,73 @@ const NewFeedScreen = ({ route }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Box flex={1} bgColor="#FFFFFF" p={5}>
-      <PageHeader
-        title="New Post"
-        onPress={
-          formik.values.content || image !== null
-            ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-            : () => {
-                !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
-                formik.resetForm();
-                setImage(null);
-              }
-        }
-      />
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <Box flex={1} bgColor="#FFFFFF" p={5}>
+        <PageHeader
+          title="New Post"
+          onPress={
+            formik.values.content || image !== null
+              ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+              : () => {
+                  !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                  formik.resetForm();
+                  setImage(null);
+                }
+          }
+        />
 
-      <ReturnConfirmationModal
-        isOpen={returnModalIsOpen}
-        toggle={toggleReturnModal}
-        onPress={() => {
-          toggleReturnModal();
-          navigation.goBack();
-          setImage(null);
-        }}
-        description="Are you sure want to exit? It will be deleted."
-      />
+        <ReturnConfirmationModal
+          isOpen={returnModalIsOpen}
+          toggle={toggleReturnModal}
+          onPress={() => {
+            toggleReturnModal();
+            navigation.goBack();
+            setImage(null);
+          }}
+          description="Are you sure want to exit? It will be deleted."
+        />
 
-      <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
-        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
-        <Flex gap={1}>
-          <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
-            <Flex alignItems="center" flexDir="row">
-              <Text fontSize={10}>{formik.values.type}</Text>
-              <Icon as={<MaterialCommunityIcons name="chevron-down" />} />
-            </Flex>
-          </Button>
-          {formik.values.type === "Public" ? (
-            ""
-          ) : (
-            <Flex alignItems="center" gap={2} flexDir="row">
-              <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
-              <Text fontSize={12}>
-                {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
-              </Text>
-            </Flex>
-          )}
+        <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
+          <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
+          <Flex gap={1}>
+            <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
+              <Flex alignItems="center" flexDir="row">
+                <Text fontSize={10}>{formik.values.type}</Text>
+                <Icon as={<MaterialCommunityIcons name="chevron-down" />} />
+              </Flex>
+            </Button>
+            {formik.values.type === "Public" ? (
+              ""
+            ) : (
+              <Flex alignItems="center" gap={2} flexDir="row">
+                <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
+                <Text fontSize={12}>
+                  {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
         </Flex>
-      </Flex>
 
-      <NewFeedForm
-        formik={formik}
-        image={image}
-        setImage={setImage}
-        pickImageHandler={pickImageHandler}
-        postTypeIsOpen={postTypeIsOpen}
-        postTypeIsClose={postTypeIsClose}
-        publicToggleHandler={publicToggleHandler}
-        announcementToggleHandler={announcementToggleHandler}
-        isAnnouncementSelected={isAnnouncementSelected}
-        dateShown={dateShown}
-        endDateAnnouncementHandler={endDateAnnouncementHandler}
-        loggedEmployeeDivision={loggedEmployeeDivision}
-        employees={employees?.data}
-        mentionSelectHandler={mentionSelectHandler}
-        inputRef={inputRef}
-      />
-    </Box>
+        <NewFeedForm
+          formik={formik}
+          image={image}
+          setImage={setImage}
+          pickImageHandler={pickImageHandler}
+          postTypeIsOpen={postTypeIsOpen}
+          postTypeIsClose={postTypeIsClose}
+          publicToggleHandler={publicToggleHandler}
+          announcementToggleHandler={announcementToggleHandler}
+          isAnnouncementSelected={isAnnouncementSelected}
+          dateShown={dateShown}
+          endDateAnnouncementHandler={endDateAnnouncementHandler}
+          loggedEmployeeDivision={loggedEmployeeDivision}
+          employees={employees?.data}
+          mentionSelectHandler={mentionSelectHandler}
+          inputRef={inputRef}
+        />
+      </Box>
+    </TouchableWithoutFeedback>
   );
 };
 
