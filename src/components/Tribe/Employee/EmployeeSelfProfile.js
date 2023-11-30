@@ -6,24 +6,17 @@ import { Box, Flex, Icon, Image, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const EmployeeSelfProfile = ({ employee, toggleTeammates, teammates }) => {
   return (
     <>
-      <Image
-        source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${employee?.data?.image}` }}
-        resizeMethod="contain"
-        borderRadius="full"
-        w={100}
-        h={100}
-        alt="profile image"
-        borderWidth={2}
-        borderColor="#FFFFFF"
-        position="relative"
-        bottom="50px"
-      />
-      <Flex mt="-40px">
-        <Flex gap={3} pb={3}>
+      <Box mb={2} position="relative" bottom={10}>
+        <AvatarPlaceholder size="xl" name={employee?.data?.name} image={employee?.data?.image} />
+      </Box>
+
+      <Flex mt={-10}>
+        <Flex gap={3} pb={3} px={1}>
           <Box>
             <Flex gap={1} alignItems="center" flexDir="row">
               <Text fontWeight={500} fontSize={20} color="#3F434A">

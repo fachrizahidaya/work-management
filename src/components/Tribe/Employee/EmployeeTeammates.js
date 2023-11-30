@@ -8,7 +8,7 @@ const EmployeeTeammates = ({ teammatesIsOpen, toggleTeammates, teammates }) => {
         <VStack w="95%">
           {teammates?.data.map((item, index) => {
             return (
-              <Actionsheet.Item px={-1}>
+              <Actionsheet.Item key={index} px={-1}>
                 <Flex key={index} flexDir="row" alignItems="center" gap={3}>
                   <AvatarPlaceholder
                     image={item?.image}

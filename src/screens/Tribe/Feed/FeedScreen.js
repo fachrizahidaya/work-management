@@ -88,7 +88,7 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              postRefetchHandler: postRefetchHandler,
+              postRefetchHandler: postRefetchHandler, // To get new post after create one
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
