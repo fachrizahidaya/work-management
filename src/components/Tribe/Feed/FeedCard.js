@@ -23,6 +23,8 @@ const FeedCard = ({
   setReload,
   postIsFetching,
   refetchPost,
+  scrollNewMessage,
+  flashListRef,
 }) => {
   const [comments, setComments] = useState([]);
   const [postTotalComment, setPostTotalComment] = useState(0);
@@ -114,6 +116,7 @@ const FeedCard = ({
   return (
     <Box flex={1}>
       <FlashList
+        ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
         initialNumToRender={10}
@@ -155,6 +158,8 @@ const FeedCard = ({
             loggedEmployeeImage={loggedEmployeeImage}
             onToggleLike={postLikeToggleHandler}
             onCommentToggle={commentsOpenHandler}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
           />
         )}
       />

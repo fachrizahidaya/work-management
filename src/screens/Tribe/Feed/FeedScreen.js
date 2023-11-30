@@ -9,18 +9,28 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
+import { useRef } from "react";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [reload, setReload] = useState(false);
+  const [scrollNewMessage, setScrollNewMessage] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
 
   const toast = useToast();
+
+  const flashListRef = useRef(null);
+
+  useEffect(() => {
+    if (flashListRef.current && posts.length > 0) {
+      flashListRef.current.scrollToIndex({ animated: true, index: 0 });
+    }
+  }, [posts]);
 
   // Parameters for fetch posts
   const postFetchParameters = {
@@ -93,6 +103,8 @@ const FeedScreen = () => {
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
+              scrollNewMessage: scrollNewMessage,
+              setScrollNewMessage: setScrollNewMessage,
             });
           }}
         >
@@ -114,6 +126,8 @@ const FeedScreen = () => {
             setHasBeenScrolled={setHasBeenScrolled}
             reload={reload}
             setReload={setReload}
+            scrollNewMessage={scrollNewMessage}
+            flashListRef={flashListRef}
           />
         </Box>
       </SafeAreaView>
