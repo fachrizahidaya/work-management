@@ -134,21 +134,31 @@ const ChatInput = ({
     <Box>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
 
-      <Flex gap={1} backgroundColor="#E8E9EB" flexDirection="row" alignItems="center" justifyContent="center" p={2}>
-        {type === "group" && !active_member ? (
-          <Text textAlign="center" fontSize={12} fontWeight={500}>
-            You can't send message to this group because you're no longer a participant
-          </Text>
-        ) : (
-          <>
-            <Pressable onPress={toggleMenu}>
-              <Icon
-                as={<MaterialCommunityIcons name="plus" />}
-                size={6}
-                style={{ transform: [{ rotate: "270deg" }] }}
-              />
-            </Pressable>
-            {/* <Menu
+      <Flex backgroundColor="#FFFFFF" flexDirection="row" alignItems="center" justifyContent="center" p={2}>
+        <Flex
+          borderRadius={10}
+          px={1}
+          backgroundColor="#F8F8F8"
+          gap={1}
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {type === "group" && !active_member ? (
+            <Text textAlign="center" fontSize={12} fontWeight={500}>
+              You can't send message to this group because you're no longer a participant
+            </Text>
+          ) : (
+            <>
+              <Pressable onPress={toggleMenu}>
+                <Icon
+                  as={<MaterialCommunityIcons name="plus" />}
+                  size={6}
+                  style={{ transform: [{ rotate: "270deg" }] }}
+                  color="#8A9099"
+                />
+              </Pressable>
+              {/* <Menu
               mb={10}
               trigger={(trigger) => {
                 return fileAttachment || bandAttachment ? null : (
@@ -172,31 +182,31 @@ const ChatInput = ({
               })}
             </Menu> */}
 
-            <FormControl display="flex" flex={1} justifyContent="center">
-              <Input
-                backgroundColor="#FFFFFF"
-                size="md"
-                variant="unstyled"
-                placeholder="Type a message..."
-                value={formik.values.message}
-                onChangeText={(value) => formik.setFieldValue("message", value)}
-              />
-            </FormControl>
+              <FormControl display="flex" flex={1} justifyContent="center">
+                <Input
+                  size="md"
+                  variant="unstyled"
+                  placeholder="Type a message..."
+                  value={formik.values.message}
+                  onChangeText={(value) => formik.setFieldValue("message", value)}
+                />
+              </FormControl>
 
-            <IconButton
-              onPress={
-                formik.values.message !== "" ||
-                formik.values.file !== "" ||
-                formik.values.project_id ||
-                (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
-                  ? formik.handleSubmit
-                  : null
-              }
-              opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
-              icon={<Icon as={<MaterialIcons name="send" />} size={6} />}
-            />
-          </>
-        )}
+              <IconButton
+                onPress={
+                  formik.values.message !== "" ||
+                  formik.values.file !== "" ||
+                  formik.values.project_id ||
+                  (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
+                    ? formik.handleSubmit
+                    : null
+                }
+                opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
+                icon={<Icon as={<MaterialIcons name="send" />} size={6} color="#8A9099" />}
+              />
+            </>
+          )}
+        </Flex>
       </Flex>
     </Box>
   );
