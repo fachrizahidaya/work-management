@@ -93,7 +93,6 @@ const EmployeeProfileScreen = ({ route }) => {
           postRefetchHandler={postRefetchHandler}
           postEndReachedHandler={postEndReachedHandler}
           personalPostIsFetching={personalPostIsFetching}
-          personalPostIsLoading={personalPostIsLoading}
           refetchPersonalPost={refetchPersonalPost}
           employee={employee}
           toggleTeammates={toggleTeammates}

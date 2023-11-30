@@ -24,9 +24,7 @@ const FeedCard = ({
   postRefetchHandler,
   postEndReachedHandler,
   personalPostIsFetching,
-  personalPostIsLoading,
   refetchPersonalPost,
-  refetchPost,
   employee,
   toggleTeammates,
   teammates,
@@ -235,7 +233,7 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
-          // refetchPost={refetchPost}
+          refetchPost={refetchPersonalPost}
           commentRefetchHandler={commentRefetchHandler}
           currentOffset={currentOffset}
           setCurrentOffset={setCurrentOffset}

@@ -12,7 +12,6 @@ import FormButton from "../../../shared/FormButton";
 import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 
 const TeamLeaveRequestList = ({
-  id,
   name,
   image,
   leaveName,
