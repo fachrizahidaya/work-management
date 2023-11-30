@@ -59,17 +59,23 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         toast.show({
           render: ({ id }) => {
             return (
-              <SuccessToast
-                message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
-                close={() => toast.close(id)}
-              />
+              <Box zIndex={2}>
+                <SuccessToast
+                  message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
+                  close={() => toast.close(id)}
+                />
+              </Box>
             );
           },
         });
       } else {
         toast.show({
           render: ({ id }) => {
-            return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+            return (
+              <Box zIndex={2}>
+                <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+              </Box>
+            );
           },
         });
       }
