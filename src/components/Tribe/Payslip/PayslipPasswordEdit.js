@@ -107,9 +107,15 @@ const PayslipPasswordEdit = ({
               />
               <FormControl.ErrorMessage>{formik.errors.confirm_password}</FormControl.ErrorMessage>
             </FormControl>
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="#FFFFFF">Submit</Text>
-            </FormButton>
+            {formik.values.old_password && formik.values.new_password && formik.valuesconfirm_password ? (
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="#FFFFFF">Submit</Text>
+              </FormButton>
+            ) : (
+              <FormButton opacity={0.5}>
+                <Text color="#FFFFFF">Submit</Text>
+              </FormButton>
+            )}
           </VStack>
         </VStack>
       </Actionsheet.Content>
