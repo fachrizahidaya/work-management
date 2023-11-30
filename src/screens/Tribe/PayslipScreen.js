@@ -7,14 +7,14 @@ import { Button, Flex, Image, Skeleton, Text, VStack, useToast } from "native-ba
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import { useFetch } from "../../hooks/useFetch";
+import { useDisclosure } from "../../hooks/useDisclosure";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
-import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
-import { useDisclosure } from "../../hooks/useDisclosure";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import PayslipList from "../../components/Tribe/Payslip/PayslipList";
+import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -94,12 +94,11 @@ const PayslipScreen = () => {
           </Text>
         </Button>
         <PayslipPasswordEdit
+          formik={formik}
           formIsOpen={formIsOpen}
           toggleForm={toggleForm}
-          onSubmit={payslipPasswordUpdateHandler}
           passwordError={passwordError}
           setPasswordError={setPasswordError}
-          formik={formik}
           hideNewPassword={hideNewPassword}
           setHideNewPassword={setHideNewPassword}
           hideOldPassword={hideOldPassword}

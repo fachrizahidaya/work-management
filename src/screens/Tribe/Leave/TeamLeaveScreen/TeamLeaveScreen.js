@@ -6,8 +6,8 @@ import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
-import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 import { useFetch } from "../../../../hooks/useFetch";
+import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = () => {
   const navigation = useNavigation();
@@ -41,7 +41,6 @@ const TeamLeaveScreen = () => {
             <>
               <TeamLeaveRequestList
                 key={item?.id}
-                id={item?.id}
                 name={item?.employee_name}
                 image={item?.employee_image}
                 leaveName={item?.leave_name}

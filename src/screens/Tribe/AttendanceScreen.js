@@ -3,15 +3,15 @@ import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, useToast } from "native-base";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 
-import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
