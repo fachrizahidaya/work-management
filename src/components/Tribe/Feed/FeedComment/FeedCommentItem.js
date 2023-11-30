@@ -9,16 +9,13 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({
-  id,
   parentId,
   loggedEmployeeId,
-  authorId,
   authorImage,
   authorName,
   totalReplies,
   postId,
   onReply,
-  latestExpandedReply,
   comments,
 }) => {
   const [commentReplies, setCommentReplies] = useState(false);
@@ -104,19 +101,13 @@ const FeedCommentItem = ({
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={200}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                   <FeedCommentReplyItem
-                    key={item?.id}
-                    id={item?.id}
-                    parent_id={item?.parent_id ? item?.parent_id : item?.id}
-                    loggedEmployeeId={loggedEmployeeId}
-                    authorId={item?.emloyee_id}
+                    key={index}
                     authorName={item?.employee_name}
                     authorImage={item?.employee_image}
-                    author_username={item?.employee_username}
                     comments={item?.comments}
                     totalReplies={item?.total_replies}
-                    postId={postId}
                     parentId={parentId}
                     onReply={onReply}
                   />

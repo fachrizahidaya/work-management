@@ -35,8 +35,6 @@ const FeedCard = ({
   setHasBeenScrolled,
   reload,
   setReload,
-  forceRerender,
-  setForceRerender,
 }) => {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
@@ -117,7 +115,6 @@ const FeedCard = ({
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       refetchPersonalPost();
-      refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -184,8 +181,8 @@ const FeedCard = ({
           </Box>
         }
         // Employee Posts
-        renderItem={({ item }) => {
-          if (item.id === "no-posts") {
+        renderItem={({ item, index }) => {
+          if (item.length === 0) {
             return (
               <Flex alignItems="center" justifyContent="center" py={3} px={3}>
                 <Text fontSize={16} fontWeight={500}>
@@ -195,31 +192,35 @@ const FeedCard = ({
             );
           }
           return (
-            <Box px={3}>
-              <FeedCardItem
-                key={item?.id}
-                id={item?.id}
-                employeeId={item?.author_id}
-                employeeName={item?.employee_name}
-                createdAt={item?.created_at}
-                employeeImage={item?.employee_image}
-                content={item?.content}
-                total_like={item?.total_like}
-                totalComment={item?.total_comment}
-                likedBy={item?.liked_by}
-                attachment={item?.file_path}
-                type={item?.type}
-                onToggleLike={postLikeToggleHandler}
-                loggedEmployeeId={loggedEmployeeId}
-                loggedEmployeeImage={loggedEmployeeImage}
-                onCommentToggle={commentsOpenHandler}
-                refetchPersonalPost={refetchPersonalPost}
-                forceRerender={forceRerender}
-                forceRerenderPersonal={forceRerenderPersonal}
-                setForceRerender={setForceRerender}
-                setForceRerenderPersonal={setForceRerenderPersonal}
-              />
-            </Box>
+            <>
+              {personalPostIsFetching ? (
+                <Spinner />
+              ) : (
+                <Box px={3}>
+                  <FeedCardItem
+                    key={index}
+                    id={item?.id}
+                    employeeId={item?.author_id}
+                    employeeName={item?.employee_name}
+                    createdAt={item?.created_at}
+                    employeeImage={item?.employee_image}
+                    content={item?.content}
+                    total_like={item?.total_like}
+                    totalComment={item?.total_comment}
+                    likedBy={item?.liked_by}
+                    attachment={item?.file_path}
+                    type={item?.type}
+                    onToggleLike={postLikeToggleHandler}
+                    loggedEmployeeId={loggedEmployeeId}
+                    loggedEmployeeImage={loggedEmployeeImage}
+                    onCommentToggle={commentsOpenHandler}
+                    refetchPersonalPost={refetchPersonalPost}
+                    forceRerenderPersonal={forceRerenderPersonal}
+                    setForceRerenderPersonal={setForceRerenderPersonal}
+                  />
+                </Box>
+              )}
+            </>
           );
         }}
       />
@@ -234,7 +235,7 @@ const FeedCard = ({
           loggedEmployeeImage={loggedEmployeeImage}
           loggedEmployeeName={loggedEmployeeName}
           postRefetchHandler={postRefetchHandler}
-          refetchPost={refetchPost}
+          // refetchPost={refetchPost}
           commentRefetchHandler={commentRefetchHandler}
           currentOffset={currentOffset}
           setCurrentOffset={setCurrentOffset}

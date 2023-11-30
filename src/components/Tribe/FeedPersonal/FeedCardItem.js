@@ -30,8 +30,6 @@ const FeedCardItem = ({
   onToggleLike,
   onCommentToggle,
   refetchPersonalPost,
-  forceRerender,
-  setForceRerender,
   forceRerenderPersonal,
   setForceRerenderPersonal,
 }) => {
@@ -58,7 +56,6 @@ const FeedCardItem = ({
     }
     onToggleLike(post_id, action);
     setForceRerenderPersonal(!forceRerenderPersonal);
-    setForceRerender(!forceRerender);
   };
 
   /**
@@ -69,8 +66,8 @@ const FeedCardItem = ({
     setIsFullScreen(!isFullScreen);
   };
 
-  const words = content.split(" ");
-  const styledTexts = words.map((item, index) => {
+  const words = content?.split(" ");
+  const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     if (item.includes("https") || item.includes("www")) {
       textStyle = styles.highlightedText;
@@ -103,7 +100,7 @@ const FeedCardItem = ({
           <Flex flex={1}>
             <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
               <Text fontSize={15} fontWeight={500}>
-                {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               <Flex flexDir="row" alignItems="center" gap={1}>
                 {type === "Announcement" ? (
