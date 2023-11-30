@@ -174,7 +174,7 @@ const ChatBubble = ({
 
           <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
             {!isDeleted ? (
-              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#000000" : "white"} flexShrink={1}>
+              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#3F434A" : "#FFFFFF"} flexShrink={1}>
                 {styledTexts}
               </Text>
             ) : myMessage && isDeleted ? (
@@ -187,7 +187,7 @@ const ChatBubble = ({
               </Text>
             ) : null}
 
-            <Text alignSelf="flex-end" fontSize={10} color="#578A90">
+            <Text alignSelf="flex-end" fontSize={8} color="#FFFFFF">
               {time}
             </Text>
           </Flex>
