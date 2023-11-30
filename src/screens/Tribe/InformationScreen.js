@@ -19,7 +19,7 @@ const InformationScreen = () => {
         </Flex>
 
         <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
-          <Flex px={3} flex={1} gap={5} mt={5}>
+          <Flex px={3} flex={1} gap={5} py={5}>
             {/* Content here */}
             {!profile?.data ? (
               <VStack space={2} alignItems="center" justifyContent="center">
