@@ -111,14 +111,19 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
-      // toast.show({
-      //   render: () => {
-      //     return <SuccessToast message={`You can continue to sumbit the form`} />;
-      //   },
-      // });
+      toast.show({
+        render: () => {
+          return <SuccessToast message="Leave request available" />;
+        },
+      });
       setFormError(false);
     } catch (err) {
       console.log(err);
+      toast.show({
+        render: () => {
+          return <ErrorToast message="Quota is not enough" />;
+        },
+      });
     }
   };
 
