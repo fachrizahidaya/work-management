@@ -3,16 +3,12 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Icon, Image, Pressable, Text, useToast } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Flex } from "native-base";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import axiosInstance from "../../../config/api";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [personalPosts, setPersonalPosts] = useState([]);
@@ -21,16 +17,13 @@ const EmployeeProfileScreen = ({ route }) => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchPost, forceRerender, setForceRerender } =
-    route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
 
   const navigation = useNavigation();
-
-  const toast = useToast();
 
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
 
@@ -86,29 +79,9 @@ const EmployeeProfileScreen = ({ route }) => {
           title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
           onPress={() => {
             navigation.goBack();
-            refetchPost();
           }}
         />
       </Flex>
-
-      <Pressable
-        style={styles.createPostIcon}
-        shadow="0"
-        borderRadius="full"
-        borderWidth={3}
-        borderColor="#FFFFFF"
-        onPress={() => {
-          navigation.navigate("New Feed", {
-            refetch: refetchPersonalPost,
-            postRefetchHandler: postRefetchHandler,
-            loggedEmployeeImage: loggedEmployeeImage,
-            loggedEmployeeName: userSelector?.name,
-            employeeId: employeeId,
-          });
-        }}
-      >
-        <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
-      </Pressable>
 
       <Flex flex={1} minHeight={2} gap={2} height={height}>
         {/* Content here */}
@@ -122,7 +95,6 @@ const EmployeeProfileScreen = ({ route }) => {
           personalPostIsFetching={personalPostIsFetching}
           personalPostIsLoading={personalPostIsLoading}
           refetchPersonalPost={refetchPersonalPost}
-          refetchPost={refetchPost}
           employee={employee}
           toggleTeammates={toggleTeammates}
           teammates={teammates}
@@ -131,8 +103,6 @@ const EmployeeProfileScreen = ({ route }) => {
           setHasBeenScrolled={setHasBeenScrolled}
           reload={reload}
           setReload={setReload}
-          forceRerender={forceRerender}
-          setForceRerender={setForceRerender}
         />
       </Flex>
     </SafeAreaView>

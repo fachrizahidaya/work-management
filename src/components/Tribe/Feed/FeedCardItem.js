@@ -27,9 +27,6 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  refetchPost,
-  forceRerender,
-  setForceRerender,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
 
@@ -59,8 +56,8 @@ const FeedCardItem = ({
     setIsFullScreen(!isFullScreen);
   };
 
-  const words = content.split(" ");
-  const styledTexts = words.map((item, index) => {
+  const words = content?.split(" ");
+  const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
@@ -137,9 +134,6 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
-                refetchPost: refetchPost,
-                forceRerender: forceRerender,
-                setForceRerender: setForceRerender,
               })
             }
           >
@@ -154,15 +148,12 @@ const FeedCardItem = ({
                     employeeId: employeeId,
                     loggedEmployeeId: loggedEmployeeId,
                     loggedEmployeeImage: loggedEmployeeImage,
-                    refetchPost: refetchPost,
-                    forceRerender: forceRerender,
-                    setForceRerender: setForceRerender,
                   })
                 }
                 fontSize={15}
                 fontWeight={500}
               >
-                {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
                 <Badge borderRadius={15} backgroundColor="#ADD7FF">

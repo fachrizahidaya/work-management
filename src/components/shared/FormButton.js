@@ -44,7 +44,13 @@ const FormButton = ({
       variant={variant}
       opacity={opacity ? opacity : null}
     >
-      {isLoading ? <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} /> : children}
+      {isLoading ? (
+        <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} />
+      ) : (
+        <Text fontSize={12} fontWeight={500} color={fontColor ? fontColor : null}>
+          {children}
+        </Text>
+      )}
     </Button>
   );
 };
