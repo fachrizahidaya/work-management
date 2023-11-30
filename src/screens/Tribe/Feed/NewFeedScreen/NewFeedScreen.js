@@ -33,7 +33,14 @@ const NewFeedScreen = ({ route }) => {
 
   const inputRef = useRef(null);
 
-  const { loggedEmployeeImage, loggedEmployeeName, loggedEmployeeDivision, postRefetchHandler } = route.params;
+  const {
+    loggedEmployeeImage,
+    loggedEmployeeName,
+    loggedEmployeeDivision,
+    postRefetchHandler,
+    scrollNewMessage,
+    setScrollNewMessage,
+  } = route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
@@ -85,6 +92,7 @@ const NewFeedScreen = ({ route }) => {
         },
       });
       postRefetchHandler();
+      setScrollNewMessage(!scrollNewMessage);
       setSubmitting(false);
       setStatus("success");
       toast.show({
