@@ -77,9 +77,7 @@ const AttendanceScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
-        <ScrollView
-          refreshControl={<RefreshControl refreshing={attendanceDataIsFetching} onRefresh={refetchAttendanceData} />}
-        >
+        <ScrollView refreshControl={false}>
           <AttendanceCalendar
             attendance={attendanceData?.data}
             onMonthChange={handleMonthChange}
