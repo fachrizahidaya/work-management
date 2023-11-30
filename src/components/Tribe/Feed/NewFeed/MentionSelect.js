@@ -1,6 +1,5 @@
-import React from "react";
-import MentionSelectItem from "./MentionSelectItem";
 import { Flex } from "native-base";
+import MentionSelectItem from "./MentionSelectItem";
 
 const MentionSelect = ({ employees, onSelect }) => {
   return (

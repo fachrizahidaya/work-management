@@ -28,11 +28,9 @@ const NewFeedForm = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const navigation = useNavigation();
-
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
-      <FormControl isInvalid={formik.errors.content}>
+      <FormControl>
         <MentionInput
           employees={employees}
           formik={formik}

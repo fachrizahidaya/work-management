@@ -11,6 +11,7 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
   const [filteredEmployee, setFilteredEmployee] = useState([]);
 
   const mentionToggleHandler = (e) => {
+    console.log("e", e);
     if (e.key !== "Shift") {
       const text = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_@]+$/);
       const value = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_]+$/);
@@ -50,13 +51,14 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
   useEffect(() => {
     mentionFilterHandler();
   }, [mentionFilter]);
+
   return (
     <>
       <KeyboardAwareScrollView
-        onKeyboardWillShow={(e) => {
-          mentionToggleHandler(e);
-          mentionFilterHandler(e);
-        }}
+      // onKeyboardWillShow={(e) => {
+      //   mentionToggleHandler(e);
+      //   mentionFilterHandler(e);
+      // }}
       >
         <TextArea
           minH={100}

@@ -118,47 +118,46 @@ const ContactScreen = () => {
 
       <Flex px={3} flex={1} flexDir="column">
         {/* Content here */}
-        <FlashList
-          data={contacts.length ? contacts : filteredDataArray}
-          onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-          windowSize={5}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
-          onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-          renderItem={({ item }) => (
-            <ContactList
-              key={item?.id}
-              id={item?.id}
-              name={item?.name}
-              position={item?.position_name}
-              image={item?.image}
-              phone={item?.phone_number}
-              email={item?.email}
-              user={item?.user}
-              user_id={item?.user?.id}
-              room_id={item?.chat_personal_id}
-              user_name={item?.user?.name}
-              user_type={item?.user?.user_type}
-              user_image={item?.user?.image}
-              loggedEmployeeId={userSelector?.user_role_id}
-              refetch={refetchEmployeeData}
-            />
-          )}
-        />
 
-        <>
-          {/* If there are no data handler */}
-          {employeeData?.data?.data.length === 0 && (
-            <VStack space={2} alignItems="center" justifyContent="center">
-              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-              <Text>No Data</Text>
-            </VStack>
-          )}
-        </>
+        {/* If there are no data handler */}
+        {employeeData?.data?.data.length === 0 ? (
+          <VStack space={2} alignItems="center" justifyContent="center">
+            <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+            <Text>No Data</Text>
+          </VStack>
+        ) : (
+          <FlashList
+            data={contacts.length ? contacts : filteredDataArray}
+            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={50}
+            windowSize={5}
+            keyExtractor={(item, index) => index}
+            onEndReachedThreshold={0.1}
+            estimatedItemSize={200}
+            onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
+            renderItem={({ item }) => (
+              <ContactList
+                key={item?.id}
+                id={item?.id}
+                name={item?.name}
+                position={item?.position_name}
+                image={item?.image}
+                phone={item?.phone_number}
+                email={item?.email}
+                user={item?.user}
+                user_id={item?.user?.id}
+                room_id={item?.chat_personal_id}
+                user_name={item?.user?.name}
+                user_type={item?.user?.user_type}
+                user_image={item?.user?.image}
+                loggedEmployeeId={userSelector?.user_role_id}
+                refetch={refetchEmployeeData}
+              />
+            )}
+          />
+        )}
       </Flex>
     </SafeAreaView>
   );
