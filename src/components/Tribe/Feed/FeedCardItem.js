@@ -27,6 +27,8 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
+  forceRerender,
+  setForceRerender,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
 
@@ -218,7 +220,7 @@ const FeedCardItem = ({
           <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialCommunityIcons name="heart" />} size="md" fill="#FD7972" />
+                <Icon as={<MaterialCommunityIcons name="heart" />} size="md" color="#FF0000" />
               </Pressable>
             )}
             {likeAction === "like" && (
