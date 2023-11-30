@@ -137,28 +137,24 @@ const FeedCard = ({
             }}
           />
         }
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <FeedCardItem
-            key={item?.id}
+            key={index}
             id={item?.id}
-            post={item}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
-            createdAt={item?.created_at}
             employeeImage={item?.employee_image}
+            createdAt={item?.created_at}
             content={item?.content}
             total_like={item?.total_like}
             totalComment={item?.total_comment}
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            onToggleLike={postLikeToggleHandler}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
+            onToggleLike={postLikeToggleHandler}
             onCommentToggle={commentsOpenHandler}
-            refetchPost={refetchPost}
-            forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
           />
         )}
       />
@@ -169,17 +165,17 @@ const FeedCard = ({
           loggedEmployeeId={loggedEmployeeId}
           loggedEmployeeName={loggedEmployeeName}
           loggedEmployeeImage={loggedEmployeeImage}
+          currentOffset={currentOffset}
+          comment={comment}
+          comments={comments}
+          setComments={setComments}
+          commentIsFetching={commentIsFetching}
+          refetchComment={refetchComment}
           handleOpen={commentsOpenHandler}
           handleClose={commentsCloseHandler}
           commentAddHandler={commentAddHandler}
-          currentOffset={currentOffset}
-          comment={comment}
-          commentIsFetching={commentIsFetching}
-          refetchComment={refetchComment}
           commentEndReachedHandler={commentEndReachedHandler}
           commentRefetchHandler={commentRefetchHandler}
-          comments={comments}
-          setComments={setComments}
         />
       )}
     </Box>

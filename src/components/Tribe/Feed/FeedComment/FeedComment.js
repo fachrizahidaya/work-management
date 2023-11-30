@@ -27,8 +27,6 @@ const FeedComment = ({
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
-  const inputRef = useRef();
-
   /**
    * Submit a comment handler
    * @param {*} data
@@ -94,16 +92,16 @@ const FeedComment = ({
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
-                onReply={replyHandler}
-                loggedEmployeeId={loggedEmployeeId}
                 postId={postId}
+                loggedEmployeeId={loggedEmployeeId}
                 latestExpandedReply={latestExpandedReply}
+                hasBeenScrolled={hasBeenScrolled}
+                setHasBeenScrolled={setHasBeenScrolled}
+                onReply={replyHandler}
                 commentEndReachedHandler={commentEndReachedHandler}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
                 refetchComment={refetchComment}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
               />
             </Flex>
           </ScrollView>
@@ -113,7 +111,6 @@ const FeedComment = ({
             loggedEmployeeImage={loggedEmployeeImage}
             loggedEmployeeName={loggedEmployeeName}
             parentId={commentParentId}
-            inputRef={inputRef}
             onSubmit={commentSubmitHandler}
           />
         </Flex>

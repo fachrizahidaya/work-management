@@ -40,20 +40,17 @@ const FeedCommentList = ({
               }}
             />
           }
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <FeedCommentItem
-              key={item?.id}
-              id={item?.id}
+              key={index}
               parentId={item.parent_id ? item?.parent_id : item?.id}
-              loggedEmployeeId={loggedEmployeeId}
-              authorId={item?.employee_id}
               authorImage={item?.employee_image}
               authorName={item?.employee_name}
               totalReplies={item?.total_replies}
+              comments={item?.comments}
+              loggedEmployeeId={loggedEmployeeId}
               postId={postId}
               onReply={onReply}
-              latestExpandedReply={latestExpandedReply}
-              comments={item?.comments}
             />
           )}
         />

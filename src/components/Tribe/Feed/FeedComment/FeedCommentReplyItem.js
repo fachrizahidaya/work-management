@@ -4,20 +4,7 @@ import { Box, Flex, Pressable, Text } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
-const FeedCommentReplyItem = ({
-  id,
-  parent_id,
-  loggedEmployeeId,
-  authorId,
-  authorName,
-  author_username,
-  comments,
-  totalReplies,
-  postId,
-  onReply,
-  parentId,
-  authorImage,
-}) => {
+const FeedCommentReplyItem = ({ authorName, comments, totalReplies, onReply, parentId, authorImage }) => {
   const [filteredComment, setFilteredComment] = useState();
 
   return (
