@@ -22,6 +22,8 @@ const ChatList = ({
   bandAttachment,
   bandAttachmentType,
   setBandAttachment,
+  bubbleChangeColor,
+  setBubbleChangeColor,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -142,6 +144,8 @@ const ChatList = ({
               name={userNameRenderCheck(chatList[index + 1], item)}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               openChatBubbleHandler={openChatBubbleHandler}
+              bubbleChangeColor={bubbleChangeColor}
+              setBubbleChangeColor={setBubbleChangeColor}
             />
           </>
         )}
