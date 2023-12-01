@@ -41,6 +41,7 @@ const ChatRoom = () => {
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [bubbleChangeColor, setBubbleChangeColor] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -95,6 +96,15 @@ const ChatRoom = () => {
   const toggleFullScreen = (chat) => {
     setSelectedChatBubble(chat);
     setIsFullScreen(!isFullScreen);
+  };
+
+  const selectBandHandler = (bandType) => {
+    if (bandType === "project") {
+      toggleProjectList();
+    } else {
+      toggleTaskList();
+    }
+    setBandAttachmentType(bandType);
   };
 
   /**
@@ -571,6 +581,8 @@ const ChatRoom = () => {
               isLoading={isLoading}
               openChatBubbleHandler={openChatBubbleHandler}
               toggleFullScreen={toggleFullScreen}
+              bubbleChangeColor={bubbleChangeColor}
+              setBubbleChangeColor={setBubbleChangeColor}
             />
 
             <ChatInput
@@ -650,6 +662,8 @@ const ChatRoom = () => {
         setMessageToReply={setMessageToReply}
         chat={selectedChatBubble}
         toggleDeleteModal={toggleDeleteModalChat}
+        bubbleChangeColor={bubbleChangeColor}
+        setBubbleChangeColor={setBubbleChangeColor}
       />
 
       <ChatMessageDeleteModal
@@ -674,7 +688,13 @@ const ChatRoom = () => {
         setBandAttachment={setBandAttachment}
       />
 
-      <MenuAttachment isOpen={menuIsOpen} onClose={toggleMenu} />
+      <MenuAttachment
+        isOpen={menuIsOpen}
+        onClose={toggleMenu}
+        selectFile={selectFile}
+        pickImageHandler={pickImageHandler}
+        selectBandHandler={selectBandHandler}
+      />
     </>
   );
 };

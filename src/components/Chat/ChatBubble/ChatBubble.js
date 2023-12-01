@@ -1,13 +1,14 @@
 import { memo } from "react";
 import { useSelector } from "react-redux";
 
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, Linking, PanResponder, StyleSheet, TouchableOpacity } from "react-native";
 import { Flex, Image, Pressable, Text } from "native-base";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
+import { useRef } from "react";
 
 const ChatBubble = ({
   chat,
@@ -29,6 +30,8 @@ const ChatBubble = ({
   reply_to,
   openChatBubbleHandler,
   toggleFullScreen,
+  bubbleChangeColor,
+  setBubbleChangeColor,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
@@ -98,6 +101,23 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
+  const animatedX = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([null, { dx: animatedX, dy: new Animated.Value(0) }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (e, gestureState) => {
+        if (Math.abs(gestureState.dx) > 100) {
+        }
+        Animated.spring({ toValue: 0, useNativeDriver: false }).start();
+      },
+    })
+  ).current;
+
   return (
     <>
       <Flex
@@ -113,9 +133,13 @@ const ChatBubble = ({
           <Box ml={8}></Box>
         ) : null} */}
 
+        {/* <Animated.View {...panResponder.panHandlers} style={{ transform: [{ translateX: animatedX }] }}> */}
         <Pressable
           maxWidth={300}
-          onLongPress={() => !isDeleted && openChatBubbleHandler(chat)}
+          onLongPress={() => {
+            !isDeleted && openChatBubbleHandler(chat);
+            setBubbleChangeColor(true);
+          }}
           borderRadius={10}
           display="flex"
           justifyContent="center"
@@ -123,6 +147,7 @@ const ChatBubble = ({
           px={1.5}
           bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
           gap={1}
+          zIndex={bubbleChangeColor ? 2 : null}
         >
           {type === "group" && name && !myMessage && (
             <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
@@ -187,11 +212,12 @@ const ChatBubble = ({
               </Text>
             ) : null}
 
-            <Text alignSelf="flex-end" fontSize={8} color="#FFFFFF">
+            <Text alignSelf="flex-end" fontSize={8} color={!myMessage ? "#8A9099" : "#FFFFFF"}>
               {time}
             </Text>
           </Flex>
         </Pressable>
+        {/* </Animated.View> */}
 
         {/* {!isGrouped && (
           <Box
