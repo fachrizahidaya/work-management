@@ -31,6 +31,7 @@ const ContactListItem = ({
   isRead,
   isPinned,
   toggleDeleteModal,
+  toggleContactOption,
 }) => {
   const navigation = useNavigation();
 
@@ -109,7 +110,7 @@ const ContactListItem = ({
         });
       }}
       onLongPress={() => {
-        type === "group" && active_member ? null : toggleDeleteModal(chat);
+        toggleContactOption(chat);
       }}
       delayLongPress={100} // adjust idle time for long press
     >
