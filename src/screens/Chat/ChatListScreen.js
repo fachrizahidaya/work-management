@@ -130,12 +130,12 @@ const ChatListScreen = () => {
 
   const openContactInformationHandler = () => {
     setSelectedChat(selectedContact);
-    toggleContactOption();
+    toggleContactInformation();
   };
 
   const closeContactInformationHandler = () => {
     setSelectedChat(null);
-    toggleContactOption();
+    toggleContactInformation();
   };
 
   /**
