@@ -152,7 +152,7 @@ const FeedCard = ({
             <Image
               source={require("../../../assets/profile_banner.jpg")}
               alignSelf="center"
-              h={200}
+              h={100}
               w={500}
               alt="empty"
               resizeMode="cover"
