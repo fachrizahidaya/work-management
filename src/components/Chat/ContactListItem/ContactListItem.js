@@ -31,6 +31,7 @@ const ContactListItem = ({
   isRead,
   isPinned,
   toggleDeleteModal,
+  toggleContactOption,
 }) => {
   const navigation = useNavigation();
 
