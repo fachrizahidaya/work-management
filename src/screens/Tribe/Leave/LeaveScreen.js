@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -8,11 +9,17 @@ import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const LeaveScreen = () => {
+  const [selectedData, setSelectedData] = useState(null);
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
   const navigation = useNavigation();
+
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const {
     data: personalLeaveRequest,
@@ -24,6 +31,16 @@ const LeaveScreen = () => {
   const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
+
+  const openSelectedLeaveHandler = (leave) => {
+    setSelectedData(leave);
+    toggleAction();
+  };
+
+  const closeSelectedLeaveHandler = () => {
+    setSelectedData(null);
+    toggleAction();
+  };
 
   /**
    * Filtered leave handler
@@ -64,6 +81,11 @@ const LeaveScreen = () => {
                 pendingCount={pendingCount}
                 approvedCount={approvedCount}
                 rejectedCount={rejectedCount}
+                onSelect={openSelectedLeaveHandler}
+                onDeselect={closeSelectedLeaveHandler}
+                actionIsOpen={actionIsOpen}
+                toggleAction={toggleAction}
+                toggleCancelModal={toggleCancelModal}
               />
             </ScrollView>
           ) : (
@@ -91,6 +113,22 @@ const LeaveScreen = () => {
           </>
         )}
       </SafeAreaView>
+      <ConfirmationModal
+        isOpen={cancelModalIsOpen}
+        toggle={toggleCancelModal}
+        apiUrl={`/hr/leave-requests/${selectedData?.id}/cancel`}
+        hasSuccessFunc={true}
+        header="Cancel Leave Request"
+        onSuccess={() => {
+          toggleAction();
+          refetchPersonalLeaveRequest();
+          refetchProfile();
+        }}
+        description="Are you sure to cancel this request?"
+        successMessage="Request canceled"
+        isDelete={false}
+        isPatch={true}
+      />
     </>
   );
 };

@@ -30,30 +30,6 @@ const PayslipScreen = () => {
   const { data: payslip, refetch: refetchPayslip, isFetching: payslipIsFetching } = useFetch("/hr/payslip");
 
   /**
-   * Change password handler
-   */
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
-    },
-    validationSchema: yup.object().shape({
-      old_password: yup.string().required("Old Password is required"),
-      new_password: yup.string().required("New Password is required"),
-      confirm_password: yup
-        .string()
-        .oneOf([yup.ref("new_password"), null], "Password doesn't match")
-        .required("Confirm Password is required"),
-    }),
-    onSubmit: (values, { setSubmitting, setStatus }) => {
-      setStatus("processing");
-      payslipPasswordUpdateHandler(values, setSubmitting, setStatus);
-    },
-  });
-
-  /**
    * Document Password update handler
    * @param {*} data
    * @param {*} setSubmitting
@@ -84,6 +60,33 @@ const PayslipScreen = () => {
     }
   };
 
+  /**
+   * Download payslip Handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const payslipDownloadHandler = async (data, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.get(`/hr/payslip/${id}/download`, {
+        params: data,
+      });
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${res?.data?.data}`);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      setPasswordError(err.response.data.message);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Download failed, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
@@ -94,7 +97,6 @@ const PayslipScreen = () => {
           </Text>
         </Button>
         <PayslipPasswordEdit
-          formik={formik}
           formIsOpen={formIsOpen}
           toggleForm={toggleForm}
           passwordError={passwordError}
@@ -105,6 +107,7 @@ const PayslipScreen = () => {
           setHideOldPassword={setHideOldPassword}
           hideConfirmPassword={hideConfirmPassword}
           setHideConfirmPassword={setHideConfirmPassword}
+          onUpdatePassword={payslipPasswordUpdateHandler}
         />
       </Flex>
 
@@ -119,13 +122,13 @@ const PayslipScreen = () => {
           onEndReachedThreshold={0.1}
           estimatedItemSize={100}
           refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <PayslipList
-              key={item?.id}
-              id={item?.id}
+              key={index}
               month={item?.pay_month}
               year={item?.pay_year}
               downloadPayslipCheckAccess={downloadPayslipCheckAccess}
+              onDownloadPayslip={payslipDownloadHandler}
             />
           )}
         />

@@ -1,13 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Linking, TouchableOpacity } from "react-native";
-import { Button, Flex, Icon, Image, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TouchableOpacity } from "react-native";
+import { Flex, Text } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 import EmailButton from "../../shared/EmailButton";
 import PhoneButton from "../../shared/PhoneButton";
 import WhatsappButton from "../../shared/WhatsappButton";

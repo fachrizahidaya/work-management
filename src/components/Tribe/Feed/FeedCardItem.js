@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
@@ -251,7 +251,7 @@ const FeedCardItem = ({
   );
 };
 
-export default FeedCardItem;
+export default memo(FeedCardItem);
 
 const styles = StyleSheet.create({
   defaultText: {

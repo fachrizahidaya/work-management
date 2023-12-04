@@ -1,11 +1,11 @@
-import { ScrollView } from "react-native-gesture-handler";
-import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { memo } from "react";
 import dayjs from "dayjs";
+
+import { ScrollView } from "react-native-gesture-handler";
+import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ConfirmationModal from "../../shared/ConfirmationModal";
 import CustomAccordion from "../../shared/CustomAccordion";
 
 const LeaveRequestList = ({
@@ -15,12 +15,11 @@ const LeaveRequestList = ({
   pendingCount,
   approvedCount,
   rejectedCount,
-  refetchPersonalLeaveRequest,
-  refetchProfile,
+  onSelect,
+  onDeselect,
+  actionIsOpen,
+  toggleCancelModal,
 }) => {
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
-  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
-
   return (
     <Flex gap={10}>
       {/* Pending Leave */}
@@ -35,7 +34,7 @@ const LeaveRequestList = ({
                       <Text fontWeight={500} fontSize={14} color="#3F434A">
                         {item?.leave_name}
                       </Text>
-                      <Pressable onPress={toggleAction}>
+                      <Pressable onPress={() => onSelect(item)}>
                         <Icon
                           as={<MaterialCommunityIcons name="dots-vertical" />}
                           size="md"
@@ -44,28 +43,11 @@ const LeaveRequestList = ({
                         />
                       </Pressable>
 
-                      <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
+                      <Actionsheet isOpen={actionIsOpen} onClose={onDeselect}>
                         <Actionsheet.Content>
                           <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
                         </Actionsheet.Content>
                       </Actionsheet>
-
-                      <ConfirmationModal
-                        isOpen={cancelModalIsOpen}
-                        toggle={toggleCancelModal}
-                        apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
-                        hasSuccessFunc={true}
-                        header="Cancel Leave Request"
-                        onSuccess={() => {
-                          toggleAction();
-                          refetchPersonalLeaveRequest();
-                          refetchProfile();
-                        }}
-                        description="Are you sure to cancel this request?"
-                        successMessage="Request canceled"
-                        isDelete={false}
-                        isPatch={true}
-                      />
                     </Flex>
                     <Flex flexDir="row" justifyContent="space-between" alignItems="center">
                       <Flex flex={1}>
@@ -177,4 +159,4 @@ const LeaveRequestList = ({
   );
 };
 
-export default LeaveRequestList;
+export default memo(LeaveRequestList);

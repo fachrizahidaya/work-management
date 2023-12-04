@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
@@ -24,44 +24,9 @@ const TeamLeaveRequestList = ({
   objectId,
   object,
   refetchTeamLeaveRequest,
+  onApproval,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
-
-  const toast = useToast();
-
-  /**
-   * Submit response of leave request handler
-   * @param {*} data
-   * @param {*} setStatus
-   * @param {*} setSubmitting
-   */
-  const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
-    try {
-      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
-      setSubmitting(false);
-      setStatus("success");
-      refetchTeamLeaveRequest();
-      toast.show({
-        render: ({ id }) => {
-          return (
-            <SuccessToast
-              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
-              close={() => toast.close(id)}
-            />
-          );
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
 
   /**
    * Aprroval or Rejection handler
@@ -76,7 +41,7 @@ const TeamLeaveRequestList = ({
     },
     onSubmit: (values, { setStatus, setSubmitting }) => {
       setStatus("processing");
-      approvalResponseHandler(values, setStatus, setSubmitting);
+      onApproval(values, setStatus, setSubmitting);
     },
   });
 
@@ -137,6 +102,7 @@ const TeamLeaveRequestList = ({
               isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
               size="xs"
               color="red.500"
+              fontColor="white"
             >
               Decline
             </FormButton>
@@ -145,6 +111,7 @@ const TeamLeaveRequestList = ({
               isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
               size="xs"
               bgColor="#377893"
+              fontColor="white"
             >
               Approve
             </FormButton>
@@ -157,4 +124,4 @@ const TeamLeaveRequestList = ({
   );
 };
 
-export default TeamLeaveRequestList;
+export default memo(TeamLeaveRequestList);
