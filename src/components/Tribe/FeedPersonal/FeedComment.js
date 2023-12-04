@@ -1,8 +1,9 @@
 import { memo, useState } from "react";
 
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
-import FeedCommentList from "./FeedCommentList";
-import FeedCommentForm from "./FeedCommentForm";
+
+import FeedCommentList from "../Feed/FeedComment/FeedCommentList";
+import FeedCommentForm from "../Feed/FeedComment/FeedCommentForm";
 
 const FeedComment = ({
   postId,

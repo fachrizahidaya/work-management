@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/core";
 
 import { Flex, Image, Text, Icon, Pressable, Modal, Badge, Actionsheet } from "native-base";
 import { Linking, StyleSheet, TouchableOpacity } from "react-native";
-import { YouTubeEmbed, TwitterEmbed } from "react-social-media-embed";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

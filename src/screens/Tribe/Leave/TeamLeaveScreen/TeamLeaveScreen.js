@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Image, Text, VStack } from "native-base";
+import { Flex, Image, Text, VStack, useToast } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -8,9 +8,13 @@ import { RefreshControl } from "react-native-gesture-handler";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
+import axiosInstance from "../../../../config/api";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 
 const TeamLeaveScreen = () => {
   const navigation = useNavigation();
+
+  const toast = useToast();
 
   const {
     data: teamLeaveRequestData,
@@ -18,6 +22,40 @@ const TeamLeaveScreen = () => {
     isFetching: teamLeaveRequestIsFetching,
     isLoading: teamLeaveRequestIsLoading,
   } = useFetch("/hr/leave-requests/waiting-approval");
+
+  /**
+   * Submit response of leave request handler
+   * @param {*} data
+   * @param {*} setStatus
+   * @param {*} setSubmitting
+   */
+  const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
+    try {
+      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
+      setSubmitting(false);
+      setStatus("success");
+      refetchTeamLeaveRequest();
+      toast.show({
+        render: ({ id }) => {
+          return (
+            <SuccessToast
+              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
+              close={() => toast.close(id)}
+            />
+          );
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,6 +91,7 @@ const TeamLeaveScreen = () => {
                 objectId={item?.approval_object_id}
                 object={item?.approval_object}
                 refetchTeamLeaveRequest={refetchTeamLeaveRequest}
+                onApproval={approvalResponseHandler}
               />
             </>
           )}
