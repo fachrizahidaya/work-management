@@ -31,15 +31,16 @@ const FeedCardItem = ({
   refetchPersonalPost,
   forceRerenderPersonal,
   setForceRerenderPersonal,
+  toggleFullScreen,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
-  const [postIsFetching, setPostIsFetching] = useState(false);
 
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-
-  const navigation = useNavigation();
 
   /**
    * Like post control
@@ -57,30 +58,39 @@ const FeedCardItem = ({
     setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
-  /**
-   * Toggle fullscreen image
-   */
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
-
   const words = content?.split(" ");
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
-    if (item.includes("https") || item.includes("www")) {
+    if (item.includes("https")) {
       textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("08") || item.includes("62")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("@") && item.includes(".com")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else {
+      textStyle = styles.defaultText;
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
     }
-    return (
-      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-        {item}{" "}
-      </Text>
-    );
   });
-
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
 
   useEffect(() => {
     if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
@@ -128,7 +138,6 @@ const FeedCardItem = ({
                       apiUrl={`/hr/posts/${id}`}
                       color="red.800"
                       hasSuccessFunc={true}
-                      header="Cancel Leave Request"
                       onSuccess={() => {
                         toggleAction();
                         refetchPersonalPost();
@@ -154,7 +163,7 @@ const FeedCardItem = ({
 
         {attachment ? (
           <>
-            <TouchableOpacity key={id} onPress={toggleFullScreen}>
+            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
               <Image
                 source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                 borderRadius={15}
@@ -163,20 +172,6 @@ const FeedCardItem = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-              <Modal.Content backgroundColor="#000000">
-                <Modal.CloseButton />
-                <Modal.Body alignContent="center">
-                  <Image
-                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
-                    height={500}
-                    width={500}
-                    alt="Feed Image"
-                    resizeMode="contain"
-                  />
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
           </>
         ) : null}
 
@@ -219,9 +214,9 @@ export default FeedCardItem;
 
 const styles = StyleSheet.create({
   defaultText: {
-    color: "black", // Warna teks default
+    color: "black",
   },
   highlightedText: {
-    color: "#72acdc", // Warna teks yang mengandung 'https' atau 'www'
+    color: "#72acdc",
   },
 });

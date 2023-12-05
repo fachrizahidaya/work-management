@@ -11,11 +11,11 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 const EmployeeProfile = ({ employee, toggleTeammates, teammates }) => {
   return (
     <>
-      <Box mb={2} position="relative" bottom={20}>
+      <Box mb={2} position="relative" bottom={24}>
         <AvatarPlaceholder size="xl" name={employee?.data?.name} image={employee?.data?.image} />
       </Box>
 
-      <Flex mt={-20}>
+      <Flex mt={-24}>
         <Flex pb={3} px={1} gap={3}>
           <Box>
             <Flex gap={1} alignItems="center" flexDir="row">

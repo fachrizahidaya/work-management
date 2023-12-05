@@ -12,6 +12,7 @@ import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
+import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -28,6 +29,9 @@ const FeedScreen = () => {
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
+  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  console.log("comment", comments);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -37,33 +41,37 @@ const FeedScreen = () => {
 
   const flashListRef = useRef(null);
 
-  useEffect(() => {
-    if (flashListRef.current && posts.length > 0) {
-      flashListRef.current.scrollToIndex({ animated: true, index: 0 });
-    }
-  }, [posts]);
+  /**
+   * Toggle fullscreen image
+   */
+  const toggleFullScreen = (post) => {
+    setSelectedPicture(post);
+    setIsFullScreen(!isFullScreen);
+  };
 
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 10,
+    limit: 20,
   };
 
   const {
     data: post,
     refetch: refetchPost,
     isFetching: postIsFetching,
+    isLoading: postIsLoading,
   } = useFetch("/hr/posts", [reloadPost, currentOffsetPost], postFetchParameters);
 
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComments,
-    limit: 20,
+    limit: 10,
   };
 
   const {
     data: comment,
     isFetching: commentIsFetching,
+    isLoading: commentIsLoading,
     refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
 
@@ -75,7 +83,7 @@ const FeedScreen = () => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + post?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 10);
+      setCurrentOffsetPost(currentOffsetPost + 20);
     }
   };
 
@@ -168,6 +176,15 @@ const FeedScreen = () => {
     setLatestExpandedReply(comment_parent_id);
   };
 
+  /**
+   * After created a post, it will scroll to top
+   */
+  useEffect(() => {
+    if (flashListRef.current && posts.length > 0) {
+      flashListRef.current.scrollToIndex({ animated: true, index: 0 });
+    }
+  }, [posts]);
+
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
       if (currentOffsetPost === 0) {
@@ -190,7 +207,7 @@ const FeedScreen = () => {
         }
       }
     }
-  }, [commentsOpenHandler, commentIsFetching]);
+  }, [commentIsFetching, reloadComment]);
 
   return (
     <>
@@ -237,6 +254,7 @@ const FeedScreen = () => {
             postRefetchHandler={postRefetchHandler}
             postEndReachedHandler={postEndReachedHandler}
             postIsFetching={postIsFetching}
+            postIsLoading={postIsLoading}
             refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
@@ -245,6 +263,7 @@ const FeedScreen = () => {
             onCommentToggle={commentsOpenHandler}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
+            toggleFullScreen={toggleFullScreen}
           />
           {commentsOpen && (
             <FeedComment
@@ -254,6 +273,7 @@ const FeedScreen = () => {
               loggedEmployeeImage={profile?.data?.image}
               comments={comments}
               commentIsFetching={commentIsFetching}
+              commentIsLoading={commentIsLoading}
               refetchComment={refetchComment}
               handleOpen={commentsOpenHandler}
               handleClose={commentsCloseHandler}
@@ -267,6 +287,7 @@ const FeedScreen = () => {
           )}
         </Box>
       </SafeAreaView>
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );
 };

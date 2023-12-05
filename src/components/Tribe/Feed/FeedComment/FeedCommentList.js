@@ -1,4 +1,4 @@
-import { Box } from "native-base";
+import { Box, Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 
 import FeedCommentItem from "./FeedCommentItem";
@@ -13,6 +13,7 @@ const FeedCommentList = ({
   commentEndReachedHandler,
   commentsRefetchHandler,
   commentIsFetching,
+  commentIsLoading,
   refetchComment,
   hasBeenScrolled,
   setHasBeenScrolled,
@@ -29,7 +30,8 @@ const FeedCommentList = ({
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          onEndReached={hasBeenScrolled === true ? commentEndReachedHandler : null}
+          ListFooterComponent={() => commentIsLoading && <Spinner size="sm" />}
+          onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
           estimatedItemSize={100}
           refreshControl={
             <RefreshControl

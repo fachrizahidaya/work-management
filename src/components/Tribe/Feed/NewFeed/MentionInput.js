@@ -61,11 +61,8 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
       // }}
       >
         <TextArea
-          minH={100}
-          maxH={500}
           variant="unstyled"
           placeholder="What is happening?"
-          multiline
           onChangeText={(value) => formik.setFieldValue("content", value)}
           value={formik.values.content}
           fontSize="lg"

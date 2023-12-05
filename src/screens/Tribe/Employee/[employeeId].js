@@ -10,6 +10,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
+import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -26,6 +27,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
+  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
@@ -41,10 +44,12 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
+  const { data: profile } = useFetch("/hr/my-profile");
+
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 10,
+    limit: 20,
   };
 
   const {
@@ -57,7 +62,7 @@ const EmployeeProfileScreen = ({ route }) => {
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComment,
-    limit: 50,
+    limit: 10,
   };
 
   const {
@@ -72,7 +77,7 @@ const EmployeeProfileScreen = ({ route }) => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + personalPost?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 10);
+      setCurrentOffsetPost(currentOffsetPost + 20);
     }
   };
 
@@ -106,7 +111,6 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Comments open handler
    */
-
   const commentsOpenHandler = (post_id) => {
     setPostId(post_id);
     setCommentsOpen(true);
@@ -166,6 +170,14 @@ const EmployeeProfileScreen = ({ route }) => {
     setLatestExpandedReply(comment_parent_id);
   };
 
+  /**
+   * Toggle fullscreen image
+   */
+  const toggleFullScreen = (post) => {
+    setSelectedPicture(post);
+    setIsFullScreen(!isFullScreen);
+  };
+
   useEffect(() => {
     if (personalPost?.data && personalPostIsFetching === false) {
       if (currentOffsetPost === 0) {
@@ -191,56 +203,61 @@ const EmployeeProfileScreen = ({ route }) => {
   }, [commentsOpenHandler, commentIsFetching]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
-        <PageHeader
-          title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-      </Flex>
-
-      <Flex flex={1} minHeight={2} gap={2} height={height}>
-        {/* Content here */}
-        <FeedCard
-          posts={posts}
-          loggedEmployeeId={loggedEmployeeId}
-          loggedEmployeeImage={loggedEmployeeImage}
-          postEndReachedHandler={postEndReachedHandler}
-          personalPostIsFetching={personalPostIsFetching}
-          refetchPersonalPost={refetchPersonalPost}
-          employee={employee}
-          toggleTeammates={toggleTeammates}
-          teammates={teammates}
-          teammatesIsOpen={teammatesIsOpen}
-          hasBeenScrolled={hasBeenScrolled}
-          setHasBeenScrolled={setHasBeenScrolled}
-          onCommentToggle={commentsOpenHandler}
-          forceRerender={forceRerender}
-          setForceRerender={setForceRerender}
-        />
-        {commentsOpen && (
-          <FeedComment
-            postId={postId}
-            loggedEmployeeId={profile?.data?.id}
-            loggedEmployeeName={userSelector?.name}
-            loggedEmployeeImage={profile?.data?.image}
-            comments={comments}
-            commentIsFetching={commentIsFetching}
-            refetchComment={refetchComment}
-            handleOpen={commentsOpenHandler}
-            handleClose={commentsCloseHandler}
-            onEndReached={commentEndReachedHandler}
-            commentRefetchHandler={commentRefetchHandler}
-            parentId={commentParentId}
-            onSubmit={commentSubmitHandler}
-            onReply={replyHandler}
-            latestExpandedReply={latestExpandedReply}
+    <>
+      <SafeAreaView style={styles.container}>
+        <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+          <PageHeader
+            title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+            onPress={() => {
+              navigation.goBack();
+            }}
           />
-        )}
-      </Flex>
-    </SafeAreaView>
+        </Flex>
+
+        <Flex flex={1} minHeight={2} gap={2} height={height}>
+          {/* Content here */}
+          <FeedCard
+            posts={posts}
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            postEndReachedHandler={postEndReachedHandler}
+            personalPostIsFetching={personalPostIsFetching}
+            refetchPersonalPost={refetchPersonalPost}
+            employee={employee}
+            toggleTeammates={toggleTeammates}
+            teammates={teammates}
+            teammatesIsOpen={teammatesIsOpen}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            onCommentToggle={commentsOpenHandler}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
+            personalPostIsLoading={personalPostIsLoading}
+            toggleFullScreen={toggleFullScreen}
+          />
+          {commentsOpen && (
+            <FeedComment
+              postId={postId}
+              loggedEmployeeId={profile?.data?.id}
+              loggedEmployeeName={userSelector?.name}
+              loggedEmployeeImage={profile?.data?.image}
+              comments={comments}
+              commentIsFetching={commentIsFetching}
+              refetchComment={refetchComment}
+              handleOpen={commentsOpenHandler}
+              handleClose={commentsCloseHandler}
+              onEndReached={commentEndReachedHandler}
+              commentRefetchHandler={commentRefetchHandler}
+              parentId={commentParentId}
+              onSubmit={commentSubmitHandler}
+              onReply={replyHandler}
+              latestExpandedReply={latestExpandedReply}
+            />
+          )}
+        </Flex>
+      </SafeAreaView>
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+    </>
   );
 };
 

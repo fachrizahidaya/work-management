@@ -10,6 +10,7 @@ const FeedComment = ({
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
+  commentIsLoading,
   comments,
   handleOpen,
   handleClose,
@@ -53,6 +54,7 @@ const FeedComment = ({
                 commentEndReachedHandler={onEndReached}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
+                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
               />
             </Flex>

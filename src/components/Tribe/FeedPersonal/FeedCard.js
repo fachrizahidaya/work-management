@@ -29,6 +29,8 @@ const FeedCard = ({
   onCommentToggle,
   forceRerender,
   setForceRerender,
+  personalPostIsLoading,
+  toggleFullScreen,
 }) => {
   const userSelector = useSelector((state) => state.auth);
 
@@ -54,6 +56,32 @@ const FeedCard = ({
     }
   };
 
+  const handleLinkPress = (url) => {
+    Linking.openURL(url);
+  };
+
+  const handleEmailPress = (email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Box flex={1}>
       <FlashList
@@ -68,6 +96,7 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
+        ListFooterComponent={() => personalPostIsFetching && <Spinner size="sm" />}
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}
@@ -145,6 +174,10 @@ const FeedCard = ({
                     refetchPersonalPost={refetchPersonalPost}
                     forceRerenderPersonal={forceRerender}
                     setForceRerenderPersonal={setForceRerender}
+                    toggleFullScreen={toggleFullScreen}
+                    handleLinkPress={handleLinkPress}
+                    handleEmailPress={handleEmailPress}
+                    copyToClipboard={copyToClipboard}
                   />
                 </Box>
               )}

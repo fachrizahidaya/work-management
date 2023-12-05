@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { Actionsheet, Box, Flex, FormControl, Icon, Image, Pressable, Spinner, Text, TextArea } from "native-base";
 
@@ -38,16 +37,6 @@ const NewFeedForm = ({
           onMentionSelect={mentionSelectHandler}
           inputRef={inputRef}
         />
-        {/* <TextArea
-          minH={100}
-          maxH={500}
-          variant="unstyled"
-          placeholder="What is happening?"
-          multiline
-          onChangeText={(value) => formik.setFieldValue("content", value)}
-          value={formik.values.content}
-          fontSize="lg"
-        /> */}
 
         <Flex p={2} flexDir="column" justifyContent="space-between">
           {image ? (
@@ -74,7 +63,6 @@ const NewFeedForm = ({
             </Box>
           ) : null}
         </Flex>
-        <FormControl.ErrorMessage px={3}>{formik.errors.content}</FormControl.ErrorMessage>
 
         <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
           <Actionsheet.Content>
