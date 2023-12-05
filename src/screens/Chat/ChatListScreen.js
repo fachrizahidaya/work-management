@@ -31,8 +31,6 @@ const ChatListScreen = () => {
   const [globalKeyword, setGlobalKeyword] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
-  console.log("selected", selectedContact);
-  console.log("chat", selectedChat);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
