@@ -31,7 +31,6 @@ const FeedScreen = () => {
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  console.log("comment", comments);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -65,7 +64,7 @@ const FeedScreen = () => {
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComments,
-    limit: 10,
+    limit: 50,
   };
 
   const {
@@ -102,7 +101,7 @@ const FeedScreen = () => {
    */
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffsetComments(currentOffsetComments + 10);
+      setCurrentOffsetComments(currentOffsetComments + 20);
     }
   };
 
