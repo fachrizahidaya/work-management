@@ -2,9 +2,8 @@ import { useEffect, useState, memo } from "react";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
-import { Flex, Image, Text, Icon, Pressable, Modal, Badge } from "native-base";
-import { Linking, StyleSheet, TouchableOpacity, Clipboard } from "react-native";
-import { YouTubeEmbed, TwitterEmbed } from "react-social-media-embed";
+import { Flex, Image, Text, Icon, Pressable, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -29,15 +28,20 @@ const FeedCardItem = ({
   onCommentToggle,
   forceRerender,
   setForceRerender,
+  toggleFullScreen,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
+  const [likeAction, setLikeAction] = useState("dislike");
 
   const navigation = useNavigation();
 
   /**
    * Like post control
    */
-  const [likeAction, setLikeAction] = useState("dislike");
+
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -48,14 +52,6 @@ const FeedCardItem = ({
     }
     onToggleLike(post_id, action);
     setForceRerender(!forceRerender);
-  };
-
-  /**
-   * Toggle fullscreen image
-   */
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
   };
 
   const words = content?.split(" ");
@@ -91,32 +87,6 @@ const FeedCardItem = ({
       );
     }
   });
-
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
-
-  const handleEmailPress = (email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const copyToClipboard = (text) => {
-    try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
-      } else {
-        Clipboard.setString(text);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
     if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
@@ -175,7 +145,7 @@ const FeedCardItem = ({
 
         {attachment ? (
           <>
-            <TouchableOpacity key={id} onPress={toggleFullScreen}>
+            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
               <Image
                 source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
                 borderRadius={15}
@@ -185,38 +155,22 @@ const FeedCardItem = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-              <Modal.Content backgroundColor="#000000">
-                <Modal.CloseButton />
-                <Modal.Body alignContent="center">
-                  <Image
-                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
-                    height={500}
-                    width={500}
-                    alt="Feed Image"
-                    resizeMode="contain"
-                  />
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
           </>
         ) : null}
 
-        {/* {styledTexts.filter((item) => {
-          if (item?.props?.children[0].includes("youtube") === true) {
-            return (
-              <Flex>
-                <YouTubeEmbed url={item?.props?.children[0]} width={300} height={200} />;
-              </Flex>
-            );
-          } else if (item?.props?.children[0].includes("twitter") === true) {
-            <Flex>
-              <TwitterEmbed url={item?.props?.children[0]} width={250} />;
-            </Flex>;
-          }
-        })} */}
-
         <Flex alignItems="center" direction="row" gap={4}>
+          <Flex alignItems="center" direction="row" gap={2}>
+            <Pressable
+              onPress={() => {
+                onCommentToggle(id);
+              }}
+            >
+              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
+            </Pressable>
+            <Text fontSize={15} fontWeight={500}>
+              {totalComment}
+            </Text>
+          </Flex>
           <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
@@ -231,18 +185,6 @@ const FeedCardItem = ({
 
             <Text fontSize={15} fontWeight={500}>
               {totalLike}
-            </Text>
-          </Flex>
-          <Flex alignItems="center" direction="row" gap={2}>
-            <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
-            </Pressable>
-            <Text fontSize={15} fontWeight={500}>
-              {totalComment}
             </Text>
           </Flex>
         </Flex>

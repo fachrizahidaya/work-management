@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { Box, useToast } from "native-base";
+import { Box, Spinner, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -17,12 +17,14 @@ const FeedCard = ({
   hasBeenScrolled,
   setHasBeenScrolled,
   postIsFetching,
+  postIsLoading,
   refetchPost,
   scrollNewMessage,
   flashListRef,
   onCommentToggle,
   forceRerender,
   setForceRerender,
+  toggleFullScreen,
 }) => {
   const toast = useToast();
 
@@ -43,6 +45,32 @@ const FeedCard = ({
           return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
         },
       });
+    }
+  };
+
+  const handleLinkPress = (url) => {
+    Linking.openURL(url);
+  };
+
+  const handleEmailPress = (email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -73,6 +101,7 @@ const FeedCard = ({
             }}
           />
         }
+        ListFooterComponent={() => postIsLoading && <Spinner size="sm" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}
@@ -93,6 +122,10 @@ const FeedCard = ({
             onCommentToggle={onCommentToggle}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
+            toggleFullScreen={toggleFullScreen}
+            handleLinkPress={handleLinkPress}
+            handleEmailPress={handleEmailPress}
+            copyToClipboard={copyToClipboard}
           />
         )}
       />
