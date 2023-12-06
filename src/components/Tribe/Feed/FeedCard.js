@@ -1,5 +1,6 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
+import { Clipboard, Linking } from "react-native";
 import { Box, Spinner, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -48,18 +49,18 @@ const FeedCard = ({
     }
   };
 
-  const handleLinkPress = (url) => {
+  const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
-  };
+  }, []);
 
-  const handleEmailPress = (email) => {
+  const handleEmailPress = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
 
   const copyToClipboard = (text) => {
     try {
@@ -101,7 +102,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsLoading && <Spinner size="sm" />}
+        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner size="sm" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}
@@ -126,6 +127,7 @@ const FeedCard = ({
             handleLinkPress={handleLinkPress}
             handleEmailPress={handleEmailPress}
             copyToClipboard={copyToClipboard}
+            postRefetchHandler={postRefetchHandler}
           />
         )}
       />

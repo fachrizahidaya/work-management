@@ -31,6 +31,7 @@ const FeedCard = ({
   setForceRerender,
   personalPostIsLoading,
   toggleFullScreen,
+  openSelectedPersonalPost,
 }) => {
   const userSelector = useSelector((state) => state.auth);
 
@@ -96,7 +97,7 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
-        ListFooterComponent={() => personalPostIsFetching && <Spinner size="sm" />}
+        ListFooterComponent={() => personalPostIsFetching && hasBeenScrolled && <Spinner size="sm" />}
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}
@@ -139,7 +140,7 @@ const FeedCard = ({
         }
         // Employee Posts
         renderItem={({ item, index }) => {
-          if (item.length === 0) {
+          if (item.id === "no-posts") {
             return (
               <Flex alignItems="center" justifyContent="center" py={3} px={3}>
                 <Text fontSize={16} fontWeight={500}>
@@ -149,39 +150,34 @@ const FeedCard = ({
             );
           }
           return (
-            <>
-              {personalPostIsFetching ? (
-                <Spinner />
-              ) : (
-                <Box px={3}>
-                  <FeedCardItem
-                    key={index}
-                    id={item?.id}
-                    employeeId={item?.author_id}
-                    employeeName={item?.employee_name}
-                    createdAt={item?.created_at}
-                    employeeImage={item?.employee_image}
-                    content={item?.content}
-                    total_like={item?.total_like}
-                    totalComment={item?.total_comment}
-                    likedBy={item?.liked_by}
-                    attachment={item?.file_path}
-                    type={item?.type}
-                    onToggleLike={postLikeToggleHandler}
-                    loggedEmployeeId={loggedEmployeeId}
-                    loggedEmployeeImage={loggedEmployeeImage}
-                    onCommentToggle={onCommentToggle}
-                    refetchPersonalPost={refetchPersonalPost}
-                    forceRerenderPersonal={forceRerender}
-                    setForceRerenderPersonal={setForceRerender}
-                    toggleFullScreen={toggleFullScreen}
-                    handleLinkPress={handleLinkPress}
-                    handleEmailPress={handleEmailPress}
-                    copyToClipboard={copyToClipboard}
-                  />
-                </Box>
-              )}
-            </>
+            <Box px={3}>
+              <FeedCardItem
+                key={index}
+                id={item?.id}
+                employeeId={item?.author_id}
+                employeeName={item?.employee_name}
+                createdAt={item?.created_at}
+                employeeImage={item?.employee_image}
+                content={item?.content}
+                total_like={item?.total_like}
+                totalComment={item?.total_comment}
+                likedBy={item?.liked_by}
+                attachment={item?.file_path}
+                type={item?.type}
+                onToggleLike={postLikeToggleHandler}
+                loggedEmployeeId={loggedEmployeeId}
+                loggedEmployeeImage={loggedEmployeeImage}
+                onCommentToggle={onCommentToggle}
+                refetchPersonalPost={refetchPersonalPost}
+                forceRerenderPersonal={forceRerender}
+                setForceRerenderPersonal={setForceRerender}
+                toggleFullScreen={toggleFullScreen}
+                handleLinkPress={handleLinkPress}
+                handleEmailPress={handleEmailPress}
+                copyToClipboard={copyToClipboard}
+                openSelectedPersonalPost={openSelectedPersonalPost}
+              />
+            </Box>
           );
         }}
       />

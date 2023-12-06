@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 
@@ -32,6 +32,7 @@ const FeedCardItem = ({
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
+  postRefetchHandler,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -106,6 +107,7 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
+                postRefetch: postRefetchHandler,
               })
             }
           >
@@ -120,6 +122,7 @@ const FeedCardItem = ({
                     employeeId: employeeId,
                     loggedEmployeeId: loggedEmployeeId,
                     loggedEmployeeImage: loggedEmployeeImage,
+                    postRefetch: postRefetchHandler,
                   })
                 }
                 fontSize={15}
@@ -147,12 +150,13 @@ const FeedCardItem = ({
           <>
             <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
               <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
                 borderRadius={15}
                 width="100%"
-                height={200}
+                height={250}
                 alt="Feed Image"
                 resizeMode="contain"
+                resizeMethod="auto"
               />
             </TouchableOpacity>
           </>
@@ -193,7 +197,7 @@ const FeedCardItem = ({
   );
 };
 
-export default memo(FeedCardItem);
+export default FeedCardItem;
 
 const styles = StyleSheet.create({
   defaultText: {

@@ -137,7 +137,7 @@ const ContactScreen = () => {
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}
             onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-            ListFooterComponent={() => employeeDataIsLoading && <Spinner size="sm" />}
+            ListFooterComponent={() => employeeDataIsLoading && hasBeenScrolled && <Spinner size="sm" />}
             renderItem={({ item }) => (
               <ContactList
                 key={item?.id}

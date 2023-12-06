@@ -7,9 +7,15 @@ import { Box, Flex, Pressable, Text } from "native-base";
  * @param {string} value - The currently selected tab value.
  * @param {function} onChange - Function to handle tab selection changes.
  */
-const Tabs = ({ tabs = [], value, onChange }) => {
+const Tabs = ({ tabs = [], value, onChange, justifyContent }) => {
   return (
-    <Flex flexDir="row" gap={10} borderBottomWidth={1} borderColor="#E8E9EB">
+    <Flex
+      flexDir="row"
+      justifyContent={justifyContent ? justifyContent : null}
+      gap={10}
+      borderBottomWidth={1}
+      borderColor="#E8E9EB"
+    >
       {tabs.length > 0 &&
         tabs.map((tab, idx) => {
           return (

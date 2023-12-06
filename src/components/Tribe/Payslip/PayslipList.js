@@ -1,78 +1,29 @@
-import { useEffect, useState } from "react";
+import { memo } from "react";
 
 import dayjs from "dayjs";
-import { useFormik } from "formik";
-import * as yup from "yup";
 
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { card } from "../../../styles/Card";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import PayslipDownload from "./PayslipDownload";
-
-const PayslipList = ({ month, year, downloadPayslipCheckAccess, onDownloadPayslip }) => {
-  const [passwordError, setPasswordError] = useState("");
-
-  const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
-
-  /**
-   * Input Password Handler
-   */
-  const formik = useFormik({
-    initialValues: {
-      password: "",
-    },
-    validationSchema: yup.object().shape({
-      password: yup.string().required("Password is required"),
-    }),
-    onSubmit: (values, { setSubmitting, setStatus }) => {
-      setStatus("processing");
-      onDownloadPayslip(values, setSubmitting, setStatus);
-    },
-  });
-
-  useEffect(() => {
-    if (!formik.isSubmitting && formik.status === "success") {
-      toggleDownloadDialog();
-      formik.resetForm();
-    }
-  }, [formik.isSubmitting, formik.status]);
-
+const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
   return (
-    <>
-      <Flex
-        flexDir="row"
-        justifyContent="space-between"
-        alignItems="center"
-        borderTopColor="#E8E9EB"
-        borderTopWidth={1}
-        py={3}
-        px={4}
-      >
-        <Box>
-          <Text fontWeight={500} fontSize={14} color="#3F434A">
-            {dayjs()
-              .month(month - 1)
-              .year(year)
-              .format("MMMM YYYY")}
-          </Text>
-        </Box>
+    <Flex mx={3} my={2} flexDir="column" style={card.card}>
+      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+        <Text fontWeight={500} fontSize={14} color="#3F434A">
+          {dayjs()
+            .month(month - 1)
+            .year(year)
+            .format("MMMM YYYY")}
+        </Text>
 
-        <Pressable onPress={toggleDownloadDialog}>
+        <Pressable onPress={() => openSelectedPayslip(id)}>
           <Icon as={<MaterialCommunityIcons name="tray-arrow-down" />} size={6} color="#186688" />
         </Pressable>
-        <PayslipDownload
-          downloadDialogIsOpen={downloadDialogIsOpen}
-          formik={formik}
-          toggleDownloadDialog={toggleDownloadDialog}
-          passwordError={passwordError}
-          setPasswordError={setPasswordError}
-          downloadPayslipCheckAccess={downloadPayslipCheckAccess}
-        />
       </Flex>
-    </>
+    </Flex>
   );
 };
 
-export default PayslipList;
+export default memo(PayslipList);

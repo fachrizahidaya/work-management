@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
@@ -13,6 +13,7 @@ import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import { C } from "ts-toolbelt";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -43,10 +44,10 @@ const FeedScreen = () => {
   /**
    * Toggle fullscreen image
    */
-  const toggleFullScreen = (post) => {
-    setSelectedPicture(post);
+  const toggleFullScreen = useCallback((post) => {
     setIsFullScreen(!isFullScreen);
-  };
+    setSelectedPicture(post);
+  }, []);
 
   // Parameters for fetch posts
   const postFetchParameters = {
@@ -101,7 +102,7 @@ const FeedScreen = () => {
    */
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffsetComments(currentOffsetComments + 20);
+      setCurrentOffsetComments(currentOffsetComments + 50);
     }
   };
 
@@ -170,10 +171,10 @@ const FeedScreen = () => {
   /**
    * Control for reply a comment
    */
-  const replyHandler = (comment_parent_id) => {
+  const replyHandler = useCallback((comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
-  };
+  }, []);
 
   /**
    * After created a post, it will scroll to top
@@ -206,7 +207,7 @@ const FeedScreen = () => {
         }
       }
     }
-  }, [commentIsFetching, reloadComment]);
+  }, [commentIsFetching, reloadComment, commentParentId]);
 
   return (
     <>

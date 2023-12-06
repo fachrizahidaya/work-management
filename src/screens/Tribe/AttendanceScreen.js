@@ -1,9 +1,10 @@
-import { useState, memo, useMemo, useCallback } from "react";
+import { useState, useCallback, useEffect, Fragment } from "react";
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, useToast } from "native-base";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Calendar } from "react-native-calendars";
 
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
@@ -13,9 +14,6 @@ import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceModal from "../../components/Tribe/Attendance/AttendanceModal";
-import { useEffect } from "react";
-import { Fragment } from "react";
-import { Calendar } from "react-native-calendars";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -106,7 +104,7 @@ const AttendanceScreen = () => {
    * Toggle date Handler
    * @param {*} day
    */
-  const toggleDateHandler = (day) => {
+  const toggleDateHandler = useCallback((day) => {
     if (day) {
       const selectedDate = day.dateString;
       const dateData = items[selectedDate];
@@ -119,7 +117,7 @@ const AttendanceScreen = () => {
         });
       }
     }
-  };
+  });
 
   /**
    * Submit attendance report handler
@@ -128,7 +126,7 @@ const AttendanceScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const attendanceReportSubmitHandler = useCallback(async (attendance_id, data, setSubmitting, setStatus) => {
+  const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
       toggleReport();
@@ -150,15 +148,15 @@ const AttendanceScreen = () => {
         },
       });
     }
-  }, []);
+  };
 
   /**
    * Month change handler
    * @param {*} newMonth
    */
-  const handleMonthChange = (newMonth) => {
+  const handleMonthChange = useCallback((newMonth) => {
     switchMonthHandler(newMonth);
-  };
+  }, []);
 
   /**
    * Marked dates in Calendar Handler
@@ -216,6 +214,7 @@ const AttendanceScreen = () => {
           markingType={"multi-dot"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
+          re
         />
       </Fragment>
     );
@@ -227,7 +226,9 @@ const AttendanceScreen = () => {
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
-        <ScrollView refreshControl={false}>
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={attendanceDataIsFetching} onRefresh={refetchAttendanceData} />}
+        >
           <AttendanceCalendar
             attendance={attendanceData?.data}
             onMonthChange={switchMonthHandler}

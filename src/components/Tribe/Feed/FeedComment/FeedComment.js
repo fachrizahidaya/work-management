@@ -1,8 +1,11 @@
-import { memo, useState } from "react";
+import { memo, useState, useCallback } from "react";
 
+import { Clipboard, Linking } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
-import FeedCommentList from "./FeedCommentList";
+
+import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentForm from "./FeedCommentForm";
+import FeedCommentList from "./FeedCommentList";
 
 const FeedComment = ({
   postId,
@@ -23,6 +26,41 @@ const FeedComment = ({
   latestExpandedReply,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [commentReplies, setCommentReplies] = useState(false);
+  const [viewReplyToggle, setViewReplyToggle] = useState(false);
+  const [hideReplies, setHideReplies] = useState(false);
+
+  const {
+    data: commentRepliesData,
+    isFetching: commentRepliesDataIsFetching,
+    refetch: refetchCommentRepliesData,
+  } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
+
+  const handleLinkPress = useCallback((url) => {
+    Linking.openURL(url);
+  }, []);
+
+  const handleEmailPress = useCallback((email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
@@ -45,8 +83,6 @@ const FeedComment = ({
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
-                postId={postId}
-                loggedEmployeeId={loggedEmployeeId}
                 latestExpandedReply={latestExpandedReply}
                 hasBeenScrolled={hasBeenScrolled}
                 setHasBeenScrolled={setHasBeenScrolled}
@@ -56,6 +92,15 @@ const FeedComment = ({
                 commentIsFetching={commentIsFetching}
                 commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
+                handleLinkPress={handleLinkPress}
+                handleEmailPress={handleEmailPress}
+                copyToClipboard={copyToClipboard}
+                commentRepliesData={commentRepliesData}
+                refetchCommentRepliesData={refetchCommentRepliesData}
+                hideReplies={hideReplies}
+                setHideReplies={setHideReplies}
+                viewReplyToggle={viewReplyToggle}
+                setViewReplyToggle={setViewReplyToggle}
               />
             </Flex>
           </ScrollView>
@@ -73,4 +118,4 @@ const FeedComment = ({
   );
 };
 
-export default memo(FeedComment);
+export default FeedComment;

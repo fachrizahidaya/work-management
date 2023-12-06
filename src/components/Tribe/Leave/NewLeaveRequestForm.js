@@ -30,8 +30,8 @@ const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStart
           placeholder="Select Leave type"
           dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
         >
-          {leaveType?.data.map((item) => {
-            return <Select.Item label={item?.name} value={item?.id} key={item?.id} />;
+          {leaveType?.data.map((item, index) => {
+            return <Select.Item key={index} label={item?.name} value={item?.id} />;
           })}
         </Select>
         <FormControl mt={-2} isInvalid={formik.errors.leave_id}>

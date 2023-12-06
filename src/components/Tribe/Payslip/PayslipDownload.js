@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as yup from "yup";
 
 import { Actionsheet, FormControl, Icon, Input, Pressable, Text, VStack } from "native-base";
 import { Platform } from "react-native";
@@ -7,17 +8,42 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
+import { useFormik } from "formik";
+import { useEffect } from "react";
 
 const PayslipDownload = ({
   downloadDialogIsOpen,
-  formik,
   toggleDownloadDialog,
   passwordError,
   setPasswordError,
   downloadPayslipCheckAccess,
+  onDownloadPayslip,
 }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
+  /**
+   * Input Password Handler
+   */
+  const formik = useFormik({
+    initialValues: {
+      password: "",
+    },
+    validationSchema: yup.object().shape({
+      password: yup.string().required("Password is required"),
+    }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onDownloadPayslip(values, setSubmitting, setStatus);
+    },
+  });
+
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      toggleDownloadDialog();
+      formik.resetForm();
+    }
+  }, [formik.isSubmitting, formik.status]);
 
   return (
     <Actionsheet

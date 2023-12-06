@@ -123,7 +123,6 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
                       employeeId: profile?.data?.id,
-                      refetchPersonalLeave: refetchPersonalLeave,
                     });
                     toggle();
                   } else if (item.title === "New Reimbursement") {
