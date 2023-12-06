@@ -282,7 +282,7 @@ const EmployeeProfileScreen = ({ route }) => {
             </Flex>
           </>
         ) : (
-          <VStack mt={10} px={4} space={2}>
+          <VStack mt={30} px={4} space={2}>
             <Spinner color="primary.600" size="lg" />
           </VStack>
         )}
