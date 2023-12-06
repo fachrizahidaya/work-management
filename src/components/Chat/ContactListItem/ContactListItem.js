@@ -111,7 +111,6 @@ const ContactListItem = ({
       onLongPress={() => {
         type === "group" && active_member ? null : toggleDeleteModal(chat);
       }}
-      // onPressIn={}
       delayLongPress={100} // adjust idle time for long press
     >
       <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
