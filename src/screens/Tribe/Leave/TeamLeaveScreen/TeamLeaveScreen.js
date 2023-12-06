@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { Flex, Image, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
@@ -9,7 +9,6 @@ import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
-import { useEffect } from "react";
 
 const TeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);

@@ -157,6 +157,7 @@ const FeedCardItem = ({
                 alt="Feed Image"
                 resizeMode="contain"
                 resizeMethod="auto"
+                fadeDuration={0}
               />
             </TouchableOpacity>
           </>
