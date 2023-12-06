@@ -245,10 +245,10 @@ const AttendanceModal = ({
         )}
 
         {/* If attendance type is Leave */}
-        {isLeave && <LateOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+        {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
         {/* If attendance type is Permit */}
-        {isPermit && <LateOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+        {isPermit && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
         <Modal.Footer>
           {
@@ -355,7 +355,7 @@ const LateOrEarlyTime = ({
   );
 };
 
-const LateOrPermit = ({ type, reason }) => {
+const LeaveOrPermit = ({ type, reason }) => {
   return (
     <Modal.Body>
       <VStack w="95%" space={3}>

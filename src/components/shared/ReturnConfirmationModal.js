@@ -20,7 +20,7 @@ const ReturnConfirmationModal = ({ isOpen, toggle, onPress, description }) => {
 
         <Modal.Footer bgColor="white">
           <Button.Group space={2} width="full">
-            <Button onPress={toggle} bgColor={"red.600"} flex={1}>
+            <Button onPress={toggle} flex={1} variant="outline">
               Cancel
             </Button>
 

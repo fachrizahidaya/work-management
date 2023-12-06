@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useNavigation } from "@react-navigation/core";
 
-import { Flex, Image, Text, Icon, Pressable, Modal, Badge, Actionsheet } from "native-base";
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, Image, Text, Icon, Pressable, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import ConfirmationModal from "../../shared/ConfirmationModal";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCardItem = ({
   id,
@@ -35,17 +32,15 @@ const FeedCardItem = ({
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
+  openSelectedPersonalPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
-
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const [likeAction, setLikeAction] = useState("dislike");
 
   /**
    * Like post control
    */
-  const [likeAction, setLikeAction] = useState("dislike");
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -119,7 +114,7 @@ const FeedCardItem = ({
                 ) : null}
                 {loggedEmployeeId === employeeId && (
                   <>
-                    <Pressable onPress={toggleAction}>
+                    <Pressable onPress={() => openSelectedPersonalPost(id)}>
                       <Icon
                         as={<MaterialCommunityIcons name="dots-vertical" />}
                         size="md"
@@ -127,26 +122,6 @@ const FeedCardItem = ({
                         color="#000000"
                       />
                     </Pressable>
-                    <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-                      <Actionsheet.Content>
-                        <Actionsheet.Item onPress={toggleDeleteModal}>Delete Post</Actionsheet.Item>
-                      </Actionsheet.Content>
-                    </Actionsheet>
-                    <ConfirmationModal
-                      isOpen={deleteModalIsOpen}
-                      toggle={toggleDeleteModal}
-                      apiUrl={`/hr/posts/${id}`}
-                      color="red.800"
-                      hasSuccessFunc={true}
-                      onSuccess={() => {
-                        toggleAction();
-                        refetchPersonalPost();
-                      }}
-                      description="Are you sure to delete this post?"
-                      successMessage="Post deleted"
-                      isDelete={true}
-                      isPatch={false}
-                    />
                   </>
                 )}
               </Flex>
@@ -165,11 +140,13 @@ const FeedCardItem = ({
           <>
             <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
               <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
                 borderRadius={15}
-                height={200}
+                width="100%"
+                height={250}
                 alt="Feed Image"
                 resizeMode="contain"
+                resizeMethod="auto"
               />
             </TouchableOpacity>
           </>

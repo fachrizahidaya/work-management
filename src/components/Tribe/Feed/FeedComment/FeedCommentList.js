@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { Box, Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 
@@ -7,8 +9,6 @@ import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-han
 const FeedCommentList = ({
   comments,
   onReply,
-  loggedEmployeeId,
-  postId,
   latestExpandedReply,
   commentEndReachedHandler,
   commentsRefetchHandler,
@@ -17,6 +17,15 @@ const FeedCommentList = ({
   refetchComment,
   hasBeenScrolled,
   setHasBeenScrolled,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
+  commentRepliesData,
+  refetchCommentRepliesData,
+  viewReplyToggle,
+  setViewReplyToggle,
+  hideReplies,
+  setHideReplies,
 }) => {
   return (
     <GestureHandlerRootView>
@@ -30,7 +39,7 @@ const FeedCommentList = ({
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          ListFooterComponent={() => commentIsLoading && <Spinner size="sm" />}
+          ListFooterComponent={() => hasBeenScrolled && commentIsFetching && <Spinner size="sm" />}
           onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
           estimatedItemSize={100}
           refreshControl={
@@ -50,9 +59,16 @@ const FeedCommentList = ({
               authorName={item?.employee_name}
               totalReplies={item?.total_replies}
               comments={item?.comments}
-              loggedEmployeeId={loggedEmployeeId}
-              postId={postId}
               onReply={onReply}
+              handleLinkPress={handleLinkPress}
+              handleEmailPress={handleEmailPress}
+              copyToClipboard={copyToClipboard}
+              commentRepliesData={commentRepliesData}
+              refetchCommentRepliesData={refetchCommentRepliesData}
+              viewReplyToggle={viewReplyToggle}
+              setViewReplyToggle={setViewReplyToggle}
+              hideReplies={hideReplies}
+              setHideReplies={setHideReplies}
             />
           )}
         />
@@ -61,4 +77,4 @@ const FeedCommentList = ({
   );
 };
 
-export default FeedCommentList;
+export default memo(FeedCommentList);

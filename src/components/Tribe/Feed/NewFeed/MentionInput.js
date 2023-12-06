@@ -61,11 +61,13 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
       // }}
       >
         <TextArea
+          height={300}
           variant="unstyled"
           placeholder="What is happening?"
           onChangeText={(value) => formik.setFieldValue("content", value)}
           value={formik.values.content}
           fontSize="lg"
+          multiline={true}
         />
       </KeyboardAwareScrollView>
       {mentionOpen && <MentionSelect employees={filteredEmployee} onSelect={mentionSelectHandler} />}

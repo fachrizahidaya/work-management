@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { StyleSheet } from "react-native";
 import { Box, FormControl, Input } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
@@ -73,12 +72,3 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
 };
 
 export default FeedCommentForm;
-
-const styles = StyleSheet.create({
-  input: {
-    minHeight: 50,
-    maxHeight: 100,
-    width: 400,
-    backgroundColor: "#FFFFFF",
-  },
-});

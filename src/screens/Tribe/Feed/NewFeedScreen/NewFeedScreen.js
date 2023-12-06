@@ -19,6 +19,7 @@ import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useFetch } from "../../../../hooks/useFetch";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -262,6 +263,17 @@ const NewFeedScreen = ({ route }) => {
             employees={employees?.data}
             mentionSelectHandler={mentionSelectHandler}
             inputRef={inputRef}
+          />
+          <PostAction
+            publicToggleHandler={publicToggleHandler}
+            postTypeIsOpen={postTypeIsOpen}
+            postTypeIsClose={postTypeIsClose}
+            announcementToggleHandler={announcementToggleHandler}
+            isAnnouncementSelected={isAnnouncementSelected}
+            dateShown={dateShown}
+            endDateAnnouncementHandler={endDateAnnouncementHandler}
+            loggedEmployeeDivision={loggedEmployeeDivision}
+            formik={formik}
           />
         </Box>
       ) : (

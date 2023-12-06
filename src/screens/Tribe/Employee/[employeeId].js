@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex } from "native-base";
+import { Flex, Spinner, VStack } from "native-base";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -11,6 +11,9 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
 import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import { useCallback } from "react";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -27,12 +30,15 @@ const EmployeeProfileScreen = ({ route }) => {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, postRefetch } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
+  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
 
@@ -136,6 +142,16 @@ const EmployeeProfileScreen = ({ route }) => {
     setForceRerender(!forceRerender);
   };
 
+  const openSelectedPersonalPost = useCallback((post) => {
+    toggleAction();
+    setSelectedPost(post);
+  }, []);
+
+  const closeSelectedPersonalPost = () => {
+    toggleAction();
+    setSelectedPost(null);
+  };
+
   /**
    * Submit a comment handler
    * @param {*} data
@@ -165,18 +181,18 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Control for reply a comment
    */
-  const replyHandler = (comment_parent_id) => {
+  const replyHandler = useCallback((comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
-  };
+  }, []);
 
   /**
    * Toggle fullscreen image
    */
-  const toggleFullScreen = (post) => {
-    setSelectedPicture(post);
+  const toggleFullScreen = useCallback((post) => {
+    setSelectedPost(post);
     setIsFullScreen(!isFullScreen);
-  };
+  }, []);
 
   useEffect(() => {
     if (personalPost?.data && personalPostIsFetching === false) {
@@ -202,61 +218,96 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   }, [commentsOpenHandler, commentIsFetching]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+  });
+
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
-          <PageHeader
-            title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        </Flex>
-
-        <Flex flex={1} minHeight={2} gap={2} height={height}>
-          {/* Content here */}
-          <FeedCard
-            posts={posts}
-            loggedEmployeeId={loggedEmployeeId}
-            loggedEmployeeImage={loggedEmployeeImage}
-            postEndReachedHandler={postEndReachedHandler}
-            personalPostIsFetching={personalPostIsFetching}
-            refetchPersonalPost={refetchPersonalPost}
-            employee={employee}
-            toggleTeammates={toggleTeammates}
-            teammates={teammates}
-            teammatesIsOpen={teammatesIsOpen}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
-            onCommentToggle={commentsOpenHandler}
-            forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
-            personalPostIsLoading={personalPostIsLoading}
-            toggleFullScreen={toggleFullScreen}
-          />
-          {commentsOpen && (
-            <FeedComment
-              postId={postId}
-              loggedEmployeeId={profile?.data?.id}
-              loggedEmployeeName={userSelector?.name}
-              loggedEmployeeImage={profile?.data?.image}
-              comments={comments}
-              commentIsFetching={commentIsFetching}
-              refetchComment={refetchComment}
-              handleOpen={commentsOpenHandler}
-              handleClose={commentsCloseHandler}
-              onEndReached={commentEndReachedHandler}
-              commentRefetchHandler={commentRefetchHandler}
-              parentId={commentParentId}
-              onSubmit={commentSubmitHandler}
-              onReply={replyHandler}
-              latestExpandedReply={latestExpandedReply}
-            />
-          )}
-        </Flex>
+        {isReady ? (
+          <>
+            <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+              <PageHeader
+                title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                onPress={() => {
+                  navigation.goBack();
+                  postRefetch();
+                }}
+              />
+            </Flex>
+            <Flex flex={1} minHeight={2} gap={2} height={height}>
+              {/* Content here */}
+              <FeedCard
+                posts={posts}
+                loggedEmployeeId={loggedEmployeeId}
+                loggedEmployeeImage={loggedEmployeeImage}
+                postEndReachedHandler={postEndReachedHandler}
+                personalPostIsFetching={personalPostIsFetching}
+                refetchPersonalPost={refetchPersonalPost}
+                employee={employee}
+                toggleTeammates={toggleTeammates}
+                teammates={teammates}
+                teammatesIsOpen={teammatesIsOpen}
+                hasBeenScrolled={hasBeenScrolled}
+                setHasBeenScrolled={setHasBeenScrolled}
+                onCommentToggle={commentsOpenHandler}
+                forceRerender={forceRerender}
+                setForceRerender={setForceRerender}
+                personalPostIsLoading={personalPostIsLoading}
+                toggleFullScreen={toggleFullScreen}
+                openSelectedPersonalPost={openSelectedPersonalPost}
+              />
+              {commentsOpen && (
+                <FeedComment
+                  postId={postId}
+                  loggedEmployeeId={profile?.data?.id}
+                  loggedEmployeeName={userSelector?.name}
+                  loggedEmployeeImage={profile?.data?.image}
+                  comments={comments}
+                  commentIsFetching={commentIsFetching}
+                  refetchComment={refetchComment}
+                  handleOpen={commentsOpenHandler}
+                  handleClose={commentsCloseHandler}
+                  onEndReached={commentEndReachedHandler}
+                  commentRefetchHandler={commentRefetchHandler}
+                  parentId={commentParentId}
+                  onSubmit={commentSubmitHandler}
+                  onReply={replyHandler}
+                  latestExpandedReply={latestExpandedReply}
+                />
+              )}
+            </Flex>
+          </>
+        ) : (
+          <VStack mt={10} px={4} space={2}>
+            <Spinner color="primary.600" size="lg" />
+          </VStack>
+        )}
       </SafeAreaView>
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
+      <PostAction
+        actionIsOpen={actionIsOpen}
+        toggleAction={closeSelectedPersonalPost}
+        toggleDeleteModal={toggleDeleteModal}
+      />
+      <ConfirmationModal
+        isOpen={deleteModalIsOpen}
+        toggle={toggleDeleteModal}
+        apiUrl={`/hr/posts/${selectedPost}`}
+        color="red.800"
+        hasSuccessFunc={true}
+        onSuccess={() => {
+          toggleAction();
+          refetchPersonalPost();
+        }}
+        description="Are you sure to delete this post?"
+        successMessage="Post deleted"
+        isDelete={true}
+        isPatch={false}
+      />
     </>
   );
 };
