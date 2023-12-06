@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import { Linking, SafeAreaView, StyleSheet } from "react-native";
 import { Box, Button, Flex, Image, Spinner, Text, VStack, useToast } from "native-base";
@@ -14,6 +14,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
+import _ from "lodash";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -23,6 +24,10 @@ const PayslipScreen = () => {
   const [selectedPayslip, setSelectedPayslip] = useState(null);
   const [passwordDownloadError, setPasswordDownloadError] = useState("");
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [payslips, setPayslips] = useState([]);
+  const [filteredDataArray, setFilteredDataArray] = useState([]);
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
@@ -31,17 +36,37 @@ const PayslipScreen = () => {
 
   const toast = useToast();
 
+  const fetchPayslipParameters = {
+    page: currentPage,
+    search: searchInput,
+    limit: 10,
+  };
+
   const {
     data: payslip,
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
     isLoading: payslipIsLoading,
-  } = useFetch("/hr/payslip");
+  } = useFetch("/hr/payslip", [currentPage, searchInput], fetchPayslipParameters);
 
-  const openSelectedPayslip = (data) => {
+  const fetchMorePayslip = () => {
+    if (currentPage < payslip?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
+  const openSelectedPayslip = useCallback((data) => {
     toggleDownloadDialog();
     setSelectedPayslip(data);
-  };
+  }, []);
 
   const closeSelectedPayslip = () => {
     toggleDownloadDialog();
@@ -106,9 +131,21 @@ const PayslipScreen = () => {
     }
   };
 
+  useEffect(() => {
+    if (payslip?.data?.data.length) {
+      if (!searchInput) {
+        setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
+        setFilteredDataArray([]);
+      } else {
+        setFilteredDataArray((prevData) => [...prevData, ...payslip?.data?.data]);
+        setPayslips([]);
+      }
+    }
+  }, [payslip?.data]);
+
   return (
     <>
-      <SafeAreaView style={payslip?.data?.length > 0 ? styles.container : styles.containerEmpty}>
+      <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
         <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button onPress={() => toggleForm()}>
@@ -131,10 +168,9 @@ const PayslipScreen = () => {
           />
         </Flex>
 
-        <Box></Box>
-        {payslip?.data.length > 0 ? (
+        {payslip?.data?.data.length > 0 ? (
           <FlashList
-            data={payslip?.data}
+            data={payslips.length ? payslips : filteredDataArray}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
             updateCellsBatchingPeriod={50}
@@ -142,6 +178,7 @@ const PayslipScreen = () => {
             keyExtractor={(item, index) => index}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}
             onEndReachedThreshold={0.1}
+            onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={100}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
             ListFooterComponent={() => payslipIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}

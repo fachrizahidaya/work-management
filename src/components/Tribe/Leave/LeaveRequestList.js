@@ -1,6 +1,6 @@
 import { memo, useState, useMemo, useCallback, useEffect } from "react";
 
-import { RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Box, Flex, Image, Text, VStack } from "native-base";
 
 import Tabs from "../../shared/Tabs";
@@ -77,15 +77,21 @@ const LeaveRequestList = ({
               />
             </Box>
           ) : (
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-              <Image
-                source={require("../../../assets/vectors/empty.png")}
-                alt="empty"
-                resizeMode="contain"
-                size="2xl"
-              />
-              <Text>No Data</Text>
-            </VStack>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              }
+            >
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
           )
         ) : tabValue === "approved" ? (
           approvedLeaveRequests.length > 0 ? (
@@ -121,15 +127,21 @@ const LeaveRequestList = ({
               />
             </Box>
           ) : (
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-              <Image
-                source={require("../../../assets/vectors/empty.png")}
-                alt="empty"
-                resizeMode="contain"
-                size="2xl"
-              />
-              <Text>No Data</Text>
-            </VStack>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              }
+            >
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
           )
         ) : rejectedLeaveRequests.length > 0 ? (
           <Box flex={1}>
@@ -164,10 +176,21 @@ const LeaveRequestList = ({
             />
           </Box>
         ) : (
-          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-            <Image source={require("../../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
-            <Text>No Data</Text>
-          </VStack>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+            }
+          >
+            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <Image
+                source={require("../../../assets/vectors/empty.png")}
+                alt="empty"
+                resizeMode="contain"
+                size="2xl"
+              />
+              <Text>No Data</Text>
+            </VStack>
+          </ScrollView>
         )}
       </Flex>
     </>
