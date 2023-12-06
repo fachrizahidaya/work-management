@@ -116,6 +116,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           {items.map((item, idx) => {
             return (
               <Actionsheet.Item
+                _pressed={{ backgroundColor: "#f1f1f1" }}
                 key={idx}
                 borderColor="#E8E9EB"
                 borderBottomWidth={1}

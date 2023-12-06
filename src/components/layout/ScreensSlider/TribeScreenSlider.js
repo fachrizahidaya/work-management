@@ -6,8 +6,10 @@ import { Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
+import { useState } from "react";
 
 const TribeScreenSlider = ({ isOpen, toggle }) => {
+  const [isPressed, setIsPressed] = useState(false);
   const navigation = useNavigation();
   const { height } = Dimensions.get("window");
   const menuSelector = useSelector((state) => state.user_menu);
@@ -46,6 +48,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
         {filteredMenu.map((item, idx) => {
           return (
             <Actionsheet.Item
+              _pressed={{ backgroundColor: "#f1f1f1" }}
               key={idx}
               borderColor="#E8E9EB"
               borderBottomWidth={1}
@@ -95,6 +98,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
           </Flex>
         </Actionsheet.Item> */}
         <Actionsheet.Item
+          _pressed={{ backgroundColor: "#f1f1f1" }}
           borderColor="#E8E9EB"
           borderBottomWidth={1}
           onPress={() => {
@@ -118,6 +122,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
           </Flex>
         </Actionsheet.Item>
         <Actionsheet.Item
+          _pressed={{ backgroundColor: "#f1f1f1" }}
           borderColor="#E8E9EB"
           borderBottomWidth={1}
           onPress={() => {

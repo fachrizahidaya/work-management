@@ -22,6 +22,7 @@ const PayslipScreen = () => {
   const [passwordError, setPasswordError] = useState("");
   const [selectedPayslip, setSelectedPayslip] = useState(null);
   const [passwordDownloadError, setPasswordDownloadError] = useState("");
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
@@ -30,7 +31,12 @@ const PayslipScreen = () => {
 
   const toast = useToast();
 
-  const { data: payslip, refetch: refetchPayslip, isFetching: payslipIsFetching } = useFetch("/hr/payslip");
+  const {
+    data: payslip,
+    refetch: refetchPayslip,
+    isFetching: payslipIsFetching,
+    isLoading: payslipIsLoading,
+  } = useFetch("/hr/payslip");
 
   const openSelectedPayslip = (data) => {
     toggleDownloadDialog();
@@ -134,10 +140,11 @@ const PayslipScreen = () => {
             updateCellsBatchingPeriod={50}
             windowSize={5}
             keyExtractor={(item, index) => index}
+            onScrollBeginDrag={() => setHasBeenScrolled(true)}
             onEndReachedThreshold={0.1}
             estimatedItemSize={100}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            // ListFooterComponent={() => payslipIsFetching && }
+            ListFooterComponent={() => payslipIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}
