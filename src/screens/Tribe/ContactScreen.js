@@ -129,10 +129,9 @@ const ContactScreen = () => {
           <FlashList
             data={contacts.length ? contacts : filteredDataArray}
             onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            updateCellsBatchingPeriod={50}
-            windowSize={5}
+            initialNumToRender={20}
+            maxToRenderPerBatch={20}
+            windowSize={20}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}

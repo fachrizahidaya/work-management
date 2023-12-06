@@ -78,13 +78,13 @@ const FeedCard = ({
   return (
     <Box flex={1}>
       <FlashList
+        removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        updateCellsBatchingPeriod={100}
-        windowSize={10}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={20}
         onEndReachedThreshold={0.1}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}

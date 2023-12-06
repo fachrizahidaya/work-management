@@ -163,7 +163,7 @@ const PayslipScreen = () => {
         ) : payslipIsFetching ? (
           <Spinner size="sm" />
         ) : (
-          <VStack space={2} alignItems="center" justifyContent="center">
+          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
             <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
             <Text>No Data</Text>
           </VStack>

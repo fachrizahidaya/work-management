@@ -88,10 +88,9 @@ const FeedCard = ({
       <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        updateCellsBatchingPeriod={100}
-        windowSize={10}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={20}
         keyExtractor={(item, index) => index}
         onEndReachedThreshold={0.1}
         estimatedItemSize={100}
