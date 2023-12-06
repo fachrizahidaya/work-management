@@ -125,15 +125,21 @@ const TeamLeaveRequestList = ({
               )}
             />
           ) : (
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-              <Image
-                source={require("../../../../assets/vectors/empty.png")}
-                alt="empty"
-                resizeMode="contain"
-                size="2xl"
-              />
-              <Text>No Data</Text>
-            </VStack>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={teamLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+              }
+            >
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
           )
         ) : tabValue === "approved" ? (
           approvedLeaveRequests.length > 0 ? (

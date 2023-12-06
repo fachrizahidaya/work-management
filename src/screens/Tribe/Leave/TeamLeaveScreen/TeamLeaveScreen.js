@@ -72,53 +72,51 @@ const TeamLeaveScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        {isReady ? (
-          <>
-            <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-              <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
-            </Flex>
-            {!teamLeaveRequestIsLoading ? (
-              teamLeaveRequestData?.data.length > 0 ? (
-                <>
-                  <TeamLeaveRequestList
-                    pendingLeaveRequests={pendingLeaveRequests}
-                    approvedLeaveRequests={approvedLeaveRequests}
-                    rejectedLeaveRequests={rejectedLeaveRequests}
-                    pendingCount={pendingCount}
-                    approvedCount={approvedCount}
-                    rejectedCount={rejectedCount}
-                    teamLeaveRequestData={teamLeaveRequestData}
-                    teamLeaveRequestIsFetching={teamLeaveRequestIsFetching}
-                    refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-                    onApproval={approvalResponseHandler}
-                  />
-                </>
-              ) : (
-                <VStack space={2} alignItems="center" justifyContent="center">
-                  <Image
-                    source={require("../../../../assets/vectors/empty.png")}
-                    resizeMode="contain"
-                    size="2xl"
-                    alt="empty"
-                  />
-                  <Text>No Data</Text>
-                </VStack>
-              )
+      {isReady ? (
+        <SafeAreaView style={styles.container}>
+          <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+            <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
+          </Flex>
+          {!teamLeaveRequestIsLoading ? (
+            teamLeaveRequestData?.data.length > 0 ? (
+              <>
+                <TeamLeaveRequestList
+                  pendingLeaveRequests={pendingLeaveRequests}
+                  approvedLeaveRequests={approvedLeaveRequests}
+                  rejectedLeaveRequests={rejectedLeaveRequests}
+                  pendingCount={pendingCount}
+                  approvedCount={approvedCount}
+                  rejectedCount={rejectedCount}
+                  teamLeaveRequestData={teamLeaveRequestData}
+                  teamLeaveRequestIsFetching={teamLeaveRequestIsFetching}
+                  refetchTeamLeaveRequest={refetchTeamLeaveRequest}
+                  onApproval={approvalResponseHandler}
+                />
+              </>
             ) : (
-              <VStack px={3} space={2}>
-                <Skeleton h={41} />
-                <Skeleton h={41} />
-                <Skeleton h={41} />
+              <VStack space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  resizeMode="contain"
+                  size="2xl"
+                  alt="empty"
+                />
+                <Text>No Data</Text>
               </VStack>
-            )}
-          </>
-        ) : (
-          <VStack mt={10} px={4} space={2}>
-            <Spinner color="primary.600" size="lg" />
-          </VStack>
-        )}
-      </SafeAreaView>
+            )
+          ) : (
+            <VStack px={3} space={2}>
+              <Skeleton h={41} />
+              <Skeleton h={41} />
+              <Skeleton h={41} />
+            </VStack>
+          )}
+        </SafeAreaView>
+      ) : (
+        <VStack mt={10} px={4} space={2}>
+          <Spinner color="primary.600" size="lg" />
+        </VStack>
+      )}
     </>
   );
 };
