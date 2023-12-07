@@ -8,8 +8,9 @@ const ClockAttendance = ({ attendance, item, currentTime, attendanceCheckHandler
       flexDir="row"
       bg={!attendance?.time_in ? "#daecfc" : "#feedaf"}
       borderRadius={5}
-      style={{ height: 32, width: 352 }}
       alignItems="center"
+      py={2}
+      px={2}
     >
       <Box px={1}>
         <Icon
