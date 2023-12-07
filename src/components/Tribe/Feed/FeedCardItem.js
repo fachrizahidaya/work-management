@@ -61,12 +61,8 @@ const FeedCardItem = ({
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    const isItemIncluded = employeeUsername?.some(
-      (employee) => employee.username === item || item?.includes(employee.username)
-    );
-    specificEmployee = employeeUsername?.find(
-      (employee) => employee.username === item || item?.includes(employee.username)
-    );
+    const isItemIncluded = employeeUsername?.some((employee) => item?.includes(employee.username));
+    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
 
@@ -113,24 +109,6 @@ const FeedCardItem = ({
       return (
         <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
           {item}{" "}
-        </Text>
-      );
-    } else if (isItemIncluded && specificEmployee) {
-      const specificEmployeeId = specificEmployee.id;
-      textStyle = styles.highlightedText;
-      return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: specificEmployeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-            })
-          }
-        >
-          @{item}{" "}
         </Text>
       );
     } else {
