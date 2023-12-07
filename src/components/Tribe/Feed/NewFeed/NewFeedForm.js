@@ -6,7 +6,17 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import MentionInput from "./MentionInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, mentionSelectHandler, inputRef }) => {
+const NewFeedForm = ({
+  formik,
+  image,
+  setImage,
+  pickImageHandler,
+  employees,
+  mentionSelectHandler,
+  inputRef,
+  mentionIsOpen,
+  toggleMention,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -47,14 +57,21 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, men
         </Flex>
       </FormControl>
       <Flex mt={2} py={3} px={2} flexDir="row" justifyContent="space-between" alignItems="center">
-        <Pressable onPress={pickImageHandler}>
-          <Icon
-            as={<MaterialCommunityIcons name="attachment" />}
-            size={25}
-            color="#377893"
-            style={{ transform: [{ rotate: "-35deg" }] }}
-          />
-        </Pressable>
+        <Flex gap={3} flexDir="row" alignItems="center">
+          <Pressable onPress={pickImageHandler}>
+            <Icon
+              as={<MaterialCommunityIcons name="attachment" />}
+              size={25}
+              color="#377893"
+              style={{ transform: [{ rotate: "-35deg" }] }}
+            />
+          </Pressable>
+          {/* <Pressable
+          onPress={pickImageHandler}
+          >
+            <Icon as={<MaterialCommunityIcons name="at" />} size={25} color="#377893" />
+          </Pressable> */}
+        </Flex>
 
         <Pressable
           borderRadius="full"

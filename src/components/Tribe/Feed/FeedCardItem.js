@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
+import { Linking } from "react-native";
 
 const FeedCardItem = ({
   id,
@@ -33,6 +34,7 @@ const FeedCardItem = ({
   handleEmailPress,
   copyToClipboard,
   postRefetchHandler,
+  employeeUsername,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -58,6 +60,8 @@ const FeedCardItem = ({
   const words = content?.split(" ");
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
+    const isItemIncluded = employeeUsername.some((employee) => employee.username === item);
+    const specificEmployee = employeeUsername.find((employee) => employee.username === item);
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
@@ -79,7 +83,35 @@ const FeedCardItem = ({
           {item}{" "}
         </Text>
       );
-    } else {
+    } else if (isItemIncluded && specificEmployee) {
+      const specificEmployeeId = specificEmployee.id;
+      textStyle = styles.highlightedText;
+      return (
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() =>
+            navigation.navigate("Employee Profile", {
+              employeeId: specificEmployeeId,
+              loggedEmployeeId: loggedEmployeeId,
+              loggedEmployeeImage: loggedEmployeeImage,
+            })
+          }
+        >
+          @{item}{" "}
+        </Text>
+      );
+    }
+    // else if (item.includes("<a href")) {
+    //   const textContent = item.replace(/<a[^>]*>(.*?)<\/a>/g, "");
+    //   textStyle = styles.highlightedText;
+    //   return (
+    //     <Text key={index} style={textStyle}>
+    //       {textContent}{" "}
+    //     </Text>
+    //   );
+    // }
+    else {
       textStyle = styles.defaultText;
       return (
         <Text key={index} style={textStyle}>
@@ -107,7 +139,6 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
-                postRefetch: postRefetchHandler,
               })
             }
           >
@@ -122,7 +153,6 @@ const FeedCardItem = ({
                     employeeId: employeeId,
                     loggedEmployeeId: loggedEmployeeId,
                     loggedEmployeeImage: loggedEmployeeImage,
-                    postRefetch: postRefetchHandler,
                   })
                 }
                 fontSize={15}
