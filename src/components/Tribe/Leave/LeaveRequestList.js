@@ -56,7 +56,7 @@ const LeaveRequestList = ({
                   <RefreshControl
                     refreshing={personalLeaveRequestIsFetching}
                     onRefresh={() => {
-                      refetchPersonalLeaveRequest;
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -106,7 +106,7 @@ const LeaveRequestList = ({
                   <RefreshControl
                     refreshing={personalLeaveRequestIsFetching}
                     onRefresh={() => {
-                      refetchPersonalLeaveRequest;
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -155,7 +155,7 @@ const LeaveRequestList = ({
                 <RefreshControl
                   refreshing={personalLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchPersonalLeaveRequest;
+                    refetchPersonalLeaveRequest();
                   }}
                 />
               }

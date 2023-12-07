@@ -42,6 +42,7 @@ const TeamLeaveRequestList = ({
       notes: "",
     },
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      console.log(values);
       setStatus("processing");
       onApproval(values, setStatus, setSubmitting);
     },
@@ -101,7 +102,7 @@ const TeamLeaveRequestList = ({
                 <RefreshControl
                   refreshing={teamLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchTeamLeaveRequest;
+                    refetchTeamLeaveRequest();
                   }}
                 />
               }
@@ -153,7 +154,7 @@ const TeamLeaveRequestList = ({
                 <RefreshControl
                   refreshing={teamLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchTeamLeaveRequest;
+                    refetchTeamLeaveRequest();
                   }}
                 />
               }
@@ -195,7 +196,7 @@ const TeamLeaveRequestList = ({
               <RefreshControl
                 refreshing={teamLeaveRequestIsFetching}
                 onRefresh={() => {
-                  refetchTeamLeaveRequest;
+                  refetchTeamLeaveRequest();
                 }}
               />
             }
