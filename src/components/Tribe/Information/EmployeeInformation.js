@@ -20,7 +20,6 @@ const EmployeeInformation = ({ id, name, position, email, phone, image, refetch 
                 employeeId: id,
                 returnPage: "My Information",
                 loggedEmployeeImage: image,
-                refetch: refetch,
                 loggedEmployeeId: id,
               })
             }

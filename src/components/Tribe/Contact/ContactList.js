@@ -37,7 +37,6 @@ const ContactList = ({
               navigation.navigate("Employee Profile", {
                 employeeId: id,
                 returnPage: "Contact",
-                refetch: refetch,
                 loggedEmployeeId: loggedEmployeeId,
               })
             }

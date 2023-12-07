@@ -13,7 +13,6 @@ import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
-import { C } from "ts-toolbelt";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -76,6 +75,14 @@ const FeedScreen = () => {
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
+
+  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const employeeUsername = employees.data.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+    };
+  });
 
   /**
    * Fetch more Posts handler
@@ -264,6 +271,7 @@ const FeedScreen = () => {
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreen}
+            employeeUsername={employeeUsername}
           />
           {commentsOpen && (
             <FeedComment

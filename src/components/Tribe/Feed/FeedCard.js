@@ -26,6 +26,7 @@ const FeedCard = ({
   forceRerender,
   setForceRerender,
   toggleFullScreen,
+  employeeUsername,
 }) => {
   const toast = useToast();
 
@@ -128,6 +129,7 @@ const FeedCard = ({
             handleEmailPress={handleEmailPress}
             copyToClipboard={copyToClipboard}
             postRefetchHandler={postRefetchHandler}
+            employeeUsername={employeeUsername}
           />
         )}
       />

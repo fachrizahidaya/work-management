@@ -29,6 +29,7 @@ const NewFeedScreen = ({ route }) => {
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: mentionIsOpen, toggle: toggleMention } = useDisclosure(false);
 
   const toast = useToast();
 
@@ -263,6 +264,8 @@ const NewFeedScreen = ({ route }) => {
             employees={employees?.data}
             mentionSelectHandler={mentionSelectHandler}
             inputRef={inputRef}
+            mentionIsOpen={mentionIsOpen}
+            toggleMention={toggleMention}
           />
           <PostAction
             publicToggleHandler={publicToggleHandler}

@@ -34,7 +34,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, postRefetch } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
@@ -234,7 +234,6 @@ const EmployeeProfileScreen = ({ route }) => {
                 title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
                 onPress={() => {
                   navigation.goBack();
-                  postRefetch();
                 }}
               />
             </Flex>
