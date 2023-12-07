@@ -42,10 +42,6 @@ const LeaveScreen = () => {
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-  }, []);
-
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
     toggleAction();
@@ -65,12 +61,6 @@ const LeaveScreen = () => {
   const approvedCount = approvedLeaveRequests.length;
   const rejectedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Rejected");
   const rejectedCount = rejectedLeaveRequests.length;
-
-  useEffect(() => {
-    return () => {
-      setTabValue("pending");
-    };
-  }, [personalLeaveRequest]);
 
   return (
     <>
