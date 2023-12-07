@@ -19,6 +19,7 @@ const AttendanceModal = ({
   hasSubmittedBothReports,
   isLeave,
   isPermit,
+  INITIAL_DATE,
 }) => {
   /**
    * Late type Handler
@@ -75,7 +76,13 @@ const AttendanceModal = ({
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>Clock-in Time</FormControl.Label>
-                  <Text>{date?.timeIn}</Text>
+                  <Text>
+                    {date?.timeIn
+                      ? date?.timeIn
+                      : date?.date === INITIAL_DATE
+                      ? "Please Clock-in first"
+                      : `You haven't Clock-in`}
+                  </Text>
                 </FormControl>
                 {!date?.timeOut ? null : (
                   <FormControl>

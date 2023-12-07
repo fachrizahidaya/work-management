@@ -72,13 +72,13 @@ const TeamLeaveScreen = () => {
 
   return (
     <>
-      {isReady ? (
-        <SafeAreaView style={styles.container}>
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-            <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
-          </Flex>
-          {!teamLeaveRequestIsLoading ? (
-            teamLeaveRequestData?.data.length > 0 ? (
+      <SafeAreaView style={styles.container}>
+        {isReady ? (
+          <>
+            <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+              <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
+            </Flex>
+            {teamLeaveRequestData?.data.length > 0 ? (
               <>
                 <TeamLeaveRequestList
                   pendingLeaveRequests={pendingLeaveRequests}
@@ -93,6 +93,12 @@ const TeamLeaveScreen = () => {
                   onApproval={approvalResponseHandler}
                 />
               </>
+            ) : teamLeaveRequestIsFetching ? (
+              <VStack px={3} space={2}>
+                <Skeleton h={41} />
+                <Skeleton h={41} />
+                <Skeleton h={41} />
+              </VStack>
             ) : (
               <VStack space={2} alignItems="center" justifyContent="center">
                 <Image
@@ -103,20 +109,14 @@ const TeamLeaveScreen = () => {
                 />
                 <Text>No Data</Text>
               </VStack>
-            )
-          ) : (
-            <VStack px={3} space={2}>
-              <Skeleton h={41} />
-              <Skeleton h={41} />
-              <Skeleton h={41} />
-            </VStack>
-          )}
-        </SafeAreaView>
-      ) : (
-        <VStack mt={10} px={4} space={2}>
-          <Spinner color="primary.600" size="lg" />
-        </VStack>
-      )}
+            )}
+          </>
+        ) : (
+          <VStack borderWidth={1} px={4} space={2}>
+            <Spinner color="primary.600" size="lg" />
+          </VStack>
+        )}
+      </SafeAreaView>
     </>
   );
 };

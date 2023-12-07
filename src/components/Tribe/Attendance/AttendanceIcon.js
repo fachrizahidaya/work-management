@@ -8,12 +8,12 @@ const AttendanceIcon = () => {
     { key: "reportRequired", color: "#FDC500", name: "Report Required" },
     { key: "submittedReport", color: "#186688", name: "Submitted Report" },
     { key: "dayOff", color: "#3bc14a", name: "Day-off" },
-    { key: "sick", color: "#000000", name: "Sick" },
+    { key: "sick", color: "red.600", name: "Sick" },
   ];
 
   return (
-    <Flex alignItems="center" justifyContent="center" gap={1} px={3} flexDirection="row" flexWrap="wrap">
-      {listIcons.slice(0, 4).map((item) => {
+    <Flex flex={1} alignItems="center" justifyContent="center" gap={1} px={3} flexDirection="row" flexWrap="wrap">
+      {listIcons.map((item) => {
         return (
           <Flex key={item?.key} flexDirection="row" alignItems="center" justifyContent="center" gap={1}>
             <Icon as={<MaterialCommunityIcons name="circle" />} color={item.color} />

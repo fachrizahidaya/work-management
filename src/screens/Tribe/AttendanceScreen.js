@@ -41,7 +41,7 @@ const AttendanceScreen = () => {
   const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required" };
   const submittedReport = { key: "submittedReport", color: "#186688", name: "Submitted Report" };
   const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off" };
-  const sick = { key: "sick", color: "#000000", name: "Sick" };
+  const sick = { key: "sick", color: "red.600", name: "Sick" };
 
   const isWorkDay = date?.dayType === "Work Day";
   const hasClockInAndOut =
@@ -172,14 +172,14 @@ const AttendanceScreen = () => {
           let dotColor = "";
 
           if (
-            (event?.dayType === "Work Day" && event?.attendanceType === "Leave" && event?.dayType === "Work Day") ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.dayType === "Work Day")
+            (event?.dayType === "Work Day" && event?.attendanceType === "Leave") ||
+            (event?.dayType === "Work Day" && event?.attendanceType === "Permit")
           ) {
             dotColor = dayOff.color;
           } else if (
             (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
             (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && !event?.attendanceReason)
+            (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && !event?.attendanceReason)
           ) {
             dotColor = reportRequired.color;
           } else if (
@@ -193,7 +193,13 @@ const AttendanceScreen = () => {
             event?.attendanceType === "Leave"
           ) {
             dotColor = sick.color;
-          } else if (event?.confirmation && event?.dayType !== "Weekend") {
+          } else if (
+            (event?.confirmation && event?.dayType === "Work Day") ||
+            (!event?.confirmation &&
+              event?.dayType === "Work Day" &&
+              event?.attendanceType === "Alpa" &&
+              !event?.timeIn)
+          ) {
             dotColor = allGood.color;
           }
           dots.push({
@@ -254,6 +260,7 @@ const AttendanceScreen = () => {
         hasSubmittedBothReports={hasSubmittedBothReports}
         isLeave={isLeave}
         isPermit={isPermit}
+        INITIAL_DATE={INITIAL_DATE}
       />
     </>
   );

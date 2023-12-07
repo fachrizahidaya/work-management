@@ -125,6 +125,14 @@ const ContactScreen = () => {
             <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
             <Text>No Data</Text>
           </VStack>
+        ) : employeeDataIsFetching ? (
+          <VStack alignItems="center" mt={5} space={2}>
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+          </VStack>
         ) : (
           <FlashList
             data={contacts.length ? contacts : filteredDataArray}
