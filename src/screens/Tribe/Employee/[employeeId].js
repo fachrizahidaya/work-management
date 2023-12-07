@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Spinner, VStack } from "native-base";
+import { Flex, Skeleton, Spinner, VStack } from "native-base";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -229,59 +229,67 @@ const EmployeeProfileScreen = ({ route }) => {
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
-              <PageHeader
-                title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              />
-            </Flex>
-            <Flex flex={1} minHeight={2} gap={2} height={height}>
-              {/* Content here */}
-              <FeedCard
-                posts={posts}
-                loggedEmployeeId={loggedEmployeeId}
-                loggedEmployeeImage={loggedEmployeeImage}
-                postEndReachedHandler={postEndReachedHandler}
-                personalPostIsFetching={personalPostIsFetching}
-                refetchPersonalPost={refetchPersonalPost}
-                employee={employee}
-                toggleTeammates={toggleTeammates}
-                teammates={teammates}
-                teammatesIsOpen={teammatesIsOpen}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
-                onCommentToggle={commentsOpenHandler}
-                forceRerender={forceRerender}
-                setForceRerender={setForceRerender}
-                personalPostIsLoading={personalPostIsLoading}
-                toggleFullScreen={toggleFullScreen}
-                openSelectedPersonalPost={openSelectedPersonalPost}
-              />
-              {commentsOpen && (
-                <FeedComment
-                  postId={postId}
-                  loggedEmployeeId={profile?.data?.id}
-                  loggedEmployeeName={userSelector?.name}
-                  loggedEmployeeImage={profile?.data?.image}
-                  comments={comments}
-                  commentIsFetching={commentIsFetching}
-                  refetchComment={refetchComment}
-                  handleOpen={commentsOpenHandler}
-                  handleClose={commentsCloseHandler}
-                  onEndReached={commentEndReachedHandler}
-                  commentRefetchHandler={commentRefetchHandler}
-                  parentId={commentParentId}
-                  onSubmit={commentSubmitHandler}
-                  onReply={replyHandler}
-                  latestExpandedReply={latestExpandedReply}
-                />
-              )}
-            </Flex>
+            {personalPostIsFetching ? (
+              <VStack px={4} space={2}>
+                <Spinner color="primary.600" size="lg" />
+              </VStack>
+            ) : (
+              <>
+                <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+                  <PageHeader
+                    title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                    onPress={() => {
+                      navigation.goBack();
+                    }}
+                  />
+                </Flex>
+                <Flex flex={1} minHeight={2} gap={2} height={height}>
+                  {/* Content here */}
+                  <FeedCard
+                    posts={posts}
+                    loggedEmployeeId={loggedEmployeeId}
+                    loggedEmployeeImage={loggedEmployeeImage}
+                    postEndReachedHandler={postEndReachedHandler}
+                    personalPostIsFetching={personalPostIsFetching}
+                    refetchPersonalPost={refetchPersonalPost}
+                    employee={employee}
+                    toggleTeammates={toggleTeammates}
+                    teammates={teammates}
+                    teammatesIsOpen={teammatesIsOpen}
+                    hasBeenScrolled={hasBeenScrolled}
+                    setHasBeenScrolled={setHasBeenScrolled}
+                    onCommentToggle={commentsOpenHandler}
+                    forceRerender={forceRerender}
+                    setForceRerender={setForceRerender}
+                    personalPostIsLoading={personalPostIsLoading}
+                    toggleFullScreen={toggleFullScreen}
+                    openSelectedPersonalPost={openSelectedPersonalPost}
+                  />
+                  {commentsOpen && (
+                    <FeedComment
+                      postId={postId}
+                      loggedEmployeeId={profile?.data?.id}
+                      loggedEmployeeName={userSelector?.name}
+                      loggedEmployeeImage={profile?.data?.image}
+                      comments={comments}
+                      commentIsFetching={commentIsFetching}
+                      refetchComment={refetchComment}
+                      handleOpen={commentsOpenHandler}
+                      handleClose={commentsCloseHandler}
+                      onEndReached={commentEndReachedHandler}
+                      commentRefetchHandler={commentRefetchHandler}
+                      parentId={commentParentId}
+                      onSubmit={commentSubmitHandler}
+                      onReply={replyHandler}
+                      latestExpandedReply={latestExpandedReply}
+                    />
+                  )}
+                </Flex>
+              </>
+            )}
           </>
         ) : (
-          <VStack mt={30} px={4} space={2}>
+          <VStack px={4} space={2}>
             <Spinner color="primary.600" size="lg" />
           </VStack>
         )}
