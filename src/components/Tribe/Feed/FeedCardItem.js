@@ -60,8 +60,16 @@ const FeedCardItem = ({
   const words = content?.split(" ");
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
-    const isItemIncluded = employeeUsername.some((employee) => employee.username === item);
-    const specificEmployee = employeeUsername.find((employee) => employee.username === item);
+    let specificEmployee;
+    const isItemIncluded = employeeUsername?.some(
+      (employee) => employee.username === item || item?.includes(employee.username)
+    );
+    specificEmployee = employeeUsername?.find(
+      (employee) => employee.username === item || item?.includes(employee.username)
+    );
+    const hasTag = item.includes("<a");
+    const hasHref = item.includes("href");
+
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
@@ -69,6 +77,30 @@ const FeedCardItem = ({
           {item}{" "}
         </Text>
       );
+    } else if (hasHref && specificEmployee) {
+      const specificEmployeeId = specificEmployee.id;
+      item = item.replace(`href="/tribe/employee/`, "").replace(`">`, "").replace("</a>", "").replace("@", "");
+
+      textStyle = styles.highlightedText;
+      return (
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() =>
+            navigation.navigate("Employee Profile", {
+              employeeId: specificEmployeeId,
+              loggedEmployeeId: loggedEmployeeId,
+              loggedEmployeeImage: loggedEmployeeImage,
+            })
+          }
+        >
+          @{item}{" "}
+        </Text>
+      );
+    } else if (hasTag) {
+      item = item.replace(`<a`, "");
+      textStyle = styles.defaultText;
+      return <Text key={index} style={textStyle}></Text>;
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
@@ -101,17 +133,7 @@ const FeedCardItem = ({
           @{item}{" "}
         </Text>
       );
-    }
-    // else if (item.includes("<a href")) {
-    //   const textContent = item.replace(/<a[^>]*>(.*?)<\/a>/g, "");
-    //   textStyle = styles.highlightedText;
-    //   return (
-    //     <Text key={index} style={textStyle}>
-    //       {textContent}{" "}
-    //     </Text>
-    //   );
-    // }
-    else {
+    } else {
       textStyle = styles.defaultText;
       return (
         <Text key={index} style={textStyle}>

@@ -77,7 +77,7 @@ const FeedScreen = () => {
   const { data: profile } = useFetch("/hr/my-profile");
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
-  const employeeUsername = employees.data.map((item) => {
+  const employeeUsername = employees?.data?.map((item) => {
     return {
       username: item.username,
       id: item.id,

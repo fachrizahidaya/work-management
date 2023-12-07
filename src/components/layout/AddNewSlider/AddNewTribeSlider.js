@@ -137,13 +137,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                 <Flex flexDir="row" alignItems="center" gap={21}>
                   {item.title !== "Clock in" ? (
                     <>
-                      <Box
-                        bg="#F7F7F7"
-                        borderRadius={5}
-                        style={{ height: 32, width: 32 }}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
+                      <Box bg="#F7F7F7" borderRadius={5} py={2} px={2} alignItems="center" justifyContent="center">
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
                       <Text key={item.title} fontWeight={700} color="#000000">
