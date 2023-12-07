@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { Mention, MentionsInput } from "react-mentions";
 
-import { TextArea } from "native-base";
+import { Text, TextArea } from "native-base";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import MentionSelect from "./MentionSelect";
@@ -9,9 +10,13 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
   const [mentionOpen, setMentionOpen] = useState(false);
   const [mentionFilter, setMentionFilter] = useState("");
   const [filteredEmployee, setFilteredEmployee] = useState([]);
+  const [testFormattedContent, setTestFormattedContent] = useState("");
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [value, setValue] = useState("");
+  const [mentions, setMentions] = useState([]);
 
   const mentionToggleHandler = (e) => {
-    console.log("e", e);
     if (e.key !== "Shift") {
       const text = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_@]+$/);
       const value = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_]+$/);
@@ -54,22 +59,22 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
 
   return (
     <>
-      <KeyboardAwareScrollView
-      // onKeyboardWillShow={(e) => {
-      //   mentionToggleHandler(e);
-      //   mentionFilterHandler(e);
-      // }}
-      >
+      <KeyboardAwareScrollView>
         <TextArea
           height={300}
           variant="unstyled"
           placeholder="What is happening?"
-          onChangeText={(value) => formik.setFieldValue("content", value)}
+          onChangeText={(value) => {
+            formik.setFieldValue("content", value);
+          }}
           value={formik.values.content}
           fontSize="lg"
           multiline={true}
         />
       </KeyboardAwareScrollView>
+      {/* <MentionsInput onChange={handleMentionChange} value={value}>
+        <Mention trigger={<Text>@</Text>} data={users} renderSuggestion={({ item }) => <Text>{item.display}</Text>} />
+      </MentionsInput> */}
       {mentionOpen && <MentionSelect employees={filteredEmployee} onSelect={mentionSelectHandler} />}
     </>
   );
