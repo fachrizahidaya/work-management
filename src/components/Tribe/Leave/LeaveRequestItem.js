@@ -8,7 +8,7 @@ import { card } from "../../../styles/Card";
 
 const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, status, item, onSelect }) => {
   return (
-    <Flex key={id} my={2} flexDir="column" style={card.card}>
+    <Flex key={id} my={2} flexDir="column" style={card.card} gap={1}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center">
         <Text fontWeight={500} fontSize={14} color="#3F434A">
           {leave_name}
@@ -23,7 +23,7 @@ const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, 
           </Pressable>
         ) : null}
       </Flex>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+      <Flex gap={3} flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flex={1}>
           <Text color="#595F69" fontSize={12} fontWeight={400}>
             {reason}

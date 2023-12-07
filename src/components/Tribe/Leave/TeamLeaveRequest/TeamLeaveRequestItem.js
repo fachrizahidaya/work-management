@@ -42,7 +42,7 @@ const TeamLeaveRequestItem = ({
         </Flex>
       </Flex>
 
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
+      <Flex gap={2} flexDir="row" justifyContent="space-between" alignItems="center">
         <Flex flex={1}>
           <Text color="#595F69" fontSize={12} fontWeight={400}>
             {item?.reason}
