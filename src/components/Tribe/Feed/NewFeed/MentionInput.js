@@ -10,11 +10,6 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
   const [mentionOpen, setMentionOpen] = useState(false);
   const [mentionFilter, setMentionFilter] = useState("");
   const [filteredEmployee, setFilteredEmployee] = useState([]);
-  const [testFormattedContent, setTestFormattedContent] = useState("");
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [value, setValue] = useState("");
-  const [mentions, setMentions] = useState([]);
 
   const mentionToggleHandler = (e) => {
     if (e.key !== "Shift") {
@@ -72,9 +67,7 @@ const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) =>
           multiline={true}
         />
       </KeyboardAwareScrollView>
-      {/* <MentionsInput onChange={handleMentionChange} value={value}>
-        <Mention trigger={<Text>@</Text>} data={users} renderSuggestion={({ item }) => <Text>{item.display}</Text>} />
-      </MentionsInput> */}
+
       {mentionOpen && <MentionSelect employees={filteredEmployee} onSelect={mentionSelectHandler} />}
     </>
   );
