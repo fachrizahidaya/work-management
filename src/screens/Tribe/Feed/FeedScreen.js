@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Skeleton, Text, VStack, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -254,44 +254,57 @@ const FeedScreen = () => {
 
         <Box flex={1} px={3}>
           {/* Content here */}
-          <FeedCard
-            posts={posts}
-            loggedEmployeeId={profile?.data?.id}
-            loggedEmployeeImage={profile?.data?.image}
-            postRefetchHandler={postRefetchHandler}
-            postEndReachedHandler={postEndReachedHandler}
-            postIsFetching={postIsFetching}
-            postIsLoading={postIsLoading}
-            refetchPost={refetchPost}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
-            scrollNewMessage={scrollNewMessage}
-            flashListRef={flashListRef}
-            onCommentToggle={commentsOpenHandler}
-            forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
-            toggleFullScreen={toggleFullScreen}
-            employeeUsername={employeeUsername}
-          />
-          {commentsOpen && (
-            <FeedComment
-              postId={postId}
-              loggedEmployeeId={profile?.data?.id}
-              loggedEmployeeName={userSelector?.name}
-              loggedEmployeeImage={profile?.data?.image}
-              comments={comments}
-              commentIsFetching={commentIsFetching}
-              commentIsLoading={commentIsLoading}
-              refetchComment={refetchComment}
-              handleOpen={commentsOpenHandler}
-              handleClose={commentsCloseHandler}
-              onEndReached={commentEndReachedHandler}
-              commentRefetchHandler={commentRefetchHandler}
-              parentId={commentParentId}
-              onSubmit={commentSubmitHandler}
-              onReply={replyHandler}
-              latestExpandedReply={latestExpandedReply}
-            />
+          {postIsFetching ? (
+            <VStack mt={2} alignItems="center" space={2}>
+              <Skeleton h={82} />
+              <Skeleton h={82} />
+              <Skeleton h={82} />
+              <Skeleton h={82} />
+              <Skeleton h={82} />
+              <Skeleton h={82} />
+            </VStack>
+          ) : (
+            <>
+              <FeedCard
+                posts={posts}
+                loggedEmployeeId={profile?.data?.id}
+                loggedEmployeeImage={profile?.data?.image}
+                postRefetchHandler={postRefetchHandler}
+                postEndReachedHandler={postEndReachedHandler}
+                postIsFetching={postIsFetching}
+                postIsLoading={postIsLoading}
+                refetchPost={refetchPost}
+                hasBeenScrolled={hasBeenScrolled}
+                setHasBeenScrolled={setHasBeenScrolled}
+                scrollNewMessage={scrollNewMessage}
+                flashListRef={flashListRef}
+                onCommentToggle={commentsOpenHandler}
+                forceRerender={forceRerender}
+                setForceRerender={setForceRerender}
+                toggleFullScreen={toggleFullScreen}
+                employeeUsername={employeeUsername}
+              />
+              {commentsOpen && (
+                <FeedComment
+                  postId={postId}
+                  loggedEmployeeId={profile?.data?.id}
+                  loggedEmployeeName={userSelector?.name}
+                  loggedEmployeeImage={profile?.data?.image}
+                  comments={comments}
+                  commentIsFetching={commentIsFetching}
+                  commentIsLoading={commentIsLoading}
+                  refetchComment={refetchComment}
+                  handleOpen={commentsOpenHandler}
+                  handleClose={commentsCloseHandler}
+                  onEndReached={commentEndReachedHandler}
+                  commentRefetchHandler={commentRefetchHandler}
+                  parentId={commentParentId}
+                  onSubmit={commentSubmitHandler}
+                  onReply={replyHandler}
+                  latestExpandedReply={latestExpandedReply}
+                />
+              )}
+            </>
           )}
         </Box>
       </SafeAreaView>

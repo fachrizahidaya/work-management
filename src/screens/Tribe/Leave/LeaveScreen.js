@@ -75,43 +75,28 @@ const LeaveScreen = () => {
           )}
         </Flex>
 
-        {!personalLeaveRequestIsLoading ? (
-          personalLeaveRequest?.data.length > 0 ? (
-            <>
-              {/* Content here */}
-              <LeaveRequestList
-                pendingLeaveRequests={pendingLeaveRequests}
-                approvedLeaveRequests={approvedLeaveRequests}
-                rejectedLeaveRequests={rejectedLeaveRequests}
-                refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
-                refetchProfile={refetchProfile}
-                pendingCount={pendingCount}
-                approvedCount={approvedCount}
-                rejectedCount={rejectedCount}
-                onSelect={openSelectedLeaveHandler}
-                onDeselect={closeSelectedLeaveHandler}
-                actionIsOpen={actionIsOpen}
-                toggleAction={toggleAction}
-                toggleCancelModal={toggleCancelModal}
-                personalLeaveRequest={personalLeaveRequest}
-                personalLeaveRequestIsFetching={personalLeaveRequestIsFetching}
-              />
-            </>
-          ) : (
-            <>
-              {/* No content handler */}
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image
-                  source={require("../../../assets/vectors/empty.png")}
-                  resizeMode="contain"
-                  size="2xl"
-                  alt="empty"
-                />
-                <Text>No Data</Text>
-              </VStack>
-            </>
-          )
-        ) : (
+        {personalLeaveRequest?.data.length > 0 ? (
+          <>
+            {/* Content here */}
+            <LeaveRequestList
+              pendingLeaveRequests={pendingLeaveRequests}
+              approvedLeaveRequests={approvedLeaveRequests}
+              rejectedLeaveRequests={rejectedLeaveRequests}
+              refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
+              refetchProfile={refetchProfile}
+              pendingCount={pendingCount}
+              approvedCount={approvedCount}
+              rejectedCount={rejectedCount}
+              onSelect={openSelectedLeaveHandler}
+              onDeselect={closeSelectedLeaveHandler}
+              actionIsOpen={actionIsOpen}
+              toggleAction={toggleAction}
+              toggleCancelModal={toggleCancelModal}
+              personalLeaveRequest={personalLeaveRequest}
+              personalLeaveRequestIsFetching={personalLeaveRequestIsFetching}
+            />
+          </>
+        ) : personalLeaveRequestIsFetching ? (
           <>
             {/* During fetch data is loading handler */}
             <VStack px={3} space={2}>
@@ -120,7 +105,21 @@ const LeaveScreen = () => {
               <Skeleton h={41} />
             </VStack>
           </>
+        ) : (
+          <>
+            {/* No content handler */}
+            <VStack space={2} alignItems="center" justifyContent="center">
+              <Image
+                source={require("../../../assets/vectors/empty.png")}
+                resizeMode="contain"
+                size="2xl"
+                alt="empty"
+              />
+              <Text>No Data</Text>
+            </VStack>
+          </>
         )}
+
         {/* </Flex> */}
       </SafeAreaView>
       <CancelAction

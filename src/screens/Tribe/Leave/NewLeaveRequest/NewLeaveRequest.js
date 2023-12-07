@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import * as yup from "yup";
 
-import { Dimensions, StyleSheet } from "react-native";
-import { Box, Flex, Spinner, Text, VStack, useToast } from "native-base";
+import { Dimensions } from "react-native";
+import { Box, Flex, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
@@ -227,18 +227,26 @@ const NewLeaveRequest = ({ route }) => {
           />
 
           <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
-            {availableLeaves?.map((item, index) => {
-              return (
-                <Box key={index} alignItems="center" justifyContent="center" gap={2}>
-                  <Text fontWeight={500} fontSize={20}>
-                    {item.quota}
-                  </Text>
-                  <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
-                    {item.leave_name}
-                  </Text>
-                </Box>
-              );
-            })}
+            {leaveHistoryIsFetching ? (
+              // <Spinner color="primary.600" size="lg" />
+              <VStack space={2} alignItems="center">
+                <Skeleton h={41} w={10} />
+                <Skeleton h={5} w={100} />
+              </VStack>
+            ) : (
+              availableLeaves?.map((item, index) => {
+                return (
+                  <Box key={index} alignItems="center" justifyContent="center" gap={2}>
+                    <Text fontWeight={500} fontSize={20}>
+                      {item.quota}
+                    </Text>
+                    <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
+                      {item.leave_name}
+                    </Text>
+                  </Box>
+                );
+              })
+            )}
           </Flex>
 
           <NewLeaveRequestForm
@@ -259,11 +267,3 @@ const NewLeaveRequest = ({ route }) => {
 };
 
 export default NewLeaveRequest;
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
