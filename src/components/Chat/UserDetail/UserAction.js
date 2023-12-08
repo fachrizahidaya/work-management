@@ -8,23 +8,22 @@ const UserAction = ({
   toggleDeleteModal,
   toggleExitModal,
   toggleDeleteGroupModal,
+  name,
 }) => {
   return (
-    <Flex flex={1} px={4} py={2} gap={2} bg="#FFFFFF">
+    <Flex borderRadius={10} mx={3} px={2} py={2} gap={3} bg="#FFFFFF">
       <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
-        <Icon as={<MaterialIcons name="close" />} size={5} />
         <Text fontSize={14} fontWeight={400}>
-          Clear Chat
+          Clear Messages
         </Text>
       </Pressable>
-      {type === "personal" && (
+      {/* {type === "personal" && (
         <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleDeleteModal}>
-          <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
           <Text fontSize={14} fontWeight={400}>
             Delete Chat
           </Text>
         </Pressable>
-      )}
+      )} */}
       {type === "group" && active_member === 1 && (
         <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleExitModal}>
           <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
@@ -41,6 +40,16 @@ const UserAction = ({
           </Text>
         </Pressable>
       )}
+      <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
+        <Text fontSize={14} fontWeight={400}>
+          Block {name.length > 30 ? name.split(" ")[0] : name}
+        </Text>
+      </Pressable>
+      <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
+        <Text fontSize={14} fontWeight={400}>
+          Report {name.length > 30 ? name.split(" ")[0] : name}
+        </Text>
+      </Pressable>
     </Flex>
   );
 };
