@@ -10,10 +10,10 @@ const UserAvatar = ({ roomId, type, name, image, position, email, selectedMember
   const navigation = useNavigation();
 
   return (
-    <Flex pb={2} gap={2} bg="#FFFFFF" alignItems="center" justifyContent="center">
+    <Flex pb={2} bg="#FFFFFF" alignItems="center" justifyContent="center">
       <Box>
-        <AvatarPlaceholder size="2xl" name={name} image={image} />
-        {type === "group" && currentUserIsAdmin && (
+        <AvatarPlaceholder size="2xl" name={name} image={image} isThumb={false} />
+        {type === "group" && currentUserIsAdmin ? (
           <Pressable
             style={styles.editPicture}
             shadow="0"
@@ -31,6 +31,10 @@ const UserAvatar = ({ roomId, type, name, image, position, email, selectedMember
           >
             <Icon as={<MaterialCommunityIcons name="pencil" />} size={5} color="#3F434A" />
           </Pressable>
+        ) : (
+          <Pressable style={styles.editPicture} shadow="0" borderRadius="full">
+            <Icon as={<MaterialCommunityIcons name="checkbox-blank-circle" />} size={5} color="#49C96D" />
+          </Pressable>
         )}
       </Box>
 
@@ -40,11 +44,8 @@ const UserAvatar = ({ roomId, type, name, image, position, email, selectedMember
 
       {type === "personal" ? (
         <Box alignItems="center">
-          <Text opacity={0.5} fontSize={12} fontWeight={400}>
+          <Text fontSize={12} fontWeight={400}>
             {position}
-          </Text>
-          <Text opacity={0.5} fontSize={12} fontWeight={400}>
-            {email}
           </Text>
         </Box>
       ) : null}

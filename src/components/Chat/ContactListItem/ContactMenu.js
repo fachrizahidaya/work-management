@@ -38,7 +38,7 @@ const ContactMenu = ({
     },
     {
       icon: "minus-circle-outline",
-      name: "Block",
+      name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
       color: "#EB0E29",
       onPress: null,
     },

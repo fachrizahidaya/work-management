@@ -153,7 +153,7 @@ const ContactListItem = ({
                           width: 25,
                         }}
                         bgColor="#FD7972"
-                        borderRadius="full"
+                        borderRadius={10}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"

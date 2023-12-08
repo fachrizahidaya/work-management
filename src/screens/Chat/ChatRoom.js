@@ -26,6 +26,8 @@ import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConf
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
 import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
+import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
+import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -642,12 +644,12 @@ const ChatRoom = () => {
         isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
-      <RemoveConfirmationModal
+      <ClearChatAction
         isOpen={clearChatMessageIsOpen}
-        toggle={toggleClearChatMessage}
-        description="Are you sure want to clear chat?"
+        onClose={toggleClearChatMessage}
+        name={name}
         isLoading={clearMessageIsLoading}
-        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
+        clearChat={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
       />
 
       <ImageFullScreenModal
