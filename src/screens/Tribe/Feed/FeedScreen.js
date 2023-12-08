@@ -81,6 +81,7 @@ const FeedScreen = () => {
     return {
       username: item.username,
       id: item.id,
+      name: item.name,
     };
   });
 
