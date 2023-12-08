@@ -34,16 +34,16 @@ const UserAction = ({
           </Text>
         </Pressable>
       )}
-      <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
+      {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
         <Text fontSize={14} fontWeight={400}>
           Block {name.length > 30 ? name.split(" ")[0] : name}
         </Text>
-      </Pressable>
-      <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
+      </Pressable> */}
+      {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
         <Text fontSize={14} fontWeight={400}>
           Report {name.length > 30 ? name.split(" ")[0] : name}
         </Text>
-      </Pressable>
+      </Pressable> */}
     </Flex>
   );
 };
