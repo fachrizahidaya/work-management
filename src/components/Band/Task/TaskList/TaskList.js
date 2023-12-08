@@ -35,7 +35,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   data={todoTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={200}
+                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -87,7 +87,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   data={onProgressTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={200}
+                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -139,7 +139,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   data={finishTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={200}
+                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
