@@ -33,6 +33,11 @@ const ChatListScreen = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
 
+  const swipeToReply = (contact) => {
+    setSelectedContact(contact);
+    toggleContactOption();
+  };
+
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -41,6 +46,9 @@ const ChatListScreen = () => {
   const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
   const { isOpen: contactInformationIsOpen, toggle: toggleContactInformation } = useDisclosure(false);
+  const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
+  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -212,6 +220,25 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Personal message delete handler
+   * @param {*} chat_message_id
+   * @param {*} delete_type
+   * @param {*} setIsLoading
+   */
+  const messagedeleteHandler = async (chat_message_id, delete_type) => {
+    try {
+      toggleDeleteChatMessage();
+      await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      toggleOption();
+      toggleDeleteModalChat();
+      toggleDeleteChatMessage();
+    } catch (err) {
+      console.log(err);
+      toggleDeleteChatMessage();
+    }
+  };
+
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
@@ -256,6 +283,7 @@ const ChatListScreen = () => {
             toggleDeleteModal={openSelectedChatHandler}
             toggleContactOption={openSelectedContactMenuHandler}
             toggleChatOption={toggleChatOption}
+            onSwipeControl={swipeToReply}
           />
 
           {searchResult?.message?.length > 0 && (
@@ -271,6 +299,15 @@ const ChatListScreen = () => {
         toggleDeleteGroupModal={openSelectedGroupChatHandler}
         toggleClearChatMessage={openSelectedChatToClearHandler}
         toggleContactInformation={openContactInformationHandler}
+        loggedInUser={userSelector?.id}
+        toggleDeleteChatMessage={toggleDeleteChatMessage}
+        toggleExitModal={toggleExitModal}
+        deleteModalIsOpen={deleteModalIsOpen}
+        exitModalIsOpen={exitModalIsOpen}
+        deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+        deleteChatPersonal={deleteChatPersonal}
+        deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+        chatRoomIsLoading={chatRoomIsLoading}
       />
       <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
       {selectedChat?.pin_personal ? (
