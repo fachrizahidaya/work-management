@@ -15,7 +15,6 @@ import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
-import { useRef } from "react";
 
 const ChatBubble = ({
   chat,
