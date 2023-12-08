@@ -42,6 +42,7 @@ const LeaveRequestList = ({
   return (
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justifyContent="space-evenly" flexDir="row" gap={2} />
+
       <Flex backgroundColor="#f8f8f8" px={3} flex={1} flexDir="column">
         {tabValue === "pending" ? (
           pendingLeaveRequests.length > 0 ? (

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Mention, MentionsInput } from "react-mentions";
 
 import { Text, TextArea } from "native-base";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
