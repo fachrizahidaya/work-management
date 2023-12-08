@@ -17,13 +17,7 @@ const UserAction = ({
           Clear Messages
         </Text>
       </Pressable>
-      {/* {type === "personal" && (
-        <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleDeleteModal}>
-          <Text fontSize={14} fontWeight={400}>
-            Delete Chat
-          </Text>
-        </Pressable>
-      )} */}
+
       {type === "group" && active_member === 1 && (
         <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleExitModal}>
           <Icon as={<MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} />} size={5} />
