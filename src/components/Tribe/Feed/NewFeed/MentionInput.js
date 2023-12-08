@@ -1,75 +1,54 @@
 import { useState, useEffect } from "react";
 
-import { Text, TextArea } from "native-base";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Box, Pressable, Text, TextArea } from "native-base";
+import { MentionInput } from "react-native-controlled-mentions";
 
-import MentionSelect from "./MentionSelect";
+const MentionInputs = ({ employees, formik, name, onMentionSelect, inputRef }) => {
+  const [value, setValue] = useState(null);
+  console.log("emp", employees);
 
-const MentionInput = ({ employees, formik, name, onMentionSelect, inputRef }) => {
-  const [mentionOpen, setMentionOpen] = useState(false);
-  const [mentionFilter, setMentionFilter] = useState("");
-  const [filteredEmployee, setFilteredEmployee] = useState([]);
-
-  const mentionToggleHandler = (e) => {
-    if (e.key !== "Shift") {
-      const text = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_@]+$/);
-      const value = e.target.value.substring(0, e.target.selectionStart).match(/[a-zA-Z0-9-_]+$/);
-      if (text && text[0][0] === "@" && text[0][1] !== "@") {
-        setMentionOpen(true);
-        setMentionFilter(value && value[0]);
+  const renderSuggestions =
+    (suggestions) =>
+    ({ keyword, onSuggestionPress }) => {
+      if (keyword == null) {
+        return null;
       }
-      if (!text || (text && text[0][0] === "@" && text[0][1] === "@")) {
-        setMentionOpen(false);
-        setMentionFilter("");
-      }
-    }
-  };
 
-  const mentionFilterHandler = () => {
-    let filtered;
-    if (mentionFilter) {
-      filtered = employees.filter((employee) => {
-        return employee.username.includes(mentionFilter);
-      });
-    } else {
-      filtered = employees;
-    }
-    setFilteredEmployee(filtered);
-  };
+      return (
+        <Box>
+          {suggestions
+            .filter((one, index) => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+            .map((one, index) => (
+              <Pressable key={index} onPress={() => onSuggestionPress(one)} style={{ padding: 12 }}>
+                <Text>{one.name}</Text>
+              </Pressable>
+            ))}
+        </Box>
+      );
+    };
 
-  const mentionSelectHandler = (username) => {
-    let updatedTweet;
-    const text = inputRef.current.value.substring(0, inputRef.current.selectionStart).match(/[a-zA-Z0-9-_@]+$/);
-    updatedTweet = inputRef.current.value.replace(text[0], "@" + username + " ");
-    onMentionSelect(updatedTweet);
-    inputRef.current.focus();
-    setMentionOpen(false);
-    setMentionFilter("");
-  };
-
-  useEffect(() => {
-    mentionFilterHandler();
-  }, [mentionFilter]);
+  const renderMentionSuggestions = renderSuggestions(employees);
 
   return (
     <>
-      <KeyboardAwareScrollView>
-        <TextArea
-          height={300}
-          variant="unstyled"
-          placeholder="What is happening?"
-          onChangeText={(value) => {
-            formik.setFieldValue("content", value);
-          }}
-          value={formik.values.content}
-          fontSize="lg"
-          multiline={true}
-        />
-      </KeyboardAwareScrollView>
-
-      {mentionOpen && <MentionSelect employees={filteredEmployee} onSelect={mentionSelectHandler} />}
+      <MentionInput
+        value={value}
+        onChange={setValue}
+        partTypes={[
+          {
+            trigger: "@",
+            renderSuggestions: renderMentionSuggestions,
+          },
+          {
+            pattern:
+              /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
+            textStyle: { color: "blue" },
+          },
+        ]}
+        placeholder="Type here..."
+      />
     </>
   );
 };
 
-export default MentionInput;
+export default MentionInputs;

@@ -61,7 +61,6 @@ const FeedCardItem = ({
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    const isItemIncluded = employeeUsername?.some((employee) => item?.includes(employee.username));
     specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
@@ -76,7 +75,6 @@ const FeedCardItem = ({
     } else if (hasHref && specificEmployee) {
       const specificEmployeeId = specificEmployee.id;
       item = specificEmployee.username;
-
       textStyle = styles.highlightedText;
       return (
         <Text
@@ -96,7 +94,7 @@ const FeedCardItem = ({
     } else if (hasTag) {
       item = item.replace(`<a`, "");
       textStyle = styles.defaultText;
-      return <Text key={index} style={textStyle}></Text>;
+      return <Text key={index}>{item}</Text>;
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (

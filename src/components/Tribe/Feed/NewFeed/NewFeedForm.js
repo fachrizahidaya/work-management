@@ -4,7 +4,7 @@ import { Box, Flex, FormControl, Icon, Image, Pressable, Spinner } from "native-
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import MentionInput from "./MentionInput";
+import MentionInputs from "./MentionInput";
 
 const NewFeedForm = ({
   formik,
@@ -22,7 +22,7 @@ const NewFeedForm = ({
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
       <FormControl>
-        <MentionInput
+        <MentionInputs
           employees={employees}
           formik={formik}
           name="content"
