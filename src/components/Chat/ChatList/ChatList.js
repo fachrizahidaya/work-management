@@ -24,6 +24,9 @@ const ChatList = ({
   setBandAttachment,
   bubbleChangeColor,
   setBubbleChangeColor,
+  onSwipeToReply,
+  modalAppeared,
+  setModalAppeared,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -146,6 +149,9 @@ const ChatList = ({
               openChatBubbleHandler={openChatBubbleHandler}
               bubbleChangeColor={bubbleChangeColor}
               setBubbleChangeColor={setBubbleChangeColor}
+              onSwipe={onSwipeToReply}
+              modalAppeared={modalAppeared}
+              setModalAppeared={setModalAppeared}
             />
           </>
         )}

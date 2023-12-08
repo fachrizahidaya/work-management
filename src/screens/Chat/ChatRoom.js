@@ -26,7 +26,6 @@ import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConf
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
 import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
-import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
 import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
 
 const ChatRoom = () => {
@@ -44,6 +43,12 @@ const ChatRoom = () => {
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [bubbleChangeColor, setBubbleChangeColor] = useState(false);
+  const [placement, setPlacement] = useState(undefined);
+  const [modalAppeared, setModalAppeared] = useState(false);
+
+  const swipeToReply = (message) => {
+    setMessageToReply(message);
+  };
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -78,8 +83,9 @@ const ChatRoom = () => {
    * Open chat options handler
    * @param {*} chat
    */
-  const openChatBubbleHandler = (chat) => {
+  const openChatBubbleHandler = (chat, placement) => {
     setSelectedChatBubble(chat);
+    setPlacement(placement);
     toggleOption();
   };
 
@@ -585,6 +591,10 @@ const ChatRoom = () => {
               toggleFullScreen={toggleFullScreen}
               bubbleChangeColor={bubbleChangeColor}
               setBubbleChangeColor={setBubbleChangeColor}
+              onSwipeToReply={swipeToReply}
+              placement={placement}
+              modalAppeared={modalAppeared}
+              setModalAppeared={setModalAppeared}
             />
 
             <ChatInput
@@ -666,6 +676,7 @@ const ChatRoom = () => {
         toggleDeleteModal={toggleDeleteModalChat}
         bubbleChangeColor={bubbleChangeColor}
         setBubbleChangeColor={setBubbleChangeColor}
+        placement={placement}
       />
 
       <ChatMessageDeleteModal

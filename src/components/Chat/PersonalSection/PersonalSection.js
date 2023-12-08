@@ -14,6 +14,7 @@ const PersonalSection = ({
   toggleDeleteModal,
   toggleContactOption,
   toggleChatOption,
+  onSwipeControl,
 }) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
@@ -53,6 +54,7 @@ const PersonalSection = ({
               active_member={0}
               toggleDeleteModal={toggleDeleteModal}
               toggleContactOption={toggleContactOption}
+              onSwipe={onSwipeControl}
             />
           );
         })}
