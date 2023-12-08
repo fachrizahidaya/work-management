@@ -1,13 +1,27 @@
-import React, { memo } from "react";
+import { Flex, Text, Pressable } from "native-base";
+import React, { useRef } from "react";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 
-import { Box, Flex, Pressable, Text } from "native-base";
+const Tab = ({ tab, value, onChange, isValue, flexDir, gap }) => {
+  const animatedValue = useSharedValue(0);
 
-/**
- * @param {Array} tabs - An array of tab objects.
- * @param {string} value - The currently selected tab value.
- * @param {function} onChange - Function to handle tab selection changes.
- */
-const Tabs = ({ tabs = [], value, onChange, justifyContent, isValue, flexDir, gap }) => {
+  const animatedStyles = useAnimatedStyle(() => ({
+    borderBottomWidth: value === tab.title ? withTiming(2) : withTiming(0),
+  }));
+
+  return (
+    <Pressable onPress={() => onChange(tab.title)}>
+      <Animated.View style={[animatedStyles]}>
+        <Flex flexDirection={flexDir ? flexDir : null} alignItems="center" px={2} pb={3} gap={gap ? gap : null}>
+          <Text textTransform="uppercase">{tab.title}</Text>
+          {isValue ? <Text>{tab.number}</Text> : null}
+        </Flex>
+      </Animated.View>
+    </Pressable>
+  );
+};
+
+const Tabs = ({ tabs = [], value, onChange, justifyContent, flexDir, gap }) => {
   return (
     <Flex
       flexDir="row"
@@ -17,26 +31,11 @@ const Tabs = ({ tabs = [], value, onChange, justifyContent, isValue, flexDir, ga
       borderColor="#E8E9EB"
     >
       {tabs.length > 0 &&
-        tabs.map((tab, idx) => {
-          return (
-            <Pressable key={idx} onPress={() => onChange(tab.title)}>
-              <Flex
-                flexDirection={flexDir ? flexDir : null}
-                alignItems="center"
-                borderBottomWidth={value === tab.title ? 2 : 0}
-                borderColor="#377893"
-                px={2}
-                pb={3}
-                gap={gap ? gap : null}
-              >
-                <Text textTransform="uppercase">{tab.title}</Text>
-                {isValue ? <Text>{tab.number}</Text> : null}
-              </Flex>
-            </Pressable>
-          );
-        })}
+        tabs.map((tab, idx) => (
+          <Tab key={idx} tab={tab} value={value} onChange={onChange} flexDir={flexDir} gap={gap} />
+        ))}
     </Flex>
   );
 };
 
-export default memo(Tabs);
+export default Tabs;

@@ -75,7 +75,7 @@ const FeedCardItem = ({
       );
     } else if (hasHref && specificEmployee) {
       const specificEmployeeId = specificEmployee.id;
-      item = item.replace(`href="/tribe/employee/`, "").replace(`">`, "").replace("</a>", "").replace("@", "");
+      item = specificEmployee.username;
 
       textStyle = styles.highlightedText;
       return (
