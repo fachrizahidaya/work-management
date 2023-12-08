@@ -20,6 +20,7 @@ import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
 import ContactInformation from "../../components/Chat/ContactListItem/ContactInformation";
+import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ const ChatListScreen = () => {
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: contactOptionIsOpen, toggle: toggleContactOption } = useDisclosure(false);
+  const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
   const { isOpen: contactInformationIsOpen, toggle: toggleContactInformation } = useDisclosure(false);
 
@@ -244,6 +246,7 @@ const ChatListScreen = () => {
             searchResult={searchResult?.group}
             toggleDeleteModal={openSelectedGroupChatHandler}
             toggleContactOption={openSelectedContactMenuHandler}
+            toggleChatOption={toggleChatOption}
           />
 
           <PersonalSection
@@ -252,6 +255,7 @@ const ChatListScreen = () => {
             searchResult={searchResult?.personal}
             toggleDeleteModal={openSelectedChatHandler}
             toggleContactOption={openSelectedContactMenuHandler}
+            toggleChatOption={toggleChatOption}
           />
 
           {searchResult?.message?.length > 0 && (
@@ -268,6 +272,7 @@ const ChatListScreen = () => {
         toggleClearChatMessage={openSelectedChatToClearHandler}
         toggleContactInformation={openContactInformationHandler}
       />
+      <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
       {selectedChat?.pin_personal ? (
         <RemoveConfirmationModal
           isLoading={deleteChatMessageIsLoading}
@@ -296,7 +301,19 @@ const ChatListScreen = () => {
           clearChatMessageHandler(selectedChat?.id, selectedChat?.pin_group ? "group" : "personal", toggleClearMessage)
         }
       />
-      <ContactInformation isOpen={contactInformationIsOpen} toggle={closeContactInformationHandler} />
+      <ContactInformation
+        isOpen={contactInformationIsOpen}
+        toggle={closeContactInformationHandler}
+        userId={selectedChat?.user?.id}
+        name={selectedChat?.pin_group ? selectedChat?.name : selectedChat?.user?.name}
+        roomId={selectedChat?.id}
+        file_path={selectedChat?.pin_group ? selectedChat?.image : selectedChat?.user?.image}
+        position={selectedChat?.user?.user_type}
+        email={selectedChat?.user?.email}
+        type={selectedChat?.pin_personal ? "personal" : "group"}
+        active_member={!selectedChat?.active_member ? null : selectedChat?.active_member}
+        isPinned={selectedChat?.pin_personal ? selectedChat?.pin_personal : selectedChat?.pin_group}
+      />
     </>
   );
 };
