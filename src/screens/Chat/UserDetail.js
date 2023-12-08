@@ -327,7 +327,7 @@ const UserDetail = () => {
           toggleRemoveMemberAction={toggleRemoveMemberAction}
         />
         <UserMedia qty={media?.data?.length} />
-        <UserPersonalized />
+        {/* <UserPersonalized /> */}
         <UserAction
           name={name}
           type={type}
