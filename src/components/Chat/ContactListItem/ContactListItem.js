@@ -109,6 +109,7 @@ const ContactListItem = ({
           isPinned: isPinned,
         });
       }}
+      // delayLongPress={370}
       onLongPress={() => {
         toggleContactOption(chat);
       }}
