@@ -7,7 +7,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleDeleteModal, toggleContactOption }) => {
+const PersonalSection = ({
+  personalChats,
+  searchKeyword,
+  searchResult,
+  toggleDeleteModal,
+  toggleContactOption,
+  toggleChatOption,
+}) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -16,7 +23,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleDel
           PEOPLE
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
+        <TouchableOpacity style={styles.addButton} onPress={toggleChatOption}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>

@@ -7,7 +7,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleDeleteModal, toggleContactOption }) => {
+const GroupSection = ({
+  groupChats,
+  searchKeyword,
+  searchResult,
+  toggleDeleteModal,
+  toggleContactOption,
+  toggleChatOption,
+}) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
@@ -17,7 +24,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleDeleteMod
           TEAMS
         </Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
+        <TouchableOpacity style={styles.addButton} onPress={toggleChatOption}>
           <Icon as={<MaterialIcons name="add" />} color="black" />
         </TouchableOpacity>
       </Flex>
