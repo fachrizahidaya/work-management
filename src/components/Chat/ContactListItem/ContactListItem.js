@@ -2,9 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Box, Flex, HStack, Icon, Text, useToast } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { FlingGestureHandler, Directions, State } from "react-native-gesture-handler";
+import Animated, {
+  withSpring,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
@@ -32,8 +39,12 @@ const ContactListItem = ({
   isPinned,
   toggleDeleteModal,
   toggleContactOption,
+  onSwipe,
 }) => {
   const navigation = useNavigation();
+
+  const startingPosition = 0;
+  const x = useSharedValue(startingPosition);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -94,6 +105,22 @@ const ContactListItem = ({
     return text;
   };
 
+  const eventHandler = useAnimatedGestureHandler({
+    onStart: (event, ctx) => {},
+    onActive: (event, ctx) => {
+      x.value = -100;
+    },
+    onEnd: (event, ctx) => {
+      x.value = withSpring(startingPosition);
+    },
+  });
+
+  const uas = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: x.value }],
+    };
+  });
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -109,79 +136,87 @@ const ContactListItem = ({
           isPinned: isPinned,
         });
       }}
-      // delayLongPress={370}
-      onLongPress={() => {
-        toggleContactOption(chat);
-      }}
     >
-      <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-        <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
-          <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
+      <FlingGestureHandler
+        direction={Directions.LEFT}
+        onGestureEvent={eventHandler}
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            onSwipe(chat);
+          }
+        }}
+      >
+        <Animated.View style={[uas]}>
+          <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
+            <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
+              <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
-          <Box flex={1}>
-            <HStack justifyContent="space-between">
-              {!searchKeyword ? (
-                <Text>{name}</Text>
-              ) : (
-                <RenderHtml
-                  contentWidth={400}
-                  source={{
-                    html: renderName(),
-                  }}
-                />
-              )}
+              <Box flex={1}>
+                <HStack justifyContent="space-between">
+                  {!searchKeyword ? (
+                    <Text>{name}</Text>
+                  ) : (
+                    <RenderHtml
+                      contentWidth={400}
+                      source={{
+                        html: renderName(),
+                      }}
+                    />
+                  )}
 
-              <Flex flexDirection="row">
-                <ChatTimeStamp time={time} timestamp={timestamp} />
-              </Flex>
-            </HStack>
+                  <Flex flexDirection="row">
+                    <ChatTimeStamp time={time} timestamp={timestamp} />
+                  </Flex>
+                </HStack>
 
-            <Flex flexDir="row" alignItems="center" gap={1}>
-              {!isDeleted ? (
-                <>
-                  <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                    {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
-                    {message === null && (project || task || fileName) && (
-                      <HStack alignItems="center" space={1}>
-                        <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
-                        <Text>{generateAttachmentText()}</Text>
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  {!isDeleted ? (
+                    <>
+                      <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                        {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                        {message === null && (project || task || fileName) && (
+                          <HStack alignItems="center" space={1}>
+                            <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                            <Text>{generateAttachmentText()}</Text>
+                          </HStack>
+                        )}
+                        {!!isRead && (
+                          <Box
+                            style={{
+                              height: 25,
+                              width: 25,
+                            }}
+                            bgColor="#FD7972"
+                            borderRadius={10}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Text fontSize={12} textAlign="center" color="white">
+                              {isRead > 20 ? "20+" : isRead}
+                            </Text>
+                          </Box>
+                        )}
                       </HStack>
-                    )}
-                    {!!isRead && (
-                      <Box
-                        style={{
-                          height: 25,
-                          width: 25,
-                        }}
-                        bgColor="#FD7972"
-                        borderRadius={10}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Text fontSize={12} textAlign="center" color="white">
-                          {isRead > 20 ? "20+" : isRead}
-                        </Text>
-                      </Box>
-                    )}
-                  </HStack>
-                </>
-              ) : (
-                <Text fontStyle="italic" opacity={0.5}>
-                  Message has been deleted
-                </Text>
-              )}
-              {isPinned?.pin_chat ? (
-                <Icon
-                  as={<MaterialCommunityIcons name="pin" />}
-                  size="md"
-                  style={{ transform: [{ rotate: "45deg" }] }}
-                />
-              ) : null}
+                    </>
+                  ) : (
+                    <Text fontStyle="italic" opacity={0.5}>
+                      Message has been deleted
+                    </Text>
+                  )}
+                  {isPinned?.pin_chat ? (
+                    <Icon
+                      as={<MaterialCommunityIcons name="pin" />}
+                      size="md"
+                      style={{ transform: [{ rotate: "45deg" }] }}
+                    />
+                  ) : null}
+                </Flex>
+              </Box>
             </Flex>
-          </Box>
-        </Flex>
-      </Flex>
+          </Flex>
+        </Animated.View>
+      </FlingGestureHandler>
     </TouchableOpacity>
   );
 };

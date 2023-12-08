@@ -10,6 +10,7 @@ const ChatOptionMenu = ({
   toggleDeleteModal,
   bubbleChangeColor,
   setBubbleChangeColor,
+  placement,
 }) => {
   const options = [
     {
@@ -72,8 +73,8 @@ const ChatOptionMenu = ({
           </Actionsheet.Item>
         </Actionsheet.Content>
       </Actionsheet> */}
-      <Modal isOpen={optionIsOpen} onClose={onClose}>
-        <Modal.Content width={200}>
+      <Modal isOpen={optionIsOpen} onClose={onClose} safeAreaTop={true}>
+        <Modal.Content width={200} {...styles[placement]}>
           <Modal.Body gap={3}>
             {options.map((option, index) => {
               return (
@@ -113,3 +114,14 @@ const ChatOptionMenu = ({
 };
 
 export default ChatOptionMenu;
+
+const styles = {
+  left: {
+    marginLeft: 0,
+    marginRight: "auto",
+  },
+  right: {
+    marginLeft: "auto",
+    marginRight: 0,
+  },
+};

@@ -1,5 +1,9 @@
+import { useNavigation } from "@react-navigation/native";
+
 import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const ContactMenu = ({
@@ -10,7 +14,17 @@ const ContactMenu = ({
   toggleDeleteGroupModal,
   toggleClearChatMessage,
   toggleContactInformation,
+  loggedInUser,
+  toggleDeleteChatMessage,
+  toggleExitModal,
+  deleteModalIsOpen,
+  exitModalIsOpen,
+  deleteGroupModalIsOpen,
+  deleteChatPersonal,
+  deleteChatMessageIsLoading,
+  chatRoomIsLoading,
 }) => {
+  const navigation = useNavigation();
   const menuOptions = [
     // {
     //   icon: "volume-off",
@@ -23,8 +37,29 @@ const ContactMenu = ({
       name: "Contact Info",
       color: "#176688",
       onPress: () => {
-        toggleContactInformation(chat);
         onClose();
+        navigation.navigate("User Detail", {
+          navigation: navigation,
+          name: chat?.user?.name,
+          image: chat?.user?.image,
+          position: chat?.user?.user_type,
+          email: chat?.user?.email,
+          type: chat?.pin_personal ? "personal" : "group",
+          roomId: chat?.id,
+          loggedInUser: loggedInUser,
+          active_member: chat?.active_member,
+          toggleDeleteModal: toggleDeleteModal,
+          toggleExitModal: toggleExitModal,
+          toggleDeleteGroupModal: toggleDeleteGroupModal,
+          deleteModalIsOpen: deleteModalIsOpen,
+          exitModalIsOpen: exitModalIsOpen,
+          deleteGroupModalIsOpen: deleteGroupModalIsOpen,
+          deleteChatPersonal: deleteChatPersonal,
+          deleteChatMessageIsLoading: deleteChatMessageIsLoading,
+          chatRoomIsLoading: chatRoomIsLoading,
+          toggleDeleteChatMessage: toggleDeleteChatMessage,
+          toggleClearChatMessage: toggleClearChatMessage,
+        });
       },
     },
     {
@@ -36,12 +71,12 @@ const ContactMenu = ({
         onClose();
       },
     },
-    {
-      icon: "minus-circle-outline",
-      name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
-      color: "#EB0E29",
-      onPress: null,
-    },
+    // {
+    //   icon: "minus-circle-outline",
+    //   name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
+    //   color: "#EB0E29",
+    //   onPress: null,
+    // },
     {
       icon: "trash-can-outline",
       name: `Delete ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
@@ -56,7 +91,7 @@ const ContactMenu = ({
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content gap={1}>
-        <Actionsheet.Item mt={1}>
+        <Actionsheet.Item mt={1} _pressed={{ backgroundColor: "#FFFFFF" }}>
           <Flex flexDirection="row" justifyContent="space-between">
             <Flex gap={3} flexDirection="row" alignItems="center" width={350}>
               <AvatarPlaceholder

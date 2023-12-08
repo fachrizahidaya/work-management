@@ -1,14 +1,20 @@
-import { memo } from "react";
+import { useRef, memo } from "react";
 import { useSelector } from "react-redux";
 
-import { Animated, Linking, PanResponder, StyleSheet, TouchableOpacity } from "react-native";
+import { Linking, PanResponder, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Flex, Image, Pressable, Text } from "native-base";
+import { FlingGestureHandler, Directions, State } from "react-native-gesture-handler";
+import Animated, {
+  withSpring,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
-import { useRef } from "react";
 
 const ChatBubble = ({
   chat,
@@ -32,12 +38,18 @@ const ChatBubble = ({
   toggleFullScreen,
   bubbleChangeColor,
   setBubbleChangeColor,
+  onSwipe,
+  modalAppeared,
+  setModalAppeared,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
+
+  const startingPosition = 0;
+  const x = useSharedValue(startingPosition);
 
   let styledTexts = null;
   if (content?.length !== 0) {
@@ -101,125 +113,144 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
-  const animatedX = useRef(new Animated.Value(0)).current;
+  const eventHandler = useAnimatedGestureHandler({
+    onStart: (event, ctx) => {},
+    onActive: (event, ctx) => {
+      x.value = !myMessage ? 50 : -50;
+    },
+    onEnd: (event, ctx) => {
+      x.value = withSpring(startingPosition);
+    },
+  });
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, { dx: animatedX, dy: new Animated.Value(0) }], {
-        useNativeDriver: false,
-      }),
-      onPanResponderRelease: (e, gestureState) => {
-        if (Math.abs(gestureState.dx) > 100) {
-        }
-        Animated.spring({ toValue: 0, useNativeDriver: false }).start();
-      },
-    })
-  ).current;
+  const uas = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: x.value }],
+    };
+  });
 
   return (
-    <>
-      <Flex
-        alignItems="flex-end"
-        gap={1}
-        mb={isGrouped ? 1 : 2}
-        px={2}
-        flexDirection={!myMessage ? "row" : "row-reverse"}
-      >
-        {/* {type === "group" && !myMessage && image ? (
+    <Flex
+      alignItems="flex-end"
+      gap={1}
+      mb={isGrouped ? 1 : 2}
+      px={2}
+      flexDirection={!myMessage ? "row" : "row-reverse"}
+    >
+      {/* {type === "group" && !myMessage && image ? (
           <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
-        ) : type === "group" && !myMessage ? (
-          <Box ml={8}></Box>
-        ) : null} */}
+          ) : type === "group" && !myMessage ? (
+            <Box ml={8}></Box>
+          ) : null} */}
 
-        {/* <Animated.View {...panResponder.panHandlers} style={{ transform: [{ translateX: animatedX }] }}> */}
-        <Pressable
-          maxWidth={300}
-          onLongPress={() => {
-            !isDeleted && openChatBubbleHandler(chat);
-            setBubbleChangeColor(true);
-          }}
-          borderRadius={10}
-          display="flex"
-          justifyContent="center"
-          py={1.5}
-          px={1.5}
-          bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
-          gap={1}
-          zIndex={bubbleChangeColor ? 2 : null}
-        >
-          {type === "group" && name && !myMessage && (
-            <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
-              {name}
-            </Text>
-          )}
-          {!isDeleted ? (
-            <>
-              {reply_to && <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />}
-              {file_path && (
-                <>
-                  {imgTypes.includes(formatMimeType(file_type)) && (
-                    <>
-                      <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
-                        <Image
-                          width={260}
-                          height={200}
-                          borderRadius={5}
-                          source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-                          alt="Chat Image"
-                          resizeMode="contain"
-                          resizeMethod="auto"
-                        />
-                      </TouchableOpacity>
-                    </>
-                  )}
-                  {docTypes.includes(formatMimeType(file_type)) && (
-                    <FileAttachmentBubble
-                      file_type={file_type}
-                      file_name={file_name}
-                      file_path={file_path}
-                      file_size={file_size}
-                      myMessage={myMessage}
-                    />
-                  )}
-                </>
-              )}
-              {band_attachment_id && (
-                <BandAttachmentBubble
-                  id={band_attachment_id}
-                  title={band_attachment_title}
-                  number_id={band_attachment_no}
-                  type={band_attachment_type}
-                  myMessage={myMessage}
-                />
-              )}
-            </>
-          ) : null}
-
-          <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
+      <FlingGestureHandler
+        direction={!myMessage ? Directions.RIGHT : Directions.LEFT}
+        onGestureEvent={eventHandler}
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            onSwipe(chat);
+          }
+        }}
+      >
+        <Animated.View style={uas}>
+          <Pressable
+            maxWidth={300}
+            onLongPress={() => {
+              !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
+              setBubbleChangeColor(true);
+              setModalAppeared(true);
+            }}
+            borderRadius={10}
+            display="flex"
+            justifyContent="center"
+            py={1.5}
+            px={1.5}
+            bgColor={
+              !myMessage && bubbleChangeColor
+                ? "red"
+                : myMessage && bubbleChangeColor
+                ? "black"
+                : !myMessage
+                ? "#FFFFFF"
+                : "primary.600"
+            }
+            gap={1}
+            zIndex={bubbleChangeColor && modalAppeared ? 2 : null}
+          >
+            {type === "group" && name && !myMessage && (
+              <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
+                {name}
+              </Text>
+            )}
             {!isDeleted ? (
-              <Text fontSize={14} fontWeight={400} color={!myMessage ? "#3F434A" : "#FFFFFF"} flexShrink={1}>
-                {styledTexts}
-              </Text>
-            ) : myMessage && isDeleted ? (
-              <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
-                You have deleted this message
-              </Text>
-            ) : !myMessage && isDeleted ? (
-              <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
-                This message has been deleted
-              </Text>
+              <>
+                {reply_to && (
+                  <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />
+                )}
+                {file_path && (
+                  <>
+                    {imgTypes.includes(formatMimeType(file_type)) && (
+                      <>
+                        <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
+                          <Image
+                            width={260}
+                            height={200}
+                            borderRadius={5}
+                            source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
+                            alt="Chat Image"
+                            resizeMode="contain"
+                            resizeMethod="auto"
+                          />
+                        </TouchableOpacity>
+                      </>
+                    )}
+                    {docTypes.includes(formatMimeType(file_type)) && (
+                      <FileAttachmentBubble
+                        file_type={file_type}
+                        file_name={file_name}
+                        file_path={file_path}
+                        file_size={file_size}
+                        myMessage={myMessage}
+                      />
+                    )}
+                  </>
+                )}
+                {band_attachment_id && (
+                  <BandAttachmentBubble
+                    id={band_attachment_id}
+                    title={band_attachment_title}
+                    number_id={band_attachment_no}
+                    type={band_attachment_type}
+                    myMessage={myMessage}
+                  />
+                )}
+              </>
             ) : null}
 
-            <Text alignSelf="flex-end" fontSize={8} color={!myMessage ? "#8A9099" : "#FFFFFF"}>
-              {time}
-            </Text>
-          </Flex>
-        </Pressable>
-        {/* </Animated.View> */}
+            <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
+              {!isDeleted ? (
+                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#3F434A" : "#FFFFFF"} flexShrink={1}>
+                  {styledTexts}
+                </Text>
+              ) : myMessage && isDeleted ? (
+                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                  You have deleted this message
+                </Text>
+              ) : !myMessage && isDeleted ? (
+                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
+                  This message has been deleted
+                </Text>
+              ) : null}
 
-        {/* {!isGrouped && (
+              <Text alignSelf="flex-end" fontSize={8} color={!myMessage ? "#8A9099" : "#FFFFFF"}>
+                {time}
+              </Text>
+            </Flex>
+          </Pressable>
+        </Animated.View>
+      </FlingGestureHandler>
+
+      {/* {!isGrouped && (
           <Box
             position="absolute"
             bottom={1}
@@ -239,8 +270,7 @@ const ChatBubble = ({
             zIndex={-1}
           ></Box>
         )} */}
-      </Flex>
-    </>
+    </Flex>
   );
 };
 
@@ -250,5 +280,12 @@ const styles = StyleSheet.create({
   defaultText: {},
   highlightedText: {
     textDecorationLine: "underline",
+  },
+  container: {
+    alignItems: "flex-end",
+    gap: 1,
+    // mb:isGrouped ? 1 : 2,
+    px: 2,
+    flexDirection: "row",
   },
 });
