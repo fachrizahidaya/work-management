@@ -1,7 +1,27 @@
 import { Actionsheet, Flex, Icon, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const MenuAttachment = ({ isOpen, onClose, selectFile, pickImageHandler, selectBandHandler }) => {
+const MenuAttachment = ({
+  isOpen,
+  onClose,
+  selectFile,
+  pickImageHandler,
+  selectBandHandler,
+  navigation,
+  bandAttachment,
+  setBandAttachment,
+  bandAttachmentType,
+  setBandAttachmentType,
+  userId,
+  name,
+  roomId,
+  image,
+  position,
+  email,
+  type,
+  active_member,
+  isPinned,
+}) => {
   const attachmentOptions = [
     {
       icon: "file-document-outline",
@@ -26,7 +46,22 @@ const MenuAttachment = ({ isOpen, onClose, selectFile, pickImageHandler, selectB
       name: "Project/Task",
       color: "#EB0E29",
       onPress: () => {
-        selectBandHandler("project");
+        // selectBandHandler("project");
+        navigation.navigate("Project Screen", {
+          bandAttachment: bandAttachment,
+          setBandAttachment: setBandAttachment,
+          bandAttachmentType: bandAttachmentType,
+          setBandAttachmentType: setBandAttachmentType,
+          userId: userId,
+          name: name,
+          roomId: roomId,
+          image: image,
+          position: position,
+          email: email,
+          type: type,
+          active_member: active_member,
+          isPinned: isPinned,
+        });
         onClose();
       },
     },

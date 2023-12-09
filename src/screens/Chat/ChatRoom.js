@@ -617,6 +617,7 @@ const ChatRoom = () => {
               toggleTaskList={toggleTaskList}
               menuIsOpen={menuIsOpen}
               toggleMenu={toggleMenu}
+              navigation={navigation}
             />
           </>
         ) : (
@@ -707,6 +708,20 @@ const ChatRoom = () => {
         selectFile={selectFile}
         pickImageHandler={pickImageHandler}
         selectBandHandler={selectBandHandler}
+        navigation={navigation}
+        bandAttachment={bandAttachment}
+        setBandAttachment={setBandAttachment}
+        bandAttachmentType={bandAttachmentType}
+        setBandAttachmentType={setBandAttachmentType}
+        name={name}
+        userId={userId}
+        roomId={roomId}
+        image={image}
+        position={position}
+        email={email}
+        type={type}
+        active_member={active_member}
+        isPinned={isPinned}
       />
     </>
   );

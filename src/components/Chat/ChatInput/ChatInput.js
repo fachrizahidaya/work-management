@@ -29,6 +29,7 @@ const ChatInput = ({
   toggleTaskList,
   menuIsOpen,
   toggleMenu,
+  navigation,
 }) => {
   const attachmentOptions = [
     {
@@ -158,29 +159,6 @@ const ChatInput = ({
                   color="#8A9099"
                 />
               </Pressable>
-              {/* <Menu
-              mb={10}
-              trigger={(trigger) => {
-                return fileAttachment || bandAttachment ? null : (
-                  <Pressable {...trigger}>
-                    <Icon
-                      as={<MaterialCommunityIcons name="attachment" />}
-                      size={6}
-                      style={{ transform: [{ rotate: "270deg" }] }}
-                    />
-                  </Pressable>
-                );
-              }}
-            >
-              {attachmentOptions.map((option) => {
-                return (
-                  <Menu.Item key={option.id} onPress={option.onPress}>
-                    <Icon as={<MaterialCommunityIcons name={option.icon} />} />
-                    <Text>{option.name}</Text>
-                  </Menu.Item>
-                );
-              })}
-            </Menu> */}
 
               <FormControl display="flex" flex={1} justifyContent="center">
                 <Input

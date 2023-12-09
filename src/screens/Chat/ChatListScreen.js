@@ -220,25 +220,6 @@ const ChatListScreen = () => {
     }
   };
 
-  /**
-   * Personal message delete handler
-   * @param {*} chat_message_id
-   * @param {*} delete_type
-   * @param {*} setIsLoading
-   */
-  const messagedeleteHandler = async (chat_message_id, delete_type) => {
-    try {
-      toggleDeleteChatMessage();
-      await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
-      toggleOption();
-      toggleDeleteModalChat();
-      toggleDeleteChatMessage();
-    } catch (err) {
-      console.log(err);
-      toggleDeleteChatMessage();
-    }
-  };
-
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
