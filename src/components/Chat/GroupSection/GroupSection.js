@@ -14,6 +14,7 @@ const GroupSection = ({
   toggleDeleteModal,
   toggleContactOption,
   toggleChatOption,
+  onSwipeControl,
 }) => {
   const navigation = useNavigation();
 
@@ -52,6 +53,7 @@ const GroupSection = ({
             active_member={group?.active_member}
             toggleDeleteModal={toggleDeleteModal}
             toggleContactOption={toggleContactOption}
+            onSwipe={onSwipeControl}
           />
         ))}
     </>

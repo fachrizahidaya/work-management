@@ -255,6 +255,7 @@ const ChatListScreen = () => {
             toggleDeleteModal={openSelectedGroupChatHandler}
             toggleContactOption={openSelectedContactMenuHandler}
             toggleChatOption={toggleChatOption}
+            onSwipeControl={swipeToReply}
           />
 
           <PersonalSection
