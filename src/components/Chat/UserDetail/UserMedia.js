@@ -1,8 +1,9 @@
 import { Flex, Icon, Pressable, Text } from "native-base";
 import React from "react";
+import { TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const UserMedia = ({ qty }) => {
+const UserMedia = ({ qty, navigation, media, docs }) => {
   return (
     <Flex
       flexDirection="row"
@@ -21,12 +22,20 @@ const UserMedia = ({ qty }) => {
           Media & Docs
         </Text>
       </Pressable>
-      <Pressable display="flex" gap={1} flexDirection="row" alignItems="center">
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Media", {
+            media: media,
+            docs: docs,
+          })
+        }
+        style={{ display: "flex", gap: 1, flexDirection: "row", alignItems: "center" }}
+      >
         <Text opacity={0.5} fontSize={14} fontWeight={400}>
           {qty}
         </Text>
         <Icon opacity={0.5} as={<MaterialIcons name="chevron-right" />} size={5} />
-      </Pressable>
+      </TouchableOpacity>
     </Flex>
   );
 };

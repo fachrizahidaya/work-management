@@ -99,7 +99,11 @@ const UserDetail = () => {
   };
 
   const { data: media, isFetching: mediaIsFetching, refetch: refetchMedia } = useFetch(`/chat/${type}/${roomId}/media`);
-  console.log(media?.data);
+  const {
+    data: document,
+    isFetching: documentIsFetching,
+    refetch: refetchDocument,
+  } = useFetch(`/chat/${type}/${roomId}/docs`);
 
   /**
    * Handle group member add event
@@ -326,7 +330,12 @@ const UserDetail = () => {
           setMemberAdminStatus={setMemberAdminStatus}
           toggleRemoveMemberAction={toggleRemoveMemberAction}
         />
-        <UserMedia qty={media?.data?.length} />
+        {/* <UserMedia
+          qty={media?.data?.length + document?.data?.length}
+          media={media?.data}
+          docs={document?.data}
+          navigation={navigation}
+        /> */}
         {/* <UserPersonalized /> */}
         <UserAction
           name={name}
