@@ -45,6 +45,7 @@ const ChatRoom = () => {
   const [bubbleChangeColor, setBubbleChangeColor] = useState(false);
   const [placement, setPlacement] = useState(undefined);
   const [modalAppeared, setModalAppeared] = useState(false);
+  const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
 
   const swipeToReply = (message) => {
     setMessageToReply(message);
@@ -113,6 +114,11 @@ const ChatRoom = () => {
       toggleTaskList();
     }
     setBandAttachmentType(bandType);
+  };
+
+  const openDeleteChatMessageHandler = () => {
+    setSelectedChatToDelete(selectedChatBubble);
+    toggleDeleteModalChat();
   };
 
   /**
@@ -234,7 +240,6 @@ const ChatRoom = () => {
     try {
       toggleDeleteChatMessage();
       await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
-      toggleOption();
       toggleDeleteModalChat();
       toggleDeleteChatMessage();
     } catch (err) {
@@ -674,18 +679,18 @@ const ChatRoom = () => {
         onClose={closeChatBubbleHandler}
         setMessageToReply={setMessageToReply}
         chat={selectedChatBubble}
-        toggleDeleteModal={toggleDeleteModalChat}
+        toggleDeleteModal={openDeleteChatMessageHandler}
         bubbleChangeColor={bubbleChangeColor}
         setBubbleChangeColor={setBubbleChangeColor}
         placement={placement}
       />
 
       <ChatMessageDeleteModal
-        id={selectedChatBubble?.id}
-        isDeleted={selectedChatBubble?.delete_for_everyone}
+        id={selectedChatToDelete?.id}
+        isDeleted={selectedChatToDelete?.delete_for_everyone}
         deleteModalChatIsOpen={deleteModalChatIsOpen}
         toggleDeleteModalChat={toggleDeleteModalChat}
-        myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
+        myMessage={userSelector?.id === selectedChatToDelete?.from_user_id}
         isLoading={deleteChatMessageIsLoading}
         onDeleteMessage={messagedeleteHandler}
       />

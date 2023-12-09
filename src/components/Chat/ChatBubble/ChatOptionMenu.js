@@ -19,7 +19,6 @@ const ChatOptionMenu = ({
       onPress: () => {
         setMessageToReply(chat);
         onClose();
-        setBubbleChangeColor(false);
       },
       color: "#176688",
     },

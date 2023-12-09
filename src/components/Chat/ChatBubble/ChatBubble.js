@@ -157,7 +157,6 @@ const ChatBubble = ({
             maxWidth={300}
             onLongPress={() => {
               !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
-              setBubbleChangeColor(true);
               setModalAppeared(true);
             }}
             borderRadius={10}
@@ -165,17 +164,9 @@ const ChatBubble = ({
             justifyContent="center"
             py={1.5}
             px={1.5}
-            bgColor={
-              !myMessage && bubbleChangeColor
-                ? "red"
-                : myMessage && bubbleChangeColor
-                ? "black"
-                : !myMessage
-                ? "#FFFFFF"
-                : "primary.600"
-            }
+            bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
             gap={1}
-            zIndex={bubbleChangeColor && modalAppeared ? 2 : null}
+            zIndex={modalAppeared ? 2 : null}
           >
             {type === "group" && name && !myMessage && (
               <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
