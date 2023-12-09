@@ -1,5 +1,4 @@
 import { Box, Flex, Pressable, Text } from "native-base";
-import React from "react";
 
 const OptionButton = ({ tabValue, setTabValue }) => {
   return (

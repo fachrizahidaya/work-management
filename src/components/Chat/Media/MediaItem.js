@@ -1,5 +1,4 @@
 import { Flex, Icon, Image, Text } from "native-base";
-import React from "react";
 import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

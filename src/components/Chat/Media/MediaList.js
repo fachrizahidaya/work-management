@@ -1,6 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
 import { Box, Flex, Pressable, Text } from "native-base";
-import React from "react";
 import { TouchableOpacity } from "react-native";
 import MediaItem from "./MediaItem";
 

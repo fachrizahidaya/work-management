@@ -1,5 +1,4 @@
 import { Flex, Pressable, Text } from "native-base";
-import React from "react";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const MemberSection = ({ name, image }) => {

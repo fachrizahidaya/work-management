@@ -1,8 +1,6 @@
 import { Box, Icon, Input, Pressable } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import React from "react";
-
 const SearchBox = () => {
   return (
     <Box bgColor="#FFFFFF">

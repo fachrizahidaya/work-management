@@ -1,5 +1,4 @@
 import { Flex, Pressable, Text } from "native-base";
-import React from "react";
 
 const StatusSection = ({ open, onProgress, finish }) => {
   return (
