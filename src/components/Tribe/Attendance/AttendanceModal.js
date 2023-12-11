@@ -17,9 +17,11 @@ const AttendanceModal = ({
   hasEarlyWithoutReason,
   hasSubmittedReport,
   hasSubmittedBothReports,
+  hasSubmittedReportAlpa,
+  notAttend,
   isLeave,
   isPermit,
-  INITIAL_DATE,
+  CURRENT_DATE,
 }) => {
   /**
    * Late type Handler
@@ -76,13 +78,7 @@ const AttendanceModal = ({
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>Clock-in Time</FormControl.Label>
-                  <Text>
-                    {date?.timeIn
-                      ? date?.timeIn
-                      : date?.date === INITIAL_DATE
-                      ? "Please Clock-in first"
-                      : `You haven't Clock-in`}
-                  </Text>
+                  <Text>{date?.timeIn}</Text>
                 </FormControl>
                 {!date?.timeOut ? null : (
                   <FormControl>
@@ -96,7 +92,6 @@ const AttendanceModal = ({
         )}
 
         {/* If employee Clock in late, require Late Report */}
-
         {hasLateWithoutReason && (
           <LateOrEarlyTime
             arrayList={lateType}
@@ -126,7 +121,7 @@ const AttendanceModal = ({
           />
         )}
 
-        {/* If report submitted either Late or Early */}
+        {/* If report submitted either Late or Early or Alpa */}
         {hasSubmittedReport && (
           <Modal.Body>
             <VStack w="95%" space={3}>
@@ -169,6 +164,37 @@ const AttendanceModal = ({
                 <FormControl>
                   <FormControl.Label>Status</FormControl.Label>
                   <Text>{date?.lateStatus ? date?.lateStatus : date?.earlyStatus}</Text>
+                </FormControl>
+              </VStack>
+            </VStack>
+          </Modal.Body>
+        )}
+
+        {hasSubmittedReportAlpa && (
+          <Modal.Body>
+            <VStack
+              w="95%"
+              space={3}
+              // pb={keyboardHeight}
+            >
+              <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Attendance Type</FormControl.Label>
+                  <Input
+                    variant="outline"
+                    isDisabled={true}
+                    placeholder={date?.attendanceType}
+                    value={formik.values.att_type}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Reason</FormControl.Label>
+                  <Input
+                    variant="outline"
+                    placeholder="Enter your reason"
+                    value={formik.values.att_reason}
+                    onChangeText={(value) => formik.setFieldValue("att_reason", value)}
+                  />
                 </FormControl>
               </VStack>
             </VStack>
@@ -251,6 +277,37 @@ const AttendanceModal = ({
           </Modal.Body>
         )}
 
+        {/* If did not clock-in (Alpa)  */}
+        {notAttend && (
+          <Modal.Body>
+            <VStack
+              w="95%"
+              space={3}
+              // pb={keyboardHeight}
+            >
+              <VStack w="100%" space={2}>
+                <FormControl>
+                  <FormControl.Label>Attendance Type</FormControl.Label>
+                  <Input
+                    variant="outline"
+                    isDisabled={true}
+                    placeholder={date?.attendanceType}
+                    value={formik.values.att_type}
+                  />
+                </FormControl>
+
+                <FormControl.Label>Reason</FormControl.Label>
+                <Input
+                  variant="outline"
+                  placeholder="Enter your reason"
+                  value={formik.values.att_reason}
+                  onChangeText={(value) => formik.setFieldValue("att_reason", value)}
+                />
+              </VStack>
+            </VStack>
+          </Modal.Body>
+        )}
+
         {/* If attendance type is Leave */}
         {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
@@ -262,9 +319,10 @@ const AttendanceModal = ({
             // (date?.lateType && date?.lateReason && !date?.earlyType && !date?.earlyReason) ||
             // (date?.earlyType && date?.earlyReason && !date?.lateType) ||
             // (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
+
             date?.attendanceType === "Permit" ||
             date?.attendanceType === "Leave" ||
-            (!date?.lateType && !date?.earlyType) ? (
+            (!date?.lateType && !date?.earlyType && date?.attendanceType !== "Alpa") ? (
               <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
                 <Text color="#FFFFFF">Close</Text>
               </Button>

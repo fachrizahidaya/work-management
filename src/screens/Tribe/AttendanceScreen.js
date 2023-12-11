@@ -32,27 +32,34 @@ const AttendanceScreen = () => {
   const attendanceFetchParameters = filter;
 
   // initial date handler
-  const INITIAL_DATE = dayjs().format("YYYY-MM-DD");
+  const CURRENT_DATE = dayjs().format("YYYY-MM-DD");
 
   /**
    * Status attendance Handler
    */
-  const allGood = { key: "allGood", color: "#EDEDED", name: "All Good" };
-  const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required" };
-  const submittedReport = { key: "submittedReport", color: "#186688", name: "Submitted Report" };
-  const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off" };
-  const sick = { key: "sick", color: "red.600", name: "Sick" };
+  const allGood = { key: "allGood", color: "#EDEDED", name: "All Good", textColor: "#000000" };
+  const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required", textColor: "#000000" };
+  const submittedReport = { key: "submittedReport", color: "#186688", name: "Submitted Report", textColor: "#FFFFFF" };
+  const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off", textColor: "#FFFFFF" };
+  const sick = { key: "sick", color: "red.600", name: "Sick", textColor: "#FFFFFF" };
 
   const isWorkDay = date?.dayType === "Work Day";
   const hasClockInAndOut =
     isWorkDay &&
     !date?.lateType &&
     !date?.earlyType &&
-    (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave");
+    (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave" || date?.attendanceType !== "Alpa");
   const hasLateWithoutReason = date?.late && date?.lateType && !date?.lateReason;
   const hasEarlyWithoutReason = date?.early && date?.earlyType && !date?.earlyReason;
   const hasSubmittedReport = (date?.lateReason && !date?.earlyReason) || (date?.earlyReason && !date?.lateReason);
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
+  const hasSubmittedReportAlpa =
+    date?.attendanceType === "Alpa" && date?.attendanceReason && date?.dayType === "Work Day";
+  const notAttend =
+    date?.attendanceType === "Alpa" &&
+    date?.dayType === "Work Day" &&
+    date?.date !== CURRENT_DATE &&
+    date?.attendanceReason === null;
   const isLeave = date?.attendanceType === "Work Day" && date?.attendanceType === "Leave";
   const isPermit = date?.attendanceType === "Work Day" && date?.attendanceType === "Permit";
 
@@ -167,32 +174,53 @@ const AttendanceScreen = () => {
     for (const date in items) {
       if (items.hasOwnProperty(date)) {
         const events = items[date];
-        const dots = [];
+        var customStyles = {};
         events.forEach((event) => {
-          let dotColor = "";
+          let backgroundColor = "";
+          let textColor = "";
 
           if (
             (event?.dayType === "Work Day" && event?.attendanceType === "Leave") ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Permit")
           ) {
-            dotColor = dayOff.color;
+            backgroundColor = dayOff.color;
+            textColor = dayOff.textColor;
           } else if (
             (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
             (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && !event?.attendanceReason)
+            (event?.dayType === "Work Day" &&
+              event?.attendanceType === "Alpa" &&
+              event?.date !== CURRENT_DATE &&
+              !event?.attendanceReason)
           ) {
-            dotColor = reportRequired.color;
+            backgroundColor = reportRequired.color;
+            textColor = reportRequired.textColor;
           } else if (
-            (event?.dayType === "Work Day" && event?.early && event?.earlyReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.late && event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason)
+            (event?.dayType === "Work Day" &&
+              event?.early &&
+              event?.earlyReason &&
+              event?.attendanceType === "Attend" &&
+              !event?.confirmation) ||
+            (event?.dayType === "Work Day" &&
+              event?.late &&
+              event?.lateReason &&
+              event?.attendanceType === "Attend" &&
+              !event?.confirmation) ||
+            (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
+            (event?.dayType === "Work Day" &&
+              event?.attendanceType === "Alpa" &&
+              event?.attendanceReason &&
+              event?.confirmation === 0 &&
+              event?.date !== CURRENT_DATE)
           ) {
-            dotColor = submittedReport.color;
+            backgroundColor = submittedReport.color;
+            textColor = submittedReport.textColor;
           } else if (
             (event?.dayType === "Work Day" && event?.attendanceType === "Sick") ||
             event?.attendanceType === "Leave"
           ) {
-            dotColor = sick.color;
+            backgroundColor = sick.color;
+            textColor = sick.textColor;
           } else if (
             (event?.confirmation && event?.dayType === "Work Day") ||
             (!event?.confirmation &&
@@ -200,14 +228,19 @@ const AttendanceScreen = () => {
               event?.attendanceType === "Alpa" &&
               !event?.timeIn)
           ) {
-            dotColor = allGood.color;
+            backgroundColor = allGood.color;
+            textColor = allGood.textColor;
           }
-          dots.push({
-            key: event.name,
-            color: dotColor,
-          });
+          customStyles = {
+            container: {
+              backgroundColor: backgroundColor,
+            },
+            text: {
+              color: textColor,
+            },
+          };
         });
-        markedDates[date] = { dots };
+        markedDates[date] = { customStyles };
       }
     }
 
@@ -216,11 +249,10 @@ const AttendanceScreen = () => {
         <Calendar
           onDayPress={updateAttendanceCheckAccess && toggleDateHandler}
           style={styles.calendar}
-          current={INITIAL_DATE}
-          markingType={"multi-dot"}
+          current={CURRENT_DATE}
+          markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
-          re
         />
       </Fragment>
     );
@@ -258,9 +290,11 @@ const AttendanceScreen = () => {
         hasEarlyWithoutReason={hasEarlyWithoutReason}
         hasSubmittedReport={hasSubmittedReport}
         hasSubmittedBothReports={hasSubmittedBothReports}
+        hasSubmittedReportAlpa={hasSubmittedReportAlpa}
+        notAttend={notAttend}
         isLeave={isLeave}
         isPermit={isPermit}
-        INITIAL_DATE={INITIAL_DATE}
+        CURRENT_DATE={CURRENT_DATE}
       />
     </>
   );
