@@ -57,16 +57,17 @@ const HomeStack = () => {
       .then((message) => {
         if (message) {
           if (message.data.type === "personal" || message.data.type === "group") {
+            const parsedIsPinnedObj = JSON.parse(message.data.is_pinned);
+            const parsedUserObj = message.data.user && JSON.parse(message.data.user);
             navigation.navigate("Chat Room", {
               name: message.data.name,
               userId: message.data.user_id,
               roomId: message.data.chat_id,
               image: message.data.image,
               type: message.data.type,
-              position: message.data.position,
-              email: message.data.email,
+              email: parsedUserObj?.email,
               active_member: message.data.active_member,
-              isPinned: message.data.isPinned,
+              isPinned: parsedIsPinnedObj,
             });
           }
         }
