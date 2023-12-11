@@ -96,7 +96,6 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                     style={{
                       backgroundColor: "#f1f2f3",
                       alignItems: "center",
-                      alignSelf: "flex-start",
                       justifyContent: "center",
                       padding: 8,
                       borderRadius: 10,

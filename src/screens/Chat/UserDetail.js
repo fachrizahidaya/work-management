@@ -20,6 +20,8 @@ import UserInformation from "../../components/Chat/UserDetail/UserInformation";
 import UserAction from "../../components/Chat/UserDetail/UserAction";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
+import UserMedia from "../../components/Chat/UserDetail/UserMedia";
+import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
 
 const UserDetail = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -95,6 +97,13 @@ const UserDetail = () => {
       console.log(err);
     }
   };
+
+  const { data: media, isFetching: mediaIsFetching, refetch: refetchMedia } = useFetch(`/chat/${type}/${roomId}/media`);
+  const {
+    data: document,
+    isFetching: documentIsFetching,
+    refetch: refetchDocument,
+  } = useFetch(`/chat/${type}/${roomId}/docs`);
 
   /**
    * Handle group member add event
@@ -321,7 +330,15 @@ const UserDetail = () => {
           setMemberAdminStatus={setMemberAdminStatus}
           toggleRemoveMemberAction={toggleRemoveMemberAction}
         />
+        {/* <UserMedia
+          qty={media?.data?.length + document?.data?.length}
+          media={media?.data}
+          docs={document?.data}
+          navigation={navigation}
+        /> */}
+        {/* <UserPersonalized /> */}
         <UserAction
+          name={name}
           type={type}
           active_member={active_member}
           toggleClearChatMessage={toggleClearChatMessage}

@@ -24,6 +24,7 @@ const ModuleSelectSlider = ({ isOpen, toggle }) => {
               return (
                 <Actionsheet.Item
                   key={idx}
+                  _pressed={{ backgroundColor: "#f1f1f1" }}
                   borderColor="#E8E9EB"
                   borderBottomWidth={1}
                   onPress={() => dispatch(setModule(item.module_name))}

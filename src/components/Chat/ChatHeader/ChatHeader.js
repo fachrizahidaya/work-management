@@ -93,7 +93,7 @@ const ChatHeader = ({
               <Text fontSize={16}>{name}</Text>
               {type === "personal" ? (
                 <Text fontSize={12} fontWeight={400}>
-                  {position}
+                  {email}
                 </Text>
               ) : (
                 <Flex alignItems="center" flexDirection="row">

@@ -184,7 +184,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
 
             <FormControl isInvalid={formik.errors.title}>
               <Input
-                placeholder="Cost Title"
+                placeholder="Check List Title"
                 value={formik.values.title}
                 onChangeText={(value) => formik.setFieldValue("title", value)}
               />

@@ -25,13 +25,14 @@ import ImageFullScreenModal from "../../components/Chat/ChatBubble/ImageFullScre
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ProjectAttachment from "../../components/Chat/Attachment/ProjectAttachment";
 import TaskAttachment from "../../components/Chat/Attachment/TaskAttachment";
+import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
+import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [fileAttachment, setFileAttachment] = useState(null);
-  const [previousUser, setPreviousUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [bandAttachment, setBandAttachment] = useState(null);
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
@@ -40,6 +41,14 @@ const ChatRoom = () => {
   const [selectedChatBubble, setSelectedChatBubble] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [bubbleChangeColor, setBubbleChangeColor] = useState(false);
+  const [placement, setPlacement] = useState(undefined);
+  const [modalAppeared, setModalAppeared] = useState(false);
+  const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
+
+  const swipeToReply = (message) => {
+    setMessageToReply(message);
+  };
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -64,6 +73,7 @@ const ChatRoom = () => {
   const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
   const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: menuIsOpen, toggle: toggleMenu } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -73,8 +83,9 @@ const ChatRoom = () => {
    * Open chat options handler
    * @param {*} chat
    */
-  const openChatBubbleHandler = (chat) => {
+  const openChatBubbleHandler = (chat, placement) => {
     setSelectedChatBubble(chat);
+    setPlacement(placement);
     toggleOption();
   };
 
@@ -95,13 +106,24 @@ const ChatRoom = () => {
     setIsFullScreen(!isFullScreen);
   };
 
+  const selectBandHandler = (bandType) => {
+    if (bandType === "project") {
+      toggleProjectList();
+    } else {
+      toggleTaskList();
+    }
+    setBandAttachmentType(bandType);
+  };
+
+  const openDeleteChatMessageHandler = () => {
+    setSelectedChatToDelete(selectedChatBubble);
+    toggleDeleteModalChat();
+  };
+
   /**
    * Event listener for new personal chat messages
    */
   const personalChatMessageEvent = () => {
-    if (userSelector?.id && previousUser) {
-      laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${previousUser}`);
-    }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
         if (event.data.type === "New") {
@@ -117,9 +139,6 @@ const ChatRoom = () => {
    * Event listener for new group chat messages
    */
   const groupChatMessageEvent = () => {
-    if (userSelector?.id && previousUser) {
-      laravelEcho.leaveChannel(`group.chat.${previousUser}.${userSelector?.id}`);
-    }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`group.chat.${currentUser}.${userSelector?.id}`).listen(".group.chat", (event) => {
         if (event.data.type === "New") {
@@ -214,7 +233,6 @@ const ChatRoom = () => {
     try {
       toggleDeleteChatMessage();
       await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
-      toggleOption();
       toggleDeleteModalChat();
       toggleDeleteChatMessage();
     } catch (err) {
@@ -485,7 +503,11 @@ const ChatRoom = () => {
         /**
          * To reset all state
          */
-        setPreviousUser(currentUser);
+        if (type === "personal") {
+          laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${roomId}`);
+        } else {
+          laravelEcho.leaveChannel(`group.chat.${userId}.${userSelector?.id}`);
+        }
         setHasMore(true);
         setOffset(0);
         clearAdditionalContentActionState();
@@ -500,7 +522,6 @@ const ChatRoom = () => {
     if (roomId) {
       setCurrentUser(roomId);
     }
-    setPreviousUser(currentUser);
     setHasMore(true);
     setOffset(0);
     clearAdditionalContentActionState();
@@ -569,6 +590,12 @@ const ChatRoom = () => {
               isLoading={isLoading}
               openChatBubbleHandler={openChatBubbleHandler}
               toggleFullScreen={toggleFullScreen}
+              bubbleChangeColor={bubbleChangeColor}
+              setBubbleChangeColor={setBubbleChangeColor}
+              onSwipeToReply={swipeToReply}
+              placement={placement}
+              modalAppeared={modalAppeared}
+              setModalAppeared={setModalAppeared}
             />
 
             <ChatInput
@@ -589,6 +616,9 @@ const ChatRoom = () => {
               onSendMessage={sendMessageHandler}
               toggleProjectList={toggleProjectList}
               toggleTaskList={toggleTaskList}
+              menuIsOpen={menuIsOpen}
+              toggleMenu={toggleMenu}
+              navigation={navigation}
             />
           </>
         ) : (
@@ -626,12 +656,12 @@ const ChatRoom = () => {
         isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
       />
 
-      <RemoveConfirmationModal
+      <ClearChatAction
         isOpen={clearChatMessageIsOpen}
-        toggle={toggleClearChatMessage}
-        description="Are you sure want to clear chat?"
+        onClose={toggleClearChatMessage}
+        name={name}
         isLoading={clearMessageIsLoading}
-        onPress={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
+        clearChat={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
       />
 
       <ImageFullScreenModal
@@ -645,15 +675,18 @@ const ChatRoom = () => {
         onClose={closeChatBubbleHandler}
         setMessageToReply={setMessageToReply}
         chat={selectedChatBubble}
-        toggleDeleteModal={toggleDeleteModalChat}
+        toggleDeleteModal={openDeleteChatMessageHandler}
+        bubbleChangeColor={bubbleChangeColor}
+        setBubbleChangeColor={setBubbleChangeColor}
+        placement={placement}
       />
 
       <ChatMessageDeleteModal
-        id={selectedChatBubble?.id}
-        isDeleted={selectedChatBubble?.delete_for_everyone}
+        id={selectedChatToDelete?.id}
+        isDeleted={selectedChatToDelete?.delete_for_everyone}
         deleteModalChatIsOpen={deleteModalChatIsOpen}
         toggleDeleteModalChat={toggleDeleteModalChat}
-        myMessage={userSelector?.id === selectedChatBubble?.from_user_id}
+        myMessage={userSelector?.id === selectedChatToDelete?.from_user_id}
         isLoading={deleteChatMessageIsLoading}
         onDeleteMessage={messagedeleteHandler}
       />
@@ -668,6 +701,28 @@ const ChatRoom = () => {
         taskListIsOpen={taskListIsOpen}
         toggleTaskList={toggleTaskList}
         setBandAttachment={setBandAttachment}
+      />
+
+      <MenuAttachment
+        isOpen={menuIsOpen}
+        onClose={toggleMenu}
+        selectFile={selectFile}
+        pickImageHandler={pickImageHandler}
+        selectBandHandler={selectBandHandler}
+        navigation={navigation}
+        bandAttachment={bandAttachment}
+        setBandAttachment={setBandAttachment}
+        bandAttachmentType={bandAttachmentType}
+        setBandAttachmentType={setBandAttachmentType}
+        name={name}
+        userId={userId}
+        roomId={roomId}
+        image={image}
+        position={position}
+        email={email}
+        type={type}
+        active_member={active_member}
+        isPinned={isPinned}
       />
     </>
   );

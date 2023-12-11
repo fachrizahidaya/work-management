@@ -1,4 +1,6 @@
-import { Box } from "native-base";
+import { memo } from "react";
+
+import { Box, Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 
 import FeedCommentItem from "./FeedCommentItem";
@@ -7,15 +9,23 @@ import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-han
 const FeedCommentList = ({
   comments,
   onReply,
-  loggedEmployeeId,
-  postId,
   latestExpandedReply,
   commentEndReachedHandler,
   commentsRefetchHandler,
   commentIsFetching,
+  commentIsLoading,
   refetchComment,
   hasBeenScrolled,
   setHasBeenScrolled,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
+  commentRepliesData,
+  refetchCommentRepliesData,
+  viewReplyToggle,
+  setViewReplyToggle,
+  hideReplies,
+  setHideReplies,
 }) => {
   return (
     <GestureHandlerRootView>
@@ -29,7 +39,8 @@ const FeedCommentList = ({
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          onEndReached={hasBeenScrolled === true ? commentEndReachedHandler : null}
+          ListFooterComponent={() => hasBeenScrolled && commentIsFetching && <Spinner size="sm" />}
+          onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
           estimatedItemSize={100}
           refreshControl={
             <RefreshControl
@@ -40,20 +51,24 @@ const FeedCommentList = ({
               }}
             />
           }
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <FeedCommentItem
-              key={item?.id}
-              id={item?.id}
+              key={index}
               parentId={item.parent_id ? item?.parent_id : item?.id}
-              loggedEmployeeId={loggedEmployeeId}
-              authorId={item?.employee_id}
               authorImage={item?.employee_image}
               authorName={item?.employee_name}
               totalReplies={item?.total_replies}
-              postId={postId}
-              onReply={onReply}
-              latestExpandedReply={latestExpandedReply}
               comments={item?.comments}
+              onReply={onReply}
+              handleLinkPress={handleLinkPress}
+              handleEmailPress={handleEmailPress}
+              copyToClipboard={copyToClipboard}
+              commentRepliesData={commentRepliesData}
+              refetchCommentRepliesData={refetchCommentRepliesData}
+              viewReplyToggle={viewReplyToggle}
+              setViewReplyToggle={setViewReplyToggle}
+              hideReplies={hideReplies}
+              setHideReplies={setHideReplies}
             />
           )}
         />
@@ -62,4 +77,4 @@ const FeedCommentList = ({
   );
 };
 
-export default FeedCommentList;
+export default memo(FeedCommentList);

@@ -1,52 +1,62 @@
-import { useState } from "react";
+import { memo } from "react";
 
-import { Linking, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Box, Flex, Pressable, Text } from "native-base";
 
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({
-  id,
   parentId,
-  loggedEmployeeId,
-  authorId,
   authorImage,
   authorName,
   totalReplies,
-  postId,
   onReply,
-  latestExpandedReply,
   comments,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
+  commentRepliesData,
+  refetchCommentRepliesData,
+  viewReplyToggle,
+  setViewReplyToggle,
+  hideReplies,
+  setHideReplies,
 }) => {
-  const [commentReplies, setCommentReplies] = useState(false);
-  const [viewReplyToggle, setViewReplyToggle] = useState(false);
-  const [hideReplies, setHideReplies] = useState(false);
-
-  const {
-    data: commentRepliesData,
-    isFetching: commentRepliesDataIsFetching,
-    refetch: refetchCommentRepliesData,
-  } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
-
   const words = comments.split(" ");
-  const styledTexts = words.map((item, index) => {
+  const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
-    if (item.includes("https") || item.includes("www")) {
+    if (item.includes("https")) {
       textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("08") || item.includes("62")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("@") && item.includes(".com")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else {
+      textStyle = styles.defaultText;
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
     }
-    return (
-      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-        {item}{" "}
-      </Text>
-    );
   });
-
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
 
   return (
     <Flex gap={3}>
@@ -104,19 +114,13 @@ const FeedCommentItem = ({
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={200}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                   <FeedCommentReplyItem
-                    key={item?.id}
-                    id={item?.id}
-                    parent_id={item?.parent_id ? item?.parent_id : item?.id}
-                    loggedEmployeeId={loggedEmployeeId}
-                    authorId={item?.emloyee_id}
+                    key={index}
                     authorName={item?.employee_name}
                     authorImage={item?.employee_image}
-                    author_username={item?.employee_username}
                     comments={item?.comments}
                     totalReplies={item?.total_replies}
-                    postId={postId}
                     parentId={parentId}
                     onReply={onReply}
                   />
@@ -147,7 +151,7 @@ const FeedCommentItem = ({
   );
 };
 
-export default FeedCommentItem;
+export default memo(FeedCommentItem);
 
 const styles = StyleSheet.create({
   defaultText: {

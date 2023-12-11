@@ -5,13 +5,12 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Box, Flex, Icon, Image, Input, Pressable, Skeleton, Spinner, Text, VStack } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import ContactList from "../../components/Tribe/Contact/ContactList";
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
+import ContactList from "../../components/Tribe/Contact/ContactList";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,49 +118,56 @@ const ContactScreen = () => {
 
       <Flex px={3} flex={1} flexDir="column">
         {/* Content here */}
-        <FlashList
-          data={contacts.length ? contacts : filteredDataArray}
-          onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-          windowSize={5}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
-          onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-          renderItem={({ item }) => (
-            <ContactList
-              key={item?.id}
-              id={item?.id}
-              name={item?.name}
-              position={item?.position_name}
-              division={item?.division_name}
-              status={item?.status}
-              image={item?.image}
-              phone={item?.phone_number}
-              email={item?.email}
-              refetch={refetchEmployeeData}
-              loggedEmployeeId={userSelector?.user_role_id}
-              user={item?.user}
-              user_id={item?.user?.id}
-              room_id={item?.chat_personal_id}
-              user_name={item?.user?.name}
-              user_type={item?.user?.user_type}
-              user_image={item?.user?.image}
-            />
-          )}
-        />
 
-        <>
-          {/* If there are no data handler */}
-          {employeeData?.data?.data.length === 0 && (
-            <VStack space={2} alignItems="center" justifyContent="center">
-              <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-              <Text>No Data</Text>
-            </VStack>
-          )}
-        </>
+        {/* If there are no data handler */}
+        {employeeData?.data?.data.length === 0 ? (
+          <VStack space={2} alignItems="center" justifyContent="center">
+            <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+            <Text>No Data</Text>
+          </VStack>
+        ) : employeeDataIsFetching ? (
+          <VStack alignItems="center" mt={5} space={2}>
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+            <Skeleton h={82} />
+          </VStack>
+        ) : (
+          <FlashList
+            data={contacts.length ? contacts : filteredDataArray}
+            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+            initialNumToRender={20}
+            maxToRenderPerBatch={20}
+            windowSize={20}
+            keyExtractor={(item, index) => index}
+            onEndReachedThreshold={0.1}
+            estimatedItemSize={200}
+            onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
+            ListFooterComponent={() =>
+              employeeDataIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
+            }
+            renderItem={({ item }) => (
+              <ContactList
+                key={item?.id}
+                id={item?.id}
+                name={item?.name}
+                position={item?.position_name}
+                image={item?.image}
+                phone={item?.phone_number}
+                email={item?.email}
+                user={item?.user}
+                user_id={item?.user?.id}
+                room_id={item?.chat_personal_id}
+                user_name={item?.user?.name}
+                user_type={item?.user?.user_type}
+                user_image={item?.user?.image}
+                loggedEmployeeId={userSelector?.user_role_id}
+                refetch={refetchEmployeeData}
+              />
+            )}
+          />
+        )}
       </Flex>
     </SafeAreaView>
   );

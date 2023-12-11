@@ -1,16 +1,20 @@
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Image, Text, VStack } from "native-base";
+import { Flex, Image, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
-import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 import { useFetch } from "../../../../hooks/useFetch";
+import axiosInstance from "../../../../config/api";
+import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
+import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = () => {
+  const [isReady, setIsReady] = useState(false);
   const navigation = useNavigation();
+
+  const toast = useToast();
 
   const {
     data: teamLeaveRequestData,
@@ -19,52 +23,101 @@ const TeamLeaveScreen = () => {
     isLoading: teamLeaveRequestIsLoading,
   } = useFetch("/hr/leave-requests/waiting-approval");
 
+  const pendingLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Pending");
+  const pendingCount = pendingLeaveRequests.length;
+  const approvedLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Approved");
+  const approvedCount = approvedLeaveRequests.length;
+  const rejectedLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Rejected");
+  const rejectedCount = rejectedLeaveRequests.length;
+
+  /**
+   * Submit response of leave request handler
+   * @param {*} data
+   * @param {*} setStatus
+   * @param {*} setSubmitting
+   */
+  const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
+    try {
+      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
+      setSubmitting(false);
+      setStatus("success");
+      toast.show({
+        render: ({ id }) => {
+          return (
+            <SuccessToast
+              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
+              close={() => toast.close(id)}
+            />
+          );
+        },
+      });
+      refetchTeamLeaveRequest();
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
-      </Flex>
-      {teamLeaveRequestData?.data.length > 0 ? (
-        <FlashList
-          data={teamLeaveRequestData?.data}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-          windowSize={5}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={100}
-          refreshControl={
-            <RefreshControl refreshing={teamLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
-          }
-          renderItem={({ item }) => (
-            <>
-              <TeamLeaveRequestList
-                key={item?.id}
-                id={item?.id}
-                name={item?.employee_name}
-                image={item?.employee_image}
-                leaveName={item?.leave_name}
-                days={item?.days}
-                startDate={item?.begin_date}
-                endDate={item?.end_date}
-                status={item?.status}
-                reason={item?.reason}
-                type={item?.approval_type}
-                objectId={item?.approval_object_id}
-                object={item?.approval_object}
-                refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-              />
-            </>
-          )}
-        />
-      ) : (
-        <VStack space={2} alignItems="center" justifyContent="center">
-          <Image source={require("../../../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-          <Text>No Data</Text>
-        </VStack>
-      )}
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={styles.container}>
+        {isReady ? (
+          <>
+            <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+              <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
+            </Flex>
+            {teamLeaveRequestData?.data.length > 0 ? (
+              <>
+                <TeamLeaveRequestList
+                  pendingLeaveRequests={pendingLeaveRequests}
+                  approvedLeaveRequests={approvedLeaveRequests}
+                  rejectedLeaveRequests={rejectedLeaveRequests}
+                  pendingCount={pendingCount}
+                  approvedCount={approvedCount}
+                  rejectedCount={rejectedCount}
+                  teamLeaveRequestData={teamLeaveRequestData}
+                  teamLeaveRequestIsFetching={teamLeaveRequestIsFetching}
+                  refetchTeamLeaveRequest={refetchTeamLeaveRequest}
+                  onApproval={approvalResponseHandler}
+                />
+              </>
+            ) : teamLeaveRequestIsFetching ? (
+              <VStack px={3} space={2}>
+                <Skeleton h={41} />
+                <Skeleton h={41} />
+                <Skeleton h={41} />
+              </VStack>
+            ) : (
+              <VStack space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  resizeMode="contain"
+                  size="2xl"
+                  alt="empty"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            )}
+          </>
+        ) : (
+          <VStack borderWidth={1} px={4} space={2}>
+            <Spinner color="primary.600" size="lg" />
+          </VStack>
+        )}
+      </SafeAreaView>
+    </>
   );
 };
 

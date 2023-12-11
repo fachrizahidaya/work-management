@@ -1,12 +1,11 @@
-import { ScrollView } from "react-native-gesture-handler";
-import { Actionsheet, Badge, Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
-import dayjs from "dayjs";
+import { memo, useState, useMemo, useCallback, useEffect } from "react";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Box, Flex, Image, Text, VStack } from "native-base";
 
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import ConfirmationModal from "../../shared/ConfirmationModal";
-import CustomAccordion from "../../shared/CustomAccordion";
+import Tabs from "../../shared/Tabs";
+import { FlashList } from "@shopify/flash-list";
+import LeaveRequestItem from "./LeaveRequestItem";
 
 const LeaveRequestList = ({
   pendingLeaveRequests,
@@ -15,167 +14,188 @@ const LeaveRequestList = ({
   pendingCount,
   approvedCount,
   rejectedCount,
+  onSelect,
+  personalLeaveRequest,
   refetchPersonalLeaveRequest,
-  refetchProfile,
   personalLeaveRequestIsFetching,
 }) => {
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
-  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
+  const [tabValue, setTabValue] = useState("pending");
+
+  const tabs = useMemo(() => {
+    return [
+      { title: "pending", number: pendingCount },
+      { title: "approved", number: approvedCount },
+      { title: "rejected", number: rejectedCount },
+    ];
+  }, []);
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setTabValue("pending");
+    };
+  }, [personalLeaveRequest]);
 
   return (
-    <Flex gap={10}>
-      {/* Pending Leave */}
-      {pendingCount === 0 ? null : (
-        <CustomAccordion title="Pending" subTitle={pendingCount || 0}>
-          <ScrollView style={{ maxHeight: 300 }}>
-            <Box flex={1} minHeight={2}>
-              {pendingLeaveRequests.map((item) => {
-                return (
-                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text fontWeight={500} fontSize={14} color="#3F434A">
-                        {item?.leave_name}
-                      </Text>
-                      <Pressable onPress={toggleAction}>
-                        <Icon
-                          as={<MaterialCommunityIcons name="dots-vertical" />}
-                          size="md"
-                          borderRadius="full"
-                          color="#000000"
-                        />
-                      </Pressable>
+    <>
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
-                      <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-                        <Actionsheet.Content>
-                          <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
-                        </Actionsheet.Content>
-                      </Actionsheet>
-
-                      <ConfirmationModal
-                        isOpen={cancelModalIsOpen}
-                        toggle={toggleCancelModal}
-                        apiUrl={`/hr/leave-requests/${item?.id}/cancel`}
-                        hasSuccessFunc={true}
-                        header="Cancel Leave Request"
-                        onSuccess={() => {
-                          toggleAction();
-                          refetchPersonalLeaveRequest();
-                          refetchProfile();
-                        }}
-                        description="Are you sure to cancel this request?"
-                        successMessage="Request canceled"
-                        isDelete={false}
-                        isPatch={true}
-                      />
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Flex flex={1}>
-                        <Text color="#595F69" fontSize={12} fontWeight={400}>
-                          {item?.reason}
-                        </Text>
-                      </Flex>
-                      <Badge borderRadius={10} w={20}>
-                        <Flex gap={2} flexDir="row">
-                          <Icon as={<MaterialCommunityIcons name="clock-outline" />} size={5} color="#186688" />
-                          {item?.days > 1 ? `${item?.days} days` : `${item?.days} day`}
-                        </Flex>
-                      </Badge>
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text color="#595F69" fontSize={12} fontWeight={400}>
-                        {dayjs(item?.begin_date).format("DD.MM.YYYY")} - {dayjs(item?.end_date).format("DD.MM.YYYY")}
-                      </Text>
-                      <Text color={"#FF6262"}>{item?.status}</Text>
-                    </Flex>
-                  </Box>
-                );
-              })}
+      <Flex backgroundColor="#f8f8f8" px={3} flex={1} flexDir="column">
+        {tabValue === "pending" ? (
+          pendingLeaveRequests.length > 0 ? (
+            <Box flex={1}>
+              <FlashList
+                data={pendingLeaveRequests}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={personalLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchPersonalLeaveRequest();
+                    }}
+                  />
+                }
+                renderItem={({ item, index }) => (
+                  <LeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    onSelect={onSelect}
+                  />
+                )}
+              />
             </Box>
-          </ScrollView>
-        </CustomAccordion>
-      )}
-
-      {/* Approved Leave */}
-      {approvedCount === 0 ? null : (
-        <CustomAccordion title="Approved" subTitle={approvedCount || 0}>
-          <ScrollView style={{ maxHeight: 300 }}>
-            <Box flex={1} minHeight={2}>
-              {approvedLeaveRequests.map((item) => {
-                return (
-                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text fontWeight={500} fontSize={14} color="#3F434A">
-                        {item?.leave_name}
-                      </Text>
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Flex flex={1}>
-                        <Text color="#595F69" fontSize={12} fontWeight={400}>
-                          {item?.reason}
-                        </Text>
-                      </Flex>
-                      <Badge borderRadius={10} w={20}>
-                        <Flex gap={2} flexDir="row">
-                          <Icon as={<MaterialCommunityIcons name="clock-outline" />} size={5} color="#186688" />
-                          {item?.days > 1 ? `${item?.days} days` : `${item?.days} day`}
-                        </Flex>
-                      </Badge>
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text color="#595F69" fontSize={12} fontWeight={400}>
-                        {dayjs(item?.begin_date).format("DD.MM.YYYY")} - {dayjs(item?.end_date).format("DD.MM.YYYY")}
-                      </Text>
-                      <Text color={"#FF6262"}>{item?.status}</Text>
-                    </Flex>
-                  </Box>
-                );
-              })}
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              }
+            >
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
+          )
+        ) : tabValue === "approved" ? (
+          approvedLeaveRequests.length > 0 ? (
+            <Box flex={1}>
+              <FlashList
+                data={approvedLeaveRequests}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={personalLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchPersonalLeaveRequest();
+                    }}
+                  />
+                }
+                renderItem={({ item, index }) => (
+                  <LeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    onSelect={onSelect}
+                  />
+                )}
+              />
             </Box>
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              }
+            >
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
+          )
+        ) : rejectedLeaveRequests.length > 0 ? (
+          <Box flex={1}>
+            <FlashList
+              data={rejectedLeaveRequests}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              estimatedItemSize={200}
+              refreshing={true}
+              refreshControl={
+                <RefreshControl
+                  refreshing={personalLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
+              }
+              renderItem={({ item, index }) => (
+                <LeaveRequestItem
+                  item={item}
+                  key={index}
+                  id={item?.id}
+                  leave_name={item?.leave_name}
+                  reason={item?.reason}
+                  days={item?.days}
+                  begin_date={item?.begin_date}
+                  end_date={item?.end_date}
+                  status={item?.status}
+                  onSelect={onSelect}
+                />
+              )}
+            />
+          </Box>
+        ) : (
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+            }
+          >
+            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <Image
+                source={require("../../../assets/vectors/empty.png")}
+                alt="empty"
+                resizeMode="contain"
+                size="2xl"
+              />
+              <Text>No Data</Text>
+            </VStack>
           </ScrollView>
-        </CustomAccordion>
-      )}
-
-      {/* Rejected Leave */}
-      {rejectedCount === 0 ? null : (
-        <CustomAccordion title="Rejected" subTitle={rejectedCount || 0}>
-          <ScrollView style={{ maxHeight: 300 }}>
-            <Box flex={1} minHeight={2}>
-              {rejectedLeaveRequests.map((item) => {
-                return (
-                  <Box key={item?.id} gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={3}>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text fontWeight={500} fontSize={14} color="#3F434A">
-                        {item?.leave_name}
-                      </Text>
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Flex flex={1}>
-                        <Text color="#595F69" fontSize={12} fontWeight={400}>
-                          {item?.reason}
-                        </Text>
-                      </Flex>
-                      <Badge borderRadius={10} w={20}>
-                        <Flex gap={2} flexDir="row">
-                          <Icon as={<MaterialCommunityIcons name="clock-outline" />} size={5} color="#186688" />
-                          {item?.days > 1 ? `${item?.days} days` : `${item?.days} day`}
-                        </Flex>
-                      </Badge>
-                    </Flex>
-                    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-                      <Text color="#595F69" fontSize={12} fontWeight={400}>
-                        {dayjs(item?.begin_date).format("DD.MM.YYYY")} - {dayjs(item?.end_date).format("DD.MM.YYYY")}
-                      </Text>
-                      <Text color={"#FF6262"}>{item?.status}</Text>
-                    </Flex>
-                  </Box>
-                );
-              })}
-            </Box>
-          </ScrollView>
-        </CustomAccordion>
-      )}
-    </Flex>
+        )}
+      </Flex>
+    </>
   );
 };
 
-export default LeaveRequestList;
+export default memo(LeaveRequestList);

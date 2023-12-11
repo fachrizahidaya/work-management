@@ -64,7 +64,7 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
         );
       } else {
         return (
-          <Text fontSize={12} fontWeight={400} color="#000000">
+          <Text fontSize={12} fontWeight={400} color="#3F434A">
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
         );

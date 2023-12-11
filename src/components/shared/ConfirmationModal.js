@@ -76,21 +76,22 @@ const ConfirmationModal = ({
         <Modal.Footer bgColor="white">
           <Button.Group space={2} width="full">
             <Button
+              disabled={isDeleting}
+              onPress={!isDeleting && toggle}
+              // bgColor={isDeleting ? "coolGray.500" : "primary.600"}
+              flex={1}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+
+            <Button
               bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
               onPress={onPressHandler}
               startIcon={isDeleting && <Spinner size="sm" color="white" />}
               flex={1}
             >
               Confirm
-            </Button>
-
-            <Button
-              disabled={isDeleting}
-              onPress={!isDeleting && toggle}
-              bgColor={isDeleting ? "coolGray.500" : "primary.600"}
-              flex={1}
-            >
-              Cancel
             </Button>
           </Button.Group>
         </Modal.Footer>

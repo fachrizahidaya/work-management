@@ -1,20 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Skeleton, Text, VStack, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
+import FeedCard from "../../../components/Tribe/Feed/FeedCard";
+import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
+import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
+  const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
+  const [reloadPost, setReloadPost] = useState(false);
+  const [reloadComment, setReloadComment] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [reload, setReload] = useState(false);
+  const [scrollNewMessage, setScrollNewMessage] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [postId, setPostId] = useState(null);
+  const [commentParentId, setCommentParentId] = useState(null);
+  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
+  const [postTotalComment, setPostTotalComment] = useState(0);
+  const [forceRerender, setForceRerender] = useState(false);
+  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -22,19 +38,52 @@ const FeedScreen = () => {
 
   const toast = useToast();
 
+  const flashListRef = useRef(null);
+
+  /**
+   * Toggle fullscreen image
+   */
+  const toggleFullScreen = useCallback((post) => {
+    setIsFullScreen(!isFullScreen);
+    setSelectedPicture(post);
+  }, []);
+
   // Parameters for fetch posts
   const postFetchParameters = {
-    offset: currentOffset,
-    limit: 10,
+    offset: currentOffsetPost,
+    limit: 20,
   };
 
   const {
     data: post,
     refetch: refetchPost,
     isFetching: postIsFetching,
-  } = useFetch("/hr/posts", [reload, currentOffset], postFetchParameters);
+    isLoading: postIsLoading,
+  } = useFetch("/hr/posts", [reloadPost, currentOffsetPost], postFetchParameters);
+
+  // Parameters for fetch comments
+  const commentsFetchParameters = {
+    offset: currentOffsetComments,
+    limit: 50,
+  };
+
+  const {
+    data: comment,
+    isFetching: commentIsFetching,
+    isLoading: commentIsLoading,
+    refetch: refetchComment,
+  } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
+
+  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const employeeUsername = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
 
   /**
    * Fetch more Posts handler
@@ -42,7 +91,7 @@ const FeedScreen = () => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + post?.data.length) {
-      setCurrentOffset(currentOffset + 10);
+      setCurrentOffsetPost(currentOffsetPost + 20);
     }
   };
 
@@ -51,19 +100,122 @@ const FeedScreen = () => {
    * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
-    setCurrentOffset(0);
-    setReload(!reload);
+    setCurrentOffsetPost(0);
+    setReloadPost(!reloadPost);
   };
+
+  /**
+   * Fetch more Comments handler
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + comment?.data.length) {
+      setCurrentOffsetComments(currentOffsetComments + 50);
+    }
+  };
+
+  /**
+   * Fetch from first offset
+   * After create a new comment, it will return to the first offset
+   */
+  const commentRefetchHandler = () => {
+    setCurrentOffsetComments(0);
+    setReloadComment(!reloadComment);
+  };
+
+  /**
+   * Action sheet for comment handler
+   */
+  const commentsOpenHandler = (post_id) => {
+    setPostId(post_id);
+    setCommentsOpen(true);
+    const togglePostComment = posts.find((post) => post.id === post_id);
+    setPostTotalComment(togglePostComment.total_comment);
+  };
+
+  const commentsCloseHandler = () => {
+    setCommentsOpen(false);
+    setPostId(null);
+  };
+
+  /**
+   * Submit comment handler
+   */
+  const commentAddHandler = () => {
+    setPostTotalComment((prevState) => {
+      return prevState + 1;
+    });
+    const referenceIndex = posts.findIndex((post) => post.id === postId);
+    posts[referenceIndex]["total_comment"] += 1;
+    setForceRerender(!forceRerender);
+  };
+
+  /**
+   * Submit a comment handler
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/comment`, data);
+      commentRefetchHandler();
+      setCommentParentId(null);
+      commentAddHandler(postId);
+      setSubmitting(false);
+      setStatus("success");
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
+        },
+      });
+      setSubmitting(false);
+      setStatus("error");
+    }
+  };
+
+  /**
+   * Control for reply a comment
+   */
+  const replyHandler = useCallback((comment_parent_id) => {
+    setCommentParentId(comment_parent_id);
+    setLatestExpandedReply(comment_parent_id);
+  }, []);
+
+  /**
+   * After created a post, it will scroll to top
+   */
+  useEffect(() => {
+    if (flashListRef.current && posts.length > 0) {
+      flashListRef.current.scrollToIndex({ animated: true, index: 0 });
+    }
+  }, [posts]);
 
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
-      if (currentOffset === 0) {
+      if (currentOffsetPost === 0) {
         setPosts(post?.data);
       } else {
         setPosts((prevData) => [...prevData, ...post?.data]);
       }
     }
-  }, [postIsFetching, reload]);
+  }, [postIsFetching, reloadPost]);
+
+  useEffect(() => {
+    if (!commentsOpenHandler) {
+      setCommentParentId(null);
+    } else {
+      if (comment?.data && commentIsFetching === false) {
+        if (currentOffsetComments === 0) {
+          setComments(comment?.data);
+        } else {
+          setComments((prevData) => [...prevData, ...comment?.data]);
+        }
+      }
+    }
+  }, [commentIsFetching, reloadComment, commentParentId]);
 
   return (
     <>
@@ -88,11 +240,13 @@ const FeedScreen = () => {
           borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
-              postRefetchHandler: postRefetchHandler,
+              postRefetchHandler: postRefetchHandler, // To get new post after create one
               loggedEmployeeId: profile?.data?.id,
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
+              scrollNewMessage: scrollNewMessage,
+              setScrollNewMessage: setScrollNewMessage,
             });
           }}
         >
@@ -101,22 +255,51 @@ const FeedScreen = () => {
 
         <Box flex={1} px={3}>
           {/* Content here */}
-          <FeedCard
-            posts={posts}
-            loggedEmployeeId={profile?.data?.id}
-            loggedEmployeeImage={profile?.data?.image}
-            loggedEmployeeName={userSelector?.name}
-            postRefetchHandler={postRefetchHandler}
-            postEndReachedHandler={postEndReachedHandler}
-            postIsFetching={postIsFetching}
-            refetchPost={refetchPost}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
-            reload={reload}
-            setReload={setReload}
-          />
+
+          <>
+            <FeedCard
+              posts={posts}
+              loggedEmployeeId={profile?.data?.id}
+              loggedEmployeeImage={profile?.data?.image}
+              postRefetchHandler={postRefetchHandler}
+              postEndReachedHandler={postEndReachedHandler}
+              postIsFetching={postIsFetching}
+              postIsLoading={postIsLoading}
+              refetchPost={refetchPost}
+              hasBeenScrolled={hasBeenScrolled}
+              setHasBeenScrolled={setHasBeenScrolled}
+              scrollNewMessage={scrollNewMessage}
+              flashListRef={flashListRef}
+              onCommentToggle={commentsOpenHandler}
+              forceRerender={forceRerender}
+              setForceRerender={setForceRerender}
+              toggleFullScreen={toggleFullScreen}
+              employeeUsername={employeeUsername}
+            />
+            {commentsOpen && (
+              <FeedComment
+                postId={postId}
+                loggedEmployeeId={profile?.data?.id}
+                loggedEmployeeName={userSelector?.name}
+                loggedEmployeeImage={profile?.data?.image}
+                comments={comments}
+                commentIsFetching={commentIsFetching}
+                commentIsLoading={commentIsLoading}
+                refetchComment={refetchComment}
+                handleOpen={commentsOpenHandler}
+                handleClose={commentsCloseHandler}
+                onEndReached={commentEndReachedHandler}
+                commentRefetchHandler={commentRefetchHandler}
+                parentId={commentParentId}
+                onSubmit={commentSubmitHandler}
+                onReply={replyHandler}
+                latestExpandedReply={latestExpandedReply}
+              />
+            )}
+          </>
         </Box>
       </SafeAreaView>
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );
 };
