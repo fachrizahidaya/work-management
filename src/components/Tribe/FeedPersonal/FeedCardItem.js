@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useNavigation } from "@react-navigation/core";
 
-import { Flex, Image, Text, Icon, Pressable, Modal, Badge, Actionsheet } from "native-base";
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, Image, Text, Icon, Pressable, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import ConfirmationModal from "../../shared/ConfirmationModal";
-import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedCardItem = ({
   id,
@@ -29,24 +26,21 @@ const FeedCardItem = ({
   onToggleLike,
   onCommentToggle,
   refetchPersonalPost,
-  forceRerender,
-  setForceRerender,
   forceRerenderPersonal,
   setForceRerenderPersonal,
+  toggleFullScreen,
+  handleLinkPress,
+  handleEmailPress,
+  copyToClipboard,
+  openSelectedPersonalPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
-  const [postIsFetching, setPostIsFetching] = useState(false);
-
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-
-  const navigation = useNavigation();
+  const [likeAction, setLikeAction] = useState("dislike");
 
   /**
    * Like post control
    */
-  const [likeAction, setLikeAction] = useState("dislike");
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -57,33 +51,41 @@ const FeedCardItem = ({
     }
     onToggleLike(post_id, action);
     setForceRerenderPersonal(!forceRerenderPersonal);
-    setForceRerender(!forceRerender);
   };
 
-  /**
-   * Toggle fullscreen image
-   */
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
-
-  const words = content.split(" ");
-  const styledTexts = words.map((item, index) => {
+  const words = content?.split(" ");
+  const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
-    if (item.includes("https") || item.includes("www")) {
+    if (item.includes("https")) {
       textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("08") || item.includes("62")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else if (item.includes("@") && item.includes(".com")) {
+      textStyle = styles.highlightedText;
+      return (
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          {item}{" "}
+        </Text>
+      );
+    } else {
+      textStyle = styles.defaultText;
+      return (
+        <Text key={index} style={textStyle}>
+          {item}{" "}
+        </Text>
+      );
     }
-    return (
-      <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-        {item}{" "}
-      </Text>
-    );
   });
-
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
 
   useEffect(() => {
     if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
@@ -102,7 +104,7 @@ const FeedCardItem = ({
           <Flex flex={1}>
             <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
               <Text fontSize={15} fontWeight={500}>
-                {employeeName.length > 30 ? employeeName.split(" ")[0] : employeeName}
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               <Flex flexDir="row" alignItems="center" gap={1}>
                 {type === "Announcement" ? (
@@ -112,7 +114,7 @@ const FeedCardItem = ({
                 ) : null}
                 {loggedEmployeeId === employeeId && (
                   <>
-                    <Pressable onPress={toggleAction}>
+                    <Pressable onPress={() => openSelectedPersonalPost(id)}>
                       <Icon
                         as={<MaterialCommunityIcons name="dots-vertical" />}
                         size="md"
@@ -120,27 +122,6 @@ const FeedCardItem = ({
                         color="#000000"
                       />
                     </Pressable>
-                    <Actionsheet isOpen={actionIsOpen} onClose={toggleAction}>
-                      <Actionsheet.Content>
-                        <Actionsheet.Item onPress={toggleDeleteModal}>Delete Post</Actionsheet.Item>
-                      </Actionsheet.Content>
-                    </Actionsheet>
-                    <ConfirmationModal
-                      isOpen={deleteModalIsOpen}
-                      toggle={toggleDeleteModal}
-                      apiUrl={`/hr/posts/${id}`}
-                      color="red.800"
-                      hasSuccessFunc={true}
-                      header="Cancel Leave Request"
-                      onSuccess={() => {
-                        toggleAction();
-                        refetchPersonalPost();
-                      }}
-                      description="Are you sure to delete this post?"
-                      successMessage="Post deleted"
-                      isDelete={true}
-                      isPatch={false}
-                    />
                   </>
                 )}
               </Flex>
@@ -157,29 +138,17 @@ const FeedCardItem = ({
 
         {attachment ? (
           <>
-            <TouchableOpacity key={id} onPress={toggleFullScreen}>
+            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
               <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
                 borderRadius={15}
-                height={200}
+                width="100%"
+                height={250}
                 alt="Feed Image"
                 resizeMode="contain"
+                resizeMethod="auto"
               />
             </TouchableOpacity>
-            <Modal backgroundColor="#000000" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-              <Modal.Content backgroundColor="#000000">
-                <Modal.CloseButton />
-                <Modal.Body alignContent="center">
-                  <Image
-                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}/thumb` }}
-                    height={500}
-                    width={500}
-                    alt="Feed Image"
-                    resizeMode="contain"
-                  />
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
           </>
         ) : null}
 
@@ -222,9 +191,9 @@ export default FeedCardItem;
 
 const styles = StyleSheet.create({
   defaultText: {
-    color: "black", // Warna teks default
+    color: "black",
   },
   highlightedText: {
-    color: "#72acdc", // Warna teks yang mengandung 'https' atau 'www'
+    color: "#72acdc",
   },
 });
