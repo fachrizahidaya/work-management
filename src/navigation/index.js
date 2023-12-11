@@ -21,6 +21,10 @@ export const Navigations = () => {
           roomId: message.data.chat_id,
           image: message.data.image,
           type: message.data.type,
+          position: message.data.position,
+          email: message.data.email,
+          active_member: message.data.active_member,
+          isPinned: message.data.isPinned,
         });
       }
     });
