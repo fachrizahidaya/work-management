@@ -1,12 +1,22 @@
-import { Flex, FormControl, Icon, Select, Text, TextArea } from "native-base";
+import { useState } from "react";
+
+import { Flex, FormControl, HStack, Icon, Select, Spinner, Text, TextArea } from "native-base";
+import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
-import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
-const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStartDate, selectedGenerateType }) => {
+const NewLeaveRequestForm = ({
+  formik,
+  leaveType,
+  onChangeEndDate,
+  onChangeStartDate,
+  selectedGenerateType,
+  isLoading,
+  isError,
+}) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -67,8 +77,21 @@ const NewLeaveRequestForm = ({ formik, leaveType, onChangeEndDate, onChangeStart
           />
           <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
         </FormControl>
+        {isLoading && (
+          <HStack>
+            <Spinner />
+            <Text fontSize={10} fontWeight={400}>
+              Checking availability...
+            </Text>
+          </HStack>
+        )}
 
-        {formik.values.leave_id && formik.values.reason && formik.values.begin_date && formik.values.end_date ? (
+        {formik.values.leave_id &&
+        formik.values.reason &&
+        formik.values.begin_date &&
+        formik.values.end_date &&
+        !isLoading &&
+        !isError ? (
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
             <Text color="#FFFFFF">Submit</Text>
           </FormButton>
