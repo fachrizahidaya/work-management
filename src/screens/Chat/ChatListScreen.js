@@ -18,6 +18,9 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
+import ContactInformation from "../../components/Chat/ContactListItem/ContactInformation";
+import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
@@ -28,14 +31,28 @@ const ChatListScreen = () => {
   const { laravelEcho } = useWebsocketContext();
   const [globalKeyword, setGlobalKeyword] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
+
+  const swipeToReply = (contact) => {
+    setSelectedContact(contact);
+    toggleContactOption();
+  };
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: contactOptionIsOpen, toggle: toggleContactOption } = useDisclosure(false);
+  const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: contactInformationIsOpen, toggle: toggleContactInformation } = useDisclosure(false);
+  const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
+  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
 
   /**
    * Event listener for new chats
@@ -79,8 +96,8 @@ const ChatListScreen = () => {
     }
   };
 
-  const openSelectedChatHandler = (chat) => {
-    setSelectedChat(chat);
+  const openSelectedChatHandler = () => {
+    setSelectedChat(selectedContact);
     toggleDeleteModal();
   };
 
@@ -89,14 +106,44 @@ const ChatListScreen = () => {
     toggleDeleteModal();
   };
 
-  const openSelectedGroupChatHandler = (chat) => {
-    setSelectedChat(chat);
+  const openSelectedChatToClearHandler = () => {
+    setSelectedChat(selectedContact);
+    toggleClearChatMessage();
+  };
+
+  const closeSelectedChatToClearHandler = () => {
+    setSelectedChat(null);
+    toggleClearChatMessage();
+  };
+
+  const openSelectedGroupChatHandler = () => {
+    setSelectedChat(selectedContact);
     toggleDeleteGroupModal();
   };
 
   const closeSelectedGroupChatHandler = () => {
     setSelectedChat(null);
     toggleDeleteGroupModal();
+  };
+
+  const openSelectedContactMenuHandler = (contact) => {
+    setSelectedContact(contact);
+    toggleContactOption();
+  };
+
+  const closeSelectedContactMenuHandler = () => {
+    setSelectedContact(null);
+    toggleContactOption();
+  };
+
+  const openContactInformationHandler = () => {
+    setSelectedChat(selectedContact);
+    toggleContactInformation();
+  };
+
+  const closeContactInformationHandler = () => {
+    setSelectedChat(null);
+    toggleContactInformation();
   };
 
   /**
@@ -135,7 +182,6 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
-      navigation.navigate("Chat List");
       toast.show({
         render: ({ id }) => {
           return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
@@ -144,6 +190,28 @@ const ChatListScreen = () => {
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
+  const clearChatMessageHandler = async (id, type, itemName) => {
+    try {
+      toggleClearMessage();
+      await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
+      toggleClearMessage();
+      toggleClearChatMessage();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toggleClearMessage();
       toast.show({
         render: ({ id }) => {
           return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
@@ -185,6 +253,9 @@ const ChatListScreen = () => {
             searchKeyword={globalKeyword}
             searchResult={searchResult?.group}
             toggleDeleteModal={openSelectedGroupChatHandler}
+            toggleContactOption={openSelectedContactMenuHandler}
+            toggleChatOption={toggleChatOption}
+            onSwipeControl={swipeToReply}
           />
 
           <PersonalSection
@@ -192,6 +263,9 @@ const ChatListScreen = () => {
             searchKeyword={globalKeyword}
             searchResult={searchResult?.personal}
             toggleDeleteModal={openSelectedChatHandler}
+            toggleContactOption={openSelectedContactMenuHandler}
+            toggleChatOption={toggleChatOption}
+            onSwipeControl={swipeToReply}
           />
 
           {searchResult?.message?.length > 0 && (
@@ -199,13 +273,34 @@ const ChatListScreen = () => {
           )}
         </ScrollView>
       </SafeAreaView>
-      <RemoveConfirmationModal
-        isLoading={deleteChatMessageIsLoading}
-        isOpen={deleteModalIsOpen}
-        toggle={closeSelectedChatHandler}
-        onPress={() => deleteChatPersonal(selectedChat?.id)}
-        description="Are you sure want to delete this chat?"
+      <ContactMenu
+        isOpen={contactOptionIsOpen}
+        onClose={closeSelectedContactMenuHandler}
+        chat={selectedContact}
+        toggleDeleteModal={openSelectedChatHandler}
+        toggleDeleteGroupModal={openSelectedGroupChatHandler}
+        toggleClearChatMessage={openSelectedChatToClearHandler}
+        toggleContactInformation={openContactInformationHandler}
+        loggedInUser={userSelector?.id}
+        toggleDeleteChatMessage={toggleDeleteChatMessage}
+        toggleExitModal={toggleExitModal}
+        deleteModalIsOpen={deleteModalIsOpen}
+        exitModalIsOpen={exitModalIsOpen}
+        deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+        deleteChatPersonal={deleteChatPersonal}
+        deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+        chatRoomIsLoading={chatRoomIsLoading}
       />
+      <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
+      {selectedChat?.pin_personal ? (
+        <RemoveConfirmationModal
+          isLoading={deleteChatMessageIsLoading}
+          isOpen={deleteModalIsOpen}
+          toggle={closeSelectedChatHandler}
+          onPress={() => deleteChatPersonal(selectedChat?.id)}
+          description="Are you sure want to delete this chat?"
+        />
+      ) : null}
       {selectedChat?.pin_group ? (
         <RemoveConfirmationModal
           isLoading={chatRoomIsLoading}
@@ -215,6 +310,29 @@ const ChatListScreen = () => {
           description="Are you sure want to delete this group?"
         />
       ) : null}
+
+      <RemoveConfirmationModal
+        isOpen={clearChatMessageIsOpen}
+        toggle={closeSelectedChatToClearHandler}
+        description="Are you sure want to clear chat?"
+        isLoading={clearMessageIsLoading}
+        onPress={() =>
+          clearChatMessageHandler(selectedChat?.id, selectedChat?.pin_group ? "group" : "personal", toggleClearMessage)
+        }
+      />
+      <ContactInformation
+        isOpen={contactInformationIsOpen}
+        toggle={closeContactInformationHandler}
+        userId={selectedChat?.user?.id}
+        name={selectedChat?.pin_group ? selectedChat?.name : selectedChat?.user?.name}
+        roomId={selectedChat?.id}
+        file_path={selectedChat?.pin_group ? selectedChat?.image : selectedChat?.user?.image}
+        position={selectedChat?.user?.user_type}
+        email={selectedChat?.user?.email}
+        type={selectedChat?.pin_personal ? "personal" : "group"}
+        active_member={!selectedChat?.active_member ? null : selectedChat?.active_member}
+        isPinned={selectedChat?.pin_personal ? selectedChat?.pin_personal : selectedChat?.pin_group}
+      />
     </>
   );
 };

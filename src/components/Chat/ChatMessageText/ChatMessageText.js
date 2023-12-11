@@ -83,7 +83,7 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
           <Text
             fontSize={12}
             fontWeight={400}
-            color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+            color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#9E9E9E"}
           >
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>

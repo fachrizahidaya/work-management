@@ -42,6 +42,10 @@ import GroupFormScreen from "../screens/Chat/GroupFormScreen";
 import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 import UserDetail from "../screens/Chat/UserDetail";
 import EditGroupProfile from "../screens/Chat/EditGroupProfile";
+import MediaScreen from "../screens/Chat/MediaScreen";
+import ProjectScreen from "../screens/Chat/ProjectScreen";
+import ProjectDetail from "../screens/Chat/ProjectDetail";
+import TaskDetail from "../screens/Chat/TaskDetail";
 
 const Stack = createStackNavigator();
 
@@ -117,6 +121,14 @@ const HomeStack = () => {
       <Stack.Screen name="User Detail" component={UserDetail} options={{ headerShown: false }} />
 
       <Stack.Screen name="Edit Group" component={EditGroupProfile} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Media" component={MediaScreen} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Project Screen" component={ProjectScreen} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
 
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
