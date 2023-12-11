@@ -126,7 +126,6 @@ const ChatRoom = () => {
   const personalChatMessageEvent = () => {
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        console.log("e", event);
         if (event.data.type === "New") {
           setChatList((prevState) => [event.data, ...prevState]);
         } else {
