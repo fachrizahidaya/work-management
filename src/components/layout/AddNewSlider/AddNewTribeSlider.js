@@ -59,17 +59,23 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
         toast.show({
           render: ({ id }) => {
             return (
-              <SuccessToast
-                message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
-                close={() => toast.close(id)}
-              />
+              <Box zIndex={2}>
+                <SuccessToast
+                  message={!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success"}
+                  close={() => toast.close(id)}
+                />
+              </Box>
             );
           },
         });
       } else {
         toast.show({
           render: ({ id }) => {
-            return <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+            return (
+              <Box zIndex={2}>
+                <ErrorToast message={"You already checked out at this time"} close={() => toast.close(id)} />;
+              </Box>
+            );
           },
         });
       }
@@ -110,6 +116,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
           {items.map((item, idx) => {
             return (
               <Actionsheet.Item
+                _pressed={{ backgroundColor: "#f1f1f1" }}
                 key={idx}
                 borderColor="#E8E9EB"
                 borderBottomWidth={1}
@@ -117,7 +124,6 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
                       employeeId: profile?.data?.id,
-                      refetchPersonalLeave: refetchPersonalLeave,
                     });
                     toggle();
                   } else if (item.title === "New Reimbursement") {
@@ -131,13 +137,7 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
                 <Flex flexDir="row" alignItems="center" gap={21}>
                   {item.title !== "Clock in" ? (
                     <>
-                      <Box
-                        bg="#F7F7F7"
-                        borderRadius={5}
-                        style={{ height: 32, width: 32 }}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
+                      <Box bg="#F7F7F7" borderRadius={5} py={2} px={2} alignItems="center" justifyContent="center">
                         <Icon as={<MaterialCommunityIcons name={item.icons} />} size={6} color="#2A7290" />
                       </Box>
                       <Text key={item.title} fontWeight={700} color="#000000">

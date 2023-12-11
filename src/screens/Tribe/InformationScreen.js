@@ -2,11 +2,11 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Image, Text, VStack } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
+import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import EmployeeLeaveDashboard from "../../components/Tribe/Information/EmployeeLeaveDashboard";
 import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
-import { useFetch } from "../../hooks/useFetch";
 
 const InformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
@@ -19,7 +19,7 @@ const InformationScreen = () => {
         </Flex>
 
         <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
-          <Flex px={3} flex={1} gap={5} mt={5}>
+          <Flex px={3} flex={1} gap={5} py={5}>
             {/* Content here */}
             {!profile?.data ? (
               <VStack space={2} alignItems="center" justifyContent="center">

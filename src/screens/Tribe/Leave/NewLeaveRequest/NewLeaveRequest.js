@@ -4,10 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import * as yup from "yup";
 
-import { Dimensions, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Text, useToast } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Dimensions } from "react-native";
+import { Box, Flex, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
@@ -22,10 +20,11 @@ const NewLeaveRequest = ({ route }) => {
   const [dateChanges, setDateChanges] = useState(true);
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [formError, setFormError] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   const { width, height } = Dimensions.get("window");
 
-  const { refetchPersonalLeave, employeeId } = route.params;
+  const { employeeId } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -34,25 +33,6 @@ const NewLeaveRequest = ({ route }) => {
   const navigation = useNavigation();
 
   const { data: leaveType } = useFetch("/hr/leaves");
-
-  const personalLeaveData = [
-    {
-      id: 1,
-      name: "Available Leave",
-      icon: "clipboard-outline",
-      qty: availableLeaves?.available_leave,
-      backgroundColor: "#E8E9EB",
-      iconColor: "#377893",
-    },
-    // {
-    //   id: 2,
-    //   name: "Available Day-off",
-    //   icon: "clipboard-pulse-outline",
-    //   qty: availableLeaves?.day_off_leave,
-    //   backgroundColor: "#FAF6E8",
-    //   iconColor: "#FFD240",
-    // },
-  ];
 
   const {
     data: leaveHistory,
@@ -79,23 +59,7 @@ const NewLeaveRequest = ({ route }) => {
     if (availableLeave.length > 0) {
       setAvailableLeaves(availableLeave);
     }
-
-    // let sumAvailableLeave = 0;
-
-    // const availableLeave = leaveHistory?.data.filter((leave) => leave.active);
-
-    // if (availableLeave?.length > 0) {
-    //   sumAvailableLeave = availableLeave?.reduce((val, obj) => {
-    //     return Number(val) + Number(obj.quota);
-    //   }, 0);
-    // }
-
-    // setAvailableLeaves(() => {
-    //   return { available_leave: sumAvailableLeave };
-    // });
   };
-
-  console.log("available leave", availableLeaves);
 
   /**
    * Calculate leave quota handler
@@ -113,14 +77,19 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
-      // toast.show({
-      //   render: () => {
-      //     return <SuccessToast message={`You can continue to sumbit the form`} />;
-      //   },
-      // });
+      toast.show({
+        render: () => {
+          return <SuccessToast message="Leave request available" />;
+        },
+      });
       setFormError(false);
     } catch (err) {
       console.log(err);
+      toast.show({
+        render: () => {
+          return <ErrorToast message="Quota is not enough" />;
+        },
+      });
     }
   };
 
@@ -134,7 +103,6 @@ const NewLeaveRequest = ({ route }) => {
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests`, form);
-      refetchPersonalLeave();
       refetchLeaveHistory();
       setSubmitting(false);
       setStatus("success");
@@ -226,64 +194,76 @@ const NewLeaveRequest = ({ route }) => {
     filterAvailableLeaveHistory();
   }, [leaveHistory?.data]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+  }, []);
+
   return (
-    <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
-        <PageHeader
-          title="New Leave Request"
-          onPress={
-            formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-              ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-              : () => {
-                  !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
-                  navigation.goBack();
-                }
-          }
-        />
+    <Box>
+      {isReady ? (
+        <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
+          <PageHeader
+            title="New Leave Request"
+            onPress={
+              formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
+                ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                : () => {
+                    !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                    navigation.goBack();
+                  }
+            }
+          />
 
-        <ReturnConfirmationModal
-          isOpen={returnModalIsOpen}
-          toggle={toggleReturnModal}
-          onPress={() => {
-            toggleReturnModal();
-            navigation.navigate("Dashboard");
-          }}
-          description="If you return, It will be discarded"
-        />
+          <ReturnConfirmationModal
+            isOpen={returnModalIsOpen}
+            toggle={toggleReturnModal}
+            onPress={() => {
+              toggleReturnModal();
+              navigation.navigate("Dashboard");
+            }}
+            description="Are you sure want to exit? It will be deleted"
+          />
 
-        <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
-          {availableLeaves?.map((item, index) => {
-            return (
-              <Box key={index} alignItems="center" justifyContent="center" gap={2}>
-                <Text fontWeight={500} fontSize={20}>
-                  {item.quota}
-                </Text>
-                <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
-                  {item.leave_name}
-                </Text>
-              </Box>
-            );
-          })}
-        </Flex>
+          <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
+            {leaveHistoryIsFetching ? (
+              // <Spinner color="primary.600" size="lg" />
+              <VStack space={2} alignItems="center">
+                <Skeleton h={41} w={10} />
+                <Skeleton h={5} w={100} />
+              </VStack>
+            ) : (
+              availableLeaves?.map((item, index) => {
+                return (
+                  <Box key={index} alignItems="center" justifyContent="center" gap={2}>
+                    <Text fontWeight={500} fontSize={20}>
+                      {item.quota}
+                    </Text>
+                    <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
+                      {item.leave_name}
+                    </Text>
+                  </Box>
+                );
+              })
+            )}
+          </Flex>
 
-        <NewLeaveRequestForm
-          formik={formik}
-          leaveType={leaveType}
-          onChangeEndDate={onChangeEndDate}
-          onChangeStartDate={onChangeStartDate}
-          selectedGenerateType={selectedGenerateType}
-        />
-      </Box>
+          <NewLeaveRequestForm
+            formik={formik}
+            leaveType={leaveType}
+            onChangeEndDate={onChangeEndDate}
+            onChangeStartDate={onChangeStartDate}
+            selectedGenerateType={selectedGenerateType}
+          />
+        </Box>
+      ) : (
+        <VStack mt={10} px={4} space={2}>
+          <Spinner color="primary.600" size="lg" />
+        </VStack>
+      )}
     </Box>
   );
 };
 
 export default NewLeaveRequest;
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

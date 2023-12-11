@@ -1,95 +1,34 @@
-import { useState } from "react";
+import { memo, useCallback } from "react";
 
-import { Box, useToast } from "native-base";
+import { Clipboard, Linking } from "react-native";
+import { Box, Spinner, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import FeedCardItem from "./FeedCardItem";
-import FeedComment from "./FeedComment/FeedComment";
-import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../shared/ToastDialog";
+import FeedCardItem from "./FeedCardItem";
 
 const FeedCard = ({
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
-  loggedEmployeeName,
   postRefetchHandler,
   postEndReachedHandler,
   hasBeenScrolled,
   setHasBeenScrolled,
-  reload,
-  setReload,
   postIsFetching,
+  postIsLoading,
   refetchPost,
+  scrollNewMessage,
+  flashListRef,
+  onCommentToggle,
+  forceRerender,
+  setForceRerender,
+  toggleFullScreen,
+  employeeUsername,
 }) => {
-  const [comments, setComments] = useState([]);
-  const [postTotalComment, setPostTotalComment] = useState(0);
-  const [postId, setPostId] = useState(null);
-  const [currentOffset, setCurrentOffset] = useState(0);
-  const [forceRerender, setForceRerender] = useState(false);
-
   const toast = useToast();
-
-  // Parameters for fetch comments
-  const commentsFetchParameters = {
-    offset: currentOffset,
-    limit: 50,
-  };
-
-  const {
-    data: comment,
-    isFetching: commentIsFetching,
-    refetch: refetchComment,
-  } = useFetch(`/hr/posts/${postId}/comment`, [reload, currentOffset], commentsFetchParameters);
-
-  /**
-   * Fetch more Comments handler
-   * After end of scroll reached, it will added other earlier comments
-   */
-  const commentEndReachedHandler = () => {
-    if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffset(currentOffset + 10);
-    }
-  };
-
-  /**
-   * Fetch from first offset
-   * After create a new comment, it will return to the first offset
-   */
-  const commentRefetchHandler = () => {
-    setCurrentOffset(0);
-    setReload(!reload);
-  };
-
-  /**
-   * Action sheet for comment handler
-   */
-  const [commentsOpen, setCommentsOpen] = useState(false);
-  const commentsOpenHandler = (post_id) => {
-    setPostId(post_id);
-    setCommentsOpen(true);
-    const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
-  };
-
-  const commentsCloseHandler = () => {
-    setCommentsOpen(false);
-    setPostId(null);
-  };
-
-  /**
-   * Submit comment handler
-   */
-  const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
-    const referenceIndex = posts.findIndex((post) => post.id === postId);
-    posts[referenceIndex]["total_comment"] += 1;
-    setForceRerender(!forceRerender);
-  };
 
   /**
    * Like a Post handler
@@ -111,15 +50,42 @@ const FeedCard = ({
     }
   };
 
+  const handleLinkPress = useCallback((url) => {
+    Linking.openURL(url);
+  }, []);
+
+  const handleEmailPress = useCallback((email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Box flex={1}>
       <FlashList
+        removeClippedSubviews={true}
+        ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        updateCellsBatchingPeriod={100}
-        windowSize={10}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={20}
         onEndReachedThreshold={0.1}
         keyExtractor={(item, index) => index}
         estimatedItemSize={200}
@@ -137,53 +103,38 @@ const FeedCard = ({
             }}
           />
         }
-        renderItem={({ item }) => (
+        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
+        renderItem={({ item, index }) => (
           <FeedCardItem
-            key={item?.id}
+            key={index}
             id={item?.id}
-            post={item}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
-            createdAt={item?.created_at}
             employeeImage={item?.employee_image}
+            createdAt={item?.created_at}
             content={item?.content}
             total_like={item?.total_like}
             totalComment={item?.total_comment}
             likedBy={item?.liked_by}
             attachment={item?.file_path}
             type={item?.type}
-            onToggleLike={postLikeToggleHandler}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            onCommentToggle={commentsOpenHandler}
-            refetchPost={refetchPost}
+            onToggleLike={postLikeToggleHandler}
+            onCommentToggle={onCommentToggle}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
+            toggleFullScreen={toggleFullScreen}
+            handleLinkPress={handleLinkPress}
+            handleEmailPress={handleEmailPress}
+            copyToClipboard={copyToClipboard}
+            postRefetchHandler={postRefetchHandler}
+            employeeUsername={employeeUsername}
           />
         )}
       />
-
-      {commentsOpen && (
-        <FeedComment
-          postId={postId}
-          loggedEmployeeId={loggedEmployeeId}
-          loggedEmployeeName={loggedEmployeeName}
-          loggedEmployeeImage={loggedEmployeeImage}
-          handleOpen={commentsOpenHandler}
-          handleClose={commentsCloseHandler}
-          commentAddHandler={commentAddHandler}
-          currentOffset={currentOffset}
-          comment={comment}
-          commentIsFetching={commentIsFetching}
-          refetchComment={refetchComment}
-          commentEndReachedHandler={commentEndReachedHandler}
-          commentRefetchHandler={commentRefetchHandler}
-          comments={comments}
-          setComments={setComments}
-        />
-      )}
     </Box>
   );
 };
 
-export default FeedCard;
+export default memo(FeedCard);

@@ -13,23 +13,32 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
   };
 
   return (
-    <Modal position="relative" backgroundColor="#272A2B" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-      <Box gap={2} position="relative">
-        <Flex pr={2} gap={2} flexDirection="row" justifyContent="flex-end" alignItems="flex-end">
-          <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
-            <Icon as={<MaterialCommunityIcons name="download" />} size={6} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsFullScreen(false)}>
-            <Icon as={<MaterialCommunityIcons name="close" />} size={6} />
-          </TouchableOpacity>
-        </Flex>
+    <Modal backgroundColor="#272A2B" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+      <Box position="relative">
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-          height={400}
+          height={300}
           width={400}
           alt="Feed Image"
           resizeMode="contain"
         />
+        <Flex
+          position="absolute"
+          right={0}
+          top={0}
+          pr={2}
+          gap={2}
+          flexDirection="row"
+          justifyContent="flex-end"
+          alignItems="flex-end"
+        >
+          <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
+            <Icon as={<MaterialCommunityIcons name="download" />} size={6} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsFullScreen(false)}>
+            <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="#FFFFFF" />
+          </TouchableOpacity>
+        </Flex>
       </Box>
     </Modal>
   );

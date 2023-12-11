@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 import { Platform, Pressable } from "react-native";
 import { Actionsheet, FormControl, Icon, Input, Text, VStack } from "native-base";
@@ -11,18 +13,41 @@ import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 const PayslipPasswordEdit = ({
   formIsOpen,
   toggleForm,
-  onSubmit,
   passwordError,
   setPasswordError,
-  formik,
   hideNewPassword,
   setHideNewPassword,
   hideOldPassword,
   setHideOldPassword,
   hideConfirmPassword,
   setHideConfirmPassword,
+  onUpdatePassword,
 }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
+  /**
+   * Change password handler
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      old_password: "",
+      new_password: "",
+      confirm_password: "",
+    },
+    validationSchema: yup.object().shape({
+      old_password: yup.string().required("Old Password is required"),
+      new_password: yup.string().required("New Password is required"),
+      confirm_password: yup
+        .string()
+        .oneOf([yup.ref("new_password"), null], "Password doesn't match")
+        .required("Confirm Password is required"),
+    }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onUpdatePassword(values, setSubmitting, setStatus);
+    },
+  });
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -108,9 +133,15 @@ const PayslipPasswordEdit = ({
               />
               <FormControl.ErrorMessage>{formik.errors.confirm_password}</FormControl.ErrorMessage>
             </FormControl>
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="#FFFFFF">Submit</Text>
-            </FormButton>
+            {formik.values.old_password && formik.values.new_password && formik.valuesconfirm_password ? (
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                <Text color="#FFFFFF">Submit</Text>
+              </FormButton>
+            ) : (
+              <FormButton opacity={0.5}>
+                <Text color="#FFFFFF">Submit</Text>
+              </FormButton>
+            )}
           </VStack>
         </VStack>
       </Actionsheet.Content>

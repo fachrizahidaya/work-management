@@ -1,95 +1,79 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import { Badge, Box, Flex, Icon, Text, useToast } from "native-base";
+import { ScrollView } from "react-native";
+import { Badge, Flex, Icon, Image, Text, VStack } from "native-base";
+import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import axiosInstance from "../../../../config/api";
 import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
+import Tabs from "../../../shared/Tabs";
+import { card } from "../../../../styles/Card";
+import TeamLeaveRequestItem from "./TeamLeaveRequestItem";
 
 const TeamLeaveRequestList = ({
-  id,
-  name,
-  image,
-  leaveName,
-  days,
-  startDate,
-  endDate,
-  status,
-  reason,
-  type,
-  objectId,
-  object,
   refetchTeamLeaveRequest,
+  onApproval,
+  pendingLeaveRequests,
+  approvedLeaveRequests,
+  rejectedLeaveRequests,
+  pendingCount,
+  approvedCount,
+  rejectedCount,
+  teamLeaveRequestData,
+  teamLeaveRequestIsFetching,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
-
-  const toast = useToast();
-
-  /**
-   * Submit response of leave request handler
-   * @param {*} data
-   * @param {*} setStatus
-   * @param {*} setSubmitting
-   */
-  const approvalResponseHandler = async (data, setStatus, setSubmitting) => {
-    try {
-      const res = await axiosInstance.post(`/hr/approvals/approval`, data);
-      setSubmitting(false);
-      setStatus("success");
-      refetchTeamLeaveRequest();
-      toast.show({
-        render: ({ id }) => {
-          return (
-            <SuccessToast
-              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
-              close={() => toast.close(id)}
-            />
-          );
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
+  const [tabValue, setTabValue] = useState("waiting approval");
 
   /**
    * Aprroval or Rejection handler
    */
   const formik = useFormik({
     initialValues: {
-      object: object,
-      object_id: objectId,
-      type: type,
+      object: "",
+      object_id: "",
+      type: "",
       status: "",
       notes: "",
     },
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      console.log(values);
       setStatus("processing");
-      approvalResponseHandler(values, setStatus, setSubmitting);
+      onApproval(values, setStatus, setSubmitting);
     },
   });
+
+  const tabs = useMemo(() => {
+    return [{ title: "waiting approval" }, { title: "approved" }, { title: "rejected" }];
+  }, []);
 
   /**
    * Response handler
    * @param {*} response
    */
-  const responseHandler = (response) => {
+  const responseHandler = (response, data) => {
+    formik.setFieldValue("object", data?.approval_object);
+    formik.setFieldValue("object_id", data?.approval_object_id);
+    formik.setFieldValue("type", data?.approval_type);
     formik.setFieldValue("status", response);
     setIsSubmitting(response);
     formik.handleSubmit();
   };
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setTabValue("waiting approval");
+    };
+  }, [teamLeaveRequestData]);
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -97,65 +81,155 @@ const TeamLeaveRequestList = ({
     }
   }, [formik.isSubmitting && formik.status]);
 
-  // Canceled status not appeared in team leave request
-  return status === "Canceled" || status === "Rejected" ? null : (
-    <Box gap={2} borderTopColor="#E8E9EB" borderTopWidth={1} py={3} px={5}>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex gap={2} flex={1} flexDir="row">
-          <AvatarPlaceholder image={image} name={name} size="xs" borderRadius="full" isThumb={false} />
-          <Flex flexDir="row" alignItems="center">
-            <Text fontWeight={500} fontSize={14} color="#3F434A">
-              {leaveName}
-            </Text>{" "}
-            |{" "}
-            <Text fontWeight={500} fontSize={14} color="#377893">
-              {name}
-            </Text>
-          </Flex>
-        </Flex>
-      </Flex>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex flex={1}>
-          <Text color="#595F69" fontSize={12} fontWeight={400}>
-            {reason}
-          </Text>
-        </Flex>
-        <Badge borderRadius={10} w={20}>
-          <Flex gap={2} flexDir="row">
-            <Icon as={<MaterialCommunityIcons name="clock-outline" />} size={5} color="#186688" />
-            {days > 1 ? `${days} days` : `${days} day`}
-          </Flex>
-        </Badge>
-      </Flex>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Text color="#595F69" fontSize={12} fontWeight={400}>
-          {dayjs(startDate).format("DD.MM.YYYY")} - {dayjs(endDate).format("DD.MM.YYYY")}
-        </Text>
-        {status === "Pending" ? (
-          <Flex gap={1} flexDir="row">
-            <FormButton
-              onPress={() => responseHandler("Rejected")}
-              isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
-              size="xs"
-              color="red.500"
+  return (
+    <>
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justifyContent="space-evenly" />
+      <Flex
+        backgroundColor={pendingLeaveRequests || approvedLeaveRequests || rejectedLeaveRequests ? "#f1f1f1" : "#FFFFFF"}
+        px={3}
+        flex={1}
+        flexDir="column"
+      >
+        {tabValue === "waiting approval" ? (
+          pendingLeaveRequests.length > 0 ? (
+            <FlashList
+              data={pendingLeaveRequests}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              estimatedItemSize={200}
+              refreshing={true}
+              refreshControl={
+                <RefreshControl
+                  refreshing={teamLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchTeamLeaveRequest();
+                  }}
+                />
+              }
+              renderItem={({ item, index }) => (
+                <TeamLeaveRequestItem
+                  item={item}
+                  key={index}
+                  id={item?.id}
+                  leave_name={item?.leave_name}
+                  reason={item?.reason}
+                  days={item?.days}
+                  begin_date={item?.begin_date}
+                  end_date={item?.end_date}
+                  status={item?.status}
+                  employee_name={item?.employee_name}
+                  employee_image={item?.employee_image}
+                  responseHandler={responseHandler}
+                  isSubmitting={isSubmitting}
+                  formik={formik}
+                />
+              )}
+            />
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={teamLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+              }
             >
-              Decline
-            </FormButton>
-            <FormButton
-              onPress={() => responseHandler("Approved")}
-              isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
-              size="xs"
-              bgColor="#377893"
-            >
-              Approve
-            </FormButton>
-          </Flex>
+              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  resizeMode="contain"
+                  size="2xl"
+                />
+                <Text>No Data</Text>
+              </VStack>
+            </ScrollView>
+          )
+        ) : tabValue === "approved" ? (
+          approvedLeaveRequests.length > 0 ? (
+            <FlashList
+              data={approvedLeaveRequests}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              estimatedItemSize={200}
+              refreshing={true}
+              refreshControl={
+                <RefreshControl
+                  refreshing={teamLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchTeamLeaveRequest();
+                  }}
+                />
+              }
+              renderItem={({ item, index }) => (
+                <TeamLeaveRequestItem
+                  item={item}
+                  key={index}
+                  id={item?.id}
+                  leave_name={item?.leave_name}
+                  reason={item?.reason}
+                  days={item?.days}
+                  begin_date={item?.begin_date}
+                  end_date={item?.end_date}
+                  status={item?.status}
+                  employee_name={item?.employee_name}
+                  employee_image={item?.employee_image}
+                />
+              )}
+            />
+          ) : (
+            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <Image
+                source={require("../../../../assets/vectors/empty.png")}
+                alt="empty"
+                resizeMode="contain"
+                size="2xl"
+              />
+              <Text>No Data</Text>
+            </VStack>
+          )
+        ) : rejectedLeaveRequests.length > 0 ? (
+          <FlashList
+            data={rejectedLeaveRequests}
+            onEndReachedThreshold={0.1}
+            keyExtractor={(item, index) => index}
+            estimatedItemSize={200}
+            refreshing={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={teamLeaveRequestIsFetching}
+                onRefresh={() => {
+                  refetchTeamLeaveRequest();
+                }}
+              />
+            }
+            renderItem={({ item, index }) => (
+              <TeamLeaveRequestItem
+                item={item}
+                key={index}
+                id={item?.id}
+                leave_name={item?.leave_name}
+                reason={item?.reason}
+                days={item?.days}
+                begin_date={item?.begin_date}
+                end_date={item?.end_date}
+                status={item?.status}
+                employee_name={item?.employee_name}
+                employee_image={item?.employee_image}
+              />
+            )}
+          />
         ) : (
-          <Text color={status === "Rejected" || status === "Canceled" ? "#FF6262" : "#437D96"}>{status}</Text>
+          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+            <Image
+              source={require("../../../../assets/vectors/empty.png")}
+              alt="empty"
+              resizeMode="contain"
+              size="2xl"
+            />
+            <Text>No Data</Text>
+          </VStack>
         )}
       </Flex>
-    </Box>
+    </>
   );
 };
 
-export default TeamLeaveRequestList;
+export default memo(TeamLeaveRequestList);
