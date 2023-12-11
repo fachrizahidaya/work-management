@@ -33,7 +33,6 @@ const ChatRoom = () => {
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [fileAttachment, setFileAttachment] = useState(null);
-  const [previousUser, setPreviousUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [bandAttachment, setBandAttachment] = useState(null);
   const [bandAttachmentType, setBandAttachmentType] = useState(null);
@@ -125,9 +124,6 @@ const ChatRoom = () => {
    * Event listener for new personal chat messages
    */
   const personalChatMessageEvent = () => {
-    if (userSelector?.id && previousUser) {
-      laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${previousUser}`);
-    }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
         if (event.data.type === "New") {
@@ -143,9 +139,6 @@ const ChatRoom = () => {
    * Event listener for new group chat messages
    */
   const groupChatMessageEvent = () => {
-    if (userSelector?.id && previousUser) {
-      laravelEcho.leaveChannel(`group.chat.${previousUser}.${userSelector?.id}`);
-    }
     if (userSelector?.id && currentUser) {
       laravelEcho.channel(`group.chat.${currentUser}.${userSelector?.id}`).listen(".group.chat", (event) => {
         if (event.data.type === "New") {
@@ -510,7 +503,11 @@ const ChatRoom = () => {
         /**
          * To reset all state
          */
-        setPreviousUser(currentUser);
+        if (type === "personal") {
+          laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${roomId}`);
+        } else {
+          laravelEcho.leaveChannel(`group.chat.${userId}.${userSelector?.id}`);
+        }
         setHasMore(true);
         setOffset(0);
         clearAdditionalContentActionState();
@@ -525,7 +522,6 @@ const ChatRoom = () => {
     if (roomId) {
       setCurrentUser(roomId);
     }
-    setPreviousUser(currentUser);
     setHasMore(true);
     setOffset(0);
     clearAdditionalContentActionState();

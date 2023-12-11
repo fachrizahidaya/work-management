@@ -1,16 +1,17 @@
+import { useState, useEffect, useCallback } from "react";
+import _ from "lodash";
 import { useNavigation, useRoute } from "@react-navigation/core";
+
 import { Flex, Icon, Pressable, Text } from "native-base";
 import { SafeAreaView, StyleSheet } from "react-native";
-import SearchBox from "../../components/Chat/ProjectTask/SearchBox";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { useFetch } from "../../hooks/useFetch";
 import OptionButton from "../../components/Chat/ProjectTask/OptionButton";
 import ChatProjectList from "../../components/Chat/ProjectTask/ChatProjectList";
-import { useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
-import { useCallback } from "react";
-import _ from "lodash";
-import { useEffect } from "react";
+import SearchBox from "../../components/Chat/ProjectTask/SearchBox";
 
 const ProjectScreen = () => {
   const [tabValue, setTabValue] = useState("project");
@@ -144,8 +145,19 @@ const ProjectScreen = () => {
           <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
         </Flex>
       </Flex>
-      <OptionButton tabValue={tabValue} setTabValue={setTabValue} />
-      {/* <SearchBox /> */}
+      <OptionButton
+        setSearchInput={setSearchInput}
+        setInputToShow={setInputToShow}
+        tabValue={tabValue}
+        setTabValue={setTabValue}
+      />
+      <SearchBox
+        handleSearch={handleSearch}
+        inputToShow={inputToShow}
+        setInputToShow={setInputToShow}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
       <ChatProjectList
         navigation={navigation}
         tabValue={tabValue}
@@ -170,47 +182,6 @@ const ProjectScreen = () => {
         selectedTask={selectedTask}
         setSelectedTask={setSelectedTask}
       />
-      {tabValue === "task" ? (
-        <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-          <Pressable
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            flex={1}
-            direction="row"
-            alignItems="center"
-            bgColor="#f5f5f5"
-            borderRadius={10}
-            p={2}
-            opacity={!selected ? 0.5 : 1}
-            onPress={() => {
-              setBandAttachment(selected);
-              setBandAttachmentType("task");
-              navigation.navigate("Chat Room", {
-                userId: userId,
-                name: name,
-                roomId: roomId,
-                image: image,
-                position: position,
-                email: email,
-                type: type,
-                active_member: active_member,
-                isPinned: isPinned,
-              });
-            }}
-          >
-            <Text fontSize={14} fontWeight={400} opacity={!selected ? 0.5 : 1} color="#176688">
-              Import Task
-            </Text>
-            <Icon
-              as={<MateriaCommunitylIcons name="lightning-bolt" />}
-              opacity={!selected ? 0.5 : 1}
-              size="xl"
-              color="#176688"
-            />
-          </Pressable>
-        </Flex>
-      ) : null}
     </SafeAreaView>
   );
 };
