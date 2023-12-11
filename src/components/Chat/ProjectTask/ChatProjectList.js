@@ -1,5 +1,6 @@
 import { Flex, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
+
 import ChatProjectItem from "./ChatProjectItem";
 import ChatTaskItem from "./ChatTaskItem";
 
