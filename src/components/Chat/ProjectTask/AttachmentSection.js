@@ -2,18 +2,7 @@ import { Box, Flex, Image, Pressable, Text } from "native-base";
 
 const AttachmentSection = () => {
   return (
-    <Pressable
-      display="flex"
-      flexDir="row"
-      alignItems="center"
-      bgColor="#ffffff"
-      py={3}
-      px={3}
-      borderRadius={10}
-      justifyContent="space-between"
-      gap={3}
-      flex={1}
-    >
+    <Pressable display="flex" alignItems="center" bgColor="#ffffff" py={3} px={3} borderRadius={10} gap={3}>
       <Flex justifyContent="center" alignItems="center">
         <Image
           alt="attachment"
