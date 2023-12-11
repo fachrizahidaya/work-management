@@ -83,7 +83,7 @@ const TeamLeaveRequestList = ({
 
   return (
     <>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justifyContent="space-evenly" />
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       <Flex
         backgroundColor={pendingLeaveRequests || approvedLeaveRequests || rejectedLeaveRequests ? "#f1f1f1" : "#FFFFFF"}
         px={3}
