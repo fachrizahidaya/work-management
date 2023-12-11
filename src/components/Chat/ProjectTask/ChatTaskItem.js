@@ -1,5 +1,5 @@
-import { useState } from "react";
 import dayjs from "dayjs";
+
 import { Box, Flex, Pressable, Text } from "native-base";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
@@ -24,31 +24,28 @@ const ChatTaskItem = ({
   selected,
   setSelected,
 }) => {
-  const [color, setColor] = useState(false);
   return (
     <Box my={1}>
       <Pressable
         onPress={() => {
-          setColor(true);
-          setSelected(task);
-          //   setBandAttachment(task);
-          //   setBandAttachmentType("task");
-          //   navigation.navigate("Chat Room", {
-          //     userId: userId,
-          //     name: nameUser,
-          //     roomId: roomId,
-          //     image: imageUser,
-          //     position: position,
-          //     email: email,
-          //     type: type,
-          //     active_member: active_member,
-          //     isPinned: isPinned,
-          //   });
+          setBandAttachment(task);
+          setBandAttachmentType("task");
+          navigation.navigate("Chat Room", {
+            userId: userId,
+            name: nameUser,
+            roomId: roomId,
+            image: imageUser,
+            position: position,
+            email: email,
+            type: type,
+            active_member: active_member,
+            isPinned: isPinned,
+          });
         }}
         display="flex"
         flexDirection="row"
         alignItems="center"
-        bgColor={color ? "#f1f1f1" : "#ffffff"}
+        bgColor="#ffffff"
         p={5}
         borderRadius={10}
         justifyContent="space-between"
