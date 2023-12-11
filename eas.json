@@ -34,12 +34,12 @@
         "EXPO_PUBLIC_WS_BROADCASTER": "pusher",
         "EXPO_PUBLIC_WS_KEY": "kssapp",
         "EXPO_PUBLIC_WS_HOST": "api.ksshub.com",
-        "EXPO_PUBLIC_WS_PORT": 6101,
-        "EXPO_PUBLIC_WSS_PORT": 6101,
+        "EXPO_PUBLIC_WS_PORT": "6101",
+        "EXPO_PUBLIC_WSS_PORT": "6101",
         "EXPO_PUBLIC_WS_TRANSPORT": "websocket",
         "EXPO_PUBLIC_WS_ENABLED_TRANSPORT": "ws,wss",
-        "EXPO_PUBLIC_WS_FORCE_TLS": false,
-        "EXPO_PUBLIC_WS_DISABLE_STATS": false,
+        "EXPO_PUBLIC_WS_FORCE_TLS": "false",
+        "EXPO_PUBLIC_WS_DISABLE_STATS": "false",
         "EXPO_PUBLIC_WS_CLUSTER": "mt1"
       }
     }
