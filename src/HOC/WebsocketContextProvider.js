@@ -10,16 +10,16 @@ export function WebsocketContextProvider({ children }) {
   const [laravelEcho, setLaravelEcho] = useState(null);
 
   const echo = new Echo({
-    broadcaster: "pusher",
-    key: "kssapp",
-    wsHost: "api-dev.ksshub.com",
-    wsPort: 6001,
-    wssport: 6001,
-    transports: ["websocket"],
-    enabledTransports: ["ws", "wss"],
-    forceTLS: false,
-    disableStats: true,
-    cluster: "mt1",
+    broadcaster: process.env.EXPO_PUBLIC_WS_BROADCASTER,
+    key: process.env.EXPO_PUBLIC_WS_KEY,
+    wsHost: process.env.EXPO_PUBLIC_WS_HOST,
+    wsPort: process.env.EXPO_PUBLIC_WS_PORT,
+    wssport: process.env.EXPO_PUBLIC_WSS_PORT,
+    transports: process.env.EXPO_PUBLIC_WS_TRANSPORT.split(","),
+    enabledTransports: process.env.EXPO_PUBLIC_WS_ENABLED_TRANSPORT.split(","),
+    forceTLS: process.env.EXPO_PUBLIC_WS_FORCE_TLS,
+    disableStats: process.env.EXPO_PUBLIC_WS_DISABLE_STATS,
+    cluster: process.env.EXPO_PUBLIC_WS_CLUSTER,
   });
 
   if (!laravelEcho) {
