@@ -228,7 +228,6 @@ const NewLeaveRequest = ({ route }) => {
 
           <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
             {leaveHistoryIsFetching ? (
-              // <Spinner color="primary.600" size="lg" />
               <VStack space={2} alignItems="center">
                 <Skeleton h={41} w={10} />
                 <Skeleton h={5} w={100} />
