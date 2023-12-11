@@ -145,8 +145,19 @@ const ProjectScreen = () => {
           <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
         </Flex>
       </Flex>
-      <OptionButton tabValue={tabValue} setTabValue={setTabValue} />
-      {/* <SearchBox /> */}
+      <OptionButton
+        setSearchInput={setSearchInput}
+        setInputToShow={setInputToShow}
+        tabValue={tabValue}
+        setTabValue={setTabValue}
+      />
+      <SearchBox
+        handleSearch={handleSearch}
+        inputToShow={inputToShow}
+        setInputToShow={setInputToShow}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
       <ChatProjectList
         navigation={navigation}
         tabValue={tabValue}
