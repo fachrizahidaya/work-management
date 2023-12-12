@@ -69,7 +69,13 @@ const NewFeedScreen = ({ route }) => {
       setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
-        formData.append(key, values[key]);
+        if (key === "content") {
+          const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+          const modifiedContent = values[key].replace(mentionRegex, "@$1");
+          formData.append(key, modifiedContent);
+        } else {
+          formData.append(key, values[key]);
+        }
       }
 
       formData.append("file", image);
