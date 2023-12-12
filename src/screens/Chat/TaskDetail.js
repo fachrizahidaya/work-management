@@ -33,8 +33,8 @@ const TaskDetail = () => {
   } = routes.params;
   const { data: task, isFetching: taskIsFetching, refetch: refetchTask } = useFetch(`/chat/task/${task_id}`);
   const filteredData = task?.data?.checklist.filter((item) => item.status === "Finish");
-  const percentage =
-    task?.data?.checklist?.length !== 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
+  // const percentage =
+  //   task?.data?.checklist?.length !== 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
   return (
     <SafeAreaView style={styles.container}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
@@ -93,7 +93,7 @@ const TaskDetail = () => {
         </Flex>
         <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
           <Text fontSize={12} fontWeight={400}>
-            Checklist ({Math.round(percentage) || 0}
+            Checklist ({/* {Math.round(percentage) || 0} */}
             %)
           </Text>
           {task?.data?.checklist.length === 0 ? (
