@@ -6,7 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
-import TaskListItem from "./TaskListItem";
+import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 
@@ -36,6 +36,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
                   estimatedItemSize={112}
+                  numColumns={1}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -88,6 +89,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
                   estimatedItemSize={112}
+                  numColumns={1}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -140,6 +142,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
                   estimatedItemSize={112}
+                  numColumns={1}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
