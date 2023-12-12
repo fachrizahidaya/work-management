@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Flex, FormControl, HStack, Icon, Select, Spinner, Text, TextArea } from "native-base";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
