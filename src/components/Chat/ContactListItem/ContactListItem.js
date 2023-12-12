@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Box, Flex, HStack, Icon, Pressable, Text, useToast } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { FlingGestureHandler, Directions, State, PanGestureHandler } from "react-native-gesture-handler";
-import { Swipeable } from "react-native-gesture-handler";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
-  withSpring,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   useSharedValue,
@@ -17,12 +14,8 @@ import Animated, {
 } from "react-native-reanimated";
 const LIST_ITEM_HEIGHT = 70;
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const TRANSLATE_X_THRESHOLD = -SCREEN_WIDTH * 0.3;
-
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
   chat,
@@ -44,11 +37,8 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
-  toggleDeleteModal,
-  toggleContactOption,
   onSwipe,
 }) => {
-  const [isMoreVisible, setIsMoreVisible] = useState(false);
   const navigation = useNavigation();
 
   const translateX = useSharedValue(0);
@@ -118,58 +108,6 @@ const ContactListItem = ({
     return text;
   };
 
-  const eventHandler = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {},
-    onActive: (event, ctx) => {
-      x.value = -100;
-    },
-    onEnd: (event, ctx) => {
-      x.value = withSpring(startingPosition);
-    },
-  });
-
-  const uas = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: x.value }],
-    };
-  });
-
-  const renderRightActions = (progress, dragX) => {
-    const trans = dragX.interpolate({
-      inputRange: (-100, 0),
-      outputRange: (0, 1),
-    });
-
-    const onSwipeAction = () => {
-      onSwipe(chat);
-      setIsMoreVisible(true);
-    };
-
-    return (
-      <>
-        <Pressable
-          style={{
-            width: 50,
-            alignItems: "center",
-            backgroundColor: "#959595",
-            justifyContent: "center",
-            padding: 3,
-            transform: [{ translateX: trans }],
-          }}
-          onPress={() => {
-            onSwipeAction();
-            setIsMoreVisible(false);
-          }}
-        >
-          <Icon as={<MaterialIcons name="more-horiz" />} color="white" />
-          <Text fontSize={12} fontWeight={400} style={{ color: "white" }}>
-            More
-          </Text>
-        </Pressable>
-      </>
-    );
-  };
-
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       translateX.value = event.translationX;
@@ -177,13 +115,6 @@ const ContactListItem = ({
     onEnd: () => {
       translateX.value = withTiming(0);
     },
-  });
-
-  const rStyle = useAnimatedStyle(() => ({}));
-
-  const rIconContainerStyle = useAnimatedStyle(() => {
-    const opacityValue = withTiming(translateX.value < TRANSLATE_X_THRESHOLD ? 1 : 0);
-    return { opacity: opacityValue };
   });
 
   const rTaskContainerStyle = useAnimatedStyle(() => ({
@@ -214,6 +145,7 @@ const ContactListItem = ({
         </Text>
       </Pressable>
       <TouchableOpacity
+        activeOpacity={1}
         onPress={() => {
           navigation.navigate("Chat Room", {
             userId: userId,

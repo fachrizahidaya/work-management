@@ -14,8 +14,6 @@ const ChatInput = ({
   roomId,
   type,
   fileAttachment,
-  selectFile,
-  pickImageHandler,
   onSendMessage,
   setFileAttachment,
   bandAttachment,
@@ -27,9 +25,7 @@ const ChatInput = ({
   active_member,
   toggleProjectList,
   toggleTaskList,
-  menuIsOpen,
   toggleMenu,
-  navigation,
 }) => {
   const formik = useFormik({
     enableReinitialize: true,

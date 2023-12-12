@@ -1,15 +1,7 @@
 import { Flex, Icon, Pressable, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const UserAction = ({
-  type,
-  active_member,
-  toggleClearChatMessage,
-  toggleDeleteModal,
-  toggleExitModal,
-  toggleDeleteGroupModal,
-  name,
-}) => {
+const UserAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
   return (
     <Flex borderRadius={10} mx={3} px={2} py={2} gap={3} bg="#FFFFFF">
       <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>

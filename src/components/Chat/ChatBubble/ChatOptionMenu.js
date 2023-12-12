@@ -1,17 +1,8 @@
-import { Actionsheet, AlertDialog, Box, Button, Divider, Flex, Icon, Modal, Pressable, Text } from "native-base";
+import { Icon, Modal, Pressable, Text } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ChatOptionMenu = ({
-  optionIsOpen,
-  onClose,
-  setMessageToReply,
-  chat,
-  toggleDeleteModal,
-  bubbleChangeColor,
-  setBubbleChangeColor,
-  placement,
-}) => {
+const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggleDeleteModal, placement }) => {
   const options = [
     {
       name: "Reply",

@@ -208,7 +208,7 @@ const EditGroupProfile = () => {
           </Flex>
         </Flex>
         {imageAttachment || formik.values.name !== name ? (
-          <FormButton onPress={formik.handleSubmit} children="Save" />
+          <FormButton fontColor="white" onPress={formik.handleSubmit} children="Save" />
         ) : (
           <FormButton opacity={0.5} onPress={null} children="Save" />
         )}

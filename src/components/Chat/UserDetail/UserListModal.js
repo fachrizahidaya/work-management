@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Box, Flex, Icon, Input, Modal, Pressable, Spinner, Text } from "native-base";
+import { Box, Icon, Input, Modal, Pressable, Spinner, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
-import { TouchableOpacity } from "react-native";
 
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import UserListItemModal from "./UserListItemModal";
 
 const UserListModal = ({
@@ -18,7 +16,6 @@ const UserListModal = ({
   inputToShow,
   setInputToShow,
   setSearchInput,
-  userList,
   fetchMoreData,
   cumulativeData,
   filteredDataArray,

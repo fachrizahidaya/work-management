@@ -103,7 +103,6 @@ const ContactMenu = ({
                 {chat?.pin_group ? chat?.name : chat?.user?.name}
               </Text>
             </Flex>
-            <Icon onPress={onClose} as={<MaterialCommunityIcons name="close" />} />
           </Flex>
         </Actionsheet.Item>
 

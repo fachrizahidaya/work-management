@@ -1,10 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { Actionsheet, Box, Flex, Text } from "native-base";
 
 const ChatMenu = ({ isOpen, onClose }) => {
   const navigation = useNavigation();
@@ -16,13 +12,13 @@ const ChatMenu = ({ isOpen, onClose }) => {
         navigation.navigate("New Chat");
       },
     },
-    {
-      name: "New Group",
-      onPress: () => {
-        onClose();
-        navigation.navigate("Group Participant");
-      },
-    },
+    // {
+    //   name: "New Group",
+    //   onPress: () => {
+    //     onClose();
+    //     navigation.navigate("Group Participant");
+    //   },
+    // },
     // {
     //   name: "Select Message",
     // },
