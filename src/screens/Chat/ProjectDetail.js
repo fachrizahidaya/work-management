@@ -1,5 +1,7 @@
+import dayjs from "dayjs";
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -10,9 +12,6 @@ import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
 import MemberSection from "../../components/Chat/ProjectTask/MemberSection";
 import AttachmentSection from "../../components/Chat/ProjectTask/AttachmentSection";
 import { useFetch } from "../../hooks/useFetch";
-import dayjs from "dayjs";
-import { FlashList } from "@shopify/flash-list";
-import { ScrollView } from "react-native-gesture-handler";
 
 const ProjectDetail = () => {
   const navigation = useNavigation();
@@ -83,7 +82,7 @@ const ProjectDetail = () => {
         />
       </Flex>
       <Flex gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
-        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={1}>
+        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={0.5}>
           <FlashList
             data={project?.data?.member}
             estimatedItemSize={50}
@@ -94,7 +93,9 @@ const ProjectDetail = () => {
             )}
           />
         </Flex>
-        <AttachmentSection />
+        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={1}>
+          <AttachmentSection />
+        </Flex>
       </Flex>
       <Flex gap={2} borderRadius={10} mx={3} my={2} flex={1} bgColor="#fafafa">
         {projectTask?.data.length > 0 ? (

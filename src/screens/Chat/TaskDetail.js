@@ -1,6 +1,8 @@
+import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -10,8 +12,6 @@ import CreatorSection from "./CreatorSection";
 import ObserverSection from "./ObserverSection";
 import ChecklistSection from "./ChecklistSection";
 import { useFetch } from "../../hooks/useFetch";
-import dayjs from "dayjs";
-import { FlashList } from "@shopify/flash-list";
 
 const TaskDetail = () => {
   const navigation = useNavigation();
@@ -34,7 +34,7 @@ const TaskDetail = () => {
   const { data: task, isFetching: taskIsFetching, refetch: refetchTask } = useFetch(`/chat/task/${task_id}`);
   const filteredData = task?.data?.checklist.filter((item) => item.status === "Finish");
   const percentage =
-    task?.data?.checklist.length !== 0 ? ((filteredData.length / task.data?.checklist.length) * 100).toFixed(0) : 0;
+    task?.data?.checklist?.length !== 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
   return (
     <SafeAreaView style={styles.container}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
@@ -93,7 +93,8 @@ const TaskDetail = () => {
         </Flex>
         <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
           <Text fontSize={12} fontWeight={400}>
-            Checklist ({percentage}%)
+            Checklist ({Math.round(percentage) || 0}
+            %)
           </Text>
           {task?.data?.checklist.length === 0 ? (
             <Flex gap={3} justifyContent="center" alignItems="center">

@@ -1,37 +1,25 @@
+import { useState } from "react";
 import dayjs from "dayjs";
 
 import { Box, Flex, Pressable, Text } from "native-base";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { useState } from "react";
 
-const ChatTaskItem = ({
-  navigation,
-  name,
-  date,
-  owner,
-  image,
-  setBandAttachment,
-  setBandAttachmentType,
-  task,
-  userId,
-  roomId,
-  position,
-  email,
-  nameUser,
-  imageUser,
-  type,
-  active_member,
-  isPinned,
-  selected,
-  setSelected,
-}) => {
+const ChatTaskItem = ({ name, date, owner, image, task, setSelected }) => {
   const [color, setColor] = useState(false);
+  const [taskId, setTaskId] = useState();
   return (
     <Box my={1}>
       <Pressable
         onPress={() => {
-          setColor(true);
-          setSelected(task);
+          if (!color && task?.id !== taskId) {
+            setColor(true);
+            setSelected(task);
+            setTaskId(task?.id);
+          } else {
+            setColor(false);
+            setSelected(null);
+            setTaskId(null);
+          }
         }}
         display="flex"
         flexDirection="row"

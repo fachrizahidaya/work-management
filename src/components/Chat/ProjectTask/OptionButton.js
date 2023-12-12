@@ -1,4 +1,4 @@
-import { Box, Flex, Pressable, Text } from "native-base";
+import { Flex, Pressable, Text } from "native-base";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow }) => {
   return (

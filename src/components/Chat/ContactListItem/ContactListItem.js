@@ -188,7 +188,12 @@ const ContactListItem = ({
                     {!isDeleted ? (
                       <>
                         <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                          {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                          <Flex flexDirection="row">
+                            {type === "group" && chat?.latest_message && (
+                              <Text>{chat?.latest_message?.user?.name}: </Text>
+                            )}
+                            {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                          </Flex>
                           {message === null && (project || task || fileName) && (
                             <HStack alignItems="center" space={1}>
                               <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />

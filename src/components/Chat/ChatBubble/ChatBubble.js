@@ -159,7 +159,7 @@ const ChatBubble = ({
               !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
               setModalAppeared(true);
             }}
-            delayLongPress={100}
+            delayLongPress={200}
             borderRadius={10}
             display="flex"
             justifyContent="center"

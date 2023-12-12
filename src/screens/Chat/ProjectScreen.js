@@ -29,14 +29,13 @@ const ProjectScreen = () => {
   const [selected, setSelected] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [taskId, setTaskId] = useState(null);
 
   const navigation = useNavigation();
   const routes = useRoute();
 
   const {
-    bandAttachment,
     setBandAttachment,
-    bandAttachmentType,
     setBandAttachmentType,
     userId,
     name,
@@ -52,24 +51,26 @@ const ProjectScreen = () => {
   const fetchProjectParameters = {
     page: currentPageProject,
     search: searchInput,
-    limit: 10,
+    limit: 30,
   };
 
   const fetchTaskParameters = {
     page: currentPageTask,
     search: searchInput,
-    limit: 10,
+    limit: 30,
   };
 
   const {
     data: project,
     isFetching: projectIsFetching,
+    isLoading: projectIsLoading,
     refetch: refetchProject,
   } = useFetch(tabValue === "project" && "/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
 
   const {
     data: task,
     isFetching: taskIsFetching,
+    isLoading: taskIsLoading,
     refetch: refetchTask,
   } = useFetch(tabValue === "task" && "/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
 
@@ -181,6 +182,12 @@ const ProjectScreen = () => {
         setSelectedProject={setSelectedProject}
         selectedTask={selectedTask}
         setSelectedTask={setSelectedTask}
+        projectIsFetching={projectIsFetching}
+        taskIsFetching={taskIsFetching}
+        projectIsLoading={projectIsLoading}
+        taskIsLoading={taskIsLoading}
+        // taskId={taskId}
+        // setTaskId={setTaskId}
       />
       {tabValue === "task" ? (
         <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
