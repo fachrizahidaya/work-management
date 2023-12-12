@@ -173,6 +173,7 @@ const AttendanceModal = ({
         {hasSubmittedReportAlpa && (
           <Modal.Body>
             <VStack
+              borderWidth={1}
               w="95%"
               space={3}
               // pb={keyboardHeight}
@@ -281,6 +282,7 @@ const AttendanceModal = ({
         {notAttend && (
           <Modal.Body>
             <VStack
+              borderWidth={1}
               w="95%"
               space={3}
               // pb={keyboardHeight}

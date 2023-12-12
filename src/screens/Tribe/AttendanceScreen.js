@@ -38,7 +38,7 @@ const AttendanceScreen = () => {
    * Status attendance Handler
    */
   const allGood = { key: "allGood", color: "#EDEDED", name: "All Good", textColor: "#000000" };
-  const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required", textColor: "#000000" };
+  const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required", textColor: "#FFFFFF" };
   const submittedReport = { key: "submittedReport", color: "#186688", name: "Submitted Report", textColor: "#FFFFFF" };
   const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off", textColor: "#FFFFFF" };
   const sick = { key: "sick", color: "red.600", name: "Sick", textColor: "#FFFFFF" };
@@ -48,6 +48,7 @@ const AttendanceScreen = () => {
     isWorkDay &&
     !date?.lateType &&
     !date?.earlyType &&
+    date?.timeIn &&
     (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave" || date?.attendanceType !== "Alpa");
   const hasLateWithoutReason = date?.late && date?.lateType && !date?.lateReason;
   const hasEarlyWithoutReason = date?.early && date?.earlyType && !date?.earlyReason;
