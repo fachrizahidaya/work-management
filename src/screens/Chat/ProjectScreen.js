@@ -56,7 +56,7 @@ const ProjectScreen = () => {
   };
 
   const fetchTaskParameters = {
-    page: currentPageProject,
+    page: currentPageTask,
     search: searchInput,
     limit: 10,
   };
@@ -65,13 +65,13 @@ const ProjectScreen = () => {
     data: project,
     isFetching: projectIsFetching,
     refetch: refetchProject,
-  } = useFetch("/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
+  } = useFetch(tabValue === "project" && "/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
 
   const {
     data: task,
     isFetching: taskIsFetching,
     refetch: refetchTask,
-  } = useFetch("/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
+  } = useFetch(tabValue === "task" && "/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
 
   const projectEndReachedHandler = () => {
     if (projects.length !== projects.length + project?.data.length) {
@@ -103,7 +103,7 @@ const ProjectScreen = () => {
       } else {
         setCurrentPageTask(1);
       }
-    }, 300),
+    }, 500),
     []
   );
 
