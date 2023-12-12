@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -7,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
 import { Spinner, VStack, useToast } from "native-base";
 
 import axiosInstance from "../../config/api";
@@ -95,6 +96,11 @@ const ChatRoom = () => {
   const closeChatBubbleHandler = () => {
     setSelectedChatBubble(null);
     toggleOption();
+  };
+
+  const openAddAttachmentHandler = () => {
+    toggleMenu();
+    Keyboard.dismiss();
   };
 
   /**
@@ -617,7 +623,7 @@ const ChatRoom = () => {
               toggleProjectList={toggleProjectList}
               toggleTaskList={toggleTaskList}
               menuIsOpen={menuIsOpen}
-              toggleMenu={toggleMenu}
+              toggleMenu={openAddAttachmentHandler}
               navigation={navigation}
             />
           </>

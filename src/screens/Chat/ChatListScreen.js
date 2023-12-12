@@ -32,6 +32,7 @@ const ChatListScreen = () => {
   const [globalKeyword, setGlobalKeyword] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   const swipeToReply = (contact) => {
     setSelectedContact(contact);
@@ -242,37 +243,45 @@ const ChatListScreen = () => {
     });
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 300);
+  });
+
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
+      {isReady ? (
+        <SafeAreaView style={styles.container}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-          <GroupSection
-            groupChats={groupChats}
-            searchKeyword={globalKeyword}
-            searchResult={searchResult?.group}
-            toggleDeleteModal={openSelectedGroupChatHandler}
-            toggleContactOption={openSelectedContactMenuHandler}
-            toggleChatOption={toggleChatOption}
-            onSwipeControl={swipeToReply}
-          />
+            <GroupSection
+              groupChats={groupChats}
+              searchKeyword={globalKeyword}
+              searchResult={searchResult?.group}
+              toggleDeleteModal={openSelectedGroupChatHandler}
+              toggleContactOption={openSelectedContactMenuHandler}
+              toggleChatOption={toggleChatOption}
+              onSwipeControl={swipeToReply}
+            />
 
-          <PersonalSection
-            personalChats={personalChats}
-            searchKeyword={globalKeyword}
-            searchResult={searchResult?.personal}
-            toggleDeleteModal={openSelectedChatHandler}
-            toggleContactOption={openSelectedContactMenuHandler}
-            toggleChatOption={toggleChatOption}
-            onSwipeControl={swipeToReply}
-          />
+            <PersonalSection
+              personalChats={personalChats}
+              searchKeyword={globalKeyword}
+              searchResult={searchResult?.personal}
+              toggleDeleteModal={openSelectedChatHandler}
+              toggleContactOption={openSelectedContactMenuHandler}
+              toggleChatOption={toggleChatOption}
+              onSwipeControl={swipeToReply}
+            />
 
-          {searchResult?.message?.length > 0 && (
-            <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
-          )}
-        </ScrollView>
-      </SafeAreaView>
+            {searchResult?.message?.length > 0 && (
+              <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      ) : null}
       <ContactMenu
         isOpen={contactOptionIsOpen}
         onClose={closeSelectedContactMenuHandler}
