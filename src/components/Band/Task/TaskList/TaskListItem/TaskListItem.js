@@ -26,41 +26,30 @@ const TaskListItem = ({
   openCloseTaskConfirmation,
 }) => {
   const navigation = useNavigation();
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsReady(true);
-    }, 150);
-  }, []);
 
   return (
     <Pressable style={styles.wrapper} onPress={() => navigation.navigate("Task Detail", { taskId: id })}>
       <Flex gap={2}>
-        {isReady && (
-          <StatusAndDeadlineSection
-            no={no}
-            task={task}
-            title={title}
-            deadline={deadline}
-            status={status}
-            responsibleId={responsibleId}
-            openCloseTaskConfirmation={openCloseTaskConfirmation}
-          />
-        )}
+        <StatusAndDeadlineSection
+          no={no}
+          task={task}
+          title={title}
+          deadline={deadline}
+          status={status}
+          responsibleId={responsibleId}
+          openCloseTaskConfirmation={openCloseTaskConfirmation}
+        />
 
         <PrioritySection priority={priority} />
 
-        {isReady && (
-          <AdditionAndResponsibleSection
-            image={image}
-            totalAttachments={totalAttachments}
-            totalChecklists={totalChecklists}
-            totalChecklistsDone={totalChecklistsDone}
-            totalComments={totalComments}
-            responsible={responsible}
-          />
-        )}
+        <AdditionAndResponsibleSection
+          image={image}
+          totalAttachments={totalAttachments}
+          totalChecklists={totalChecklists}
+          totalChecklistsDone={totalChecklistsDone}
+          totalComments={totalComments}
+          responsible={responsible}
+        />
       </Flex>
     </Pressable>
   );
