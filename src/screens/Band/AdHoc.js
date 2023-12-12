@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -11,7 +11,6 @@ import { useFetch } from "../../hooks/useFetch";
 import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
-import TaskViewSection from "../../components/Band/Project/ProjectTask/TaskViewSection";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
@@ -100,8 +99,6 @@ const AdHocScreen = () => {
       <Flex style={styles.container}>
         <Flex gap={15} style={{ marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
-
-          {/* <TaskViewSection changeView={changeView} view={view} /> */}
 
           <Flex flexDir="row" mt={11} mb={21}>
             <TaskFilter
