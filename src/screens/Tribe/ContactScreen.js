@@ -118,21 +118,8 @@ const ContactScreen = () => {
 
       <Flex px={3} flex={1} flexDir="column">
         {/* Content here */}
-
-        {/* If there are no data handler */}
-        {employeeData?.data?.data.length === 0 ? (
-          <VStack space={2} alignItems="center" justifyContent="center">
-            <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
-            <Text>No Data</Text>
-          </VStack>
-        ) : employeeDataIsFetching ? (
-          <VStack alignItems="center" mt={5} space={2}>
-            <Skeleton h={82} />
-            <Skeleton h={82} />
-            <Skeleton h={82} />
-            <Skeleton h={82} />
-            <Skeleton h={82} />
-          </VStack>
+        {employeeDataIsLoading ? (
+          <Spinner />
         ) : (
           <FlashList
             data={contacts.length ? contacts : filteredDataArray}
@@ -144,9 +131,7 @@ const ContactScreen = () => {
             onEndReachedThreshold={0.1}
             estimatedItemSize={200}
             onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-            ListFooterComponent={() =>
-              employeeDataIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
-            }
+            ListFooterComponent={() => employeeDataIsFetching && <Spinner />}
             renderItem={({ item }) => (
               <ContactList
                 key={item?.id}

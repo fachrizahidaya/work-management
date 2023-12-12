@@ -29,7 +29,7 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <Box flex={1} minHeight={2}>
+      <Box flex={1} height={540}>
         <FlashList
           data={comments}
           initialNumToRender={10}
@@ -39,7 +39,7 @@ const FeedCommentList = ({
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          ListFooterComponent={() => hasBeenScrolled && commentIsFetching && <Spinner size="sm" />}
+          ListFooterComponent={() => commentIsFetching && <Spinner />}
           onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
           estimatedItemSize={100}
           refreshControl={

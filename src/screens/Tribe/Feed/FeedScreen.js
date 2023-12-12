@@ -64,7 +64,7 @@ const FeedScreen = () => {
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComments,
-    limit: 50,
+    limit: 10,
   };
 
   const {
@@ -110,7 +110,7 @@ const FeedScreen = () => {
    */
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffsetComments(currentOffsetComments + 50);
+      setCurrentOffsetComments(currentOffsetComments + 10);
     }
   };
 

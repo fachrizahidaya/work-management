@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 import { Clipboard, Linking } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
