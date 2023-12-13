@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 import { Clipboard, Linking } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
@@ -24,17 +24,9 @@ const FeedComment = ({
   onSubmit,
   onReply,
   latestExpandedReply,
+  employeeUsername,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [commentReplies, setCommentReplies] = useState(false);
-  const [viewReplyToggle, setViewReplyToggle] = useState(false);
-  const [hideReplies, setHideReplies] = useState(false);
-
-  const {
-    data: commentRepliesData,
-    isFetching: commentRepliesDataIsFetching,
-    refetch: refetchCommentRepliesData,
-  } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
 
   const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
@@ -95,12 +87,7 @@ const FeedComment = ({
                 handleLinkPress={handleLinkPress}
                 handleEmailPress={handleEmailPress}
                 copyToClipboard={copyToClipboard}
-                commentRepliesData={commentRepliesData}
-                refetchCommentRepliesData={refetchCommentRepliesData}
-                hideReplies={hideReplies}
-                setHideReplies={setHideReplies}
-                viewReplyToggle={viewReplyToggle}
-                setViewReplyToggle={setViewReplyToggle}
+                employeeUsername={employeeUsername}
               />
             </Flex>
           </ScrollView>

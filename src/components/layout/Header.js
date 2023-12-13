@@ -35,7 +35,7 @@ const Header = () => {
    * Unread messages changes event listener
    */
   const unreadMessagesEvent = () => {
-    laravelEcho.channel(`unread.message.${userSelector?.id}`).listen(".unread.message", (event) => {
+    laravelEcho?.channel(`unread.message.${userSelector?.id}`)?.listen(".unread.message", (event) => {
       openNotificationCard();
       setUnreadMessages(event);
     });

@@ -51,7 +51,7 @@ const LeaveRequestList = ({
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
-                estimatedItemSize={200}
+                estimatedItemSize={70}
                 refreshing={true}
                 refreshControl={
                   <RefreshControl
@@ -101,7 +101,7 @@ const LeaveRequestList = ({
                 data={approvedLeaveRequests}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
-                estimatedItemSize={200}
+                estimatedItemSize={70}
                 refreshing={true}
                 refreshControl={
                   <RefreshControl
@@ -150,7 +150,7 @@ const LeaveRequestList = ({
               data={rejectedLeaveRequests}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
-              estimatedItemSize={200}
+              estimatedItemSize={70}
               refreshing={true}
               refreshControl={
                 <RefreshControl

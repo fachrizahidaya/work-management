@@ -1,32 +1,22 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import Tabs from "../../../components/shared/Tabs";
 import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
-import { useMemo } from "react";
-import { useCallback } from "react";
-import { useEffect } from "react";
 import CancelAction from "../../../components/Tribe/Leave/CancelAction";
 
 const LeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
-  const [tabValue, setTabValue] = useState("pending");
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
   const navigation = useNavigation();
-
-  const tabs = useMemo(() => {
-    return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
-  }, []);
 
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);

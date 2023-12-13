@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Skeleton, Spinner, VStack } from "native-base";
+import { Flex, Spinner, VStack, useToast } from "native-base";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -14,6 +14,8 @@ import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullS
 import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import { useCallback } from "react";
+import { ErrorToast } from "../../../components/shared/ToastDialog";
+import axiosInstance from "../../../config/api";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -44,6 +46,8 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
+  const toast = useToast();
+
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
 
   const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
@@ -51,6 +55,15 @@ const EmployeeProfileScreen = ({ route }) => {
   const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
 
   const { data: profile } = useFetch("/hr/my-profile");
+
+  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const employeeUsername = employees?.data?.map((item, index) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
 
   // Parameters for fetch posts
   const postFetchParameters = {
@@ -74,6 +87,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const {
     data: comment,
     isFetching: commentIsFetching,
+    isLoading: commentIsLoading,
     refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComment], commentsFetchParameters);
 
@@ -264,6 +278,7 @@ const EmployeeProfileScreen = ({ route }) => {
                     personalPostIsLoading={personalPostIsLoading}
                     toggleFullScreen={toggleFullScreen}
                     openSelectedPersonalPost={openSelectedPersonalPost}
+                    employeeUsername={employeeUsername}
                   />
                   {commentsOpen && (
                     <FeedComment
@@ -273,6 +288,7 @@ const EmployeeProfileScreen = ({ route }) => {
                       loggedEmployeeImage={profile?.data?.image}
                       comments={comments}
                       commentIsFetching={commentIsFetching}
+                      commentIsLoading={commentIsLoading}
                       refetchComment={refetchComment}
                       handleOpen={commentsOpenHandler}
                       handleClose={commentsCloseHandler}

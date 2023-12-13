@@ -83,12 +83,9 @@ const FeedCard = ({
         ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
-        initialNumToRender={20}
-        maxToRenderPerBatch={20}
-        windowSize={20}
         onEndReachedThreshold={0.1}
         keyExtractor={(item, index) => index}
-        estimatedItemSize={200}
+        estimatedItemSize={150}
         refreshing={true}
         onScrollBeginDrag={() => {
           setHasBeenScrolled(true); // user has scrolled handler
