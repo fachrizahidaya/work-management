@@ -7,17 +7,14 @@ import { StyleSheet, Text, View } from "react-native";
 import { Actionsheet, Icon } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
-
 const BandScreensSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
-  const { mergedMenu } = useGetSubMenu(menuSelector.user_menu);
 
   return (
     <Actionsheet isOpen={isOpen} onClose={toggle}>
       <Actionsheet.Content>
-        {mergedMenu.map((item, idx) => {
+        {menuSelector.user_menu.menu?.map((item, idx) => {
           return (
             <Actionsheet.Item
               key={idx}
@@ -27,10 +24,11 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
                 navigation.navigate(item.name);
                 toggle();
               }}
+              _pressed={{ bgColor: "#f1f1f1" }}
             >
               <View style={styles.flex}>
                 <View style={styles.item}>
-                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={6} color="#2A7290" />
+                  <Icon as={<MaterialCommunityIcons name={item.mobile_icon} />} size={6} color="#2A7290" />
                 </View>
                 <Text style={styles.text}>{item.name}</Text>
               </View>

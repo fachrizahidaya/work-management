@@ -62,13 +62,25 @@ const ControlSection = ({ taskStatus, selectedTask, refetchTask }) => {
 
       <Actionsheet isOpen={sheetIsOpen} onClose={toggleSheet}>
         <Actionsheet.Content>
-          <Actionsheet.Item onPress={() => changeTaskStatus("open")} disabled={isLoading}>
+          <Actionsheet.Item
+            onPress={() => changeTaskStatus("open")}
+            disabled={isLoading}
+            _pressed={{ bgColor: "#f1f1f1" }}
+          >
             Open
           </Actionsheet.Item>
-          <Actionsheet.Item onPress={() => changeTaskStatus("start")} disabled={isLoading}>
+          <Actionsheet.Item
+            onPress={() => changeTaskStatus("start")}
+            disabled={isLoading}
+            _pressed={{ bgColor: "#f1f1f1" }}
+          >
             On Progress
           </Actionsheet.Item>
-          <Actionsheet.Item onPress={() => changeTaskStatus("finish")} disabled={isLoading}>
+          <Actionsheet.Item
+            onPress={() => changeTaskStatus("finish")}
+            disabled={isLoading}
+            _pressed={{ bgColor: "#f1f1f1" }}
+          >
             Finish
           </Actionsheet.Item>
         </Actionsheet.Content>

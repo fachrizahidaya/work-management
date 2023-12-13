@@ -150,6 +150,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
                           togglePriorityMenu();
                           formik.setFieldValue("priority", status);
                         }}
+                        _pressed={{ bgColor: "#f1f1f1" }}
                       >
                         <Text>{status}</Text>
                       </Actionsheet.Item>
@@ -175,6 +176,7 @@ const NewTaskSlider = ({ isOpen, onClose, taskData, projectId, selectedStatus = 
                           toggleScoreMenu();
                           formik.setFieldValue("score", score);
                         }}
+                        _pressed={{ bgColor: "#f1f1f1" }}
                       >
                         <Text>{score}</Text>
                       </Actionsheet.Item>

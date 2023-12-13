@@ -97,6 +97,7 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
                       changeProjectStatusHandler(status === "On Progress" ? "start" : "finish");
                     }
                   }}
+                  _pressed={{ bgColor: "#f1f1f1" }}
                 >
                   <Flex flexDir="row" gap={2} alignItems="center">
                     <Box
