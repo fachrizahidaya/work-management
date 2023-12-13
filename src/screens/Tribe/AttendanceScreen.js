@@ -114,6 +114,8 @@ const AttendanceScreen = () => {
             earlyStatus: item?.early_status,
             confirmation: item?.confirm,
             date: item?.date,
+            onDuty: item?.on_duty,
+            offDuty: item?.off_duty,
           },
         ];
       });
