@@ -39,7 +39,9 @@ const NewLeaveRequestForm = ({
           dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
         >
           {leaveType?.data.map((item, index) => {
-            return <Select.Item key={index} label={item?.name} value={item?.id} />;
+            return (
+              <Select.Item _pressed={{ backgroundColor: "#f1f1f1" }} key={index} label={item?.name} value={item?.id} />
+            );
           })}
         </Select>
         <FormControl mt={-2} isInvalid={formik.errors.leave_id}>

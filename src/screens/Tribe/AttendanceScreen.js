@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, Fragment } from "react";
 import dayjs from "dayjs";
+import * as DocumentPicker from "expo-document-picker";
 
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, useToast } from "native-base";
@@ -14,6 +15,8 @@ import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceModal from "../../components/Tribe/Attendance/AttendanceModal";
+import AddAttachment from "../../components/Tribe/Attendance/AddAttachment";
+import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -22,17 +25,28 @@ const AttendanceScreen = () => {
   });
   const [items, setItems] = useState({});
   const [date, setDate] = useState({});
+  const [fileAttachment, setFileAttachment] = useState(null);
+  const [attachmentId, setAttachmentId] = useState(null);
+  const [forceRenderer, setForceRenderer] = useState(false);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
+  const { isOpen: addAttachmentIsOpen, toggle: toggleAddAttachment } = useDisclosure(false);
+  const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
 
   const toast = useToast();
 
   const attendanceFetchParameters = filter;
 
-  // initial date handler
   const CURRENT_DATE = dayjs().format("YYYY-MM-DD");
+
+  const {
+    data: attachment,
+    isFetching: attachmentIsFetching,
+    isLoading: attachmentIsLoading,
+    refetch: refetchAttachment,
+  } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
 
   /**
    * Status attendance Handler
@@ -167,6 +181,96 @@ const AttendanceScreen = () => {
   }, []);
 
   /**
+   * Select file handler
+   */
+  const selectFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
+
+      // Check if there is selected file
+      if (result) {
+        if (result.assets[0].size < 3000001) {
+          setFileAttachment({
+            name: result.assets[0].name,
+            size: result.assets[0].size,
+            type: result.assets[0].mimeType,
+            uri: result.assets[0].uri,
+            webkitRelativePath: "",
+          });
+        } else {
+          Alert.alert("Max file size is 3MB");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Handle attachment submit
+   *
+   * @param {*} data
+   */
+  const attachmentSubmitHandler = async (data, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/hr/timesheets/personal/attachments`, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      setForceRenderer(true);
+      refetchAttachment();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Attachment Submitted" close={() => toast.close(id)} />;
+        },
+      });
+      setStatus("success");
+      setSubmitting(false);
+    } catch (err) {
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Submit failed, please try again later" close={() => toast.close(id)} />;
+        },
+      });
+      setStatus("error");
+      setSubmitting(false);
+    }
+  };
+
+  const openDeleteAttachmentModalHandler = (id) => {
+    setAttachmentId(id);
+    toggleDeleteAttachment();
+  };
+
+  /**
+   * Handle attachment delete event
+   *
+   * @param {*} attachment_id
+   */
+  const attachmentDeleteHandler = async (attachment_id, itemName, setIsLoading) => {
+    try {
+      const res = await axiosInstance.delete(`/hr/timesheets/personal/attachments/${attachment_id}`);
+      refetchAttachment();
+      toast.show({
+        render: ({ id }) => {
+          return <SuccessToast message="Attachment Deleted" close={() => toast.close(id)} />;
+        },
+      });
+      setIsLoading(false);
+    } catch (err) {
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Submit failed, please try again later" close={() => toast.close(id)} />;
+        },
+      });
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Marked dates in Calendar Handler
    * @returns
    */
@@ -266,7 +370,15 @@ const AttendanceScreen = () => {
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
         <ScrollView
-          refreshControl={<RefreshControl refreshing={attendanceDataIsFetching} onRefresh={refetchAttendanceData} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={attendanceDataIsFetching && attachmentIsFetching}
+              onRefresh={() => {
+                refetchAttendanceData;
+                refetchAttachment;
+              }}
+            />
+          }
         >
           <AttendanceCalendar
             attendance={attendanceData?.data}
@@ -278,6 +390,12 @@ const AttendanceScreen = () => {
             onSelectDate={toggleDateHandler}
             items={items}
             renderCalendar={renderCalendarWithMultiDotMarking}
+            attachment={attachment}
+            toggle={toggleAddAttachment}
+            onSelectFile={selectFile}
+            onDelete={attachmentDeleteHandler}
+            setAttachmentId={openDeleteAttachmentModalHandler}
+            forceRenderer={forceRenderer}
           />
         </ScrollView>
       </SafeAreaView>
@@ -296,6 +414,22 @@ const AttendanceScreen = () => {
         isLeave={isLeave}
         isPermit={isPermit}
         CURRENT_DATE={CURRENT_DATE}
+      />
+      <AddAttachment
+        isOpen={addAttachmentIsOpen}
+        toggle={toggleAddAttachment}
+        onSelectFile={selectFile}
+        fileAttachment={fileAttachment}
+        setFileAttachment={setFileAttachment}
+        onSubmit={attachmentSubmitHandler}
+      />
+      <ConfirmationModal
+        isOpen={deleteAttachmentIsOpen}
+        toggle={toggleDeleteAttachment}
+        successMessage="Attachment Deleted"
+        isDelete={true}
+        description="Are you sure want to delete attachment?"
+        apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
       />
     </>
   );
