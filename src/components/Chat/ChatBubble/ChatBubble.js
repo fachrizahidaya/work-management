@@ -9,6 +9,7 @@ import Animated, {
   useAnimatedGestureHandler,
   useSharedValue,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
 const LIST_ITEM_HEIGHT = 70;
 
@@ -39,10 +40,7 @@ const ChatBubble = ({
   reply_to,
   openChatBubbleHandler,
   toggleFullScreen,
-
   onSwipe,
-  modalAppeared,
-  setModalAppeared,
   isOptimistic,
 }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -50,10 +48,6 @@ const ChatBubble = ({
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
-
-  const startingPosition = 0;
-
-  const translateX = useSharedValue(0);
 
   let styledTexts = null;
   if (content?.length !== 0) {
@@ -117,22 +111,34 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
+  const MAX_TRANSLATEX = 100;
+
+  const translateX = useSharedValue(0);
+
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
-      translateX.value = event.translationX;
+      if (event.translationX > 0) {
+        translateX.value = event.translationX;
+      }
     },
-    onEnd: () => {
+    onEnd: (event) => {
+      if (event.translationX > 0) {
+        runOnJS(onSwipe)(chat);
+      }
       translateX.value = withTiming(0);
     },
   });
 
-  const rTaskContainerStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateX: translateX.value,
-      },
-    ],
-  }));
+  const rTaskContainerStyle = useAnimatedStyle(() => {
+    const limitedTranslateX = Math.max(translateX.value, 0);
+    return {
+      transform: [
+        {
+          translateX: limitedTranslateX,
+        },
+      ],
+    };
+  });
 
   return (
     <Flex
@@ -151,13 +157,12 @@ const ChatBubble = ({
             <Box ml={8}></Box>
           ) : null} */}
 
-      <PanGestureHandler onEnded={() => onSwipe(chat)} onGestureEvent={panGesture}>
+      <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             maxWidth={300}
             onLongPress={() => {
               !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
-              setModalAppeared(true);
             }}
             delayLongPress={200}
             borderRadius={10}
@@ -167,7 +172,6 @@ const ChatBubble = ({
             px={1.5}
             bgColor={isOptimistic ? "gray.500" : !myMessage ? "#FFFFFF" : "primary.600"}
             gap={1}
-            zIndex={modalAppeared ? 2 : null}
           >
             {type === "group" && name && !myMessage && (
               <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>

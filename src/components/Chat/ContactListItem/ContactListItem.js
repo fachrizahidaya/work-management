@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, Swipeable } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useAnimatedGestureHandler,
@@ -16,6 +16,7 @@ const LIST_ITEM_HEIGHT = 70;
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+import { useRef } from "react";
 
 const ContactListItem = ({
   chat,
@@ -40,6 +41,7 @@ const ContactListItem = ({
   onSwipe,
 }) => {
   const navigation = useNavigation();
+  const swipeableRef = useRef(null);
 
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
@@ -47,7 +49,6 @@ const ContactListItem = ({
   const opacity = useSharedValue(1);
 
   const startingPosition = 0;
-  const x = useSharedValue(startingPosition);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -108,30 +109,50 @@ const ContactListItem = ({
     return text;
   };
 
-  const panGesture = useAnimatedGestureHandler({
-    onActive: (event) => {
-      translateX.value = event.translationX;
-    },
-    onEnd: () => {
-      translateX.value = withTiming(0);
-    },
-  });
+  // const panGesture = useAnimatedGestureHandler({
+  //   onActive: (event) => {
+  //     translateX.value = event.translationX;
+  //   },
+  //   onEnd: () => {
+  //     translateX.value = withTiming(0);
+  //   },
+  // });
 
-  const rTaskContainerStyle = useAnimatedStyle(() => ({
-    height: itemHeight.value,
-    marginVertical: marginVertical.value,
-    opacity: opacity.value,
-    transform: [
-      {
-        translateX: translateX.value,
-      },
-    ],
-    backgroundColor: "white",
-  }));
+  // const rTaskContainerStyle = useAnimatedStyle(() => ({
+  //   height: itemHeight.value,
+  //   marginVertical: marginVertical.value,
+  //   opacity: opacity.value,
+  //   transform: [
+  //     {
+  //       translateX: translateX.value,
+  //     },
+  //   ],
+  //   backgroundColor: "white",
+  // }));
+
+  const renderRightView = (progress, dragX) => {
+    return (
+      <Pressable
+        onPress={() => {
+          if (swipeableRef.current) {
+            swipeableRef.current.close();
+          }
+          onSwipe(chat);
+        }}
+        p={5}
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="#959595"
+      >
+        <Icon as={<MaterialIcons name="more-horiz" />} color="white" />
+        <Text color="white">More</Text>
+      </Pressable>
+    );
+  };
 
   return (
     <Box>
-      <Pressable
+      {/* <Pressable
         mt={5}
         style={[styles.iconContainer]}
         alignItems="center"
@@ -143,101 +164,103 @@ const ContactListItem = ({
         <Text fontSize={12} fontWeight={400} style={{ color: "white" }}>
           More
         </Text>
-      </Pressable>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          navigation.navigate("Chat Room", {
-            userId: userId,
-            name: name,
-            roomId: id,
-            image: image,
-            position: position,
-            email: email,
-            type: type,
-            active_member: active_member,
-            isPinned: isPinned,
-          });
-        }}
-      >
-        <PanGestureHandler onEnded={() => onSwipe(chat)} onGestureEvent={panGesture}>
-          <Animated.View style={[rTaskContainerStyle]}>
-            <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
-              <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
-                <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
+      </Pressable> */}
+      <Swipeable ref={swipeableRef} renderRightActions={renderRightView} rightThreshold={-100}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            navigation.navigate("Chat Room", {
+              userId: userId,
+              name: name,
+              roomId: id,
+              image: image,
+              position: position,
+              email: email,
+              type: type,
+              active_member: active_member,
+              isPinned: isPinned,
+            });
+          }}
+        >
+          {/* <PanGestureHandler onEnded={() => onSwipe(chat)} onGestureEvent={panGesture}> */}
+          {/* <Animated.View style={[rTaskContainerStyle]}> */}
+          <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
+            <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
+              <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
-                <Box flex={1}>
-                  <HStack justifyContent="space-between">
-                    {!searchKeyword ? (
-                      <Text>{name}</Text>
-                    ) : (
-                      <RenderHtml
-                        contentWidth={400}
-                        source={{
-                          html: renderName(),
-                        }}
-                      />
-                    )}
+              <Box flex={1}>
+                <HStack justifyContent="space-between">
+                  {!searchKeyword ? (
+                    <Text>{name}</Text>
+                  ) : (
+                    <RenderHtml
+                      contentWidth={400}
+                      source={{
+                        html: renderName(),
+                      }}
+                    />
+                  )}
 
-                    <Flex flexDirection="row">
-                      <ChatTimeStamp time={time} timestamp={timestamp} />
-                    </Flex>
-                  </HStack>
-
-                  <Flex flexDir="row" alignItems="center" gap={1}>
-                    {!isDeleted ? (
-                      <>
-                        <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                          <Flex flexDirection="row">
-                            {type === "group" && chat?.latest_message && (
-                              <Text>{chat?.latest_message?.user?.name}: </Text>
-                            )}
-                            {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
-                          </Flex>
-                          {message === null && (project || task || fileName) && (
-                            <HStack alignItems="center" space={1}>
-                              <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
-                              <Text>{generateAttachmentText()}</Text>
-                            </HStack>
-                          )}
-                          {!!isRead && (
-                            <Box
-                              style={{
-                                height: 25,
-                                width: 25,
-                              }}
-                              bgColor="#FD7972"
-                              borderRadius={10}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                            >
-                              <Text fontSize={12} textAlign="center" color="white">
-                                {isRead > 20 ? "20+" : isRead}
-                              </Text>
-                            </Box>
-                          )}
-                        </HStack>
-                      </>
-                    ) : (
-                      <Text fontStyle="italic" opacity={0.5}>
-                        Message has been deleted
-                      </Text>
-                    )}
-                    {isPinned?.pin_chat ? (
-                      <Icon
-                        as={<MaterialCommunityIcons name="pin" />}
-                        size="md"
-                        style={{ transform: [{ rotate: "45deg" }] }}
-                      />
-                    ) : null}
+                  <Flex flexDirection="row">
+                    <ChatTimeStamp time={time} timestamp={timestamp} />
                   </Flex>
-                </Box>
-              </Flex>
+                </HStack>
+
+                <Flex flexDir="row" alignItems="center" gap={1}>
+                  {!isDeleted ? (
+                    <>
+                      <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                        <Flex flexDirection="row">
+                          {type === "group" && chat?.latest_message && (
+                            <Text>{chat?.latest_message?.user?.name}: </Text>
+                          )}
+                          {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                        </Flex>
+                        {message === null && (project || task || fileName) && (
+                          <HStack alignItems="center" space={1}>
+                            <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
+                            <Text>{generateAttachmentText()}</Text>
+                          </HStack>
+                        )}
+                        {!!isRead && (
+                          <Box
+                            style={{
+                              height: 25,
+                              width: 25,
+                            }}
+                            bgColor="#FD7972"
+                            borderRadius={10}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Text fontSize={12} textAlign="center" color="white">
+                              {isRead > 20 ? "20+" : isRead}
+                            </Text>
+                          </Box>
+                        )}
+                      </HStack>
+                    </>
+                  ) : (
+                    <Text fontStyle="italic" opacity={0.5}>
+                      Message has been deleted
+                    </Text>
+                  )}
+                  {isPinned?.pin_chat ? (
+                    <Icon
+                      as={<MaterialCommunityIcons name="pin" />}
+                      size="md"
+                      style={{ transform: [{ rotate: "45deg" }] }}
+                    />
+                  ) : null}
+                </Flex>
+              </Box>
             </Flex>
-          </Animated.View>
-        </PanGestureHandler>
-      </TouchableOpacity>
+          </Flex>
+          {/* </Animated.View> */}
+          {/* </PanGestureHandler> */}
+        </TouchableOpacity>
+      </Swipeable>
     </Box>
   );
 };

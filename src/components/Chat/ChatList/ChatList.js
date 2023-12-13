@@ -23,8 +23,6 @@ const ChatList = ({
   bandAttachmentType,
   setBandAttachment,
   onSwipeToReply,
-  modalAppeared,
-  setModalAppeared,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -118,8 +116,6 @@ const ChatList = ({
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               openChatBubbleHandler={openChatBubbleHandler}
               onSwipe={onSwipeToReply}
-              modalAppeared={modalAppeared}
-              setModalAppeared={setModalAppeared}
               isOptimistic={item?.isOptimistic}
             />
           </>

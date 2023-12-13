@@ -41,7 +41,6 @@ const ChatRoom = () => {
   const [isReady, setIsReady] = useState(false);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [placement, setPlacement] = useState(undefined);
-  const [modalAppeared, setModalAppeared] = useState(false);
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
 
   const swipeToReply = (message) => {
@@ -638,8 +637,6 @@ const ChatRoom = () => {
               toggleFullScreen={toggleFullScreen}
               onSwipeToReply={swipeToReply}
               placement={placement}
-              modalAppeared={modalAppeared}
-              setModalAppeared={setModalAppeared}
             />
 
             <ChatInput
