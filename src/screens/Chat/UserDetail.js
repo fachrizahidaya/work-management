@@ -9,17 +9,17 @@ import { SafeAreaView } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRoute } from "@react-navigation/native";
 
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
-import UserListModal from "../../components/Chat/UserDetail/UserListModal";
 import { useFetch } from "../../hooks/useFetch";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
+import axiosInstance from "../../config/api";
+import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import UserListModal from "../../components/Chat/UserDetail/UserListModal";
 import MemberListActionModal from "../../components/Chat/UserDetail/MemberListActionModal";
 import UserAvatar from "../../components/Chat/UserDetail/UserAvatar";
 import UserInformation from "../../components/Chat/UserDetail/UserInformation";
 import UserAction from "../../components/Chat/UserDetail/UserAction";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
-import axiosInstance from "../../config/api";
 import UserMedia from "../../components/Chat/UserDetail/UserMedia";
 import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
 

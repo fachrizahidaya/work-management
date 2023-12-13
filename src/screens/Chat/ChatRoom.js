@@ -731,7 +731,6 @@ const ChatRoom = () => {
             onClose={toggleMenu}
             selectFile={selectFile}
             pickImageHandler={pickImageHandler}
-            selectBandHandler={selectBandHandler}
             navigation={navigation}
             bandAttachment={bandAttachment}
             setBandAttachment={setBandAttachment}

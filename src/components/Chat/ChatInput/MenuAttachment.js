@@ -6,7 +6,6 @@ const MenuAttachment = ({
   onClose,
   selectFile,
   pickImageHandler,
-  selectBandHandler,
   navigation,
   bandAttachment,
   setBandAttachment,
