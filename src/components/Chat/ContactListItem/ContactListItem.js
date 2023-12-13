@@ -43,13 +43,6 @@ const ContactListItem = ({
   const navigation = useNavigation();
   const swipeableRef = useRef(null);
 
-  const translateX = useSharedValue(0);
-  const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
-  const marginVertical = useSharedValue(10);
-  const opacity = useSharedValue(1);
-
-  const startingPosition = 0;
-
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
     return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
@@ -109,26 +102,25 @@ const ContactListItem = ({
     return text;
   };
 
-  // const panGesture = useAnimatedGestureHandler({
-  //   onActive: (event) => {
-  //     translateX.value = event.translationX;
-  //   },
-  //   onEnd: () => {
-  //     translateX.value = withTiming(0);
-  //   },
-  // });
-
-  // const rTaskContainerStyle = useAnimatedStyle(() => ({
-  //   height: itemHeight.value,
-  //   marginVertical: marginVertical.value,
-  //   opacity: opacity.value,
-  //   transform: [
-  //     {
-  //       translateX: translateX.value,
-  //     },
-  //   ],
-  //   backgroundColor: "white",
-  // }));
+  const renderLeftView = (progress, dragX) => {
+    return (
+      <Pressable
+        onPress={() => {
+          if (swipeableRef.current) {
+            swipeableRef.current.close();
+          }
+          onSwipe(chat);
+        }}
+        p={5}
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="#959595"
+      >
+        <Icon as={<MaterialIcons name="push-pin" />} color="white" style={{ transform: [{ rotate: "45deg" }] }} />
+        <Text color="white">Pin</Text>
+      </Pressable>
+    );
+  };
 
   const renderRightView = (progress, dragX) => {
     return (
@@ -152,20 +144,12 @@ const ContactListItem = ({
 
   return (
     <Box>
-      {/* <Pressable
-        mt={5}
-        style={[styles.iconContainer]}
-        alignItems="center"
-        backgroundColor="#959595"
-        justifyContent="center"
-        padding={3}
+      <Swipeable
+        ref={swipeableRef}
+        // renderLeftActions={renderLeftView}
+        renderRightActions={renderRightView}
+        rightThreshold={-100}
       >
-        <Icon as={<MaterialIcons name="more-horiz" />} color="white" />
-        <Text fontSize={12} fontWeight={400} style={{ color: "white" }}>
-          More
-        </Text>
-      </Pressable> */}
-      <Swipeable ref={swipeableRef} renderRightActions={renderRightView} rightThreshold={-100}>
         <TouchableOpacity
           style={{ backgroundColor: "white" }}
           activeOpacity={1}
@@ -183,8 +167,6 @@ const ContactListItem = ({
             });
           }}
         >
-          {/* <PanGestureHandler onEnded={() => onSwipe(chat)} onGestureEvent={panGesture}> */}
-          {/* <Animated.View style={[rTaskContainerStyle]}> */}
           <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
             <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
               <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
@@ -258,8 +240,6 @@ const ContactListItem = ({
               </Box>
             </Flex>
           </Flex>
-          {/* </Animated.View> */}
-          {/* </PanGestureHandler> */}
         </TouchableOpacity>
       </Swipeable>
     </Box>
