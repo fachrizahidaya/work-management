@@ -16,6 +16,7 @@ const NewFeedForm = ({
   inputRef,
   mentionIsOpen,
   toggleMention,
+  checkAccess,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,11 +67,6 @@ const NewFeedForm = ({
               style={{ transform: [{ rotate: "-35deg" }] }}
             />
           </Pressable>
-          {/* <Pressable
-          onPress={pickImageHandler}
-          >
-            <Icon as={<MaterialCommunityIcons name="at" />} size={25} color="#377893" />
-          </Pressable> */}
         </Flex>
 
         <Pressable

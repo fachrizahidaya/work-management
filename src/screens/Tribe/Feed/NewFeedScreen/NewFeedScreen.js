@@ -5,6 +5,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
+import { useSelector } from "react-redux";
 
 import { Box, Flex, Icon, Text, useToast, Button, VStack, Spinner } from "native-base";
 
@@ -31,6 +32,9 @@ const NewFeedScreen = ({ route }) => {
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: mentionIsOpen, toggle: toggleMention } = useDisclosure(false);
 
+  const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
+
+  const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
   const toast = useToast();
 
   const navigation = useNavigation();
@@ -235,10 +239,16 @@ const NewFeedScreen = ({ route }) => {
           <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
             <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
             <Flex gap={1}>
-              <Button height={25} onPress={() => togglePostType()} borderRadius="full" variant="outline">
+              <Button
+                disabled={checkAccess ? false : true}
+                height={25}
+                onPress={() => togglePostType()}
+                borderRadius="full"
+                variant="outline"
+              >
                 <Flex alignItems="center" flexDir="row">
                   <Text fontSize={10}>{formik.values.type}</Text>
-                  <Icon as={<MaterialCommunityIcons name="chevron-down" />} />
+                  {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
                 </Flex>
               </Button>
               {formik.values.type === "Public" ? (
@@ -272,6 +282,7 @@ const NewFeedScreen = ({ route }) => {
             inputRef={inputRef}
             mentionIsOpen={mentionIsOpen}
             toggleMention={toggleMention}
+            checkAccess={checkAccess}
           />
           <PostAction
             publicToggleHandler={publicToggleHandler}

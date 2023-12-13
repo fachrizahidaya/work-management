@@ -1,12 +1,13 @@
-import { Actionsheet, Box, Button, Flex, FormControl, Icon, Input, Pressable, Text, VStack } from "native-base";
+import { useEffect } from "react";
+import * as yup from "yup";
+import { useFormik } from "formik";
+
+import { Actionsheet, Box, FormControl, Input, Pressable, Text, VStack } from "native-base";
 import { Platform } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useEffect } from "react";
 
 const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAttachment, onSubmit }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();

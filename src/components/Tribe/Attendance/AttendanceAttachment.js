@@ -1,6 +1,6 @@
-import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Box, Flex, Icon, Image, Text } from "native-base";
+import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const AttendanceAttachment = ({ attachment, toggle, onSelectFile, onDelete, setAttachmentId, forceRenderer }) => {
