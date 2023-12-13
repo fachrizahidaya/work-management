@@ -109,6 +109,10 @@ const ProjectScreen = () => {
   );
 
   useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchInput]);
+
+  useEffect(() => {
     if (project?.data.length && projectIsFetching === false) {
       if (currentOffsetProject === 0) {
         if (!searchInput) {
@@ -138,20 +142,21 @@ const ProjectScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
+      <Flex direction="row" bg="white" p={4}>
         <Flex flex={1} direction="row" alignItems="center">
           <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
           <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
+          <OptionButton
+            setSearchInput={setSearchInput}
+            setInputToShow={setInputToShow}
+            tabValue={tabValue}
+            setTabValue={setTabValue}
+          />
         </Flex>
       </Flex>
-      <OptionButton
-        setSearchInput={setSearchInput}
-        setInputToShow={setInputToShow}
-        tabValue={tabValue}
-        setTabValue={setTabValue}
-      />
+
       <SearchBox
         handleSearch={handleSearch}
         inputToShow={inputToShow}
@@ -186,50 +191,7 @@ const ProjectScreen = () => {
         taskIsFetching={taskIsFetching}
         projectIsLoading={projectIsLoading}
         taskIsLoading={taskIsLoading}
-        // taskId={taskId}
-        // setTaskId={setTaskId}
       />
-      {tabValue === "task" ? (
-        <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-          <Pressable
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            flex={1}
-            direction="row"
-            alignItems="center"
-            bgColor="#f5f5f5"
-            borderRadius={10}
-            p={2}
-            opacity={!selectedTask ? 0.5 : 1}
-            onPress={() => {
-              setBandAttachment(selectedTask);
-              setBandAttachmentType("task");
-              navigation.navigate("Chat Room", {
-                userId: userId,
-                name: name,
-                roomId: roomId,
-                image: image,
-                position: position,
-                email: email,
-                type: type,
-                active_member: active_member,
-                isPinned: isPinned,
-              });
-            }}
-          >
-            <Text fontSize={14} fontWeight={400} opacity={!selectedTask ? 0.5 : 1} color="primary.600">
-              Import Task
-            </Text>
-            <Icon
-              as={<MateriaCommunitylIcons name="lightning-bolt" />}
-              opacity={!selectedTask ? 0.5 : 1}
-              size="xl"
-              color="primary.600"
-            />
-          </Pressable>
-        </Flex>
-      ) : null}
     </SafeAreaView>
   );
 };

@@ -1,11 +1,14 @@
 import dayjs from "dayjs";
+import { useNavigation, useRoute } from "@react-navigation/core";
+
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { StyleSheet, SafeAreaView } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import { useNavigation, useRoute } from "@react-navigation/core";
 import Description from "../../components/Chat/ProjectTask/Description";
 import DateSection from "../../components/Chat/ProjectTask/DateSection";
 import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
@@ -32,15 +35,15 @@ const ProjectDetail = () => {
     setBandAttachmentType,
   } = routes.params;
   const {
-    data: projectTask,
-    isFetching: projectTaskIsFetching,
-    refetch: refetchProjectTask,
-  } = useFetch(`/chat/task/project/${project_id}`);
-  const {
     data: project,
     isFetching: projectIsFetching,
     refetch: refetchProject,
   } = useFetch(`/chat/project/${project_id}`);
+  const {
+    data: projectTask,
+    isFetching: projectTaskIsFetching,
+    refetch: refetchProjectTask,
+  } = useFetch(`/chat/task/project/${project_id}`);
   return (
     <SafeAreaView style={styles.container}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>

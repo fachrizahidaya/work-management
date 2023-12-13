@@ -1,5 +1,4 @@
-import { Box, Flex, Pressable, ScrollView, Text } from "native-base";
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { Box, ScrollView, Text } from "native-base";
 
 const Description = ({ navigation, description }) => {
   return (

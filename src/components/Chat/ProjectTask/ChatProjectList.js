@@ -42,7 +42,7 @@ const ChatProjectList = ({
           onEndReachedThreshold={0.1}
           renderItem={({ item, index }) =>
             projectIsLoading ? (
-              <Spinner color="primary.600" size="sm" />
+              <Spinner />
             ) : (
               <ChatProjectItem
                 key={index}
@@ -52,8 +52,6 @@ const ChatProjectList = ({
                 owner={item?.owner?.name}
                 image={item?.owner?.image}
                 id={item?.id}
-                created_at={item?.created_at}
-                description={item?.description}
                 selected={selectedProject}
                 setSelected={setSelectedProject}
                 nameUser={name}
@@ -83,6 +81,7 @@ const ChatProjectList = ({
               <Spinner color="primary.600" size="sm" />
             ) : (
               <ChatTaskItem
+                id={item?.id}
                 key={index}
                 navigation={navigation}
                 name={item?.title}
@@ -91,7 +90,6 @@ const ChatProjectList = ({
                 image={item?.owner?.image}
                 setBandAttachment={setBandAttachment}
                 setBandAttachmentType={setBandAttachmentType}
-                task={item}
                 userId={userId}
                 roomId={roomId}
                 position={position}
@@ -105,6 +103,7 @@ const ChatProjectList = ({
                 setSelected={setSelectedTask}
                 taskId={taskId}
                 setTaskId={setTaskId}
+                item={item}
               />
             )
           }

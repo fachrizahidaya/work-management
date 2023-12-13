@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Pressable, Text } from "native-base";
+import { Box, Flex, Image, Text } from "native-base";
 
 const AttachmentSection = () => {
   return (
