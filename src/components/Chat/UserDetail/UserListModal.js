@@ -106,7 +106,7 @@ const UserListModal = ({
             }}
           >
             {addMemberIsLoading ? (
-              <Spinner size="md" color="#FFFFFF" />
+              <Spinner size="sm" color="#FFFFFF" />
             ) : (
               <Icon as={<MaterialCommunityIcons name="arrow-right" />} size="md" color="white" />
             )}
