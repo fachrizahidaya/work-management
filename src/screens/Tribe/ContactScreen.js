@@ -57,6 +57,10 @@ const ContactScreen = () => {
   );
 
   useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchInput]);
+
+  useEffect(() => {
     if (employeeData?.data?.data.length) {
       if (!searchInput) {
         setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
