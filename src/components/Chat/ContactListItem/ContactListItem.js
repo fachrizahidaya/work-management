@@ -167,6 +167,7 @@ const ContactListItem = ({
       </Pressable> */}
       <Swipeable ref={swipeableRef} renderRightActions={renderRightView} rightThreshold={-100}>
         <TouchableOpacity
+          style={{ backgroundColor: "white" }}
           activeOpacity={1}
           onPress={() => {
             navigation.navigate("Chat Room", {
