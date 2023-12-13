@@ -1,32 +1,45 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const useCheckAccess = (action_name, screen_name) => {
+const useCheckAccess = (action_name, current_path) => {
   const [checkAccess, setCheckAccess] = useState(true);
   const userMenuSelector = useSelector((state) => state.user_menu);
 
   useEffect(() => {
-    /**
-     Search if current path is found in the logged in user's available menus
-     and return the sub menu containing the related path
-     * @param {Object} screen_name - screen name to be compared
+    /*
+     * Search if current path is found in the logged in user's available menus
+     * and return the sub menu containing the related path
+     *
+     * @param current_path
+     * @returns
      */
-    const searchMenu = (screen_name) => {
+    const searchMenu = (current_path) => {
       const parent_menu = userMenuSelector.user_menu.menu?.filter((menu) => {
-        return menu.sub.some((subMenu) => {
-          return subMenu.name === screen_name;
-        });
+        if (!menu.sub.length) {
+          return menu.name === current_path;
+        } else {
+          return menu.sub.some((subMenu) => {
+            return subMenu.name === current_path;
+          });
+        }
       });
+
       if (parent_menu) {
-        const sub_menu = parent_menu[0]?.sub.filter((sub) => {
-          return sub.name === screen_name;
-        });
-        return sub_menu;
+        if (!parent_menu[0]?.sub?.length) {
+          if (parent_menu[0]?.name === current_path) {
+            return [parent_menu[0]];
+          }
+        } else {
+          const sub_menu = parent_menu[0]?.sub.filter((sub) => {
+            return sub.name === current_path;
+          });
+          return sub_menu;
+        }
       }
     };
 
     // look for the sub menu to access the actions within
-    const sub_menu = searchMenu(screen_name);
+    const sub_menu = searchMenu(current_path);
 
     /*
      * If there is a list of available actions, then we will loop through it
@@ -43,7 +56,7 @@ const useCheckAccess = (action_name, screen_name) => {
     } else {
       setCheckAccess(false);
     }
-  }, [userMenuSelector, screen_name, action_name]);
+  }, [userMenuSelector, current_path, action_name]);
 
   return checkAccess;
 };

@@ -26,6 +26,7 @@ const ProjectList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const createActionCheck = useCheckAccess("create", "Projects");
+  console.log(createActionCheck);
   const { isOpen: projectFormIsOpen, toggle: toggleProjectForm } = useDisclosure(false);
 
   const dependencies = [status, currentPage, searchInput];
