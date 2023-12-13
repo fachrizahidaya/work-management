@@ -1,4 +1,4 @@
-import { Flex, Text } from "native-base";
+import { Flex, Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 
 import ChatProjectItem from "./ChatProjectItem";
@@ -21,12 +21,16 @@ const ChatProjectList = ({
   type,
   active_member,
   isPinned,
-  selected,
-  setSelected,
   selectedProject,
   setSelectedProject,
   selectedTask,
   setSelectedTask,
+  projectIsFetching,
+  taskIsFetching,
+  projectIsLoading,
+  taskIsLoading,
+  taskId,
+  setTaskId,
 }) => {
   return (
     <Flex borderRadius={10} mx={3} flex={1} bgColor="#fafafa">
@@ -36,33 +40,35 @@ const ChatProjectList = ({
           estimatedItemSize={100}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
-          renderItem={({ item, index }) => (
-            <ChatProjectItem
-              key={index}
-              navigation={navigation}
-              name={item?.title}
-              date={item?.deadline}
-              owner={item?.owner?.name}
-              image={item?.owner?.image}
-              id={item?.id}
-              created_at={item?.created_at}
-              description={item?.description}
-              selected={selectedProject}
-              setSelected={setSelectedProject}
-              nameUser={name}
-              imageUser={image}
-              email={email}
-              active_member={active_member}
-              isPinned={isPinned}
-              type={type}
-              project={item}
-              userId={userId}
-              roomId={roomId}
-              position={position}
-              setBandAttachment={setBandAttachment}
-              setBandAttachmentType={setBandAttachmentType}
-            />
-          )}
+          renderItem={({ item, index }) =>
+            projectIsLoading ? (
+              <Spinner />
+            ) : (
+              <ChatProjectItem
+                key={index}
+                navigation={navigation}
+                name={item?.title}
+                date={item?.deadline}
+                owner={item?.owner?.name}
+                image={item?.owner?.image}
+                id={item?.id}
+                selected={selectedProject}
+                setSelected={setSelectedProject}
+                nameUser={name}
+                imageUser={image}
+                email={email}
+                active_member={active_member}
+                isPinned={isPinned}
+                type={type}
+                project={item}
+                userId={userId}
+                roomId={roomId}
+                position={position}
+                setBandAttachment={setBandAttachment}
+                setBandAttachmentType={setBandAttachmentType}
+              />
+            )
+          }
         />
       ) : (
         <FlashList
@@ -70,30 +76,37 @@ const ChatProjectList = ({
           estimatedItemSize={100}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
-          renderItem={({ item, index }) => (
-            <ChatTaskItem
-              key={index}
-              navigation={navigation}
-              name={item?.title}
-              date={item?.deadline}
-              owner={item?.owner?.name}
-              image={item?.owner?.image}
-              setBandAttachment={setBandAttachment}
-              setBandAttachmentType={setBandAttachmentType}
-              task={item}
-              userId={userId}
-              roomId={roomId}
-              position={position}
-              email={email}
-              nameUser={name}
-              imageUser={image}
-              type={type}
-              active_member={active_member}
-              isPinned={isPinned}
-              selected={selectedTask}
-              setSelected={setSelectedTask}
-            />
-          )}
+          renderItem={({ item, index }) =>
+            taskIsLoading ? (
+              <Spinner color="primary.600" size="sm" />
+            ) : (
+              <ChatTaskItem
+                id={item?.id}
+                key={index}
+                navigation={navigation}
+                name={item?.title}
+                date={item?.deadline}
+                owner={item?.owner?.name}
+                image={item?.owner?.image}
+                setBandAttachment={setBandAttachment}
+                setBandAttachmentType={setBandAttachmentType}
+                userId={userId}
+                roomId={roomId}
+                position={position}
+                email={email}
+                nameUser={name}
+                imageUser={image}
+                type={type}
+                active_member={active_member}
+                isPinned={isPinned}
+                selected={selectedTask}
+                setSelected={setSelectedTask}
+                taskId={taskId}
+                setTaskId={setTaskId}
+                item={item}
+              />
+            )
+          }
         />
       )}
     </Flex>

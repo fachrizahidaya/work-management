@@ -20,28 +20,19 @@ const FeedCommentList = ({
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
-  commentRepliesData,
-  refetchCommentRepliesData,
-  viewReplyToggle,
-  setViewReplyToggle,
-  hideReplies,
-  setHideReplies,
+  employeeUsername,
 }) => {
   return (
     <GestureHandlerRootView>
-      <Box flex={1} minHeight={2}>
+      <Box flex={1} height={540}>
         <FlashList
           data={comments}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-          windowSize={5}
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          ListFooterComponent={() => hasBeenScrolled && commentIsFetching && <Spinner size="sm" />}
+          ListFooterComponent={() => commentIsFetching && <Spinner />}
           onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
-          estimatedItemSize={100}
+          estimatedItemSize={80}
           refreshControl={
             <RefreshControl
               refreshing={commentIsFetching}
@@ -54,6 +45,7 @@ const FeedCommentList = ({
           renderItem={({ item, index }) => (
             <FeedCommentItem
               key={index}
+              postId={item?.id}
               parentId={item.parent_id ? item?.parent_id : item?.id}
               authorImage={item?.employee_image}
               authorName={item?.employee_name}
@@ -63,12 +55,7 @@ const FeedCommentList = ({
               handleLinkPress={handleLinkPress}
               handleEmailPress={handleEmailPress}
               copyToClipboard={copyToClipboard}
-              commentRepliesData={commentRepliesData}
-              refetchCommentRepliesData={refetchCommentRepliesData}
-              viewReplyToggle={viewReplyToggle}
-              setViewReplyToggle={setViewReplyToggle}
-              hideReplies={hideReplies}
-              setHideReplies={setHideReplies}
+              employeeUsername={employeeUsername}
             />
           )}
         />

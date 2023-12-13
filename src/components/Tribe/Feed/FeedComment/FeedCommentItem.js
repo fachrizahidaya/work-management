@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import { StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -6,8 +6,10 @@ import { Box, Flex, Pressable, Text } from "native-base";
 
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({
+  postId,
   parentId,
   authorImage,
   authorName,
@@ -17,16 +19,24 @@ const FeedCommentItem = ({
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
-  commentRepliesData,
-  refetchCommentRepliesData,
-  viewReplyToggle,
-  setViewReplyToggle,
-  hideReplies,
-  setHideReplies,
+  employeeUsername,
 }) => {
+  const [viewReplyToggle, setViewReplyToggle] = useState(false);
+  const [hideReplies, setHideReplies] = useState(false);
+
+  const {
+    data: commentRepliesData,
+    isFetching: commentRepliesDataIsFetching,
+    refetch: refetchCommentRepliesData,
+  } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
+
   const words = comments.split(" ");
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
+    let specificEmployee;
+    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
+    const hasTag = item.includes("<a");
+    const hasHref = item.includes("href");
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
@@ -34,6 +44,50 @@ const FeedCommentItem = ({
           {item}{" "}
         </Text>
       );
+    } else if (hasHref && specificEmployee) {
+      const specificEmployeeId = specificEmployee.id;
+      item = specificEmployee.username;
+      textStyle = styles.highlightedText;
+      return (
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() =>
+            navigation.navigate("Employee Profile", {
+              employeeId: specificEmployeeId,
+              loggedEmployeeId: loggedEmployeeId,
+              loggedEmployeeImage: loggedEmployeeImage,
+            })
+          }
+        >
+          @{item}{" "}
+        </Text>
+      );
+    }
+    // else if (specificEmployee) {
+    //   const specificEmployeeId = specificEmployee.id;
+    //   item = specificEmployee.username;
+    //   textStyle = styles.highlightedText;
+    //   return (
+    //     <Text
+    //       key={index}
+    //       style={textStyle}
+    //       onPress={() =>
+    //         navigation.navigate("Employee Profile", {
+    //           employeeId: specificEmployeeId,
+    //           loggedEmployeeId: loggedEmployeeId,
+    //           loggedEmployeeImage: loggedEmployeeImage,
+    //         })
+    //       }
+    //     >
+    //       @{item}{" "}
+    //     </Text>
+    //   );
+    // }
+    else if (hasTag) {
+      item = item.replace(`<a`, "");
+      textStyle = styles.defaultText;
+      return <Text key={index}>{item}</Text>;
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
@@ -83,26 +137,26 @@ const FeedCommentItem = ({
         {!totalReplies ? (
           ""
         ) : (
-          <Box mx={10} my={3}>
-            <Pressable
-              onPress={() => {
-                refetchCommentRepliesData();
-                setHideReplies(false);
-                setViewReplyToggle(true);
-              }}
-            >
-              {viewReplyToggle === false ? (
-                <Text fontSize={12} fontWeight={500} color="#8A7373">
-                  View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
-                </Text>
-              ) : (
-                ""
-              )}
-            </Pressable>
-          </Box>
+          <Pressable
+            mx={10}
+            my={3}
+            onPress={() => {
+              refetchCommentRepliesData();
+              setHideReplies(false);
+              setViewReplyToggle(true);
+            }}
+          >
+            {viewReplyToggle === false ? (
+              <Text fontSize={12} fontWeight={500} color="#8A7373">
+                View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
+              </Text>
+            ) : (
+              ""
+            )}
+          </Pressable>
         )}
 
-        {viewReplyToggle && totalReplies > 0 && !hideReplies && (
+        {viewReplyToggle === true && totalReplies > 0 && hideReplies === false && (
           <>
             <Box flex={1} minHeight={2}>
               <FlashList

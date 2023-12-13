@@ -3,20 +3,18 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
+import { StyleSheet, Text, View } from "react-native";
+import { Actionsheet, Icon } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 
 const BandScreensSlider = ({ isOpen, toggle }) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
-  const { mergedMenu } = useGetSubMenu(menuSelector.user_menu);
 
   return (
     <Actionsheet isOpen={isOpen} onClose={toggle}>
       <Actionsheet.Content>
-        {mergedMenu.map((item, idx) => {
+        {menuSelector.user_menu.menu?.map((item, idx) => {
           return (
             <Actionsheet.Item
               key={idx}
@@ -26,21 +24,14 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
                 navigation.navigate(item.name);
                 toggle();
               }}
+              _pressed={{ bgColor: "#f1f1f1" }}
             >
-              <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
-                <Box
-                  bg="#f7f7f7"
-                  borderRadius={5}
-                  style={{ height: 32, width: 32 }}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={6} color="#2A7290" />
-                </Box>
-                <Text fontWeight={700} color="black">
-                  {item.name}
-                </Text>
-              </Flex>
+              <View style={styles.flex}>
+                <View style={styles.item}>
+                  <Icon as={<MaterialCommunityIcons name={item.mobile_icon} />} size={6} color="#2A7290" />
+                </View>
+                <Text style={styles.text}>{item.name}</Text>
+              </View>
             </Actionsheet.Item>
           );
         })}
@@ -52,20 +43,12 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
             toggle();
           }}
         >
-          <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
-            <Box
-              bg="#f7f7f7"
-              borderRadius={5}
-              style={{ height: 32, width: 32 }}
-              alignItems="center"
-              justifyContent="center"
-            >
+          <View style={styles.flex}>
+            <View style={styles.item}>
               <Icon as={<MaterialCommunityIcons name="calendar-clock" />} size={6} color="#2A7290" />
-            </Box>
-            <Text fontWeight={700} color="black">
-              Calendar
-            </Text>
-          </Flex>
+            </View>
+            <Text style={styles.text}>Calendar</Text>
+          </View>
         </Actionsheet.Item>
       </Actionsheet.Content>
     </Actionsheet>
@@ -73,3 +56,24 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
 };
 
 export default BandScreensSlider;
+
+const styles = StyleSheet.create({
+  flex: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 21,
+  },
+  item: {
+    backgroundColor: "#f7f7f7",
+    borderRadius: 5,
+    height: 32,
+    width: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontWeight: "800",
+    color: "black",
+  },
+});

@@ -1,12 +1,12 @@
 import React, { memo } from "react";
 
 import { Box, Button, Flex, Icon, Text } from "native-base";
-import { FlashList } from "@shopify/flash-list";
 import { ScrollView } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
-import TaskListItem from "./TaskListItem";
+import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 
@@ -31,11 +31,10 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <Box flex={1} minHeight={2}>
-                <FlashList
+                <FlatList
                   data={todoTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -83,11 +82,10 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <Box flex={1} minHeight={2}>
-                <FlashList
+                <FlatList
                   data={onProgressTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}
@@ -135,11 +133,10 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <Box flex={1} minHeight={2}>
-                <FlashList
+                <FlatList
                   data={finishTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={112}
                   renderItem={({ item }) => (
                     <TaskListItem
                       id={item.id}

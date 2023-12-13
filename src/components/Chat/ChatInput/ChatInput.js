@@ -14,8 +14,6 @@ const ChatInput = ({
   roomId,
   type,
   fileAttachment,
-  selectFile,
-  pickImageHandler,
   onSendMessage,
   setFileAttachment,
   bandAttachment,
@@ -27,37 +25,8 @@ const ChatInput = ({
   active_member,
   toggleProjectList,
   toggleTaskList,
-  menuIsOpen,
   toggleMenu,
-  navigation,
 }) => {
-  const attachmentOptions = [
-    {
-      id: 1,
-      icon: "file-document-outline",
-      name: "Document",
-      onPress: () => selectFile(),
-    },
-    {
-      id: 2,
-      icon: "image",
-      name: "Photo",
-      onPress: () => pickImageHandler(),
-    },
-    {
-      id: 3,
-      icon: "lightning-bolt",
-      name: "Project",
-      onPress: () => selectBandHandler("project"),
-    },
-    {
-      id: 4,
-      icon: "checkbox-marked-circle-outline",
-      name: "Task",
-      onPress: () => selectBandHandler("task"),
-    },
-  ];
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

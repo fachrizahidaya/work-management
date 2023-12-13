@@ -4,6 +4,7 @@ import { Box, Flex, Pressable, Text } from "native-base";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const ChatTaskItem = ({
+  id,
   navigation,
   name,
   date,
@@ -11,35 +12,35 @@ const ChatTaskItem = ({
   image,
   setBandAttachment,
   setBandAttachmentType,
-  task,
   userId,
   roomId,
+  imageUser,
   position,
   email,
   nameUser,
-  imageUser,
   type,
   active_member,
   isPinned,
-  selected,
-  setSelected,
+  item,
 }) => {
   return (
     <Box my={1}>
       <Pressable
         onPress={() => {
-          setBandAttachment(task);
-          setBandAttachmentType("task");
-          navigation.navigate("Chat Room", {
+          navigation.navigate("Task Detail Screen", {
+            task_id: id,
+            setBandAttachment: setBandAttachment,
+            setBandAttachmentType: setBandAttachmentType,
             userId: userId,
-            name: nameUser,
             roomId: roomId,
+            name: nameUser,
             image: imageUser,
             position: position,
             email: email,
             type: type,
             active_member: active_member,
             isPinned: isPinned,
+            taskData: item,
           });
         }}
         display="flex"

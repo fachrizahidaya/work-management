@@ -247,7 +247,11 @@ const PeopleSection = ({
           {members?.data?.length > 0 ? (
             members.data.map((member) => {
               return (
-                <Actionsheet.Item key={member.id} onPress={() => takeTask(member.user_id)}>
+                <Actionsheet.Item
+                  key={member.id}
+                  onPress={() => takeTask(member.user_id)}
+                  _pressed={{ bgColor: "#f1f1f1" }}
+                >
                   {member.member_name}
                 </Actionsheet.Item>
               );

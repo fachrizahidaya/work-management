@@ -21,6 +21,8 @@ const NewLeaveRequest = ({ route }) => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [formError, setFormError] = useState(true);
   const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const { width, height } = Dimensions.get("window");
 
@@ -65,9 +67,9 @@ const NewLeaveRequest = ({ route }) => {
    * Calculate leave quota handler
    * @param {*} action
    */
-
   const countLeave = async (action = null) => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
         leave_id: formik.values.leave_id,
         begin_date: formik.values.begin_date,
@@ -77,6 +79,7 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
+      setIsLoading(false);
       toast.show({
         render: () => {
           return <SuccessToast message="Leave request available" />;
@@ -85,9 +88,11 @@ const NewLeaveRequest = ({ route }) => {
       setFormError(false);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
+      setIsError(true);
       toast.show({
         render: () => {
-          return <ErrorToast message="Quota is not enough" />;
+          return <ErrorToast message={err.response.data.message} />;
         },
       });
     }
@@ -228,7 +233,6 @@ const NewLeaveRequest = ({ route }) => {
 
           <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
             {leaveHistoryIsFetching ? (
-              // <Spinner color="primary.600" size="lg" />
               <VStack space={2} alignItems="center">
                 <Skeleton h={41} w={10} />
                 <Skeleton h={5} w={100} />
@@ -255,6 +259,8 @@ const NewLeaveRequest = ({ route }) => {
             onChangeEndDate={onChangeEndDate}
             onChangeStartDate={onChangeStartDate}
             selectedGenerateType={selectedGenerateType}
+            isLoading={isLoading}
+            isError={isError}
           />
         </Box>
       ) : (

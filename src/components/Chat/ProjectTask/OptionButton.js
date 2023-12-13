@@ -1,8 +1,8 @@
-import { Box, Flex, Pressable, Text } from "native-base";
+import { Flex, Pressable, Text } from "native-base";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow }) => {
   return (
-    <Flex flexDir="row" background="#ffffff" flex={0} justifyContent="center" alignItems="center">
+    <Flex ml={60} flexDir="row" background="#ffffff" flex={0} justifyContent="center" alignItems="center">
       <Flex
         bgColor="#fafafa"
         gap={3}

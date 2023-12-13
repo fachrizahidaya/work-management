@@ -9,7 +9,7 @@ const MentionInputs = ({ employees, formik, name, onMentionSelect, inputRef }) =
   const employeeData = employees.map(({ id, username }) => ({ id, name: username }));
 
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
-    if (keyword == null) {
+    if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));

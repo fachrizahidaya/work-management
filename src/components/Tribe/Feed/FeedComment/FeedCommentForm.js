@@ -22,7 +22,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
     initialValues: {
       post_id: postId || "",
       comments: "",
-      parent_id: parentId || null,
+      parent_id: parentId || "",
     },
     validationSchema: yup.object().shape({
       comments: yup.string().required("Comments is required"),

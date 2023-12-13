@@ -171,15 +171,11 @@ const PayslipScreen = () => {
         {payslip?.data?.data.length > 0 ? (
           <FlashList
             data={payslips.length ? payslips : filteredDataArray}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            updateCellsBatchingPeriod={50}
-            windowSize={5}
             keyExtractor={(item, index) => index}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}
             onEndReachedThreshold={0.1}
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
-            estimatedItemSize={100}
+            estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
             ListFooterComponent={() => payslipIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
             renderItem={({ item, index }) => (
@@ -198,7 +194,7 @@ const PayslipScreen = () => {
             )}
           />
         ) : payslipIsFetching ? (
-          <Spinner size="sm" />
+          <Spinner />
         ) : (
           <VStack mt={20} space={2} alignItems="center" justifyContent="center">
             <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />

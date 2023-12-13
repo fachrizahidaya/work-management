@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { SafeAreaView, Vibration } from "react-native";
+import { SafeAreaView } from "react-native";
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -35,9 +35,8 @@ const Header = () => {
    * Unread messages changes event listener
    */
   const unreadMessagesEvent = () => {
-    laravelEcho.channel(`unread.message.${userSelector?.id}`).listen(".unread.message", (event) => {
+    laravelEcho?.channel(`unread.message.${userSelector?.id}`)?.listen(".unread.message", (event) => {
       openNotificationCard();
-      Vibration.vibrate();
       setUnreadMessages(event);
     });
   };

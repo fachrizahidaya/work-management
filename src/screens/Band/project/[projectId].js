@@ -82,8 +82,9 @@ const ProjectDetailScreen = ({ route }) => {
     setOpenEditForm(true);
   };
 
-  const onCloseEditForm = () => {
+  const onCloseEditForm = (resetForm) => {
     setOpenEditForm(false);
+    resetForm();
   };
 
   const onPressUserToDelegate = (userId) => {

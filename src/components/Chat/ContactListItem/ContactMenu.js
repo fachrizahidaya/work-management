@@ -40,10 +40,10 @@ const ContactMenu = ({
         onClose();
         navigation.navigate("User Detail", {
           navigation: navigation,
-          name: chat?.user?.name,
-          image: chat?.user?.image,
-          position: chat?.user?.user_type,
-          email: chat?.user?.email,
+          name: chat?.pin_group ? chat?.name : chat?.user?.name,
+          image: chat?.pin_group ? chat?.image : chat?.user?.image,
+          position: chat?.pin_group ? null : chat?.user?.user_type,
+          email: chat?.pin_group ? null : chat?.user?.email,
           type: chat?.pin_personal ? "personal" : "group",
           roomId: chat?.id,
           loggedInUser: loggedInUser,
@@ -103,7 +103,6 @@ const ContactMenu = ({
                 {chat?.pin_group ? chat?.name : chat?.user?.name}
               </Text>
             </Flex>
-            <Icon onPress={onClose} as={<MaterialCommunityIcons name="close" />} />
           </Flex>
         </Actionsheet.Item>
 

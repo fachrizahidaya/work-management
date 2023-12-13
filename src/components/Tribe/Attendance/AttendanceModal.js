@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import { Button, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
+import { Box, Button, Divider, Flex, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -103,6 +103,10 @@ const AttendanceModal = ({
             selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
             errorForType={formik.errors.late_type}
             errorForReason={formik.errors.late_reason}
+            titleDuty="On Duty"
+            timeDuty={date?.onDuty}
+            titleLateOrEarly="Late"
+            timeLateOrEarly={date?.late}
           />
         )}
 
@@ -118,6 +122,10 @@ const AttendanceModal = ({
             selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
             errorForType={formik.errors.early_type}
             errorForReason={formik.errors.early_reason}
+            titleDuty="Off Duty"
+            timeDuty={date?.offDuty}
+            titleLateOrEarly="Early"
+            timeLateOrEarly={date?.early}
           />
         )}
 
@@ -126,9 +134,19 @@ const AttendanceModal = ({
           <Modal.Body>
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
-                <FormControl>
-                  <FormControl.Label>{date?.timeIn ? "Clock-in Time" : "Clock-out Time"}</FormControl.Label>
-                  <Text>{date?.timeIn ? date?.timeIn : date?.timeOut}</Text>
+                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                  <Box>
+                    <FormControl.Label>{date?.late ? "On Duty" : "Off Duty"}</FormControl.Label>
+                    <Text>{date?.late ? date?.onDuty : date?.offDuty}</Text>
+                  </Box>
+                  <Flex gap={5} flexDirection="row" alignItems="center">
+                    <Box>
+                      <FormControl.Label>{date?.timeIn ? "Clock-in Time" : "Clock-out Time"}</FormControl.Label>
+                      <Text>
+                        {date?.timeIn ? date?.timeIn : date?.timeOut} ({date?.timeIn ? date?.late : date?.early})
+                      </Text>
+                    </Box>
+                  </Flex>
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
@@ -160,10 +178,6 @@ const AttendanceModal = ({
                     }
                     defaultValue={date?.lateReason ? date?.lateReason : date?.earlyReason}
                   />
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Status</FormControl.Label>
-                  <Text>{date?.lateStatus ? date?.lateStatus : date?.earlyStatus}</Text>
                 </FormControl>
               </VStack>
             </VStack>
@@ -206,6 +220,20 @@ const AttendanceModal = ({
           <Modal.Body>
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
+                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                  <Box>
+                    <FormControl.Label>On Duty</FormControl.Label>
+                    <Text>{date?.onDuty}</Text>
+                  </Box>
+                  <Flex gap={5} flexDirection="row" alignItems="center">
+                    <Box>
+                      <FormControl.Label>Clock-in Time</FormControl.Label>
+                      <Text>
+                        {date?.timeIn} ({date?.late})
+                      </Text>
+                    </Box>
+                  </Flex>
+                </FormControl>
                 <FormControl>
                   <FormControl.Label>Late Type</FormControl.Label>
                   {/* <Text>{date?.lateType}</Text> */}
@@ -235,9 +263,20 @@ const AttendanceModal = ({
                     defaultValue={date?.lateReason}
                   />
                 </FormControl>
-                <FormControl>
-                  <FormControl.Label>Status</FormControl.Label>
-                  <Text>{date?.lateStatus}</Text>
+                <Divider />
+                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                  <Box>
+                    <FormControl.Label>Off Duty</FormControl.Label>
+                    <Text>{date?.offDuty}</Text>
+                  </Box>
+                  <Flex gap={5} flexDirection="row" alignItems="center">
+                    <Box>
+                      <FormControl.Label>Clock-out Time</FormControl.Label>
+                      <Text>
+                        {date?.timeOut} ({date?.early})
+                      </Text>
+                    </Box>
+                  </Flex>
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Early Type</FormControl.Label>
@@ -268,10 +307,6 @@ const AttendanceModal = ({
                     defaultValue={date?.earlyReason}
                   />
                 </FormControl>
-                <FormControl>
-                  <FormControl.Label>Status</FormControl.Label>
-                  <Text>{date.earlyStatus}</Text>
-                </FormControl>
               </VStack>
             </VStack>
           </Modal.Body>
@@ -281,6 +316,7 @@ const AttendanceModal = ({
         {notAttend && (
           <Modal.Body>
             <VStack
+              borderWidth={1}
               w="95%"
               space={3}
               // pb={keyboardHeight}
@@ -371,6 +407,10 @@ const LateOrEarlyTime = ({
   selectOnValueChange,
   errorForType,
   errorForReason,
+  titleDuty,
+  timeDuty,
+  titleLateOrEarly,
+  timeLateOrEarly,
 }) => {
   return (
     <Modal.Body>
@@ -380,9 +420,19 @@ const LateOrEarlyTime = ({
         // pb={keyboardHeight}
       >
         <VStack w="100%" space={2}>
-          <FormControl>
-            <FormControl.Label>{titleTime}</FormControl.Label>
-            <Text>{time}</Text>
+          <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+            <Box>
+              <FormControl.Label>{titleDuty}</FormControl.Label>
+              <Text>{timeDuty}</Text>
+            </Box>
+            <Flex gap={5} flexDirection="row" alignItems="center">
+              <Box>
+                <FormControl.Label>{titleTime}</FormControl.Label>
+                <Text>
+                  {time} ({timeLateOrEarly})
+                </Text>
+              </Box>
+            </Flex>
           </FormControl>
           <FormControl>
             <FormControl.Label>{title}</FormControl.Label>

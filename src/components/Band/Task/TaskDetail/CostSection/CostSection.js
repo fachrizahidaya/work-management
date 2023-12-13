@@ -156,7 +156,9 @@ const CostSection = ({ taskId, disabled }) => {
                   </Box>
                 </ScrollView>
               ) : (
-                <Actionsheet.Item isDisabled>This task has no cost yet.</Actionsheet.Item>
+                <Actionsheet.Item isDisabled _pressed={{ bgColor: "#f1f1f1" }}>
+                  This task has no cost yet.
+                </Actionsheet.Item>
               )}
               {!disabled && (
                 <>

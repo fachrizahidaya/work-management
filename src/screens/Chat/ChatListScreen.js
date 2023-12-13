@@ -32,6 +32,7 @@ const ChatListScreen = () => {
   const [globalKeyword, setGlobalKeyword] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   const swipeToReply = (contact) => {
     setSelectedContact(contact);
@@ -46,8 +47,6 @@ const ChatListScreen = () => {
   const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
   const { isOpen: contactInformationIsOpen, toggle: toggleContactInformation } = useDisclosure(false);
-  const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
-  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
@@ -220,6 +219,25 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Handle chat pin update event
+   *
+   * @param {*} id - Personal chat id / Group chat id
+   * @param {*} action - either pin/unpin
+   */
+  const chatPinUpdateHandler = async (chatType, id, action) => {
+    try {
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+    } catch (err) {
+      console.log(err);
+      toast.show({
+        render: ({ id }) => {
+          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     fetchPersonalChats();
     fetchGroupChats();
@@ -242,97 +260,95 @@ const ChatListScreen = () => {
     });
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 300);
+  }, []);
+
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
+      {isReady ? (
+        <>
+          <SafeAreaView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
 
-          <GroupSection
-            groupChats={groupChats}
-            searchKeyword={globalKeyword}
-            searchResult={searchResult?.group}
-            toggleDeleteModal={openSelectedGroupChatHandler}
-            toggleContactOption={openSelectedContactMenuHandler}
-            toggleChatOption={toggleChatOption}
-            onSwipeControl={swipeToReply}
-          />
+              <GroupSection
+                groupChats={groupChats}
+                searchKeyword={globalKeyword}
+                searchResult={searchResult?.group}
+                toggleChatOption={toggleChatOption}
+                onSwipeControl={swipeToReply}
+              />
 
-          <PersonalSection
-            personalChats={personalChats}
-            searchKeyword={globalKeyword}
-            searchResult={searchResult?.personal}
+              <PersonalSection
+                personalChats={personalChats}
+                searchKeyword={globalKeyword}
+                searchResult={searchResult?.personal}
+                toggleChatOption={toggleChatOption}
+                onSwipeControl={swipeToReply}
+              />
+
+              {searchResult?.message?.length > 0 && (
+                <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+              )}
+            </ScrollView>
+          </SafeAreaView>
+
+          <ContactMenu
+            isOpen={contactOptionIsOpen}
+            onClose={closeSelectedContactMenuHandler}
+            chat={selectedContact}
             toggleDeleteModal={openSelectedChatHandler}
-            toggleContactOption={openSelectedContactMenuHandler}
-            toggleChatOption={toggleChatOption}
-            onSwipeControl={swipeToReply}
+            toggleDeleteGroupModal={openSelectedGroupChatHandler}
+            toggleClearChatMessage={openSelectedChatToClearHandler}
+            toggleContactInformation={openContactInformationHandler}
+            loggedInUser={userSelector?.id}
+            toggleDeleteChatMessage={toggleDeleteChatMessage}
+            toggleExitModal={toggleExitModal}
+            deleteModalIsOpen={deleteModalIsOpen}
+            exitModalIsOpen={exitModalIsOpen}
+            deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+            deleteChatPersonal={deleteChatPersonal}
+            deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+            chatRoomIsLoading={chatRoomIsLoading}
           />
+          <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
+          {selectedChat?.pin_personal ? (
+            <RemoveConfirmationModal
+              isLoading={deleteChatMessageIsLoading}
+              isOpen={deleteModalIsOpen}
+              toggle={closeSelectedChatHandler}
+              onPress={() => deleteChatPersonal(selectedChat?.id)}
+              description="Are you sure want to delete this chat?"
+            />
+          ) : null}
+          {selectedChat?.pin_group ? (
+            <RemoveConfirmationModal
+              isLoading={chatRoomIsLoading}
+              isOpen={deleteGroupModalIsOpen}
+              toggle={closeSelectedGroupChatHandler}
+              onPress={() => groupDeleteHandler(selectedChat?.id)}
+              description="Are you sure want to delete this group?"
+            />
+          ) : null}
 
-          {searchResult?.message?.length > 0 && (
-            <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
-          )}
-        </ScrollView>
-      </SafeAreaView>
-      <ContactMenu
-        isOpen={contactOptionIsOpen}
-        onClose={closeSelectedContactMenuHandler}
-        chat={selectedContact}
-        toggleDeleteModal={openSelectedChatHandler}
-        toggleDeleteGroupModal={openSelectedGroupChatHandler}
-        toggleClearChatMessage={openSelectedChatToClearHandler}
-        toggleContactInformation={openContactInformationHandler}
-        loggedInUser={userSelector?.id}
-        toggleDeleteChatMessage={toggleDeleteChatMessage}
-        toggleExitModal={toggleExitModal}
-        deleteModalIsOpen={deleteModalIsOpen}
-        exitModalIsOpen={exitModalIsOpen}
-        deleteGroupModalIsOpen={deleteGroupModalIsOpen}
-        deleteChatPersonal={deleteChatPersonal}
-        deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-        chatRoomIsLoading={chatRoomIsLoading}
-      />
-      <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
-      {selectedChat?.pin_personal ? (
-        <RemoveConfirmationModal
-          isLoading={deleteChatMessageIsLoading}
-          isOpen={deleteModalIsOpen}
-          toggle={closeSelectedChatHandler}
-          onPress={() => deleteChatPersonal(selectedChat?.id)}
-          description="Are you sure want to delete this chat?"
-        />
+          <RemoveConfirmationModal
+            isOpen={clearChatMessageIsOpen}
+            toggle={closeSelectedChatToClearHandler}
+            description="Are you sure want to clear chat?"
+            isLoading={clearMessageIsLoading}
+            onPress={() =>
+              clearChatMessageHandler(
+                selectedChat?.id,
+                selectedChat?.pin_group ? "group" : "personal",
+                toggleClearMessage
+              )
+            }
+          />
+        </>
       ) : null}
-      {selectedChat?.pin_group ? (
-        <RemoveConfirmationModal
-          isLoading={chatRoomIsLoading}
-          isOpen={deleteGroupModalIsOpen}
-          toggle={closeSelectedGroupChatHandler}
-          onPress={() => groupDeleteHandler(selectedChat?.id)}
-          description="Are you sure want to delete this group?"
-        />
-      ) : null}
-
-      <RemoveConfirmationModal
-        isOpen={clearChatMessageIsOpen}
-        toggle={closeSelectedChatToClearHandler}
-        description="Are you sure want to clear chat?"
-        isLoading={clearMessageIsLoading}
-        onPress={() =>
-          clearChatMessageHandler(selectedChat?.id, selectedChat?.pin_group ? "group" : "personal", toggleClearMessage)
-        }
-      />
-      <ContactInformation
-        isOpen={contactInformationIsOpen}
-        toggle={closeContactInformationHandler}
-        userId={selectedChat?.user?.id}
-        name={selectedChat?.pin_group ? selectedChat?.name : selectedChat?.user?.name}
-        roomId={selectedChat?.id}
-        file_path={selectedChat?.pin_group ? selectedChat?.image : selectedChat?.user?.image}
-        position={selectedChat?.user?.user_type}
-        email={selectedChat?.user?.email}
-        type={selectedChat?.pin_personal ? "personal" : "group"}
-        active_member={!selectedChat?.active_member ? null : selectedChat?.active_member}
-        isPinned={selectedChat?.pin_personal ? selectedChat?.pin_personal : selectedChat?.pin_group}
-      />
     </>
   );
 };

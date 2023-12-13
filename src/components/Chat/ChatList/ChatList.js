@@ -22,37 +22,9 @@ const ChatList = ({
   bandAttachment,
   bandAttachmentType,
   setBandAttachment,
-  bubbleChangeColor,
-  setBubbleChangeColor,
   onSwipeToReply,
-  modalAppeared,
-  setModalAppeared,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-
-  /**
-   * Decide when user avatar should be rendered at
-   */
-  const userImageRenderCheck = useCallback(
-    (currentMessage, nextMessage) => {
-      const currentMessageDate = dayjs(currentMessage?.created_at).format("YYYY-MM-DD");
-      const nextMessageDate = dayjs(nextMessage?.created_at).format("YYYY-MM-DD");
-
-      if (nextMessage) {
-        if (currentMessage?.from_user_id !== nextMessage?.from_user_id) {
-          return currentMessage?.user?.image;
-        } else {
-          if (dayjs(currentMessageDate).isBefore(dayjs(nextMessageDate))) {
-            return currentMessage?.user?.image;
-          }
-          return;
-        }
-      } else {
-        return currentMessage?.user?.image;
-      }
-    },
-    [chatList]
-  );
 
   /**
    * Decide when username should be rendered at
@@ -103,16 +75,12 @@ const ChatList = ({
     <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
       <FlashList
         inverted
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        updateCellsBatchingPeriod={50}
-        initialNumToRender={20}
         ListFooterComponent={() => isLoading && <Spinner size="sm" />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
         onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
         onEndReachedThreshold={0.1}
-        estimatedItemSize={200}
+        estimatedItemSize={35}
         data={chatList}
         renderItem={({ item, index }) => (
           <>
@@ -147,11 +115,8 @@ const ChatList = ({
               name={userNameRenderCheck(chatList[index + 1], item)}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
               openChatBubbleHandler={openChatBubbleHandler}
-              bubbleChangeColor={bubbleChangeColor}
-              setBubbleChangeColor={setBubbleChangeColor}
               onSwipe={onSwipeToReply}
-              modalAppeared={modalAppeared}
-              setModalAppeared={setModalAppeared}
+              isOptimistic={item?.isOptimistic}
             />
           </>
         )}

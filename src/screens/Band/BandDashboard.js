@@ -1,7 +1,5 @@
 import React, { useMemo } from "react";
 
-import { useSelector } from "react-redux";
-
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Flex, Skeleton, Text } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -12,8 +10,6 @@ import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/Activ
 import { useFetch } from "../../hooks/useFetch";
 
 const BandDashboard = () => {
-  const menuSelector = useSelector((state) => state.user_menu);
-
   const {
     data: projects,
     isLoading: projectIsLoading,
@@ -104,10 +100,7 @@ const BandDashboard = () => {
             <Skeleton height={300} />
           )}
 
-          {/* Should be rendered if menuSelector?.user_menu?.menu?.length > 0 */}
-          {menuSelector?.user_menu?.menu?.length > 0 && (
-            <>{menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow && <ActiveTaskCard />}</>
-          )}
+          <ActiveTaskCard />
         </Flex>
       </ScrollView>
     </SafeAreaView>

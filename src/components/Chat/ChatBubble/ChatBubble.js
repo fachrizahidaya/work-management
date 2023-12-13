@@ -1,15 +1,19 @@
-import { useRef, memo } from "react";
+import { memo } from "react";
 import { useSelector } from "react-redux";
 
-import { Linking, PanResponder, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Flex, Image, Pressable, Text } from "native-base";
-import { FlingGestureHandler, Directions, State } from "react-native-gesture-handler";
+import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Flex, Icon, Image, Pressable, Text } from "native-base";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
-  withSpring,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   useSharedValue,
+  withTiming,
+  runOnJS,
 } from "react-native-reanimated";
+const LIST_ITEM_HEIGHT = 70;
+
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
@@ -36,20 +40,14 @@ const ChatBubble = ({
   reply_to,
   openChatBubbleHandler,
   toggleFullScreen,
-  bubbleChangeColor,
-  setBubbleChangeColor,
   onSwipe,
-  modalAppeared,
-  setModalAppeared,
+  isOptimistic,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
-
-  const startingPosition = 0;
-  const x = useSharedValue(startingPosition);
 
   let styledTexts = null;
   if (content?.length !== 0) {
@@ -113,19 +111,32 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
-  const eventHandler = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {},
-    onActive: (event, ctx) => {
-      x.value = !myMessage ? 50 : -50;
+  const MAX_TRANSLATEX = 100;
+
+  const translateX = useSharedValue(0);
+
+  const panGesture = useAnimatedGestureHandler({
+    onActive: (event) => {
+      if (event.translationX > 0) {
+        translateX.value = event.translationX;
+      }
     },
-    onEnd: (event, ctx) => {
-      x.value = withSpring(startingPosition);
+    onEnd: (event) => {
+      if (event.translationX > 0) {
+        runOnJS(onSwipe)(chat);
+      }
+      translateX.value = withTiming(0);
     },
   });
 
-  const uas = useAnimatedStyle(() => {
+  const rTaskContainerStyle = useAnimatedStyle(() => {
+    const limitedTranslateX = Math.max(translateX.value, 0);
     return {
-      transform: [{ translateX: x.value }],
+      transform: [
+        {
+          translateX: limitedTranslateX,
+        },
+      ],
     };
   });
 
@@ -137,36 +148,37 @@ const ChatBubble = ({
       px={2}
       flexDirection={!myMessage ? "row" : "row-reverse"}
     >
+      <Pressable
+        style={styles.iconContainer}
+        width={50}
+        alignItems="center"
+        justifyContent="center"
+        padding={3}
+        mr={myMessage ? 10 : null}
+      >
+        <Icon as={<MaterialIcons name="reply" />} />
+      </Pressable>
       {/* {type === "group" && !myMessage && image ? (
           <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
           ) : type === "group" && !myMessage ? (
             <Box ml={8}></Box>
           ) : null} */}
 
-      <FlingGestureHandler
-        direction={!myMessage ? Directions.RIGHT : Directions.LEFT}
-        onGestureEvent={eventHandler}
-        onHandlerStateChange={({ nativeEvent }) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            onSwipe(chat);
-          }
-        }}
-      >
-        <Animated.View style={uas}>
+      <PanGestureHandler onGestureEvent={panGesture}>
+        <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             maxWidth={300}
             onLongPress={() => {
               !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
-              setModalAppeared(true);
             }}
+            delayLongPress={200}
             borderRadius={10}
             display="flex"
             justifyContent="center"
             py={1.5}
             px={1.5}
-            bgColor={!myMessage ? "#FFFFFF" : "primary.600"}
+            bgColor={isOptimistic ? "gray.500" : !myMessage ? "#FFFFFF" : "primary.600"}
             gap={1}
-            zIndex={modalAppeared ? 2 : null}
           >
             {type === "group" && name && !myMessage && (
               <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
@@ -187,7 +199,9 @@ const ChatBubble = ({
                             width={260}
                             height={200}
                             borderRadius={5}
-                            source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
+                            source={{
+                              uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
+                            }}
                             alt="Chat Image"
                             resizeMode="contain"
                             resizeMethod="auto"
@@ -239,7 +253,7 @@ const ChatBubble = ({
             </Flex>
           </Pressable>
         </Animated.View>
-      </FlingGestureHandler>
+      </PanGestureHandler>
 
       {/* {!isGrouped && (
           <Box
@@ -278,5 +292,30 @@ const styles = StyleSheet.create({
     // mb:isGrouped ? 1 : 2,
     px: 2,
     flexDirection: "row",
+  },
+  taskContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  task: {
+    width: "90%",
+    height: LIST_ITEM_HEIGHT,
+    justifyContent: "center",
+    paddingLeft: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    shadowOpacity: 0.08,
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    },
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  taskTitle: {
+    fontSize: 16,
+  },
+  iconContainer: {
+    position: "absolute",
   },
 });

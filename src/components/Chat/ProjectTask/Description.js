@@ -1,22 +1,13 @@
-import { Box, Flex, Pressable, Text } from "native-base";
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { Box, ScrollView, Text } from "native-base";
 
 const Description = ({ navigation, description }) => {
   return (
-    <Box gap={2}>
-      <Pressable
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        bgColor="#ffffff"
-        p={3}
-        borderRadius={10}
-        justifyContent="space-between"
-      >
+    <Box bgColor="#FFFFFF" gap={2} p={3} borderRadius={10} minH={100} maxH={150}>
+      <ScrollView>
         <Text fontSize={14} fontWeight={400}>
           {description}
         </Text>
-      </Pressable>
+      </ScrollView>
     </Box>
   );
 };

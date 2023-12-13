@@ -1,17 +1,20 @@
+import dayjs from "dayjs";
+import { useNavigation, useRoute } from "@react-navigation/core";
+
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import { useNavigation, useRoute } from "@react-navigation/core";
 import Description from "../../components/Chat/ProjectTask/Description";
 import DateSection from "../../components/Chat/ProjectTask/DateSection";
 import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
 import MemberSection from "../../components/Chat/ProjectTask/MemberSection";
 import AttachmentSection from "../../components/Chat/ProjectTask/AttachmentSection";
 import { useFetch } from "../../hooks/useFetch";
-import dayjs from "dayjs";
-import { FlashList } from "@shopify/flash-list";
 
 const ProjectDetail = () => {
   const navigation = useNavigation();
@@ -32,15 +35,15 @@ const ProjectDetail = () => {
     setBandAttachmentType,
   } = routes.params;
   const {
-    data: projectTask,
-    isFetching: projectTaskIsFetching,
-    refetch: refetchProjectTask,
-  } = useFetch(`/chat/task/project/${project_id}`);
-  const {
     data: project,
     isFetching: projectIsFetching,
     refetch: refetchProject,
   } = useFetch(`/chat/project/${project_id}`);
+  const {
+    data: projectTask,
+    isFetching: projectTaskIsFetching,
+    refetch: refetchProjectTask,
+  } = useFetch(`/chat/task/project/${project_id}`);
   return (
     <SafeAreaView style={styles.container}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
@@ -82,25 +85,29 @@ const ProjectDetail = () => {
         />
       </Flex>
       <Flex gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
-        <FlashList
-          data={project?.data?.member}
-          estimatedItemSize={50}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          renderItem={({ item, index }) => (
-            <MemberSection key={index} name={item?.user?.name} image={item?.user?.image} />
-          )}
-        />
-        <AttachmentSection />
+        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={0.5}>
+          <FlashList
+            data={project?.data?.member}
+            estimatedItemSize={50}
+            keyExtractor={(item, index) => index}
+            onEndReachedThreshold={0.1}
+            renderItem={({ item, index }) => (
+              <MemberSection key={index} name={item?.user?.name} image={item?.user?.image} />
+            )}
+          />
+        </Flex>
+        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={1}>
+          <AttachmentSection />
+        </Flex>
       </Flex>
       <Flex gap={2} borderRadius={10} mx={3} my={2} flex={1} bgColor="#fafafa">
-        <FlashList
-          data={projectTask?.data}
-          estimatedItemSize={100}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          renderItem={({ item, index }) =>
-            projectTask?.data.length ? (
+        {projectTask?.data.length > 0 ? (
+          <FlashList
+            data={projectTask?.data}
+            estimatedItemSize={100}
+            keyExtractor={(item, index) => index}
+            onEndReachedThreshold={0.1}
+            renderItem={({ item, index }) => (
               <Box key={index} gap={2}>
                 <Pressable
                   onPress={() =>
@@ -125,6 +132,7 @@ const ProjectDetail = () => {
                   alignItems="center"
                   bgColor="#ffffff"
                   p={5}
+                  my={1}
                   borderRadius={10}
                   justifyContent="space-between"
                 >
@@ -139,35 +147,32 @@ const ProjectDetail = () => {
                   <AvatarPlaceholder name={item?.owner?.name} image={item?.owner?.image} size="sm" />
                 </Pressable>
               </Box>
-            ) : (
-              <Pressable
-                display="flex"
-                flexDir="row"
-                alignItems="center"
-                bgColor="#ffffff"
-                py={3}
-                px={3}
-                borderRadius={10}
-                justifyContent="space-between"
-                gap={3}
-                flex={1}
-              >
-                <Flex justifyContent="center" alignItems="center">
-                  <Image
-                    alt="attachment"
-                    h={150}
-                    w={180}
-                    resizeMode="cover"
-                    source={require("../../assets/vectors/empty.png")}
-                  />
-                  <Box>
-                    <Text>No Data</Text>
-                  </Box>
-                </Flex>
-              </Pressable>
-            )
-          }
-        />
+            )}
+          />
+        ) : (
+          <Pressable
+            display="flex"
+            alignItems="center"
+            bgColor="#ffffff"
+            py={3}
+            px={3}
+            borderRadius={10}
+            justifyContent="center"
+            gap={3}
+            flex={1}
+          >
+            <Flex gap={3} justifyContent="center" alignItems="center">
+              <Image
+                alt="attachment"
+                h={150}
+                w={180}
+                resizeMode="cover"
+                source={require("../../assets/vectors/empty.png")}
+              />
+              <Text>No Task</Text>
+            </Flex>
+          </Pressable>
+        )}
       </Flex>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
         <Pressable
