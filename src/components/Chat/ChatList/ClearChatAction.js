@@ -1,8 +1,5 @@
-import { Actionsheet, Box, Flex, Icon, Spinner, Text } from "native-base";
-import React from "react";
+import { Actionsheet, Flex, Icon, Spinner, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading }) => {
   return (

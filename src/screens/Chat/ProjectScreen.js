@@ -29,14 +29,13 @@ const ProjectScreen = () => {
   const [selected, setSelected] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [taskId, setTaskId] = useState(null);
 
   const navigation = useNavigation();
   const routes = useRoute();
 
   const {
-    bandAttachment,
     setBandAttachment,
-    bandAttachmentType,
     setBandAttachmentType,
     userId,
     name,
@@ -52,26 +51,28 @@ const ProjectScreen = () => {
   const fetchProjectParameters = {
     page: currentPageProject,
     search: searchInput,
-    limit: 10,
+    limit: 30,
   };
 
   const fetchTaskParameters = {
-    page: currentPageProject,
+    page: currentPageTask,
     search: searchInput,
-    limit: 10,
+    limit: 30,
   };
 
   const {
     data: project,
     isFetching: projectIsFetching,
+    isLoading: projectIsLoading,
     refetch: refetchProject,
-  } = useFetch("/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
+  } = useFetch(tabValue === "project" && "/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
 
   const {
     data: task,
     isFetching: taskIsFetching,
+    isLoading: taskIsLoading,
     refetch: refetchTask,
-  } = useFetch("/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
+  } = useFetch(tabValue === "task" && "/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
 
   const projectEndReachedHandler = () => {
     if (projects.length !== projects.length + project?.data.length) {
@@ -103,9 +104,13 @@ const ProjectScreen = () => {
       } else {
         setCurrentPageTask(1);
       }
-    }, 300),
+    }, 500),
     []
   );
+
+  useEffect(() => {
+    setFilteredDataArray([]);
+  }, [searchInput]);
 
   useEffect(() => {
     if (project?.data.length && projectIsFetching === false) {
@@ -137,20 +142,21 @@ const ProjectScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
+      <Flex direction="row" bg="white" p={4}>
         <Flex flex={1} direction="row" alignItems="center">
           <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
             <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
           </Pressable>
           <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
+          <OptionButton
+            setSearchInput={setSearchInput}
+            setInputToShow={setInputToShow}
+            tabValue={tabValue}
+            setTabValue={setTabValue}
+          />
         </Flex>
       </Flex>
-      <OptionButton
-        setSearchInput={setSearchInput}
-        setInputToShow={setInputToShow}
-        tabValue={tabValue}
-        setTabValue={setTabValue}
-      />
+
       <SearchBox
         handleSearch={handleSearch}
         inputToShow={inputToShow}
@@ -181,6 +187,10 @@ const ProjectScreen = () => {
         setSelectedProject={setSelectedProject}
         selectedTask={selectedTask}
         setSelectedTask={setSelectedTask}
+        projectIsFetching={projectIsFetching}
+        taskIsFetching={taskIsFetching}
+        projectIsLoading={projectIsLoading}
+        taskIsLoading={taskIsLoading}
       />
     </SafeAreaView>
   );

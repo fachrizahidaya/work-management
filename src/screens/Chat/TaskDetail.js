@@ -1,6 +1,8 @@
+import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
@@ -10,8 +12,6 @@ import CreatorSection from "./CreatorSection";
 import ObserverSection from "./ObserverSection";
 import ChecklistSection from "./ChecklistSection";
 import { useFetch } from "../../hooks/useFetch";
-import dayjs from "dayjs";
-import { FlashList } from "@shopify/flash-list";
 
 const TaskDetail = () => {
   const navigation = useNavigation();
@@ -32,6 +32,9 @@ const TaskDetail = () => {
     taskData,
   } = routes.params;
   const { data: task, isFetching: taskIsFetching, refetch: refetchTask } = useFetch(`/chat/task/${task_id}`);
+  const filteredData = task?.data?.checklist.filter((item) => item.status === "Finish");
+  const percentage =
+    task?.data?.checklist?.length > 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
   return (
     <SafeAreaView style={styles.container}>
       <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
@@ -63,7 +66,7 @@ const TaskDetail = () => {
       <Flex borderRadius={10} mx={3} my={2} bgColor="#fafafa">
         <Description description={task?.data?.description} navigation={navigation} />
       </Flex>
-      <Flex gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
+      <Flex flex={1} gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
         <Flex gap={2}>
           <DateSection
             start={dayjs(task?.data?.created_at).format("MMM DD, YYYY")}
@@ -73,23 +76,28 @@ const TaskDetail = () => {
             image={task?.data?.responsible?.user?.image}
             name={task?.data?.responsible?.user?.name.split(" ")[0]}
           />
-          <FlashList
-            data={task?.data?.observer}
-            estimatedItemSize={50}
-            keyExtractor={(item, index) => index}
-            onEndReachedThreshold={0.1}
-            renderItem={({ item, index }) => (
-              <ObserverSection key={index} name={item?.user?.name.split(" ")[0]} image={item?.user?.image} />
-            )}
-          />
+          <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
+            <Text fontSize={12} fontWeight={400}>
+              Observed by
+            </Text>
+            <FlashList
+              data={task?.data?.observer}
+              estimatedItemSize={50}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              renderItem={({ item, index }) => (
+                <ObserverSection key={index} name={item?.user?.name.split(" ")[0]} image={item?.user?.image} />
+              )}
+            />
+          </Flex>
         </Flex>
-        <FlashList
-          data={task?.data?.checklist}
-          estimatedItemSize={100}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          renderItem={({ item, index }) =>
-            task?.data.length === 0 ? (
+        <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
+          <Text fontSize={12} fontWeight={400}>
+            Checklist ({typeof percentage === "undefined" ? 0 : Math.round(percentage)}
+            %)
+          </Text>
+          {task?.data?.checklist.length === 0 ? (
+            <Flex gap={3} justifyContent="center" alignItems="center">
               <Image
                 alt="attachment"
                 h={150}
@@ -97,16 +105,26 @@ const TaskDetail = () => {
                 resizeMode="cover"
                 source={require("../../assets/vectors/empty.png")}
               />
-            ) : (
-              <ChecklistSection key={index} title={item?.id} id={item?.id} status={item?.status} />
-            )
-          }
-        />
+              <Text>No Task</Text>
+            </Flex>
+          ) : (
+            <FlashList
+              data={task?.data?.checklist}
+              estimatedItemSize={100}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              renderItem={({ item, index }) => (
+                <ChecklistSection key={index} title={item?.title} id={item?.id} status={item?.status} />
+              )}
+            />
+          )}
+        </Flex>
       </Flex>
 
       <Pressable
         display="flex"
         alignItems="center"
+        justifyContent="center"
         bgColor="#ffffff"
         py={3}
         px={3}

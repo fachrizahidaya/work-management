@@ -6,7 +6,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 
-const UserAvatar = ({ roomId, type, name, image, position, email, selectedMembers = [], currentUserIsAdmin }) => {
+const UserAvatar = ({ roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
   const navigation = useNavigation();
 
   return (
@@ -39,7 +39,7 @@ const UserAvatar = ({ roomId, type, name, image, position, email, selectedMember
       </Box>
 
       <Text fontSize={16} fontWeight={500}>
-        {name.length > 30 ? name.split(" ")[0] : name}
+        {name?.length > 30 ? name?.split(" ")[0] : name}
       </Text>
 
       {type === "personal" ? (

@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { TouchableOpacity, View } from "react-native";
-import { Box, Flex, HStack, Icon, Text, useToast } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { FlingGestureHandler, Directions, State } from "react-native-gesture-handler";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { PanGestureHandler, Swipeable } from "react-native-gesture-handler";
 import Animated, {
-  withSpring,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
+const LIST_ITEM_HEIGHT = 70;
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import axiosInstance from "../../../config/api";
+import { useRef } from "react";
 
 const ContactListItem = ({
   chat,
@@ -37,14 +38,10 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
-  toggleDeleteModal,
-  toggleContactOption,
   onSwipe,
 }) => {
   const navigation = useNavigation();
-
-  const startingPosition = 0;
-  const x = useSharedValue(startingPosition);
+  const swipeableRef = useRef(null);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -105,48 +102,71 @@ const ContactListItem = ({
     return text;
   };
 
-  const eventHandler = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {},
-    onActive: (event, ctx) => {
-      x.value = -100;
-    },
-    onEnd: (event, ctx) => {
-      x.value = withSpring(startingPosition);
-    },
-  });
+  const renderLeftView = (progress, dragX) => {
+    return (
+      <Pressable
+        onPress={() => {
+          if (swipeableRef.current) {
+            swipeableRef.current.close();
+          }
+          onSwipe(chat);
+        }}
+        p={5}
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="#959595"
+      >
+        <Icon as={<MaterialIcons name="push-pin" />} color="white" style={{ transform: [{ rotate: "45deg" }] }} />
+        <Text color="white">Pin</Text>
+      </Pressable>
+    );
+  };
 
-  const uas = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: x.value }],
-    };
-  });
+  const renderRightView = (progress, dragX) => {
+    return (
+      <Pressable
+        onPress={() => {
+          if (swipeableRef.current) {
+            swipeableRef.current.close();
+          }
+          onSwipe(chat);
+        }}
+        p={5}
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="#959595"
+      >
+        <Icon as={<MaterialIcons name="more-horiz" />} color="white" />
+        <Text color="white">More</Text>
+      </Pressable>
+    );
+  };
 
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate("Chat Room", {
-          userId: userId,
-          name: name,
-          roomId: id,
-          image: image,
-          position: position,
-          email: email,
-          type: type,
-          active_member: active_member,
-          isPinned: isPinned,
-        });
-      }}
-    >
-      <FlingGestureHandler
-        direction={Directions.LEFT}
-        onGestureEvent={eventHandler}
-        onHandlerStateChange={({ nativeEvent }) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            onSwipe(chat);
-          }
-        }}
+    <Box>
+      <Swipeable
+        ref={swipeableRef}
+        // renderLeftActions={renderLeftView}
+        renderRightActions={renderRightView}
+        rightThreshold={-100}
       >
-        <Animated.View style={[uas]}>
+        <TouchableOpacity
+          style={{ backgroundColor: "white" }}
+          activeOpacity={1}
+          onPress={() => {
+            navigation.navigate("Chat Room", {
+              userId: userId,
+              name: name,
+              roomId: id,
+              image: image,
+              position: position,
+              email: email,
+              type: type,
+              active_member: active_member,
+              isPinned: isPinned,
+            });
+          }}
+        >
           <Flex flexDir="row" justifyContent="space-between" p={4} borderBottomWidth={1} borderColor="#E8E9EB">
             <Flex flexDir="row" gap={4} alignItems="center" flex={1}>
               <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
@@ -173,7 +193,12 @@ const ContactListItem = ({
                   {!isDeleted ? (
                     <>
                       <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                        {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                        <Flex flexDirection="row">
+                          {type === "group" && chat?.latest_message && (
+                            <Text>{chat?.latest_message?.user?.name}: </Text>
+                          )}
+                          {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                        </Flex>
                         {message === null && (project || task || fileName) && (
                           <HStack alignItems="center" space={1}>
                             <Icon as={<MaterialCommunityIcons name={generateIcon()} />} size="md" />
@@ -215,10 +240,39 @@ const ContactListItem = ({
               </Box>
             </Flex>
           </Flex>
-        </Animated.View>
-      </FlingGestureHandler>
-    </TouchableOpacity>
+        </TouchableOpacity>
+      </Swipeable>
+    </Box>
   );
 };
 
 export default ContactListItem;
+
+const styles = StyleSheet.create({
+  taskContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  task: {
+    width: "90%",
+    height: LIST_ITEM_HEIGHT,
+    justifyContent: "center",
+    paddingLeft: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    shadowOpacity: 0.08,
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    },
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  taskTitle: {
+    fontSize: 16,
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 0,
+  },
+});

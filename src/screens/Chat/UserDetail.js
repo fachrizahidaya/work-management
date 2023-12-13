@@ -38,6 +38,7 @@ const UserDetail = () => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [imageAttachment, setImageAttachment] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   const route = useRoute();
   const {
@@ -290,135 +291,138 @@ const UserDetail = () => {
     }
   }, [userList, searchInput, selectedGroupMembers]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 300);
+  }, []);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-        <Flex direction="row" alignItems="center" gap={4}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-          </Pressable>
-          <Text>{type === "personal" ? "Contact Detail" : "Group Detail"}</Text>
-        </Flex>
-      </Flex>
-      <Flex gap={2} flex={1} bg="#FAFAFA" position="relative">
-        <UserAvatar
-          roomId={roomId}
-          type={type}
-          name={name}
-          image={image}
-          position={position}
-          email={email}
-          onUpdateGroup={groupUpdateHandler}
-          selectedMembers={selectedMembers}
-          setSelectedMembers={setSelectedMembers}
-          imageAttachment={imageAttachment}
-          setImageAttachment={setImageAttachment}
-          currentUserIsAdmin={currentUserIsAdmin}
-        />
-        <UserInformation
-          type={type}
-          selectedGroupMembers={selectedGroupMembers}
-          loggedInUser={loggedInUser}
-          toggleMemberList={toggleMemberList}
-          currentUserIsAdmin={currentUserIsAdmin}
-          toggleMemberListAction={toggleMemberListAction}
-          memberId={memberId}
-          setMemberId={setMemberId}
-          memberName={memberName}
-          setMemberName={setMemberName}
-          memberAdminStatus={memberAdminStatus}
-          setMemberAdminStatus={setMemberAdminStatus}
-          toggleRemoveMemberAction={toggleRemoveMemberAction}
-        />
-        {/* <UserMedia
+    <>
+      {isReady ? (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+          <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
+            <Flex direction="row" alignItems="center" gap={4}>
+              <Pressable onPress={() => navigation.goBack()}>
+                <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+              </Pressable>
+              <Text>{type === "personal" ? "Contact Detail" : "Group Detail"}</Text>
+            </Flex>
+          </Flex>
+          <Flex gap={2} flex={1} bg="#FAFAFA" position="relative">
+            <UserAvatar
+              roomId={roomId}
+              type={type}
+              name={name}
+              image={image}
+              position={position}
+              onUpdateGroup={groupUpdateHandler}
+              selectedMembers={selectedMembers}
+              setSelectedMembers={setSelectedMembers}
+              imageAttachment={imageAttachment}
+              setImageAttachment={setImageAttachment}
+              currentUserIsAdmin={currentUserIsAdmin}
+            />
+            <UserInformation
+              type={type}
+              selectedGroupMembers={selectedGroupMembers}
+              loggedInUser={loggedInUser}
+              toggleMemberList={toggleMemberList}
+              currentUserIsAdmin={currentUserIsAdmin}
+              toggleMemberListAction={toggleMemberListAction}
+              setMemberId={setMemberId}
+              setMemberName={setMemberName}
+              setMemberAdminStatus={setMemberAdminStatus}
+              toggleRemoveMemberAction={toggleRemoveMemberAction}
+            />
+            {/* <UserMedia
           qty={media?.data?.length + document?.data?.length}
           media={media?.data}
           docs={document?.data}
           navigation={navigation}
         /> */}
-        {/* <UserPersonalized /> */}
-        <UserAction
-          name={name}
-          type={type}
-          active_member={active_member}
-          toggleClearChatMessage={toggleClearChatMessage}
-          toggleDeleteModal={toggleDeleteModal}
-          toggleExitModal={toggleExitModal}
-          toggleDeleteGroupModal={toggleDeleteGroupModal}
-        />
-      </Flex>
-      <RemoveConfirmationModal
-        isOpen={
-          type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
-        }
-        toggle={
-          type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
-        }
-        description={
-          type === "personal"
-            ? "Are you sure want to delete this chat?"
-            : type === "group" && active_member === 1
-            ? "Are you sure want to exit this group?"
-            : type === "group" && active_member === 0
-            ? "Are you sure want to delete this group?"
-            : null
-        }
-        onPress={() =>
-          type === "personal"
-            ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
-            : type === "group" && active_member === 1
-            ? groupExitHandler(roomId, toggleChatRoom)
-            : type === "group" && active_member === 0
-            ? groupDeleteHandler(roomId, toggleChatRoom)
-            : null
-        }
-        isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
-      />
-      <RemoveConfirmationModal
-        isOpen={removeMemberActionIsopen}
-        toggle={toggleRemoveMemberAction}
-        description="Are you sure want to remove member from group?"
-        onPress={() => {
-          groupMemberDeleteHandler(memberId);
-        }}
-        isLoading={removeMemberIsLoading}
-      />
-      <UserListModal
-        roomId={roomId}
-        memberListIsopen={memberListIsopen}
-        toggleMemberList={toggleMemberList}
-        toggleAddMember={toggleAddMember}
-        userList={userList}
-        handleSearch={handleSearch}
-        inputToShow={inputToShow}
-        setInputToShow={setInputToShow}
-        setSearchInput={setSearchInput}
-        fetchMoreData={fetchMoreData}
-        cumulativeData={cumulativeData}
-        filteredDataArray={filteredDataArray}
-        userListIsLoading={userListIsLoading}
-        onPressAddHandler={addSelectedUserToArray}
-        onPressRemoveHandler={removeSelectedUserToArray}
-        selectedUsers={selectedUsers}
-        setSelectedUsers={setSelectedUsers}
-        forceRerender={forceRerender}
-        onAddMoreMember={groupMemberAddHandler}
-        addMemberIsLoading={addMemberIsLoading}
-      />
-      <MemberListActionModal
-        memberListActionIsopen={memberListActionIsopen}
-        toggleMemberListAction={toggleMemberListAction}
-        memberId={memberId}
-        setMemberId={setMemberId}
-        memberName={memberName}
-        setMemberName={setMemberName}
-        memberAdminStatus={memberAdminStatus}
-        setMemberAdminStatus={setMemberAdminStatus}
-        onUpdateAdminStatus={groupMemberUpdateHandler}
-        currentUserIsAdmin={currentUserIsAdmin}
-        toggleRemoveMemberAction={toggleRemoveMemberAction}
-      />
-    </SafeAreaView>
+            {/* <UserPersonalized /> */}
+            <UserAction
+              type={type}
+              active_member={active_member}
+              toggleClearChatMessage={toggleClearChatMessage}
+              toggleExitModal={toggleExitModal}
+              toggleDeleteGroupModal={toggleDeleteGroupModal}
+            />
+          </Flex>
+          <RemoveConfirmationModal
+            isOpen={
+              type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+            }
+            toggle={
+              type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+            }
+            description={
+              type === "personal"
+                ? "Are you sure want to delete this chat?"
+                : type === "group" && active_member === 1
+                ? "Are you sure want to exit this group?"
+                : type === "group" && active_member === 0
+                ? "Are you sure want to delete this group?"
+                : null
+            }
+            onPress={() =>
+              type === "personal"
+                ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
+                : type === "group" && active_member === 1
+                ? groupExitHandler(roomId, toggleChatRoom)
+                : type === "group" && active_member === 0
+                ? groupDeleteHandler(roomId, toggleChatRoom)
+                : null
+            }
+            isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
+          />
+          <RemoveConfirmationModal
+            isOpen={removeMemberActionIsopen}
+            toggle={toggleRemoveMemberAction}
+            description="Are you sure want to remove member from group?"
+            onPress={() => {
+              groupMemberDeleteHandler(memberId);
+            }}
+            isLoading={removeMemberIsLoading}
+          />
+          <UserListModal
+            roomId={roomId}
+            memberListIsopen={memberListIsopen}
+            toggleMemberList={toggleMemberList}
+            toggleAddMember={toggleAddMember}
+            handleSearch={handleSearch}
+            inputToShow={inputToShow}
+            setInputToShow={setInputToShow}
+            setSearchInput={setSearchInput}
+            fetchMoreData={fetchMoreData}
+            cumulativeData={cumulativeData}
+            filteredDataArray={filteredDataArray}
+            userListIsLoading={userListIsLoading}
+            onPressAddHandler={addSelectedUserToArray}
+            onPressRemoveHandler={removeSelectedUserToArray}
+            selectedUsers={selectedUsers}
+            setSelectedUsers={setSelectedUsers}
+            forceRerender={forceRerender}
+            onAddMoreMember={groupMemberAddHandler}
+            addMemberIsLoading={addMemberIsLoading}
+          />
+          <MemberListActionModal
+            memberListActionIsopen={memberListActionIsopen}
+            toggleMemberListAction={toggleMemberListAction}
+            memberId={memberId}
+            setMemberId={setMemberId}
+            memberName={memberName}
+            setMemberName={setMemberName}
+            memberAdminStatus={memberAdminStatus}
+            setMemberAdminStatus={setMemberAdminStatus}
+            onUpdateAdminStatus={groupMemberUpdateHandler}
+            currentUserIsAdmin={currentUserIsAdmin}
+            toggleRemoveMemberAction={toggleRemoveMemberAction}
+          />
+        </SafeAreaView>
+      ) : null}
+    </>
   );
 };
 

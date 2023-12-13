@@ -1,5 +1,5 @@
 import { TouchableOpacity } from "react-native";
-import { Badge, Box, Divider, Flex, Icon, Text } from "native-base";
+import { Badge, Box, Flex, Icon, Text } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -10,14 +10,10 @@ const UserInformation = ({
   selectedGroupMembers,
   loggedInUser,
   toggleMemberList,
-  memberListActionIsopen,
   toggleMemberListAction,
   currentUserIsAdmin,
-  memberId,
   setMemberId,
-  memberName,
   setMemberName,
-  memberAdminStatus,
   setMemberAdminStatus,
 }) => {
   return (

@@ -9,8 +9,6 @@ const ChatProjectItem = ({
   owner,
   image,
   id,
-  created_at,
-  description,
   selected,
   setSelected,
   nameUser,
