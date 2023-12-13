@@ -1,9 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 
 import { Clipboard, Linking } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
-import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
 
@@ -105,4 +104,4 @@ const FeedComment = ({
   );
 };
 
-export default FeedComment;
+export default memo(FeedComment);

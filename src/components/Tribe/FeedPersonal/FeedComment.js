@@ -4,7 +4,6 @@ import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentList from "../Feed/FeedComment/FeedCommentList";
 import FeedCommentForm from "../Feed/FeedComment/FeedCommentForm";
-import { useFetch } from "../../../hooks/useFetch";
 import { Clipboard, Linking } from "react-native";
 
 const FeedComment = ({
