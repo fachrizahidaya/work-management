@@ -148,7 +148,14 @@ const ChatBubble = ({
       px={2}
       flexDirection={!myMessage ? "row" : "row-reverse"}
     >
-      <Pressable style={styles.iconContainer} width={50} alignItems="center" justifyContent="center" padding={3}>
+      <Pressable
+        style={styles.iconContainer}
+        width={50}
+        alignItems="center"
+        justifyContent="center"
+        padding={3}
+        mr={myMessage ? 10 : null}
+      >
         <Icon as={<MaterialIcons name="reply" />} />
       </Pressable>
       {/* {type === "group" && !myMessage && image ? (
