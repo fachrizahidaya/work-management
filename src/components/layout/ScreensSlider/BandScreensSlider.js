@@ -24,6 +24,7 @@ const BandScreensSlider = ({ isOpen, toggle }) => {
                 navigation.navigate(item.name);
                 toggle();
               }}
+              _pressed={{ bgColor: "#f1f1f1" }}
             >
               <View style={styles.flex}>
                 <View style={styles.item}>

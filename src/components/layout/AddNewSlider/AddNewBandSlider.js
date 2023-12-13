@@ -62,6 +62,7 @@ const AddNewBandSlider = ({ isOpen, toggle }) => {
                   }
                   toggle();
                 }}
+                _pressed={{ bgColor: "#f1f1f1" }}
               >
                 <Flex flexDir="row" alignItems="center" gap={21}>
                   <Box

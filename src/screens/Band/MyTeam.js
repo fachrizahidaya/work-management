@@ -211,25 +211,33 @@ const MyTeamScreen = () => {
       <Actionsheet isOpen={menuIsOpen} onClose={toggleMenu}>
         <Actionsheet.Content>
           <VStack w="95%">
-            {createCheckAccess && <Actionsheet.Item onPress={openNewTeamFormHandler}>Create new team</Actionsheet.Item>}
+            {createCheckAccess && (
+              <Actionsheet.Item onPress={openNewTeamFormHandler} _pressed={{ bgColor: "#f1f1f1" }}>
+                Create new team
+              </Actionsheet.Item>
+            )}
             {team && (
               <>
                 {createProjectCheckAccess && (
-                  <Actionsheet.Item onPress={openProjectFormHandler}>Create project with this team</Actionsheet.Item>
+                  <Actionsheet.Item onPress={openProjectFormHandler} _pressed={{ bgColor: "#f1f1f1" }}>
+                    Create project with this team
+                  </Actionsheet.Item>
                 )}
 
                 {team?.owner_id === userSelector.id && (
                   <>
                     {editCheckAccess && (
                       <>
-                        <Actionsheet.Item onPress={openMemberModalHandler}>
+                        <Actionsheet.Item onPress={openMemberModalHandler} _pressed={{ bgColor: "#f1f1f1" }}>
                           Add new member to this team
                         </Actionsheet.Item>
-                        <Actionsheet.Item onPress={openEditTeamFormHandler}>Edit this team</Actionsheet.Item>
+                        <Actionsheet.Item onPress={openEditTeamFormHandler} _pressed={{ bgColor: "#f1f1f1" }}>
+                          Edit this team
+                        </Actionsheet.Item>
                       </>
                     )}
                     {deleteCheckAccess && (
-                      <Actionsheet.Item onPress={toggleDeleteModal}>
+                      <Actionsheet.Item onPress={toggleDeleteModal} _pressed={{ bgColor: "#f1f1f1" }}>
                         <Text color="red.500" fontSize={16}>
                           Delete this team
                         </Text>
