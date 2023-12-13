@@ -160,8 +160,8 @@ const FeedScreen = () => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       commentRefetchHandler();
-      setCommentParentId(null);
       commentAddHandler(postId);
+      setCommentParentId(null);
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -179,10 +179,10 @@ const FeedScreen = () => {
   /**
    * Control for reply a comment
    */
-  const replyHandler = useCallback((comment_parent_id) => {
+  const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
-  }, []);
+  };
 
   /**
    * After created a post, it will scroll to top
@@ -255,7 +255,6 @@ const FeedScreen = () => {
 
         <Box flex={1} px={3}>
           {/* Content here */}
-
           <>
             <FeedCard
               posts={posts}
@@ -294,6 +293,7 @@ const FeedScreen = () => {
                 onSubmit={commentSubmitHandler}
                 onReply={replyHandler}
                 latestExpandedReply={latestExpandedReply}
+                employeeUsername={employeeUsername}
               />
             )}
           </>

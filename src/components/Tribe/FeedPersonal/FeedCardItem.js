@@ -33,6 +33,7 @@ const FeedCardItem = ({
   handleEmailPress,
   copyToClipboard,
   openSelectedPersonalPost,
+  employeeUsername,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [filteredContent, setFilteredContent] = useState(null);
@@ -56,6 +57,11 @@ const FeedCardItem = ({
   const words = content?.split(" ");
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
+    let specificEmployee;
+    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
+    const hasTag = item.includes("<a");
+    const hasHref = item.includes("href");
+
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
@@ -63,6 +69,50 @@ const FeedCardItem = ({
           {item}{" "}
         </Text>
       );
+    } else if (hasHref && specificEmployee) {
+      const specificEmployeeId = specificEmployee.id;
+      item = specificEmployee.username;
+      textStyle = styles.highlightedText;
+      return (
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() =>
+            navigation.navigate("Employee Profile", {
+              employeeId: specificEmployeeId,
+              loggedEmployeeId: loggedEmployeeId,
+              loggedEmployeeImage: loggedEmployeeImage,
+            })
+          }
+        >
+          @{item}{" "}
+        </Text>
+      );
+    }
+    // else if (specificEmployee) {
+    //   const specificEmployeeId = specificEmployee.id;
+    //   item = specificEmployee.username;
+    //   textStyle = styles.highlightedText;
+    //   return (
+    //     <Text
+    //       key={index}
+    //       style={textStyle}
+    //       onPress={() =>
+    //         navigation.navigate("Employee Profile", {
+    //           employeeId: specificEmployeeId,
+    //           loggedEmployeeId: loggedEmployeeId,
+    //           loggedEmployeeImage: loggedEmployeeImage,
+    //         })
+    //       }
+    //     >
+    //       @{item}{" "}
+    //     </Text>
+    //   );
+    // }
+    else if (hasTag) {
+      item = item.replace(`<a`, "");
+      textStyle = styles.defaultText;
+      return <Text key={index}>{item}</Text>;
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
@@ -154,6 +204,18 @@ const FeedCardItem = ({
 
         <Flex alignItems="center" direction="row" gap={4}>
           <Flex alignItems="center" direction="row" gap={2}>
+            <Pressable
+              onPress={() => {
+                onCommentToggle(id);
+              }}
+            >
+              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
+            </Pressable>
+            <Text fontSize={15} fontWeight={500}>
+              {totalComment}
+            </Text>
+          </Flex>
+          <Flex alignItems="center" direction="row" gap={2}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
                 <Icon as={<MaterialCommunityIcons name="heart" />} size="md" fill="#FD7972" />
@@ -167,18 +229,6 @@ const FeedCardItem = ({
 
             <Text fontSize={15} fontWeight={500}>
               {totalLike}
-            </Text>
-          </Flex>
-          <Flex alignItems="center" direction="row" gap={2}>
-            <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
-            </Pressable>
-            <Text fontSize={15} fontWeight={500}>
-              {totalComment}
             </Text>
           </Flex>
         </Flex>

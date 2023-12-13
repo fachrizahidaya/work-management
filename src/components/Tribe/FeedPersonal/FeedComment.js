@@ -1,9 +1,11 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentList from "../Feed/FeedComment/FeedCommentList";
 import FeedCommentForm from "../Feed/FeedComment/FeedCommentForm";
+import { useFetch } from "../../../hooks/useFetch";
+import { Clipboard, Linking } from "react-native";
 
 const FeedComment = ({
   postId,
@@ -11,6 +13,7 @@ const FeedComment = ({
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
+  commentIsLoading,
   comments,
   handleOpen,
   handleClose,
@@ -23,6 +26,32 @@ const FeedComment = ({
   latestExpandedReply,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+
+  const handleLinkPress = useCallback((url) => {
+    Linking.openURL(url);
+  }, []);
+
+  const handleEmailPress = useCallback((email) => {
+    try {
+      const emailUrl = `mailto:${email}`;
+      Linking.openURL(emailUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  const copyToClipboard = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
@@ -45,8 +74,6 @@ const FeedComment = ({
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
-                postId={postId}
-                loggedEmployeeId={loggedEmployeeId}
                 latestExpandedReply={latestExpandedReply}
                 hasBeenScrolled={hasBeenScrolled}
                 setHasBeenScrolled={setHasBeenScrolled}
@@ -55,6 +82,10 @@ const FeedComment = ({
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
                 refetchComment={refetchComment}
+                handleLinkPress={handleLinkPress}
+                handleEmailPress={handleEmailPress}
+                copyToClipboard={copyToClipboard}
+                commentIsLoading={commentIsLoading}
               />
             </Flex>
           </ScrollView>

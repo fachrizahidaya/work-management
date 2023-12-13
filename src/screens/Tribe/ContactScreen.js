@@ -128,12 +128,9 @@ const ContactScreen = () => {
           <FlashList
             data={contacts.length ? contacts : filteredDataArray}
             onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            initialNumToRender={20}
-            maxToRenderPerBatch={20}
-            windowSize={20}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
-            estimatedItemSize={200}
+            estimatedItemSize={60}
             onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
             ListFooterComponent={() => employeeDataIsFetching && <Spinner />}
             renderItem={({ item }) => (
