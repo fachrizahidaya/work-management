@@ -29,7 +29,7 @@ const ProjectScreen = () => {
   const [selected, setSelected] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [taskId, setTaskId] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   const navigation = useNavigation();
   const routes = useRoute();
@@ -140,58 +140,68 @@ const ProjectScreen = () => {
     }
   }, [task, taskIsFetching, reloadTask]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 300);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Flex direction="row" bg="white" p={4}>
-        <Flex flex={1} direction="row" alignItems="center">
-          <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-          </Pressable>
-          <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
-          <OptionButton
-            setSearchInput={setSearchInput}
-            setInputToShow={setInputToShow}
-            tabValue={tabValue}
-            setTabValue={setTabValue}
-          />
-        </Flex>
-      </Flex>
+      {isReady ? (
+        <>
+          <Flex direction="row" bg="white" p={4}>
+            <Flex flex={1} direction="row" alignItems="center">
+              <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
+                <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+              </Pressable>
+              <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
+              <OptionButton
+                setSearchInput={setSearchInput}
+                setInputToShow={setInputToShow}
+                tabValue={tabValue}
+                setTabValue={setTabValue}
+              />
+            </Flex>
+          </Flex>
 
-      <SearchBox
-        handleSearch={handleSearch}
-        inputToShow={inputToShow}
-        setInputToShow={setInputToShow}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
-      <ChatProjectList
-        navigation={navigation}
-        tabValue={tabValue}
-        projects={projects}
-        tasks={tasks}
-        filteredDataArray={filteredDataArray}
-        setBandAttachment={setBandAttachment}
-        setBandAttachmentType={setBandAttachmentType}
-        userId={userId}
-        roomId={roomId}
-        name={name}
-        image={image}
-        position={position}
-        email={email}
-        type={type}
-        active_member={active_member}
-        isPinned={isPinned}
-        selected={selected}
-        setSelected={setSelected}
-        selectedProject={selectedProject}
-        setSelectedProject={setSelectedProject}
-        selectedTask={selectedTask}
-        setSelectedTask={setSelectedTask}
-        projectIsFetching={projectIsFetching}
-        taskIsFetching={taskIsFetching}
-        projectIsLoading={projectIsLoading}
-        taskIsLoading={taskIsLoading}
-      />
+          <SearchBox
+            handleSearch={handleSearch}
+            inputToShow={inputToShow}
+            setInputToShow={setInputToShow}
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+          />
+          <ChatProjectList
+            navigation={navigation}
+            tabValue={tabValue}
+            projects={projects}
+            tasks={tasks}
+            filteredDataArray={filteredDataArray}
+            setBandAttachment={setBandAttachment}
+            setBandAttachmentType={setBandAttachmentType}
+            userId={userId}
+            roomId={roomId}
+            name={name}
+            image={image}
+            position={position}
+            email={email}
+            type={type}
+            active_member={active_member}
+            isPinned={isPinned}
+            selected={selected}
+            setSelected={setSelected}
+            selectedProject={selectedProject}
+            setSelectedProject={setSelectedProject}
+            selectedTask={selectedTask}
+            setSelectedTask={setSelectedTask}
+            projectIsFetching={projectIsFetching}
+            taskIsFetching={taskIsFetching}
+            projectIsLoading={projectIsLoading}
+            taskIsLoading={taskIsLoading}
+          />
+        </>
+      ) : null}
     </SafeAreaView>
   );
 };

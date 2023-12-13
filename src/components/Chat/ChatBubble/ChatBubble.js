@@ -154,7 +154,7 @@ const ChatBubble = ({
         alignItems="center"
         justifyContent="center"
         padding={3}
-        mr={myMessage ? 10 : null}
+        mr={myMessage ? 5 : null}
       >
         <Icon as={<MaterialIcons name="reply" />} />
       </Pressable>

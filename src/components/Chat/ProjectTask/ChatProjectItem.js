@@ -56,7 +56,7 @@ const ChatProjectItem = ({
       >
         <Flex>
           <Text fontSize={14} fontWeight={400}>
-            {name}
+            {name.length > 50 ? name.slice(0, 30) + "..." : name}
           </Text>
           <Text opacity={0.5} fontSize={12} fontWeight={300}>
             Due {dayjs(date).format("DD MMMM YYYY")}

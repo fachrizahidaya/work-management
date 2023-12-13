@@ -138,7 +138,7 @@ const ProjectDetail = () => {
                 >
                   <Flex>
                     <Text fontSize={14} fontWeight={400}>
-                      {item?.title}
+                      {item?.title.length > 50 ? item?.title.slice(0, 30) + "..." : item?.title}
                     </Text>
                     <Text opacity={0.5} fontSize={12} fontWeight={300}>
                       Due {dayjs(item?.deadline).format("DD MMMM YYYY")}
