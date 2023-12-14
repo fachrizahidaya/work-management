@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import dayjs from "dayjs";
+import * as yup from "yup";
+
 import { Flex, FormControl, HStack, Icon, Select, Spinner, Text, TextArea } from "native-base";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
@@ -5,19 +10,123 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
+import { ErrorToast, SuccessToast } from "../../shared/ToastDialog";
+import axiosInstance from "../../../config/api";
+import { useFetch } from "../../../hooks/useFetch";
 
-const NewLeaveRequestForm = ({
-  formik,
-  leaveType,
-  onChangeEndDate,
-  onChangeStartDate,
-  selectedGenerateType,
-  isLoading,
-  isError,
-}) => {
+const NewLeaveRequestForm = ({ toast, onSubmit }) => {
+  const [selectedGenerateType, setSelectedGenerateType] = useState(null);
+  const [dateChanges, setDateChanges] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [formError, setFormError] = useState(true);
+
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+
+  const { data: leaveType } = useFetch("/hr/leaves");
+
+  /**
+   * Calculate leave quota handler
+   * @param {*} action
+   */
+  const countLeave = async (action = null) => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
+        leave_id: formik.values.leave_id,
+        begin_date: formik.values.begin_date,
+        end_date: formik.values.end_date,
+      });
+
+      formik.setFieldValue("days", res.data.days);
+      formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
+      formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
+      setIsLoading(false);
+      toast.show({
+        render: () => {
+          return <SuccessToast message="Leave request available" />;
+        },
+      });
+      setFormError(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+      setIsError(true);
+      toast.show({
+        render: () => {
+          return <ErrorToast message={err.response.data.message} />;
+        },
+      });
+    }
+  };
+
+  /**
+   * Create leave request handler
+   */
+  const formik = useFormik({
+    initialValues: {
+      leave_id: "",
+      begin_date: dayjs().format("YYYY-MM-DD"),
+      end_date: dayjs().format("YYYY-MM-DD"),
+      days: "",
+      reason: "",
+    },
+    validationSchema: yup.object().shape({
+      leave_id: yup.string().required("Leave Type is required"),
+      reason: yup.string().required("Purpose of Leave is required"),
+      begin_date: yup.date().required("Start date is required"),
+      end_date: yup.date().min(yup.ref("begin_date"), "End date can't be less than start date"),
+    }),
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      onSubmit(values, setSubmitting, setStatus);
+      // resetForm();
+    },
+  });
+
+  /**
+   * Begin and End date Leave handler
+   * @param {*} value
+   */
+  const onChangeStartDate = (value) => {
+    formik.setFieldValue("begin_date", value);
+  };
+
+  const onChangeEndDate = (value) => {
+    formik.setFieldValue("end_date", value);
+  };
+
+  useEffect(() => {
+    if (formik.values.leave_id && dateChanges) {
+      countLeave();
+      setDateChanges(false);
+    }
+  }, [formik.values.leave_id, dateChanges]);
+
+  useEffect(() => {
+    // If selected leave_id has a fixed leave day count then
+    // date changes should be set as true to enable leave count
+    // without making changes to date first
+    if (selectedGenerateType === null) {
+      setDateChanges(true);
+    }
+  }, [selectedGenerateType]);
+
+  useEffect(() => {
+    setSelectedGenerateType(() => {
+      const selectedLeave = leaveType?.data.find((leave) => leave.id === formik.values.leave_id);
+      console.log(selectedLeave?.generate_type);
+      return selectedLeave?.generate_type;
+    });
+  }, [formik.values.leave_id]);
+
+  useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      navigation.goBack();
+    }
+  }, [formik.isSubmitting, formik.status]);
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -73,7 +182,7 @@ const NewLeaveRequestForm = ({
           <CustomDateTimePicker
             defaultValue={formik.values.end_date}
             onChange={onChangeEndDate}
-            disabled={!formik.values.leave_id || !selectedGenerateType}
+            disabled={!formik.values.leave_id}
           />
           <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
         </FormControl>
