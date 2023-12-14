@@ -1,11 +1,10 @@
-import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
 import { useDispatch } from "react-redux";
 
-import { Box, Flex, Progress, Text } from "native-base";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 
 import { login } from "../redux/reducer/auth";
 import { setModule } from "../redux/reducer/module";
@@ -134,20 +133,20 @@ const LoadingScreen = ({ route }) => {
             alt="KSS_LOGO"
             style={[styles.logo, rStyle]}
           />
-          <Text color="#979797">
+          {/* <Text color="#979797">
             {loadingValue <= 40
               ? "Logging in"
               : loadingValue > 40 && loadingValue <= 60
               ? "Loading your dashboard"
               : "Preparing your dashboard"}
-          </Text>
-          <Progress value={loadingValue} colorScheme="primary" size="sm" bg="#E8E9EB" w={300} mt={50} />
+          </Text> */}
+          {/* <Progress value={loadingValue} colorScheme="primary" size="sm" bg="#E8E9EB" w={300} mt={50} /> */}
         </Animated.View>
       )}
 
       {loadingValue >= 100 && (
         <Animated.View style={[styles.profileBox, yStyle]}>
-          <Flex bg="#E7E7E7" alignItems="center" justifyContent="center" gap={25} style={styles.profileBox}>
+          {/* <Flex bg="#E7E7E7" alignItems="center" justifyContent="center" gap={25} style={styles.profileBox}>
             <Animated.Image
               resizeMode="contain"
               source={require("../assets/icons/kss_logo.png")}
@@ -161,7 +160,7 @@ const LoadingScreen = ({ route }) => {
                 {userData.userData.name.length > 30 ? userData.userData.name.split(" ")[0] : userData.userData.name}
               </Text>
             </Box>
-          </Flex>
+          </Flex> */}
         </Animated.View>
       )}
     </SafeAreaView>

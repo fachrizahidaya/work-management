@@ -1,8 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Box, Icon, Image } from "native-base";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { TouchableOpacity } from "react-native";
 
 import BandDashboard from "../../screens/Band/BandDashboard";
 import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
@@ -15,6 +14,8 @@ import MyTeamScreen from "../../screens/Band/MyTeam";
 import NotesScreen from "../../screens/Band/Notes";
 import CalendarScreen from "../../screens/Band/Calendar";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
+import { useRef } from "react";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +24,7 @@ function EmptyScreen() {
 }
 
 const BandTab = () => {
+  const bandScreenSheetRef = useRef(null);
   const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
   const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
   const {
@@ -82,46 +84,31 @@ const BandTab = () => {
           component={BandDashboard}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="menu" />} size={size} color="#186688" />
-              </Box>
-            ),
-            tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => handleStateToggle("screenSelectIsOpen")}>
-                {props.children}
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        {/* <Tab.Screen
-          name="Search"
-          component={EmptyScreen}
-          options={{
-            tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="menu" size={20} />
+              </View>
             ),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
                 onPress={() => {
-                  // handleStateToggle("settingSelectIsOpen");
+                  handleStateToggle("screenSelectIsOpen");
+                  bandScreenSheetRef.current?.show();
                 }}
               >
                 {props.children}
               </TouchableOpacity>
             ),
           }}
-        /> */}
+        />
         <Tab.Screen
           name="Add"
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="plus" size={20} />
+              </View>
             ),
             tabBarButton: (props) => (
               <TouchableOpacity
@@ -140,9 +127,9 @@ const BandTab = () => {
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#fbfbfb" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="cog-outline" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="cog-outline" size={20} />
+              </View>
             ),
           }}
         />
@@ -150,7 +137,9 @@ const BandTab = () => {
           name="Module Selection"
           component={EmptyScreen}
           options={{
-            tabBarIcon: () => <Image source={require("../../assets/icons/band_logo.png")} size={35} alt="band logo" />,
+            tabBarIcon: () => (
+              <Image source={require("../../assets/icons/band_logo.png")} alt="band logo" style={styles.moduleImage} />
+            ),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
@@ -174,14 +163,28 @@ const BandTab = () => {
         <Tab.Screen name="Calendar Band" component={CalendarScreen} />
       </Tab.Navigator>
 
-      {/* Sliders */}
-      <BandScreensSlider isOpen={menuScreenSliderIsOpen} toggle={toggleMenuScreenSlider} />
+      {/* Sheets */}
+      <BandScreenSheet reference={bandScreenSheetRef} />
+      {/* <BandScreensSlider isOpen={menuScreenSliderIsOpen} toggle={toggleMenuScreenSlider} />
 
       <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />
+      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} /> */}
     </>
   );
 };
 
 export default BandTab;
+
+const styles = StyleSheet.create({
+  menuIcon: {
+    backgroundColor: "#fbfbfb",
+    borderRadius: 50,
+    padding: 2,
+  },
+  moduleImage: {
+    resizeMode: "contain",
+    height: 35,
+    width: 35,
+  },
+});

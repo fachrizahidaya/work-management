@@ -3,8 +3,8 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { TouchableOpacity } from "react-native";
-import { Box, Divider, Flex, Text } from "native-base";
+import { TouchableOpacity, View, Text } from "react-native";
+import { Divider } from "native-base";
 import { ProgressChart } from "react-native-chart-kit";
 
 import { card } from "../../../../styles/Card";
@@ -33,9 +33,9 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
       }}
       style={[card.card, { flex: 1 }]}
     >
-      <Flex flexDir="column">
-        <Text fontSize={20}>This Year Tasks</Text>
-        <Box>
+      <View style={{ display: "flex", flexDirection: "column" }}>
+        <Text style={{ fontSize: 20 }}>This Year Tasks</Text>
+        <View>
           <ProgressChart
             data={data}
             width={200}
@@ -53,38 +53,32 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
               alignItems: "center",
             }}
           />
-        </Box>
+        </View>
 
-        <Flex flexDir="row" gap={5} justifyContent="center">
-          <Flex alignItems="center">
-            <Box w={2} h={2} borderRadius={50} bgColor="#176688"></Box>
-            <Text fontSize={24} bold>
-              {open}
-            </Text>
-            <Text fontWeight={400}>Open</Text>
-          </Flex>
+        <View style={{ display: "flex", flexDirection: "row", gap: 8, justifyContent: "center" }}>
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#176688" }} />
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{open}</Text>
+            <Text style={{ fontWeight: 400 }}>Open</Text>
+          </View>
 
-          <Divider orientation="vertical" />
+          <View style={{ borderWidth: 1, borderColor: "#f8f8f8" }} />
 
-          <Flex alignItems="center">
-            <Box w={2} h={2} borderRadius={50} bgColor="#fcd241"></Box>
-            <Text fontSize={24} bold>
-              {onProgress}
-            </Text>
-            <Text fontWeight={400}>In Progress</Text>
-          </Flex>
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#fcd241" }}></View>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{onProgress}</Text>
+            <Text style={{ fontWeight: 400 }}>In Progress</Text>
+          </View>
 
-          <Divider orientation="vertical" />
+          <View style={{ borderWidth: 1, borderColor: "#f8f8f8" }} />
 
-          <Flex alignItems="center">
-            <Box w={2} h={2} borderRadius={50} bgColor="#FF965D"></Box>
-            <Text fontSize={24} bold>
-              {finish}
-            </Text>
-            <Text fontWeight={400}>Finish</Text>
-          </Flex>
-        </Flex>
-      </Flex>
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#FF965D" }}></View>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{finish}</Text>
+            <Text style={{ fontWeight: 400 }}>Finish</Text>
+          </View>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };

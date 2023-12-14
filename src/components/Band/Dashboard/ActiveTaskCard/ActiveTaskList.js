@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 
-import { Checkbox, Flex, Icon, Text } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useSelector } from "react-redux";
@@ -10,15 +9,18 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
   const userSelector = useSelector((state) => state.auth);
 
   return (
-    <Flex
-      flexDir="row"
-      alignItems="center"
-      justifyContent="space-between"
-      borderLeftWidth={3}
-      borderColor={priority === "Low" ? "#49c96d" : priority === "Medium" ? "#ff965d" : "#fd7972"}
-      px={4}
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderLeftWidth: 3,
+        borderColor: priority === "Low" ? "#49c96d" : priority === "Medium" ? "#ff965d" : "#fd7972",
+        paddingHorizontal: 4,
+      }}
     >
-      <Checkbox
+      <TouchableOpacity
         isChecked={status === "Closed"}
         onTouchEnd={() => {
           status === "Finish" && userSelector.id === task?.responsible_id && onPress(task);
@@ -26,18 +28,16 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
         isDisabled={status !== "Finish" || userSelector.id !== task?.responsible_id}
         borderWidth={1}
       >
-        <Flex flexDir="column">
-          <Text opacity={0.5}>{responsible || "TBD"}</Text>
-          <Text textDecorationLine={status === "Closed" ? "line-through" : "none"} w={200}>
-            {title}
-          </Text>
-        </Flex>
-      </Checkbox>
+        <View style={{ display: "flex", flexDirection: "column" }}>
+          <Text style={{ opacity: 0.5 }}>{responsible || "TBD"}</Text>
+          <Text style={{ textDecorationLine: status === "Closed" ? "line-through" : "none", width: 200 }}>{title}</Text>
+        </View>
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => onPressItem(id)}>
-        <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" />
+        <MaterialCommunityIcons name="chevron-right" />
       </TouchableOpacity>
-    </Flex>
+    </View>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Skeleton, Text } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { Flex, Skeleton } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard/ProgressChartCard";
@@ -56,25 +56,15 @@ const BandDashboard = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex
-        flexDir="row"
-        alignItems="center"
-        justifyContent="space-between"
-        bgColor="white"
-        py={14}
-        style={{ paddingHorizontal: 16 }}
-      >
-        <Flex flexDir="row" gap={1}>
-          <Text color="primary.600" fontWeight={700} fontSize={16}>
-            Work
-          </Text>
-          <Text fontSize={16}>Overview</Text>
-        </Flex>
+      <View style={styles.flexWrapper}>
+        <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+          <Text style={{ fontSize: 16, fontWeight: 700, color: "#176688" }}>Work</Text>
+          <Text style={{ fontSize: 16 }}>Overview</Text>
+        </View>
 
-        <Text fontWeight={700} fontSize={12}>
-          PT Kolabora Group Indonesia
-        </Text>
-      </Flex>
+        <Text style={{ fontWeight: 700, fontSize: 14 }}>PT Kolabora Group Indonesia</Text>
+      </View>
+
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -85,8 +75,7 @@ const BandDashboard = () => {
           />
         }
       >
-        <Flex flex={1} flexDir="column" gap={5} my={5}>
-          {/* Content here */}
+        <View style={styles.contentWrapper}>
           <ProjectAndTaskCard
             projects={projects?.data}
             tasks={tasks?.data}
@@ -97,11 +86,12 @@ const BandDashboard = () => {
           {!tasksThisYearIsLoading ? (
             <ProgressChartCard data={data} open={openTasks} onProgress={onProgressTasks} finish={finishTasks} />
           ) : (
-            <Skeleton height={300} />
+            // <Skeleton height={300} />
+            <Text>Loading...</Text>
           )}
 
           <ActiveTaskCard />
-        </Flex>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -114,7 +104,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
   },
-  scrollView: {
+  flexWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    paddingVertical: 14,
     paddingHorizontal: 16,
+  },
+  scrollView: {
+    paddingHorizontal: 14,
+  },
+  contentWrapper: {
+    display: "flex",
+    flex: 1,
+    gap: 14,
+    marginVertical: 14,
   },
 });

@@ -69,7 +69,7 @@ const Header = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: "white" }}>
-      <Flex
+      {/* <Flex
         direction="row"
         bg="#fff"
         alignItems="center"
@@ -93,7 +93,6 @@ const Header = () => {
         </Flex>
 
         <Flex flexDir="row" gap={8} alignItems="center">
-          {/* {selectedModule && ( */}
           <Box position="relative">
             <Pressable
               onPress={() =>
@@ -128,7 +127,6 @@ const Header = () => {
               </Box>
             )}
           </Box>
-          {/* )} */}
 
           <Pressable onPress={() => navigation.navigate("Chat List")} position="relative">
             {unreadMessages?.data?.total_unread > 0 && (
@@ -161,7 +159,7 @@ const Header = () => {
           isOpen={notificationCardIsOpen}
           close={toggleNotificationCard}
         />
-      </Flex>
+      </Flex> */}
     </SafeAreaView>
   );
 };

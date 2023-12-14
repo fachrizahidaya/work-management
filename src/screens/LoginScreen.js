@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
@@ -18,16 +17,26 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import {
-  Box,
-  Button,
-  FormControl,
-  Icon,
-  Input,
-  Image,
+  StyleSheet,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
   Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import {
+  Box,
+  // Button,
+  FormControl,
+  // Icon,
+  // Input,
+  Image,
+  // Text,
   Flex,
   Divider,
-  Pressable,
+  // Pressable,
   Checkbox,
   useToast,
 } from "native-base";
@@ -41,7 +50,7 @@ import { useLoading } from "../hooks/useLoading";
 // WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
-  const toast = useToast();
+  // const toast = useToast();
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
   const [hidePassword, setHidePassword] = useState(true);
@@ -188,14 +197,50 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
-      <Flex bg="white" borderRadius={15} py={38} gap={36} w="full" maxWidth={500} style={{ paddingHorizontal: 16 }}>
+      {/* <FormControl width="100%" isInvalid={formik.errors.email}> */}
+      <Text>Email</Text>
+      <TextInput
+        size="md"
+        placeholder="Insert your email..."
+        onChangeText={(value) => formik.setFieldValue("email", value)}
+        autoCapitalize="none"
+      />
+      <Text>{formik.errors.email}</Text>
+      {/* </FormControl> */}
+
+      {/* <FormControl width="100%" isInvalid={formik.errors.password}> */}
+      <Text>Password</Text>
+      <TextInput
+        size="md"
+        placeholder="Insert your password..."
+        autoCapitalize="none"
+        type={!hidePassword ? "text" : "password"}
+        onChangeText={(value) => formik.setFieldValue("password", value)}
+        InputRightElement={
+          <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
+            <MaterialIcons name={hidePassword ? "visibility" : "visibility-off"} />
+          </TouchableOpacity>
+        }
+      />
+      <Text>{formik.errors.password}</Text>
+      {/* </FormControl> */}
+
+      <Button
+        onPress={formik.handleSubmit}
+        isLoading={formik.isSubmitting}
+        disabled={formik.isSubmitting || isLoading}
+        bgColor={formik.isSubmitting || isLoading ? "gray.500" : "primary.600"}
+        isLoadingText="Loging in..."
+        title="Log In"
+      />
+      {/* <Flex bg="white" borderRadius={15} py={38} gap={36} w="full" maxWidth={500} style={{ paddingHorizontal: 16 }}>
         <Flex gap={22} w="100%">
           <Flex gap={15} alignItems="center">
             <Image resizeMode="contain" source={require("../assets/icons/kss_logo.png")} alt="KSS_LOGO" h={45} w={45} />
             <Text fontSize={20}>Login</Text>
           </Flex>
 
-          {/* <Flex position="relative">
+          <Flex position="relative">
             <Image
               resizeMode="contain"
               source={require("../assets/icons/google.png")}
@@ -229,9 +274,9 @@ const LoginScreen = () => {
                 {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
             </Button>
-          </Flex> */}
+          </Flex>
         </Flex>
-        {/* 
+        
         <Flex position="relative" w="100%" alignItems="center" justifyContent="center">
           <Divider />
           <Box style={{ paddingHorizontal: 16 }} position="absolute" top={-10} bg="white">
@@ -239,43 +284,12 @@ const LoginScreen = () => {
               OR LOGIN WITH EMAIL
             </Text>
           </Box>
-        </Flex> */}
+        </Flex>
 
         <Flex w="100%" style={{ gap: 20 }}>
-          <FormControl width="100%" isInvalid={formik.errors.email}>
-            <FormControl.Label>Email</FormControl.Label>
-            <Input
-              size="md"
-              placeholder="Insert your email..."
-              onChangeText={(value) => formik.setFieldValue("email", value)}
-              autoCapitalize="none"
-            />
-            <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
-          </FormControl>
+          
 
-          <FormControl width="100%" isInvalid={formik.errors.password}>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input
-              size="md"
-              placeholder="Insert your password..."
-              autoCapitalize="none"
-              type={!hidePassword ? "text" : "password"}
-              onChangeText={(value) => formik.setFieldValue("password", value)}
-              InputRightElement={
-                <Pressable onPress={() => setHidePassword(!hidePassword)}>
-                  <Icon
-                    as={<MaterialIcons name={hidePassword ? "visibility" : "visibility-off"} />}
-                    size={5}
-                    mr="3"
-                    color="muted.400"
-                  />
-                </Pressable>
-              }
-            />
-            <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
-          </FormControl>
-
-          {/* <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
             <Flex>
               <Checkbox color="primary.600">
                 <Text fontWeight={400}>Remember Me</Text>
@@ -285,26 +299,18 @@ const LoginScreen = () => {
             <Text color="primary.600" fontWeight={400}>
               Forgot Password?
             </Text>
-          </Flex> */}
+          </Flex>
         </Flex>
 
         <Flex w="100%">
-          <Button
-            onPress={formik.handleSubmit}
-            isLoading={formik.isSubmitting}
-            disabled={formik.isSubmitting || isLoading}
-            bgColor={formik.isSubmitting || isLoading ? "gray.500" : "primary.600"}
-            isLoadingText="Loging in..."
-          >
-            Log In
-          </Button>
+         
         </Flex>
 
-        {/* <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
+        <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
           <Text>Don't have an account?</Text>
           <Text color="primary.600">Sign Up</Text>
-        </Flex> */}
-      </Flex>
+        </Flex>
+      </Flex> */}
     </KeyboardAvoidingView>
   );
 };
