@@ -20,6 +20,7 @@ const NewLeaveRequestForm = ({ toast, onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [formError, setFormError] = useState(true);
+  console.log("change", dateChanges);
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -92,10 +93,12 @@ const NewLeaveRequestForm = ({ toast, onSubmit }) => {
    */
   const onChangeStartDate = (value) => {
     formik.setFieldValue("begin_date", value);
+    setDateChanges(true); // every time there is change of date, it will set to true
   };
 
   const onChangeEndDate = (value) => {
     formik.setFieldValue("end_date", value);
+    setDateChanges(true); // every time there is change of date, it will set to true
   };
 
   useEffect(() => {
@@ -106,9 +109,6 @@ const NewLeaveRequestForm = ({ toast, onSubmit }) => {
   }, [formik.values.leave_id, dateChanges]);
 
   useEffect(() => {
-    // If selected leave_id has a fixed leave day count then
-    // date changes should be set as true to enable leave count
-    // without making changes to date first
     if (selectedGenerateType === null) {
       setDateChanges(true);
     }
