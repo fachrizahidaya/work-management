@@ -64,9 +64,11 @@ const AttendanceScreen = () => {
     !date?.earlyType &&
     date?.timeIn &&
     (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave" || date?.attendanceType !== "Alpa");
-  const hasLateWithoutReason = date?.late && date?.lateType && !date?.lateReason;
-  const hasEarlyWithoutReason = date?.early && date?.earlyType && !date?.earlyReason;
-  const hasSubmittedReport = (date?.lateReason && !date?.earlyReason) || (date?.earlyReason && !date?.lateReason);
+  const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
+  const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
+  const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
+  const hasSubmittedLateReport = date?.lateType && date?.lateReason && !date?.earlyType;
+  const hasSubmittedEarlyReport = date?.earlyType && date?.earlyReason && !date?.lateType;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
     date?.attendanceType === "Alpa" && date?.attendanceReason && date?.dayType === "Work Day";
@@ -74,7 +76,7 @@ const AttendanceScreen = () => {
     date?.attendanceType === "Alpa" &&
     date?.dayType === "Work Day" &&
     date?.date !== CURRENT_DATE &&
-    date?.attendanceReason === null;
+    !date?.attendanceReason;
   const isLeave = date?.attendanceType === "Work Day" && date?.attendanceType === "Leave";
   const isPermit = date?.attendanceType === "Work Day" && date?.attendanceType === "Permit";
 
@@ -409,9 +411,11 @@ const AttendanceScreen = () => {
         hasClockInAndOut={hasClockInAndOut}
         hasLateWithoutReason={hasLateWithoutReason}
         hasEarlyWithoutReason={hasEarlyWithoutReason}
-        hasSubmittedReport={hasSubmittedReport}
+        hasLateAndEarlyWithoutReason={hasLateAndEarlyWithoutReason}
         hasSubmittedBothReports={hasSubmittedBothReports}
         hasSubmittedReportAlpa={hasSubmittedReportAlpa}
+        hasSubmittedLateReport={hasSubmittedLateReport}
+        hasSubmittedEarlyReport={hasSubmittedEarlyReport}
         notAttend={notAttend}
         isLeave={isLeave}
         isPermit={isPermit}

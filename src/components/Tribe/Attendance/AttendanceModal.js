@@ -1,11 +1,26 @@
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import { Box, Button, Divider, Flex, FormControl, Icon, Input, Modal, Select, Text, VStack } from "native-base";
+import {
+  Actionsheet,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  FormControl,
+  Icon,
+  Input,
+  Modal,
+  Select,
+  Text,
+  VStack,
+} from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
+import Tabs from "../../shared/Tabs";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const AttendanceModal = ({
   reportIsOpen,
@@ -15,14 +30,17 @@ const AttendanceModal = ({
   hasClockInAndOut,
   hasLateWithoutReason,
   hasEarlyWithoutReason,
-  hasSubmittedReport,
+  hasLateAndEarlyWithoutReason,
   hasSubmittedBothReports,
   hasSubmittedReportAlpa,
+  hasSubmittedLateReport,
+  hasSubmittedEarlyReport,
   notAttend,
   isLeave,
   isPermit,
   CURRENT_DATE,
 }) => {
+  const [tabValue, setTabValue] = useState("late");
   /**
    * Late type Handler
    */
@@ -36,10 +54,18 @@ const AttendanceModal = ({
    * Early type Handler
    */
   const earlyType = [
-    { id: 1, name: "Early" },
+    { id: 1, name: "Went Home Early" },
     { id: 2, name: "Permit" },
     { id: 3, name: "Other" },
   ];
+
+  const tabs = useMemo(() => {
+    return [{ title: "late" }, { title: "early" }];
+  }, []);
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+  }, []);
 
   /**
    * Create attendance report handler
@@ -54,26 +80,27 @@ const AttendanceModal = ({
       att_type: date?.attendanceType || "",
       att_reason: date?.attendanceReason || "",
     },
-    // validationSchema: yup.object().shape({}),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       onSubmit(date?.id, values, setSubmitting, setStatus);
     },
   });
 
-  return (
-    <Modal
-      size="xl"
-      isOpen={reportIsOpen}
-      onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()}
-    >
-      <Modal.Content>
-        <Modal.CloseButton onPress={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport()} />
-        <Modal.Header>{dayjs(date?.date).format("dddd, DD MMM YYYY")}</Modal.Header>
+  useEffect(() => {
+    return () => {
+      setTabValue("late");
+    };
+  }, [date]);
 
-        {/* If employee ontime for Clock in and Clock out */}
-        {hasClockInAndOut && (
-          <Modal.Body>
+  return (
+    <>
+      <Actionsheet
+        isOpen={reportIsOpen}
+        onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport(formik.resetForm)}
+      >
+        <Actionsheet.Content>
+          {/* If employee ontime for Clock in and Clock out */}
+          {hasClockInAndOut && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
                 <FormControl>
@@ -88,78 +115,74 @@ const AttendanceModal = ({
                 )}
               </VStack>
             </VStack>
-          </Modal.Body>
-        )}
-
-        {/* If employee Clock in late, require Late Report */}
-        {hasLateWithoutReason && (
-          <LateOrEarlyTime
-            arrayList={lateType}
-            titleTime="Clock-in Time"
-            time={date?.timeIn}
-            title="Late Type"
-            inputValue={formik.values.late_reason}
-            inputOnChangeText={(value) => formik.setFieldValue("late_reason", value)}
-            selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
-            errorForType={formik.errors.late_type}
-            errorForReason={formik.errors.late_reason}
-            titleDuty="On Duty"
-            timeDuty={date?.onDuty}
-            titleLateOrEarly="Late"
-            timeLateOrEarly={date?.late}
-          />
-        )}
-
-        {/* If employee Clock out early, require Early Report */}
-        {hasEarlyWithoutReason && (
-          <LateOrEarlyTime
-            arrayList={earlyType}
-            titleTime="Clock-out Time"
-            time={date?.timeOut}
-            title="Early Type"
-            inputValue={formik.values.early_reason}
-            inputOnChangeText={(value) => formik.setFieldValue("early_reason", value)}
-            selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
-            errorForType={formik.errors.early_type}
-            errorForReason={formik.errors.early_reason}
-            titleDuty="Off Duty"
-            timeDuty={date?.offDuty}
-            titleLateOrEarly="Early"
-            timeLateOrEarly={date?.early}
-          />
-        )}
-
-        {/* If report submitted either Late or Early or Alpa */}
-        {hasSubmittedReport && (
-          <Modal.Body>
+          )}
+          {/* If employee Clock in late, require Late Report */}
+          {hasLateWithoutReason && (
+            <LateOrEarlyTime
+              formik={formik}
+              arrayList={lateType}
+              titleTime="Clock-in Time"
+              time={date?.timeIn}
+              title="Late Type"
+              inputValue={formik.values.late_reason}
+              inputOnChangeText={(value) => formik.setFieldValue("late_reason", value)}
+              selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
+              errorForType={formik.errors.late_type}
+              errorForReason={formik.errors.late_reason}
+              titleDuty="On Duty"
+              timeDuty={date?.onDuty}
+              titleLateOrEarly="Late"
+              timeLateOrEarly={date?.late}
+            />
+          )}
+          {/* If employee Clock out early, require Early Report */}
+          {hasEarlyWithoutReason && (
+            <LateOrEarlyTime
+              formik={formik}
+              arrayList={earlyType}
+              titleTime="Clock-out Time"
+              time={date?.timeOut}
+              title="Early Type"
+              inputValue={formik.values.early_reason}
+              inputOnChangeText={(value) => formik.setFieldValue("early_reason", value)}
+              selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
+              errorForType={formik.errors.early_type}
+              errorForReason={formik.errors.early_reason}
+              titleDuty="Off Duty"
+              timeDuty={date?.offDuty}
+              titleLateOrEarly="Early"
+              timeLateOrEarly={date?.early}
+            />
+          )}
+          {/* If report submitted either Late or Early or Alpa */}
+          {hasSubmittedLateReport && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
                 <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box>
-                    <FormControl.Label>{date?.late ? "On Duty" : "Off Duty"}</FormControl.Label>
-                    <Text>{date?.late ? date?.onDuty : date?.offDuty}</Text>
+                    <FormControl.Label>On Duty</FormControl.Label>
+                    <Text>{date?.onDuty}</Text>
                   </Box>
                   <Flex gap={5} flexDirection="row" alignItems="center">
                     <Box>
-                      <FormControl.Label>{date?.timeIn ? "Clock-in Time" : "Clock-out Time"}</FormControl.Label>
+                      <FormControl.Label>Clock-in Time</FormControl.Label>
                       <Text>
-                        {date?.timeIn ? date?.timeIn : date?.timeOut} ({date?.timeIn ? date?.late : date?.early})
+                        {date?.timeIn} ({date?.late})
                       </Text>
                     </Box>
                   </Flex>
                 </FormControl>
                 <FormControl>
-                  <FormControl.Label>{date?.lateType ? "Late Type" : "Early Type"}</FormControl.Label>
-                  {/* <Text>{date?.lateType ? date?.lateType : date?.earlyType}</Text> */}
+                  <FormControl.Label>Late Type</FormControl.Label>
                   <Select
-                    onValueChange={(value) => formik.setFieldValue(date?.lateType ? "late_type" : "early_type", value)}
+                    onValueChange={(value) => formik.setFieldValue("late_type", value)}
                     borderRadius={15}
                     borderWidth={1}
                     variant="unstyled"
                     key="late_type"
                     placeholder="Select Late Type"
                     dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                    defaultValue={date?.lateType ? date?.lateType : date?.earlyType}
+                    defaultValue={date?.lateType}
                   >
                     {lateType.map((item) => {
                       return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
@@ -168,29 +191,85 @@ const AttendanceModal = ({
                 </FormControl>
                 <FormControl>
                   <FormControl.Label>Reason</FormControl.Label>
-                  {/* <Text>{date?.lateReason ? date?.lateReason : date?.earlyReason}</Text> */}
                   <Input
                     variant="outline"
                     placeholder="Enter your reason"
-                    value={formik.values.late_reason ? formik.values_late_reason : formik.values.early_reason}
-                    onChangeText={(value) =>
-                      formik.setFieldValue(date?.lateReason ? "late_reason" : "early_reason", value)
-                    }
-                    defaultValue={date?.lateReason ? date?.lateReason : date?.earlyReason}
+                    value={formik.values.late_reason}
+                    onChangeText={(value) => formik.setFieldValue("late_reason", value)}
+                    defaultValue={date?.lateReason}
                   />
                 </FormControl>
               </VStack>
+              <FormButton
+                width="full"
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
             </VStack>
-          </Modal.Body>
-        )}
-
-        {hasSubmittedReportAlpa && (
-          <Modal.Body>
-            <VStack
-              w="95%"
-              space={3}
-              // pb={keyboardHeight}
-            >
+          )}
+          {hasSubmittedEarlyReport && (
+            <VStack w="95%" space={3}>
+              <VStack w="100%" space={2}>
+                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                  <Box>
+                    <FormControl.Label>Off Duty</FormControl.Label>
+                    <Text>{date?.offDuty}</Text>
+                  </Box>
+                  <Flex gap={5} flexDirection="row" alignItems="center">
+                    <Box>
+                      <FormControl.Label>Clock-out Time</FormControl.Label>
+                      <Text>
+                        {date?.timeOut} ({date?.early})
+                      </Text>
+                    </Box>
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Early Type</FormControl.Label>
+                  <Select
+                    onValueChange={(value) => formik.setFieldValue("early_type", value)}
+                    borderRadius={15}
+                    borderWidth={1}
+                    variant="unstyled"
+                    key="early_type"
+                    placeholder="Select Early Type"
+                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                    defaultValue={date?.earlyType}
+                  >
+                    {lateType.map((item) => {
+                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Reason</FormControl.Label>
+                  <Input
+                    variant="outline"
+                    placeholder="Enter your reason"
+                    value={formik.values.early_reason}
+                    onChangeText={(value) => formik.setFieldValue("early_reason", value)}
+                    defaultValue={date?.earlyReason}
+                  />
+                </FormControl>
+              </VStack>
+              <FormButton
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
+            </VStack>
+          )}
+          {hasSubmittedReportAlpa && (
+            <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>Attendance Type</FormControl.Label>
@@ -211,115 +290,245 @@ const AttendanceModal = ({
                   />
                 </FormControl>
               </VStack>
+              <FormButton
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
             </VStack>
-          </Modal.Body>
-        )}
-
-        {/* If report submitted Late and Early */}
-        {hasSubmittedBothReports && (
-          <Modal.Body>
+          )}
+          {hasLateAndEarlyWithoutReason && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
-                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <FormControl.Label>On Duty</FormControl.Label>
-                    <Text>{date?.onDuty}</Text>
-                  </Box>
-                  <Flex gap={5} flexDirection="row" alignItems="center">
-                    <Box>
-                      <FormControl.Label>Clock-in Time</FormControl.Label>
-                      <Text>
-                        {date?.timeIn} ({date?.late})
-                      </Text>
-                    </Box>
-                  </Flex>
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Late Type</FormControl.Label>
-                  {/* <Text>{date?.lateType}</Text> */}
-                  <Select
-                    onValueChange={(value) => formik.setFieldValue("late_type", value)}
-                    borderRadius={15}
-                    borderWidth={1}
-                    variant="unstyled"
-                    key="late_type"
-                    placeholder="Select Late Type"
-                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                    defaultValue={date?.lateType}
-                  >
-                    {lateType.map((item) => {
-                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                    })}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Reason</FormControl.Label>
-                  {/* <Text>{date?.lateReason}</Text> */}
-                  <Input
-                    variant="outline"
-                    placeholder="Enter your reason"
-                    value={formik.values.late_reason}
-                    onChangeText={(value) => formik.setFieldValue("late_reason", value)}
-                    defaultValue={date?.lateReason}
-                  />
-                </FormControl>
-                <Divider />
-                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <FormControl.Label>Off Duty</FormControl.Label>
-                    <Text>{date?.offDuty}</Text>
-                  </Box>
-                  <Flex gap={5} flexDirection="row" alignItems="center">
-                    <Box>
-                      <FormControl.Label>Clock-out Time</FormControl.Label>
-                      <Text>
-                        {date?.timeOut} ({date?.early})
-                      </Text>
-                    </Box>
-                  </Flex>
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Early Type</FormControl.Label>
-                  {/* <Text>{date?.earlyType}</Text> */}
-                  <Select
-                    onValueChange={(value) => formik.setFieldValue("early_type", value)}
-                    borderRadius={15}
-                    borderWidth={1}
-                    variant="unstyled"
-                    key="early_type"
-                    placeholder="Select Early Type"
-                    dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                    defaultValue={date.earlyType}
-                  >
-                    {earlyType.map((item) => {
-                      return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                    })}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Reason</FormControl.Label>
-                  {/* <Text>{date?.earlyReason}</Text> */}
-                  <Input
-                    variant="outline"
-                    placeholder="Enter your reason"
-                    value={formik.values.early_reason}
-                    onChangeText={(value) => formik.setFieldValue("early_reason", value)}
-                    defaultValue={date?.earlyReason}
-                  />
-                </FormControl>
+                <Tabs
+                  tabs={tabs}
+                  value={tabValue}
+                  onChange={onChangeTab}
+                  justify="space-evenly"
+                  flexDir="row"
+                  gap={2}
+                />
+                {tabValue === "late" ? (
+                  <>
+                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                      <Box>
+                        <FormControl.Label>On Duty</FormControl.Label>
+                        <Text>{date?.onDuty}</Text>
+                      </Box>
+                      <Flex gap={5} flexDirection="row" alignItems="center">
+                        <Box>
+                          <FormControl.Label>Clock-in Time</FormControl.Label>
+                          <Text>
+                            {date?.timeIn} ({date?.late})
+                          </Text>
+                        </Box>
+                      </Flex>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Late Type</FormControl.Label>
+                      <Select
+                        onValueChange={(value) => formik.setFieldValue("late_type", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        key="late_type"
+                        placeholder="Select Late Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        defaultValue={date?.lateType}
+                      >
+                        {lateType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                        })}
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
+                      <Input
+                        variant="outline"
+                        placeholder="Enter your reason"
+                        value={formik.values.late_reason}
+                        onChangeText={(value) => formik.setFieldValue("late_reason", value)}
+                        defaultValue={date?.lateReason}
+                      />
+                    </FormControl>
+                  </>
+                ) : (
+                  <>
+                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                      <Box>
+                        <FormControl.Label>Off Duty</FormControl.Label>
+                        <Text>{date?.offDuty}</Text>
+                      </Box>
+                      <Flex gap={5} flexDirection="row" alignItems="center">
+                        <Box>
+                          <FormControl.Label>Clock-out Time</FormControl.Label>
+                          <Text>
+                            {date?.timeOut} ({date?.early})
+                          </Text>
+                        </Box>
+                      </Flex>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Early Type</FormControl.Label>
+                      <Select
+                        onValueChange={(value) => formik.setFieldValue("early_type", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        key="early_type"
+                        placeholder="Select Early Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        defaultValue={date.earlyType}
+                      >
+                        {earlyType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                        })}
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
+                      <Input
+                        variant="outline"
+                        placeholder="Enter your reason"
+                        value={formik.values.early_reason}
+                        onChangeText={(value) => formik.setFieldValue("early_reason", value)}
+                        defaultValue={date?.earlyReason}
+                      />
+                    </FormControl>
+                  </>
+                )}
               </VStack>
+              <FormButton
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
             </VStack>
-          </Modal.Body>
-        )}
-
-        {/* If did not clock-in (Alpa)  */}
-        {notAttend && (
-          <Modal.Body>
-            <VStack
-              w="95%"
-              space={3}
-              // pb={keyboardHeight}
-            >
+          )}
+          {/* If report submitted Late and Early */}
+          {hasSubmittedBothReports && (
+            <VStack w="95%" space={3}>
+              <VStack w="100%" space={2}>
+                <Tabs
+                  tabs={tabs}
+                  value={tabValue}
+                  onChange={onChangeTab}
+                  justify="space-evenly"
+                  flexDir="row"
+                  gap={2}
+                />
+                {tabValue === "late" ? (
+                  <>
+                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                      <Box>
+                        <FormControl.Label>On Duty</FormControl.Label>
+                        <Text>{date?.onDuty}</Text>
+                      </Box>
+                      <Flex gap={5} flexDirection="row" alignItems="center">
+                        <Box>
+                          <FormControl.Label>Clock-in Time</FormControl.Label>
+                          <Text>
+                            {date?.timeIn} ({date?.late})
+                          </Text>
+                        </Box>
+                      </Flex>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Late Type</FormControl.Label>
+                      <Select
+                        onValueChange={(value) => formik.setFieldValue("late_type", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        key="late_type"
+                        placeholder="Select Late Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        defaultValue={date?.lateType}
+                      >
+                        {lateType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                        })}
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
+                      <Input
+                        variant="outline"
+                        placeholder="Enter your reason"
+                        value={formik.values.late_reason}
+                        onChangeText={(value) => formik.setFieldValue("late_reason", value)}
+                        defaultValue={date?.lateReason}
+                      />
+                    </FormControl>
+                  </>
+                ) : (
+                  <>
+                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                      <Box>
+                        <FormControl.Label>Off Duty</FormControl.Label>
+                        <Text>{date?.offDuty}</Text>
+                      </Box>
+                      <Flex gap={5} flexDirection="row" alignItems="center">
+                        <Box>
+                          <FormControl.Label>Clock-out Time</FormControl.Label>
+                          <Text>
+                            {date?.timeOut} ({date?.early})
+                          </Text>
+                        </Box>
+                      </Flex>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Early Type</FormControl.Label>
+                      <Select
+                        onValueChange={(value) => formik.setFieldValue("early_type", value)}
+                        borderRadius={15}
+                        borderWidth={1}
+                        variant="unstyled"
+                        key="early_type"
+                        placeholder="Select Early Type"
+                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        defaultValue={date.earlyType}
+                      >
+                        {earlyType.map((item) => {
+                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+                        })}
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <FormControl.Label>Reason</FormControl.Label>
+                      <Input
+                        variant="outline"
+                        placeholder="Enter your reason"
+                        value={formik.values.early_reason}
+                        onChangeText={(value) => formik.setFieldValue("early_reason", value)}
+                        defaultValue={date?.earlyReason}
+                      />
+                    </FormControl>
+                  </>
+                )}
+              </VStack>
+              <FormButton
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
+            </VStack>
+          )}
+          {/* If did not clock-in (Alpa) */}
+          {notAttend && (
+            <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
                 <FormControl>
                   <FormControl.Label>Attendance Type</FormControl.Label>
@@ -339,64 +548,40 @@ const AttendanceModal = ({
                   onChangeText={(value) => formik.setFieldValue("att_reason", value)}
                 />
               </VStack>
+              <FormButton
+                children="Save"
+                size="sm"
+                variant="solid"
+                fontSize={12}
+                fontColor="white"
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+              />
             </VStack>
-          </Modal.Body>
-        )}
-
-        {/* If attendance type is Leave */}
-        {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
-
-        {/* If attendance type is Permit */}
-        {isPermit && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
-
-        <Modal.Footer>
-          {
-            // (date?.lateType && date?.lateReason && !date?.earlyType && !date?.earlyReason) ||
-            // (date?.earlyType && date?.earlyReason && !date?.lateType) ||
-            // (date?.earlyType && date?.earlyReason && date?.lateType && date?.earlyType) ||
-
-            date?.attendanceType === "Permit" ||
-            date?.attendanceType === "Leave" ||
-            (!date?.lateType && !date?.earlyType && date?.attendanceType !== "Alpa") ? (
-              <Button backgroundColor="red.800" size="sm" variant="outline" onPress={toggleReport}>
-                <Text color="#FFFFFF">Close</Text>
-              </Button>
-            ) : (
-              <>
-                <Button
-                  backgroundColor="red.800"
-                  size="sm"
-                  variant="outline"
-                  onPress={() => {
-                    toggleReport(formik.resetForm);
-                  }}
-                >
-                  <Text fontSize={12} fontWeight={500} color="#FFFFFF">
-                    Cancel
-                  </Text>
-                </Button>
-
-                <FormButton
-                  children="Save"
-                  size="sm"
-                  variant="solid"
-                  fontSize={12}
-                  fontColor="white"
-                  isSubmitting={formik.isSubmitting}
-                  onPress={formik.handleSubmit}
-                />
-              </>
-            )
-          }
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+          )}
+          {/* If attendance type is Leave */}
+          {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+          {/* If attendance type is Permit */}
+          {isPermit && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+          {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
+            <VStack w="95%" space={3}>
+              <VStack w="100%" space={2}>
+                <FormControl>
+                  <Text>Please Clock-in</Text>
+                </FormControl>
+              </VStack>
+            </VStack>
+          )}
+        </Actionsheet.Content>
+      </Actionsheet>
+    </>
   );
 };
 
 export default AttendanceModal;
 
 const LateOrEarlyTime = ({
+  formik,
   arrayList,
   titleTime,
   time,
@@ -412,78 +597,83 @@ const LateOrEarlyTime = ({
   timeLateOrEarly,
 }) => {
   return (
-    <Modal.Body>
-      <VStack
-        w="95%"
-        space={3}
-        // pb={keyboardHeight}
-      >
-        <VStack w="100%" space={2}>
-          <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+    <VStack
+      w="95%"
+      space={3}
+      // pb={keyboardHeight}
+    >
+      <VStack w="100%" space={2}>
+        <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+          <Box>
+            <FormControl.Label>{titleDuty}</FormControl.Label>
+            <Text>{timeDuty}</Text>
+          </Box>
+          <Flex gap={5} flexDirection="row" alignItems="center">
             <Box>
-              <FormControl.Label>{titleDuty}</FormControl.Label>
-              <Text>{timeDuty}</Text>
+              <FormControl.Label>{titleTime}</FormControl.Label>
+              <Text>
+                {time} ({timeLateOrEarly})
+              </Text>
             </Box>
-            <Flex gap={5} flexDirection="row" alignItems="center">
-              <Box>
-                <FormControl.Label>{titleTime}</FormControl.Label>
-                <Text>
-                  {time} ({timeLateOrEarly})
-                </Text>
-              </Box>
-            </Flex>
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>{title}</FormControl.Label>
-          </FormControl>
-          <Select
-            onValueChange={selectOnValueChange}
-            borderRadius={15}
-            borderWidth={1}
-            variant="unstyled"
-            key="late_type"
-            placeholder="Select Late Type"
-            dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-          >
-            {arrayList.map((item) => {
-              return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-            })}
-          </Select>
-          <FormControl mt={-2} isInvalid={errorForType}>
-            <FormControl.ErrorMessage>{errorForType}</FormControl.ErrorMessage>
-          </FormControl>
+          </Flex>
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>{title}</FormControl.Label>
+        </FormControl>
+        <Select
+          onValueChange={selectOnValueChange}
+          borderRadius={15}
+          borderWidth={1}
+          variant="unstyled"
+          key="late_type"
+          placeholder="Select Late Type"
+          dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+        >
+          {arrayList.map((item) => {
+            return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
+          })}
+        </Select>
+        <FormControl mt={-2} isInvalid={errorForType}>
+          <FormControl.ErrorMessage>{errorForType}</FormControl.ErrorMessage>
+        </FormControl>
 
-          <FormControl isInvalid={errorForReason}>
-            <FormControl.Label>Reason</FormControl.Label>
-            <Input
-              variant="outline"
-              placeholder="Enter your reason"
-              value={inputValue}
-              onChangeText={inputOnChangeText}
-            />
-            <FormControl.ErrorMessage>{errorForReason}</FormControl.ErrorMessage>
-          </FormControl>
-        </VStack>
+        <FormControl isInvalid={errorForReason}>
+          <FormControl.Label>Reason</FormControl.Label>
+          <Input
+            variant="outline"
+            placeholder="Enter your reason"
+            value={inputValue}
+            onChangeText={inputOnChangeText}
+          />
+          <FormControl.ErrorMessage>{errorForReason}</FormControl.ErrorMessage>
+        </FormControl>
       </VStack>
-    </Modal.Body>
+      <FormButton
+        children="Save"
+        size="sm"
+        variant="solid"
+        fontSize={12}
+        fontColor="white"
+        isSubmitting={formik.isSubmitting}
+        onPress={formik.handleSubmit}
+      />
+    </VStack>
   );
 };
 
 const LeaveOrPermit = ({ type, reason }) => {
   return (
-    <Modal.Body>
-      <VStack w="95%" space={3}>
-        <VStack w="100%" space={2}>
-          <FormControl>
-            <FormControl.Label>Attendance Type</FormControl.Label>
-            <Text>{type}</Text>
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>Reason</FormControl.Label>
-            <Text>{reason}</Text>
-          </FormControl>
-        </VStack>
+    <VStack w="95%" space={3}>
+      <VStack w="100%" space={2}>
+        <FormControl>
+          <FormControl.Label>Attendance Type</FormControl.Label>
+          <Text>{type}</Text>
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Reason</FormControl.Label>
+          <Text>{reason}</Text>
+        </FormControl>
       </VStack>
-    </Modal.Body>
+    </VStack>
   );
 };
