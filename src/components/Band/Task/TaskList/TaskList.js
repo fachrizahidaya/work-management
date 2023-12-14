@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 
-import { Box, Button, Flex, Icon, Text } from "native-base";
+import { Flex } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
-import { FlatList } from "react-native";
+import { FlatList, View, Button, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
@@ -25,12 +25,12 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
   });
 
   return (
-    <Flex gap={8}>
+    <View style={{ display: "flex", gap: 8 }}>
       <CustomAccordion title="ToDo" subTitle={todoTasks?.length || 0}>
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
+              <View style={{ flex: 1, minHeight: 2 }}>
                 <FlatList
                   data={todoTasks}
                   keyExtractor={(item) => item.id}
@@ -55,7 +55,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
@@ -64,16 +64,17 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                 borderStyle="dashed"
                 style={{ height: 56 }}
                 onPress={() => openNewTaskForm("Open")}
+                title="ADD TASK"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
+                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
                   <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
                   <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                </View style={{display: }}> */}
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
 
@@ -81,7 +82,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
+              <View style={{ flex: 1, minHeight: 2 }}>
                 <FlatList
                   data={onProgressTasks}
                   keyExtractor={(item) => item.id}
@@ -106,7 +107,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
@@ -115,16 +116,17 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                 borderStyle="dashed"
                 style={{ height: 56 }}
                 onPress={() => openNewTaskForm("On Progress")}
+                title="ADD TASK"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
+                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
                   <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
                   <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                </View style={{display: }}> */}
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
 
@@ -132,7 +134,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
+              <View style={{ flex: 1, minHeight: 2 }}>
                 <FlatList
                   data={finishTasks}
                   keyExtractor={(item) => item.id}
@@ -157,7 +159,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
@@ -166,19 +168,20 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                 borderStyle="dashed"
                 style={{ height: 56 }}
                 onPress={() => openNewTaskForm("Finish")}
+                title="ADD TASK"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
+                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
                   <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
                   <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                </View style={{display: }}> */}
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
-    </Flex>
+    </View>
   );
 };
 

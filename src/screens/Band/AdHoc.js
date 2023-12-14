@@ -1,8 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { StyleSheet } from "react-native";
-import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
+import { StyleSheet, View, Pressable, Text, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -96,12 +95,12 @@ const AdHocScreen = () => {
   );
   return (
     <>
-      <Flex style={styles.container}>
-        <Flex gap={15} style={{ marginTop: 13 }}>
+      <View style={styles.container}>
+        <View style={{ display: "flex", gap: 15, marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
 
-          <Flex flexDir="row" mt={11} mb={21}>
-            <TaskFilter
+          <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
+            {/* <TaskFilter
               data={tasks?.data}
               members={noDuplicateResponsibleArr}
               labels={labels}
@@ -115,9 +114,9 @@ const AdHocScreen = () => {
               setResponsibleId={setResponsibleId}
               setDeadlineSort={setDeadlineSort}
               setSelectedPriority={setSelectedPriority}
-            />
-          </Flex>
-        </Flex>
+            /> */}
+          </View>
+        </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -135,49 +134,35 @@ const AdHocScreen = () => {
           )}
 
           {(view === "Kanban" || view === "Gantt Chart") && (
-            <Center>
+            <View>
               <Image
                 source={require("../../assets/vectors/desktop.jpg")}
-                h={180}
-                w={250}
                 alt="desktop-only"
-                resizeMode="contain"
+                style={{ height: 180, width: 250, resizeMode: "contain" }}
               />
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
+              <Text style={{ fontWeight: "bold" }}>This feature only available for desktop</Text>
+            </View>
           )}
         </ScrollView>
 
         {/* Task Form */}
-        {taskFormIsOpen && (
+        {/* {taskFormIsOpen && (
           <NewTaskSlider
             selectedStatus={selectedStatus}
             onClose={onCloseTaskForm}
             isOpen={taskFormIsOpen}
             refetch={refetchTasks}
           />
-        )}
+        )} */}
 
         {createActionCheck && (
-          <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleTaskForm}
-          >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          <Pressable style={styles.hoverButton} onPress={toggleTaskForm}>
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
-      </Flex>
+      </View>
 
-      {closeConfirmationIsOpen && (
+      {/* {closeConfirmationIsOpen && (
         <ConfirmationModal
           isDelete={false}
           isOpen={closeConfirmationIsOpen}
@@ -190,7 +175,7 @@ const AdHocScreen = () => {
           hasSuccessFunc
           onSuccess={refetchTasks}
         />
-      )}
+      )} */}
     </>
   );
 };
@@ -203,5 +188,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 16,
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Flex, HStack, Icon, Text } from "native-base";
+import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../../shared/AvatarPlaceholder";
@@ -14,40 +14,36 @@ const AdditionAndResponsibleSection = ({
   responsible,
 }) => {
   return (
-    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-      <HStack space={5}>
+    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View style={{ display: "flex", gap: 5 }}>
         {totalAttachments > 0 && (
-          <Flex flexDir="row" alignItems="center" gap={1}>
-            <Icon
-              as={<MaterialCommunityIcons name="attachment" />}
-              size="sm"
-              style={{ transform: [{ rotate: "-35deg" }] }}
-            />
-            <Text fontWeight={400}>{totalAttachments || 0}</Text>
-          </Flex>
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+            <MaterialCommunityIcons name="attachment" />
+            <Text style={{ fontWeight: 400, fontSize: 16 }}>{totalAttachments || 0}</Text>
+          </View>
         )}
 
         {totalComments > 0 && (
-          <Flex flexDir="row" alignItems="center" gap={1}>
-            <Icon as={<MaterialCommunityIcons name="message-text-outline" />} size="sm" />
-            <Text fontWeight={400}>{totalComments || 0}</Text>
-          </Flex>
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+            <MaterialCommunityIcons name="message-text-outline" />
+            <Text style={{ fontWeight: 400, fontSize: 16 }}>{totalComments || 0}</Text>
+          </View>
         )}
 
         {totalChecklists > 0 && (
-          <Flex flexDir="row" alignItems="center" gap={1}>
-            <Icon as={<MaterialCommunityIcons name="checkbox-marked-outline" />} size="sm" />
-            <Text fontWeight={400}>
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+            <MaterialCommunityIcons name="checkbox-marked-outline" />
+            <Text style={{ fontWeight: 400, fontSize: 16 }}>
               {totalChecklistsDone || 0} / {totalChecklists || 0}
             </Text>
-          </Flex>
+          </View>
         )}
-      </HStack>
+      </View>
 
-      <Flex flexDir="row" alignItems="center" gap={2}>
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
         {responsible && <AvatarPlaceholder image={image} name={responsible} />}
-      </Flex>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
