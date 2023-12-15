@@ -15,11 +15,9 @@ import CancelAction from "../../../components/Tribe/Leave/CancelAction";
 
 const LeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
-
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [forceRerender, setForceRerender] = useState(false);
   const [pendingList, setPendingList] = useState([]);
   const [reloadPending, setReloadPending] = useState(false);
   const [approvedList, setApprovedList] = useState([]);
@@ -30,23 +28,23 @@ const LeaveScreen = () => {
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
-  const [filteredArray, setFilteredArray] = useState([]);
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
   const navigation = useNavigation();
 
   const tabs = useMemo(() => {
-    return [
-      { title: "pending", number: pendingCount },
-      { title: "approved", number: approvedCount },
-      { title: "rejected", number: rejectedCount },
-    ];
+    return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
   }, []);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
+    setPendingList([]);
+    setApprovedList([]);
+    setRejectedList([]);
+    setCurrentPagePending(1);
+    setCurrentPageApproved(1);
+    setCurrentPage(1);
   }, []);
 
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
@@ -54,22 +52,19 @@ const LeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    search: searchInput,
-    limit: 10,
+    limit: 20,
     status: "Pending",
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
-    search: searchInput,
-    limit: 10,
+    limit: 20,
     status: "Approved",
   };
 
   const fetchMoreRejectedParameters = {
     page: currentPage,
-    search: searchInput,
-    limit: 10,
+    limit: 20,
     status: "Rejected",
   };
 
@@ -79,7 +74,7 @@ const LeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
   } = useFetch(
     tabValue === "pending" && "/hr/leave-requests/personal",
-    [currentPagePending, searchInput, reloadPending],
+    [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
 
@@ -89,7 +84,7 @@ const LeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
   } = useFetch(
     tabValue === "approved" && "/hr/leave-requests/personal",
-    [currentPageApproved, searchInput, reloadApproved],
+    [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
 
@@ -100,7 +95,7 @@ const LeaveScreen = () => {
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "rejected" && "/hr/leave-requests/personal",
-    [currentPage, searchInput, reloadRejected],
+    [currentPage, reloadRejected],
     fetchMoreRejectedParameters
   );
 
@@ -143,57 +138,23 @@ const LeaveScreen = () => {
     toggleAction();
   };
 
-  /**
-   * Filtered leave handler
-   */
-  const pendingLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Pending");
-  const pendingCount = pendingLeaveRequests.length;
-  const approvedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Approved");
-  const approvedCount = approvedLeaveRequests.length;
-  const rejectedLeaveRequests = personalLeaveRequest?.data.filter((request) => request.status === "Rejected");
-  const rejectedCount = rejectedLeaveRequests.length;
-
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data.length) {
-      if (!searchInput) {
-        setPendingList((prevData) => [...prevData, pendingLeaveRequest?.data?.data]);
-        setFilteredArray([]);
-      } else {
-        setFilteredArray((prevData) => [...prevData, pendingLeaveRequest?.data?.data]);
-        setPendingList([]);
-      }
+    if (pendingLeaveRequest?.data?.data?.length) {
+      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest]);
+  }, [pendingLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
-      if (!searchInput) {
-        setApprovedList((prevData) => [...prevData, approvedLeaveRequest?.data?.data]);
-        setFilteredArray([]);
-      } else {
-        setFilteredArray((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
-        setApprovedList([]);
-      }
+      setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
-  }, [approvedLeaveRequest]);
+  }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data.length) {
-      if (!searchInput) {
-        setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
-        setFilteredArray([]);
-      } else {
-        setFilteredArray((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
-        setRejectedList([]);
-      }
+      setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
-  }, [rejectedLeaveRequest]);
-
-  useEffect(() => {
-    return () => {
-      setTabValue("pending");
-    };
-  }, [personalLeaveRequest]);
+  }, [rejectedLeaveRequest?.data?.data?.length]);
 
   return (
     <>
@@ -223,7 +184,6 @@ const LeaveScreen = () => {
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-            forceRerender={forceRerender}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
             hasBeenScrolledPending={hasBeenScrolledPending}
