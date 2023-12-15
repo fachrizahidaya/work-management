@@ -100,7 +100,7 @@ const AdHocScreen = () => {
           <PageHeader title="Ad Hoc" backButton={false} />
 
           <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
-            {/* <TaskFilter
+            <TaskFilter
               data={tasks?.data}
               members={noDuplicateResponsibleArr}
               labels={labels}
@@ -114,7 +114,7 @@ const AdHocScreen = () => {
               setResponsibleId={setResponsibleId}
               setDeadlineSort={setDeadlineSort}
               setSelectedPriority={setSelectedPriority}
-            /> */}
+            />
           </View>
         </View>
 

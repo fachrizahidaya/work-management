@@ -222,17 +222,17 @@ const LoginScreen = () => {
               borderWidth={1}
               borderColor="#E8E9EB"
               bg="white"
-              // onPress={() => {
-              //   if (Platform.OS === "android") {
-              //     onGoogleButtonPress();
-              //   } else {
-              //     promptAsync();
-              //   }
-              //   toggleLoading();
-              // }}
-              // onPress={() => {
-              //   Platform.OS === "ios" && promptAsync();
-              // }}
+              onPress={() => {
+                if (Platform.OS === "android") {
+                  onGoogleButtonPress();
+                } else {
+                  promptAsync();
+                }
+                toggleLoading();
+              }}
+              onPress={() => {
+                Platform.OS === "ios" && promptAsync();
+              }}
             >
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
@@ -277,12 +277,6 @@ const LoginScreen = () => {
           <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
           >
-            {/* <View>
-              <Checkbox color="primary.600">
-                <Text fontWeight={400}>Remember Me</Text>
-              </Checkbox>
-            </View> */}
-
             <Text style={{ color: "#176688", fontWeight: 400 }}>Forgot Password?</Text>
           </View>
         </View>
@@ -296,6 +290,12 @@ const LoginScreen = () => {
 
         <Toast />
       </View>
+
+      {/* <View>
+              <Checkbox color="primary.600">
+                <Text fontWeight={400}>Remember Me</Text>
+              </Checkbox>
+            </View> */}
     </KeyboardAvoidingView>
   );
 };
@@ -308,14 +308,6 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
     justifyContent: "center",
     alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    height: 42,
-    borderWidth: 1,
-    borderColor: "#E8E9EB",
-    borderRadius: 10,
-    padding: 10,
   },
 });
 

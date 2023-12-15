@@ -10,8 +10,15 @@ const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsib
   const userSelector = useSelector((state) => state.auth);
 
   return (
-    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-      <View style={{ display: "flex", flexDirection: "row", gap: 3, alignItems: "center" }}>
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <View style={{ display: "flex", flexDirection: "row", gap: 3, alignItems: "center", flex: 1 }}>
         {status === "Closed" || status === "Finish" ? (
           <Pressable
             onPress={() => {
@@ -36,11 +43,11 @@ const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsib
           {title}
           <Text style={{ color: "#176688", fontWeight: 500, fontSize: 16 }}> #{no}</Text>
         </Text>
+      </View>
 
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-          <MaterialCommunityIcons name="calendar-blank" />
-          <Text style={{ fontWeight: 500, fontSize: 16 }}>{dayjs(deadline).format("MMM DD")}</Text>
-        </View>
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
+        <MaterialCommunityIcons name="calendar-blank" />
+        <Text style={{ fontWeight: 500, fontSize: 16 }}>{dayjs(deadline).format("MMM DD")}</Text>
       </View>
     </View>
   );

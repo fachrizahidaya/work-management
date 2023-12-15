@@ -13,13 +13,21 @@ const Input = ({
   secureTextEntry,
   endIcon,
   onPressEndIcon,
+  onChangeText,
+  endAdornment,
 }) => {
   return (
     <View style={styles.wrapper}>
       <Text style={{ marginBottom: 9 }}>{title}</Text>
       <TextInput
         placeholder={placeHolder}
-        onChangeText={(value) => formik?.setFieldValue(fieldName, value)}
+        onChangeText={(value) => {
+          if (onChangeText) {
+            onChangeText(value);
+          } else {
+            formik?.setFieldValue(fieldName, value);
+          }
+        }}
         autoCapitalize="none"
         style={styles.input}
         defaultValue={defaultValue}
@@ -33,6 +41,7 @@ const Input = ({
           <MaterialCommunityIcons name={endIcon} size={20} />
         </TouchableOpacity>
       )}
+      {endAdornment && <View style={styles.endIcon}>{endAdornment}</View>}
     </View>
   );
 };

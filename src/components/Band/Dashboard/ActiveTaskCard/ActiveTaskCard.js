@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { View, Text, Button, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 // import { Image, Modal, Skeleton, VStack } from "native-base";
 
 import ActiveTaskList from "./ActiveTaskList";
@@ -9,6 +9,7 @@ import { card } from "../../../../styles/Card";
 import { useFetch } from "../../../../hooks/useFetch";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import Button from "../../../shared/Forms/Button";
 
 const ActiveTaskCard = () => {
   const navigation = useNavigation();
@@ -48,30 +49,34 @@ const ActiveTaskCard = () => {
           >
             <Button
               flex={1}
-              rounded={"xl"}
-              bgColor={status === "month" ? "primary.600" : "#fff"}
+              backgroundColor={status === "month" ? "#176688" : "#fff"}
               onPress={() => setStatus("month")}
-              title="Month"
             >
-              <Text color={status === "month" ? "#fff" : "#3F434A"}>Month</Text>
+              <Text
+                style={{
+                  color: status === "month" ? "#fff" : "#3F434A",
+                }}
+              >
+                Month
+              </Text>
             </Button>
-            <Button
-              flex={1}
-              rounded={"xl"}
-              bgColor={status === "week" ? "primary.600" : "#fff"}
-              onPress={() => setStatus("week")}
-              title="Week"
-            >
-              <Text color={status === "week" ? "#fff" : "#3F434A"}>Week</Text>
+            <Button flex={1} backgroundColor={status === "week" ? "#176688" : "#fff"} onPress={() => setStatus("week")}>
+              <Text
+                style={{
+                  color: status === "week" ? "#fff" : "#3F434A",
+                }}
+              >
+                Week
+              </Text>
             </Button>
-            <Button
-              flex={1}
-              rounded={"xl"}
-              bgColor={status === "day" ? "primary.600" : "#fff"}
-              onPress={() => setStatus("day")}
-              title="Day"
-            >
-              <Text color={status === "day" ? "#fff" : "#3F434A"}>Day</Text>
+            <Button flex={1} backgroundColor={status === "day" ? "#176688" : "#fff"} onPress={() => setStatus("day")}>
+              <Text
+                style={{
+                  color: status === "day" ? "#fff" : "#3F434A",
+                }}
+              >
+                Day
+              </Text>
             </Button>
           </View>
           {!isLoading ? (

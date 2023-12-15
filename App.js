@@ -16,6 +16,7 @@ import { SheetProvider } from "react-native-actions-sheet";
 import "./src/components/shared/ActionSheet/sheets";
 
 import { Alert, PermissionsAndroid, Platform } from "react-native";
+import { NativeBaseProvider } from "native-base";
 
 const queryClient = new QueryClient();
 
@@ -50,17 +51,19 @@ export default function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <SheetProvider>
-          <WebsocketContextProvider>
-            <NavigationContainer>
-              <SafeAreaProvider>
-                <UserModuleVerificationGuard>
-                  <Navigations />
-                </UserModuleVerificationGuard>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </WebsocketContextProvider>
-        </SheetProvider>
+        <NativeBaseProvider theme={customTheme}>
+          <SheetProvider>
+            <WebsocketContextProvider>
+              <NavigationContainer>
+                <SafeAreaProvider>
+                  <UserModuleVerificationGuard>
+                    <Navigations />
+                  </UserModuleVerificationGuard>
+                </SafeAreaProvider>
+              </NavigationContainer>
+            </WebsocketContextProvider>
+          </SheetProvider>
+        </NativeBaseProvider>
       </QueryClientProvider>
     </Provider>
   );

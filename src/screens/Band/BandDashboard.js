@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { Flex, Skeleton } from "native-base";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard/ProgressChartCard";

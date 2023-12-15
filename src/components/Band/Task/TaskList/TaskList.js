@@ -1,13 +1,13 @@
 import React, { memo } from "react";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { FlatList, View, Button, Text } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { FlatList, View, Text } from "react-native";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
+import Button from "../../../shared/Forms/Button";
 
 const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
   const createActionCheck = useCheckAccess("create", "Tasks");
@@ -59,20 +59,17 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
                 onPress={() => openNewTaskForm("Open")}
-                title="ADD TASK"
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </View style={{display: }}> */}
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>
         ) : (
+          // <TaskSkeleton />
           <Text>Loading...</Text>
         )}
       </CustomAccordion>
@@ -111,16 +108,12 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("On Progress")}
-                title="ADD TASK"
+                onPress={() => openNewTaskForm("Open")}
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </View style={{display: }}> */}
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>
@@ -163,16 +156,12 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("Finish")}
-                title="ADD TASK"
+                onPress={() => openNewTaskForm("Open")}
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                {/* <View style={{display: }} flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </View style={{display: }}> */}
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>

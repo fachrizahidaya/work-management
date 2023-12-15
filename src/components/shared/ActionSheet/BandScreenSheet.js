@@ -13,7 +13,14 @@ const BandScreenSheet = (props) => {
     <ActionSheet ref={props.reference}>
       {menuSelector.user_menu.menu?.map((item, idx) => {
         return (
-          <TouchableOpacity key={idx} onPress={() => navigation.navigate(item.name)} style={styles.wrapper}>
+          <TouchableOpacity
+            key={idx}
+            onPress={() => {
+              navigation.navigate(item.name);
+              props.reference.current?.hide();
+            }}
+            style={styles.wrapper}
+          >
             <View style={styles.flex}>
               <View style={styles.item}>
                 <MaterialCommunityIcons size={20} name={item.mobile_icon} />
@@ -23,7 +30,13 @@ const BandScreenSheet = (props) => {
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity onPress={() => navigation.navigate("Calendar Band")} style={styles.wrapper}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Calendar Band");
+          props.reference.current?.hide();
+        }}
+        style={styles.wrapper}
+      >
         <View style={styles.flex}>
           <View style={styles.item}>
             <MaterialCommunityIcons size={20} name="calendar-clock" />

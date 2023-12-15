@@ -12,7 +12,7 @@ const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
     <View style={{ display: "flex", gap: 15 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <View>
-          <Pressable style={{ display: "flex", flexDirection: "row", gap: 1 }} onPress={toggle}>
+          <Pressable style={{ display: "flex", flexDirection: "row", gap: 4 }} onPress={toggle}>
             <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
             <Text style={{ fontWeight: 500, fontSize: 16 }}>{title}</Text>
             <Text style={{ color: "#8A9099", fontWeight: 500, fontSize: 16 }}>({subTitle})</Text>

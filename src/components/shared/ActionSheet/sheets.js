@@ -1,6 +1,8 @@
 import { registerSheet } from "react-native-actions-sheet";
-import ExampleSheet from "./ActionSheet";
+import FormSheet from "./FormSheet";
+import SelectSheet from "./SelectSheet";
 
-registerSheet("band-menu-sheet", ExampleSheet);
+registerSheet("form-sheet", FormSheet);
+registerSheet("select-sheet", SelectSheet);
 
 export {};

@@ -18,6 +18,7 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
         borderLeftWidth: 3,
         borderColor: priority === "Low" ? "#49c96d" : priority === "Medium" ? "#ff965d" : "#fd7972",
         paddingHorizontal: 4,
+        marginVertical: 5,
       }}
     >
       <TouchableOpacity
@@ -26,7 +27,6 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
           status === "Finish" && userSelector.id === task?.responsible_id && onPress(task);
         }}
         isDisabled={status !== "Finish" || userSelector.id !== task?.responsible_id}
-        borderWidth={1}
       >
         <View style={{ display: "flex", flexDirection: "column" }}>
           <Text style={{ opacity: 0.5 }}>{responsible || "TBD"}</Text>
@@ -35,7 +35,7 @@ const ActiveTaskList = ({ id, task, title, responsible, status, priority, onPres
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => onPressItem(id)}>
-        <MaterialCommunityIcons name="chevron-right" />
+        <MaterialCommunityIcons name="chevron-right" size={20} />
       </TouchableOpacity>
     </View>
   );

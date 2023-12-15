@@ -128,7 +128,7 @@ const SettingScreen = () => {
                   style={[styles.item, { opacity: item.screen ? 1 : 0.5 }]}
                   onPress={() => item.screen && navigation.navigate(item.screen)}
                 >
-                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <View style={{ backgroundColor: item.color, padding: 1, borderRadius: 4 }}>
                       <MaterialCommunityIcons name={item.icons} color="white" size={20} />
                     </View>
@@ -141,7 +141,7 @@ const SettingScreen = () => {
           </View>
 
           <TouchableOpacity style={styles.item}>
-            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
               <View style={{ backgroundColor: "#8B63E7", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="link-variant" color="white" size={20} />
               </View>
@@ -154,7 +154,7 @@ const SettingScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.item}>
-            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
               <View style={{ backgroundColor: "#B5B5B5", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="view-grid-outline" color="white" size={20} />
               </View>
@@ -167,7 +167,7 @@ const SettingScreen = () => {
             {second.map((item) => {
               return (
                 <TouchableOpacity style={styles.item} key={item.title}>
-                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <View style={{ backgroundColor: item.color, padding: 1, borderRadius: 4 }}>
                       <MaterialCommunityIcons name={item.icons} size={20} color="white" />
                     </View>
