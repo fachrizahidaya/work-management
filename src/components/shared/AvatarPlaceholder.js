@@ -54,8 +54,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                     : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
                 }}
                 style={{
-                  width: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
-                  height: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
                   resizeMode: "contain",
                   backgroundColor: "transparent",
                   borderRadius: 50,
@@ -74,8 +74,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
               style={[
                 style,
                 {
-                  width: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
-                  height: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
                   resizeMode: "contain",
                   backgroundColor: "transparent",
                   borderRadius: 50,
@@ -93,12 +93,13 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
                   backgroundColor: stringToColor(name),
-                  borderRadius: borderRadius,
+                  borderRadius: 50,
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
+                <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
                   {name ? userInitialGenerator() : "KSS"}
                 </Text>
               </View>
@@ -111,13 +112,14 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: size === "xs" ? 20 : size === "sm" ? 22 : size === "md" ? 24 : 26,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
                   backgroundColor: stringToColor(name),
-                  borderRadius: borderRadius,
+                  borderRadius: 50,
                 },
               ]}
             >
-              <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
+              <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
                 {name ? userInitialGenerator() : "KSS"}
               </Text>
             </View>

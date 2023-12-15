@@ -1,4 +1,3 @@
-import { SafeAreaView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
@@ -9,7 +8,8 @@ import * as SecureStore from "expo-secure-store";
 import { useDispatch, useSelector } from "react-redux";
 import { QueryCache } from "react-query";
 
-import { Box, Flex, Progress, Text } from "native-base";
+import { Bar } from "react-native-progress";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 
 import axiosInstance from "../config/api";
@@ -138,36 +138,34 @@ const LogoutScreen = () => {
             alt="KSS_LOGO"
             style={[styles.logo, rStyle]}
           />
-          <Text color="#979797">
+          <Text style={{ color: "#979797", marginBottom: 10 }}>
             {loadingValue <= 40
               ? "Stepping out"
               : loadingValue > 40 && loadingValue <= 60
               ? "Clearing cache"
               : "Logging out"}
           </Text>
-          <Progress value={loadingValue} colorScheme="primary" size="sm" bg="#E8E9EB" w={300} mt={50} />
+
+          <Bar progress={loadingValue / 100} width={300} color="#176688" borderColor="white" />
         </Animated.View>
       )}
 
       {loadingValue >= 100 && (
         <Animated.View style={[styles.profileBox, yStyle]}>
-          <Flex bg="#E7E7E7" alignItems="center" justifyContent="center" gap={25} style={styles.profileBox}>
+          <View style={styles.profileBox}>
             <Animated.Image
-              resizeMode="contain"
               source={require("../assets/icons/kss_logo.png")}
               alt="KSS_LOGO"
-              h={43}
-              w={43}
-              style={uStyle}
+              style={[uStyle, { resizeMode: "contain" }]}
             />
 
-            <Box alignItems="center">
-              <Text color="#979797">See you,</Text>
-              <Text fontSize={16} color="primary.600" textAlign="center">
+            <View style={{ display: "flex", alignItems: "center" }} alignItems="center">
+              <Text style={{ color: "#979797" }}>See you,</Text>
+              <Text style={{ fontSize: 16, color: "#176688", textAlign: "center" }}>
                 {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
               </Text>
-            </Box>
-          </Flex>
+            </View>
+          </View>
         </Animated.View>
       )}
     </SafeAreaView>
@@ -194,6 +192,10 @@ const styles = StyleSheet.create({
   },
   profileBox: {
     display: "flex",
+    backgroundColor: "#E7E7E7",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 25,
     width: 252,
     height: "100%",
     borderRadius: 10,

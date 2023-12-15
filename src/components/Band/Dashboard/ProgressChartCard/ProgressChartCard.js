@@ -34,7 +34,7 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
       style={[card.card, { flex: 1 }]}
     >
       <View style={{ display: "flex", flexDirection: "column" }}>
-        <Text style={{ fontSize: 20 }}>This Year Tasks</Text>
+        <Text style={{ fontSize: 20, fontWeight: 500 }}>This Year Tasks</Text>
         <View>
           <ProgressChart
             data={data}

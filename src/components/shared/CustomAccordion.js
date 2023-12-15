@@ -15,7 +15,7 @@ const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
           <Pressable style={{ display: "flex", flexDirection: "row", gap: 1 }} onPress={toggle}>
             <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
             <Text style={{ fontWeight: 500, fontSize: 16 }}>{title}</Text>
-            <Text style={{ fontColor: "#8A9099", fontWeight: 500, fontSize: 16 }}>({subTitle})</Text>
+            <Text style={{ color: "#8A9099", fontWeight: 500, fontSize: 16 }}>({subTitle})</Text>
           </Pressable>
         </View>
 

@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 
-import { Flex } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlatList, View, Button, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

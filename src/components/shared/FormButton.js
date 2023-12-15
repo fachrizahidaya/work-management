@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Spinner, Text } from "native-base";
+import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
 
 const FormButton = ({
   children,
-  color,
-  size,
+  backgroundColor,
   isSubmitting,
   onPress,
   disabled,
   setLoadingIndicator,
-  variant,
   opacity,
   fontSize,
   fontColor,
@@ -29,9 +27,16 @@ const FormButton = ({
     setLoadingIndicator && setLoadingIndicator(isLoading);
   }, [isLoading]);
   return (
-    <Button
-      size={size || "md"}
-      bgColor={color ? color : disabled || isLoading ? "coolGray.500" : "primary.600"}
+    <TouchableOpacity
+      style={{
+        backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
+        opacity: opacity || 1,
+        borderRadius: 10,
+        height: 42,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       disabled={disabled || isLoading}
       onPress={() => {
         if (isSubmitting !== undefined) {
@@ -41,17 +46,13 @@ const FormButton = ({
           onPress(setIsLoading);
         }
       }}
-      variant={variant}
-      opacity={opacity ? opacity : null}
     >
       {isLoading ? (
-        <Spinner size="sm" color={color === "white" ? "primary.600" : "white"} />
+        <ActivityIndicator />
       ) : (
-        <Text fontSize={12} fontWeight={500} color={fontColor ? fontColor : null}>
-          {children}
-        </Text>
+        <Text style={{ fontSize: fontSize || 14, fontWeight: 500, color: fontColor || "black" }}>{children}</Text>
       )}
-    </Button>
+    </TouchableOpacity>
   );
 };
 

@@ -157,9 +157,7 @@ const LoadingScreen = ({ route }) => {
             />
 
             <View style={{ display: "flex", alignItems: "center" }} alignItems="center">
-              <Text style={{ color: "#979797" }} color="#979797">
-                Welcome,
-              </Text>
+              <Text style={{ color: "#979797" }}>Welcome,</Text>
               <Text style={{ fontSize: 16, color: "#176688", textAlign: "center" }}>
                 {userData.userData.name.length > 30 ? userData.userData.name.split(" ")[0] : userData.userData.name}
               </Text>
@@ -191,7 +189,6 @@ const styles = StyleSheet.create({
     height: 67,
   },
   profileBox: {
-    // bg="#E7E7E7" alignItems="center" justifyContent="center" gap={25}
     display: "flex",
     backgroundColor: "#E7E7E7",
     alignItems: "center",

@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useRef } from "react";
 
-import { Dimensions, StyleSheet } from "react-native";
-import { HStack, Icon, IconButton, Text, VStack } from "native-base";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
@@ -41,27 +40,22 @@ const InAppNotificationCard = ({ message, isOpen, close }) => {
 
   return (
     <Animated.View style={[styles.container, tStyle]}>
-      <VStack>
-        <HStack space={2} alignItems="baseline">
-          <Text color="white" bold fontSize={16}>
-            Nest
-          </Text>
+      <View>
+        <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "baseline" }}>
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>Nest</Text>
 
-          <Text color="white" fontSize={12}>
-            now
-          </Text>
-        </HStack>
+          <Text style={{ fontSize: 12, color: "white", fontWeight: 500 }}>now</Text>
+        </View>
 
-        <Text color="white">
+        <Text style={{ color: "white", fontSize: 14, fontWeight: 500 }}>
           {message?.from_name} :{" "}
           {message?.message?.length > 30 ? message?.message?.slice(0, 30) + "..." : message?.message}
         </Text>
-      </VStack>
+      </View>
 
-      <IconButton
-        onPress={handlePressClose}
-        icon={<Icon as={<MaterialCommunityIcons name="close" />} color="white" />}
-      />
+      <TouchableOpacity onPress={handlePressClose}>
+        <MaterialCommunityIcons name="close" color="white" size={20} />
+      </TouchableOpacity>
     </Animated.View>
   );
 };
