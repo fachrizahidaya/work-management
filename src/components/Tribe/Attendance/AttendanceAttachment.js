@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Box, Flex, Icon, Image, Text } from "native-base";
+import { Box, Button, Flex, Icon, Image, Pressable, Text } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -8,7 +8,7 @@ const AttendanceAttachment = ({ attachment, toggle, onSelectFile, onDelete, setA
     <Flex gap={3} my={2} px={3}>
       <Flex flexDirection="row" alignItems="center" justifyContent="space-between">
         <Text fontSize={14}>Attachment(s)</Text>
-        <Icon onPress={toggle} as={<MaterialCommunityIcons name="plus" />} size={5} />
+        {attachment?.data.length > 0 && <Icon onPress={toggle} as={<MaterialCommunityIcons name="plus" />} size={5} />}
       </Flex>
       <Box gap={2} flex={1}>
         {attachment?.data.length > 0 ? (
@@ -40,14 +40,18 @@ const AttendanceAttachment = ({ attachment, toggle, onSelectFile, onDelete, setA
             )}
           />
         ) : (
-          <Box alignItems="center" justifyContent="center">
-            <Image
-              alt="attachment"
-              h={150}
-              w={180}
-              resizeMode="cover"
-              source={require("../../../assets/vectors/empty.png")}
-            />
+          <Box gap={3} alignItems="center" justifyContent="center">
+            <Pressable
+              onPress={toggle}
+              borderWidth={1}
+              borderRadius={15}
+              borderColor="#E8E9EB"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon as={<MaterialCommunityIcons name="plus" />} size={75} />
+            </Pressable>
+            <Text>No Data</Text>
           </Box>
         )}
       </Box>

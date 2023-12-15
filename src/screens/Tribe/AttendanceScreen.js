@@ -421,6 +421,7 @@ const AttendanceScreen = () => {
         isPermit={isPermit}
         CURRENT_DATE={CURRENT_DATE}
       />
+
       <AddAttachment
         isOpen={addAttachmentIsOpen}
         toggle={toggleAddAttachment}
@@ -429,6 +430,7 @@ const AttendanceScreen = () => {
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
       />
+
       <ConfirmationModal
         isOpen={deleteAttachmentIsOpen}
         toggle={toggleDeleteAttachment}

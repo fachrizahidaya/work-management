@@ -1,63 +1,58 @@
 import { memo, useState, useMemo, useCallback, useEffect } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Image, Text, VStack } from "native-base";
+import { Box, Flex, Image, Spinner, Text, VStack } from "native-base";
 
 import Tabs from "../../shared/Tabs";
 import { FlashList } from "@shopify/flash-list";
 import LeaveRequestItem from "./LeaveRequestItem";
 
 const LeaveRequestList = ({
-  pendingLeaveRequests,
-  approvedLeaveRequests,
-  rejectedLeaveRequests,
-  pendingCount,
-  approvedCount,
-  rejectedCount,
   onSelect,
-  personalLeaveRequest,
-  refetchPersonalLeaveRequest,
-  personalLeaveRequestIsFetching,
+  pendingList,
+  approvedList,
+  rejectedList,
+  pendingLeaveRequestIsFetching,
+  approvedLeaveRequestIsFetching,
+  rejectedLeaveRequestIsFetching,
+  refetchPendingLeaveRequest,
+  refetchApprovedLeaveRequest,
+  refetchRejectedLeaveRequest,
+  hasBeenScrolled,
+  setHasBeenScrolled,
+  fetchMorePending,
+  fetchMoreApproved,
+  fetchMoreRejected,
+  rejectedLeaveRequestIsLoading,
+  tabValue,
+  tabs,
+  onChangeTab,
+  hasBeenScrolledPending,
+  setHasBeenScrolledPending,
+  hasBeenScrolledApproved,
+  setHasBeenScrolledApproved,
 }) => {
-  const [tabValue, setTabValue] = useState("pending");
-
-  const tabs = useMemo(() => {
-    return [
-      { title: "pending", number: pendingCount },
-      { title: "approved", number: approvedCount },
-      { title: "rejected", number: rejectedCount },
-    ];
-  }, []);
-
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      setTabValue("pending");
-    };
-  }, [personalLeaveRequest]);
-
   return (
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
       <Flex backgroundColor="#f8f8f8" px={3} flex={1} flexDir="column">
         {tabValue === "pending" ? (
-          pendingLeaveRequests.length > 0 ? (
+          pendingList.length > 0 ? (
             <Box flex={1}>
               <FlashList
-                data={pendingLeaveRequests}
+                data={pendingList}
                 onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
+                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
                 refreshControl={
                   <RefreshControl
-                    refreshing={personalLeaveRequestIsFetching}
+                    refreshing={pendingLeaveRequestIsFetching}
                     onRefresh={() => {
-                      refetchPersonalLeaveRequest();
+                      refetchPendingLeaveRequest();
                     }}
                   />
                 }
@@ -80,7 +75,7 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
               }
             >
               <VStack mt={20} space={2} alignItems="center" justifyContent="center">
@@ -95,19 +90,21 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : tabValue === "approved" ? (
-          approvedLeaveRequests.length > 0 ? (
+          approvedList.length > 0 ? (
             <Box flex={1}>
               <FlashList
-                data={approvedLeaveRequests}
+                data={approvedList}
                 onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
                 refreshControl={
                   <RefreshControl
-                    refreshing={personalLeaveRequestIsFetching}
+                    refreshing={approvedLeaveRequestIsFetching}
                     onRefresh={() => {
-                      refetchPersonalLeaveRequest();
+                      refetchApprovedLeaveRequest();
                     }}
                   />
                 }
@@ -130,7 +127,7 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
               }
             >
               <VStack mt={20} space={2} alignItems="center" justifyContent="center">
@@ -144,19 +141,25 @@ const LeaveRequestList = ({
               </VStack>
             </ScrollView>
           )
-        ) : rejectedLeaveRequests.length > 0 ? (
+        ) : rejectedList.length > 0 ? (
           <Box flex={1}>
             <FlashList
-              data={rejectedLeaveRequests}
+              removeClippedSubviews={true}
+              data={rejectedList}
               onEndReachedThreshold={0.1}
+              onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+              onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
+              ListFooterComponent={() =>
+                rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+              }
               refreshControl={
                 <RefreshControl
-                  refreshing={personalLeaveRequestIsFetching}
+                  refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchPersonalLeaveRequest();
+                    refetchRejectedLeaveRequest();
                   }}
                 />
               }
@@ -179,7 +182,7 @@ const LeaveRequestList = ({
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={personalLeaveRequestIsFetching} onRefresh={refetchPersonalLeaveRequest} />
+              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
             }
           >
             <VStack mt={20} space={2} alignItems="center" justifyContent="center">
