@@ -8,6 +8,7 @@ import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 import Button from "../../../shared/Forms/Button";
+import { FlashList } from "@shopify/flash-list";
 
 const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
   const createActionCheck = useCheckAccess("create", "Tasks");
@@ -24,13 +25,14 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
   });
 
   return (
-    <View style={{ display: "flex", gap: 8 }}>
+    <View style={{ display: "flex", gap: 20 }}>
       <CustomAccordion title="ToDo" subTitle={todoTasks?.length || 0}>
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <View style={{ flex: 1, minHeight: 2 }}>
-                <FlatList
+                <FlashList
+                  estimatedItemSize={112}
                   data={todoTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
@@ -69,7 +71,6 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
             )}
           </>
         ) : (
-          // <TaskSkeleton />
           <Text>Loading...</Text>
         )}
       </CustomAccordion>
@@ -79,7 +80,8 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <View style={{ flex: 1, minHeight: 2 }}>
-                <FlatList
+                <FlashList
+                  estimatedItemSize={112}
                   data={onProgressTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
@@ -127,7 +129,9 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
           <>
             <ScrollView style={{ maxHeight: 300 }}>
               <View style={{ flex: 1, minHeight: 2 }}>
-                <FlatList
+                <FlashList
+                  estimatedItemSize={112}
+                  estima
                   data={finishTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}

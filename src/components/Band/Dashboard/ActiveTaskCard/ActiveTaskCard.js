@@ -34,7 +34,7 @@ const ActiveTaskCard = () => {
   return (
     <>
       <View style={[card.card, { minHeight: 300 }]}>
-        <View style={{ display: "flex", gap: 3 }}>
+        <View style={{ display: "flex", gap: 10 }}>
           <Text style={{ fontSize: 20, fontWeight: 500 }}>Active Tasks</Text>
           <View
             style={{

@@ -11,37 +11,57 @@ const Input = ({
   defaultValue,
   value,
   secureTextEntry,
+  startIcon,
   endIcon,
   onPressEndIcon,
   onChangeText,
   endAdornment,
+  startAdornment,
 }) => {
   return (
     <View style={styles.wrapper}>
-      <Text style={{ marginBottom: 9 }}>{title}</Text>
-      <TextInput
-        placeholder={placeHolder}
-        onChangeText={(value) => {
-          if (onChangeText) {
-            onChangeText(value);
-          } else {
-            formik?.setFieldValue(fieldName, value);
-          }
-        }}
-        autoCapitalize="none"
-        style={styles.input}
-        defaultValue={defaultValue}
-        value={value}
-        secureTextEntry={secureTextEntry}
-      />
-      <Text style={{ color: "red", marginTop: 9 }}>{formik?.errors[fieldName]}</Text>
+      {title && <Text style={{ marginBottom: 9 }}>{title}</Text>}
 
-      {endIcon && (
-        <TouchableOpacity style={styles.endIcon} onPress={onPressEndIcon}>
-          <MaterialCommunityIcons name={endIcon} size={20} />
-        </TouchableOpacity>
-      )}
-      {endAdornment && <View style={styles.endIcon}>{endAdornment}</View>}
+      <View style={styles.inputWrapper}>
+        {startIcon && (
+          <TouchableOpacity style={styles.startIcon} onPress={onPressEndIcon}>
+            <MaterialCommunityIcons name={startIcon} size={20} />
+          </TouchableOpacity>
+        )}
+
+        {startAdornment && <View style={styles.startIcon}>{startAdornment}</View>}
+
+        <TextInput
+          placeholder={placeHolder}
+          onChangeText={(value) => {
+            if (onChangeText) {
+              onChangeText(value);
+            } else {
+              formik?.setFieldValue(fieldName, value);
+            }
+          }}
+          autoCapitalize="none"
+          style={[
+            styles.input,
+            {
+              paddingLeft: startAdornment || startIcon ? 35 : 10,
+            },
+          ]}
+          defaultValue={defaultValue}
+          value={value}
+          secureTextEntry={secureTextEntry}
+        />
+
+        {endIcon && (
+          <TouchableOpacity style={styles.endIcon} onPress={onPressEndIcon}>
+            <MaterialCommunityIcons name={endIcon} size={20} />
+          </TouchableOpacity>
+        )}
+
+        {endAdornment && <View style={styles.endIcon}>{endAdornment}</View>}
+      </View>
+
+      {formik?.errors[fieldName] && <Text style={{ color: "red", marginTop: 9 }}>{formik.errors[fieldName]}</Text>}
     </View>
   );
 };
@@ -51,6 +71,8 @@ export default Input;
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
+  },
+  inputWrapper: {
     position: "relative",
   },
   input: {
@@ -60,9 +82,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
+  startIcon: {
+    position: "absolute",
+    left: 10,
+    top: 10,
+  },
   endIcon: {
     position: "absolute",
-    right: 20,
-    top: 35,
+    right: 10,
+    top: 11,
   },
 });

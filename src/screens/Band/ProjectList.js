@@ -4,8 +4,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
+import { Divider, Icon, Select } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -19,6 +19,7 @@ import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSk
 import useCheckAccess from "../../hooks/useCheckAccess";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NewProjectSlider from "../../components/Band/Project/NewProjectSlider/NewProjectSlider";
+import Input from "../../components/shared/Forms/Input";
 
 const ProjectList = () => {
   const firstTimeRef = useRef(true);
@@ -83,41 +84,61 @@ const ProjectList = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "white",
+            paddingVertical: 14,
+            paddingHorizontal: 15,
+          }}
+        >
           <PageHeader title="My Project" backButton={false} />
-        </Flex>
+        </View>
 
-        <Flex flex={1} gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
-          <Box pt={4} px={4}>
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            gap: 14,
+            backgroundColor: "white",
+            paddingTop: 17,
+            paddingBottom: 4,
+            marginHorizontal: 16,
+            marginVertical: 20,
+            borderRadius: 10,
+          }}
+        >
+          <View style={{ paddingTop: 4, paddingHorizontal: 16 }}>
             <Input
               value={formik.values.search}
-              size="md"
-              InputRightElement={
-                searchInput && (
+              onChangeText={(value) => {
+                handleSearch(value);
+                formik.setFieldValue("search", value);
+              }}
+              placeHolder="Search project..."
+              endAdornment={
+                formik.values.search && (
                   <Pressable
                     onPress={() => {
                       handleSearch("");
                       formik.resetForm();
                     }}
                   >
-                    <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+                    <MaterialCommunityIcons name="close" size={20} />
                   </Pressable>
                 )
               }
-              InputLeftElement={
+              startAdornment={
                 <Pressable>
-                  <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
+                  <MaterialCommunityIcons name="magnify" size={20} />
                 </Pressable>
               }
-              placeholder="Search project..."
-              onChangeText={(value) => {
-                handleSearch(value);
-                formik.setFieldValue("search", value);
-              }}
             />
-          </Box>
+          </View>
 
-          <Box px={4} pb={1}>
+          <View style={{ paddingHorizontal: 16, paddingBottom: 1 }}>
             <Select
               variant="unstyled"
               size="md"
@@ -133,14 +154,14 @@ const ProjectList = () => {
               <Select.Item label="Finish" value="Finish" />
               <Select.Item label="Archived" value="Archived" />
             </Select>
-          </Box>
+          </View>
 
           <Divider></Divider>
 
           {!isLoading ? (
             data?.data?.data?.length > 0 ? (
               <>
-                <Box flex={1}>
+                <View style={{ flex: 1 }}>
                   <FlashList
                     refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                     data={data?.data.data}
@@ -160,7 +181,7 @@ const ProjectList = () => {
                       />
                     )}
                   />
-                </Box>
+                </View>
 
                 {data?.data?.last_page > 1 && (
                   <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
@@ -170,26 +191,12 @@ const ProjectList = () => {
               <EmptyPlaceholder height={200} width={240} text="No project" />
             )
           ) : (
-            <VStack px={2} space={2}>
-              {renderSkeletons()}
-            </VStack>
+            <View style={{ display: "flex", paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
           )}
-        </Flex>
+        </View>
 
         {createActionCheck && (
-          <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleProjectForm}
-          >
+          <Pressable style={styles.hoverButton} onPress={toggleProjectForm}>
             <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
           </Pressable>
         )}
@@ -206,6 +213,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });
 

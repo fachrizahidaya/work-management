@@ -84,15 +84,15 @@ const AdHocScreen = () => {
     setSelectedTask(task);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (firstTimeRef.current) {
-        firstTimeRef.current = false;
-        return;
-      }
-      refetchTasks();
-    }, [refetchTasks])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (firstTimeRef.current) {
+  //       firstTimeRef.current = false;
+  //       return;
+  //     }
+  //     refetchTasks();
+  //   }, [refetchTasks])
+  // );
   return (
     <>
       <View style={styles.container}>

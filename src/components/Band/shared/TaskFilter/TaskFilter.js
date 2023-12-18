@@ -69,14 +69,14 @@ const TaskFilter = ({
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity onPress={() => openFilterHandler()}>
+            {/* <TouchableOpacity onPress={() => openFilterHandler()}>
               <MaterialCommunityIcons name="tune-variant" size={20} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         }
       />
 
-      {filterIsOpen && (
+      {/* {filterIsOpen && (
         <Actionsheet
           isOpen={filterIsOpen}
           onClose={() => {
@@ -163,7 +163,7 @@ const TaskFilter = ({
             )}
           </Actionsheet.Content>
         </Actionsheet>
-      )}
+      )} */}
     </>
   );
 };

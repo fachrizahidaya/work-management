@@ -27,12 +27,7 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   };
 
   return (
-    <TouchableOpacity
-      onPress={() => {
-        menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow && navigation.navigate("Tasks");
-      }}
-      style={[card.card, { flex: 1 }]}
-    >
+    <TouchableOpacity style={[card.card, { flex: 1 }]}>
       <View style={{ display: "flex", flexDirection: "column" }}>
         <Text style={{ fontSize: 20, fontWeight: 500 }}>This Year Tasks</Text>
         <View>
