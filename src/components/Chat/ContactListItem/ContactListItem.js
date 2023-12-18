@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
@@ -5,18 +6,11 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { Box, Flex, HStack, Icon, Pressable, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { PanGestureHandler, Swipeable } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-const LIST_ITEM_HEIGHT = 70;
-
+import { Swipeable } from "react-native-gesture-handler";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
-import { useRef } from "react";
+
+const LIST_ITEM_HEIGHT = 70;
 
 const ContactListItem = ({
   chat,
@@ -39,6 +33,7 @@ const ContactListItem = ({
   isRead,
   isPinned,
   onSwipe,
+  onPin,
 }) => {
   const navigation = useNavigation();
   const swipeableRef = useRef(null);
@@ -109,7 +104,7 @@ const ContactListItem = ({
           if (swipeableRef.current) {
             swipeableRef.current.close();
           }
-          onSwipe(chat);
+          onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
         }}
         p={5}
         justifyContent="center"
@@ -146,7 +141,7 @@ const ContactListItem = ({
     <Box>
       <Swipeable
         ref={swipeableRef}
-        // renderLeftActions={renderLeftView}
+        renderLeftActions={renderLeftView}
         renderRightActions={renderRightView}
         rightThreshold={-100}
       >

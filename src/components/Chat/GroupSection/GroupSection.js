@@ -7,7 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOption, onSwipeControl }) => {
+const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOption, onSwipeControl, onPinControl }) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
@@ -44,6 +44,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOptio
             type="group"
             active_member={group?.active_member}
             onSwipe={onSwipeControl}
+            onPin={onPinControl}
           />
         ))}
     </>

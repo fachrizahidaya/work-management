@@ -19,7 +19,6 @@ import { useLoading } from "../../hooks/useLoading";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
-import ContactInformation from "../../components/Chat/ContactListItem/ContactInformation";
 import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
 
 const ChatListScreen = () => {
@@ -33,11 +32,6 @@ const ChatListScreen = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
   const [isReady, setIsReady] = useState(false);
-
-  const swipeToReply = (contact) => {
-    setSelectedContact(contact);
-    toggleContactOption();
-  };
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
@@ -95,6 +89,18 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Swipe Contact List Item handler
+   * @param {*} contact
+   */
+  const swipeToReply = (contact) => {
+    setSelectedContact(contact);
+    toggleContactOption();
+  };
+
+  /**
+   * Delete message Handler
+   */
   const openSelectedChatHandler = () => {
     setSelectedChat(selectedContact);
     toggleDeleteModal();
@@ -105,6 +111,9 @@ const ChatListScreen = () => {
     toggleDeleteModal();
   };
 
+  /**
+   * Clear personal chat message handler
+   */
   const openSelectedChatToClearHandler = () => {
     setSelectedChat(selectedContact);
     toggleClearChatMessage();
@@ -115,6 +124,9 @@ const ChatListScreen = () => {
     toggleClearChatMessage();
   };
 
+  /**
+   * Clear personal chat message handler
+   */
   const openSelectedGroupChatHandler = () => {
     setSelectedChat(selectedContact);
     toggleDeleteGroupModal();
@@ -133,16 +145,6 @@ const ChatListScreen = () => {
   const closeSelectedContactMenuHandler = () => {
     setSelectedContact(null);
     toggleContactOption();
-  };
-
-  const openContactInformationHandler = () => {
-    setSelectedChat(selectedContact);
-    toggleContactInformation();
-  };
-
-  const closeContactInformationHandler = () => {
-    setSelectedChat(null);
-    toggleContactInformation();
   };
 
   /**
@@ -280,6 +282,7 @@ const ChatListScreen = () => {
                 searchResult={searchResult?.group}
                 toggleChatOption={toggleChatOption}
                 onSwipeControl={swipeToReply}
+                onPinControl={chatPinUpdateHandler}
               />
 
               <PersonalSection
@@ -288,6 +291,7 @@ const ChatListScreen = () => {
                 searchResult={searchResult?.personal}
                 toggleChatOption={toggleChatOption}
                 onSwipeControl={swipeToReply}
+                onPinControl={chatPinUpdateHandler}
               />
 
               {searchResult?.message?.length > 0 && (
@@ -303,7 +307,6 @@ const ChatListScreen = () => {
             toggleDeleteModal={openSelectedChatHandler}
             toggleDeleteGroupModal={openSelectedGroupChatHandler}
             toggleClearChatMessage={openSelectedChatToClearHandler}
-            toggleContactInformation={openContactInformationHandler}
             loggedInUser={userSelector?.id}
             toggleDeleteChatMessage={toggleDeleteChatMessage}
             toggleExitModal={toggleExitModal}

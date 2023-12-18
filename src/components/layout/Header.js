@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useNavigationState, useRoute } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
@@ -19,6 +19,8 @@ const Header = () => {
   const moduleSelector = useSelector((state) => state.module);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
+  const [routeName, setRouteName] = useState([]);
+  const [initiate, setInitiate] = useState(true);
   const {
     isOpen: notificationCardIsOpen,
     open: openNotificationCard,
@@ -65,6 +67,19 @@ const Header = () => {
     if (userSelector.id) {
       unreadMessagesEvent();
     }
+  }, []);
+
+  useEffect(() => {
+    const { routes } = navigation.getState();
+
+    const filteredRoutes = routes.filter((route) => route.name !== "Chat Room");
+    setInitiate(false);
+    setRouteName(filteredRoutes);
+
+    navigation.reset({
+      index: filteredRoutes.length - 1,
+      routes: filteredRoutes,
+    });
   }, []);
 
   return (
@@ -130,7 +145,18 @@ const Header = () => {
           </Box>
           {/* )} */}
 
-          <Pressable onPress={() => navigation.navigate("Chat List")} position="relative">
+          <Pressable
+            onPress={() =>
+              routeName[0]?.state?.routeNames[2].includes("Tribe")
+                ? navigation.navigate("Dashboard")
+                : routeName[0]?.state?.routeNames[2].includes("Band")
+                ? navigation.navigate("Dashboard")
+                : // : initiate
+                  // ? navigation.navigate("Dashboard")
+                  navigation.navigate("Chat List")
+            }
+            position="relative"
+          >
             {unreadMessages?.data?.total_unread > 0 && (
               <Box
                 style={{
@@ -152,7 +178,32 @@ const Header = () => {
                 </Text>
               </Box>
             )}
-            <Image source={require("../../assets/icons/nest_logo.png")} alt="nest" style={{ height: 25, width: 25 }} />
+            {routeName[0]?.state?.routeNames[2].includes("Tribe") ? (
+              <Image
+                source={require("../../assets/icons/tribe_logo.png")}
+                alt="nest"
+                style={{ height: 25, width: 25 }}
+              />
+            ) : routeName[0]?.state?.routeNames[2].includes("Band") ? (
+              <Image
+                source={require("../../assets/icons/band_logo.png")}
+                alt="nest"
+                style={{ height: 25, width: 25 }}
+              />
+            ) : (
+              // : initiate ? (
+              //   <Image
+              //     source={require("../../assets/icons/band_logo.png")}
+              //     alt="nest"
+              //     style={{ height: 25, width: 25 }}
+              //   />
+              // )
+              <Image
+                source={require("../../assets/icons/nest_logo.png")}
+                alt="nest"
+                style={{ height: 25, width: 25 }}
+              />
+            )}
           </Pressable>
         </Flex>
 

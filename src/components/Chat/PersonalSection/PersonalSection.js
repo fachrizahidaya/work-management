@@ -7,7 +7,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleChatOption, onSwipeControl }) => {
+const PersonalSection = ({
+  personalChats,
+  searchKeyword,
+  searchResult,
+  toggleChatOption,
+  onSwipeControl,
+  onPinControl,
+}) => {
   const navigation = useNavigation();
   return !searchKeyword ? (
     <>
@@ -45,6 +52,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleCha
               isPinned={personal?.pin_personal}
               active_member={0}
               onSwipe={onSwipeControl}
+              onPin={onPinControl}
             />
           );
         })}
