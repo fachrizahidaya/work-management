@@ -224,9 +224,9 @@ const UserDetail = () => {
    */
   const usersWithoutMembers = (users) => {
     if (selectedGroupMembers) {
-      return users.filter((user) => {
+      return users?.filter((user) => {
         return !selectedGroupMembers.some((groupMember) => {
-          return groupMember.user_id === user.id;
+          return groupMember?.user_id === user?.id;
         });
       });
     } else {
@@ -280,14 +280,28 @@ const UserDetail = () => {
   }, [searchInput]);
 
   useEffect(() => {
-    if (userList?.data?.data?.length) {
-      if (!searchInput) {
-        setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-        setFilteredDataArray([]);
-      } else {
-        setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-        setCumulativeData([]);
-      }
+    // if (userList?.data?.data?.length) {
+    if (!searchInput) {
+      setCumulativeData((prevState) => {
+        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
+          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
+        } else {
+          return prevState;
+        }
+      });
+      setFilteredDataArray([]);
+      // setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+    } else {
+      setFilteredDataArray((prevState) => {
+        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
+          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
+        } else {
+          return prevState;
+        }
+      });
+      setCumulativeData([]);
+      // setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+      // }
     }
   }, [userList, searchInput, selectedGroupMembers]);
 
