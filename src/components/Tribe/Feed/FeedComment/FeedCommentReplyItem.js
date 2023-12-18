@@ -1,12 +1,8 @@
-import { useState } from "react";
-
 import { Box, Flex, Pressable, Text } from "native-base";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
 const FeedCommentReplyItem = ({ authorName, comments, totalReplies, onReply, parentId, authorImage }) => {
-  const [filteredComment, setFilteredComment] = useState();
-
   return (
     <Flex mx={10} my={2}>
       <Flex my={1} minHeight={1}>

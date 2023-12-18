@@ -9,11 +9,9 @@ import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-han
 const FeedCommentList = ({
   comments,
   onReply,
-  latestExpandedReply,
   commentEndReachedHandler,
   commentsRefetchHandler,
   commentIsFetching,
-  commentIsLoading,
   refetchComment,
   hasBeenScrolled,
   setHasBeenScrolled,

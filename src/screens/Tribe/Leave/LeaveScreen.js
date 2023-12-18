@@ -159,7 +159,7 @@ const LeaveScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <Flex style={styles.header} py={14} px={15}>
           <PageHeader title="My Leave Request" backButton={false} />
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
@@ -233,5 +233,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     position: "relative",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
   },
 });

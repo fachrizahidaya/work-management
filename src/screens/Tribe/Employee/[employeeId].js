@@ -257,7 +257,7 @@ const EmployeeProfileScreen = ({ route }) => {
                     }}
                   />
                 </Flex>
-                <Flex flex={1} minHeight={2} gap={2} height={height}>
+                <Flex style={styles.content} gap={2} height={height}>
                   {/* Content here */}
                   <FeedCard
                     posts={posts}
@@ -283,7 +283,6 @@ const EmployeeProfileScreen = ({ route }) => {
                   {commentsOpen && (
                     <FeedComment
                       postId={postId}
-                      loggedEmployeeId={profile?.data?.id}
                       loggedEmployeeName={userSelector?.name}
                       loggedEmployeeImage={profile?.data?.image}
                       comments={comments}
@@ -298,6 +297,8 @@ const EmployeeProfileScreen = ({ route }) => {
                       onSubmit={commentSubmitHandler}
                       onReply={replyHandler}
                       latestExpandedReply={latestExpandedReply}
+                      employees={employees?.data}
+                      employeeUsername={employeeUsername}
                     />
                   )}
                 </Flex>
@@ -373,5 +374,9 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
+  },
+  content: {
+    flex: 1,
+    minHeight: 2,
   },
 });

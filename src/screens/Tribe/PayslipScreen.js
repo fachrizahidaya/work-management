@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
+import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Button, Flex, Image, Spinner, Text, VStack, useToast } from "native-base";
+import { Button, Flex, Image, Spinner, Text, VStack, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -14,7 +15,6 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
-import _ from "lodash";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -146,7 +146,7 @@ const PayslipScreen = () => {
   return (
     <>
       <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <Flex style={styles.header} py={14} px={15}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button onPress={() => toggleForm()}>
             <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
@@ -196,7 +196,7 @@ const PayslipScreen = () => {
         ) : payslipIsFetching ? (
           <Spinner />
         ) : (
-          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+          <VStack space={2} style={styles.imageContainer}>
             <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
             <Text>No Data</Text>
           </VStack>
@@ -226,5 +226,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
     position: "relative",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+  },
+  imageContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

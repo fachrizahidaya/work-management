@@ -1,7 +1,8 @@
-import { memo, useState, useMemo, useCallback, useEffect } from "react";
+import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Box, Flex, Image, Spinner, Text, VStack } from "native-base";
+import { StyleSheet } from "react-native";
 
 import Tabs from "../../shared/Tabs";
 import { FlashList } from "@shopify/flash-list";
@@ -36,7 +37,7 @@ const LeaveRequestList = ({
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
-      <Flex backgroundColor="#f8f8f8" px={3} flex={1} flexDir="column">
+      <Flex px={3} style={styles.container}>
         {tabValue === "pending" ? (
           pendingList.length > 0 ? (
             <Box flex={1}>
@@ -202,3 +203,11 @@ const LeaveRequestList = ({
 };
 
 export default memo(LeaveRequestList);
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#F8F8F8",
+    flex: 1,
+    flexDirection: "column",
+  },
+});

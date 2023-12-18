@@ -1,20 +1,7 @@
-import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import {
-  Actionsheet,
-  Box,
-  Button,
-  Divider,
-  Flex,
-  FormControl,
-  Icon,
-  Input,
-  Modal,
-  Select,
-  Text,
-  VStack,
-} from "native-base";
+import { Actionsheet, Box, Flex, FormControl, Icon, Input, Select, Text, VStack } from "native-base";
+import { StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,7 +9,7 @@ import FormButton from "../../shared/FormButton";
 import Tabs from "../../shared/Tabs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const AttendanceModal = ({
+const AttendanceAction = ({
   reportIsOpen,
   toggleReport,
   date,
@@ -158,7 +145,7 @@ const AttendanceModal = ({
           {hasSubmittedLateReport && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
-                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                <FormControl style={styles.container}>
                   <Box>
                     <FormControl.Label>On Duty</FormControl.Label>
                     <Text>{date?.onDuty}</Text>
@@ -212,10 +199,11 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {hasSubmittedEarlyReport && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
-                <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                <FormControl style={styles.container}>
                   <Box>
                     <FormControl.Label>Off Duty</FormControl.Label>
                     <Text>{date?.offDuty}</Text>
@@ -268,6 +256,7 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {hasSubmittedReportAlpa && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
@@ -301,6 +290,7 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {hasLateAndEarlyWithoutReason && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
@@ -314,7 +304,7 @@ const AttendanceModal = ({
                 />
                 {tabValue === "late" ? (
                   <>
-                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <FormControl style={styles.container}>
                       <Box>
                         <FormControl.Label>On Duty</FormControl.Label>
                         <Text>{date?.onDuty}</Text>
@@ -358,7 +348,7 @@ const AttendanceModal = ({
                   </>
                 ) : (
                   <>
-                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <FormControl style={styles.container}>
                       <Box>
                         <FormControl.Label>Off Duty</FormControl.Label>
                         <Text>{date?.offDuty}</Text>
@@ -413,6 +403,7 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {/* If report submitted Late and Early */}
           {hasSubmittedBothReports && (
             <VStack w="95%" space={3}>
@@ -427,7 +418,7 @@ const AttendanceModal = ({
                 />
                 {tabValue === "late" ? (
                   <>
-                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <FormControl style={styles.container}>
                       <Box>
                         <FormControl.Label>On Duty</FormControl.Label>
                         <Text>{date?.onDuty}</Text>
@@ -471,7 +462,7 @@ const AttendanceModal = ({
                   </>
                 ) : (
                   <>
-                    <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <FormControl style={styles.container}>
                       <Box>
                         <FormControl.Label>Off Duty</FormControl.Label>
                         <Text>{date?.offDuty}</Text>
@@ -526,6 +517,7 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {/* If did not clock-in (Alpa) */}
           {notAttend && (
             <VStack w="95%" space={3}>
@@ -559,10 +551,13 @@ const AttendanceModal = ({
               />
             </VStack>
           )}
+
           {/* If attendance type is Leave */}
           {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+
           {/* If attendance type is Permit */}
           {isPermit && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+
           {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
             <VStack w="95%" space={3}>
               <VStack w="100%" space={2}>
@@ -578,7 +573,7 @@ const AttendanceModal = ({
   );
 };
 
-export default AttendanceModal;
+export default AttendanceAction;
 
 const LateOrEarlyTime = ({
   formik,
@@ -593,17 +588,12 @@ const LateOrEarlyTime = ({
   errorForReason,
   titleDuty,
   timeDuty,
-  titleLateOrEarly,
   timeLateOrEarly,
 }) => {
   return (
-    <VStack
-      w="95%"
-      space={3}
-      // pb={keyboardHeight}
-    >
+    <VStack w="95%" space={3}>
       <VStack w="100%" space={2}>
-        <FormControl display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+        <FormControl style={styles.container}>
           <Box>
             <FormControl.Label>{titleDuty}</FormControl.Label>
             <Text>{timeDuty}</Text>
@@ -677,3 +667,12 @@ const LeaveOrPermit = ({ type, reason }) => {
     </VStack>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});

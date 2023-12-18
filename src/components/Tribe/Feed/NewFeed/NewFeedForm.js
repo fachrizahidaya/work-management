@@ -6,30 +6,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import MentionInputs from "./MentionInput";
 
-const NewFeedForm = ({
-  formik,
-  image,
-  setImage,
-  pickImageHandler,
-  employees,
-  mentionSelectHandler,
-  inputRef,
-  mentionIsOpen,
-  toggleMention,
-  checkAccess,
-}) => {
+const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, mentionSelectHandler, inputRef }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
       <FormControl>
-        <MentionInputs
-          employees={employees}
-          formik={formik}
-          name="content"
-          onMentionSelect={mentionSelectHandler}
-          inputRef={inputRef}
-        />
+        <MentionInputs employees={employees} formik={formik} />
 
         <Flex p={2} flexDir="column" justifyContent="space-between">
           {image ? (

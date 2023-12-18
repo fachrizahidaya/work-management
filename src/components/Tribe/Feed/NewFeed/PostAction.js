@@ -9,7 +9,6 @@ const PostAction = ({
   postTypeIsClose,
   publicToggleHandler,
   formik,
-  loggedEmployeeDivision,
   announcementToggleHandler,
   isAnnouncementSelected,
   dateShown,
@@ -30,8 +29,7 @@ const PostAction = ({
             {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
           </Flex>
         </Actionsheet.Item>
-        {/* {loggedEmployeeDivision === 1 ||
-          (loggedEmployeeDivision === 6 && ( */}
+
         <Actionsheet.Item
           onPress={() => {
             announcementToggleHandler();
@@ -59,7 +57,6 @@ const PostAction = ({
             {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
           </Flex>
         </Actionsheet.Item>
-        {/* ))} */}
       </Actionsheet.Content>
     </Actionsheet>
   );

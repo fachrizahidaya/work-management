@@ -14,7 +14,7 @@ const InformationScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <Flex style={styles.header} py={14} px={15}>
           <PageHeader title="My Information" backButton={false} />
         </Flex>
 
@@ -65,12 +65,18 @@ const InformationScreen = () => {
   );
 };
 
+export default InformationScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
     position: "relative",
   },
+  header: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
 });
-
-export default InformationScreen;

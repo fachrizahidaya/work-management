@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Skeleton, Text, VStack, useToast } from "native-base";
+import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -220,9 +220,9 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <Flex style={styles.header} py={14} px={15}>
           <Flex flexDir="row" gap={1}>
-            <Text color="primary.600" fontWeight={700} fontSize={16}>
+            <Text fontSize={16} fontWeight={700} color="primary.600">
               News
             </Text>
             <Text fontSize={16}>& Feed</Text>
@@ -274,16 +274,15 @@ const FeedScreen = () => {
               setForceRerender={setForceRerender}
               toggleFullScreen={toggleFullScreen}
               employeeUsername={employeeUsername}
+              navigation={navigation}
             />
             {commentsOpen && (
               <FeedComment
                 postId={postId}
-                loggedEmployeeId={profile?.data?.id}
                 loggedEmployeeName={userSelector?.name}
                 loggedEmployeeImage={profile?.data?.image}
                 comments={comments}
                 commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
                 handleOpen={commentsOpenHandler}
                 handleClose={commentsCloseHandler}
@@ -292,8 +291,8 @@ const FeedScreen = () => {
                 parentId={commentParentId}
                 onSubmit={commentSubmitHandler}
                 onReply={replyHandler}
-                latestExpandedReply={latestExpandedReply}
                 employeeUsername={employeeUsername}
+                employees={employees?.data}
               />
             )}
           </>
@@ -321,5 +320,11 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
   },
 });

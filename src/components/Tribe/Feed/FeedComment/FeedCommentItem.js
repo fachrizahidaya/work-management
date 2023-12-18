@@ -63,28 +63,7 @@ const FeedCommentItem = ({
           @{item}{" "}
         </Text>
       );
-    }
-    // else if (specificEmployee) {
-    //   const specificEmployeeId = specificEmployee.id;
-    //   item = specificEmployee.username;
-    //   textStyle = styles.highlightedText;
-    //   return (
-    //     <Text
-    //       key={index}
-    //       style={textStyle}
-    //       onPress={() =>
-    //         navigation.navigate("Employee Profile", {
-    //           employeeId: specificEmployeeId,
-    //           loggedEmployeeId: loggedEmployeeId,
-    //           loggedEmployeeImage: loggedEmployeeImage,
-    //         })
-    //       }
-    //     >
-    //       @{item}{" "}
-    //     </Text>
-    //   );
-    // }
-    else if (hasTag) {
+    } else if (hasTag) {
       item = item.replace(`<a`, "");
       textStyle = styles.defaultText;
       return <Text key={index}>{item}</Text>;
