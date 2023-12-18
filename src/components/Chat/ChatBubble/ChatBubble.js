@@ -42,6 +42,7 @@ const ChatBubble = ({
   toggleFullScreen,
   onSwipe,
   isOptimistic,
+  memberName,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
@@ -53,7 +54,9 @@ const ChatBubble = ({
   if (content?.length !== 0) {
     let words;
 
-    if (typeof content === "number" || typeof content === "bigint") {
+    if (memberName?.some((member) => content?.includes(member.name))) {
+      words = [content];
+    } else if (typeof content === "number" || typeof content === "bigint") {
       words = content.toString().split(" ");
     } else {
       words = content?.split(" ");
@@ -61,12 +64,22 @@ const ChatBubble = ({
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
+      let specificMember;
+      specificMember = memberName?.find((member) => item?.includes(member.name));
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
           <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
             {item}{" "}
+          </Text>
+        );
+      } else if (specificMember) {
+        item = specificMember.name;
+        textStyle = styles.coloredText;
+        return (
+          <Text key={index} style={textStyle}>
+            @{item}{" "}
           </Text>
         );
       } else if (item.includes("08") || item.includes("62")) {
@@ -285,6 +298,9 @@ const styles = StyleSheet.create({
   defaultText: {},
   highlightedText: {
     textDecorationLine: "underline",
+  },
+  coloredText: {
+    color: "#72acdc",
   },
   container: {
     alignItems: "flex-end",
