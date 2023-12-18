@@ -2,8 +2,8 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Text, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import { Icon, useToast } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -220,24 +220,16 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text fontSize={16} fontWeight={700} color="primary.600">
-              News
-            </Text>
-            <Text fontSize={16}>& Feed</Text>
-          </Flex>
-          <Text fontWeight={700} fontSize={12}>
-            PT Kolabora Group Indonesia
-          </Text>
-        </Flex>
+        <View style={styles.header}>
+          <View style={styles.subHeader}>
+            <Text style={styles.textNews}>News</Text>
+            <Text style={styles.textFeed}> & Feed</Text>
+          </View>
+          <Text style={styles.textKolabora}>PT Kolabora Group Indonesia</Text>
+        </View>
 
         <Pressable
           style={styles.createPostIcon}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
               postRefetchHandler: postRefetchHandler, // To get new post after create one
@@ -253,7 +245,7 @@ const FeedScreen = () => {
           <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
 
-        <Box flex={1} px={3}>
+        <View style={styles.containerList}>
           {/* Content here */}
           <>
             <FeedCard
@@ -296,7 +288,7 @@ const FeedScreen = () => {
               />
             )}
           </>
-        </Box>
+        </View>
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -310,6 +302,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F8F8",
   },
+  containerList: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
   createPostIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
@@ -320,11 +316,34 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 15,
+  },
+  subHeader: {
+    flexDirection: "row",
+    gap: 1,
+  },
+  textNews: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#377893",
+  },
+  textFeed: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  textKolabora: {
+    fontSize: 12,
+    fontWeight: "700",
   },
 });
