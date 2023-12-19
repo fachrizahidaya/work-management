@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard, Linking, StyleSheet, View } from "react-native";
-import { Spinner, useToast } from "native-base";
+import { Clipboard, Linking } from "react-native";
+import { Box, Spinner, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -27,7 +27,6 @@ const FeedCard = ({
   setForceRerender,
   toggleFullScreen,
   employeeUsername,
-  navigation,
 }) => {
   const toast = useToast();
 
@@ -78,7 +77,7 @@ const FeedCard = ({
   };
 
   return (
-    <View style={styles.container}>
+    <Box flex={1}>
       <FlashList
         removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
@@ -101,7 +100,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}
@@ -126,19 +125,13 @@ const FeedCard = ({
             handleLinkPress={handleLinkPress}
             handleEmailPress={handleEmailPress}
             copyToClipboard={copyToClipboard}
+            postRefetchHandler={postRefetchHandler}
             employeeUsername={employeeUsername}
-            navigation={navigation}
           />
         )}
       />
-    </View>
+    </Box>
   );
 };
 
 export default memo(FeedCard);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
