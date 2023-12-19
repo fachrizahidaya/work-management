@@ -1,14 +1,12 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { StyleSheet } from "react-native";
-import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
+import { StyleSheet, View, Pressable, Text, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useFetch } from "../../hooks/useFetch";
-import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../components/shared/PageHeader";
@@ -16,6 +14,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
+  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
@@ -96,11 +95,11 @@ const AdHocScreen = () => {
   );
   return (
     <>
-      <Flex style={styles.container}>
-        <Flex gap={15} style={{ marginTop: 13 }}>
+      <View style={styles.container}>
+        <View style={{ display: "flex", gap: 15, marginTop: 13 }}>
           <PageHeader title="Ad Hoc" backButton={false} />
 
-          <Flex flexDir="row" mt={11} mb={21}>
+          <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
             <TaskFilter
               data={tasks?.data}
               members={noDuplicateResponsibleArr}
@@ -116,8 +115,8 @@ const AdHocScreen = () => {
               setDeadlineSort={setDeadlineSort}
               setSelectedPriority={setSelectedPriority}
             />
-          </Flex>
-        </Flex>
+          </View>
+        </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -135,62 +134,44 @@ const AdHocScreen = () => {
           )}
 
           {(view === "Kanban" || view === "Gantt Chart") && (
-            <Center>
+            <View>
               <Image
                 source={require("../../assets/vectors/desktop.jpg")}
-                h={180}
-                w={250}
                 alt="desktop-only"
-                resizeMode="contain"
+                style={{ height: 180, width: 250, resizeMode: "contain" }}
               />
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
+              <Text style={{ fontWeight: "bold" }}>This feature only available for desktop</Text>
+            </View>
           )}
         </ScrollView>
 
-        {/* Task Form */}
-        {taskFormIsOpen && (
-          <NewTaskSlider
-            selectedStatus={selectedStatus}
-            onClose={onCloseTaskForm}
-            isOpen={taskFormIsOpen}
-            refetch={refetchTasks}
-          />
-        )}
-
         {createActionCheck && (
           <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleTaskForm}
+            style={styles.hoverButton}
+            onPress={() =>
+              navigation.navigate("Task Form", {
+                selectedStatus,
+                refetch: refetchTasks,
+              })
+            }
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
-      </Flex>
+      </View>
 
-      {closeConfirmationIsOpen && (
-        <ConfirmationModal
-          isDelete={false}
-          isOpen={closeConfirmationIsOpen}
-          toggle={toggleCloseConfirmation}
-          apiUrl={"/pm/tasks/close"}
-          body={{ id: selectedTask?.id }}
-          header="Close Task"
-          description={`Are you sure to close task ${selectedTask?.title}?`}
-          successMessage="Task closed"
-          hasSuccessFunc
-          onSuccess={refetchTasks}
-        />
-      )}
+      <ConfirmationModal
+        isDelete={false}
+        isOpen={closeConfirmationIsOpen}
+        toggle={toggleCloseConfirmation}
+        apiUrl={"/pm/tasks/close"}
+        body={{ id: selectedTask?.id }}
+        header="Close Task"
+        description={`Are you sure to close task ${selectedTask?.title}?`}
+        successMessage="Task closed"
+        hasSuccessFunc
+        onSuccess={refetchTasks}
+      />
     </>
   );
 };
@@ -203,5 +184,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 16,
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });

@@ -1,14 +1,14 @@
 import React, { memo } from "react";
 
-import { Box, Button, Flex, Icon, Text } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
-import { FlatList } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { FlatList, View, Text } from "react-native";
 
 import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
+import Button from "../../../shared/Forms/Button";
+import { FlashList } from "@shopify/flash-list";
 
 const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
   const createActionCheck = useCheckAccess("create", "Tasks");
@@ -25,13 +25,14 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
   });
 
   return (
-    <Flex gap={8}>
+    <View style={{ display: "flex", gap: 20 }}>
       <CustomAccordion title="ToDo" subTitle={todoTasks?.length || 0}>
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
+              <View style={{ flex: 1, minHeight: 2 }}>
+                <FlashList
+                  estimatedItemSize={112}
                   data={todoTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
@@ -55,25 +56,22 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
                 onPress={() => openNewTaskForm("Open")}
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
 
@@ -81,8 +79,9 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
+              <View style={{ flex: 1, minHeight: 2 }}>
+                <FlashList
+                  estimatedItemSize={112}
                   data={onProgressTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
@@ -106,25 +105,22 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("On Progress")}
+                onPress={() => openNewTaskForm("Open")}
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
 
@@ -132,8 +128,10 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
         {!isLoading ? (
           <>
             <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
+              <View style={{ flex: 1, minHeight: 2 }}>
+                <FlashList
+                  estimatedItemSize={112}
+                  estima
                   data={finishTasks}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
@@ -157,28 +155,25 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
 
             {createActionCheck && (
               <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("Finish")}
+                onPress={() => openNewTaskForm("Open")}
+                backgroundColor="white"
+                fontColor="#176688"
+                variant="dashed"
               >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
+                <Text style={{ color: "#176688", fontWeight: 500 }}>ADD TASK</Text>
               </Button>
             )}
           </>
         ) : (
-          <TaskSkeleton />
+          <Text>Loading...</Text>
         )}
       </CustomAccordion>
-    </Flex>
+    </View>
   );
 };
 

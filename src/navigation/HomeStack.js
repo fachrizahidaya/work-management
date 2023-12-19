@@ -18,6 +18,8 @@ import NotificationScreen from "../screens/NotificationScreen";
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
+import ProjectForm from "../screens/Band/ProjectForm";
+import TaskForm from "../screens/Band/TaskForm";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
@@ -141,6 +143,10 @@ const HomeStack = () => {
       <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
 
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />

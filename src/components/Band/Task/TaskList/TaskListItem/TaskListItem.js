@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Pressable } from "native-base";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Pressable, View } from "react-native";
 
 import StatusAndDeadlineSection from "./StatusAndDeadlineSection/StatusAndDeadlineSection";
 import PrioritySection from "./PrioritySection/PrioritySection";
@@ -29,7 +28,7 @@ const TaskListItem = ({
 
   return (
     <Pressable style={styles.wrapper} onPress={() => navigation.navigate("Task Detail", { taskId: id })}>
-      <Flex gap={2}>
+      <View style={{ display: "flex", gap: 4 }}>
         <StatusAndDeadlineSection
           no={no}
           task={task}
@@ -50,7 +49,7 @@ const TaskListItem = ({
           totalComments={totalComments}
           responsible={responsible}
         />
-      </Flex>
+      </View>
     </Pressable>
   );
 };

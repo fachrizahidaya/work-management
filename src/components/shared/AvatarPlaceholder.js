@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Avatar } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, View, Text } from "react-native";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import UserPreviewModal from "./UserPreviewModal";
@@ -48,18 +47,23 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
         <>
           {isPressable ? (
             <TouchableOpacity onPress={() => isPressable && toggle()} style={style}>
-              <Avatar
+              <Image
                 source={{
                   uri: isThumb
                     ? `${process.env.EXPO_PUBLIC_API}/image/${image}/thumb`
                     : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
                 }}
-                size={size || "xs"}
-                bg="transparent"
+                style={{
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  resizeMode: "contain",
+                  backgroundColor: "transparent",
+                  borderRadius: 50,
+                }}
               />
             </TouchableOpacity>
           ) : (
-            <Avatar
+            <Image
               source={{
                 uri: isThumb
                   ? `${process.env.EXPO_PUBLIC_API}/image/${image}/thumb`
@@ -67,7 +71,16 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
               }}
               size={size || "xs"}
               bg="transparent"
-              style={style}
+              style={[
+                style,
+                {
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  resizeMode: "contain",
+                  backgroundColor: "transparent",
+                  borderRadius: 50,
+                },
+              ]}
             />
           )}
         </>
@@ -75,19 +88,46 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
         <>
           {isPressable ? (
             <TouchableOpacity onPress={() => isPressable && toggle()} style={style}>
-              <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius}>
-                {name ? userInitialGenerator() : "KSS"}
-              </Avatar>
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  backgroundColor: stringToColor(name),
+                  borderRadius: 50,
+                }}
+              >
+                <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
+                  {name ? userInitialGenerator() : "KSS"}
+                </Text>
+              </View>
             </TouchableOpacity>
           ) : (
-            <Avatar size={size || "xs"} bgColor={stringToColor(name)} borderRadius={borderRadius} style={style}>
-              {name ? userInitialGenerator() : "KSS"}
-            </Avatar>
+            <View
+              style={[
+                style,
+                {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  backgroundColor: stringToColor(name),
+                  borderRadius: 50,
+                },
+              ]}
+            >
+              <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
+                {name ? userInitialGenerator() : "KSS"}
+              </Text>
+            </View>
           )}
         </>
       )}
 
-      {isOpen && (
+      {/* {isOpen && (
         <UserPreviewModal
           isOpen={isOpen}
           onClose={toggle}
@@ -97,7 +137,7 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
           stringToColor={stringToColor}
           userInitialGenerator={userInitialGenerator}
         />
-      )}
+      )} */}
     </>
   );
 };
