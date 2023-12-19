@@ -82,8 +82,6 @@ const Header = () => {
     });
   }, []);
 
-  console.log("r", routeName[0]?.state?.routeNames[2]);
-
   return (
     <SafeAreaView style={{ backgroundColor: "white" }}>
       <Flex
