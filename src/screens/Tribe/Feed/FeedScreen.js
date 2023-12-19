@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
 import { Icon, useToast } from "native-base";
+import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -166,10 +167,10 @@ const FeedScreen = () => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setSubmitting(false);
       setStatus("error");
@@ -221,11 +222,11 @@ const FeedScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.subHeader}>
-            <Text style={styles.textNews}>News</Text>
-            <Text style={styles.textFeed}> & Feed</Text>
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}> & Feed</Text>
           </View>
-          <Text style={styles.textKolabora}>PT Kolabora Group Indonesia</Text>
+          <Text style={{ fontSize: 12, fontWeight: "700" }}>PT Kolabora Group Indonesia</Text>
         </View>
 
         <Pressable
@@ -245,7 +246,7 @@ const FeedScreen = () => {
           <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
 
-        <View style={styles.containerList}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
           {/* Content here */}
           <>
             <FeedCard
@@ -289,6 +290,7 @@ const FeedScreen = () => {
             )}
           </>
         </View>
+        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -301,10 +303,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-  },
-  containerList: {
-    flex: 1,
-    paddingHorizontal: 10,
   },
   createPostIcon: {
     backgroundColor: "#377893",
@@ -328,22 +326,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingVertical: 15,
     paddingHorizontal: 15,
-  },
-  subHeader: {
-    flexDirection: "row",
-    gap: 1,
-  },
-  textNews: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#377893",
-  },
-  textFeed: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  textKolabora: {
-    fontSize: 12,
-    fontWeight: "700",
   },
 });
