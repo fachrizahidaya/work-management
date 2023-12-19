@@ -150,11 +150,13 @@ const BandTab = () => {
 
         <Tab.Screen name="Calendar Band" component={CalendarScreen} />
       </Tab.Navigator>
+
       {/* Sheets */}
       <BandScreenSheet reference={bandScreenSheetRef} />
+
       <BandAddNewSheet reference={bandAddNewSheetRef} />
+
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
-      {/* <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />  */}
     </>
   );
 };
