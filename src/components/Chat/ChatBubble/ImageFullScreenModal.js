@@ -1,5 +1,5 @@
-import { Icon } from "native-base";
-import { Linking, StyleSheet, Modal, View, Image, TouchableWithoutFeedback } from "react-native";
+import { Box, Flex, Icon, Image, Modal } from "native-base";
+import { Linking, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -13,53 +13,35 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
   };
 
   return (
-    <Modal
-      style={styles.container}
-      animationType="fade"
-      visible={isFullScreen}
-      onDismiss={() => setIsFullScreen(false)}
-    >
-      <View style={styles.imageBox}>
+    <Modal backgroundColor="#272A2B" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+      <Box position="relative">
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-          style={styles.image}
+          height={300}
+          width={400}
           alt="Feed Image"
+          resizeMode="contain"
         />
-        <View style={styles.actionGroup}>
-          <TouchableWithoutFeedback onPress={() => attachmentDownloadHandler(file_path)}>
+        <Flex
+          position="absolute"
+          right={0}
+          top={0}
+          pr={2}
+          gap={2}
+          flexDirection="row"
+          justifyContent="flex-end"
+          alignItems="flex-end"
+        >
+          <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
             <Icon as={<MaterialCommunityIcons name="download" />} size={6} color="#FFFFFF" />
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => setIsFullScreen(false)}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsFullScreen(false)}>
             <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="#FFFFFF" />
-          </TouchableWithoutFeedback>
-        </View>
-      </View>
+          </TouchableOpacity>
+        </Flex>
+      </Box>
     </Modal>
   );
 };
 
 export default ImageFullScreenModal;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#272A2B",
-  },
-  imageBox: {
-    position: "relative",
-  },
-  image: {
-    height: 300,
-    width: 400,
-    resizeMode: "contain",
-  },
-  actionGroup: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    position: "absolute",
-    right: 0,
-    top: 0,
-    paddingRight: 10,
-    gap: 2,
-  },
-});
