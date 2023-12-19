@@ -74,7 +74,6 @@ const Header = () => {
 
     const filteredRoutes = routes.filter((route) => route.name !== "Chat Room");
     setRouteName(filteredRoutes);
-    // setInitiate(routeName[0]?.state?.routeNames[2])
 
     navigation.reset({
       index: filteredRoutes.length - 1,
@@ -151,9 +150,7 @@ const Header = () => {
                 ? navigation.navigate("Dashboard")
                 : routeName[0]?.state?.routeNames[2] == "Setting Band"
                 ? navigation.navigate("Dashboard")
-                : // : initiate
-                  // ? navigation.navigate("Dashboard")
-                  navigation.navigate("Chat List")
+                : navigation.navigate("Chat List")
             }
             position="relative"
           >
@@ -185,7 +182,6 @@ const Header = () => {
                   alt="nest"
                   style={{ height: 25, width: 25 }}
                 />
-                {/* <Text>tribe</Text> */}
               </>
             ) : routeName[0]?.state?.routeNames[2]?.includes("Band") ? (
               <>
@@ -194,16 +190,8 @@ const Header = () => {
                   alt="nest"
                   style={{ height: 25, width: 25 }}
                 />
-                {/* <Text>band</Text> */}
               </>
             ) : (
-              // : initiate ? (
-              //   <Image
-              //     source={require("../../assets/icons/band_logo.png")}
-              //     alt="nest"
-              //     style={{ height: 25, width: 25 }}
-              //   />
-              // )
               <Image
                 source={require("../../assets/icons/nest_logo.png")}
                 alt="nest"
