@@ -17,6 +17,8 @@ const Input = ({
   onChangeText,
   endAdornment,
   startAdornment,
+  multiline,
+  numberOfLines,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -32,6 +34,8 @@ const Input = ({
         {startAdornment && <View style={styles.startIcon}>{startAdornment}</View>}
 
         <TextInput
+          multiline={multiline}
+          numberOfLines={numberOfLines}
           placeholder={placeHolder}
           onChangeText={(value) => {
             if (onChangeText) {
@@ -45,6 +49,8 @@ const Input = ({
             styles.input,
             {
               paddingLeft: startAdornment || startIcon ? 35 : 10,
+              height: multiline && 100,
+              textAlignVertical: "top",
             },
           ]}
           defaultValue={defaultValue}

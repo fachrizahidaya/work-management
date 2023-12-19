@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, View, Pressable, Text, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -7,7 +7,6 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useFetch } from "../../hooks/useFetch";
-import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../components/shared/PageHeader";
@@ -15,6 +14,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
+  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
@@ -84,15 +84,15 @@ const AdHocScreen = () => {
     setSelectedTask(task);
   }, []);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (firstTimeRef.current) {
-  //       firstTimeRef.current = false;
-  //       return;
-  //     }
-  //     refetchTasks();
-  //   }, [refetchTasks])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchTasks();
+    }, [refetchTasks])
+  );
   return (
     <>
       <View style={styles.container}>
@@ -145,18 +145,16 @@ const AdHocScreen = () => {
           )}
         </ScrollView>
 
-        {/* Task Form */}
-        {/* {taskFormIsOpen && (
-          <NewTaskSlider
-            selectedStatus={selectedStatus}
-            onClose={onCloseTaskForm}
-            isOpen={taskFormIsOpen}
-            refetch={refetchTasks}
-          />
-        )} */}
-
         {createActionCheck && (
-          <Pressable style={styles.hoverButton} onPress={toggleTaskForm}>
+          <Pressable
+            style={styles.hoverButton}
+            onPress={() =>
+              navigation.navigate("Task Form", {
+                selectedStatus,
+                refetch: refetchTasks,
+              })
+            }
+          >
             <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}

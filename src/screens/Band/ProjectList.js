@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import _ from "lodash";
 
 import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
-import { Divider, Icon, Select } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -17,17 +16,16 @@ import PageHeader from "../../components/shared/PageHeader";
 import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import NewProjectSlider from "../../components/Band/Project/NewProjectSlider/NewProjectSlider";
 import Input from "../../components/shared/Forms/Input";
+import Select from "../../components/shared/Forms/Select";
 
 const ProjectList = () => {
+  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const createActionCheck = useCheckAccess("create", "Projects");
-  const { isOpen: projectFormIsOpen, toggle: toggleProjectForm } = useDisclosure(false);
 
   const dependencies = [status, currentPage, searchInput];
 
@@ -39,11 +37,6 @@ const ProjectList = () => {
     limit: 10,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
-
-  const closeProjectFormHandler = (resetForm) => {
-    toggleProjectForm();
-    resetForm();
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -140,23 +133,18 @@ const ProjectList = () => {
 
           <View style={{ paddingHorizontal: 16, paddingBottom: 1 }}>
             <Select
-              variant="unstyled"
-              size="md"
-              dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              borderRadius={15}
-              borderWidth={1}
-              style={{ height: 40 }}
-              onValueChange={(value) => setStatus(value)}
-              defaultValue={status}
-            >
-              <Select.Item label="Open" value="Open" />
-              <Select.Item label="On Progress" value="On Progress" />
-              <Select.Item label="Finish" value="Finish" />
-              <Select.Item label="Archived" value="Archived" />
-            </Select>
+              onChange={(value) => setStatus(value)}
+              value={status}
+              items={[
+                { label: "Open", value: "Open" },
+                { label: "On Progress", value: "On Progress" },
+                { label: "Finish", value: "Finish" },
+                { label: "Archived", value: "Open" },
+              ]}
+            />
           </View>
 
-          <Divider></Divider>
+          <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
 
           {!isLoading ? (
             data?.data?.data?.length > 0 ? (
@@ -196,14 +184,11 @@ const ProjectList = () => {
         </View>
 
         {createActionCheck && (
-          <Pressable style={styles.hoverButton} onPress={toggleProjectForm}>
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+          <Pressable style={styles.hoverButton} onPress={() => navigation.navigate("Project Form")}>
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
       </SafeAreaView>
-
-      {/* Create project form */}
-      {projectFormIsOpen && <NewProjectSlider isOpen={projectFormIsOpen} onClose={closeProjectFormHandler} />}
     </>
   );
 };
