@@ -16,6 +16,7 @@ import CalendarScreen from "../../screens/Band/Calendar";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
 import { useRef } from "react";
+import BandAddNewSheet from "../../components/shared/ActionSheet/BandAddNewSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,6 +26,7 @@ function EmptyScreen() {
 
 const BandTab = () => {
   const bandScreenSheetRef = useRef(null);
+  const bandAddNewSheetRef = useRef(null);
   const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
   const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
   const {
@@ -89,13 +91,7 @@ const BandTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  handleStateToggle("screenSelectIsOpen");
-                  bandScreenSheetRef.current?.show();
-                }}
-              >
+              <TouchableOpacity {...props} onPress={() => bandScreenSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -111,12 +107,7 @@ const BandTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  handleStateToggle("addIsOpen");
-                }}
-              >
+              <TouchableOpacity {...props} onPress={() => bandAddNewSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -165,6 +156,8 @@ const BandTab = () => {
 
       {/* Sheets */}
       <BandScreenSheet reference={bandScreenSheetRef} />
+
+      <BandAddNewSheet reference={bandAddNewSheetRef} />
 
       {/* <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
