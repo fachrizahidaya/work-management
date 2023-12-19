@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard, Linking } from "react-native";
-import { Box, Spinner, useToast } from "native-base";
+import { Clipboard, Linking, StyleSheet, View } from "react-native";
+import { Spinner, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -78,7 +78,7 @@ const FeedCard = ({
   };
 
   return (
-    <Box flex={1}>
+    <View style={styles.container}>
       <FlashList
         removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
@@ -131,8 +131,14 @@ const FeedCard = ({
           />
         )}
       />
-    </Box>
+    </View>
   );
 };
 
 export default memo(FeedCard);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

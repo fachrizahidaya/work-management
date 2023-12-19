@@ -1,5 +1,5 @@
-import { Box, Flex, Icon, Image, Modal } from "native-base";
-import { Linking, TouchableOpacity } from "react-native";
+import { Icon, Modal } from "native-base";
+import { Linking, StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,34 +14,45 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
 
   return (
     <Modal backgroundColor="#272A2B" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
-      <Box position="relative">
+      <View style={styles.imageBox}>
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-          height={300}
-          width={400}
           alt="Feed Image"
-          resizeMode="contain"
+          style={styles.image}
         />
-        <Flex
-          position="absolute"
-          right={0}
-          top={0}
-          pr={2}
-          gap={2}
-          flexDirection="row"
-          justifyContent="flex-end"
-          alignItems="flex-end"
-        >
+        <View style={styles.actionGroup}>
           <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
             <Icon as={<MaterialCommunityIcons name="download" />} size={6} color="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsFullScreen(false)}>
             <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="#FFFFFF" />
           </TouchableOpacity>
-        </Flex>
-      </Box>
+        </View>
+      </View>
     </Modal>
   );
 };
 
 export default ImageFullScreenModal;
+
+const styles = StyleSheet.create({
+  imageBox: {
+    position: "relative",
+  },
+  image: {
+    height: 300,
+    width: 400,
+    resizeMode: "contain",
+  },
+  actionGroup: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    paddingRight: 5,
+    paddingTop: 5,
+    gap: 5,
+  },
+});

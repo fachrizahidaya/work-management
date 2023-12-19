@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Spinner, VStack, useToast } from "native-base";
+import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import { Spinner, VStack, useToast } from "native-base";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
-import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import { useCallback } from "react";
@@ -249,15 +249,15 @@ const EmployeeProfileScreen = ({ route }) => {
               </VStack>
             ) : (
               <>
-                <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+                <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
                   <PageHeader
                     title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
                     onPress={() => {
                       navigation.goBack();
                     }}
                   />
-                </Flex>
-                <Flex style={styles.content} gap={2} height={height}>
+                </View>
+                <View style={styles.content} height={height}>
                   {/* Content here */}
                   <FeedCard
                     posts={posts}
@@ -301,15 +301,11 @@ const EmployeeProfileScreen = ({ route }) => {
                       employeeUsername={employeeUsername}
                     />
                   )}
-                </Flex>
+                </View>
               </>
             )}
           </>
-        ) : (
-          <VStack px={4} space={2}>
-            <Spinner color="primary.600" size="lg" />
-          </VStack>
-        )}
+        ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <PostAction
@@ -347,14 +343,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#E8E9EB",
     borderBottomWidth: 1,
-    paddingVertical: 14,
+    paddingVertical: 15,
     paddingHorizontal: 15,
   },
   stickyHeader: {
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#E8E9EB",
     borderBottomWidth: 1,
-    paddingVertical: 14,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     position: "sticky",
     top: 0,
@@ -377,6 +373,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    gap: 5,
     minHeight: 2,
   },
 });

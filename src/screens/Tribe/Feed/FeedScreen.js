@@ -12,7 +12,7 @@ import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
-import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingVertical: 14,
+    paddingVertical: 15,
     paddingHorizontal: 15,
   },
   subHeader: {
