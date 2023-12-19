@@ -44,7 +44,7 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
 
       <Flex>
         <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-          {title}
+          {title.length > 50 ? title.slice(0, 30) + "..." : title}
         </Text>
         <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
           #{number_id}

@@ -484,6 +484,13 @@ const ChatRoom = () => {
     }
   };
 
+  const memberName = selectedGroupMembers.map((item) => {
+    return {
+      id: item.user.id,
+      name: item.user.name,
+    };
+  });
+
   /**
    * Exit group handler
    * @param {*} group_id
@@ -643,6 +650,7 @@ const ChatRoom = () => {
               toggleFullScreen={toggleFullScreen}
               onSwipeToReply={swipeToReply}
               placement={placement}
+              memberName={memberName}
             />
 
             <ChatInput
@@ -662,6 +670,7 @@ const ChatRoom = () => {
               toggleProjectList={toggleProjectList}
               toggleTaskList={toggleTaskList}
               toggleMenu={openAddAttachmentHandler}
+              groupMember={selectedGroupMembers}
             />
           </>
 
@@ -731,7 +740,6 @@ const ChatRoom = () => {
             onClose={toggleMenu}
             selectFile={selectFile}
             pickImageHandler={pickImageHandler}
-            selectBandHandler={selectBandHandler}
             navigation={navigation}
             bandAttachment={bandAttachment}
             setBandAttachment={setBandAttachment}

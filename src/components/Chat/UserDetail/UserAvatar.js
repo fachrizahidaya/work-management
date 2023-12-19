@@ -1,10 +1,11 @@
-import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
+import { Box, Flex, Icon, Pressable, Text } from "native-base";
+
+import { StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
 
 const UserAvatar = ({ roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
   const navigation = useNavigation();

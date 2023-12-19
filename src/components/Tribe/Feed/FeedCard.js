@@ -100,7 +100,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
+        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

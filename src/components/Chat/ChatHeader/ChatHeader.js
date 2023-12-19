@@ -90,7 +90,7 @@ const ChatHeader = ({
             <AvatarPlaceholder name={name} image={image} size="md" />
 
             <Flex>
-              <Text fontSize={16}>{name}</Text>
+              <Text fontSize={16}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
                 <Text fontSize={12} fontWeight={400}>
                   {email}

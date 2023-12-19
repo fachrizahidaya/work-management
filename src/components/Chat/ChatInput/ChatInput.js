@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import * as yup from "yup";
 
-import { Box, Flex, FormControl, Icon, IconButton, Input, Menu, Pressable, Text } from "native-base";
+import { Box, Flex, FormControl, Icon, IconButton, Input, Pressable, Text } from "native-base";
+import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
+import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,10 +24,14 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
-  toggleProjectList,
-  toggleTaskList,
   toggleMenu,
+  groupMember,
 }) => {
+  const [suggestions, setSuggestions] = useState([]);
+  const memberData = groupMember.map((item) => ({
+    id: item?.user?.id,
+    name: item?.user?.name,
+  }));
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -66,13 +71,27 @@ const ChatInput = ({
     },
   });
 
-  const selectBandHandler = (bandType) => {
-    if (bandType === "project") {
-      toggleProjectList();
-    } else {
-      toggleTaskList();
+  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+    if (keyword == null || keyword === "@@" || keyword === "@#") {
+      return null;
     }
-    setBandAttachmentType(bandType);
+    const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
+
+    return (
+      <Box height={200}>
+        <FlashList
+          data={data}
+          onEndReachedThreshold={0.1}
+          keyExtractor={(item, index) => index}
+          estimatedItemSize={200}
+          renderItem={({ item, index }) => (
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
+              <Text>{item.name}</Text>
+            </Pressable>
+          )}
+        />
+      </Box>
+    );
   };
 
   const resetBandAttachment = () => {
@@ -82,6 +101,13 @@ const ChatInput = ({
     formik.setFieldValue(`project_id`, "");
     formik.setFieldValue(`project_no`, "");
     formik.setFieldValue(`project_title`, "");
+  };
+
+  const handleChange = (value) => {
+    formik.handleChange("message")(value);
+    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
+    const lastWord = replacedValue.split(" ").pop();
+    setSuggestions(groupMember.filter((member) => member?.name?.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   useEffect(() => {
@@ -130,12 +156,29 @@ const ChatInput = ({
               </Pressable>
 
               <FormControl display="flex" flex={1} justifyContent="center">
-                <Input
+                {/* <Input
                   size="md"
                   variant="unstyled"
                   placeholder="Type a message..."
                   value={formik.values.message}
                   onChangeText={(value) => formik.setFieldValue("message", value)}
+                /> */}
+                <MentionInput
+                  value={formik.values.message}
+                  onChange={handleChange}
+                  partTypes={[
+                    {
+                      pattern:
+                        /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
+                      textStyle: { color: "blue" },
+                    },
+                    {
+                      trigger: "@",
+                      renderSuggestions: renderSuggestions,
+                    },
+                  ]}
+                  placeholder="Type a message..."
+                  style={{ padding: 12 }}
                 />
               </FormControl>
 

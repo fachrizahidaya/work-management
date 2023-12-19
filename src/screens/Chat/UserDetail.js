@@ -9,17 +9,17 @@ import { SafeAreaView } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRoute } from "@react-navigation/native";
 
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
-import UserListModal from "../../components/Chat/UserDetail/UserListModal";
 import { useFetch } from "../../hooks/useFetch";
+import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
+import axiosInstance from "../../config/api";
+import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import UserListModal from "../../components/Chat/UserDetail/UserListModal";
 import MemberListActionModal from "../../components/Chat/UserDetail/MemberListActionModal";
 import UserAvatar from "../../components/Chat/UserDetail/UserAvatar";
 import UserInformation from "../../components/Chat/UserDetail/UserInformation";
 import UserAction from "../../components/Chat/UserDetail/UserAction";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
-import axiosInstance from "../../config/api";
 import UserMedia from "../../components/Chat/UserDetail/UserMedia";
 import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
 
@@ -224,9 +224,9 @@ const UserDetail = () => {
    */
   const usersWithoutMembers = (users) => {
     if (selectedGroupMembers) {
-      return users.filter((user) => {
+      return users?.filter((user) => {
         return !selectedGroupMembers.some((groupMember) => {
-          return groupMember.user_id === user.id;
+          return groupMember?.user_id === user?.id;
         });
       });
     } else {
@@ -280,14 +280,28 @@ const UserDetail = () => {
   }, [searchInput]);
 
   useEffect(() => {
-    if (userList?.data?.data?.length) {
-      if (!searchInput) {
-        setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-        setFilteredDataArray([]);
-      } else {
-        setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-        setCumulativeData([]);
-      }
+    // if (userList?.data?.data?.length) {
+    if (!searchInput) {
+      setCumulativeData((prevState) => {
+        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
+          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
+        } else {
+          return prevState;
+        }
+      });
+      setFilteredDataArray([]);
+      // setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+    } else {
+      setFilteredDataArray((prevState) => {
+        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
+          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
+        } else {
+          return prevState;
+        }
+      });
+      setCumulativeData([]);
+      // setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+      // }
     }
   }, [userList, searchInput, selectedGroupMembers]);
 

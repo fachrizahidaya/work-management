@@ -13,7 +13,6 @@ const ContactMenu = ({
   toggleDeleteModal,
   toggleDeleteGroupModal,
   toggleClearChatMessage,
-  toggleContactInformation,
   loggedInUser,
   toggleDeleteChatMessage,
   toggleExitModal,

@@ -94,9 +94,7 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
-        ListFooterComponent={() =>
-          personalPostIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
-        }
+        ListFooterComponent={() => personalPostIsFetching && <Spinner color="primary.600" />}
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}
