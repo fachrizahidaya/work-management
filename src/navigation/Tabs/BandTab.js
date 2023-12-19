@@ -17,6 +17,7 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
 import { useRef } from "react";
 import BandAddNewSheet from "../../components/shared/ActionSheet/BandAddNewSheet";
+import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,7 @@ function EmptyScreen() {
 const BandTab = () => {
   const bandScreenSheetRef = useRef(null);
   const bandAddNewSheetRef = useRef(null);
+  const moduleSelectSheetRef = useRef(null);
   const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
   const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
   const {
@@ -132,12 +134,7 @@ const BandTab = () => {
               <Image source={require("../../assets/icons/band_logo.png")} alt="band logo" style={styles.moduleImage} />
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  handleStateToggle("moduleSelectIsOpen");
-                }}
-              >
+              <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -153,15 +150,11 @@ const BandTab = () => {
 
         <Tab.Screen name="Calendar Band" component={CalendarScreen} />
       </Tab.Navigator>
-
       {/* Sheets */}
       <BandScreenSheet reference={bandScreenSheetRef} />
-
       <BandAddNewSheet reference={bandAddNewSheetRef} />
-
-      {/* <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
-
-      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />  */}
+      <ModuleSelectSheet reference={moduleSelectSheetRef} />
+      {/* <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />  */}
     </>
   );
 };
