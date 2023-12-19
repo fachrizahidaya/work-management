@@ -2,8 +2,9 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Skeleton, Text, VStack, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import { Icon, useToast } from "native-base";
+import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -12,7 +13,7 @@ import axiosInstance from "../../../config/api";
 import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
-import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -166,10 +167,10 @@ const FeedScreen = () => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setSubmitting(false);
       setStatus("error");
@@ -220,24 +221,16 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text color="primary.600" fontWeight={700} fontSize={16}>
-              News
-            </Text>
-            <Text fontSize={16}>& Feed</Text>
-          </Flex>
-          <Text fontWeight={700} fontSize={12}>
-            PT Kolabora Group Indonesia
-          </Text>
-        </Flex>
+        <View style={styles.header}>
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}> & Feed</Text>
+          </View>
+          <Text style={{ fontSize: 12, fontWeight: "700" }}>PT Kolabora Group Indonesia</Text>
+        </View>
 
         <Pressable
           style={styles.createPostIcon}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
               postRefetchHandler: postRefetchHandler, // To get new post after create one
@@ -253,7 +246,7 @@ const FeedScreen = () => {
           <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
         </Pressable>
 
-        <Box flex={1} px={3}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
           {/* Content here */}
           <>
             <FeedCard
@@ -274,16 +267,15 @@ const FeedScreen = () => {
               setForceRerender={setForceRerender}
               toggleFullScreen={toggleFullScreen}
               employeeUsername={employeeUsername}
+              navigation={navigation}
             />
             {commentsOpen && (
               <FeedComment
                 postId={postId}
-                loggedEmployeeId={profile?.data?.id}
                 loggedEmployeeName={userSelector?.name}
                 loggedEmployeeImage={profile?.data?.image}
                 comments={comments}
                 commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
                 handleOpen={commentsOpenHandler}
                 handleClose={commentsCloseHandler}
@@ -292,12 +284,13 @@ const FeedScreen = () => {
                 parentId={commentParentId}
                 onSubmit={commentSubmitHandler}
                 onReply={replyHandler}
-                latestExpandedReply={latestExpandedReply}
                 employeeUsername={employeeUsername}
+                employees={employees?.data}
               />
             )}
           </>
-        </Box>
+        </View>
+        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -321,5 +314,17 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
   },
 });

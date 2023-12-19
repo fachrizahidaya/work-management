@@ -1,18 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Box, FormControl, Input } from "native-base";
+import { Box, Flex, FormControl, Input, Pressable, Text } from "native-base";
+import { StyleSheet } from "react-native";
+import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
-import { useFetch } from "../../../../hooks/useFetch";
 import FormButton from "../../../shared/FormButton";
+import { FlashList } from "@shopify/flash-list";
 
-const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName }) => {
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName, employees }) => {
+  const [suggestions, setSuggestions] = useState([]);
 
-  const { data: employeeData } = useFetch("/hr/employees");
+  const employeeData = employees.map(({ id, username }) => ({ id, name: username }));
+
+  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+    if (keyword == null || keyword === "@@" || keyword === "@#") {
+      return null;
+    }
+    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
+
+    return (
+      <Box height={200}>
+        <FlashList
+          data={data}
+          onEndReachedThreshold={0.1}
+          keyExtractor={(item, index) => index}
+          estimatedItemSize={200}
+          renderItem={({ item, index }) => (
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
+              <Text>{item.name}</Text>
+            </Pressable>
+          )}
+        />
+      </Box>
+    );
+  };
+
+  const handleChange = (value) => {
+    formik.handleChange("comments")(value);
+    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
+    const lastWord = replacedValue.split(" ").pop();
+    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
+  };
 
   /**
    * Create a new post handler
@@ -40,7 +71,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <FormControl alignItems="center" pb={12} paddingBottom={Platform.OS === "ios" && keyboardHeight}>
+    <FormControl style={styles.inputBox} pb={12}>
       <Input
         variant="solid"
         multiline
@@ -72,3 +103,9 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
 };
 
 export default FeedCommentForm;
+
+const styles = StyleSheet.create({
+  inputBox: {
+    alignItems: "center",
+  },
+});

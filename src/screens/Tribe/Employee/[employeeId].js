@@ -10,7 +10,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
-import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import { useCallback } from "react";

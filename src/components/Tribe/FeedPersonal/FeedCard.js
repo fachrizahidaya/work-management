@@ -1,6 +1,7 @@
 import { memo } from "react";
 
-import { Box, Flex, Image, Spinner, Text, useToast } from "native-base";
+import { Box, Flex, Spinner, useToast } from "native-base";
+import { Linking, Clipboard, StyleSheet, View, Text, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -85,7 +86,7 @@ const FeedCard = ({
   };
 
   return (
-    <Box flex={1}>
+    <View style={styles.container}>
       <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
@@ -105,22 +106,15 @@ const FeedCard = ({
         }
         // Employee Information
         ListHeaderComponent={
-          <Box>
-            <Image
-              source={require("../../../assets/profile_banner.jpg")}
-              alignSelf="center"
-              h={100}
-              w={500}
-              alt="empty"
-              resizeMode="cover"
-            />
+          <View>
+            <Image source={require("../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
             {/* When the employee id is not equal, it will appear the contacts of employee */}
-            <Flex px={3} position="relative" flexDir="column" bgColor="#FFFFFF">
+            <View style={styles.information}>
               {userSelector?.id !== employee?.data?.user_id ? (
                 <>
-                  <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
+                  <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
-                  </Flex>
+                  </View>
                   <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
                 </>
               ) : (
@@ -132,22 +126,20 @@ const FeedCard = ({
                 toggleTeammates={toggleTeammates}
                 teammates={teammates}
               />
-            </Flex>
-          </Box>
+            </View>
+          </View>
         }
         // Employee Posts
         renderItem={({ item, index }) => {
           if (item.id === "no-posts") {
             return (
-              <Flex alignItems="center" justifyContent="center" py={3} px={3}>
-                <Text fontSize={16} fontWeight={500}>
-                  No Posts Yet
-                </Text>
-              </Flex>
+              <View style={styles.noPost}>
+                <Text style={styles.noPostText}>No Posts Yet</Text>
+              </View>
             );
           }
           return (
-            <Box px={3}>
+            <View style={styles.content}>
               <FeedCardItem
                 key={index}
                 id={item?.id}
@@ -175,12 +167,49 @@ const FeedCard = ({
                 openSelectedPersonalPost={openSelectedPersonalPost}
                 employeeUsername={employeeUsername}
               />
-            </Box>
+            </View>
           );
         }}
       />
-    </Box>
+    </View>
   );
 };
 
 export default memo(FeedCard);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  information: {
+    flexDirection: "column",
+    backgroundColor: "#FFFFFF",
+    position: "relative",
+    paddingHorizontal: 10,
+  },
+  image: {
+    height: 100,
+    width: 500,
+    resizeMode: "cover",
+    alignSelf: "center",
+  },
+  content: {
+    paddingHorizontal: 10,
+  },
+  noPost: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 3,
+    paddingVertical: 10,
+  },
+  noPostText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  contact: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    paddingTop: 2,
+    gap: 5,
+  },
+});

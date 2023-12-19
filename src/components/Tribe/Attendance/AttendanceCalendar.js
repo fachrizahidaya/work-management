@@ -5,26 +5,12 @@ import { Flex } from "native-base";
 import AttendanceIcon from "./AttendanceIcon";
 import AttendanceAttachment from "./AttendanceAttachment";
 
-const AttendanceCalendar = ({
-  renderCalendar,
-  attachment,
-  toggle,
-  onSelectFile,
-  onDelete,
-  setAttachmentId,
-  forceRenderer,
-}) => {
+const AttendanceCalendar = ({ renderCalendar, attachment, toggle, setAttachmentId }) => {
   return (
     <Flex flex={1} gap={1}>
       <Fragment>{renderCalendar()}</Fragment>
       <AttendanceIcon />
-      <AttendanceAttachment
-        attachment={attachment}
-        toggle={toggle}
-        onSelectFile={onSelectFile}
-        onDelete={onDelete}
-        setAttachmentId={setAttachmentId}
-      />
+      <AttendanceAttachment attachment={attachment} toggle={toggle} setAttachmentId={setAttachmentId} />
     </Flex>
   );
 };

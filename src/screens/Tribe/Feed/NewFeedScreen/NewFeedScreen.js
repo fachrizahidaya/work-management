@@ -30,11 +30,11 @@ const NewFeedScreen = ({ route }) => {
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
-  const { isOpen: mentionIsOpen, toggle: toggleMention } = useDisclosure(false);
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
+
   const toast = useToast();
 
   const navigation = useNavigation();
@@ -280,9 +280,6 @@ const NewFeedScreen = ({ route }) => {
             employees={employees?.data}
             mentionSelectHandler={mentionSelectHandler}
             inputRef={inputRef}
-            mentionIsOpen={mentionIsOpen}
-            toggleMention={toggleMention}
-            checkAccess={checkAccess}
           />
           <PostAction
             publicToggleHandler={publicToggleHandler}
@@ -292,7 +289,6 @@ const NewFeedScreen = ({ route }) => {
             isAnnouncementSelected={isAnnouncementSelected}
             dateShown={dateShown}
             endDateAnnouncementHandler={endDateAnnouncementHandler}
-            loggedEmployeeDivision={loggedEmployeeDivision}
             formik={formik}
           />
         </Box>

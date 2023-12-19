@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Box, Pressable, Text, TextArea } from "native-base";
-import { MentionInput, mentionRegEx, replaceMentionValues } from "react-native-controlled-mentions";
+import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 
-const MentionInputs = ({ employees, formik, name, onMentionSelect, inputRef }) => {
+const MentionInputs = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const employeeData = employees.map(({ id, username }) => ({ id, name: username }));

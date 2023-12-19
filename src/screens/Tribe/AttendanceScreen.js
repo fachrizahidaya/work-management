@@ -14,7 +14,7 @@ import { useDisclosure } from "../../hooks/useDisclosure";
 import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
-import AttendanceModal from "../../components/Tribe/Attendance/AttendanceModal";
+import AttendanceAction from "../../components/Tribe/Attendance/AttendanceAction";
 import AddAttachment from "../../components/Tribe/Attendance/AddAttachment";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
@@ -27,7 +27,6 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
-  const [forceRenderer, setForceRenderer] = useState(false);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
@@ -64,9 +63,11 @@ const AttendanceScreen = () => {
     !date?.earlyType &&
     date?.timeIn &&
     (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave" || date?.attendanceType !== "Alpa");
-  const hasLateWithoutReason = date?.late && date?.lateType && !date?.lateReason;
-  const hasEarlyWithoutReason = date?.early && date?.earlyType && !date?.earlyReason;
-  const hasSubmittedReport = (date?.lateReason && !date?.earlyReason) || (date?.earlyReason && !date?.lateReason);
+  const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
+  const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
+  const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
+  const hasSubmittedLateReport = date?.lateType && date?.lateReason && !date?.earlyType;
+  const hasSubmittedEarlyReport = date?.earlyType && date?.earlyReason && !date?.lateType;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
     date?.attendanceType === "Alpa" && date?.attendanceReason && date?.dayType === "Work Day";
@@ -74,7 +75,7 @@ const AttendanceScreen = () => {
     date?.attendanceType === "Alpa" &&
     date?.dayType === "Work Day" &&
     date?.date !== CURRENT_DATE &&
-    date?.attendanceReason === null;
+    !date?.attendanceReason;
   const isLeave = date?.attendanceType === "Work Day" && date?.attendanceType === "Leave";
   const isPermit = date?.attendanceType === "Work Day" && date?.attendanceType === "Permit";
 
@@ -222,7 +223,7 @@ const AttendanceScreen = () => {
           "content-type": "multipart/form-data",
         },
       });
-      setForceRenderer(true);
+
       refetchAttachment();
       toast.show({
         render: ({ id }) => {
@@ -368,7 +369,7 @@ const AttendanceScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <Flex style={styles.header} py={14} px={15}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
         </Flex>
         <ScrollView
@@ -397,11 +398,10 @@ const AttendanceScreen = () => {
             onSelectFile={selectFile}
             onDelete={attachmentDeleteHandler}
             setAttachmentId={openDeleteAttachmentModalHandler}
-            forceRenderer={forceRenderer}
           />
         </ScrollView>
       </SafeAreaView>
-      <AttendanceModal
+      <AttendanceAction
         reportIsOpen={reportIsOpen}
         toggleReport={toggleReport}
         date={date}
@@ -409,14 +409,17 @@ const AttendanceScreen = () => {
         hasClockInAndOut={hasClockInAndOut}
         hasLateWithoutReason={hasLateWithoutReason}
         hasEarlyWithoutReason={hasEarlyWithoutReason}
-        hasSubmittedReport={hasSubmittedReport}
+        hasLateAndEarlyWithoutReason={hasLateAndEarlyWithoutReason}
         hasSubmittedBothReports={hasSubmittedBothReports}
         hasSubmittedReportAlpa={hasSubmittedReportAlpa}
+        hasSubmittedLateReport={hasSubmittedLateReport}
+        hasSubmittedEarlyReport={hasSubmittedEarlyReport}
         notAttend={notAttend}
         isLeave={isLeave}
         isPermit={isPermit}
         CURRENT_DATE={CURRENT_DATE}
       />
+
       <AddAttachment
         isOpen={addAttachmentIsOpen}
         toggle={toggleAddAttachment}
@@ -425,6 +428,7 @@ const AttendanceScreen = () => {
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
       />
+
       <ConfirmationModal
         isOpen={deleteAttachmentIsOpen}
         toggle={toggleDeleteAttachment}
@@ -448,25 +452,10 @@ const styles = StyleSheet.create({
   calendar: {
     marginBottom: 10,
   },
-
-  text: {
-    textAlign: "center",
-    padding: 10,
-    backgroundColor: "lightgrey",
-    fontSize: 16,
-  },
-
-  customHeader: {
-    backgroundColor: "#FCC",
+  header: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginHorizontal: -4,
-    padding: 8,
-  },
-
-  customTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#00BBF2",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
   },
 });

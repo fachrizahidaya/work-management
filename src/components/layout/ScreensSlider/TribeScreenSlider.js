@@ -45,6 +45,31 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={toggle}>
       <Actionsheet.Content>
+        <Actionsheet.Item
+          _pressed={{ backgroundColor: "#f1f1f1" }}
+          borderColor="#E8E9EB"
+          borderBottomWidth={1}
+          onPress={() => {
+            navigation.navigate("Dashboard");
+            toggle();
+          }}
+        >
+          <Flex flexDir="row" alignItems="center" width="100%" gap={21}>
+            <Box
+              bg="#f7f7f7"
+              borderRadius={5}
+              style={{ height: 32, width: 32 }}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon as={<MaterialCommunityIcons name="rss" />} size={6} color="#2A7290" />
+            </Box>
+            <Text fontWeight={700} color="black">
+              Dashboard
+            </Text>
+          </Flex>
+        </Actionsheet.Item>
+
         {filteredMenu.map((item, idx) => {
           return (
             <Actionsheet.Item
@@ -65,7 +90,7 @@ const TribeScreenSlider = ({ isOpen, toggle }) => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Icon as={<MaterialCommunityIcons name={item.icon} />} size={6} color="#2A7290" />
+                  <Icon as={<MaterialCommunityIcons name={item.mobile_icon} />} size={6} color="#2A7290" />
                 </Box>
                 <Text key={item.name} fontWeight={700} color="black">
                   {item.name}

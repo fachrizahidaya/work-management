@@ -1,19 +1,16 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking } from "react-native";
+import { Clipboard, Linking, StyleSheet } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
-import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
 
 const FeedComment = ({
   postId,
-  loggedEmployeeId,
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
-  commentIsLoading,
   comments,
   handleOpen,
   handleClose,
@@ -23,8 +20,8 @@ const FeedComment = ({
   parentId,
   onSubmit,
   onReply,
-  latestExpandedReply,
   employeeUsername,
+  employees,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -58,13 +55,7 @@ const FeedComment = ({
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>
         <Flex flexDir="column" justifyContent="center">
-          <Flex
-            flexDir="row"
-            alignItems="center"
-            justifyContent="center"
-            borderBottomWidth={1}
-            borderBottomColor="#DBDBDB"
-          >
+          <Flex style={styles.header}>
             <Flex mb={2} alignItems="center">
               <Text fontSize={15} fontWeight={500}>
                 Comments
@@ -75,14 +66,12 @@ const FeedComment = ({
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
                 comments={comments}
-                latestExpandedReply={latestExpandedReply}
                 hasBeenScrolled={hasBeenScrolled}
                 setHasBeenScrolled={setHasBeenScrolled}
                 onReply={onReply}
                 commentEndReachedHandler={onEndReached}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
                 handleLinkPress={handleLinkPress}
                 handleEmailPress={handleEmailPress}
@@ -98,6 +87,7 @@ const FeedComment = ({
             loggedEmployeeName={loggedEmployeeName}
             parentId={parentId}
             onSubmit={onSubmit}
+            employees={employees}
           />
         </Flex>
       </Actionsheet.Content>
@@ -105,4 +95,14 @@ const FeedComment = ({
   );
 };
 
-export default FeedComment;
+export default memo(FeedComment);
+
+const styles = StyleSheet.create({
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#DBDBDB",
+  },
+});

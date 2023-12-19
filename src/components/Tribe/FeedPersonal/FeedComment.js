@@ -1,15 +1,13 @@
 import { memo, useCallback, useState } from "react";
 
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
+import { Clipboard, Linking, StyleSheet } from "react-native";
 
 import FeedCommentList from "../Feed/FeedComment/FeedCommentList";
 import FeedCommentForm from "../Feed/FeedComment/FeedCommentForm";
-import { useFetch } from "../../../hooks/useFetch";
-import { Clipboard, Linking } from "react-native";
 
 const FeedComment = ({
   postId,
-  loggedEmployeeId,
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
@@ -24,6 +22,8 @@ const FeedComment = ({
   onSubmit,
   onReply,
   latestExpandedReply,
+  employeeUsername,
+  employees,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -57,13 +57,7 @@ const FeedComment = ({
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>
         <Flex flexDir="column" justifyContent="center">
-          <Flex
-            flexDir="row"
-            alignItems="center"
-            justifyContent="center"
-            borderBottomWidth={1}
-            borderBottomColor="#DBDBDB"
-          >
+          <Flex style={styles.header}>
             <Flex mb={2} alignItems="center">
               <Text fontSize={15} fontWeight={500}>
                 Comments
@@ -86,6 +80,7 @@ const FeedComment = ({
                 handleEmailPress={handleEmailPress}
                 copyToClipboard={copyToClipboard}
                 commentIsLoading={commentIsLoading}
+                employeeUsername={employeeUsername}
               />
             </Flex>
           </ScrollView>
@@ -96,6 +91,7 @@ const FeedComment = ({
             loggedEmployeeName={loggedEmployeeName}
             parentId={parentId}
             onSubmit={onSubmit}
+            employees={employees}
           />
         </Flex>
       </Actionsheet.Content>
@@ -104,3 +100,13 @@ const FeedComment = ({
 };
 
 export default memo(FeedComment);
+
+const styles = StyleSheet.create({
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#DBDBDB",
+  },
+});

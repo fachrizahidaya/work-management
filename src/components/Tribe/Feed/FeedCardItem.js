@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useNavigation } from "@react-navigation/core";
 
-import { Flex, Image, Text, Icon, Pressable, Badge } from "native-base";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Icon, Badge } from "native-base";
+import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
-import { Linking } from "react-native";
 
 const FeedCardItem = ({
   id,
@@ -33,13 +31,11 @@ const FeedCardItem = ({
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
-  postRefetchHandler,
   employeeUsername,
+  navigation,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
-
-  const navigation = useNavigation();
 
   /**
    * Like post control
@@ -91,28 +87,7 @@ const FeedCardItem = ({
           @{item}{" "}
         </Text>
       );
-    }
-    // else if (specificEmployee) {
-    //   const specificEmployeeId = specificEmployee.id;
-    //   item = specificEmployee.username;
-    //   textStyle = styles.highlightedText;
-    //   return (
-    //     <Text
-    //       key={index}
-    //       style={textStyle}
-    //       onPress={() =>
-    //         navigation.navigate("Employee Profile", {
-    //           employeeId: specificEmployeeId,
-    //           loggedEmployeeId: loggedEmployeeId,
-    //           loggedEmployeeImage: loggedEmployeeImage,
-    //         })
-    //       }
-    //     >
-    //       @{item}{" "}
-    //     </Text>
-    //   );
-    // }
-    else if (hasTag) {
+    } else if (hasTag) {
       item = item.replace(`<a`, "");
       textStyle = styles.defaultText;
       return <Text key={index}>{item}</Text>;
@@ -149,9 +124,9 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <Flex flexDir="column" my={2}>
-      <Flex gap={5} style={card.card}>
-        <Flex alignItems="center" direction="row" gap={3}>
+    <View style={styles.container}>
+      <View gap={20} style={card.card}>
+        <View style={styles.cardHeader}>
           <Pressable
             onPress={() =>
               navigation.navigate("Employee Profile", {
@@ -164,9 +139,10 @@ const FeedCardItem = ({
             <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
           </Pressable>
 
-          <Flex flex={1}>
-            <Flex gap={1} justifyContent="space-between" flexDir="row" alignItems="center">
+          <View style={styles.nameContainer}>
+            <TouchableOpacity style={styles.dockName}>
               <Text
+                style={styles.name}
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
@@ -174,46 +150,35 @@ const FeedCardItem = ({
                     loggedEmployeeImage: loggedEmployeeImage,
                   })
                 }
-                fontSize={15}
-                fontWeight={500}
               >
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
-                <Badge borderRadius={15} backgroundColor="#ADD7FF">
-                  <Text fontSize={10}>Announcement</Text>
+                <Badge style={styles.announcementBadge}>
+                  <Text style={styles.announcement}>Announcement</Text>
                 </Badge>
               ) : null}
-            </Flex>
-            <Text fontSize={12} fontWeight={400} color="#8A9099">
-              {dayjs(createdAt).format("MMM DD, YYYY")}
-            </Text>
-          </Flex>
-        </Flex>
+            </TouchableOpacity>
+            <Text style={styles.date}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+          </View>
+        </View>
 
-        <Text fontSize={12} fontWeight={500}>
-          {styledTexts}
-        </Text>
+        <Text style={styles.content}>{styledTexts}</Text>
 
         {attachment ? (
-          <>
-            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
-              <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
-                borderRadius={15}
-                width="100%"
-                height={250}
-                alt="Feed Image"
-                resizeMode="contain"
-                resizeMethod="auto"
-                fadeDuration={0}
-              />
-            </TouchableOpacity>
-          </>
+          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+            <Image
+              style={styles.image}
+              source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
+              alt="Feed Image"
+              resizeMethod="auto"
+              fadeDuration={0}
+            />
+          </TouchableOpacity>
         ) : null}
 
-        <Flex alignItems="center" direction="row" gap={4}>
-          <Flex alignItems="center" direction="row" gap={2}>
+        <View style={styles.dockAction}>
+          <View style={styles.iconAction}>
             <Pressable
               onPress={() => {
                 onCommentToggle(id);
@@ -221,11 +186,9 @@ const FeedCardItem = ({
             >
               <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
             </Pressable>
-            <Text fontSize={15} fontWeight={500}>
-              {totalComment}
-            </Text>
-          </Flex>
-          <Flex alignItems="center" direction="row" gap={2}>
+            <Text style={styles.comment}>{totalComment}</Text>
+          </View>
+          <View style={styles.iconAction}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
                 <Icon as={<MaterialCommunityIcons name="heart" />} size="md" color="#FF0000" />
@@ -237,23 +200,84 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text fontSize={15} fontWeight={500}>
-              {totalLike}
-            </Text>
-          </Flex>
-        </Flex>
-      </Flex>
-    </Flex>
+            <Text style={styles.like}>{totalLike}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 };
 
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    marginVertical: 5,
+  },
   defaultText: {
     color: "black",
   },
   highlightedText: {
     color: "#72acdc",
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  nameContainer: {
+    flex: 1,
+    gap: 5,
+  },
+  dockName: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 1,
+  },
+  announcementBadge: {
+    borderRadius: 15,
+    backgroundColor: "#ADD7FF",
+  },
+  image: {
+    borderRadius: 15,
+    width: "100%",
+    height: 250,
+    resizeMode: "contain",
+  },
+  dockAction: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 20,
+  },
+  iconAction: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: "400",
+  },
+  announcement: {
+    fontSize: 10,
+  },
+  date: {
+    fontSize: 12,
+    fontWeight: "400",
+    opacity: 0.5,
+  },
+  content: {
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  comment: {
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  like: {
+    fontSize: 15,
+    fontWeight: "500",
   },
 });
