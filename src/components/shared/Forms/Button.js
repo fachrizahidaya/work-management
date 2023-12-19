@@ -9,16 +9,17 @@ const Button = ({ children, styles, flex, backgroundColor, onPress, disabled, op
         styles,
         {
           flex: flex,
-          backgroundColor: backgroundColor ? backgroundColor : disabled ? "gray" : "#176688",
+          backgroundColor:
+            variant === "outline" ? "white" : backgroundColor ? backgroundColor : disabled ? "gray" : "#176688",
           opacity: opacity || 1,
           borderRadius: 10,
           height: 42,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderWidth: variant === "dashed" ? 1 : 0,
-          borderStyle: variant === "dashed" ? "dashed" : "solid",
-          borderColor: variant === "dashed" ? "#E8E9EB" : "white",
+          borderWidth: variant === "dashed" || variant === "outline" ? 1 : 0,
+          borderStyle: variant === "dashed" ? "dashed" : variant === "outline" ? "solid" : "solid",
+          borderColor: variant === "dashed" ? "#E8E9EB" : variant === "outline" ? backgroundColor : "white",
         },
       ]}
       disabled={disabled}

@@ -160,20 +160,18 @@ const AdHocScreen = () => {
         )}
       </View>
 
-      {/* {closeConfirmationIsOpen && (
-        <ConfirmationModal
-          isDelete={false}
-          isOpen={closeConfirmationIsOpen}
-          toggle={toggleCloseConfirmation}
-          apiUrl={"/pm/tasks/close"}
-          body={{ id: selectedTask?.id }}
-          header="Close Task"
-          description={`Are you sure to close task ${selectedTask?.title}?`}
-          successMessage="Task closed"
-          hasSuccessFunc
-          onSuccess={refetchTasks}
-        />
-      )} */}
+      <ConfirmationModal
+        isDelete={false}
+        isOpen={closeConfirmationIsOpen}
+        toggle={toggleCloseConfirmation}
+        apiUrl={"/pm/tasks/close"}
+        body={{ id: selectedTask?.id }}
+        header="Close Task"
+        description={`Are you sure to close task ${selectedTask?.title}?`}
+        successMessage="Task closed"
+        hasSuccessFunc
+        onSuccess={refetchTasks}
+      />
     </>
   );
 };
