@@ -54,8 +54,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                     : `${process.env.EXPO_PUBLIC_API}/image/${image}`,
                 }}
                 style={{
-                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
-                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
                   resizeMode: "contain",
                   backgroundColor: "transparent",
                   borderRadius: 50,
@@ -74,8 +74,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
               style={[
                 style,
                 {
-                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
-                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
                   resizeMode: "contain",
                   backgroundColor: "transparent",
                   borderRadius: 50,
@@ -93,8 +93,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
-                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
                   backgroundColor: stringToColor(name),
                   borderRadius: 50,
                 }}
@@ -112,8 +112,8 @@ const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = t
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
-                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : 50,
+                  width: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
+                  height: size === "xs" ? 24 : size === "sm" ? 30 : size === "md" ? 40 : size === "xl" ? 80 : 50,
                   backgroundColor: stringToColor(name),
                   borderRadius: 50,
                 },

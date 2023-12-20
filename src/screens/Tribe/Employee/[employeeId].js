@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Spinner, VStack, useToast } from "native-base";
+import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import { Spinner } from "native-base";
+import Toast from "react-native-toast-message";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -14,7 +15,6 @@ import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModa
 import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import { useCallback } from "react";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
 import axiosInstance from "../../../config/api";
 
 const EmployeeProfileScreen = ({ route }) => {
@@ -45,8 +45,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const { height } = Dimensions.get("screen");
 
   const navigation = useNavigation();
-
-  const toast = useToast();
 
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
 
@@ -182,10 +180,10 @@ const EmployeeProfileScreen = ({ route }) => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setSubmitting(false);
       setStatus("error");
@@ -216,7 +214,7 @@ const EmployeeProfileScreen = ({ route }) => {
         setPosts((prevData) => [...prevData, ...personalPost?.data]);
       }
     }
-  }, [personalPostIsFetching, reloadPost]);
+  }, [personalPostIsFetching]);
 
   useEffect(() => {
     if (!commentsOpenHandler) {
@@ -230,7 +228,7 @@ const EmployeeProfileScreen = ({ route }) => {
         }
       }
     }
-  }, [commentIsFetching, reloadComment, commentParentId]);
+  }, [commentsOpenHandler, commentIsFetching]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -243,60 +241,71 @@ const EmployeeProfileScreen = ({ route }) => {
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            <Flex style={isHeaderSticky ? styles.stickyHeader : styles.header}>
-              <PageHeader
-                title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              />
-            </Flex>
-            <Flex flex={1} minHeight={2} gap={2} height={height}>
-              {/* Content here */}
-              <FeedCard
-                posts={posts}
-                loggedEmployeeId={loggedEmployeeId}
-                loggedEmployeeImage={loggedEmployeeImage}
-                postEndReachedHandler={postEndReachedHandler}
-                personalPostIsFetching={personalPostIsFetching}
-                refetchPersonalPost={refetchPersonalPost}
-                employee={employee}
-                toggleTeammates={toggleTeammates}
-                teammates={teammates}
-                teammatesIsOpen={teammatesIsOpen}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
-                onCommentToggle={commentsOpenHandler}
-                forceRerender={forceRerender}
-                setForceRerender={setForceRerender}
-                personalPostIsLoading={personalPostIsLoading}
-                toggleFullScreen={toggleFullScreen}
-                openSelectedPersonalPost={openSelectedPersonalPost}
-                employeeUsername={employeeUsername}
-              />
-              {commentsOpen && (
-                <FeedComment
-                  postId={postId}
-                  loggedEmployeeId={profile?.data?.id}
-                  loggedEmployeeName={userSelector?.name}
-                  loggedEmployeeImage={profile?.data?.image}
-                  comments={comments}
-                  commentIsFetching={commentIsFetching}
-                  commentIsLoading={commentIsLoading}
-                  refetchComment={refetchComment}
-                  handleOpen={commentsOpenHandler}
-                  handleClose={commentsCloseHandler}
-                  onEndReached={commentEndReachedHandler}
-                  commentRefetchHandler={commentRefetchHandler}
-                  parentId={commentParentId}
-                  onSubmit={commentSubmitHandler}
-                  onReply={replyHandler}
-                  latestExpandedReply={latestExpandedReply}
-                />
-              )}
-            </Flex>
+            {personalPostIsFetching ? (
+              <View style={{ paddingHorizontal: 4 }}>
+                <Spinner color="primary.600" size="lg" />
+              </View>
+            ) : (
+              <>
+                <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+                  <PageHeader
+                    title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                    onPress={() => {
+                      navigation.goBack();
+                    }}
+                  />
+                </View>
+                <View style={styles.content} height={height}>
+                  {/* Content here */}
+                  <FeedCard
+                    posts={posts}
+                    loggedEmployeeId={loggedEmployeeId}
+                    loggedEmployeeImage={loggedEmployeeImage}
+                    postEndReachedHandler={postEndReachedHandler}
+                    personalPostIsFetching={personalPostIsFetching}
+                    refetchPersonalPost={refetchPersonalPost}
+                    employee={employee}
+                    toggleTeammates={toggleTeammates}
+                    teammates={teammates}
+                    teammatesIsOpen={teammatesIsOpen}
+                    hasBeenScrolled={hasBeenScrolled}
+                    setHasBeenScrolled={setHasBeenScrolled}
+                    onCommentToggle={commentsOpenHandler}
+                    forceRerender={forceRerender}
+                    setForceRerender={setForceRerender}
+                    personalPostIsLoading={personalPostIsLoading}
+                    toggleFullScreen={toggleFullScreen}
+                    openSelectedPersonalPost={openSelectedPersonalPost}
+                    employeeUsername={employeeUsername}
+                    userSelector={userSelector}
+                  />
+                  {commentsOpen && (
+                    <FeedComment
+                      postId={postId}
+                      loggedEmployeeName={userSelector?.name}
+                      loggedEmployeeImage={profile?.data?.image}
+                      comments={comments}
+                      commentIsFetching={commentIsFetching}
+                      commentIsLoading={commentIsLoading}
+                      refetchComment={refetchComment}
+                      handleOpen={commentsOpenHandler}
+                      handleClose={commentsCloseHandler}
+                      onEndReached={commentEndReachedHandler}
+                      commentRefetchHandler={commentRefetchHandler}
+                      parentId={commentParentId}
+                      onSubmit={commentSubmitHandler}
+                      onReply={replyHandler}
+                      latestExpandedReply={latestExpandedReply}
+                      employees={employees?.data}
+                      employeeUsername={employeeUsername}
+                    />
+                  )}
+                </View>
+              </>
+            )}
           </>
         ) : null}
+        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <PostAction
@@ -334,32 +343,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#E8E9EB",
     borderBottomWidth: 1,
-    paddingVertical: 14,
+    paddingVertical: 15,
     paddingHorizontal: 15,
   },
   stickyHeader: {
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#E8E9EB",
     borderBottomWidth: 1,
-    paddingVertical: 14,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     position: "sticky",
     top: 0,
     zIndex: 1,
   },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  createPostIcon: {
-    backgroundColor: "#377893",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 60,
-    height: 60,
-    position: "absolute",
-    bottom: 15,
-    right: 15,
-    zIndex: 2,
+  content: {
+    flex: 1,
+    gap: 5,
+    minHeight: 2,
   },
 });

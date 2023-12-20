@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet } from "react-native";
+import { Clipboard, Linking, StyleSheet, View } from "react-native";
 import { Flex, ScrollView, Text, Actionsheet } from "native-base";
 
 import FeedCommentForm from "./FeedCommentForm";
@@ -54,14 +54,14 @@ const FeedComment = ({
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>
-        <Flex flexDir="column" justifyContent="center">
-          <Flex style={styles.header}>
+        <View style={{ flexDirection: "column", justifyContent: "center" }}>
+          <View style={styles.header}>
             <Flex mb={2} alignItems="center">
               <Text fontSize={15} fontWeight={500}>
                 Comments
               </Text>
             </Flex>
-          </Flex>
+          </View>
           <ScrollView flex={1} style={{ maxHeight: 600 }}>
             <Flex gap={1} mt={1} flex={1}>
               <FeedCommentList
@@ -89,7 +89,7 @@ const FeedComment = ({
             onSubmit={onSubmit}
             employees={employees}
           />
-        </Flex>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );

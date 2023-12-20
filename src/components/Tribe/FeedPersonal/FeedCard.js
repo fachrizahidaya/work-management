@@ -1,18 +1,17 @@
 import { memo } from "react";
 
-import { Box, Flex, Spinner, useToast } from "native-base";
+import { Spinner } from "native-base";
 import { Linking, Clipboard, StyleSheet, View, Text, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import FeedCardItem from "../FeedPersonal/FeedCardItem";
-import { useSelector } from "react-redux";
 import EmployeeContact from "../Employee/EmployeeContact";
 import EmployeeProfile from "../Employee/EmployeeProfile";
 import EmployeeSelfProfile from "../Employee/EmployeeSelfProfile";
 import EmployeeTeammates from "../Employee/EmployeeTeammates";
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../shared/ToastDialog";
 
 const FeedCard = ({
   posts,
@@ -34,11 +33,8 @@ const FeedCard = ({
   toggleFullScreen,
   openSelectedPersonalPost,
   employeeUsername,
+  userSelector,
 }) => {
-  const userSelector = useSelector((state) => state.auth);
-
-  const toast = useToast();
-
   /**
    * Like a Post handler
    * @param {*} post_id
@@ -51,10 +47,10 @@ const FeedCard = ({
       console.log("Process success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -134,12 +130,12 @@ const FeedCard = ({
           if (item.id === "no-posts") {
             return (
               <View style={styles.noPost}>
-                <Text style={styles.noPostText}>No Posts Yet</Text>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>No Posts Yet</Text>
               </View>
             );
           }
           return (
-            <View style={styles.content}>
+            <View style={{ paddingHorizontal: 10 }}>
               <FeedCardItem
                 key={index}
                 id={item?.id}
@@ -171,6 +167,7 @@ const FeedCard = ({
           );
         }}
       />
+      <Toast />
     </View>
   );
 };
@@ -193,18 +190,11 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     alignSelf: "center",
   },
-  content: {
-    paddingHorizontal: 10,
-  },
   noPost: {
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 3,
     paddingVertical: 10,
-  },
-  noPostText: {
-    fontSize: 16,
-    fontWeight: "500",
   },
   contact: {
     flexDirection: "row-reverse",

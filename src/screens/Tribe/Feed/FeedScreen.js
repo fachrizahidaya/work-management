@@ -3,14 +3,13 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
-import { Icon, useToast } from "native-base";
+import { Icon } from "native-base";
 import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
@@ -37,8 +36,6 @@ const FeedScreen = () => {
 
   const navigation = useNavigation();
 
-  const toast = useToast();
-
   const flashListRef = useRef(null);
 
   /**
@@ -52,7 +49,7 @@ const FeedScreen = () => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 5,
   };
 
   const {
@@ -92,7 +89,7 @@ const FeedScreen = () => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + post?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 20);
+      setCurrentOffsetPost(currentOffsetPost + 5);
     }
   };
 
