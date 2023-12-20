@@ -12,7 +12,7 @@ const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName 
   };
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9 }}>{title}</Text>}
+      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
 
       <TouchableOpacity
         style={styles.select}

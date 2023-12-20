@@ -41,9 +41,9 @@ const FormButton = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderWidth: variant === "dashed" ? 1 : 0,
+          borderWidth: variant === "dashed" || variant === "outline" ? 1 : 0,
           borderStyle: variant === "dashed" ? "dashed" : "solid",
-          borderColor: variant === "dashed" ? "#E8E9EB" : "white",
+          borderColor: variant === "dashed" || variant === "outline" ? "#E8E9EB" : "white",
         },
       ]}
       disabled={disabled || isLoading}

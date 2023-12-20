@@ -132,7 +132,7 @@ const ProjectForm = ({ route }) => {
             />
 
             <View>
-              <Text style={{ marginBottom: 9 }}>End Date</Text>
+              <Text style={{ marginBottom: 9, fontWeight: 500 }}>End Date</Text>
               <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
             </View>

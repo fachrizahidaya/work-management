@@ -136,7 +136,7 @@ const FileSection = ({ projectId, isAllowed }) => {
   return (
     <View style={{ display: "flex", gap: 18 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontSize: 16 }}>FILES</Text>
+        <Text style={{ fontSize: 16, fontWeight: 500 }}>FILES</Text>
 
         <TouchableOpacity
           onPress={selectFile}
@@ -160,7 +160,7 @@ const FileSection = ({ projectId, isAllowed }) => {
                   data={attachments.data}
                   keyExtractor={(item) => item.id}
                   onEndReachedThreshold={0.1}
-                  estimatedItemSize={200}
+                  estimatedItemSize={57}
                   renderItem={({ item }) => (
                     <AttachmentList
                       deleteFileHandler={deleteFileHandler}

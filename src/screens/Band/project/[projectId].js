@@ -154,7 +154,7 @@ const ProjectDetailScreen = ({ route }) => {
                                 toggleUserModal();
                               }}
                             >
-                              <Text>Change Ownership</Text>
+                              <Text style={{ fontWeight: 500 }}>Change Ownership</Text>
                             </TouchableOpacity>
 
                             {editCheckAccess && (
@@ -167,7 +167,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   SheetManager.hide("form-sheet");
                                 }}
                               >
-                                <Text>Edit</Text>
+                                <Text style={{ fontWeight: 500 }}>Edit</Text>
                               </TouchableOpacity>
                             )}
 
@@ -178,7 +178,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   toggle();
                                 }}
                               >
-                                <Text style={{ color: "red" }}>Delete</Text>
+                                <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
                               </TouchableOpacity>
                             )}
                           </View>
@@ -231,7 +231,7 @@ const ProjectDetailScreen = ({ route }) => {
                     data={activities?.data}
                     keyExtractor={(item) => item.id}
                     onEndReachedThreshold={0.1}
-                    estimatedItemSize={200}
+                    estimatedItemSize={51}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => {

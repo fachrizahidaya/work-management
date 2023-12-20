@@ -98,7 +98,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
 
   const baseStyles = {
     color: "#000",
-    fontWeight: 500,
+    fontWeight: 400,
   };
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
           data={comments?.data}
           keyExtractor={(item) => item.id}
           onEndReachedThreshold={0.1}
-          estimatedItemSize={200}
+          estimatedItemSize={42}
           ListHeaderComponent={
             selectedComments.length > 0 && (
               <View style={{ marginBottom: 0 }}>

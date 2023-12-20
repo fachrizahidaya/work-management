@@ -97,7 +97,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
             data={members?.data}
             keyExtractor={(item) => item?.id}
             onEndReachedThreshold={0.2}
-            estimatedItemSize={200}
+            estimatedItemSize={34}
             renderItem={({ item }) => (
               <View
                 style={{

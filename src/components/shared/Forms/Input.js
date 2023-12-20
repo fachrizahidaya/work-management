@@ -23,7 +23,7 @@ const Input = ({
 }) => {
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9 }}>{title}</Text>}
+      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
 
       <View style={styles.inputWrapper}>
         {startIcon && (
@@ -51,7 +51,7 @@ const Input = ({
             style,
             {
               paddingLeft: startAdornment || startIcon ? 35 : 10,
-              height: multiline && 100,
+              height: multiline ? 100 : 40,
               textAlignVertical: "top",
             },
           ]}

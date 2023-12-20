@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { ActivityIndicator, Image, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Image, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 
@@ -23,6 +23,12 @@ const ConfirmationModal = ({
   isPatch = false,
   placement,
 }) => {
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
 
   const onPressHandler = async () => {
@@ -60,7 +66,12 @@ const ConfirmationModal = ({
     }
   };
   return (
-    <Modal isVisible={isOpen} onBackdropPress={!isDeleting && toggle}>
+    <Modal
+      isVisible={isOpen}
+      onBackdropPress={!isDeleting && toggle}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+    >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
         <View alignItems="center">
           <Image
