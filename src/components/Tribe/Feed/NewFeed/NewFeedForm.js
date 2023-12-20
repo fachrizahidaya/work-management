@@ -1,47 +1,33 @@
 import { useState } from "react";
 
-import { Box, Flex, FormControl, Icon, Image, Pressable, Spinner } from "native-base";
+import { Icon, Spinner } from "native-base";
+import { StyleSheet, View, Pressable, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import MentionInputs from "./MentionInput";
+import NewFeedInput from "./NewFeedInput";
 
 const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <Flex borderWidth={1} borderRadius={10} borderColor="#dfdfdf" mt={3}>
-      <FormControl>
-        <MentionInputs employees={employees} formik={formik} />
+    <View style={styles.container}>
+      <View>
+        <NewFeedInput employees={employees} formik={formik} />
 
-        <Flex p={2} flexDir="column" justifyContent="space-between">
+        <View style={styles.boxImage}>
           {image ? (
-            <Box alignSelf="center">
-              <Image
-                source={{ uri: image.uri }}
-                style={{ width: 300, height: 250, borderRadius: 15 }}
-                alt="image selected"
-              />
-              <Box
-                backgroundColor="#4b4f53"
-                borderRadius="full"
-                width={8}
-                height={8}
-                top={1}
-                padding={1.5}
-                right={1}
-                position="absolute"
-              >
-                <Pressable onPress={() => setImage(null)}>
-                  <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
-                </Pressable>
-              </Box>
-            </Box>
+            <View style={{ alignSelf: "center" }}>
+              <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
+              <Pressable style={styles.close} onPress={() => setImage(null)}>
+                <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
+              </Pressable>
+            </View>
           ) : null}
-        </Flex>
-      </FormControl>
-      <Flex mt={2} py={3} px={2} flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex gap={3} flexDir="row" alignItems="center">
+        </View>
+      </View>
+      <View style={styles.action}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Pressable onPress={pickImageHandler}>
             <Icon
               as={<MaterialCommunityIcons name="attachment" />}
@@ -50,18 +36,10 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
               style={{ transform: [{ rotate: "-35deg" }] }}
             />
           </Pressable>
-        </Flex>
+        </View>
 
         <Pressable
-          borderRadius="full"
-          borderWidth={1}
-          borderColor="#FFFFFF"
-          justifyContent="center"
-          alignItems="center"
-          backgroundColor="#377893"
-          width={50}
-          height={50}
-          opacity={formik.values.content === "" ? 0.5 : 1}
+          style={{ ...styles.submit, opacity: formik.values.content === "" ? 0.5 : 1 }}
           onPress={
             formik.values.content === ""
               ? null
@@ -82,9 +60,55 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
             />
           )}
         </Pressable>
-      </Flex>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
 export default NewFeedForm;
+
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#dfdfdf",
+    marginTop: 20,
+  },
+  close: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    padding: 5,
+    borderRadius: 30,
+    backgroundColor: "#4b4f53",
+  },
+  submit: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+    backgroundColor: "#377893",
+    width: 50,
+    height: 50,
+  },
+  action: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  boxImage: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+  },
+  image: {
+    width: 300,
+    height: 250,
+    borderRadius: 10,
+  },
+});

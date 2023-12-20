@@ -1,7 +1,9 @@
-import React from "react";
-import { Actionsheet, Box, Flex, Icon, Text } from "native-base";
+import { Actionsheet, Icon } from "native-base";
+import { View, Text, StyleSheet } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 
 const PostAction = ({
@@ -17,17 +19,17 @@ const PostAction = ({
   return (
     <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
       <Actionsheet.Content>
-        <Flex w="100%" h={30} px={4} flexDir="row">
+        <View style={styles.title}>
           <Text>Choose Post Type</Text>
-        </Flex>
+        </View>
         <Actionsheet.Item
           onPress={publicToggleHandler}
           startIcon={<Icon as={<MaterialIcons name="people" />} size={6} />}
         >
-          <Flex flex={1} w="70.6%" alignItems="center" justifyContent="space-between" flexDir="row">
-            Public
+          <View style={{ ...styles.publicButton, width: formik.values.type === "Public" ? "70.6%" : null }}>
+            <Text>Public</Text>
             {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-          </Flex>
+          </View>
         </Actionsheet.Item>
 
         <Actionsheet.Item
@@ -36,13 +38,11 @@ const PostAction = ({
           }}
           startIcon={<Icon as={<MaterialCommunityIcons name="bullhorn" />} size={6} />}
         >
-          <Flex flex={1} w="85%" alignItems="center" justifyContent="space-between" flexDir="row">
-            <Box>
+          <View style={{ ...styles.announcementButton, width: formik.values.type === "Announcement" ? "85%" : null }}>
+            <View>
               <Text>Announcement</Text>
-              <Flex gap={2} alignItems="center" flexDir="row">
-                <Text fontSize={12} fontWeight={400}>
-                  End Date must be provided
-                </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                <Text style={{ fontSize: 12, fontWeight: 400 }}>End Date must be provided</Text>
                 {isAnnouncementSelected && dateShown ? (
                   <CustomDateTimePicker
                     defaultValue={formik.values.end_date}
@@ -52,10 +52,10 @@ const PostAction = ({
                     fontSize={12}
                   />
                 ) : null}
-              </Flex>
-            </Box>
+              </View>
+            </View>
             {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-          </Flex>
+          </View>
         </Actionsheet.Item>
       </Actionsheet.Content>
     </Actionsheet>
@@ -63,3 +63,24 @@ const PostAction = ({
 };
 
 export default PostAction;
+
+const styles = StyleSheet.create({
+  title: {
+    flexDirection: "row",
+    width: "100%",
+    height: 30,
+    paddingHorizontal: 4,
+  },
+  publicButton: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  announcementButton: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
