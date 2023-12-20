@@ -1,4 +1,5 @@
-import { Box, Flex } from "native-base";
+import { StyleSheet, View } from "react-native";
+
 import WhatsappButton from "../../shared/WhatsappButton";
 import EmailButton from "../../shared/EmailButton";
 import PersonalNestButton from "../../shared/PersonalNestButton";
@@ -34,16 +35,31 @@ const EmployeeContact = ({ employee }) => {
   ];
 
   return (
-    <Flex pt={2} gap={2} flexDirection="row-reverse" alignItems="center">
+    <View style={styles.container}>
       {contacts.map((contact) => {
         return (
-          <Box key={contact.id} padding={1} borderRadius="full" borderWidth={1} borderColor="#dae2e6">
+          <View key={contact.id} style={styles.content}>
             {contact.component}
-          </Box>
+          </View>
         );
       })}
-    </Flex>
+    </View>
   );
 };
 
 export default EmployeeContact;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 2,
+    paddingTop: 10,
+  },
+  content: {
+    padding: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#dae2e6",
+  },
+});
