@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Box, Pressable, Text, TextArea } from "native-base";
+
+import { View, Pressable, Text } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 
-const MentionInputs = ({ employees, formik }) => {
+const NewFeedInput = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const employeeData = employees.map(({ id, username }) => ({ id, name: username }));
@@ -15,7 +16,7 @@ const MentionInputs = ({ employees, formik }) => {
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <Box height={200}>
+      <View style={{ height: 200 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -27,7 +28,7 @@ const MentionInputs = ({ employees, formik }) => {
             </Pressable>
           )}
         />
-      </Box>
+      </View>
     );
   };
 
@@ -61,4 +62,4 @@ const MentionInputs = ({ employees, formik }) => {
   );
 };
 
-export default MentionInputs;
+export default NewFeedInput;

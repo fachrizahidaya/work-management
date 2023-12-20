@@ -8,7 +8,6 @@ import { FlashList } from "@shopify/flash-list";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
-import Input from "../../../shared/Forms/Input";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName, employees }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -78,13 +77,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
       <View>
         <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
       </View>
-      {/* <Input
-        formik={formik}
-        fieldName="comments"
-        placeholder={parentId ? "Add a reply" : "Add a comment"}
-        value={formik.values.comments}
-        withError={false}
-      /> */}
+
       <MentionInput
         value={formik.values.comments}
         onChange={handleChange}
