@@ -72,7 +72,7 @@ const StatusSection = ({ projectData, onChange }) => {
             height: 40,
             borderWidth: 1,
             borderColor: "#cbcbcb",
-            borderRadius: 15,
+            borderRadius: 10,
             paddingHorizontal: 10,
             backgroundColor: "#F8F8F8",
             display: "flex",

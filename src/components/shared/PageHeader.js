@@ -17,7 +17,7 @@ const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, is
     >
       {backButton && (
         <Pressable onPress={onPress}>
-          <MaterialCommunityIcons name="keyboard-backspace" size={20} />
+          <MaterialCommunityIcons name="chevron-left" size={20} />
         </Pressable>
       )}
 

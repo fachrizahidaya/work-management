@@ -140,30 +140,27 @@ const ChecklistSection = ({ taskId, disabled }) => {
           width={null}
         />
 
-        {!isLoading ? (
-          <ScrollView style={{ maxHeight: 200 }}>
-            <View style={{ flex: 1, minHeight: 2 }}>
-              <FlashList
-                data={checklists?.data}
-                keyExtractor={(item) => item?.id}
-                estimatedItemSize={30}
-                renderItem={({ item }) => (
-                  <CheckListItem
-                    id={item.id}
-                    title={item.title}
-                    status={item.status}
-                    isLoading={isLoading}
-                    onPress={checkAndUncheckChecklist}
-                    onPressDelete={openDeleteModal}
-                    disabled={disabled}
-                  />
-                )}
-              />
-            </View>
-          </ScrollView>
-        ) : (
-          <ActivityIndicator />
-        )}
+        <ScrollView style={{ maxHeight: 200 }}>
+          <View style={{ flex: 1, minHeight: 2 }}>
+            <FlashList
+              data={checklists?.data}
+              keyExtractor={(item) => item?.id}
+              extraData={isLoading}
+              estimatedItemSize={30}
+              renderItem={({ item }) => (
+                <CheckListItem
+                  id={item.id}
+                  title={item.title}
+                  status={item.status}
+                  isLoading={isLoading}
+                  onPress={checkAndUncheckChecklist}
+                  onPressDelete={openDeleteModal}
+                  disabled={disabled}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
 
         {!disabled && (
           <TouchableOpacity onPress={toggle}>
