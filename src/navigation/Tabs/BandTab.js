@@ -121,7 +121,7 @@ const BandTab = () => {
 
       {/* <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />  */}
+      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} /> */}
     </>
   );
 };
