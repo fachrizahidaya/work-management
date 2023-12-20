@@ -2,10 +2,10 @@ import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, FormControl, Icon, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
-import { Linking, TouchableOpacity } from "react-native";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../../hooks/useFetch";
@@ -13,7 +13,6 @@ import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 
 const AttachmentSection = ({ taskId, disabled }) => {
-  const toast = useToast();
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
 
   /**
@@ -49,18 +48,16 @@ const AttachmentSection = ({ taskId, disabled }) => {
       refetchAttachments();
 
       // Display toast if success
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Attachment uploaded",
       });
     } catch (error) {
       console.log(error);
       // Display toast if error
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -120,32 +117,30 @@ const AttachmentSection = ({ taskId, disabled }) => {
         refetchComments();
       }
 
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Attachment deleted"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Attachment deleted",
       });
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
   return (
-    <Flex gap={2}>
-      <FormControl>
-        <FormControl.Label>ATTACHMENTS</FormControl.Label>
+    <View style={{ display: "flex", gap: 10 }}>
+      <View style={{ display: "flex", gap: 10 }}>
+        <Text style={{ fontWeight: 500 }}>ATTACHMENTS</Text>
 
         {attachments?.data?.length > 0 && (
           <ScrollView style={{ maxHeight: 200 }}>
-            <Box flex={1} minHeight={2}>
+            <View style={{ flex: 1, minHeight: 2 }}>
               <FlashList
                 data={attachments.data}
                 keyExtractor={(item) => item.id}
-                estimatedItemSize={200}
+                estimatedItemSize={67}
                 renderItem={({ item }) => (
                   <AttachmentList
                     id={item?.id}
@@ -161,18 +156,20 @@ const AttachmentSection = ({ taskId, disabled }) => {
                   />
                 )}
               />
-            </Box>
+            </View>
           </ScrollView>
         )}
-      </FormControl>
+
+        <Toast />
+      </View>
 
       <TouchableOpacity onPress={selectFile}>
-        <Flex flexDir="row" alignItems="center" gap={3}>
-          <Icon as={<MaterialCommunityIcons name="plus" />} color="blue.600" size="md" />
-          <Text color="blue.600">Add attachment</Text>
-        </Flex>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
+          <Text style={{ fontWeight: 500, color: "#304FFD" }}>Add attachment</Text>
+        </View>
       </TouchableOpacity>
-    </Flex>
+    </View>
   );
 };
 

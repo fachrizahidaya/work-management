@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { ActivityIndicator, Dimensions, Image, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Image, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 
@@ -73,7 +73,7 @@ const ConfirmationModal = ({
       deviceWidth={deviceWidth}
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        <View alignItems="center">
+        <View style={{ display: "flex", alignItems: "center" }}>
           <Image
             source={require("../../assets/vectors/confirmation.jpg")}
             alt="confirmation"

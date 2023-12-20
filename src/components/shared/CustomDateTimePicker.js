@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+
 import dayjs from "dayjs";
+
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button, Flex, Icon, Input, Text, Pressable, Box } from "native-base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Input from "./Forms/Input";
+import Button from "./Forms/Button";
 
 /**
  * @param {number} width - The width of the component.
@@ -90,42 +94,32 @@ const CustomDateTimePicker = ({
       {!calendarIsOpen && (
         <>
           {withIcon ? (
-            <Icon
-              disabled={disabled}
-              onPressIn={toggleDatePicker}
-              as={iconType}
-              name={iconName}
-              size={30}
-              color={iconColor}
-            />
+            <Pressable disabled={disabled} onPress={toggleDatePicker}>
+              <MaterialCommunityIcons as={iconType} name={iconName} size={30} color={iconColor} />
+            </Pressable>
           ) : withText ? (
-            <Text fontSize={fontSize} underline onPress={toggleDatePicker}>
-              {textLabel}
-            </Text>
+            <Pressable onPress={toggleDatePicker} disabled={disabled}>
+              <Text style={{ fontSize: fontSize, textDecorationLine: "underline" }} fontSize={fontSize} underline>
+                {textLabel}
+              </Text>
+            </Pressable>
           ) : (
-            <Box position="relative">
+            <View style={{ position: "relative" }}>
               <Pressable
                 disabled={disabled}
-                position="absolute"
-                zIndex={2}
-                top={0}
-                right={0}
-                bottom={0}
-                left={0}
                 onPress={toggleDatePicker}
+                style={{ position: "absolute", zIndex: 2, top: 0, right: 0, bottom: 0, left: 0 }}
               />
               <Input
                 ref={inputRef}
-                isDisabled={disabled}
-                isReadOnly
-                placeholder="DD/MM/YYYY"
+                placeHolder="DD/MM/YYYY"
                 editable={false}
                 value={value}
                 height={height}
-                w={width}
+                width={width}
                 onTouchStart={() => inputRef.current.blur()}
               />
-            </Box>
+            </View>
           )}
         </>
       )}
@@ -144,13 +138,15 @@ const CustomDateTimePicker = ({
 
       {/* Cancel or Select date button for iOS */}
       {calendarIsOpen && Platform.OS === "ios" && (
-        <Flex flexDir="row" gap={2} alignSelf="center">
-          <Button onPress={toggleDatePicker} variant="outline">
-            Cancel
+        <View style={{ display: "flex", flexDirection: "row", gap: 5, alignSelf: "center" }}>
+          <Button onPress={toggleDatePicker} variant="outline" styles={{ paddingHorizontal: 8 }}>
+            <Text style={{ fontWeight: 500 }}>Cancel</Text>
           </Button>
 
-          <Button onPress={confirmIOSDate}>Confirm</Button>
-        </Flex>
+          <Button onPress={confirmIOSDate} styles={{ paddingHorizontal: 8 }}>
+            <Text style={{ fontWeight: 500, color: "white" }}>Confirm</Text>
+          </Button>
+        </View>
       )}
     </>
   );

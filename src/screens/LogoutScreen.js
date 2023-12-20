@@ -146,7 +146,7 @@ const LogoutScreen = () => {
               : "Logging out"}
           </Text>
 
-          <Bar progress={loadingValue / 100} width={300} color="#176688" borderColor="white" />
+          <Bar progress={loadingValue / 100} width={null} color="#176688" borderColor="white" />
         </Animated.View>
       )}
 

@@ -1,20 +1,18 @@
 import React, { memo } from "react";
 
-import { FormControl, Icon, Flex, useToast, Text } from "native-base";
+import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import LabelModal from "./LabelModal/LabelModal";
 import LabelItem from "./LabelItem/LabelItem";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
-import { TouchableOpacity } from "react-native";
 
 const LabelSection = ({ projectId, taskId, disabled }) => {
-  const toast = useToast();
   const { isLoading, start, stop } = useLoading(false);
 
   // Handles label modal
@@ -55,18 +53,16 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
       await axiosInstance.delete(`/pm/tasks/label/${labelId}`);
       refetchTaskLabels();
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Label removed"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Label removed",
       });
     } catch (error) {
       console.log(error);
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -74,11 +70,11 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
   return (
     <>
       {(!disabled || (disabled && taskLabels?.data?.length > 0)) && (
-        <FormControl>
-          <FormControl.Label>LABELS</FormControl.Label>
+        <View style={{ flex: 1, display: "flex", gap: 10 }}>
+          <Text style={{ fontWeight: 500 }}>LABELS</Text>
           {taskLabels?.data.length > 0 ? (
             <>
-              <Flex flexDir="row" alignItems="center" gap={1}>
+              <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
                 {taskLabels.data.map((label) => (
                   <LabelItem
                     disabled={isLoading || disabled}
@@ -101,12 +97,12 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                       borderRadius: 10,
                     }}
                   >
-                    <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                    <MaterialCommunityIcons name="plus" size={20} />
                   </TouchableOpacity>
                 )}
-              </Flex>
+              </View>
               {!disabled && (
-                <Text color="gray.500" mt={1}>
+                <Text style={{ fontWeight: 500, color: "gray", opacity: 0.5, marginTop: 2 }}>
                   Press any label to remove.
                 </Text>
               )}
@@ -124,24 +120,24 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                   borderRadius: 10,
                 }}
               >
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                <MaterialCommunityIcons name="plus" size={20} />
               </TouchableOpacity>
             )
           )}
-        </FormControl>
+
+          <Toast position="bottom" />
+        </View>
       )}
 
-      {modalIsOpen && (
-        <LabelModal
-          isOpen={modalIsOpen}
-          onClose={onCloseModal}
-          projectId={projectId}
-          taskId={taskId}
-          allLabels={labelArr}
-          refetch={refetch}
-          refetchTaskLabels={refetchTaskLabels}
-        />
-      )}
+      <LabelModal
+        isOpen={modalIsOpen}
+        onClose={onCloseModal}
+        projectId={projectId}
+        taskId={taskId}
+        allLabels={labelArr}
+        refetch={refetch}
+        refetchTaskLabels={refetchTaskLabels}
+      />
     </>
   );
 };

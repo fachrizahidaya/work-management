@@ -1,82 +1,66 @@
 import React, { memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
+import { SheetManager } from "react-native-actions-sheet";
 
-import { TouchableOpacity } from "react-native";
-import { Icon, Menu, Text, useToast } from "native-base";
+import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
-import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import useCheckAccess from "../../../../../hooks/useCheckAccess";
 
-const MenuSection = ({ selectedTask, refetchResponsible, responsible, openEditForm, disabled }) => {
+const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
   const navigation = useNavigation();
-  const toast = useToast();
-  const userSelector = useSelector((state) => state.auth);
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const editCheckAccess = useCheckAccess("update", "Tasks");
   const deleteCheckAccess = useCheckAccess("delete", "Tasks");
 
-  /**
-   * Handles take task as responsible
-   */
-  const takeTask = async () => {
-    try {
-      if (!selectedTask.responsible_id) {
-        await axiosInstance.post("/pm/tasks/responsible", {
-          task_id: selectedTask.id,
-          user_id: userSelector.id,
-        });
-      } else {
-        // Update the responsible user if it already exists
-        await axiosInstance.patch(`/pm/tasks/responsible/${responsible[0].id}`, {
-          user_id: userSelector.id,
-        });
-      }
-      refetchResponsible();
-      refetchTask();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
   return (
     <>
-      <Menu
-        trigger={(triggerProps) => {
-          return (
-            <TouchableOpacity {...triggerProps} disabled={disabled}>
-              <Icon
-                as={<MaterialCommunityIcons name="dots-vertical" />}
-                size="xl"
-                color="#3F434A"
-                opacity={disabled ? 0.5 : 1}
-              />
-            </TouchableOpacity>
-          );
-        }}
+      <TouchableOpacity
+        disabled={disabled}
+        onPress={() =>
+          SheetManager.show("form-sheet", {
+            payload: {
+              children: (
+                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      await onTakeTask();
+                      SheetManager.hide("form-sheet");
+                    }}
+                  >
+                    <Text style={{ fontWeight: 500 }}>Take task</Text>
+                  </TouchableOpacity>
+                  {editCheckAccess && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        SheetManager.hide("form-sheet");
+                        openEditForm();
+                      }}
+                    >
+                      <Text style={{ fontWeight: 500 }}>Edit</Text>
+                    </TouchableOpacity>
+                  )}
+                  {deleteCheckAccess && (
+                    <TouchableOpacity
+                      onPress={async () => {
+                        await SheetManager.hide("form-sheet");
+                        toggleDeleteModal();
+                      }}
+                    >
+                      <Text style={{ fontWeight: 500, color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ),
+            },
+          })
+        }
       >
-        <Menu.Item onPress={takeTask}>Take task</Menu.Item>
-        {editCheckAccess && <Menu.Item onPress={openEditForm}>Edit</Menu.Item>}
-        {deleteCheckAccess && (
-          <Menu.Item onPress={toggleDeleteModal}>
-            <Text color="red.600">Delete</Text>
-          </Menu.Item>
-        )}
-      </Menu>
+        <MaterialCommunityIcons name="dots-vertical" size={20} style={{ opacity: disabled ? 0.5 : 1 }} />
+      </TouchableOpacity>
 
       <ConfirmationModal
         isOpen={isOpen}

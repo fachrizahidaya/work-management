@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 
 import { FlashList } from "@shopify/flash-list";
-import { Dimensions, Pressable, Text, View } from "react-native";
+import { Dimensions, Platform, Pressable, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
