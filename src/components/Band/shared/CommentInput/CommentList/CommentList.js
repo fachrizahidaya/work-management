@@ -7,19 +7,18 @@ dayjs.extend(relativeTime);
 
 import RenderHTML from "react-native-render-html";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Pressable, Spinner, Text, useToast } from "native-base";
-import { Dimensions } from "react-native";
+import { ActivityIndicator, Dimensions, Pressable, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../hooks/useLoading";
 import { hyperlinkConverter } from "../../../../../helpers/hyperlinkConverter";
+import Button from "../../../../shared/Forms/Button";
 
 const CommentList = ({ comments, parentData, refetchComments, refetchAttachments, downloadAttachment, projectId }) => {
-  const toast = useToast();
   const { width } = Dimensions.get("screen");
   const userSelector = useSelector((state) => state.auth);
   const [selectedComments, setSelectedComments] = useState([]);
@@ -83,24 +82,22 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
       }
       onDeleteSuccess();
       toggleLoading();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Comment deleted"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Comment deleted",
       });
     } catch (error) {
       console.log(error);
       toggleLoading();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
 
   const baseStyles = {
-    color: "#3F434A",
+    color: "#000",
     fontWeight: 500,
   };
 
@@ -112,7 +109,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
   }, [selectedComments.length]);
   return (
     <ScrollView style={{ maxHeight: 300 }}>
-      <Box flex={1} minHeight={2}>
+      <View style={{ flex: 1, minHeight: 2 }}>
         <FlashList
           extraData={forceRerender}
           data={comments?.data}
@@ -121,18 +118,18 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
           estimatedItemSize={200}
           ListHeaderComponent={
             selectedComments.length > 0 && (
-              <Box mb={0}>
-                <Button
-                  onPress={deleteComments}
-                  borderRadius={0}
-                  borderTopRadius={8}
-                  disabled={isLoading}
-                  startIcon={!isLoading && <Icon as={<MaterialCommunityIcons name="delete" />} />}
-                  bgColor={isLoading ? "gray.500" : "primary.600"}
-                >
-                  {isLoading ? <Spinner color="white" size="sm" /> : <Text color="white">Delete comments</Text>}
+              <View style={{ marginBottom: 0 }}>
+                <Button onPress={deleteComments} styles={{ borderTopRadius: 8 }} disabled={isLoading}>
+                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    {!isLoading && <MaterialCommunityIcons name="delete" size={20} color="white" />}
+                    {isLoading ? (
+                      <ActivityIndicator />
+                    ) : (
+                      <Text style={{ color: "white", fontWeight: 500 }}>Delete comments</Text>
+                    )}
+                  </View>
                 </Button>
-              </Box>
+              </View>
             )
           }
           renderItem={({ item }) => (
@@ -154,12 +151,14 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                 }
               }}
             >
-              <Flex
-                flexDir="row"
-                justifyContent="space-between"
-                bgColor={selectedComments.includes(item.id) ? "muted.200" : "white"}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  backgroundColor: selectedComments.includes(item.id) ? "#F8F8F8" : "white",
+                }}
               >
-                <Flex flexDir="row" gap={1.5} mb={2} flex={1}>
+                <View style={{ display: "flex", flexDirection: "row", gap: 10, marginBottom: 8, flex: 1 }}>
                   <AvatarPlaceholder
                     name={item?.comment_name}
                     image={item?.comment_image}
@@ -167,13 +166,13 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                     style={{ marginTop: 4 }}
                   />
 
-                  <Box flex={1}>
-                    <Flex flexDir="row" gap={1} alignItems="center">
-                      <Text>{item?.comment_name.split(" ")[0]}</Text>
-                      <Text color="#8A9099">{dayjs(item.comment_time).fromNow()}</Text>
-                    </Flex>
+                  <View style={{ flex: 1 }}>
+                    <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "center" }}>
+                      <Text style={{ fontWeight: 500 }}>{item?.comment_name.split(" ")[0]}</Text>
+                      <Text style={{ fontWeight: 500, color: "#8A9099" }}>{dayjs(item.comment_time).fromNow()}</Text>
+                    </View>
 
-                    <Box>
+                    <View>
                       <RenderHTML
                         contentWidth={width}
                         baseStyle={baseStyles}
@@ -181,21 +180,20 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                           html: hyperlinkConverter(item?.comments) || "",
                         }}
                       />
-                    </Box>
+                    </View>
 
-                    <Flex flexDir="row" alignItems="center" gap={1} flexWrap="wrap">
+                    <View
+                      style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2, flexWrap: "wrap" }}
+                    >
                       {item.attachments.length > 0 &&
                         item.attachments.map((attachment) => {
                           return (
                             <Pressable
                               key={attachment.id}
-                              borderWidth={1}
-                              borderColor="#8A9099"
-                              borderRadius={10}
-                              p={1}
+                              style={{ borderWidth: 1, borderColor: "#8A9099", borderRadius: 10, padding: 2 }}
                               onPress={() => downloadAttachment(attachment.file_path)}
                             >
-                              <Text>
+                              <Text style={{ fontWeight: 500 }}>
                                 {attachment.file_name.length > 15
                                   ? attachment.file_name.slice(0, 15)
                                   : attachment.file_name}
@@ -203,14 +201,15 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                             </Pressable>
                           );
                         })}
-                    </Flex>
-                  </Box>
-                </Flex>
-              </Flex>
+                    </View>
+                  </View>
+                </View>
+              </View>
             </Pressable>
           )}
         />
-      </Box>
+      </View>
+      <Toast position="bottom" />
     </ScrollView>
   );
 };

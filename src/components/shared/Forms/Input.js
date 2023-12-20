@@ -19,6 +19,7 @@ const Input = ({
   startAdornment,
   multiline,
   numberOfLines,
+  style,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -47,6 +48,7 @@ const Input = ({
           autoCapitalize="none"
           style={[
             styles.input,
+            style,
             {
               paddingLeft: startAdornment || startIcon ? 35 : 10,
               height: multiline && 100,

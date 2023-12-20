@@ -1,45 +1,18 @@
 import React, { memo, useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
+import { SheetManager } from "react-native-actions-sheet";
 
-import { Actionsheet, Box, Flex, Icon, Pressable, Text, VStack, useToast } from "native-base";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
-const StatusSection = ({ projectData, refetch, projectId }) => {
+const StatusSection = ({ projectData, onChange }) => {
   const userSelector = useSelector((state) => state.auth);
-  const toast = useToast();
   const [value, setValue] = useState("");
   const { isOpen, toggle, close } = useDisclosure(false);
   const statuses = ["Open", "On Progress", "Complete"];
-
-  /**
-   * Handles project status change
-   * @param {*} status - selected status
-   */
-  const changeProjectStatusHandler = async (status) => {
-    try {
-      await axiosInstance.post(`/pm/projects/${status.toLowerCase()}`, {
-        id: projectId,
-      });
-      refetch();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Project ${status}ed`} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
 
   useEffect(() => {
     if (projectData) {
@@ -52,68 +25,81 @@ const StatusSection = ({ projectData, refetch, projectId }) => {
   }, [projectData]);
   return (
     <>
-      <Pressable flex={1} onPress={toggle} disabled={projectData?.owner_id !== userSelector.id}>
-        <Flex
-          borderWidth={1}
-          borderColor="#cbcbcb"
-          borderRadius={15}
-          py={1}
-          px={3}
-          bgColor={"#F8F8F8"}
-          style={{ height: 40 }}
-          flexDir="row"
-          alignItems="center"
-          justifyContent="space-between"
-          flex={1}
+      <Pressable
+        style={{ flex: 1 }}
+        onPress={() =>
+          SheetManager.show("form-sheet", {
+            payload: {
+              children: (
+                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  {statuses.map((status) => {
+                    return (
+                      <TouchableOpacity
+                        key={status}
+                        onPress={() => {
+                          if (status !== "Open") {
+                            setValue(status);
+                            toggle();
+                            onChange(status === "On Progress" ? "start" : "finish");
+                            SheetManager.hide("form-sheet");
+                          }
+                        }}
+                      >
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
+                          <View
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor:
+                                status === "Open" ? "#FFD240" : status === "On Progress" ? "#20cce2" : "#49c86c",
+                              borderRadius: 4,
+                            }}
+                          />
+                          <Text style={{ fontSize: 16 }}>{status}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ),
+            },
+          })
+        }
+        disabled={projectData?.owner_id !== userSelector.id}
+      >
+        <View
+          style={{
+            height: 40,
+            borderWidth: 1,
+            borderColor: "#cbcbcb",
+            borderRadius: 15,
+            paddingHorizontal: 10,
+            backgroundColor: "#F8F8F8",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
         >
-          <Flex flexDir="row" alignItems="center" style={{ gap: 10 }}>
-            <Box
-              h={4}
-              w={4}
-              bgColor={value === "Open" ? "#FFD240" : value === "On Progress" ? "#20cce2" : "#49c86c"}
-              borderRadius={4}
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <View
+              style={{
+                height: 15,
+                width: 15,
+                backgroundColor: value === "Open" ? "#FFD240" : value === "On Progress" ? "#20cce2" : "#49c86c",
+                borderRadius: 4,
+              }}
             />
 
-            <Text>{value}</Text>
-          </Flex>
+            <Text style={{ fontWeight: 500 }}>{value}</Text>
+          </View>
 
           {projectData?.owner_id === userSelector.id && (
-            <Icon as={<MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} />} size="md" />
+            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
           )}
-        </Flex>
+        </View>
       </Pressable>
-
-      <Actionsheet isOpen={isOpen} onClose={toggle}>
-        <Actionsheet.Content>
-          <VStack w="95%">
-            {statuses.map((status) => {
-              return (
-                <Actionsheet.Item
-                  key={status}
-                  onPress={() => {
-                    if (status !== "Open") {
-                      setValue(status);
-                      toggle();
-                      changeProjectStatusHandler(status === "On Progress" ? "start" : "finish");
-                    }
-                  }}
-                  _pressed={{ bgColor: "#f1f1f1" }}
-                >
-                  <Flex flexDir="row" gap={2} alignItems="center">
-                    <Box
-                      h={4}
-                      w={4}
-                      bgColor={status === "Open" ? "#FFD240" : status === "On Progress" ? "#20cce2" : "#49c86c"}
-                      borderRadius={4}
-                    />
-                    <Text>{status}</Text>
-                  </Flex>
-                </Actionsheet.Item>
-              );
-            })}
-          </VStack>
-        </Actionsheet.Content>
-      </Actionsheet>
     </>
   );
 };

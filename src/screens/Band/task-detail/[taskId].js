@@ -55,7 +55,7 @@ const TaskDetailScreen = ({ route }) => {
   }, []);
 
   const baseStyles = {
-    color: "#3F434A",
+    color: "000",
     fontWeight: 500,
   };
 

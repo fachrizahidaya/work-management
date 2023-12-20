@@ -17,7 +17,6 @@ const AdHocScreen = () => {
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [view, setView] = useState("Task List");
-  const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [responsibleId, setResponsibleId] = useState("all");
@@ -34,8 +33,6 @@ const AdHocScreen = () => {
     priority: selectedPriority,
     sort_deadline: deadlineSort,
   };
-
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const {
     data: tasks,
@@ -65,14 +62,10 @@ const AdHocScreen = () => {
   }, []);
 
   const onOpenTaskFormWithStatus = useCallback((status) => {
-    toggleTaskForm();
-    setSelectedStatus(status);
-  }, []);
-
-  const onCloseTaskForm = useCallback((resetForm) => {
-    toggleTaskForm();
-    setSelectedStatus("Open");
-    resetForm();
+    navigation.navigate("Task Form", {
+      selectedStatus: status,
+      refetch: refetchTasks,
+    });
   }, []);
 
   const changeView = useCallback((value) => {
@@ -150,7 +143,7 @@ const AdHocScreen = () => {
             style={styles.hoverButton}
             onPress={() =>
               navigation.navigate("Task Form", {
-                selectedStatus,
+                selectedStatus: "Open",
                 refetch: refetchTasks,
               })
             }

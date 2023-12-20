@@ -1,21 +1,17 @@
+import { useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import BandDashboard from "../../screens/Band/BandDashboard";
-import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
-import AddNewBandSlider from "../../components/layout/AddNewSlider/AddNewBandSlider";
-import BandScreensSlider from "../../components/layout/ScreensSlider/BandScreensSlider";
 import ProjectList from "../../screens/Band/ProjectList";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import AdHocScreen from "../../screens/Band/AdHoc";
 import MyTeamScreen from "../../screens/Band/MyTeam";
 import NotesScreen from "../../screens/Band/Notes";
 import CalendarScreen from "../../screens/Band/Calendar";
-import { useDisclosure } from "../../hooks/useDisclosure";
 import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
-import { useRef } from "react";
 import BandAddNewSheet from "../../components/shared/ActionSheet/BandAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
 
@@ -29,43 +25,12 @@ const BandTab = () => {
   const bandScreenSheetRef = useRef(null);
   const bandAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
-  const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
-  const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
-  const {
-    isOpen: menuScreenSliderIsOpen,
-    close: closeMenuScreenSlider,
-    toggle: toggleMenuScreenSlider,
-  } = useDisclosure(false);
-  const { isOpen: searchSliderIsOpen, close: closeSearchSlider, toggle: toggleSearchSlider } = useDisclosure(false);
 
   /**
    * Toggles the specified slider to open or close
    * If one slider is open then the reset of sliders are closed
    * @param {string} stateToToggle - The state key to toggle.
    */
-  const handleStateToggle = (stateToToggle) => {
-    if (stateToToggle === "moduleSelectIsOpen") {
-      toggleModuleSlider();
-      closeSearchSlider();
-      closeAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "searchIsOpen") {
-      closeModuleSlider();
-      toggleSearchSlider();
-      closeAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "addIsOpen") {
-      closeModuleSlider();
-      closeSearchSlider();
-      toggleAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "screenSelectIsOpen") {
-      closeModuleSlider();
-      closeSearchSlider();
-      closeAddSlider();
-      toggleMenuScreenSlider();
-    }
-  };
 
   return (
     <>

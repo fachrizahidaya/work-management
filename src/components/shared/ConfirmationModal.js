@@ -60,7 +60,7 @@ const ConfirmationModal = ({
     }
   };
   return (
-    <Modal isVisible={isOpen} onBackdropPress={!isDeleting && toggle} size="xl">
+    <Modal isVisible={isOpen} onBackdropPress={!isDeleting && toggle}>
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
         <View alignItems="center">
           <Image
@@ -75,15 +75,15 @@ const ConfirmationModal = ({
           <Text style={{ textAlign: "center", fontWeight: 500 }}>{description}</Text>
         </View>
 
-        <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+        <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
           <Button
             disabled={isDeleting}
             onPress={!isDeleting && toggle}
             flex={1}
             variant="outline"
-            backgroundColor="red"
+            backgroundColor="#FD7972"
           >
-            <Text style={{ color: "red", fontWeight: 500 }}>Cancel</Text>
+            <Text style={{ color: "#FD7972", fontWeight: 500 }}>Cancel</Text>
           </Button>
 
           <Button

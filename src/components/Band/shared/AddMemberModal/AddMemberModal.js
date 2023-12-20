@@ -3,12 +3,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 
 import { FlashList } from "@shopify/flash-list";
-import { Box, Button, Icon, IconButton, Input, Modal, Text } from "native-base";
+import { Pressable, Text, View } from "react-native";
+import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 import FormButton from "../../../shared/FormButton";
+import Input from "../../../shared/Forms/Input";
 
 const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, header }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,39 +84,40 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={() => {
+      isVisible={isOpen}
+      onBackdropPress={() => {
         !loadingIndicator && onClose();
       }}
-      size="xl"
     >
-      <Modal.Content>
-        <Modal.Header>{header}</Modal.Header>
-        <Modal.Body>
+      <View
+        style={{ borderWidth: 1, display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}
+      >
+        <View>
+          <Text style={{ fontWeight: "bold" }}>{header}</Text>
+        </View>
+        <View>
           <Input
             value={inputToShow}
-            placeholder="Search user..."
+            placeHolder="Search user..."
             size="md"
             onChangeText={(value) => {
               searchHandler(value);
               setInputToShow(value);
             }}
-            InputRightElement={
+            endAdornment={
               inputToShow && (
-                <IconButton
+                <Pressable
                   onPress={() => {
                     setSearchKeyword("");
                     setInputToShow("");
                   }}
-                  icon={<Icon as={<MaterialCommunityIcons name="close" />} color="#3F434A" />}
-                  rounded="full"
-                  size="sm"
-                  mr={2}
-                />
+                >
+                  <MaterialCommunityIcons name="close" size={20} />
+                </Pressable>
               )
             }
           />
-          <Box flex={1} height={300} mt={4}>
+          <View style={{ height: 300, marginTop: 4 }}>
             <FlashList
               extraData={forceRerender}
               estimatedItemSize={200}
@@ -136,26 +139,24 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
                 />
               )}
             />
-          </Box>
-        </Modal.Body>
+          </View>
+        </View>
 
         {multiSelect && (
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <FormButton onPress={onClose} disabled={loadingIndicator} color="transparent" variant="outline">
-                <Text>Cancel</Text>
-              </FormButton>
+          <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+            <FormButton onPress={onClose} disabled={loadingIndicator} color="transparent" variant="outline">
+              <Text>Cancel</Text>
+            </FormButton>
 
-              <FormButton
-                onPress={(setIsLoading) => onPressHandler(selectedUsers, setIsLoading)}
-                setLoadingIndicator={setLoadingIndicator}
-              >
-                <Text color="white">Submit</Text>
-              </FormButton>
-            </Button.Group>
-          </Modal.Footer>
+            <FormButton
+              onPress={(setIsLoading) => onPressHandler(selectedUsers, setIsLoading)}
+              setLoadingIndicator={setLoadingIndicator}
+            >
+              <Text style={{ color: "white", fontWeight: 500 }}>Submit</Text>
+            </FormButton>
+          </View>
         )}
-      </Modal.Content>
+      </View>
     </Modal>
   );
 };

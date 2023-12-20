@@ -96,8 +96,8 @@ const ActiveTaskCard = () => {
                   />
                 ))}
                 {tasks.data.data.length > 4 && (
-                  <Button variant="ghost" onPress={toggleMore} title="More">
-                    More
+                  <Button backgroundColor="white" variant="dashed" onPress={toggleMore} title="More">
+                    <Text style={{ color: "#176688" }}>More</Text>
                   </Button>
                 )}
               </>
@@ -120,12 +120,6 @@ const ActiveTaskCard = () => {
               </View>
             )
           ) : (
-            // <VStack space={2}>
-            //   <Skeleton h={41} />
-            //   <Skeleton h={41} />
-            //   <Skeleton h={41} />
-            //   <Skeleton h={41} />
-            // </VStack>
             <Text>Loading... </Text>
           )}
         </View>

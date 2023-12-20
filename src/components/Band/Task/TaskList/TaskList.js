@@ -110,7 +110,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
 
             {createActionCheck && (
               <Button
-                onPress={() => openNewTaskForm("Open")}
+                onPress={() => openNewTaskForm("On Progress")}
                 backgroundColor="white"
                 fontColor="#176688"
                 variant="dashed"
@@ -160,7 +160,7 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
 
             {createActionCheck && (
               <Button
-                onPress={() => openNewTaskForm("Open")}
+                onPress={() => openNewTaskForm("Finish")}
                 backgroundColor="white"
                 fontColor="#176688"
                 variant="dashed"

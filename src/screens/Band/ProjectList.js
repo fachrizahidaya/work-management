@@ -184,7 +184,10 @@ const ProjectList = () => {
         </View>
 
         {createActionCheck && (
-          <Pressable style={styles.hoverButton} onPress={() => navigation.navigate("Project Form")}>
+          <Pressable
+            style={styles.hoverButton}
+            onPress={() => navigation.navigate("Project Form", { projectData: null })}
+          >
             <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}

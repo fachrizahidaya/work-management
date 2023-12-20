@@ -13,6 +13,8 @@ const FormButton = ({
   fontSize,
   fontColor,
   variant,
+  style,
+  borderRadius,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -29,18 +31,21 @@ const FormButton = ({
   }, [isLoading]);
   return (
     <TouchableOpacity
-      style={{
-        backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
-        opacity: opacity || 1,
-        borderRadius: 10,
-        height: 42,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: variant === "dashed" ? 1 : 0,
-        borderStyle: variant === "dashed" ? "dashed" : "solid",
-        borderColor: variant === "dashed" ? "#E8E9EB" : "white",
-      }}
+      style={[
+        style,
+        {
+          backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
+          opacity: opacity || 1,
+          borderRadius: borderRadius || 10,
+          height: 42,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderWidth: variant === "dashed" ? 1 : 0,
+          borderStyle: variant === "dashed" ? "dashed" : "solid",
+          borderColor: variant === "dashed" ? "#E8E9EB" : "white",
+        },
+      ]}
       disabled={disabled || isLoading}
       onPress={() => {
         if (isSubmitting !== undefined) {

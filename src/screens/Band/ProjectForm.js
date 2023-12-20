@@ -14,8 +14,9 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 
-const ProjectForm = ({ projectData, refetchSelectedProject, teamMembers }) => {
+const ProjectForm = ({ route }) => {
   const { width, height } = Dimensions.get("window");
+  const { projectData, refetchSelectedProject, teamMembers } = route.params;
   const navigation = useNavigation();
 
   // State to save editted or created project

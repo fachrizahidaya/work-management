@@ -39,7 +39,10 @@ const BandAddNewSheet = (props) => {
             borderBottomWidth={1}
             style={styles.wrapper}
             onPress={() => {
-              navigation.navigate(item.screen);
+              navigation.navigate(item.screen, {
+                projectData: null,
+                taskData: null,
+              });
               props.reference.current?.hide();
             }}
           >

@@ -1,6 +1,8 @@
 import React from "react";
 
-import { Box, Flex, Icon, Image, Menu, Pressable, Text } from "native-base";
+import { SheetManager } from "react-native-actions-sheet";
+
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const AttachmentList = ({
@@ -29,12 +31,10 @@ const AttachmentList = ({
   const xls = "../../../../../../assets/doc-icons/xls-format.png";
   const zip = "../../../../../../assets/doc-icons/zip-format.png";
   return (
-    <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-      <Flex flexDir="row" gap={3} alignItems="center">
+    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View style={{ display: "flex", flexDirection: "row", gap: 5, alignItems: "center" }}>
         <Image
-          resizeMode="contain"
-          h={iconHeight || 50}
-          w={iconWidth || 50}
+          style={{ height: iconHeight || 50, width: iconWidth || 50, resizeMode: "contain" }}
           source={
             type.includes("doc")
               ? require(doc)
@@ -61,44 +61,50 @@ const AttachmentList = ({
           alt="file icon"
         />
 
-        <Box>
-          <Text>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
+        <View>
+          <Text style={{ fontWeight: 500 }}>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
 
           {time && (
-            <Text opacity={0.5} maxW={150} numberOfLines={2} flexWrap="wrap">
+            <Text style={{ fontWeight: 500, opacity: 0.5, maxWidth: 150 }} numberOfLines={2}>
               {time}
             </Text>
           )}
-          <Text opacity={0.5}>{size}</Text>
-        </Box>
-      </Flex>
+          <Text style={{ fontWeight: 500, opacity: 0.5 }}>{size}</Text>
+        </View>
+      </View>
 
-      <Menu
-        trigger={(triggerProps) => {
-          return (
-            <Pressable {...triggerProps}>
-              <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
-            </Pressable>
-          );
-        }}
+      <Pressable
+        onPress={() =>
+          SheetManager.show("form-sheet", {
+            payload: {
+              children: (
+                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  <TouchableOpacity
+                    style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
+                    onPress={() => downloadFileHandler(path)}
+                  >
+                    <MaterialCommunityIcons name="download-outline" size={20} />
+                    <Text style={{ fontWeight: 500 }}>Download</Text>
+                  </TouchableOpacity>
+
+                  {!disabled && (
+                    <TouchableOpacity
+                      style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
+                      onPress={() => deleteFileHandler(id, from)}
+                    >
+                      <MaterialCommunityIcons name="delete-outline" size={20} color="red" />
+                      <Text style={{ fontWeight: 500, color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ),
+            },
+          })
+        }
       >
-        <Menu.Item onPress={() => downloadFileHandler(path)}>
-          <Flex flexDir="row" alignItems="center" gap={2}>
-            <Icon as={<MaterialCommunityIcons name="download-outline" />} size="md" />
-            <Text>Download</Text>
-          </Flex>
-        </Menu.Item>
-
-        {!disabled && (
-          <Menu.Item onPress={() => deleteFileHandler(id, from)}>
-            <Flex flexDir="row" alignItems="center" gap={2}>
-              <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
-              <Text color="red.500">Delete</Text>
-            </Flex>
-          </Menu.Item>
-        )}
-      </Menu>
-    </Flex>
+        <MaterialCommunityIcons name="dots-vertical" size={20} />
+      </Pressable>
+    </View>
   );
 };
 

@@ -2,19 +2,16 @@ import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { Alert, Linking, TouchableOpacity } from "react-native";
-import { Box, Center, Flex, Icon, Image, Text, useToast } from "native-base";
+import { Alert, Image, Linking, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import Toast from "react-native-toast-message";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import AttachmentList from "../../Task/TaskDetail/AttachmentSection/AttachmentList/AttachmentList";
 
 const FileSection = ({ projectId, isAllowed }) => {
-  const toast = useToast();
-
   const {
     data: attachments,
     isLoading: attachmentIsLoading,
@@ -35,10 +32,9 @@ const FileSection = ({ projectId, isAllowed }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -55,18 +51,16 @@ const FileSection = ({ projectId, isAllowed }) => {
       refetchAttachments();
 
       // Display toast if success
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Attachment uploaded"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Attachment uploaded",
       });
     } catch (error) {
       console.log(error);
       // Display toast if error
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -126,25 +120,23 @@ const FileSection = ({ projectId, isAllowed }) => {
         refetchComments();
       }
 
-      toast.show({
-        render: () => {
-          return <SuccessToast message={"Attachment deleted"} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Attachment deleted",
       });
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
 
   return (
-    <Flex style={{ gap: 18 }}>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Text fontSize={16}>FILES</Text>
+    <View style={{ display: "flex", gap: 18 }}>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Text style={{ fontSize: 16 }}>FILES</Text>
 
         <TouchableOpacity
           onPress={selectFile}
@@ -156,14 +148,14 @@ const FileSection = ({ projectId, isAllowed }) => {
             borderRadius: 10,
           }}
         >
-          <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+          <MaterialCommunityIcons name="plus" size={20} />
         </TouchableOpacity>
-      </Flex>
+      </View>
       {!attachmentIsLoading && (
         <>
           {attachments?.data?.length > 0 ? (
             <ScrollView style={{ maxHeight: 200 }}>
-              <Box flex={1} minHeight={2}>
+              <View style={{ flex: 1, minHeight: 2 }}>
                 <FlashList
                   data={attachments.data}
                   keyExtractor={(item) => item.id}
@@ -185,22 +177,23 @@ const FileSection = ({ projectId, isAllowed }) => {
                     />
                   )}
                 />
-              </Box>
+              </View>
             </ScrollView>
           ) : (
-            <Center>
+            <View style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Image
                 alt="no-attachment"
                 source={require("../../../../assets/vectors/no-file.jpg")}
-                style={{ height: 100, width: 140 }}
-                resizeMode="contain"
+                style={{ height: 100, width: 140, resizeMode: "contain" }}
               />
-              <Text fontWeight={400}>This project has no attachment</Text>
-            </Center>
+              <Text style={{ fontWeight: 400 }}>This project has no attachment</Text>
+            </View>
           )}
         </>
       )}
-    </Flex>
+
+      <Toast position="bottom" />
+    </View>
   );
 };
 
