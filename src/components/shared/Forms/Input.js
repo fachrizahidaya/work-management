@@ -19,6 +19,7 @@ const Input = ({
   startAdornment,
   multiline,
   numberOfLines,
+  withError,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -67,7 +68,9 @@ const Input = ({
         {endAdornment && <View style={styles.endIcon}>{endAdornment}</View>}
       </View>
 
-      {formik?.errors[fieldName] && <Text style={{ color: "red", marginTop: 9 }}>{formik.errors[fieldName]}</Text>}
+      {withError
+        ? formik?.errors[fieldName] && <Text style={{ color: "red", marginTop: 9 }}>{formik.errors[fieldName]}</Text>
+        : null}
     </View>
   );
 };

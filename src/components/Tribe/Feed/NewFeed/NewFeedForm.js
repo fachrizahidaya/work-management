@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import MentionInputs from "./MentionInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, mentionSelectHandler, inputRef }) => {
+const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (

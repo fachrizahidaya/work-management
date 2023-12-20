@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Box, Flex, FormControl, Input, Pressable, Text } from "native-base";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Pressable, Text } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
+import { FlashList } from "@shopify/flash-list";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
-import { FlashList } from "@shopify/flash-list";
+import Input from "../../../shared/Forms/Input";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName, employees }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -22,7 +22,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <Box height={200}>
+      <View style={{ height: 200 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -30,11 +30,11 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text>{item.name}</Text>
+              <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
             </Pressable>
           )}
         />
-      </Box>
+      </View>
     );
   };
 
@@ -60,6 +60,9 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
+      const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+      const modifiedContent = values.comments.replace(mentionRegex, "@$1");
+      values.comments = modifiedContent;
       onSubmit(values, setSubmitting, setStatus);
     },
   });
@@ -71,41 +74,58 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <FormControl style={styles.inputBox} pb={12}>
-      <Input
-        variant="solid"
-        multiline
-        onChangeText={(value) => formik.setFieldValue("comments", value)}
+    <View style={styles.container}>
+      <View>
+        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
+      </View>
+      {/* <Input
+        formik={formik}
+        fieldName="comments"
         placeholder={parentId ? "Add a reply" : "Add a comment"}
         value={formik.values.comments}
-        InputLeftElement={
-          <Box pl={1}>
-            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
-          </Box>
-        }
-        InputRightElement={
-          <Box pr={0.5} py={0.5}>
-            <FormButton
-              children={parentId ? "Reply" : "Post"}
-              onPress={formik.handleSubmit}
-              isSubmitting={formik.isSubmitting}
-              opacity={formik.values.comments === "" ? 0.5 : 1}
-              variant="unstyled"
-              size="sm"
-              fontColor="white"
-              fontSize={12}
-            />
-          </Box>
-        }
+        withError={false}
+      /> */}
+      <MentionInput
+        value={formik.values.comments}
+        onChange={handleChange}
+        partTypes={[
+          {
+            pattern:
+              /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
+            textStyle: { color: "blue" },
+          },
+          {
+            trigger: "@",
+            renderSuggestions: renderSuggestions,
+          },
+        ]}
+        multiline
+        placeholder="Type here..."
+        style={{ padding: 5, borderRadius: 10, width: 320, borderWidth: 1, borderColor: "#DBDBDB" }}
       />
-    </FormControl>
+      <View>
+        <FormButton
+          onPress={formik.handleSubmit}
+          isSubmitting={formik.isSubmitting}
+          opacity={formik.values.comments === "" ? 0.5 : 1}
+          padding={4}
+        >
+          <Text style={{ color: "#FFFFFF" }}>{parentId ? "Reply" : "Post"}</Text>
+        </FormButton>
+      </View>
+    </View>
   );
 };
 
 export default FeedCommentForm;
 
 const styles = StyleSheet.create({
-  inputBox: {
+  container: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 50,
+    paddingHorizontal: 10,
+    gap: 3,
   },
 });

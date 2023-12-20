@@ -13,6 +13,7 @@ const FormButton = ({
   fontSize,
   fontColor,
   variant,
+  padding,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -33,6 +34,7 @@ const FormButton = ({
         backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
         opacity: opacity || 1,
         borderRadius: 10,
+        padding: padding ? padding : null,
         height: 42,
         display: "flex",
         alignItems: "center",
