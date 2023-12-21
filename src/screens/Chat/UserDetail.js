@@ -85,7 +85,7 @@ const UserDetail = () => {
     isFetching: userListIsFetching,
     isLoading: userListIsLoading,
     refetch: refetchUserList,
-  } = useFetch("/chat/user", [currentPage, searchInput], fetchUserParameters);
+  } = useFetch(memberListIsopen && "/chat/user", [currentPage, searchInput], fetchUserParameters);
 
   /**
    * Fetch members of selected group
@@ -280,28 +280,14 @@ const UserDetail = () => {
   }, [searchInput]);
 
   useEffect(() => {
-    // if (userList?.data?.data?.length) {
-    if (!searchInput) {
-      setCumulativeData((prevState) => {
-        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
-          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
-        } else {
-          return prevState;
-        }
-      });
-      setFilteredDataArray([]);
-      // setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-    } else {
-      setFilteredDataArray((prevState) => {
-        if (prevState.length !== prevState.length + usersWithoutMembers(userList?.data?.data).length) {
-          return [...prevState, ...usersWithoutMembers(userList?.data?.data)];
-        } else {
-          return prevState;
-        }
-      });
-      setCumulativeData([]);
-      // setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
-      // }
+    if (userList?.data?.data?.length) {
+      if (!searchInput) {
+        setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+        setFilteredDataArray([]);
+      } else {
+        setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+        setCumulativeData([]);
+      }
     }
   }, [userList, searchInput, selectedGroupMembers]);
 
