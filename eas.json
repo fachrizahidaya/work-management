@@ -52,7 +52,6 @@
         "appleTeamId": "RP9L4Q9H5J"
       },
       "android": {
-        "track": "internal",
         "serviceAccountKeyPath": "../../keys and certificate/kolabora-service-account.json"
       }
     }
