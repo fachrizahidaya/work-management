@@ -1,7 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-
-import { Linking, TouchableOpacity, View } from "react-native";
-import { Box, Divider, Flex, Icon, Text } from "native-base";
+import { TouchableOpacity, View, Text } from "react-native";
+import { Divider } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
@@ -16,15 +14,11 @@ const SupervisorInformation = ({
   supervisorPosition,
   refetch,
   id,
+  navigation,
+  onClickCall,
 }) => {
   const phoneNumber = supervisorPhone;
   const phoneUrl = `tel:0${phoneNumber}`;
-
-  const navigation = useNavigation();
-
-  const handleCallPress = () => {
-    Linking.openURL(phoneUrl).catch((err) => console.log(err));
-  };
 
   return (
     <View style={{ ...card.card, marginTop: 5, gap: 20 }}>
@@ -63,7 +57,7 @@ const SupervisorInformation = ({
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>Phone:</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
-            <TouchableOpacity onPress={handleCallPress}>
+            <TouchableOpacity onPress={() => onClickCall(phoneUrl)}>
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>{supervisorPhone}</Text>
             </TouchableOpacity>
           </View>

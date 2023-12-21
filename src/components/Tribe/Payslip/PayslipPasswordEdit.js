@@ -12,7 +12,7 @@ import Input from "../../shared/Forms/Input";
 const PayslipPasswordEdit = ({
   formIsOpen,
   toggleForm,
-  passwordError,
+
   setPasswordError,
   hideNewPassword,
   setHideNewPassword,

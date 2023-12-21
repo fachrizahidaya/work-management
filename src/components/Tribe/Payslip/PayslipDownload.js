@@ -12,7 +12,6 @@ import Input from "../../shared/Forms/Input";
 const PayslipDownload = ({
   downloadDialogIsOpen,
   toggleDownloadDialog,
-  passwordError,
   setPasswordError,
   downloadPayslipCheckAccess,
   onDownloadPayslip,

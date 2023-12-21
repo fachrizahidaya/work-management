@@ -1,5 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
-
 import { TouchableOpacity, View, Text } from "react-native";
 import { Divider } from "native-base";
 
@@ -7,9 +5,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
 
-const EmployeeInformation = ({ id, name, position, email, phone, image, refetch }) => {
-  const navigation = useNavigation();
-
+const EmployeeInformation = ({ id, name, position, email, phone, image, navigation }) => {
   return (
     <View style={{ ...card.card, marginTop: 5, gap: 20 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 5 }}>
