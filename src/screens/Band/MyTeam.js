@@ -117,7 +117,7 @@ const MyTeamScreen = () => {
         {!teamIsLoading ? (
           <>
             {teams?.data?.length > 0 ? (
-              <TeamSelection onChange={onPressTeam} selectedTeamId={selectedTeamId} teams={teams?.data} />
+              <TeamSelection onChange={onPressTeam} selectedTeam={team} teams={teams?.data} />
             ) : (
               createCheckAccess && (
                 <View style={{ display: "flex", gap: 6, alignItems: "center" }}>

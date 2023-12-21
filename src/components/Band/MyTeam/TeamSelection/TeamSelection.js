@@ -1,21 +1,19 @@
 import React, { memo } from "react";
 
-import { Icon, Select } from "native-base";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Select from "../../../shared/Forms/Select";
 
-const TeamSelection = ({ onChange, selectedTeamId, teams }) => {
+const TeamSelection = ({ onChange, selectedTeam, teams }) => {
   return (
     <Select
-      selectedValue={selectedTeamId}
-      dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-      onValueChange={(value) => onChange(value)}
-    >
-      <Select.Item value={0} label="Select Team" />
-      {teams.length > 0 &&
+      value={selectedTeam?.name}
+      onChange={(value) => onChange(value)}
+      items={
+        teams.length > 0 &&
         teams.map((team) => {
-          return <Select.Item key={team.id} value={team.id} label={team.name} />;
-        })}
-    </Select>
+          return { value: team.id, label: team.name };
+        })
+      }
+    />
   );
 };
 
