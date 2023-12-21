@@ -1,4 +1,6 @@
-import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
+import { useNavigation } from "@react-navigation/core";
+
+import { SafeAreaView, StyleSheet, View, Text, Image, Linking } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../hooks/useFetch";
@@ -9,6 +11,12 @@ import SupervisorInformation from "../../components/Tribe/Information/Supervisor
 
 const InformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
+
+  const navigation = useNavigation();
+
+  const handleCallPress = (phone) => {
+    Linking.openURL(phone).catch((err) => console.log(err));
+  };
 
   return (
     <>
@@ -44,7 +52,7 @@ const InformationScreen = () => {
                   email={profile?.data?.email}
                   phone={profile?.data?.phone_number}
                   image={profile?.data?.image}
-                  refetch={refetchProfile}
+                  navigation={navigation}
                 />
                 <Text style={{ fontSize: 16, fontWeight: "500", paddingHorizontal: 10 }}>My Supervisor</Text>
                 <SupervisorInformation
@@ -56,6 +64,8 @@ const InformationScreen = () => {
                   supervisorPosition={profile?.data?.supervisor_position}
                   refetch={refetchProfile}
                   id={profile?.data?.id}
+                  navigation={navigation}
+                  onClickCall={handleCallPress}
                 />
               </>
             )}

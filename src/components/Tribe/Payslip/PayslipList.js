@@ -1,7 +1,7 @@
 import { memo } from "react";
 import dayjs from "dayjs";
 
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Icon } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

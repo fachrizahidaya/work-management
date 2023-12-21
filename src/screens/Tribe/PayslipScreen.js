@@ -159,7 +159,6 @@ const PayslipScreen = () => {
           <PayslipPasswordEdit
             formIsOpen={formIsOpen}
             toggleForm={toggleForm}
-            passwordError={passwordError}
             setPasswordError={setPasswordError}
             hideNewPassword={hideNewPassword}
             setHideNewPassword={setHideNewPassword}
@@ -212,7 +211,6 @@ const PayslipScreen = () => {
       <PayslipDownload
         downloadDialogIsOpen={downloadDialogIsOpen}
         toggleDownloadDialog={closeSelectedPayslip}
-        passwordError={passwordDownloadError}
         setPasswordError={setPasswordDownloadError}
         downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
