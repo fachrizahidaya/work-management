@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Agenda, AgendaList, CalendarProvider, ExpandableCalendar, WeekCalendar } from "react-native-calendars";
+import { Agenda } from "react-native-calendars";
 import dayjs from "dayjs";
 
-import { Box, Image, Text, VStack } from "native-base";
-import { TouchableOpacity, StyleSheet, Dimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 
 const CalendarWithSlider = ({ items }) => {
-  const { height } = Dimensions.get("window");
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
@@ -34,16 +31,9 @@ const CalendarWithSlider = ({ items }) => {
     setSelectedDate(day.dateString);
   };
 
-  const [isMonthVisible, setIsMonthVisible] = useState(true);
-  const [isClosingKnobOpen, setIsClosingKnobOpen] = useState(false);
-  const toggleMonthVisibility = () => {
-    setIsMonthVisible(!isMonthVisible);
-    setIsClosingKnobOpen(!isClosingKnobOpen);
-  };
-
   return (
     <>
-      {isMonthVisible && <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>}
+      <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
       <Agenda
         items={items}
         showClosingKnob={true}
@@ -57,21 +47,14 @@ const CalendarWithSlider = ({ items }) => {
         renderEmptyData={() => {
           return (
             <>
-              <VStack space={2} alignItems="center" justifyContent="center" height="100%" bgColor="white">
-                <Image
-                  source={require("../../assets/vectors/items.jpg")}
-                  h={200}
-                  w={200}
-                  alt="empty"
-                  resizeMode="contain"
-                />
+              <View style={styles.container}>
+                <Image source={require("../../assets/vectors/items.jpg")} alt="empty" style={styles.image} />
                 <Text>You have no agenda</Text>
-              </VStack>
+              </View>
             </>
           );
         }}
         onDayPress={handleDayPress}
-        // onCalendarToggled={toggleMonthVisibility}
       />
     </>
   );
@@ -104,5 +87,17 @@ const styles = StyleSheet.create({
   },
   emptyDataText: {
     fontSize: 16,
+  },
+  container: {
+    gap: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+    backgroundColor: "#FFFFFF",
+  },
+  image: {
+    height: 200,
+    width: 200,
+    resizeMode: "contain",
   },
 });
