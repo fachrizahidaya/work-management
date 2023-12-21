@@ -113,7 +113,6 @@ const CustomDateTimePicker = ({
               <Input
                 ref={inputRef}
                 placeHolder="DD/MM/YYYY"
-                editable={false}
                 value={value}
                 height={height}
                 width={width}
