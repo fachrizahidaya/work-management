@@ -136,13 +136,13 @@ const FeedCardItem = ({
               })
             }
           >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </Pressable>
 
-          <View style={styles.nameContainer}>
+          <View style={{ flex: 1, gap: 5 }}>
             <TouchableOpacity style={styles.dockName}>
               <Text
-                style={styles.name}
+                style={{ fontSize: 15, fontWeight: "400" }}
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
@@ -154,8 +154,8 @@ const FeedCardItem = ({
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
-                <Badge style={styles.announcementBadge}>
-                  <Text style={styles.announcement}>Announcement</Text>
+                <Badge style={{ borderRadius: 15, backgroundColor: "#ADD7FF" }}>
+                  <Text style={{ fontSize: 10, fontWeight: "500" }}>Announcement</Text>
                 </Badge>
               ) : null}
             </TouchableOpacity>
@@ -163,7 +163,7 @@ const FeedCardItem = ({
           </View>
         </View>
 
-        <Text style={styles.content}>{styledTexts}</Text>
+        <Text style={{ fontSize: 12, fontWeight: "500" }}>{styledTexts}</Text>
 
         {attachment ? (
           <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
@@ -186,7 +186,7 @@ const FeedCardItem = ({
             >
               <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
             </Pressable>
-            <Text style={styles.comment}>{totalComment}</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -200,7 +200,7 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={styles.like}>{totalLike}</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalLike}</Text>
           </View>
         </View>
       </View>
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   defaultText: {
-    color: "black",
+    color: "#000000",
   },
   highlightedText: {
     color: "#72acdc",
@@ -226,19 +226,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 15,
   },
-  nameContainer: {
-    flex: 1,
-    gap: 5,
-  },
   dockName: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 1,
-  },
-  announcementBadge: {
-    borderRadius: 15,
-    backgroundColor: "#ADD7FF",
   },
   image: {
     borderRadius: 15,
@@ -256,28 +248,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
   },
-  name: {
-    fontSize: 15,
-    fontWeight: "400",
-  },
-  announcement: {
-    fontSize: 10,
-  },
   date: {
     fontSize: 12,
     fontWeight: "400",
     opacity: 0.5,
-  },
-  content: {
-    fontSize: 12,
-    fontWeight: "500",
-  },
-  comment: {
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  like: {
-    fontSize: 15,
-    fontWeight: "500",
   },
 });

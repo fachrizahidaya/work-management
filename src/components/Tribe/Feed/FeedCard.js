@@ -1,12 +1,12 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard, Linking } from "react-native";
-import { Box, Spinner, useToast } from "native-base";
+import { Clipboard, FlatList, Linking, StyleSheet, View } from "react-native";
+import { Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
+import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../shared/ToastDialog";
 import FeedCardItem from "./FeedCardItem";
 
 const FeedCard = ({
@@ -27,9 +27,8 @@ const FeedCard = ({
   setForceRerender,
   toggleFullScreen,
   employeeUsername,
+  navigation,
 }) => {
-  const toast = useToast();
-
   /**
    * Like a Post handler
    * @param {*} post_id
@@ -42,10 +41,10 @@ const FeedCard = ({
       console.log("Process success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process error, please try again later"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -77,8 +76,8 @@ const FeedCard = ({
   };
 
   return (
-    <Box flex={1}>
-      <FlashList
+    <View style={styles.container}>
+      <FlatList
         removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
         data={posts}
@@ -100,7 +99,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
+        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}
@@ -125,13 +124,20 @@ const FeedCard = ({
             handleLinkPress={handleLinkPress}
             handleEmailPress={handleEmailPress}
             copyToClipboard={copyToClipboard}
-            postRefetchHandler={postRefetchHandler}
             employeeUsername={employeeUsername}
+            navigation={navigation}
           />
         )}
       />
-    </Box>
+      <Toast />
+    </View>
   );
 };
 
 export default memo(FeedCard);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

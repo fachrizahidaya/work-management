@@ -1,10 +1,11 @@
 import { memo } from "react";
 
-import { Box, Spinner } from "native-base";
+import { Spinner } from "native-base";
+import { View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 
 import FeedCommentItem from "./FeedCommentItem";
-import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 
 const FeedCommentList = ({
   comments,
@@ -22,7 +23,7 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <Box flex={1} height={540}>
+      <View style={{ height: 535 }}>
         <FlashList
           data={comments}
           keyExtractor={(item, index) => item.id}
@@ -57,7 +58,7 @@ const FeedCommentList = ({
             />
           )}
         />
-      </Box>
+      </View>
     </GestureHandlerRootView>
   );
 };

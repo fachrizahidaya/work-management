@@ -1,15 +1,17 @@
-import { Actionsheet, Flex, Text, VStack } from "native-base";
+import { Actionsheet } from "native-base";
+import { StyleSheet, View, Text } from "react-native";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const EmployeeTeammates = ({ teammatesIsOpen, toggleTeammates, teammates }) => {
   return (
     <Actionsheet isOpen={teammatesIsOpen} onClose={toggleTeammates}>
       <Actionsheet.Content>
-        <VStack w="95%">
+        <View style={{ width: "95%" }}>
           {teammates?.data.map((item, index) => {
             return (
               <Actionsheet.Item key={index} px={-1}>
-                <Flex key={index} flexDir="row" alignItems="center" gap={3}>
+                <View key={index} style={styles.content}>
                   <AvatarPlaceholder
                     image={item?.image}
                     name={item?.name}
@@ -17,22 +19,28 @@ const EmployeeTeammates = ({ teammatesIsOpen, toggleTeammates, teammates }) => {
                     borderRadius="full"
                     isThumb={false}
                   />
-                  <Flex>
-                    <Text fontWeight={500} fontSize={14} color="#3F434A">
+                  <View>
+                    <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
                       {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
                     </Text>
-                    <Text fontWeight={400} fontSize={12} color="#20A144">
-                      {item?.position_name}
-                    </Text>
-                  </Flex>
-                </Flex>
+                    <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{item?.position_name}</Text>
+                  </View>
+                </View>
               </Actionsheet.Item>
             );
           })}
-        </VStack>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );
 };
 
 export default EmployeeTeammates;
+
+const styles = StyleSheet.create({
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+});

@@ -1,7 +1,7 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet } from "react-native";
-import { Flex, ScrollView, Text, Actionsheet } from "native-base";
+import { Clipboard, Linking, StyleSheet, View, ScrollView, Text } from "react-native";
+import { Actionsheet } from "native-base";
 
 import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
@@ -54,16 +54,14 @@ const FeedComment = ({
   return (
     <Actionsheet isOpen={handleOpen} onClose={handleClose}>
       <Actionsheet.Content>
-        <Flex flexDir="column" justifyContent="center">
-          <Flex style={styles.header}>
-            <Flex mb={2} alignItems="center">
-              <Text fontSize={15} fontWeight={500}>
-                Comments
-              </Text>
-            </Flex>
-          </Flex>
-          <ScrollView flex={1} style={{ maxHeight: 600 }}>
-            <Flex gap={1} mt={1} flex={1}>
+        <View style={{ flexDirection: "column", justifyContent: "center" }}>
+          <View style={styles.header}>
+            <View style={{ alignItems: "center", marginBottom: 5 }}>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
+            </View>
+          </View>
+          <ScrollView style={{ flex: 1, maxHeight: 600, paddingHorizontal: 5 }}>
+            <View style={styles.content}>
               <FeedCommentList
                 comments={comments}
                 hasBeenScrolled={hasBeenScrolled}
@@ -78,7 +76,7 @@ const FeedComment = ({
                 copyToClipboard={copyToClipboard}
                 employeeUsername={employeeUsername}
               />
-            </Flex>
+            </View>
           </ScrollView>
 
           <FeedCommentForm
@@ -89,7 +87,7 @@ const FeedComment = ({
             onSubmit={onSubmit}
             employees={employees}
           />
-        </Flex>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );
@@ -104,5 +102,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#DBDBDB",
+  },
+  content: {
+    marginTop: 5,
+    gap: 1,
+    flex: 1,
   },
 });

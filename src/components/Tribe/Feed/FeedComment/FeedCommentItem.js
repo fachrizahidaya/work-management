@@ -1,12 +1,11 @@
 import { memo, useState } from "react";
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { Box, Flex, Pressable, Text } from "native-base";
 
+import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import { useFetch } from "../../../../hooks/useFetch";
 
 const FeedCommentItem = ({
   postId,
@@ -52,13 +51,13 @@ const FeedCommentItem = ({
         <Text
           key={index}
           style={textStyle}
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: specificEmployeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-            })
-          }
+          // onPress={() =>
+          //   navigation.navigate("Employee Profile", {
+          //     employeeId: specificEmployeeId,
+          //     loggedEmployeeId: loggedEmployeeId,
+          //     loggedEmployeeImage: loggedEmployeeImage,
+          //   })
+          // }
         >
           @{item}{" "}
         </Text>
@@ -92,33 +91,31 @@ const FeedCommentItem = ({
   });
 
   return (
-    <Flex gap={3}>
-      <Flex my={1} minHeight={1}>
-        <Flex direction="row" gap={2}>
-          <Flex>
+    <View style={{ gap: 3 }}>
+      <View style={{ marginVertical: 10 }}>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View>
             <AvatarPlaceholder image={authorImage} name={authorName} size="sm" isThumb={false} />
-          </Flex>
-          <Flex flex={1} gap={1}>
-            <Text fontSize={12} fontWeight={500}>
+          </View>
+          <View style={{ flex: 1, gap: 5 }}>
+            <Text style={{ fontSize: 12, fontWeight: "500" }}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-            <Text fontSize={13} fontWeight={400}>
-              {styledTexts}
-            </Text>
+            <Text style={{ fontSize: 13, fontWeight: "400" }}>{styledTexts}</Text>
             <Pressable onPress={() => onReply(parentId)}>
-              <Text fontSize={12} fontWeight={500} color="#8A7373">
-                Reply
-              </Text>
+              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>
             </Pressable>
-          </Flex>
-        </Flex>
+          </View>
+        </View>
 
         {!totalReplies ? (
           ""
         ) : (
           <Pressable
-            mx={10}
-            my={3}
+            style={{
+              marginHorizontal: 40,
+              marginVertical: 10,
+            }}
             onPress={() => {
               refetchCommentRepliesData();
               setHideReplies(false);
@@ -126,7 +123,7 @@ const FeedCommentItem = ({
             }}
           >
             {viewReplyToggle === false ? (
-              <Text fontSize={12} fontWeight={500} color="#8A7373">
+              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
                 View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
               </Text>
             ) : (
@@ -137,7 +134,7 @@ const FeedCommentItem = ({
 
         {viewReplyToggle === true && totalReplies > 0 && hideReplies === false && (
           <>
-            <Box flex={1} minHeight={2}>
+            <View style={{ flex: 1, minHeight: 2 }}>
               <FlashList
                 data={commentRepliesData?.data}
                 initialNumToRender={10}
@@ -156,31 +153,65 @@ const FeedCommentItem = ({
                     totalReplies={item?.total_replies}
                     parentId={parentId}
                     onReply={onReply}
+                    handleEmailPress={handleEmailPress}
+                    handleLinkPress={handleLinkPress}
+                    copyToClipboard={copyToClipboard}
+                    employeeUsername={employeeUsername}
                   />
                 )}
               />
-            </Box>
+            </View>
 
             {viewReplyToggle === false ? (
               ""
             ) : (
-              <Box mx={20} my={3}>
+              <View style={{ marginHorizontal: 40, marginVertical: 5 }}>
                 <Pressable
                   onPress={() => {
                     setViewReplyToggle(false);
                     setHideReplies(true);
                   }}
                 >
-                  <Text fontSize={12} fontWeight={500} color="#8A7373">
-                    Hide Reply
-                  </Text>
+                  <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Hide Reply</Text>
                 </Pressable>
-              </Box>
+              </View>
             )}
           </>
         )}
-      </Flex>
-    </Flex>
+      </View>
+      {/* <CustomAccordion
+        title={`${totalReplies ? ` ${totalReplies}` : ""} ${totalReplies > 1 ? "Replies" : "Reply"}`}
+        subTitle={totalReplies}
+      >
+        <View style={{ flex: 1, minHeight: 2 }}>
+          <FlashList
+            data={commentRepliesData?.data}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={50}
+            windowSize={5}
+            onEndReachedThreshold={0.1}
+            keyExtractor={(item, index) => index}
+            estimatedItemSize={200}
+            renderItem={({ item, index }) => (
+              <FeedCommentReplyItem
+                key={index}
+                authorName={item?.employee_name}
+                authorImage={item?.employee_image}
+                comments={item?.comments}
+                totalReplies={item?.total_replies}
+                parentId={parentId}
+                onReply={onReply}
+                handleEmailPress={handleEmailPress}
+                handleLinkPress={handleLinkPress}
+                copyToClipboard={copyToClipboard}
+                employeeUsername={employeeUsername}
+              />
+            )}
+          />
+        </View>
+      </CustomAccordion> */}
+    </View>
   );
 };
 
