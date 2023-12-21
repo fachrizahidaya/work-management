@@ -54,14 +54,6 @@ const PayslipScreen = () => {
     }
   };
 
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      setCurrentPage(1);
-    }, 1000),
-    []
-  );
-
   const openSelectedPayslip = useCallback((data) => {
     toggleDownloadDialog();
     setSelectedPayslip(data);
@@ -135,13 +127,7 @@ const PayslipScreen = () => {
 
   useEffect(() => {
     if (payslip?.data?.data.length) {
-      if (!searchInput) {
-        setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
-        setFilteredDataArray([]);
-      } else {
-        setFilteredDataArray((prevData) => [...prevData, ...payslip?.data?.data]);
-        setPayslips([]);
-      }
+      setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
     }
   }, [payslip?.data]);
 

@@ -37,16 +37,6 @@ const LeaveScreen = () => {
     return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
   }, []);
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPage(1);
-  }, []);
-
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
@@ -99,15 +89,6 @@ const LeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const {
-    data: personalLeaveRequest,
-    refetch: refetchPersonalLeaveRequest,
-    isFetching: personalLeaveRequestIsFetching,
-    isLoading: personalLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/personal");
-
-  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
-
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
   const fetchMorePending = () => {
@@ -137,6 +118,16 @@ const LeaveScreen = () => {
     setSelectedData(null);
     toggleAction();
   };
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setPendingList([]);
+    setApprovedList([]);
+    setRejectedList([]);
+    setCurrentPagePending(1);
+    setCurrentPageApproved(1);
+    setCurrentPage(1);
+  }, []);
 
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data?.length) {
@@ -172,7 +163,6 @@ const LeaveScreen = () => {
         <>
           {/* Content here */}
           <LeaveRequestList
-            refetchProfile={refetchProfile}
             onSelect={openSelectedLeaveHandler}
             onDeselect={closeSelectedLeaveHandler}
             pendingList={pendingList}
@@ -214,8 +204,7 @@ const LeaveScreen = () => {
         header="Cancel Leave Request"
         onSuccess={() => {
           toggleAction();
-          refetchPersonalLeaveRequest();
-          refetchProfile();
+          refetchPendingLeaveRequest;
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"

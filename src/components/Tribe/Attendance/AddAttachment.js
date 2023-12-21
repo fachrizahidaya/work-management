@@ -2,12 +2,15 @@ import { useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { Actionsheet, Box, FormControl, Input, Pressable, Text, VStack } from "native-base";
-import { Platform } from "react-native";
+import { Actionsheet, Icon } from "native-base";
+import { Platform, View, Text, Pressable, StyleSheet } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
+import Input from "../../shared/Forms/Input";
 
 const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAttachment, onSubmit }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
@@ -70,47 +73,44 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
       }}
     >
       <Actionsheet.Content>
-        <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
-          <VStack w="100%" space={2}>
-            <FormControl.Label>Title</FormControl.Label>
-
-            <FormControl isInvalid={formik.errors.title}>
+        <View style={{ width: "95%", gap: 3, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
+          <View style={{ width: "100%", gap: 3 }}>
+            <View>
               <Input
-                variant="outline"
-                type="text"
+                formik={formik}
+                title="Title"
+                fieldName="title"
                 placeholder="Input title"
                 value={formik.values.title}
-                onChangeText={(value) => formik.setFieldValue("title", value)}
               />
-              <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage>
-            </FormControl>
-            <FormControl display="flex" flexDirection="row" justifyContent="space-between">
-              <Box>
-                <FormControl.Label>Start Date</FormControl.Label>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <View style={{ gap: 5 }}>
+                <Text>Start Date</Text>
                 <CustomDateTimePicker
                   width={180}
                   defaultValue={formik.values.begin_date}
                   onChange={onChangeStartDate}
                 />
-                <FormControl.ErrorMessage>{formik.errors.begin_date}</FormControl.ErrorMessage>
-              </Box>
-              <Box>
-                <FormControl.Label>End Date</FormControl.Label>
+                <Text style={{ color: "red" }}>{formik.errors.begin_date}</Text>
+              </View>
+              <View style={{ gap: 5 }}>
+                <Text>End Date</Text>
                 <CustomDateTimePicker width={180} defaultValue={formik.values.end_date} onChange={onChangeEndDate} />
-                <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
-              </Box>
-            </FormControl>
+                <Text style={{ color: "red" }}>{formik.errors.end_date}</Text>
+              </View>
+            </View>
 
-            <FormControl.Label>Attachment</FormControl.Label>
-
-            <FormControl isInvalid={formik.errors.attachment}>
-              <Pressable onPress={onSelectFile} p={3} borderColor="" borderRadius={15} borderWidth={1}>
-                <Text fontSize={12} fontWeight={400} opacity={0.5}>
+            <View style={{ gap: 5 }}>
+              <Text>Attachment</Text>
+              <Pressable onPress={onSelectFile} style={styles.attachment}>
+                <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
                   {!fileAttachment ? "Upload file..." : fileAttachment?.name}
                 </Text>
+                <Icon as={<MaterialCommunityIcons name="attachment" />} style={{ transform: [{ rotate: "-35deg" }] }} />
               </Pressable>
-              <FormControl.ErrorMessage>{formik.errors.attachment}</FormControl.ErrorMessage>
-            </FormControl>
+              <Text style={{ color: "red" }}>{formik.errors.attachment}</Text>
+            </View>
 
             {!formik.values.attachment ? (
               <FormButton opacity={0.5} disabled={true} children="Submit" fontColor="white" />
@@ -122,11 +122,23 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
                 fontColor="white"
               />
             )}
-          </VStack>
-        </VStack>
+          </View>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );
 };
 
 export default AddAttachment;
+
+const styles = StyleSheet.create({
+  attachment: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    borderColor: "#E8E9EB",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});
