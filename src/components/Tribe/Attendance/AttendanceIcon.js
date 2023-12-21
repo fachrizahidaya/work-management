@@ -1,4 +1,5 @@
-import { Flex, Icon, Text } from "native-base";
+import { Flex, Icon } from "native-base";
+import { View, Text, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -12,19 +13,35 @@ const AttendanceIcon = () => {
   ];
 
   return (
-    <Flex flex={1} alignItems="center" justifyContent="center" gap={1} px={3} flexDirection="row" flexWrap="wrap">
+    <View style={styles.container}>
       {listIcons.map((item) => {
         return (
-          <Flex key={item?.key} flexDirection="row" alignItems="center" justifyContent="center" gap={1}>
+          <View key={item?.key} style={styles.content}>
             <Icon as={<MaterialCommunityIcons name="circle" />} color={item.color} size={3} />
-            <Text fontSize={12} fontWeight={500}>
-              {item.name}
-            </Text>
-          </Flex>
+            <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
+          </View>
         );
       })}
-    </Flex>
+    </View>
   );
 };
 
 export default AttendanceIcon;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 5,
+    paddingHorizontal: 15,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+});

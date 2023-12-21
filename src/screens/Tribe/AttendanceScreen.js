@@ -2,16 +2,15 @@ import { useState, useCallback, useEffect, Fragment } from "react";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceAction from "../../components/Tribe/Attendance/AttendanceAction";
@@ -33,8 +32,6 @@ const AttendanceScreen = () => {
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
   const { isOpen: addAttachmentIsOpen, toggle: toggleAddAttachment } = useDisclosure(false);
   const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
-
-  const toast = useToast();
 
   const attendanceFetchParameters = filter;
 
@@ -158,19 +155,21 @@ const AttendanceScreen = () => {
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Report Submitted"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Report submitted",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Submit failed, please try again later"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -225,18 +224,19 @@ const AttendanceScreen = () => {
       });
 
       refetchAttachment();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Attachment Submitted" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Attachment submitted",
+        position: "bottom",
       });
       setStatus("success");
       setSubmitting(false);
     } catch (err) {
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Submit failed, please try again later" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setStatus("error");
       setSubmitting(false);
@@ -257,17 +257,18 @@ const AttendanceScreen = () => {
     try {
       const res = await axiosInstance.delete(`/hr/timesheets/personal/attachments/${attachment_id}`);
       refetchAttachment();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Attachment Deleted" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Attachment deleted",
+        position: "bottom",
       });
       setIsLoading(false);
     } catch (err) {
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Submit failed, please try again later" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setIsLoading(false);
     }
@@ -369,9 +370,9 @@ const AttendanceScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader width={200} title="My Attendance" backButton={false} />
-        </Flex>
+        </View>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -400,6 +401,7 @@ const AttendanceScreen = () => {
             setAttachmentId={openDeleteAttachmentModalHandler}
           />
         </ScrollView>
+        <Toast />
       </SafeAreaView>
       <AttendanceAction
         reportIsOpen={reportIsOpen}
@@ -457,5 +459,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
 });
