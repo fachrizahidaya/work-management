@@ -54,9 +54,9 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
       comments: "",
       parent_id: parentId || "",
     },
-    validationSchema: yup.object().shape({
-      comments: yup.string().required("Comments is required"),
-    }),
+    // validationSchema: yup.object().shape({
+    //   comments: yup.string().required("Comments is required"),
+    // }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
@@ -102,6 +102,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
           isSubmitting={formik.isSubmitting}
           opacity={formik.values.comments === "" ? 0.5 : 1}
           padding={4}
+          disabled={formik.values.comments === "" ? true : false}
         >
           <Text style={{ color: "#FFFFFF" }}>{parentId ? "Reply" : "Post"}</Text>
         </FormButton>
