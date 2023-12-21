@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { TouchableOpacity } from "react-native";
-import { Box, Divider, Flex, Text } from "native-base";
+import { TouchableOpacity, View, Text } from "react-native";
+import { Divider } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
@@ -11,9 +11,9 @@ const EmployeeInformation = ({ id, name, position, email, phone, image, refetch 
   const navigation = useNavigation();
 
   return (
-    <Flex mt={3} gap={5} style={card.card}>
-      <Flex justifyContent="space-between" direction="row" gap={4}>
-        <Flex gap={3} flexDir="row" alignItems="center">
+    <View style={{ ...card.card, marginTop: 5, gap: 20 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 5 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("Employee Profile", {
@@ -24,44 +24,38 @@ const EmployeeInformation = ({ id, name, position, email, phone, image, refetch 
               })
             }
           >
-            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius={"full"} isThumb={false} />
+            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius="full" isThumb={false} />
           </TouchableOpacity>
-          <Flex>
-            <Text fontWeight={500} fontSize={14} color="#3F434A">
+          <View>
+            <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
               {name.length > 30 ? name.split(" ")[0] : name}
             </Text>
-            <Text fontWeight={400} fontSize={12} color="#8A9099">
-              {position}
-            </Text>
-          </Flex>
-        </Flex>
-      </Flex>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>{position}</Text>
+          </View>
+        </View>
+      </View>
 
       <Divider />
 
-      <Box>
-        <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-          <Text fontWeight={400} fontSize={12} color="#3F434A">
-            Phone:
-          </Text>
-          <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(phone)} fontWeight={400} fontSize={12} color="#8A9099">
+      <View>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>Phone:</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }} onPress={() => CopyToClipboard(phone)}>
               {phone}
             </Text>
-          </Flex>
-        </Flex>
-        <Flex alignItems="center" justifyContent="space-between" flexDir="row">
-          <Text fontWeight={400} fontSize={12}>
-            Email:
-          </Text>
-          <Flex gap={1} alignItems="center" flexDir="row">
-            <Text onPress={() => CopyToClipboard(email)} fontWeight={400} fontSize={12} color="#8A9099">
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400" }}>Email:</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }} onPress={() => CopyToClipboard(email)}>
               {email}
             </Text>
-          </Flex>
-        </Flex>
-      </Box>
-    </Flex>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 };
 
