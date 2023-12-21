@@ -214,7 +214,7 @@ const EmployeeProfileScreen = ({ route }) => {
         setPosts((prevData) => [...prevData, ...personalPost?.data]);
       }
     }
-  }, [personalPostIsFetching]);
+  }, [personalPostIsFetching, reloadPost]);
 
   useEffect(() => {
     if (!commentsOpenHandler) {
@@ -228,7 +228,7 @@ const EmployeeProfileScreen = ({ route }) => {
         }
       }
     }
-  }, [commentsOpenHandler, commentIsFetching]);
+  }, [commentIsFetching, commentParentId, reloadComment]);
 
   useEffect(() => {
     setTimeout(() => {
