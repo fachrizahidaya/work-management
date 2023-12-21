@@ -64,9 +64,9 @@ const NewFeedScreen = ({ route }) => {
       type: selectedOption || "Public",
       end_date: "",
     },
-    validationSchema: yup.object().shape({
-      content: yup.string().required("Content is required"),
-    }),
+    // validationSchema: yup.object().shape({
+    //   content: yup.string().required("Content is required"),
+    // }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       const formData = new FormData();

@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Platform, Pressable } from "react-native";
-import { Actionsheet, FormControl, Icon, Input, Text, VStack } from "native-base";
+import { Platform, StyleSheet, View, Text } from "react-native";
+import { Actionsheet } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import Input from "../../shared/Forms/Input";
 
 const PayslipPasswordEdit = ({
   formIsOpen,
@@ -65,88 +66,64 @@ const PayslipPasswordEdit = ({
       }}
     >
       <Actionsheet.Content>
-        <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
-          <VStack w="100%" space={3}>
-            <FormControl.Label>Old Password</FormControl.Label>
-
-            <FormControl isInvalid={formik.errors.old_password || !!passwordError}>
+        <View style={{ width: "95%", gap: 5, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
+          <View style={{ width: "100%", gap: 10 }}>
+            <View style={{ gap: 5 }}>
               <Input
-                variant="outline"
-                type={!hideOldPassword ? "text" : "password"}
-                placeholder="Enter Old password"
+                formik={formik}
+                title="Old Password"
+                fieldName="old_password"
                 value={formik.values.old_password}
-                onChangeText={(value) => formik.setFieldValue("old_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setHideOldPassword(!hideOldPassword)}>
-                    <Icon
-                      as={<MaterialCommunityIcons name={hideOldPassword ? "eye" : "eye-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
+                placeholder="Enter Old password"
+                secureTextEntry={hideOldPassword}
+                endIcon={hideOldPassword ? "eye-outline" : "eye-off-outline"}
+                onPressEndIcon={() => setHideOldPassword(!hideOldPassword)}
               />
-              <FormControl.ErrorMessage>{formik.errors.old_password || passwordError}</FormControl.ErrorMessage>
-            </FormControl>
-            <FormControl.Label>New Password</FormControl.Label>
+            </View>
 
-            <FormControl isInvalid={formik.errors.new_password}>
+            <View style={{ gap: 5 }}>
               <Input
-                variant="outline"
-                type={!hideNewPassword ? "text" : "password"}
-                placeholder="Enter New password"
+                formik={formik}
+                title="New Password"
+                fieldName="new_password"
                 value={formik.values.new_password}
-                onChangeText={(value) => formik.setFieldValue("new_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setHideNewPassword(!hideNewPassword)}>
-                    <Icon
-                      as={<MaterialCommunityIcons name={hideNewPassword ? "eye" : "eye-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
+                placeholder="Enter New password"
+                secureTextEntry={hideNewPassword}
+                endIcon={hideNewPassword ? "eye-outline" : "eye-off-outline"}
+                onPressEndIcon={() => setHideNewPassword(!hideNewPassword)}
               />
-              <FormControl.ErrorMessage>{formik.errors.new_password}</FormControl.ErrorMessage>
-            </FormControl>
-            <FormControl.Label>Confirm New Password</FormControl.Label>
+            </View>
 
-            <FormControl isInvalid={formik.errors.confirm_password}>
+            <View style={{ gap: 5 }}>
               <Input
-                variant="outline"
-                type={!hideConfirmPassword ? "text" : "password"}
+                formik={formik}
+                title="Confirm New Password"
+                fieldName="confirm_password"
+                value={formik.values.new_password}
                 placeholder="Enter Confirm password"
-                value={formik.values.confirm_password}
-                onChangeText={(value) => formik.setFieldValue("confirm_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setHideConfirmPassword(!hideConfirmPassword)}>
-                    <Icon
-                      as={<MaterialCommunityIcons name={hideConfirmPassword ? "eye" : "eye-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
+                secureTextEntry={hideConfirmPassword}
+                endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
+                onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}
               />
-              <FormControl.ErrorMessage>{formik.errors.confirm_password}</FormControl.ErrorMessage>
-            </FormControl>
-            {formik.values.old_password && formik.values.new_password && formik.valuesconfirm_password ? (
+            </View>
+            {formik.values.old_password && formik.values.new_password && formik.values.confirm_password ? (
               <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                <Text color="#FFFFFF">Submit</Text>
+                <Text style={{ color: "#FFFFFF" }}>Submit</Text>
               </FormButton>
             ) : (
               <FormButton opacity={0.5}>
-                <Text color="#FFFFFF">Submit</Text>
+                <Text style={{ color: "#FFFFFF" }}>Submit</Text>
               </FormButton>
             )}
-          </VStack>
-        </VStack>
+          </View>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );
 };
 
 export default PayslipPasswordEdit;
+
+const styles = StyleSheet.create({
+  container: {},
+});

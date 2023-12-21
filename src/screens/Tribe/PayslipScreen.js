@@ -1,16 +1,17 @@
 import { useState, useCallback, useEffect } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Image, Spinner, Text, VStack, useToast } from "native-base";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
+import { Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import PageHeader from "../../components/shared/PageHeader";
+import Button from "../../components/shared/Forms/Button";
 import axiosInstance from "../../config/api";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
@@ -33,8 +34,6 @@ const PayslipScreen = () => {
 
   const { isOpen: formIsOpen, toggle: toggleForm } = useDisclosure(false);
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
-
-  const toast = useToast();
 
   const fetchPayslipParameters = {
     page: currentPage,
@@ -86,20 +85,22 @@ const PayslipScreen = () => {
       setStatus("success");
       formik.resetForm();
       refetchPayslip();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Password Updated"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Password updated",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -123,10 +124,11 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Download failed, please try again later"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -146,13 +148,14 @@ const PayslipScreen = () => {
   return (
     <>
       <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
-          <Button onPress={() => toggleForm()}>
-            <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
-              Change PIN
-            </Text>
-          </Button>
+          <Button
+            onPress={() => toggleForm()}
+            padding={5}
+            children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
+          />
+
           <PayslipPasswordEdit
             formIsOpen={formIsOpen}
             toggleForm={toggleForm}
@@ -166,7 +169,7 @@ const PayslipScreen = () => {
             setHideConfirmPassword={setHideConfirmPassword}
             onUpdatePassword={payslipPasswordUpdateHandler}
           />
-        </Flex>
+        </View>
 
         {payslip?.data?.data.length > 0 ? (
           <FlashList
@@ -196,10 +199,14 @@ const PayslipScreen = () => {
         ) : payslipIsFetching ? (
           <Spinner />
         ) : (
-          <VStack space={2} style={styles.imageContainer}>
-            <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("./../../assets/vectors/empty.png")}
+              alt="empty"
+              style={{ resizeMode: "contain", height: 300, width: 300 }}
+            />
             <Text>No Data</Text>
-          </VStack>
+          </View>
         )}
       </SafeAreaView>
       <PayslipDownload
@@ -232,10 +239,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
   imageContainer: {
     marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
+    gap: 5,
   },
 });

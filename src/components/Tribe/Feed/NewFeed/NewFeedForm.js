@@ -48,6 +48,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
                   formik.handleSubmit();
                 }
           }
+          disabled={formik.values.content === "" ? true : false}
         >
           {isLoading ? (
             <Spinner color="#FFFFFF" />
