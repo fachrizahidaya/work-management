@@ -125,7 +125,7 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <View gap={20} style={card.card}>
+      <View style={{ ...card.card, gap: 20 }}>
         <View style={styles.cardHeader}>
           <Pressable
             onPress={() =>

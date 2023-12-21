@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet, FormControl, Icon, Input, Pressable, Text, VStack } from "native-base";
-import { Platform } from "react-native";
+import { Actionsheet, Icon } from "native-base";
+import { Platform, View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
-import { useFormik } from "formik";
-import { useEffect } from "react";
+import Input from "../../shared/Forms/Input";
 
 const PayslipDownload = ({
   downloadDialogIsOpen,
@@ -55,35 +55,25 @@ const PayslipDownload = ({
       }}
     >
       <Actionsheet.Content>
-        <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
-          <VStack w="100%" space={2}>
-            <FormControl.Label justifyContent="center">Password</FormControl.Label>
-
-            <FormControl isInvalid={formik.errors.password || !!passwordError}>
+        <View style={{ width: "95%", gap: 5, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
+          <View style={{ width: "100%", gap: 10 }}>
+            <View>
               <Input
-                variant="outline"
-                type={!hidePassword ? "text" : "password"}
-                placeholder="Enter your KSS password"
+                formik={formik}
+                title="Password"
+                fieldName="password"
                 value={formik.values.password}
-                onChangeText={(value) => formik.setFieldValue("password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setHidePassword(!hidePassword)}>
-                    <Icon
-                      as={<MaterialCommunityIcons name={hidePassword ? "eye" : "eye-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
+                placeholder="Enter your KSS password"
+                secureTextEntry={hidePassword}
+                endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
+                onPressEndIcon={() => setHidePassword(!hidePassword)}
               />
-              <FormControl.ErrorMessage>{formik.errors.password || passwordError}</FormControl.ErrorMessage>
-            </FormControl>
+            </View>
             <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="#FFFFFF">Download</Text>
+              <Text style={{ color: "#FFFFFF" }}>Download</Text>
             </FormButton>
-          </VStack>
-        </VStack>
+          </View>
+        </View>
       </Actionsheet.Content>
     </Actionsheet>
   );
