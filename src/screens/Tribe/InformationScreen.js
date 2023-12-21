@@ -1,5 +1,4 @@
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Image, Text, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../hooks/useFetch";
@@ -14,18 +13,22 @@ const InformationScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Information" backButton={false} />
-        </Flex>
+        </View>
 
         <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
-          <Flex px={3} flex={1} gap={5} py={5}>
+          <View style={styles.content}>
             {/* Content here */}
             {!profile?.data ? (
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+                <Image
+                  source={require("../../assets/vectors/empty.png")}
+                  style={{ width: 300, height: 300, resizeMode: "contain" }}
+                  alt="empty"
+                />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             ) : (
               <>
                 <EmployeeLeaveDashboard
@@ -43,9 +46,7 @@ const InformationScreen = () => {
                   image={profile?.data?.image}
                   refetch={refetchProfile}
                 />
-                <Text fontSize={16} fontWeight={500} px={3}>
-                  My Supervisor
-                </Text>
+                <Text style={{ fontSize: 16, fontWeight: "500", paddingHorizontal: 10 }}>My Supervisor</Text>
                 <SupervisorInformation
                   supervisorId={profile?.data?.supervisor_employee_id}
                   supervisorName={profile?.data?.supervisor_name}
@@ -58,7 +59,7 @@ const InformationScreen = () => {
                 />
               </>
             )}
-          </Flex>
+          </View>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -78,5 +79,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  content: {
+    paddingHorizontal: 15,
+    flex: 1,
+    gap: 20,
+    paddingVertical: 20,
   },
 });

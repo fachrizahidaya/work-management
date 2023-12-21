@@ -1,4 +1,5 @@
-import { Box, Flex, Icon, Text } from "native-base";
+import { Icon } from "native-base";
+import { StyleSheet, View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -31,33 +32,46 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
   ];
 
   return (
-    <>
-      <Flex gap={3} alignItems="center" justifyContent="center" flexDir="row">
-        {items.map((item) => {
-          return (
-            <Box key={item.id} alignItems="center" justifyContent="center" gap={1}>
-              <Box
-                backgroundColor={item.backgroundColor}
-                alignItems="center"
-                justifyContent="center"
-                width={60}
-                height={60}
-                borderRadius={15}
-              >
-                <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
-              </Box>
-              <Text fontWeight={500} fontSize={20}>
-                {item.qty}
-              </Text>
-              <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
-                {item.name}
-              </Text>
-            </Box>
-          );
-        })}
-      </Flex>
-    </>
+    <View style={styles.icon}>
+      {items.map((item) => {
+        return (
+          <View key={item.id} style={styles.content}>
+            <View style={{ ...styles.card, backgroundColor: item.backgroundColor }}>
+              <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
+            </View>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.qty}</Text>
+            <Text
+              style={{ fontSize: 12, fontWeight: "400", color: "#8A9099", textAlign: "center", width: 60, height: 40 }}
+              numberOfLines={2}
+            >
+              {item.name}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
   );
 };
 
 export default EmployeeLeaveDashboard;
+
+const styles = StyleSheet.create({
+  icon: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 25,
+  },
+  content: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
+  card: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 60,
+    height: 60,
+    borderRadius: 15,
+  },
+});

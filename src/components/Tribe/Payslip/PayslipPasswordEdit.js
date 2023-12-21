@@ -5,8 +5,6 @@ import * as yup from "yup";
 import { Platform, StyleSheet, View, Text } from "react-native";
 import { Actionsheet } from "native-base";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import Input from "../../shared/Forms/Input";

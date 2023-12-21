@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet, Icon } from "native-base";
-import { Platform, View, Text, Pressable } from "react-native";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Actionsheet } from "native-base";
+import { Platform, View, Text } from "react-native";
 
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
