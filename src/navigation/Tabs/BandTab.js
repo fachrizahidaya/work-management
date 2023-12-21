@@ -166,9 +166,9 @@ const BandTab = () => {
       {/* Sheets */}
       <BandScreenSheet reference={bandScreenSheetRef} />
 
-      <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
+      {/* <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} />
 
-      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} />
+      <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} /> */}
     </>
   );
 };
