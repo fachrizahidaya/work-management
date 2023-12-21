@@ -15,7 +15,8 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 
-const TaskForm = ({ taskData, projectId, selectedStatus = "Open", refetch }) => {
+const TaskForm = ({ route }) => {
+  const { taskData, projectId, selectedStatus, refetch } = route.params;
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
 
@@ -79,7 +80,7 @@ const TaskForm = ({ taskData, projectId, selectedStatus = "Open", refetch }) => 
     validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
-      submitHandler(values, selectedStatus, setSubmitting, setStatus);
+      submitHandler(values, selectedStatus || "Open", setSubmitting, setStatus);
     },
   });
 

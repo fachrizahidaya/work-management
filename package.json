@@ -45,6 +45,7 @@
     "react-native-calendars": "^1.1301.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-controlled-mentions": "^2.2.5",
+    "react-native-extra-dimensions-android": "^1.2.5",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^13.0.1",

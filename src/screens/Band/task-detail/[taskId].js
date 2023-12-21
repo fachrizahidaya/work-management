@@ -1,12 +1,12 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
 import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Flex, FormControl, HStack, Skeleton, Text, VStack } from "native-base";
-import { Dimensions, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../hooks/useFetch";
 import ChecklistSection from "../../../components/Band/Task/TaskDetail/ChecklistSection/ChecklistSection";
@@ -17,11 +17,11 @@ import DeadlineSection from "../../../components/Band/Task/TaskDetail/DeadlineSe
 import ControlSection from "../../../components/Band/Task/TaskDetail/ControlSection/ControlSection";
 import AttachmentSection from "../../../components/Band/Task/TaskDetail/AttachmentSection/AttachmentSection";
 import CommentInput from "../../../components/Band/shared/CommentInput/CommentInput";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import NewTaskSlider from "../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import PageHeader from "../../../components/shared/PageHeader";
 import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/MenuSection";
 import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
+import axiosInstance from "../../../config/api";
+import { useLoading } from "../../../hooks/useLoading";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -30,7 +30,7 @@ const TaskDetailScreen = ({ route }) => {
   const { taskId } = route.params;
   const loggedUser = userSelector.id;
   const [isReady, setIsReady] = useState(false);
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
+  const { isLoading: statusIsLoading, toggle: toggleLoading } = useLoading(false);
 
   const { data: selectedTask, refetch: refetchSelectedTask } = useFetch(taskId && `/pm/tasks/${taskId}`);
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
@@ -40,13 +40,67 @@ const TaskDetailScreen = ({ route }) => {
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
   const onOpenTaskForm = useCallback(() => {
-    toggleTaskForm();
+    navigation.navigate("Task Form", { taskData: selectedTask?.data, refetch: refetchSelectedTask });
   }, []);
 
-  const onCloseTaskForm = useCallback((resetForm) => {
-    toggleTaskForm();
-    resetForm();
-  }, []);
+  /**
+   * Handles take task as responsible
+   */
+  const takeTask = async () => {
+    try {
+      if (!selectedTask.data.responsible_id) {
+        await axiosInstance.post("/pm/tasks/responsible", {
+          task_id: selectedTask.data.id,
+          user_id: loggedUser,
+        });
+      } else {
+        // Update the responsible user if it already exists
+        await axiosInstance.patch(`/pm/tasks/responsible/${responsible.data[0].id}`, {
+          user_id: loggedUser,
+        });
+      }
+      refetchResponsible();
+      refetchSelectedTask();
+      Toast.show({
+        type: "success",
+        text1: "Task assigned",
+      });
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
+      });
+    }
+  };
+
+  /**
+   * Handles change task status
+   */
+  const changeTaskStatus = async (status) => {
+    try {
+      toggleLoading();
+      await axiosInstance.post(`/pm/tasks/${status}`, {
+        id: selectedTask.data.id,
+      });
+
+      toggleLoading();
+      refetchSelectedTask();
+
+      Toast.show({
+        type: "success",
+        text1: `Task ${status}ed`,
+      });
+    } catch (error) {
+      console.log(error);
+      toggleLoading();
+
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
+      });
+    }
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,10 +108,13 @@ const TaskDetailScreen = ({ route }) => {
     }, 150);
   }, []);
 
-  const baseStyles = {
-    color: "#3F434A",
-    fontWeight: 500,
-  };
+  const baseStyles = useMemo(
+    () => ({
+      color: "#000",
+      fontWeight: 500,
+    }),
+    []
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -68,16 +125,17 @@ const TaskDetailScreen = ({ route }) => {
           enableOnAndroid={true}
           enableAutomaticScroll={Platform.OS === "ios"}
         >
-          <Flex
-            bgColor="white"
-            gap={5}
+          <View
             style={{
+              backgroundColor: "white",
+              display: "flex",
+              gap: 20,
               marginTop: 13,
               paddingHorizontal: 16,
             }}
           >
-            <Flex gap={2}>
-              <HStack justifyContent="space-between">
+            <View style={{ display: "flex", gap: 20 }}>
+              <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <PageHeader
                   title={selectedTask?.data?.title}
                   subTitle={selectedTask?.data?.task_no}
@@ -88,20 +146,20 @@ const TaskDetailScreen = ({ route }) => {
                 {!inputIsDisabled && (
                   <MenuSection
                     selectedTask={selectedTask?.data}
-                    disabled={inputIsDisabled}
+                    onTakeTask={takeTask}
                     openEditForm={onOpenTaskForm}
-                    refetchResponsible={refetchResponsible}
-                    responsible={responsible?.data}
+                    disabled={inputIsDisabled}
                   />
                 )}
-              </HStack>
+              </View>
 
               <ControlSection
                 taskStatus={selectedTask?.data?.status}
                 selectedTask={selectedTask?.data}
-                refetchTask={refetchSelectedTask}
+                onChangeStatus={changeTaskStatus}
+                isLoading={statusIsLoading}
               />
-            </Flex>
+            </View>
 
             {/* Reponsible, Creator and Observer section */}
             <PeopleSection
@@ -122,7 +180,7 @@ const TaskDetailScreen = ({ route }) => {
             <LabelSection projectId={selectedTask?.data?.project_id} taskId={taskId} disabled={inputIsDisabled} />
 
             {/* Due date and cost */}
-            <Flex flexDir="column" justifyContent="space-between" gap={5}>
+            <View style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
               <DeadlineSection
                 deadline={selectedTask?.data?.deadline}
                 projectDeadline={selectedTask?.data?.project_deadline}
@@ -131,11 +189,11 @@ const TaskDetailScreen = ({ route }) => {
               />
 
               <CostSection taskId={taskId} disabled={inputIsDisabled} />
-            </Flex>
+            </View>
 
             {/* Description */}
-            <FormControl>
-              <FormControl.Label>DESCRIPTION</FormControl.Label>
+            <View style={{ display: "flex", gap: 10 }}>
+              <Text style={{ fontWeight: 500 }}>DESCRIPTION</Text>
 
               <RenderHtml
                 contentWidth={width}
@@ -144,7 +202,7 @@ const TaskDetailScreen = ({ route }) => {
                   html: hyperlinkConverter(selectedTask?.data?.description) || "",
                 }}
               />
-            </FormControl>
+            </View>
 
             {/* Checklists */}
             <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
@@ -153,31 +211,23 @@ const TaskDetailScreen = ({ route }) => {
             <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
 
             {/* Comments */}
-            <FormControl>
-              <FormControl.Label>COMMENTS</FormControl.Label>
+            <View style={{ display: "flex", gap: 10 }}>
+              <Text style={{ fontWeight: 500 }}>COMMENTS</Text>
               <CommentInput taskId={taskId} data={selectedTask?.data} />
-            </FormControl>
-          </Flex>
+            </View>
+          </View>
         </KeyboardAwareScrollView>
       ) : (
-        <VStack mt={2} px={4} space={2}>
-          <Skeleton h={41} />
-          <HStack space={2}>
-            <Skeleton borderRadius="full" h={41} w={41} />
-            <Skeleton w={200} />
-          </HStack>
-        </VStack>
+        <View
+          style={{
+            marginTop: 13,
+            paddingHorizontal: 16,
+          }}
+        >
+          <Text>Loading...</Text>
+        </View>
       )}
-
-      {/* Task Form */}
-      {taskFormIsOpen && (
-        <NewTaskSlider
-          isOpen={taskFormIsOpen}
-          taskData={selectedTask?.data}
-          onClose={onCloseTaskForm}
-          refetch={refetchSelectedTask}
-        />
-      )}
+      <Toast position="bottom" />
     </SafeAreaView>
   );
 };

@@ -14,8 +14,9 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 
-const ProjectForm = ({ projectData, refetchSelectedProject, teamMembers }) => {
+const ProjectForm = ({ route }) => {
   const { width, height } = Dimensions.get("window");
+  const { projectData, refetchSelectedProject, teamMembers } = route.params;
   const navigation = useNavigation();
 
   // State to save editted or created project
@@ -131,7 +132,7 @@ const ProjectForm = ({ projectData, refetchSelectedProject, teamMembers }) => {
             />
 
             <View>
-              <Text style={{ marginBottom: 9 }}>End Date</Text>
+              <Text style={{ marginBottom: 9, fontWeight: 500 }}>End Date</Text>
               <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
             </View>

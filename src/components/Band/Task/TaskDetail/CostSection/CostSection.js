@@ -3,40 +3,30 @@ import React, { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  Actionsheet,
-  Box,
-  Divider,
-  Flex,
-  FormControl,
-  HStack,
-  Icon,
-  IconButton,
-  Input,
-  Pressable,
-  ScrollView,
-  Text,
-  VStack,
-  useToast,
-} from "native-base";
+import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
-import { Platform } from "react-native";
+import { Dimensions, Platform, Text, View, Pressable, TouchableOpacity } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
-import { useKeyboardChecker } from "../../../../../hooks/useKeyboardChecker";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
+import Input from "../../../../shared/Forms/Input";
 
 const CostSection = ({ taskId, disabled }) => {
-  const toast = useToast();
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const [selectedCost, setSelectedChecklist] = useState({});
   const { isOpen, toggle } = useDisclosure(false);
   const { isOpen: deleteCostModalisOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { keyboardHeight } = useKeyboardChecker();
   const { data: costs, refetch: refechCosts } = useFetch(`/pm/tasks/${taskId}/cost`);
 
   const onCloseActionSheet = (resetForm) => {
@@ -45,7 +35,9 @@ const CostSection = ({ taskId, disabled }) => {
   };
 
   const openDeleteModal = (id) => {
-    toggleDeleteModal();
+    toggle();
+
+    setTimeout(toggleDeleteModal, 500);
 
     const filteredCost = costs?.data.filter((item) => {
       return item.id === id;
@@ -64,19 +56,19 @@ const CostSection = ({ taskId, disabled }) => {
       setStatus("success");
       setSubmitting(false);
       refechCosts();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"New cost added"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Cost added",
       });
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -111,104 +103,113 @@ const CostSection = ({ taskId, disabled }) => {
 
   return (
     <>
-      <FormControl>
-        <FormControl.Label>COST</FormControl.Label>
-        <Box position="relative">
-          <Pressable onPress={toggle} position="absolute" zIndex={2} top={0} right={0} bottom={0} left={0} />
+      <View style={{ display: "flex", gap: 10 }}>
+        <Text style={{ fontWeight: 500 }}>COST</Text>
+        <View style={{ position: "relative" }}>
+          <Pressable
+            onPress={toggle}
+            style={{
+              position: "absolute",
+              zIndex: 2,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            }}
+          />
 
           <Input
-            isReadOnly
             value={`Rp ${totalCostCalculation?.toLocaleString() || 0}`}
-            placeholder="Task's cost"
+            placeHolder="Task's cost"
             editable={false}
           />
-        </Box>
-      </FormControl>
+        </View>
 
-      {isOpen && (
-        <Actionsheet isOpen={isOpen} onClose={() => onCloseActionSheet(formik.resetForm)}>
-          <Actionsheet.Content>
-            <VStack w="95%" space={3} pb={Platform.OS === "ios" && keyboardHeight}>
+        <Modal
+          avoidKeyboard={true}
+          isVisible={isOpen}
+          onBackdropPress={() => onCloseActionSheet(formik.resetForm)}
+          deviceHeight={deviceHeight}
+          deviceWidth={deviceWidth}
+        >
+          <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+            <View style={{ display: "flex", gap: 10 }}>
               {costs?.data.length > 0 ? (
                 <ScrollView style={{ maxHeight: 200 }}>
-                  <Box flex={1} minHeight={2}>
+                  <View style={{ flex: 1, minHeight: 2 }}>
                     <FlashList
                       data={costs?.data}
                       keyExtractor={(item) => item?.id}
-                      estimatedItemSize={200}
+                      estimatedItemSize={25}
                       renderItem={({ item }) => (
-                        <Flex key={item.id} flexDir="row" justifyContent="space-between" alignItems="center">
-                          <HStack>
-                            <Text fontSize={16}>{item.cost_name} - </Text>
-                            <Text fontSize={16}>Rp {item.cost_amount.toLocaleString()}</Text>
-                          </HStack>
+                        <View
+                          key={item.id}
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: 5,
+                          }}
+                        >
+                          <View style={{ display: "flex", flexDirection: "row" }}>
+                            <Text style={{ fontSize: 16 }}>{item.cost_name} - </Text>
+                            <Text style={{ fontSize: 16 }}>Rp {item.cost_amount.toLocaleString()}</Text>
+                          </View>
 
-                          <IconButton
-                            onPress={() => openDeleteModal(item.id)}
-                            rounded="full"
-                            icon={
-                              <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />
-                            }
-                          />
-                        </Flex>
+                          <TouchableOpacity onPress={() => openDeleteModal(item.id)}>
+                            <MaterialCommunityIcons name="delete-outline" size={20} />
+                          </TouchableOpacity>
+                        </View>
                       )}
                     />
-                  </Box>
+                  </View>
                 </ScrollView>
               ) : (
-                <Actionsheet.Item isDisabled _pressed={{ bgColor: "#f1f1f1" }}>
-                  This task has no cost yet.
-                </Actionsheet.Item>
+                <Text style={{ fontWeight: 500 }}>This task has no cost yet.</Text>
               )}
+
               {!disabled && (
                 <>
-                  <Divider orientation="horizontal" />
-                  <VStack w="100%" space={2}>
-                    <FormControl.Label>Add New Cost</FormControl.Label>
+                  <View style={{ flex: 1, borderWidth: 1, borderColor: "#E8E9EB" }} />
+                  <View style={{ display: "flex", gap: 5 }}>
+                    <Input
+                      placeHolder="Cost Title"
+                      value={formik.values.cost_name}
+                      fieldName="cost_name"
+                      formik={formik}
+                    />
 
-                    <FormControl isInvalid={formik.errors.cost_name}>
-                      <Input
-                        placeholder="Cost Title"
-                        value={formik.values.cost_name}
-                        onChangeText={(value) => formik.setFieldValue("cost_name", value)}
-                      />
-                      <FormControl.ErrorMessage>{formik.errors.cost_name}</FormControl.ErrorMessage>
-                    </FormControl>
-
-                    <FormControl isInvalid={formik.errors.cost_amount}>
-                      <Input
-                        keyboardType="numeric"
-                        placeholder="Cost Amount"
-                        value={formik.values.cost_amount}
-                        onChangeText={(value) => formik.setFieldValue("cost_amount", value)}
-                      />
-                      <FormControl.ErrorMessage>{formik.errors.cost_amount}</FormControl.ErrorMessage>
-                    </FormControl>
+                    <Input
+                      keyboardType="numeric"
+                      placeHolder="Cost Amount"
+                      value={formik.values.cost_amount}
+                      formik={formik}
+                      fieldName="cost_amount"
+                    />
                     <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                      <Text color="white">Save</Text>
+                      <Text style={{ color: "white" }}>Save</Text>
                     </FormButton>
-                  </VStack>
+                  </View>
                 </>
               )}
-            </VStack>
-          </Actionsheet.Content>
-        </Actionsheet>
-      )}
+            </View>
+          </View>
+        </Modal>
 
-      <Box>
-        {deleteCostModalisOpen && (
-          <ConfirmationModal
-            isOpen={deleteCostModalisOpen}
-            toggle={toggleDeleteModal}
-            apiUrl={`/pm/tasks/cost/${selectedCost?.id}`}
-            successMessage="Cost deleted"
-            header="Delete Cost"
-            description={`Are you sure to delete ${selectedCost?.title}?`}
-            hasSuccessFunc={true}
-            onSuccess={refechCosts}
-          />
-        )}
-      </Box>
+        <ConfirmationModal
+          isOpen={deleteCostModalisOpen}
+          toggle={toggleDeleteModal}
+          apiUrl={`/pm/tasks/cost/${selectedCost?.id}`}
+          successMessage="Cost deleted"
+          header="Delete Cost"
+          description={`Are you sure to delete ${selectedCost?.cost_name}?`}
+          hasSuccessFunc={true}
+          onSuccess={refechCosts}
+        />
+
+        <Toast position="bottom" />
+      </View>
     </>
   );
 };

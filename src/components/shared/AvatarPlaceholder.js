@@ -4,8 +4,7 @@ import { Image, TouchableOpacity, View, Text } from "react-native";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import UserPreviewModal from "./UserPreviewModal";
-
-const AvatarPlaceholder = ({ image, name, email, size, borderRadius, isThumb = true, isPressable, style }) => {
+const AvatarPlaceholder = ({ image, name, email, size = "sm", borderRadius, isThumb = true, isPressable, style }) => {
   const { isOpen, toggle } = useDisclosure(false);
 
   function stringToColor(string) {

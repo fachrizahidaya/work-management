@@ -2,15 +2,15 @@ import React, { memo } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { FormControl, useToast } from "native-base";
+
+import { Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import CustomDateTimePicker from "../../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../hooks/useLoading";
 
 const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
-  const toast = useToast();
   const { isLoading, start, stop } = useLoading(false);
 
   /**
@@ -22,18 +22,16 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
       start();
       await axiosInstance.patch(`/pm/tasks/${taskId}`, newDeadline);
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`New deadline saved`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "New deadline saved",
       });
     } catch (error) {
       console.log(error);
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -58,15 +56,17 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   const maxDate = projectDeadline?.split(" ")[0];
 
   return (
-    <FormControl>
-      <FormControl.Label>DUE DATE</FormControl.Label>
+    <View style={{ display: "flex", gap: 10 }}>
+      <Text style={{ fontWeight: 500 }}>DUE DATE</Text>
       <CustomDateTimePicker
         defaultValue={deadline}
         disabled={disabled || isLoading}
         onChange={onChangeDeadline}
         maximumDate={maxDate}
       />
-    </FormControl>
+
+      <Toast position="bottom" />
+    </View>
   );
 };
 

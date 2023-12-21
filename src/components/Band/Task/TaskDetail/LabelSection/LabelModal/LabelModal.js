@@ -1,20 +1,27 @@
-import React, { memo, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Button, Flex, FormControl, Input, Modal, Text, useToast } from "native-base";
+import { Dimensions, Platform, Text, View } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
+import Modal from "react-native-modal";
 
 import LabelItem from "../LabelItem/LabelItem";
 import FormButton from "../../../../../shared/FormButton";
 import { useDisclosure } from "../../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../../shared/ToastDialog";
 import { useLoading } from "../../../../../../hooks/useLoading";
+import Input from "../../../../../shared/Forms/Input";
+import Button from "../../../../../shared/Forms/Button";
 
 const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetch, refetchTaskLabels }) => {
-  const toast = useToast();
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const { isLoading, start, stop } = useLoading(false);
 
   const { isOpen: colorPickerIsOpen, toggle: toggleColorPicker } = useDisclosure(false);
@@ -40,21 +47,10 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       setStatus("success");
       setSubmitting(false);
       refetch();
-
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Label added"} close={() => toast.close(id)} />;
-        },
-      });
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
-      });
     }
   };
 
@@ -68,19 +64,9 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
       });
       refetchTaskLabels();
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Label added"} close={() => toast.close(id)} />;
-        },
-      });
     } catch (error) {
       console.log(error);
       stop();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
-      });
     }
   };
 
@@ -114,15 +100,23 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
     }
   }, [formik.isSubmitting, formik.status]);
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose(formik.resetForm)} size="xl">
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>New Label</Modal.Header>
-        <Modal.Body>
+    <Modal
+      avoidKeyboard={true}
+      isVisible={isOpen}
+      onBackdropPress={() => onClose(formik.resetForm)}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+    >
+      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+        <View>
+          <Text style={{ fontWeight: 500 }}>New Label</Text>
+        </View>
+
+        <View style={{ display: "flex", gap: 10 }}>
           {allLabels.length > 0 && (
             <>
-              <FormControl.Label>Select from labels:</FormControl.Label>
-              <Flex flexDir="row" flexWrap="wrap" gap={1}>
+              <Text style={{ fontWeight: 500 }}>Select from labels:</Text>
+              <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
                 {allLabels.map((label) => {
                   return (
                     <LabelItem
@@ -135,47 +129,45 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
                     />
                   );
                 })}
-              </Flex>
+              </View>
             </>
           )}
 
-          <FormControl isInvalid={formik.errors.name}>
-            <FormControl.Label>Create new label</FormControl.Label>
-            <Input
-              value={formik.values.name}
-              placeholder="Type anything..."
-              onChangeText={(value) => formik.setFieldValue("name", value)}
-            />
-            <FormControl.ErrorMessage>{formik.errors.name}</FormControl.ErrorMessage>
-          </FormControl>
+          <Input
+            formik={formik}
+            title="Create new label"
+            value={formik.values.name}
+            fieldName="name"
+            placeHolder="Type anything..."
+            onChangeText={(value) => formik.setFieldValue("name", value)}
+          />
 
-          <FormControl isInvalid={formik.errors.color}>
-            <FormControl.Label>Select label color</FormControl.Label>
-            <Button variant="outline" onPress={toggleColorPicker} bgColor={formik.values.color || "white"}>
+          <View style={{ display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500, color: formik.errors.color ? "red" : "black" }}>Select label color</Text>
+
+            <Button onPress={toggleColorPicker} backgroundColor={formik.values.color || "#f8f8f8"}>
               <Text> {colorPickerIsOpen ? "Close color picker" : "Pick a color"}</Text>
             </Button>
-            {colorPickerIsOpen && (
-              <ColorPicker
-                sliderHidden={true}
-                swatches={false}
-                onColorChangeComplete={(color) => {
-                  onColorPicked(color);
-                }}
-                thumbSize={40}
-                sliderSize={40}
-              />
-            )}
+          </View>
+        </View>
 
-            <FormControl.ErrorMessage>{formik.errors.color}</FormControl.ErrorMessage>
-          </FormControl>
-        </Modal.Body>
-
-        <Modal.Footer>
+        <View>
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="white">Save</Text>
+            <Text style={{ color: "white", fontWeight: 500 }}>Save</Text>
           </FormButton>
-        </Modal.Footer>
-      </Modal.Content>
+        </View>
+
+        {colorPickerIsOpen && (
+          <ColorPicker
+            sliderHidden={true}
+            swatches={false}
+            onColorChangeComplete={(color) => {
+              onColorPicked(color);
+            }}
+            thumbSize={40}
+          />
+        )}
+      </View>
     </Modal>
   );
 };

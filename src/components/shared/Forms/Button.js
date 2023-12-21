@@ -19,7 +19,8 @@ const Button = ({ children, styles, flex, backgroundColor, onPress, disabled, op
           justifyContent: "center",
           borderWidth: variant === "dashed" || variant === "outline" ? 1 : 0,
           borderStyle: variant === "dashed" ? "dashed" : variant === "outline" ? "solid" : "solid",
-          borderColor: variant === "dashed" ? "#E8E9EB" : variant === "outline" ? backgroundColor : "white",
+          borderColor:
+            variant === "dashed" || variant === "outline" ? "#E8E9EB" : backgroundColor ? backgroundColor : "white",
         },
       ]}
       disabled={disabled}

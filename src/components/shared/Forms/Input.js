@@ -19,10 +19,17 @@ const Input = ({
   startAdornment,
   multiline,
   numberOfLines,
+  style,
+  editable = true,
+  ref,
+  height,
+  width,
+  onTouchStart,
+  keyboardType,
 }) => {
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9 }}>{title}</Text>}
+      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
 
       <View style={styles.inputWrapper}>
         {startIcon && (
@@ -34,9 +41,14 @@ const Input = ({
         {startAdornment && <View style={styles.startIcon}>{startAdornment}</View>}
 
         <TextInput
+          keyboardType={keyboardType}
+          ref={ref}
+          editable={editable}
+          selectTextOnFocus={editable}
           multiline={multiline}
           numberOfLines={numberOfLines}
           placeholder={placeHolder}
+          onTouchStart={onTouchStart}
           onChangeText={(value) => {
             if (onChangeText) {
               onChangeText(value);
@@ -47,9 +59,11 @@ const Input = ({
           autoCapitalize="none"
           style={[
             styles.input,
+            style,
             {
               paddingLeft: startAdornment || startIcon ? 35 : 10,
-              height: multiline && 100,
+              height: height ? height : multiline ? 100 : 40,
+              width: width || "100%",
               textAlignVertical: "top",
             },
           ]}

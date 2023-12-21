@@ -1,20 +1,20 @@
 import React, { memo, useState } from "react";
 
-import { TouchableOpacity } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
+
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 
 const MemberSection = ({ projectId, projectData, members, refetchMember, isAllowed }) => {
-  const toast = useToast();
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
   const [selectedMember, setSelectedMember] = useState({});
   const { isOpen: memberModalIsOpen, toggle: toggleMemberModal, close: closeMemberModal } = useDisclosure(false);
@@ -44,28 +44,26 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
       }
       setIsLoading(false);
       refetchMember();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`New member added`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "New member added",
       });
       toggleMemberModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
       toggleMemberModal();
     }
   };
 
   return (
-    <Flex style={{ gap: 18 }}>
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Text fontSize={16}>MEMBERS</Text>
+    <View style={{ display: "flex", gap: 18 }}>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Text style={{ fontSize: 16, fontWeight: 500 }}>MEMBERS</Text>
 
         {isAllowed && (
           <TouchableOpacity
@@ -78,10 +76,10 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
               borderRadius: 10,
             }}
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+            <MaterialCommunityIcons name="plus" size={20} />
           </TouchableOpacity>
         )}
-      </Flex>
+      </View>
 
       {memberModalIsOpen && (
         <AddMemberModal
@@ -93,62 +91,68 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
       )}
 
       <ScrollView style={{ maxHeight: 200 }}>
-        <Box flex={1} minHeight={2}>
+        <View style={{ flex: 1, minHeight: 2 }}>
           <FlashList
             extraData={projectData?.owner_name}
             data={members?.data}
             keyExtractor={(item) => item?.id}
             onEndReachedThreshold={0.2}
-            estimatedItemSize={200}
+            estimatedItemSize={34}
             renderItem={({ item }) => (
-              <Flex
-                flexDir="row"
-                alignItems="center"
-                justifyContent="space-between"
-                pr={1.5}
-                style={{ marginBottom: 14 }}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingRight: 3,
+                  marginBottom: 14,
+                }}
               >
-                <Flex flexDir="row" alignItems="center" style={{ gap: 14 }}>
+                <View style={{ gap: 14, display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
 
-                  <Box>
-                    <Text>{item?.member_name}</Text>
-                    <Text color="#8A9099">{item?.member_email}</Text>
-                  </Box>
-                </Flex>
+                  <View>
+                    <Text style={{ fontWeight: 500 }}>{item?.member_name}</Text>
+                    <Text style={{ fontWeight: 500, color: "#8A9099" }}>{item?.member_email}</Text>
+                  </View>
+                </View>
 
                 {isAllowed && (
                   <>
                     {item?.user_id !== projectData?.owner_id && (
-                      <Menu
-                        trigger={(triggerProps) => {
-                          return (
-                            <Pressable {...triggerProps}>
-                              <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
-                            </Pressable>
-                          );
-                        }}
+                      <Pressable
+                        onPress={() =>
+                          SheetManager.show("form-sheet", {
+                            payload: {
+                              children: (
+                                <View style={{ padding: 20 }}>
+                                  <TouchableOpacity
+                                    onPress={async () => {
+                                      await SheetManager.hide("form-sheet");
+                                      getSelectedMember(item.id);
+                                    }}
+                                    style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
+                                  >
+                                    <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
+
+                                    <Text style={{ fontWeight: 500, color: "red" }}>Remove Member</Text>
+                                  </TouchableOpacity>
+                                </View>
+                              ),
+                            },
+                          })
+                        }
                       >
-                        {item?.user_id !== projectData?.owner_id && (
-                          <Menu.Item onPress={() => getSelectedMember(item.id)}>
-                            <Flex flexDir="row" alignItems="center" gap={2}>
-                              <Icon
-                                as={<MaterialCommunityIcons name="account-remove-outline" />}
-                                size="md"
-                                color="red.600"
-                              />
-                              <Text color="red.600">Remove Member</Text>
-                            </Flex>
-                          </Menu.Item>
-                        )}
-                      </Menu>
+                        <MaterialCommunityIcons name="dots-vertical" size={20} />
+                      </Pressable>
                     )}
                   </>
                 )}
-              </Flex>
+              </View>
             )}
           />
-        </Box>
+        </View>
       </ScrollView>
 
       <ConfirmationModal
@@ -161,7 +165,9 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
         hasSuccessFunc={true}
         onSuccess={refetchMember}
       />
-    </Flex>
+
+      <Toast position="bottom" />
+    </View>
   );
 };
 

@@ -15,7 +15,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
   return (
     <View style={styles.container}>
       {!projectIsLoading ? (
-        <TouchableOpacity style={[card.card, { flex: 1 }]}>
+        <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Projects")}>
           <View style={styles.imageWrapper}>
             <Image
               source={require("../../../../assets/icons/project_chart.png")}
@@ -32,7 +32,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
       )}
 
       {!taskIsLoading ? (
-        <TouchableOpacity style={[card.card, { flex: 1 }]}>
+        <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Tasks")}>
           <View style={styles.imageWrapper}>
             <Image source={require("../../../../assets/icons/task_chart.png")} alt="task chart" style={styles.image} />
             <Text style={{ color: "gray" }}>Total tasks</Text>

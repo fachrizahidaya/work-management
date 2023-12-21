@@ -1,16 +1,16 @@
 import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
+import { SheetManager } from "react-native-actions-sheet";
 
-import { TouchableOpacity } from "react-native";
-import { Actionsheet, Flex, FormControl, Icon, Pressable, useToast } from "native-base";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
 import { useFetch } from "../../../../../hooks/useFetch";
 
@@ -27,13 +27,11 @@ const PeopleSection = ({
   refetchResponsible,
   refetchTask,
 }) => {
-  const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const [selectedObserver, setSelectedObserver] = useState({});
 
   const { isOpen: deleteObserverModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: observerModalIsOpen, toggle: toggleObserverModal, close: closeObserverMocal } = useDisclosure(false);
-  const { isOpen: memberSelectIsOpen, toggle: toggleMemberSelect } = useDisclosure(false);
 
   const { data: members } = useFetch(selectedTask?.project_id && `/pm/projects/${selectedTask?.project_id}/member`);
 
@@ -63,20 +61,20 @@ const PeopleSection = ({
           user_id: userId,
         });
       }
-      toggleMemberSelect();
       refetchResponsible();
       refetchTask();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Task assigned`} close={() => toast.close(id)} />;
-        },
+      SheetManager.hide("form-sheet");
+
+      Toast.show({
+        type: "success",
+        text1: "Task assigned",
       });
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -95,31 +93,31 @@ const PeopleSection = ({
       }
       refetchObservers();
       setIsLoading(false);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`New observer added`} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "New observer added",
       });
       toggleObserverModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
-      });
       toggleObserverModal();
+
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
+      });
     }
   };
 
   return (
     <>
-      <Flex gap={5}>
+      <View style={{ display: "flex", gap: 20 }}>
         {/* Responsible and creator */}
-        <Flex flexDir="row">
-          <FormControl flex={1}>
-            <FormControl.Label>ASSIGNED TO</FormControl.Label>
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <View style={{ flex: 1, display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500 }}>ASSIGNED TO</Text>
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
@@ -127,7 +125,27 @@ const PeopleSection = ({
                     key={responsible.id}
                     onPress={() => {
                       if (!disabled) {
-                        toggleMemberSelect();
+                        SheetManager.show("form-sheet", {
+                          payload: {
+                            children: (
+                              <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                                {members?.data?.length > 0 ? (
+                                  members.data.map((member) => {
+                                    return (
+                                      <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
+                                        <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                      </TouchableOpacity>
+                                    );
+                                  })
+                                ) : (
+                                  <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>
+                                    <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                                  </Actionsheet.Item>
+                                )}
+                              </View>
+                            ),
+                          },
+                        });
                       }
                     }}
                   >
@@ -141,7 +159,29 @@ const PeopleSection = ({
               })
             ) : (
               <TouchableOpacity
-                onPress={toggleMemberSelect}
+                onPress={() =>
+                  SheetManager.show("form-sheet", {
+                    payload: {
+                      children: (
+                        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                          {members?.data?.length > 0 ? (
+                            members.data.map((member) => {
+                              return (
+                                <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
+                                  <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                </TouchableOpacity>
+                              );
+                            })
+                          ) : (
+                            <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>
+                              <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                            </Actionsheet.Item>
+                          )}
+                        </View>
+                      ),
+                    },
+                  })
+                }
                 style={{
                   backgroundColor: "#f1f2f3",
                   alignItems: "center",
@@ -151,28 +191,28 @@ const PeopleSection = ({
                   borderRadius: 10,
                 }}
               >
-                <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                <MaterialCommunityIcons name="plus" size={20} />
               </TouchableOpacity>
             )}
-          </FormControl>
+          </View>
 
-          <FormControl flex={1}>
-            <FormControl.Label>CREATED BY</FormControl.Label>
+          <View style={{ flex: 1, display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500 }}>CREATED BY</Text>
 
             {ownerId && (
               <AvatarPlaceholder name={ownerName} image={ownerImage} email={ownerEmail} size="sm" isPressable={true} />
             )}
-          </FormControl>
-        </Flex>
+          </View>
+        </View>
 
         {/* Observers */}
         {(!disabled || (disabled && observers?.length > 0)) && (
-          <FormControl>
-            <FormControl.Label>OBSERVER</FormControl.Label>
-            <Flex flexDir="row" gap={1}>
+          <View style={{ flex: 1, display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500 }}>OBSERVER</Text>
+            <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
               {observers?.length > 0 ? (
                 <>
-                  <Flex flexDir="row" alignItems="center" gap={1}>
+                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
                     {observers.map((observer) => {
                       return (
                         <Pressable
@@ -196,10 +236,10 @@ const PeopleSection = ({
                           borderRadius: 10,
                         }}
                       >
-                        <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                        <MaterialCommunityIcons name="plus" size={20} />
                       </TouchableOpacity>
                     )}
-                  </Flex>
+                  </View>
                 </>
               ) : (
                 !disabled && (
@@ -213,23 +253,23 @@ const PeopleSection = ({
                       borderRadius: 10,
                     }}
                   >
-                    <Icon as={<MaterialCommunityIcons name="plus" />} color="black" />
+                    <MaterialCommunityIcons name="plus" size={20} />
                   </TouchableOpacity>
                 )
               )}
-            </Flex>
-          </FormControl>
+            </View>
+          </View>
         )}
-      </Flex>
 
-      {observerModalIsOpen && (
-        <AddMemberModal
-          header="New Observer"
-          isOpen={observerModalIsOpen}
-          onClose={closeObserverMocal}
-          onPressHandler={addObserverToTask}
-        />
-      )}
+        <Toast position="bottom" />
+      </View>
+
+      <AddMemberModal
+        header="New Observer"
+        isOpen={observerModalIsOpen}
+        onClose={closeObserverMocal}
+        onPressHandler={addObserverToTask}
+      />
 
       <ConfirmationModal
         isOpen={deleteObserverModalIsOpen}
@@ -241,26 +281,6 @@ const PeopleSection = ({
         hasSuccessFunc={true}
         onSuccess={refetchObservers}
       />
-
-      <Actionsheet isOpen={memberSelectIsOpen} onClose={toggleMemberSelect}>
-        <Actionsheet.Content>
-          {members?.data?.length > 0 ? (
-            members.data.map((member) => {
-              return (
-                <Actionsheet.Item
-                  key={member.id}
-                  onPress={() => takeTask(member.user_id)}
-                  _pressed={{ bgColor: "#f1f1f1" }}
-                >
-                  {member.member_name}
-                </Actionsheet.Item>
-              );
-            })
-          ) : (
-            <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>{userSelector.name}</Actionsheet.Item>
-          )}
-        </Actionsheet.Content>
-      </Actionsheet>
     </>
   );
 };
