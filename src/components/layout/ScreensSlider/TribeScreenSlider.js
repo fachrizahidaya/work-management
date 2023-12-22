@@ -1,17 +1,15 @@
+import { useState } from "react";
+import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, FlatList, Flex, Icon, Slide, Pressable, Text, Actionsheet } from "native-base";
+import { Box, Flex, Icon, Text, Actionsheet } from "native-base";
 import { Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
-import { useState } from "react";
 
 const TribeScreenSlider = ({ isOpen, toggle }) => {
-  const [isPressed, setIsPressed] = useState(false);
   const navigation = useNavigation();
-  const { height } = Dimensions.get("window");
   const menuSelector = useSelector((state) => state.user_menu);
   const { mergedMenu } = useGetSubMenu(menuSelector.user_menu);
   const excludeSubscreen = [

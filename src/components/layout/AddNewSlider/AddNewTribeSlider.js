@@ -51,9 +51,12 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   const attendanceCheckHandler = async () => {
     try {
       if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
-        const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
-          ip: userIp?.ip,
-        });
+        const res = await axiosInstance.post(
+          `/hr/timesheets/personal/attendance-check`
+          // {
+          //   ip: userIp?.ip,
+          // }
+        );
         toggle();
         refetchAttendance();
         toast.show({
@@ -90,12 +93,12 @@ const AddNewTribeSlider = ({ isOpen, toggle }) => {
   };
 
   useEffect(() => {
-    if (userIp?.ip && isLoading) {
+    if (isLoading) {
       attendanceCheckHandler().then(() => {
         setIsLoading(false);
       });
     }
-  }, [userIp?.ip, isLoading]);
+  }, [isLoading]);
 
   /**
    * Clock Handler
