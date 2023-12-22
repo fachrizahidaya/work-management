@@ -13,7 +13,6 @@ import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import ReimbursementScreen from "../../screens/Tribe/Reimbursement/ReimbursementScreen";
-import { useDisclosure } from "../../hooks/useDisclosure";
 import TribeScreenSheet from "../../components/shared/ActionSheet/TribeScreenSheet";
 import TribeAddNewSheet from "../../components/shared/ActionSheet/TribeAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
@@ -28,14 +27,6 @@ const TribeTab = ({ setSelectedModule }) => {
   const tribeScreenSheetRef = useRef(null);
   const tribeAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
-  const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
-  const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
-  const { isOpen: searchSliderIsOpen, close: closeSearchSlider, toggle: toggleSearchSlider } = useDisclosure(false);
-  const {
-    isOpen: menuScreenSliderIsOpen,
-    close: closeMenuScreenSlider,
-    toggle: toggleMenuScreenSlider,
-  } = useDisclosure(false);
 
   /**
    * Toggles the specified state and resets other states to false.
