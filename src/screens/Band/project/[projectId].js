@@ -45,7 +45,10 @@ const ProjectDetailScreen = ({ route }) => {
   const editCheckAccess = useCheckAccess("update", "Projects");
 
   const tabs = useMemo(() => {
-    return [{ title: "comments" }, { title: "activity" }];
+    return [
+      { title: "comments", value: "comments" },
+      { title: "activity", value: "activity" },
+    ];
   }, []);
 
   const { data: projectData, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);

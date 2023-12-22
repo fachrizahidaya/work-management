@@ -22,10 +22,10 @@ const Tabs = ({ tabs = [], value, onChange, justify }) => {
       {tabs.length > 0 &&
         tabs.map((tab, idx) => {
           return (
-            <Pressable key={idx} onPress={() => onChange(tab.title)}>
+            <Pressable key={idx} onPress={() => onChange(tab.value)}>
               <View
                 style={{
-                  borderBottomWidth: value === tab.title ? 2 : 0,
+                  borderBottomWidth: value === tab.value ? 2 : 0,
                   borderColor: "#377893",
                   paddingHorizontal: 4,
                   paddingBottom: 12,
