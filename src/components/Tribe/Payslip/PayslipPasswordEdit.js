@@ -2,18 +2,16 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Platform, StyleSheet, View, Text } from "react-native";
-import { Actionsheet } from "native-base";
+import { Platform, View, Text, StyleSheet } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import Input from "../../shared/Forms/Input";
 
 const PayslipPasswordEdit = ({
-  formIsOpen,
-  toggleForm,
-
   setPasswordError,
+  reference,
   hideNewPassword,
   setHideNewPassword,
   hideOldPassword,
@@ -50,20 +48,20 @@ const PayslipPasswordEdit = ({
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      toggleForm(formik.resetForm);
+      formik.resetForm();
     }
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Actionsheet
-      isOpen={formIsOpen}
+    <ActionSheet
+      ref={reference}
       onClose={() => {
-        toggleForm();
         formik.resetForm();
         setPasswordError("");
+        reference.current?.hide();
       }}
     >
-      <Actionsheet.Content>
+      <View style={styles.wrapper}>
         <View style={{ width: "95%", gap: 5, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
           <View style={{ width: "100%", gap: 10 }}>
             <View style={{ gap: 5 }}>
@@ -97,7 +95,7 @@ const PayslipPasswordEdit = ({
                 formik={formik}
                 title="Confirm New Password"
                 fieldName="confirm_password"
-                value={formik.values.new_password}
+                value={formik.values.confirm_password}
                 placeholder="Enter Confirm password"
                 secureTextEntry={hideConfirmPassword}
                 endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
@@ -115,13 +113,18 @@ const PayslipPasswordEdit = ({
             )}
           </View>
         </View>
-      </Actionsheet.Content>
-    </Actionsheet>
+      </View>
+    </ActionSheet>
   );
 };
 
 export default PayslipPasswordEdit;
 
 const styles = StyleSheet.create({
-  container: {},
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
 });
