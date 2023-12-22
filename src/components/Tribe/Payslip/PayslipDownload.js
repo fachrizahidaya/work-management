@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Actionsheet } from "native-base";
-import { Platform, View, Text } from "react-native";
+import { Platform, View, Text, StyleSheet } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 
 const PayslipDownload = ({
+  reference,
   downloadDialogIsOpen,
   toggleDownloadDialog,
   setPasswordError,
@@ -43,15 +44,15 @@ const PayslipDownload = ({
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Actionsheet
-      isOpen={downloadPayslipCheckAccess && downloadDialogIsOpen}
+    <ActionSheet
+      ref={reference}
       onClose={() => {
-        toggleDownloadDialog();
         formik.resetForm();
         setPasswordError("");
+        reference.current?.hide();
       }}
     >
-      <Actionsheet.Content>
+      <View style={styles.wrapper}>
         <View style={{ width: "95%", gap: 5, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
           <View style={{ width: "100%", gap: 10 }}>
             <View>
@@ -71,9 +72,18 @@ const PayslipDownload = ({
             </FormButton>
           </View>
         </View>
-      </Actionsheet.Content>
-    </Actionsheet>
+      </View>
+    </ActionSheet>
   );
 };
 
 export default PayslipDownload;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
+});

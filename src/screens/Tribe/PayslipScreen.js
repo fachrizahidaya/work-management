@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
@@ -30,9 +30,11 @@ const PayslipScreen = () => {
   const [payslips, setPayslips] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
 
+  const payslipDownloadScreenSheetRef = useRef(null);
+  const payslipPasswordEditScreenSheetRef = useRef(null);
+
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
-  const { isOpen: formIsOpen, toggle: toggleForm } = useDisclosure(false);
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
 
   const fetchPayslipParameters = {
@@ -54,14 +56,14 @@ const PayslipScreen = () => {
     }
   };
 
-  const openSelectedPayslip = useCallback((data) => {
-    toggleDownloadDialog();
+  const openSelectedPayslip = (data) => {
     setSelectedPayslip(data);
-  }, []);
+    payslipDownloadScreenSheetRef.current?.show();
+  };
 
   const closeSelectedPayslip = () => {
-    toggleDownloadDialog();
     setSelectedPayslip(null);
+    payslipDownloadScreenSheetRef.current?.hide();
   };
 
   /**
@@ -88,7 +90,6 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -137,14 +138,13 @@ const PayslipScreen = () => {
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button
-            onPress={() => toggleForm()}
+            onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
             padding={5}
             children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
           />
 
           <PayslipPasswordEdit
-            formIsOpen={formIsOpen}
-            toggleForm={toggleForm}
+            reference={payslipPasswordEditScreenSheetRef}
             setPasswordError={setPasswordError}
             hideNewPassword={hideNewPassword}
             setHideNewPassword={setHideNewPassword}
@@ -178,6 +178,7 @@ const PayslipScreen = () => {
                 toggleDownloadDialog={toggleDownloadDialog}
                 openSelectedPayslip={openSelectedPayslip}
                 closeSelectedPayslip={closeSelectedPayslip}
+                reference={payslipDownloadScreenSheetRef}
               />
             )}
           />
@@ -195,6 +196,7 @@ const PayslipScreen = () => {
         )}
       </SafeAreaView>
       <PayslipDownload
+        reference={payslipDownloadScreenSheetRef}
         downloadDialogIsOpen={downloadDialogIsOpen}
         toggleDownloadDialog={closeSelectedPayslip}
         setPasswordError={setPasswordDownloadError}
