@@ -51,7 +51,7 @@ const AttendanceScreen = () => {
   const reportRequired = { key: "reportRequired", color: "#FDC500", name: "Report Required", textColor: "#FFFFFF" };
   const submittedReport = { key: "submittedReport", color: "#186688", name: "Submitted Report", textColor: "#FFFFFF" };
   const dayOff = { key: "dayOff", color: "#3bc14a", name: "Day-off", textColor: "#FFFFFF" };
-  const sick = { key: "sick", color: "red.600", name: "Sick", textColor: "#FFFFFF" };
+  const sick = { key: "sick", color: "#d6293a", name: "Sick", textColor: "#FFFFFF" };
 
   const isWorkDay = date?.dayType === "Work Day";
   const hasClockInAndOut =
@@ -67,7 +67,9 @@ const AttendanceScreen = () => {
   const hasSubmittedEarlyReport = date?.earlyType && date?.earlyReason && !date?.lateType;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    date?.attendanceType === "Alpa" && date?.attendanceReason && date?.dayType === "Work Day";
+    (date?.attendanceType === "Alpa" || date?.attendanceType === "Permit" || date?.attendanceType === "Sick") &&
+    date?.attendanceReason &&
+    date?.dayType === "Work Day";
   const notAttend =
     date?.attendanceType === "Alpa" &&
     date?.dayType === "Work Day" &&
@@ -289,8 +291,10 @@ const AttendanceScreen = () => {
           let textColor = "";
 
           if (
-            (event?.dayType === "Work Day" && event?.attendanceType === "Leave") ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Permit")
+            event?.dayType === "Work Day" &&
+            event?.attendanceType === "Leave"
+            // ||
+            // (event?.dayType === "Work Day" && event?.attendanceType === "Permit")
           ) {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
