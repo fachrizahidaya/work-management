@@ -42,6 +42,7 @@ const BandAddNewSheet = (props) => {
               navigation.navigate(item.screen, {
                 projectData: null,
                 taskData: null,
+                noteData: null,
               });
               props.reference.current?.hide();
             }}
@@ -58,10 +59,6 @@ const BandAddNewSheet = (props) => {
         );
       })}
     </ActionSheet>
-
-    // {/* {newProjectIsOpen && <NewProjectSlider isOpen={newProjectIsOpen} onClose={onCloseProjectForm} />}
-    // {newTaskIsOpen && <NewTaskSlider isOpen={newTaskIsOpen} onClose={onCloseTaskForm} />}
-    // {newNoteIsOpen && <NewNoteSlider isOpen={newNoteIsOpen} onClose={onCloseNoteForm} refreshFunc={false} />} */}
   );
 };
 

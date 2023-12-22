@@ -14,7 +14,7 @@ import Input from "../../components/shared/Forms/Input";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const NoteForm = ({ route }) => {
-  const { noteData, refresh, refreshFunc } = route.params;
+  const { noteData } = route.params;
   const { width, height } = Dimensions.get("window");
   const editCheckAccess = useCheckAccess("update", "Notes");
   const navigation = useNavigation();
@@ -25,9 +25,6 @@ const NoteForm = ({ route }) => {
         await axiosInstance.patch(`/pm/notes/${noteData.id}`, form);
       } else {
         await axiosInstance.post("/pm/notes", form);
-      }
-      if (refreshFunc) {
-        refresh();
       }
 
       setSubmitting(false);

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { useMutation } from "react-query";
 
@@ -28,6 +28,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 
 const NotesScreen = () => {
   const navigation = useNavigation();
+  const firstTimeRef = useRef(true);
   const [noteToDelete, setNoteToDelete] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
@@ -86,6 +87,16 @@ const NotesScreen = () => {
   }
 
   const renderList = pinIsLoading ? optimisticList : filteredData;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetch();
+    }, [refetch])
+  );
 
   return (
     <>
