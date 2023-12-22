@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Box, Flex, Icon, Text } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
@@ -35,21 +34,17 @@ const MemberListItem = ({
         }
       }}
     >
-      <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-        <Flex flexDir="row" alignItems="center" gap={2} mb={2}>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <AvatarPlaceholder image={image} name={name} size={avatarSize} />
-          <Box>
-            <Text>{name}</Text>
-            <Text fontSize={descriptionSize || 10} opacity={0.5}>
-              {userType}
-            </Text>
-          </Box>
-        </Flex>
+          <View>
+            <Text style={{ fontWeight: 500 }}>{name}</Text>
+            <Text style={{ fontWeight: 500, fontSize: descriptionSize || 10, opacity: 0.5 }}>{userType}</Text>
+          </View>
+        </View>
 
-        {selectedUsers.includes(id) && (
-          <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
-        )}
-      </Flex>
+        {selectedUsers.includes(id) && <MaterialCommunityIcons name="checkbox-marked" color="#176688" size={20} />}
+      </View>
     </TouchableOpacity>
   );
 };

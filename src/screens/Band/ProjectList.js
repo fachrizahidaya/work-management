@@ -4,7 +4,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Pressable, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -55,7 +55,7 @@ const ProjectList = () => {
   const renderSkeletons = () => {
     const skeletons = [];
     for (let i = 0; i < 2; i++) {
-      skeletons.push(<ProjectSkeleton key={i} />);
+      skeletons.push(<Text key={i}>Loading...</Text>);
     }
     return skeletons;
   };
