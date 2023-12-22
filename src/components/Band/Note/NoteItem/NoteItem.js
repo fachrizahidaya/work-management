@@ -34,7 +34,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
 
           <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
             <Pressable
-              borderRadius="full"
+              style={{ borderRadius: 50 }}
               onPress={() => onPress({ ...note, status: !isPinned ? "pinned" : "unpinned" })}
             >
               <MaterialCommunityIcons
