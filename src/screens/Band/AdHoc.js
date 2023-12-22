@@ -1,7 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { StyleSheet, View, Pressable, Text, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -22,6 +22,7 @@ const AdHocScreen = () => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
+  const [isReady, setIsReady] = useState(false);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
   const createActionCheck = useCheckAccess("create", "Tasks");
 
@@ -75,7 +76,12 @@ const AdHocScreen = () => {
     }, [refetchTasks])
   );
 
-  return (
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 150);
+  }, []);
+  return isReady ? (
     <>
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -139,6 +145,18 @@ const AdHocScreen = () => {
         onSuccess={refetchTasks}
       />
     </>
+  ) : (
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: 13,
+          paddingHorizontal: 16,
+        },
+      ]}
+    >
+      <Text>Loading...</Text>
+    </View>
   );
 };
 
