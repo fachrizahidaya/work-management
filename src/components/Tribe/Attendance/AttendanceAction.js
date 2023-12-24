@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 
-import { Actionsheet, Icon, Select } from "native-base";
 import { StyleSheet, View, Text } from "react-native";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ActionSheet from "react-native-actions-sheet";
 
 import FormButton from "../../shared/FormButton";
 import Tabs from "../../shared/Tabs";
 import Input from "../../shared/Forms/Input";
+import Select from "../../shared/Forms/Select";
 
 const AttendanceAction = ({
-  reportIsOpen,
   toggleReport,
   date,
   onSubmit,
@@ -25,33 +23,33 @@ const AttendanceAction = ({
   hasSubmittedEarlyReport,
   notAttend,
   isLeave,
-  isPermit,
   CURRENT_DATE,
+  reference,
 }) => {
   const [tabValue, setTabValue] = useState("late");
   /**
    * Late type Handler
    */
   const lateType = [
-    { id: 1, name: "Late" },
-    { id: 2, name: "Permit" },
-    { id: 3, name: "Other" },
+    { label: "Late", value: "Late" },
+    { label: "Permit", value: "Permit" },
+    { label: "Other", value: "Other" },
   ];
 
   /**
    * Early type Handler
    */
   const earlyType = [
-    { id: 1, name: "Went Home Early" },
-    { id: 2, name: "Permit" },
-    { id: 3, name: "Other" },
+    { label: "Went Home Early", value: "Went Home Early" },
+    { label: "Permit", value: "Permit" },
+    { label: "Other", value: "Other" },
   ];
 
   const alpaType = [
-    { id: 1, name: "Alpa" },
-    { id: 2, name: "Sick" },
-    { id: 3, name: "Permit" },
-    { id: 4, name: "Other" },
+    { label: "Alpa", value: "Alpa" },
+    { label: "Sick", value: "Sick" },
+    { label: "Permit", value: "Permit" },
+    { label: "Other", value: "Other" },
   ];
 
   const tabs = useMemo(() => {
@@ -89,13 +87,15 @@ const AttendanceAction = ({
 
   return (
     <>
-      <Actionsheet
-        isOpen={reportIsOpen}
-        onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggleReport(formik.resetForm)}
+      <ActionSheet
+        ref={reference}
+        onClose={() =>
+          !formik.isSubmitting && formik.status !== "processing" && toggleReport.current?.hide(formik.resetForm)
+        }
       >
-        <Actionsheet.Content>
-          {/* If employee ontime for Clock in and Clock out */}
-          {hasClockInAndOut && (
+        {/* If employee ontime for Clock in and Clock out */}
+        {hasClockInAndOut && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <View style={styles.clock}>
@@ -112,52 +112,56 @@ const AttendanceAction = ({
                 </View>
               </View>
             </View>
-          )}
+          </View>
+        )}
 
-          {/* If employee Clock in late, require Late Report */}
-          {hasLateWithoutReason && (
-            <LateOrEarlyTime
-              formik={formik}
-              arrayList={lateType}
-              titleTime="Clock-in Time"
-              time={date?.timeIn}
-              title="Late Type"
-              inputValue={formik.values.late_reason}
-              inputOnChangeText={(value) => formik.setFieldValue("late_reason", value)}
-              selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
-              errorForType={formik.errors.late_type}
-              errorForReason={formik.errors.late_reason}
-              titleDuty="On Duty"
-              timeDuty={date?.onDuty}
-              titleLateOrEarly="Late"
-              timeLateOrEarly={date?.late}
-              placeholder="Select Late Type"
-            />
-          )}
+        {/* If employee Clock in late, require Late Report */}
+        {hasLateWithoutReason && (
+          <LateOrEarlyTime
+            formik={formik}
+            arrayList={lateType}
+            titleTime="Clock-in Time"
+            time={date?.timeIn}
+            title="Late Type"
+            inputValue={formik.values.late_reason}
+            inputOnChangeText={(value) => formik.setFieldValue("late_reason", value)}
+            selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
+            errorForType={formik.errors.late_type}
+            errorForReason={formik.errors.late_reason}
+            titleDuty="On Duty"
+            timeDuty={date?.onDuty}
+            titleLateOrEarly="Late"
+            timeLateOrEarly={date?.late}
+            placeholder="Select Late Type"
+            fieldOption="late_type"
+          />
+        )}
 
-          {/* If employee Clock out early, require Early Report */}
-          {hasEarlyWithoutReason && (
-            <LateOrEarlyTime
-              formik={formik}
-              arrayList={earlyType}
-              titleTime="Clock-out Time"
-              time={date?.timeOut}
-              title="Early Type"
-              inputValue={formik.values.early_reason}
-              inputOnChangeText={(value) => formik.setFieldValue("early_reason", value)}
-              selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
-              errorForType={formik.errors.early_type}
-              errorForReason={formik.errors.early_reason}
-              titleDuty="Off Duty"
-              timeDuty={date?.offDuty}
-              titleLateOrEarly="Early"
-              timeLateOrEarly={date?.early}
-              placeholder="Select Early Type"
-            />
-          )}
+        {/* If employee Clock out early, require Early Report */}
+        {hasEarlyWithoutReason && (
+          <LateOrEarlyTime
+            formik={formik}
+            arrayList={earlyType}
+            titleTime="Clock-out Time"
+            time={date?.timeOut}
+            title="Early Type"
+            inputValue={formik.values.early_reason}
+            inputOnChangeText={(value) => formik.setFieldValue("early_reason", value)}
+            selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
+            errorForType={formik.errors.early_type}
+            errorForReason={formik.errors.early_reason}
+            titleDuty="Off Duty"
+            timeDuty={date?.offDuty}
+            titleLateOrEarly="Early"
+            timeLateOrEarly={date?.early}
+            placeholder="Select Early Type"
+            fieldOption="early_type"
+          />
+        )}
 
-          {/* If report submitted either Late or Early or Alpa */}
-          {hasSubmittedLateReport && (
+        {/* If report submitted either Late or Early or Alpa */}
+        {hasSubmittedLateReport && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Clock
@@ -169,6 +173,7 @@ const AttendanceAction = ({
                 />
                 <Options
                   formik={formik}
+                  value={formik.values.late_type}
                   title="Late Type"
                   field="late_type"
                   defaultValue={date?.lateType}
@@ -193,9 +198,11 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {hasSubmittedEarlyReport && (
+        {hasSubmittedEarlyReport && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Clock
@@ -207,6 +214,7 @@ const AttendanceAction = ({
                 />
                 <Options
                   formik={formik}
+                  value={formik.values.early_type}
                   title="Early Type"
                   field="early_type"
                   defaultValue={date?.earlyType}
@@ -230,17 +238,20 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {hasSubmittedReportAlpa && (
+        {hasSubmittedReportAlpa && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Options
                   formik={formik}
-                  title="Alpa Type"
-                  field={"att_type"}
+                  title="Unattendance Type"
+                  field="att_type"
                   defaultValue={date?.attendanceType}
                   types={alpaType}
+                  value={formik.values.att_type}
                   valueChange={(value) => formik.setFieldValue("att_type", value)}
                 />
                 <Reason
@@ -260,9 +271,11 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {hasLateAndEarlyWithoutReason && (
+        {hasLateAndEarlyWithoutReason && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Tabs
@@ -290,21 +303,16 @@ const AttendanceAction = ({
                       </View>
                     </View>
                     <View>
-                      <Text>Late Type</Text>
                       <Select
-                        onValueChange={(value) => formik.setFieldValue("late_type", value)}
-                        borderRadius={15}
-                        borderWidth={1}
-                        variant="unstyled"
-                        key="late_type"
-                        placeholder={"Select Late Type"}
-                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        formik={formik}
+                        value={formik.values.late_type}
+                        title="Late Type"
+                        fieldName="late_type"
+                        items={lateType}
+                        placeholder="Select Late Type"
                         defaultValue={date?.lateType}
-                      >
-                        {lateType.map((item) => {
-                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                        })}
-                      </Select>
+                        onChange={(value) => formik.setFieldValue("late_type", value)}
+                      />
                     </View>
                     <View>
                       <Input
@@ -334,21 +342,16 @@ const AttendanceAction = ({
                       </View>
                     </View>
                     <View>
-                      <Text>Early Type</Text>
                       <Select
-                        onValueChange={(value) => formik.setFieldValue("early_type", value)}
-                        borderRadius={15}
-                        borderWidth={1}
-                        variant="unstyled"
-                        key="early_type"
-                        placeholder={"Select Early Type"}
-                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        formik={formik}
+                        value={formik.values.early_type}
+                        title="Early Type"
+                        fieldName="early_type"
+                        items={earlyType}
+                        placeholder="Select Early Type"
                         defaultValue={date?.earlyType}
-                      >
-                        {earlyType.map((item) => {
-                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                        })}
-                      </Select>
+                        onChange={(value) => formik.setFieldValue("early_type", value)}
+                      />
                     </View>
                     <View>
                       <Input
@@ -373,10 +376,12 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {/* If report submitted Late and Early */}
-          {hasSubmittedBothReports && (
+        {/* If report submitted Late and Early */}
+        {hasSubmittedBothReports && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Tabs
@@ -406,19 +411,15 @@ const AttendanceAction = ({
                     <View>
                       <Text>Late Type</Text>
                       <Select
-                        onValueChange={(value) => formik.setFieldValue("late_type", value)}
-                        borderRadius={15}
-                        borderWidth={1}
-                        variant="unstyled"
-                        key="late_type"
-                        placeholder={"Select Late Type"}
-                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+                        formik={formik}
+                        value={formik.values.late_type}
+                        fieldName="late_type"
+                        title="Late Type"
+                        items={lateType}
+                        placeholder="Select Late Type"
                         defaultValue={date?.lateType}
-                      >
-                        {lateType.map((item) => {
-                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                        })}
-                      </Select>
+                        onChange={(value) => formik.setFieldValue("late_type", value)}
+                      />
                     </View>
                     <View>
                       <Input
@@ -450,19 +451,15 @@ const AttendanceAction = ({
                     <View>
                       <Text>Early Type</Text>
                       <Select
-                        onValueChange={(value) => formik.setFieldValue("early_type", value)}
-                        borderRadius={15}
-                        borderWidth={1}
-                        variant="unstyled"
-                        key="early_type"
+                        formik={formik}
+                        value={formik.values.early_type}
+                        fieldName="early_type"
+                        items={earlyType}
+                        title="Early Type"
                         placeholder={"Select Early Type"}
-                        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
                         defaultValue={date?.earlyType}
-                      >
-                        {earlyType.map((item) => {
-                          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-                        })}
-                      </Select>
+                        onChange={(value) => formik.setFieldValue("early_type", value)}
+                      />
                     </View>
                     <View>
                       <Input
@@ -487,19 +484,22 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {/* If did not clock-in (Alpa) */}
-          {notAttend && (
+        {/* If did not clock-in (Alpa) */}
+        {notAttend && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <Options
+                  placeholder="Select Alpa Type"
                   formik={formik}
-                  title="Alpa Type"
-                  field={"att_type"}
+                  title="Unattendance Type"
+                  field="att_type"
                   types={alpaType}
-                  defaultValue="Alpa"
                   valueChange={(value) => formik.setFieldValue("att_type", value)}
+                  value={formik.values.att_type}
                 />
                 <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
               </View>
@@ -513,15 +513,14 @@ const AttendanceAction = ({
                 onPress={formik.handleSubmit}
               />
             </View>
-          )}
+          </View>
+        )}
 
-          {/* If attendance type is Leave */}
-          {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
+        {/* If attendance type is Leave */}
+        {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
-          {/* If attendance type is Permit */}
-          {isPermit && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
-
-          {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
+        {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
+          <View style={styles.wrapper}>
             <View style={{ width: "95%", gap: 3 }}>
               <View style={{ width: "100%", gap: 5 }}>
                 <View>
@@ -529,9 +528,9 @@ const AttendanceAction = ({
                 </View>
               </View>
             </View>
-          )}
-        </Actionsheet.Content>
-      </Actionsheet>
+          </View>
+        )}
+      </ActionSheet>
     </>
   );
 };
@@ -544,6 +543,7 @@ const LateOrEarlyTime = ({
   titleTime,
   time,
   title,
+  value,
   inputValue,
   inputOnChangeText,
   selectOnValueChange,
@@ -553,50 +553,57 @@ const LateOrEarlyTime = ({
   timeDuty,
   timeLateOrEarly,
   placeholder,
+  fieldOption,
 }) => {
   return (
-    <View style={{ width: "95%", gap: 3 }}>
-      <View style={{ width: "100%", gap: 5 }}>
-        <Clock
-          titleDuty={titleDuty}
-          timeDuty={timeDuty}
-          titleClock={titleTime}
-          timeInOrTimeOut={time}
-          lateOrEarly={timeLateOrEarly}
+    <View style={styles.wrapper}>
+      <View style={{ width: "95%", gap: 3 }}>
+        <View style={{ width: "100%", gap: 5 }}>
+          <Clock
+            titleDuty={titleDuty}
+            timeDuty={timeDuty}
+            titleClock={titleTime}
+            timeInOrTimeOut={time}
+            lateOrEarly={timeLateOrEarly}
+          />
+          <Options
+            formik={formik}
+            title={title}
+            value={inputValue}
+            valueChange={selectOnValueChange}
+            types={arrayList}
+            placeholder={placeholder}
+            field={fieldOption}
+          />
+          <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
+        </View>
+        <FormButton
+          children="Save"
+          size="sm"
+          variant="solid"
+          fontSize={12}
+          fontColor="white"
+          isSubmitting={formik.isSubmitting}
+          onPress={formik.handleSubmit}
         />
-        <Options
-          formik={formik}
-          title={title}
-          valueChange={selectOnValueChange}
-          types={arrayList}
-          placeholder={placeholder}
-        />
-        <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
       </View>
-      <FormButton
-        children="Save"
-        size="sm"
-        variant="solid"
-        fontSize={12}
-        fontColor="white"
-        isSubmitting={formik.isSubmitting}
-        onPress={formik.handleSubmit}
-      />
     </View>
   );
 };
 
 const LeaveOrPermit = ({ type, reason }) => {
   return (
-    <View style={{ width: "95%", gap: 3 }}>
-      <View style={{ width: "100%", gap: 5 }}>
-        <View>
-          <Text>Attendance Type</Text>
-          <Text>{type}</Text>
-        </View>
-        <View>
-          <Text>Reason</Text>
-          <Text>{reason}</Text>
+    <View style={styles.wrapper}>
+      <View style={{ width: "95%", gap: 3 }}>
+        <View style={{ width: "100%", gap: 5 }}>
+          <View>
+            <Text>Attendance Type</Text>
+            <Text>{type}</Text>
+          </View>
+          <View>
+            <Text>Reason</Text>
+            <Text>{reason}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -622,24 +629,19 @@ const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }
   );
 };
 
-const Options = ({ formik, title, field, defaultValue, types, valueChange, placeholder }) => {
+const Options = ({ formik, title, field, defaultValue, types, valueChange, placeholder, value }) => {
   return (
     <View>
-      <Text>{title}</Text>
       <Select
-        onValueChange={valueChange ? valueChange : (value) => formik.setFieldValue(field, value)}
-        borderRadius={15}
-        borderWidth={1}
-        variant="unstyled"
-        key="late_type"
-        placeholder={placeholder}
-        dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
+        formik={formik}
+        value={value}
+        title={title}
+        fieldName={field}
+        onChange={valueChange ? valueChange : (value) => formik.setFieldValue(field, value)}
+        items={types}
+        placeHolder={placeholder}
         defaultValue={defaultValue}
-      >
-        {types.map((item) => {
-          return <Select.Item label={item?.name} value={item?.name} key={item?.id} />;
-        })}
-      </Select>
+      />
     </View>
   );
 };
@@ -665,5 +667,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
   },
 });

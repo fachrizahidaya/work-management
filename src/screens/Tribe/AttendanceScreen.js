@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, Fragment } from "react";
+import { useState, useCallback, useEffect, Fragment, useRef } from "react";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
@@ -26,6 +26,8 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
+
+  const attendanceScreenSheetRef = useRef(null);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
@@ -76,7 +78,6 @@ const AttendanceScreen = () => {
     date?.date !== CURRENT_DATE &&
     !date?.attendanceReason;
   const isLeave = date?.attendanceType === "Work Day" && date?.attendanceType === "Leave";
-  const isPermit = date?.attendanceType === "Work Day" && date?.attendanceType === "Permit";
 
   const {
     data: attendanceData,
@@ -135,7 +136,8 @@ const AttendanceScreen = () => {
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
           if (item?.date && item?.confirmation === 0 && item?.dayType !== "Weekend") {
-            toggleReport();
+            // toggleReport();
+            attendanceScreenSheetRef.current?.show();
             setDate(item);
           }
         });
@@ -153,7 +155,8 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      toggleReport();
+      // toggleReport();
+      attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
@@ -290,12 +293,7 @@ const AttendanceScreen = () => {
           let backgroundColor = "";
           let textColor = "";
 
-          if (
-            event?.dayType === "Work Day" &&
-            event?.attendanceType === "Leave"
-            // ||
-            // (event?.dayType === "Work Day" && event?.attendanceType === "Permit")
-          ) {
+          if ((event?.dayType === "Work Day" && event?.attendanceType === "Leave") || event?.dayType === "Weekend") {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
@@ -319,7 +317,9 @@ const AttendanceScreen = () => {
               event?.lateReason &&
               event?.attendanceType === "Attend" &&
               !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
+            // (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
+            // (event?.dayType === "Work Day" && event?.attendanceType !== "Sick" && event?.attendanceReason) ||
+            (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||
             (event?.dayType === "Work Day" &&
               event?.attendanceType === "Alpa" &&
               event?.attendanceReason &&
@@ -329,8 +329,11 @@ const AttendanceScreen = () => {
             backgroundColor = submittedReport.color;
             textColor = submittedReport.textColor;
           } else if (
-            (event?.dayType === "Work Day" && event?.attendanceType === "Sick") ||
-            event?.attendanceType === "Leave"
+            event?.dayType === "Work Day" &&
+            event?.attendanceType === "Sick" &&
+            event?.attendanceReason
+            // ||
+            // event?.attendanceType === "Leave"
           ) {
             backgroundColor = sick.color;
             textColor = sick.textColor;
@@ -393,7 +396,6 @@ const AttendanceScreen = () => {
             onMonthChange={switchMonthHandler}
             onSubmit={attendanceReportSubmitHandler}
             reportIsOpen={reportIsOpen}
-            toggleReport={toggleReport}
             updateAttendanceCheckAccess={updateAttendanceCheckAccess}
             onSelectDate={toggleDateHandler}
             items={items}
@@ -409,7 +411,7 @@ const AttendanceScreen = () => {
       </SafeAreaView>
       <AttendanceAction
         reportIsOpen={reportIsOpen}
-        toggleReport={toggleReport}
+        toggleReport={attendanceScreenSheetRef}
         date={date}
         onSubmit={attendanceReportSubmitHandler}
         hasClockInAndOut={hasClockInAndOut}
@@ -422,8 +424,8 @@ const AttendanceScreen = () => {
         hasSubmittedEarlyReport={hasSubmittedEarlyReport}
         notAttend={notAttend}
         isLeave={isLeave}
-        isPermit={isPermit}
         CURRENT_DATE={CURRENT_DATE}
+        reference={attendanceScreenSheetRef}
       />
 
       <AddAttachment
