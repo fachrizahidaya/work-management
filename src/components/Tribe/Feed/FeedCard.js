@@ -2,7 +2,6 @@ import { memo, useCallback } from "react";
 
 import { Clipboard, FlatList, Linking, StyleSheet, View } from "react-native";
 import { Spinner } from "native-base";
-import { FlashList } from "@shopify/flash-list";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 

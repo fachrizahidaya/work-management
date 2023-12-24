@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import { Icon, Badge } from "native-base";
+import { Badge } from "native-base";
 import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -184,19 +184,19 @@ const FeedCardItem = ({
                 onCommentToggle(id);
               }}
             >
-              <Icon as={<MaterialCommunityIcons name="comment-text-outline" />} size="md" color="#8A9099" />
+              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#8A9099" />
             </Pressable>
             <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialCommunityIcons name="heart" />} size="md" color="#FF0000" />
+                <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <Icon as={<MaterialCommunityIcons name="heart-outline" />} size="md" color="#8A9099" />
+                <MaterialCommunityIcons name="heart-outline" size={20} color="#8A9099" />
               </Pressable>
             )}
 
