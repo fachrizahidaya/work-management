@@ -1,34 +1,102 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Image, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
 
 const TeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
+  const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
+  const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [pendingList, setPendingList] = useState([]);
+  const [reloadPending, setReloadPending] = useState(false);
+  const [approvedList, setApprovedList] = useState([]);
+  const [reloadApproved, setReloadApproved] = useState(false);
+  const [rejectedList, setRejectedList] = useState([]);
+  const [reloadRejected, setReloadRejected] = useState(false);
+  const [tabValue, setTabValue] = useState("waiting approval");
+  const [currentPagePending, setCurrentPagePending] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageApproved, setCurrentPageApproved] = useState(1);
+
+  const tabs = useMemo(() => {
+    return [{ title: "waiting approval" }, { title: "approved" }, { title: "rejected" }];
+  }, []);
+
   const navigation = useNavigation();
 
-  const toast = useToast();
+  const fetchMorePendingParameters = {
+    page: currentPagePending,
+    limit: 20,
+    status: "Pending",
+  };
+
+  const fetchMoreApprovedParameters = {
+    page: currentPageApproved,
+    limit: 20,
+    status: "Approved",
+  };
+
+  const fetchMoreRejectedParameters = {
+    page: currentPage,
+    limit: 20,
+    status: "Rejected",
+  };
 
   const {
-    data: teamLeaveRequestData,
-    refetch: refetchTeamLeaveRequest,
-    isFetching: teamLeaveRequestIsFetching,
-    isLoading: teamLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/waiting-approval");
+    data: pendingLeaveRequest,
+    refetch: refetchPendingLeaveRequest,
+    isFetching: pendingLeaveRequestIsFetching,
+  } = useFetch(
+    tabValue === "pending" && "/hr/leave-requests/personal"
+    // [currentPagePending, reloadPending],
+    // fetchMorePendingParameters
+  );
 
-  const pendingLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Pending");
-  const pendingCount = pendingLeaveRequests.length;
-  const approvedLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Approved");
-  const approvedCount = approvedLeaveRequests.length;
-  const rejectedLeaveRequests = teamLeaveRequestData?.data.filter((request) => request.status === "Rejected");
-  const rejectedCount = rejectedLeaveRequests.length;
+  const {
+    data: approvedLeaveRequest,
+    refetch: refetchApprovedLeaveRequest,
+    isFetching: approvedLeaveRequestIsFetching,
+  } = useFetch(
+    tabValue === "approved" && "/hr/leave-requests/personal"
+    // [currentPageApproved, reloadApproved],
+    // fetchMoreApprovedParameters
+  );
+
+  const {
+    data: rejectedLeaveRequest,
+    refetch: refetchRejectedLeaveRequest,
+    isFetching: rejectedLeaveRequestIsFetching,
+    isLoading: rejectedLeaveRequestIsLoading,
+  } = useFetch(
+    tabValue === "rejected" && "/hr/leave-requests/personal"
+    // [currentPage, reloadRejected],
+    // fetchMoreRejectedParameters
+  );
+
+  const fetchMorePending = () => {
+    if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
+      setCurrentPagePending(currentPagePending + 1);
+    }
+  };
+
+  const fetchMoreApproved = () => {
+    if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
+      setCurrentPageApproved(currentPageApproved + 1);
+    }
+  };
+
+  const fetchMoreRejected = () => {
+    if (currentPage < rejectedLeaveRequest?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   /**
    * Submit response of leave request handler
@@ -41,28 +109,36 @@ const TeamLeaveScreen = () => {
       const res = await axiosInstance.post(`/hr/approvals/approval`, data);
       setSubmitting(false);
       setStatus("success");
-      toast.show({
-        render: ({ id }) => {
-          return (
-            <SuccessToast
-              message={data.status === "Approved" ? "Request Approved" : "Request Rejected"}
-              close={() => toast.close(id)}
-            />
-          );
-        },
+      refetchPendingLeaveRequest();
+      refetchApprovedLeaveRequest();
+      refetchRejectedLeaveRequest();
+      Toast.show({
+        type: "success",
+        text1: data.status === "Approved" ? "Request Approved" : "Request Rejected",
+        position: "bottom",
       });
-      refetchTeamLeaveRequest();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Process failed, please try again later"} close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setPendingList([]);
+    setApprovedList([]);
+    setRejectedList([]);
+    setCurrentPagePending(1);
+    setCurrentPageApproved(1);
+    setCurrentPage(1);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -70,52 +146,60 @@ const TeamLeaveScreen = () => {
     }, 100);
   });
 
+  useEffect(() => {
+    if (pendingLeaveRequest?.data?.data?.length) {
+      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    }
+  }, [pendingLeaveRequest?.data?.data?.length]);
+
+  useEffect(() => {
+    if (approvedLeaveRequest?.data?.data.length) {
+      setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
+    }
+  }, [approvedLeaveRequest?.data?.data?.length]);
+
+  useEffect(() => {
+    if (rejectedLeaveRequest?.data?.data.length) {
+      setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
+    }
+  }, [rejectedLeaveRequest?.data?.data?.length]);
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+            <View style={styles.header}>
               <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
-            </Flex>
-            {teamLeaveRequestData?.data.length > 0 ? (
-              <>
-                <TeamLeaveRequestList
-                  pendingLeaveRequests={pendingLeaveRequests}
-                  approvedLeaveRequests={approvedLeaveRequests}
-                  rejectedLeaveRequests={rejectedLeaveRequests}
-                  pendingCount={pendingCount}
-                  approvedCount={approvedCount}
-                  rejectedCount={rejectedCount}
-                  teamLeaveRequestData={teamLeaveRequestData}
-                  teamLeaveRequestIsFetching={teamLeaveRequestIsFetching}
-                  refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-                  onApproval={approvalResponseHandler}
-                />
-              </>
-            ) : teamLeaveRequestIsFetching ? (
-              <VStack px={3} space={2}>
-                <Skeleton h={41} />
-                <Skeleton h={41} />
-                <Skeleton h={41} />
-              </VStack>
-            ) : (
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  resizeMode="contain"
-                  size="2xl"
-                  alt="empty"
-                />
-                <Text>No Data</Text>
-              </VStack>
-            )}
+            </View>
+
+            <TeamLeaveRequestList
+              pendingLeaveRequests={pendingList}
+              approvedLeaveRequests={approvedList}
+              rejectedLeaveRequests={rejectedList}
+              pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
+              approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
+              rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+              refetchPendingLeaveRequest={refetchPendingLeaveRequest}
+              refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
+              refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
+              hasBeenScrolled={hasBeenScrolled}
+              setHasBeenScrolled={setHasBeenScrolled}
+              hasBeenScrolledPending={hasBeenScrolledPending}
+              setHasBeenScrolledPending={setHasBeenScrolledPending}
+              hasBeenScrolledApproved={hasBeenScrolledApproved}
+              setHasBeenScrolledApproved={setHasBeenScrolledApproved}
+              fetchMorePending={fetchMorePending}
+              fetchMoreApproved={fetchMoreApproved}
+              fetchMoreRejected={fetchMoreRejected}
+              rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
+              onApproval={approvalResponseHandler}
+              tabValue={tabValue}
+              tabs={tabs}
+              onChangeTab={onChangeTab}
+            />
           </>
-        ) : (
-          <VStack borderWidth={1} px={4} space={2}>
-            <Spinner color="primary.600" size="lg" />
-          </VStack>
-        )}
+        ) : null}
       </SafeAreaView>
     </>
   );
@@ -128,5 +212,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFF",
     position: "relative",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
 });

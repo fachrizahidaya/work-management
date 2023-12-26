@@ -1,18 +1,12 @@
-import { memo, useEffect, useState, useMemo, useCallback } from "react";
+import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import dayjs from "dayjs";
 
-import { ScrollView } from "react-native";
-import { Badge, Flex, Icon, Image, Text, VStack } from "native-base";
+import { ScrollView, StyleSheet, View, Image, Text } from "react-native";
+import { Spinner } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import AvatarPlaceholder from "./../../../shared/AvatarPlaceholder";
-import FormButton from "../../../shared/FormButton";
 import Tabs from "../../../shared/Tabs";
-import { card } from "../../../../styles/Card";
 import TeamLeaveRequestItem from "./TeamLeaveRequestItem";
 
 const TeamLeaveRequestList = ({
@@ -21,14 +15,27 @@ const TeamLeaveRequestList = ({
   pendingLeaveRequests,
   approvedLeaveRequests,
   rejectedLeaveRequests,
-  pendingCount,
-  approvedCount,
-  rejectedCount,
-  teamLeaveRequestData,
-  teamLeaveRequestIsFetching,
+  pendingLeaveRequestIsFetching,
+  approvedLeaveRequestIsFetching,
+  rejectedLeaveRequestIsFetching,
+  refetchPendingLeaveRequest,
+  refetchApprovedLeaveRequest,
+  refetchRejectedLeaveRequest,
+  hasBeenScrolled,
+  setHasBeenScrolled,
+  hasBeenScrolledPending,
+  setHasBeenScrolledPending,
+  hasBeenScrolledApproved,
+  setHasBeenScrolledApproved,
+  fetchMorePending,
+  fetchMoreApproved,
+  fetchMoreRejected,
+  rejectedLeaveRequestIsLoading,
+  tabValue,
+  tabs,
+  onChangeTab,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
-  const [tabValue, setTabValue] = useState("waiting approval");
 
   /**
    * Aprroval or Rejection handler
@@ -48,10 +55,6 @@ const TeamLeaveRequestList = ({
     },
   });
 
-  const tabs = useMemo(() => {
-    return [{ title: "waiting approval" }, { title: "approved" }, { title: "rejected" }];
-  }, []);
-
   /**
    * Response handler
    * @param {*} response
@@ -65,16 +68,6 @@ const TeamLeaveRequestList = ({
     formik.handleSubmit();
   };
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      setTabValue("waiting approval");
-    };
-  }, [teamLeaveRequestData]);
-
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       refetchTeamLeaveRequest();
@@ -84,62 +77,60 @@ const TeamLeaveRequestList = ({
   return (
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
-      <Flex
-        backgroundColor={pendingLeaveRequests || approvedLeaveRequests || rejectedLeaveRequests ? "#f1f1f1" : "#FFFFFF"}
-        px={3}
-        flex={1}
-        flexDir="column"
-      >
+      <View style={styles.container}>
         {tabValue === "waiting approval" ? (
           pendingLeaveRequests.length > 0 ? (
-            <FlashList
-              data={pendingLeaveRequests}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              estimatedItemSize={200}
-              refreshing={true}
-              refreshControl={
-                <RefreshControl
-                  refreshing={teamLeaveRequestIsFetching}
-                  onRefresh={() => {
-                    refetchTeamLeaveRequest();
-                  }}
-                />
-              }
-              renderItem={({ item, index }) => (
-                <TeamLeaveRequestItem
-                  item={item}
-                  key={index}
-                  id={item?.id}
-                  leave_name={item?.leave_name}
-                  reason={item?.reason}
-                  days={item?.days}
-                  begin_date={item?.begin_date}
-                  end_date={item?.end_date}
-                  status={item?.status}
-                  employee_name={item?.employee_name}
-                  employee_image={item?.employee_image}
-                  responseHandler={responseHandler}
-                  isSubmitting={isSubmitting}
-                  formik={formik}
-                />
-              )}
-            />
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlashList
+                data={pendingLeaveRequests}
+                onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
+                // onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={pendingLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchPendingLeaveRequest();
+                    }}
+                  />
+                }
+                renderItem={({ item, index }) => (
+                  <TeamLeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    employee_name={item?.employee_name}
+                    employee_image={item?.employee_image}
+                    responseHandler={responseHandler}
+                    isSubmitting={isSubmitting}
+                    formik={formik}
+                  />
+                )}
+              />
+            </View>
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={teamLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
               }
             >
-              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <View style={styles.content}>
                 <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
-                  resizeMode="contain"
-                  size="2xl"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             </ScrollView>
           )
         ) : tabValue === "approved" ? (
@@ -147,14 +138,16 @@ const TeamLeaveRequestList = ({
             <FlashList
               data={approvedLeaveRequests}
               onEndReachedThreshold={0.1}
+              // onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+              onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
               keyExtractor={(item, index) => index}
               estimatedItemSize={200}
               refreshing={true}
               refreshControl={
                 <RefreshControl
-                  refreshing={teamLeaveRequestIsFetching}
+                  refreshing={approvedLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchTeamLeaveRequest();
+                    refetchApprovedLeaveRequest();
                   }}
                 />
               }
@@ -175,30 +168,40 @@ const TeamLeaveRequestList = ({
               )}
             />
           ) : (
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-              <Image
-                source={require("../../../../assets/vectors/empty.png")}
-                alt="empty"
-                resizeMode="contain"
-                size="2xl"
-              />
-              <Text>No Data</Text>
-            </VStack>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+              }
+            >
+              <View style={styles.content}>
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
+                />
+                <Text>No Data</Text>
+              </View>
+            </ScrollView>
           )
         ) : rejectedLeaveRequests.length > 0 ? (
           <FlashList
             data={rejectedLeaveRequests}
             onEndReachedThreshold={0.1}
+            // onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
+            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
             keyExtractor={(item, index) => index}
             estimatedItemSize={200}
             refreshing={true}
             refreshControl={
               <RefreshControl
-                refreshing={teamLeaveRequestIsFetching}
+                refreshing={rejectedLeaveRequestIsFetching}
                 onRefresh={() => {
-                  refetchTeamLeaveRequest();
+                  refetchRejectedLeaveRequest();
                 }}
               />
+            }
+            ListFooterComponent={() =>
+              rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
             }
             renderItem={({ item, index }) => (
               <TeamLeaveRequestItem
@@ -217,19 +220,39 @@ const TeamLeaveRequestList = ({
             )}
           />
         ) : (
-          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-            <Image
-              source={require("../../../../assets/vectors/empty.png")}
-              alt="empty"
-              resizeMode="contain"
-              size="2xl"
-            />
-            <Text>No Data</Text>
-          </VStack>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
+            }
+          >
+            <View style={styles.content}>
+              <Image
+                source={require("../../../../assets/vectors/empty.png")}
+                alt="empty"
+                style={{ height: 250, width: 250, resizeMode: "contain" }}
+              />
+              <Text>No Data</Text>
+            </View>
+          </ScrollView>
         )}
-      </Flex>
+      </View>
     </>
   );
 };
 
 export default memo(TeamLeaveRequestList);
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#F8F8F8",
+    flex: 1,
+    flexDirection: "column",
+    paddingHorizontal: 5,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

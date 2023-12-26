@@ -1,8 +1,8 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Image, Spinner, Text, VStack } from "native-base";
-import { StyleSheet } from "react-native";
+import { Spinner } from "native-base";
+import { StyleSheet, View, Text, Image } from "react-native";
 
 import Tabs from "../../shared/Tabs";
 import { FlashList } from "@shopify/flash-list";
@@ -37,15 +37,15 @@ const LeaveRequestList = ({
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
-      <Flex px={3} style={styles.container}>
+      <View style={styles.container}>
         {tabValue === "pending" ? (
           pendingList.length > 0 ? (
-            <Box flex={1}>
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
-                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
+                // onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -72,32 +72,31 @@ const LeaveRequestList = ({
                   />
                 )}
               />
-            </Box>
+            </View>
           ) : (
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
               }
             >
-              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <View style={styles.content}>
                 <Image
                   source={require("../../../assets/vectors/empty.png")}
                   alt="empty"
-                  resizeMode="contain"
-                  size="2xl"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             </ScrollView>
           )
         ) : tabValue === "approved" ? (
           approvedList.length > 0 ? (
-            <Box flex={1}>
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
-                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+                // onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -124,38 +123,37 @@ const LeaveRequestList = ({
                   />
                 )}
               />
-            </Box>
+            </View>
           ) : (
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
               }
             >
-              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <View style={styles.content}>
                 <Image
                   source={require("../../../assets/vectors/empty.png")}
                   alt="empty"
-                  resizeMode="contain"
-                  size="2xl"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             </ScrollView>
           )
         ) : rejectedList.length > 0 ? (
-          <Box flex={1}>
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
             <FlashList
               removeClippedSubviews={true}
               data={rejectedList}
               onEndReachedThreshold={0.1}
               onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-              onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
+              // onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() =>
-                rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
-              }
+              // ListFooterComponent={() =>
+              //   rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+              // }
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}
@@ -179,25 +177,24 @@ const LeaveRequestList = ({
                 />
               )}
             />
-          </Box>
+          </View>
         ) : (
           <ScrollView
             refreshControl={
               <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
             }
           >
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+            <View style={styles.content}>
               <Image
                 source={require("../../../assets/vectors/empty.png")}
                 alt="empty"
-                resizeMode="contain"
-                size="2xl"
+                style={{ height: 250, width: 250, resizeMode: "contain" }}
               />
               <Text>No Data</Text>
-            </VStack>
+            </View>
           </ScrollView>
         )}
-      </Flex>
+      </View>
     </>
   );
 };
@@ -209,5 +206,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     flex: 1,
     flexDirection: "column",
+    paddingHorizontal: 5,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

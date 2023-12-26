@@ -2,9 +2,9 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
+import Button from "../../../components/shared/Forms/Button";
 import { useFetch } from "../../../hooks/useFetch";
 import PageHeader from "../../../components/shared/PageHeader";
 import useCheckAccess from "../../../hooks/useCheckAccess";
@@ -63,9 +63,9 @@ const LeaveScreen = () => {
     refetch: refetchPendingLeaveRequest,
     isFetching: pendingLeaveRequestIsFetching,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal",
-    [currentPagePending, reloadPending],
-    fetchMorePendingParameters
+    tabValue === "pending" && "/hr/leave-requests/personal"
+    // [currentPagePending, reloadPending],
+    // fetchMorePendingParameters
   );
 
   const {
@@ -73,9 +73,9 @@ const LeaveScreen = () => {
     refetch: refetchApprovedLeaveRequest,
     isFetching: approvedLeaveRequestIsFetching,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal",
-    [currentPageApproved, reloadApproved],
-    fetchMoreApprovedParameters
+    tabValue === "approved" && "/hr/leave-requests/personal"
+    // [currentPageApproved, reloadApproved],
+    // fetchMoreApprovedParameters
   );
 
   const {
@@ -84,9 +84,9 @@ const LeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal",
-    [currentPage, reloadRejected],
-    fetchMoreRejectedParameters
+    tabValue === "rejected" && "/hr/leave-requests/personal"
+    // [currentPage, reloadRejected],
+    // fetchMoreRejectedParameters
   );
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
@@ -150,15 +150,17 @@ const LeaveScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Leave Request" backButton={false} />
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
-            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
-              My Team
-            </Button>
+            <Button
+              onPress={() => navigation.navigate("Team Leave Request")}
+              padding={5}
+              children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}> My Team</Text>}
+            />
           )}
-        </Flex>
+        </View>
 
         <>
           {/* Content here */}
@@ -228,5 +230,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
 });
