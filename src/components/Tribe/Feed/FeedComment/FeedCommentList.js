@@ -1,8 +1,7 @@
 import { memo } from "react";
 
 import { Spinner } from "native-base";
-import { View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { FlatList, View } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 
 import FeedCommentItem from "./FeedCommentItem";
@@ -23,8 +22,8 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <View style={{ height: 535 }}>
-        <FlashList
+      <View style={{ height: 350 }}>
+        <FlatList
           data={comments}
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}

@@ -2,10 +2,9 @@ import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Spinner } from "native-base";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList } from "react-native";
 
 import Tabs from "../../shared/Tabs";
-import { FlashList } from "@shopify/flash-list";
 import LeaveRequestItem from "./LeaveRequestItem";
 
 const LeaveRequestList = ({
@@ -24,6 +23,8 @@ const LeaveRequestList = ({
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
+  pendingLeaveRequestIsLoading,
+  approvedLeaveRequestIsLoading,
   rejectedLeaveRequestIsLoading,
   tabValue,
   tabs,
@@ -39,13 +40,13 @@ const LeaveRequestList = ({
 
       <View style={styles.container}>
         {tabValue === "pending" ? (
-          pendingList.length > 0 ? (
+          pendingList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlashList
+              <FlatList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
-                // onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
+                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -56,6 +57,9 @@ const LeaveRequestList = ({
                       refetchPendingLeaveRequest();
                     }}
                   />
+                }
+                ListFooterComponent={() =>
+                  pendingLeaveRequestIsLoading && hasBeenScrolledPending && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -90,13 +94,13 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : tabValue === "approved" ? (
-          approvedList.length > 0 ? (
+          approvedList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlashList
+              <FlatList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
-                // onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -107,6 +111,9 @@ const LeaveRequestList = ({
                       refetchApprovedLeaveRequest();
                     }}
                   />
+                }
+                ListFooterComponent={() =>
+                  approvedLeaveRequestIsLoading && hasBeenScrolledApproved && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -140,20 +147,20 @@ const LeaveRequestList = ({
               </View>
             </ScrollView>
           )
-        ) : rejectedList.length > 0 ? (
+        ) : rejectedList?.length > 0 ? (
           <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <FlashList
+            <FlatList
               removeClippedSubviews={true}
               data={rejectedList}
               onEndReachedThreshold={0.1}
               onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-              // onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
+              onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              // ListFooterComponent={() =>
-              //   rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
-              // }
+              ListFooterComponent={() =>
+                rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+              }
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}

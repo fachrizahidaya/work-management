@@ -1,7 +1,8 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, ScrollView, Text } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
+import { ScrollView } from "react-native-gesture-handler";
 
 import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
@@ -12,7 +13,6 @@ const FeedComment = ({
   loggedEmployeeImage,
   commentIsFetching,
   comments,
-  handleOpen,
   handleClose,
   refetchComment,
   onEndReached,
@@ -61,7 +61,7 @@ const FeedComment = ({
               <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
             </View>
           </View>
-          <ScrollView style={{ flex: 1, maxHeight: 600, paddingHorizontal: 5 }}>
+          <ScrollView style={{ paddingHorizontal: 5 }}>
             <View style={styles.content}>
               <FeedCommentList
                 comments={comments}
@@ -104,11 +104,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#DBDBDB",
   },
-  content: {
-    marginTop: 5,
-    gap: 1,
-    flex: 1,
-  },
+  content: {},
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,

@@ -7,13 +7,14 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Icon, Button } from "native-base";
+import { Icon } from "native-base";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
 import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import Button from "../../../../components/shared/Forms/Button";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
@@ -30,6 +31,8 @@ const NewFeedScreen = ({ route }) => {
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+
+  const postActionScreenSheetRef = useRef(null);
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
@@ -242,21 +245,24 @@ const NewFeedScreen = ({ route }) => {
               <View style={{ gap: 5 }}>
                 <Button
                   disabled={checkAccess ? false : true}
-                  height={25}
-                  onPress={() => togglePostType()}
-                  borderRadius="full"
+                  padding={10}
+                  height={30}
+                  backgroundColor="#FFFFFF"
+                  onPress={() => postActionScreenSheetRef.current?.show()}
+                  borderRadius={15}
                   variant="outline"
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
-                    {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
-                  </View>
-                </Button>
+                  children={
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
+                      {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
+                    </View>
+                  }
+                />
                 {formik.values.type === "Public" ? (
                   ""
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
+                    <MaterialCommunityIcons name="clock-time-three-outline" />
                     <Text style={{ fontSize: 12 }}>
                       {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                     </Text>
@@ -291,6 +297,7 @@ const NewFeedScreen = ({ route }) => {
               dateShown={dateShown}
               endDateAnnouncementHandler={endDateAnnouncementHandler}
               formik={formik}
+              reference={postActionScreenSheetRef}
             />
           </View>
         ) : (

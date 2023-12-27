@@ -1,14 +1,25 @@
-import { Actionsheet } from "native-base";
-import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
-const CancelAction = ({ actionIsOpen, onDeselect, toggleCancelModal }) => {
+const CancelAction = ({ onDeselect, toggleCancelModal, reference }) => {
   return (
-    <Actionsheet isOpen={actionIsOpen} onClose={onDeselect}>
-      <Actionsheet.Content>
-        <Actionsheet.Item onPress={toggleCancelModal}>Cancel Request</Actionsheet.Item>
-      </Actionsheet.Content>
-    </Actionsheet>
+    <ActionSheet ref={reference} onClose={onDeselect}>
+      <TouchableOpacity onPress={toggleCancelModal} style={{ ...styles.wrapper }}>
+        <View>
+          <Text>Cancel Request</Text>
+        </View>
+      </TouchableOpacity>
+    </ActionSheet>
   );
 };
 
 export default CancelAction;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
@@ -31,6 +31,8 @@ const LeaveScreen = () => {
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
+  const cancleScreenSheetRef = useRef(null);
+
   const navigation = useNavigation();
 
   const tabs = useMemo(() => {
@@ -62,20 +64,22 @@ const LeaveScreen = () => {
     data: pendingLeaveRequest,
     refetch: refetchPendingLeaveRequest,
     isFetching: pendingLeaveRequestIsFetching,
+    isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal"
-    // [currentPagePending, reloadPending],
-    // fetchMorePendingParameters
+    tabValue === "pending" && "/hr/leave-requests/personal",
+    [currentPagePending, reloadPending],
+    fetchMorePendingParameters
   );
 
   const {
     data: approvedLeaveRequest,
     refetch: refetchApprovedLeaveRequest,
     isFetching: approvedLeaveRequestIsFetching,
+    isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal"
-    // [currentPageApproved, reloadApproved],
-    // fetchMoreApprovedParameters
+    tabValue === "approved" && "/hr/leave-requests/personal",
+    [currentPageApproved, reloadApproved],
+    fetchMoreApprovedParameters
   );
 
   const {
@@ -84,9 +88,9 @@ const LeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal"
-    // [currentPage, reloadRejected],
-    // fetchMoreRejectedParameters
+    tabValue === "rejected" && "/hr/leave-requests/personal",
+    [currentPage, reloadRejected],
+    fetchMoreRejectedParameters
   );
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
@@ -111,12 +115,14 @@ const LeaveScreen = () => {
 
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
-    toggleAction();
+    // toggleAction();
+    cancleScreenSheetRef.current?.show();
   };
 
   const closeSelectedLeaveHandler = () => {
     setSelectedData(null);
-    toggleAction();
+    // toggleAction();
+    cancleScreenSheetRef.current?.hide();
   };
 
   const onChangeTab = useCallback((value) => {
@@ -185,6 +191,8 @@ const LeaveScreen = () => {
             fetchMorePending={fetchMorePending}
             fetchMoreApproved={fetchMoreApproved}
             fetchMoreRejected={fetchMoreRejected}
+            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
             rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
             tabValue={tabValue}
             setTabValue={setTabValue}
@@ -194,9 +202,9 @@ const LeaveScreen = () => {
         </>
       </SafeAreaView>
       <CancelAction
-        actionIsOpen={actionIsOpen}
         onDeselect={closeSelectedLeaveHandler}
         toggleCancelModal={toggleCancelModal}
+        reference={cancleScreenSheetRef}
       />
       <ConfirmationModal
         isOpen={cancelModalIsOpen}
@@ -205,7 +213,7 @@ const LeaveScreen = () => {
         hasSuccessFunc={true}
         header="Cancel Leave Request"
         onSuccess={() => {
-          toggleAction();
+          cancleScreenSheetRef.current?.hide();
           refetchPendingLeaveRequest;
         }}
         description="Are you sure to cancel this request?"

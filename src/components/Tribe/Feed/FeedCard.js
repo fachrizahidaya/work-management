@@ -36,7 +36,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
+      // refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);

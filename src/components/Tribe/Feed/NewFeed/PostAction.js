@@ -1,8 +1,8 @@
-import { Actionsheet, Icon } from "native-base";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import ActionSheet from "react-native-actions-sheet";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 
@@ -15,30 +15,46 @@ const PostAction = ({
   isAnnouncementSelected,
   dateShown,
   endDateAnnouncementHandler,
+  reference,
 }) => {
   return (
-    <Actionsheet isOpen={postTypeIsOpen} onClose={postTypeIsClose} size="full">
-      <Actionsheet.Content>
+    <ActionSheet ref={reference} onClose={postTypeIsClose} size="full">
+      <View style={styles.wrapper}>
         <View style={styles.title}>
           <Text>Choose Post Type</Text>
         </View>
-        <Actionsheet.Item
-          onPress={publicToggleHandler}
-          startIcon={<Icon as={<MaterialIcons name="people" />} size={6} />}
-        >
-          <View style={{ ...styles.publicButton, width: formik.values.type === "Public" ? "70.6%" : null }}>
-            <Text>Public</Text>
-            {formik.values.type === "Public" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
-          </View>
-        </Actionsheet.Item>
 
-        <Actionsheet.Item
+        <TouchableOpacity
+          onPress={publicToggleHandler}
+          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+        >
+          <View
+            style={{
+              width: formik.values.type === "Public" ? "70.6%" : null,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons name="people" size={6} />
+            <Text>Public</Text>
+            {formik.values.type === "Public" ? <MaterialCommunityIcons name="check" /> : ""}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={() => {
             announcementToggleHandler();
           }}
-          startIcon={<Icon as={<MaterialCommunityIcons name="bullhorn" />} size={6} />}
+          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
         >
-          <View style={{ ...styles.announcementButton, width: formik.values.type === "Announcement" ? "85%" : null }}>
+          <View
+            style={{
+              width: formik.values.type === "Announcement" ? "85%" : null,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialCommunityIcons name="bullhorn" size={6} />
             <View>
               <Text>Announcement</Text>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
@@ -54,11 +70,11 @@ const PostAction = ({
                 ) : null}
               </View>
             </View>
-            {formik.values.type === "Announcement" ? <Icon as={<MaterialCommunityIcons name="check" />} /> : ""}
+            {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" /> : ""}
           </View>
-        </Actionsheet.Item>
-      </Actionsheet.Content>
-    </Actionsheet>
+        </TouchableOpacity>
+      </View>
+    </ActionSheet>
   );
 };
 
@@ -82,5 +98,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
   },
 });

@@ -1,9 +1,8 @@
 import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { ScrollView, StyleSheet, View, Image, Text } from "react-native";
+import { ScrollView, StyleSheet, View, Image, Text, FlatList } from "react-native";
 import { Spinner } from "native-base";
-import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import Tabs from "../../../shared/Tabs";
@@ -30,6 +29,8 @@ const TeamLeaveRequestList = ({
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
+  pendingLeaveRequestIsLoading,
+  approvedLeaveRequestIsLoading,
   rejectedLeaveRequestIsLoading,
   tabValue,
   tabs,
@@ -81,11 +82,11 @@ const TeamLeaveRequestList = ({
         {tabValue === "waiting approval" ? (
           pendingLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlashList
+              <FlatList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
-                // onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
+                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={200}
                 refreshing={true}
@@ -96,6 +97,9 @@ const TeamLeaveRequestList = ({
                       refetchPendingLeaveRequest();
                     }}
                   />
+                }
+                ListFooterComponent={() =>
+                  pendingLeaveRequestIsLoading && hasBeenScrolledPending && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <TeamLeaveRequestItem
@@ -135,10 +139,10 @@ const TeamLeaveRequestList = ({
           )
         ) : tabValue === "approved" ? (
           approvedLeaveRequests.length > 0 ? (
-            <FlashList
+            <FlatList
               data={approvedLeaveRequests}
               onEndReachedThreshold={0.1}
-              // onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+              onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
               onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
               keyExtractor={(item, index) => index}
               estimatedItemSize={200}
@@ -150,6 +154,9 @@ const TeamLeaveRequestList = ({
                     refetchApprovedLeaveRequest();
                   }}
                 />
+              }
+              ListFooterComponent={() =>
+                approvedLeaveRequestIsLoading && hasBeenScrolledApproved && <Spinner color="primary.600" />
               }
               renderItem={({ item, index }) => (
                 <TeamLeaveRequestItem
@@ -184,10 +191,10 @@ const TeamLeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedLeaveRequests.length > 0 ? (
-          <FlashList
+          <FlatList
             data={rejectedLeaveRequests}
             onEndReachedThreshold={0.1}
-            // onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
+            onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
             onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
             keyExtractor={(item, index) => index}
             estimatedItemSize={200}

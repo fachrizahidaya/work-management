@@ -2,7 +2,19 @@ import { TouchableOpacity } from "react-native";
 
 import React from "react";
 
-const Button = ({ children, styles, flex, backgroundColor, onPress, disabled, opacity, variant, padding }) => {
+const Button = ({
+  children,
+  styles,
+  flex,
+  backgroundColor,
+  onPress,
+  disabled,
+  opacity,
+  variant,
+  padding,
+  borderRadius,
+  height,
+}) => {
   return (
     <TouchableOpacity
       style={[
@@ -12,8 +24,8 @@ const Button = ({ children, styles, flex, backgroundColor, onPress, disabled, op
           backgroundColor:
             variant === "outline" ? "white" : backgroundColor ? backgroundColor : disabled ? "gray" : "#176688",
           opacity: opacity || 1,
-          borderRadius: 10,
-          height: 42,
+          borderRadius: borderRadius ? borderRadius : 10,
+          height: height ? height : 42,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

@@ -1,9 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList } from "react-native";
 import { Spinner } from "native-base";
-import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -26,9 +25,7 @@ const PayslipScreen = () => {
   const [passwordDownloadError, setPasswordDownloadError] = useState("");
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
   const [payslips, setPayslips] = useState([]);
-  const [filteredDataArray, setFilteredDataArray] = useState([]);
 
   const payslipDownloadScreenSheetRef = useRef(null);
   const payslipPasswordEditScreenSheetRef = useRef(null);
@@ -39,7 +36,6 @@ const PayslipScreen = () => {
 
   const fetchPayslipParameters = {
     page: currentPage,
-    search: searchInput,
     limit: 10,
   };
 
@@ -48,7 +44,7 @@ const PayslipScreen = () => {
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
     isLoading: payslipIsLoading,
-  } = useFetch("/hr/payslip", [currentPage, searchInput], fetchPayslipParameters);
+  } = useFetch("/hr/payslip", [currentPage], fetchPayslipParameters);
 
   const fetchMorePayslip = () => {
     if (currentPage < payslip?.data?.last_page) {
@@ -157,8 +153,8 @@ const PayslipScreen = () => {
         </View>
 
         {payslip?.data?.data.length > 0 ? (
-          <FlashList
-            data={payslips.length ? payslips : filteredDataArray}
+          <FlatList
+            data={payslips}
             keyExtractor={(item, index) => index}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}
             onEndReachedThreshold={0.1}
@@ -182,7 +178,7 @@ const PayslipScreen = () => {
               />
             )}
           />
-        ) : payslipIsFetching ? (
+        ) : payslipIsLoading ? (
           <Spinner />
         ) : (
           <View style={styles.imageContainer}>
@@ -197,7 +193,6 @@ const PayslipScreen = () => {
       </SafeAreaView>
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
-        downloadDialogIsOpen={downloadDialogIsOpen}
         toggleDownloadDialog={closeSelectedPayslip}
         setPasswordError={setPasswordDownloadError}
         downloadPayslipCheckAccess={downloadPayslipCheckAccess}

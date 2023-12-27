@@ -1,7 +1,6 @@
 import { memo, useState } from "react";
 
-import { StyleSheet, View, Text, Pressable } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { StyleSheet, View, Text, Pressable, FlatList } from "react-native";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
@@ -135,7 +134,7 @@ const FeedCommentItem = ({
         {viewReplyToggle === true && totalReplies > 0 && hideReplies === false && (
           <>
             <View style={{ flex: 1, minHeight: 2 }}>
-              <FlashList
+              <FlatList
                 data={commentRepliesData?.data}
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}

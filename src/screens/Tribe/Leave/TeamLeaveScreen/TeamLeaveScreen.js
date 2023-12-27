@@ -53,20 +53,20 @@ const TeamLeaveScreen = () => {
     data: pendingLeaveRequest,
     refetch: refetchPendingLeaveRequest,
     isFetching: pendingLeaveRequestIsFetching,
+    isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal"
-    // [currentPagePending, reloadPending],
-    // fetchMorePendingParameters
+    tabValue === "pending" && "/hr/leave-requests/personal"[(currentPagePending, reloadPending)],
+    fetchMorePendingParameters
   );
 
   const {
     data: approvedLeaveRequest,
     refetch: refetchApprovedLeaveRequest,
     isFetching: approvedLeaveRequestIsFetching,
+    isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal"
-    // [currentPageApproved, reloadApproved],
-    // fetchMoreApprovedParameters
+    tabValue === "approved" && "/hr/leave-requests/personal"[(currentPageApproved, reloadApproved)],
+    fetchMoreApprovedParameters
   );
 
   const {
@@ -75,9 +75,8 @@ const TeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal"
-    // [currentPage, reloadRejected],
-    // fetchMoreRejectedParameters
+    tabValue === "rejected" && "/hr/leave-requests/personal"[(currentPage, reloadRejected)],
+    fetchMoreRejectedParameters
   );
 
   const fetchMorePending = () => {
@@ -192,6 +191,8 @@ const TeamLeaveScreen = () => {
               fetchMorePending={fetchMorePending}
               fetchMoreApproved={fetchMoreApproved}
               fetchMoreRejected={fetchMoreRejected}
+              pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+              approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
               rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
               onApproval={approvalResponseHandler}
               tabValue={tabValue}

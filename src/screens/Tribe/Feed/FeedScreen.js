@@ -128,13 +128,11 @@ const FeedScreen = () => {
   const commentsOpenHandler = (post_id) => {
     commentScreenSheetRef.current?.show();
     setPostId(post_id);
-    // setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
 
   const commentsCloseHandler = () => {
-    // setCommentsOpen(false);
     commentScreenSheetRef.current?.hide();
     setPostId(null);
   };
@@ -277,7 +275,6 @@ const FeedScreen = () => {
               comments={comments}
               commentIsFetching={commentIsFetching}
               refetchComment={refetchComment}
-              handleOpen={commentsOpenHandler}
               handleClose={commentsCloseHandler}
               onEndReached={commentEndReachedHandler}
               commentRefetchHandler={commentRefetchHandler}

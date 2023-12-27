@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-
-import { Agenda } from "react-native-calendars";
 import dayjs from "dayjs";
 
+import { Agenda } from "react-native-calendars";
 import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 
 const CalendarWithSlider = ({ items }) => {

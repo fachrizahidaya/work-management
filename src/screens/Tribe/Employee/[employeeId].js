@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
@@ -9,13 +9,12 @@ import Toast from "react-native-toast-message";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import axiosInstance from "../../../config/api";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
-import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
-import { useCallback } from "react";
-import axiosInstance from "../../../config/api";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -29,7 +28,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const [postId, setPostId] = useState(null);
   const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
-  const [commentsOpen, setCommentsOpen] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -37,6 +35,10 @@ const EmployeeProfileScreen = ({ route }) => {
   const [isReady, setIsReady] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
+
+  const teammmatesScreenSheetRef = useRef(null);
+  const commentsScreenSheetRef = useRef(null);
+  const actionsScreenSheetRef = useRef(null);
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
   const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
@@ -66,7 +68,7 @@ const EmployeeProfileScreen = ({ route }) => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 5,
   };
 
   const {
@@ -95,7 +97,7 @@ const EmployeeProfileScreen = ({ route }) => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + personalPost?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 20);
+      setCurrentOffsetPost(currentOffsetPost + 5);
     }
   };
 
@@ -130,14 +132,14 @@ const EmployeeProfileScreen = ({ route }) => {
    * Comments open handler
    */
   const commentsOpenHandler = (post_id) => {
+    commentsScreenSheetRef.current?.show();
     setPostId(post_id);
-    setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
 
   const commentsCloseHandler = () => {
-    setCommentsOpen(false);
+    commentsScreenSheetRef.current?.hide();
     setPostId(null);
   };
 
@@ -150,17 +152,17 @@ const EmployeeProfileScreen = ({ route }) => {
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    refetchPersonalPost();
+    // refetchPersonalPost();
     setForceRerender(!forceRerender);
   };
 
   const openSelectedPersonalPost = useCallback((post) => {
-    toggleAction();
+    actionsScreenSheetRef.current?.show();
     setSelectedPost(post);
   }, []);
 
   const closeSelectedPersonalPost = () => {
-    toggleAction();
+    actionsScreenSheetRef.current?.hide();
     setSelectedPost(null);
   };
 
@@ -241,77 +243,73 @@ const EmployeeProfileScreen = ({ route }) => {
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            {personalPostIsFetching ? (
-              <View style={{ paddingHorizontal: 4 }}>
-                <Spinner color="primary.600" size="lg" />
+            <>
+              <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+                <PageHeader
+                  title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                />
               </View>
-            ) : (
-              <>
-                <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
-                  <PageHeader
-                    title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                    onPress={() => {
-                      navigation.goBack();
-                    }}
-                  />
-                </View>
-                <View style={styles.content} height={height}>
-                  {/* Content here */}
-                  <FeedCard
-                    posts={posts}
-                    loggedEmployeeId={loggedEmployeeId}
-                    loggedEmployeeImage={loggedEmployeeImage}
-                    postEndReachedHandler={postEndReachedHandler}
-                    personalPostIsFetching={personalPostIsFetching}
-                    refetchPersonalPost={refetchPersonalPost}
-                    employee={employee}
-                    toggleTeammates={toggleTeammates}
-                    teammates={teammates}
-                    teammatesIsOpen={teammatesIsOpen}
-                    hasBeenScrolled={hasBeenScrolled}
-                    setHasBeenScrolled={setHasBeenScrolled}
-                    onCommentToggle={commentsOpenHandler}
-                    forceRerender={forceRerender}
-                    setForceRerender={setForceRerender}
-                    personalPostIsLoading={personalPostIsLoading}
-                    toggleFullScreen={toggleFullScreen}
-                    openSelectedPersonalPost={openSelectedPersonalPost}
-                    employeeUsername={employeeUsername}
-                    userSelector={userSelector}
-                  />
-                  {commentsOpen && (
-                    <FeedComment
-                      postId={postId}
-                      loggedEmployeeName={userSelector?.name}
-                      loggedEmployeeImage={profile?.data?.image}
-                      comments={comments}
-                      commentIsFetching={commentIsFetching}
-                      commentIsLoading={commentIsLoading}
-                      refetchComment={refetchComment}
-                      handleOpen={commentsOpenHandler}
-                      handleClose={commentsCloseHandler}
-                      onEndReached={commentEndReachedHandler}
-                      commentRefetchHandler={commentRefetchHandler}
-                      parentId={commentParentId}
-                      onSubmit={commentSubmitHandler}
-                      onReply={replyHandler}
-                      latestExpandedReply={latestExpandedReply}
-                      employees={employees?.data}
-                      employeeUsername={employeeUsername}
-                    />
-                  )}
-                </View>
-              </>
-            )}
+              <View style={styles.content} height={height}>
+                {/* Content here */}
+                <FeedCard
+                  posts={posts}
+                  loggedEmployeeId={loggedEmployeeId}
+                  loggedEmployeeImage={loggedEmployeeImage}
+                  postEndReachedHandler={postEndReachedHandler}
+                  personalPostIsFetching={personalPostIsFetching}
+                  refetchPersonalPost={refetchPersonalPost}
+                  employee={employee}
+                  toggleTeammates={toggleTeammates}
+                  teammates={teammates}
+                  teammatesIsOpen={teammatesIsOpen}
+                  hasBeenScrolled={hasBeenScrolled}
+                  setHasBeenScrolled={setHasBeenScrolled}
+                  onCommentToggle={commentsOpenHandler}
+                  forceRerender={forceRerender}
+                  setForceRerender={setForceRerender}
+                  personalPostIsLoading={personalPostIsLoading}
+                  toggleFullScreen={toggleFullScreen}
+                  openSelectedPersonalPost={openSelectedPersonalPost}
+                  employeeUsername={employeeUsername}
+                  userSelector={userSelector}
+                  reference={teammmatesScreenSheetRef}
+                />
+
+                <FeedComment
+                  postId={postId}
+                  loggedEmployeeName={userSelector?.name}
+                  loggedEmployeeImage={profile?.data?.image}
+                  comments={comments}
+                  commentIsFetching={commentIsFetching}
+                  commentIsLoading={commentIsLoading}
+                  refetchComment={refetchComment}
+                  handleOpen={commentsOpenHandler}
+                  handleClose={commentsCloseHandler}
+                  onEndReached={commentEndReachedHandler}
+                  commentRefetchHandler={commentRefetchHandler}
+                  parentId={commentParentId}
+                  onSubmit={commentSubmitHandler}
+                  onReply={replyHandler}
+                  latestExpandedReply={latestExpandedReply}
+                  employees={employees?.data}
+                  employeeUsername={employeeUsername}
+                  reference={commentsScreenSheetRef}
+                />
+              </View>
+              <Toast />
+            </>
           </>
         ) : null}
-        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <PostAction
         actionIsOpen={actionIsOpen}
         toggleAction={closeSelectedPersonalPost}
         toggleDeleteModal={toggleDeleteModal}
+        reference={actionsScreenSheetRef}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -320,8 +318,8 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
-          toggleAction();
-          refetchPersonalPost();
+          actionsScreenSheetRef.current?.hide();
+          // refetchPersonalPost();
         }}
         description="Are you sure to delete this post?"
         successMessage="Post deleted"

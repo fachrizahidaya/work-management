@@ -1,14 +1,13 @@
 import dayjs from "dayjs";
 
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
-import { Icon } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
-const EmployeeProfile = ({ employee, toggleTeammates, teammates }) => {
+const EmployeeProfile = ({ employee, teammates, reference }) => {
   return (
     <>
       <View style={styles.avatar}>
@@ -31,7 +30,7 @@ const EmployeeProfile = ({ employee, toggleTeammates, teammates }) => {
           </View>
           <View>
             <View style={styles.information}>
-              <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={3} color="#3F434A" />
+              <MaterialCommunityIcons name="phone-outline" size={10} color="#3F434A" />
               <TouchableOpacity onPress={() => CopyToClipboard(employee?.data?.phone_number)}>
                 <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>
                   {employee?.data?.phone_number}
@@ -39,7 +38,7 @@ const EmployeeProfile = ({ employee, toggleTeammates, teammates }) => {
               </TouchableOpacity>
             </View>
             <View style={styles.information}>
-              <Icon as={<MaterialCommunityIcons name="cake-variant-outline" />} size={3} color="#3F434A" />
+              <MaterialCommunityIcons name="cake-variant-outline" size={10} color="#3F434A" />
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>
                 {dayjs(employee?.data?.birthdate).format("DD MMM YYYY")}
               </Text>
@@ -47,7 +46,7 @@ const EmployeeProfile = ({ employee, toggleTeammates, teammates }) => {
           </View>
           <View style={styles.information}>
             <Text>{teammates?.data.length}</Text>
-            <TouchableOpacity onPress={toggleTeammates}>
+            <TouchableOpacity onPress={() => reference.current?.show()}>
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>Teammates</Text>
             </TouchableOpacity>
           </View>
