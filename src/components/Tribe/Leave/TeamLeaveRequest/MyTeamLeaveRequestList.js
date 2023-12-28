@@ -6,9 +6,9 @@ import { Spinner } from "native-base";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import Tabs from "../../../shared/Tabs";
-import TeamLeaveRequestItem from "./TeamLeaveRequestItem";
+import MyTeamLeaveRequestItem from "./MyTeamLeaveRequestItem";
 
-const TeamLeaveRequestList = ({
+const MyTeamLeaveRequestList = ({
   refetchTeamLeaveRequest,
   onApproval,
   pendingLeaveRequests,
@@ -50,7 +50,6 @@ const TeamLeaveRequestList = ({
       notes: "",
     },
     onSubmit: (values, { setStatus, setSubmitting }) => {
-      console.log(values);
       setStatus("processing");
       onApproval(values, setStatus, setSubmitting);
     },
@@ -99,10 +98,10 @@ const TeamLeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  pendingLeaveRequestIsLoading && hasBeenScrolledPending && <Spinner color="primary.600" />
+                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
-                  <TeamLeaveRequestItem
+                  <MyTeamLeaveRequestItem
                     item={item}
                     key={index}
                     id={item?.id}
@@ -156,10 +155,10 @@ const TeamLeaveRequestList = ({
                 />
               }
               ListFooterComponent={() =>
-                approvedLeaveRequestIsLoading && hasBeenScrolledApproved && <Spinner color="primary.600" />
+                approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
               }
               renderItem={({ item, index }) => (
-                <TeamLeaveRequestItem
+                <MyTeamLeaveRequestItem
                   item={item}
                   key={index}
                   id={item?.id}
@@ -208,10 +207,10 @@ const TeamLeaveRequestList = ({
               />
             }
             ListFooterComponent={() =>
-              rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+              rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
             }
             renderItem={({ item, index }) => (
-              <TeamLeaveRequestItem
+              <MyTeamLeaveRequestItem
                 item={item}
                 key={index}
                 id={item?.id}
@@ -247,7 +246,7 @@ const TeamLeaveRequestList = ({
   );
 };
 
-export default memo(TeamLeaveRequestList);
+export default memo(MyTeamLeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {

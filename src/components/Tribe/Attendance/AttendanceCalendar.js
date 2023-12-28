@@ -2,15 +2,15 @@ import { Fragment, memo } from "react";
 
 import { View } from "react-native";
 
-import AttendanceIcon from "./AttendanceIcon";
+import AttendanceColor from "./AttendanceColor";
 import AttendanceAttachment from "./AttendanceAttachment";
 
-const AttendanceCalendar = ({ renderCalendar, attachment, toggle, setAttachmentId }) => {
+const AttendanceCalendar = ({ renderCalendar, attachment, toggle, setAttachmentId, reference }) => {
   return (
     <View style={{ flex: 1, gap: 1 }}>
       <Fragment>{renderCalendar()}</Fragment>
-      <AttendanceIcon />
-      <AttendanceAttachment attachment={attachment} toggle={toggle} setAttachmentId={setAttachmentId} />
+      <AttendanceColor />
+      <AttendanceAttachment attachment={attachment} setAttachmentId={setAttachmentId} reference={reference} />
     </View>
   );
 };

@@ -5,11 +5,11 @@ import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
-import InformationScreen from "../../screens/Tribe/InformationScreen";
+import InformationScreen from "../../screens/Tribe/MyInformationScreen";
 import SettingScreen from "../../screens/Setting/SettingScreen";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
-import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
+import PersonalLeaveScreen from "../../screens/Tribe/Leave/PersonalLeaveScreen/PersonalLeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import ReimbursementScreen from "../../screens/Tribe/Reimbursement/ReimbursementScreen";
@@ -144,7 +144,7 @@ const TribeTab = ({ setSelectedModule }) => {
 
         <Tab.Screen name="Attendance" component={AttendanceScreen} />
 
-        <Tab.Screen name="Leave Requests" component={LeaveScreen} />
+        <Tab.Screen name="Leave Requests" component={PersonalLeaveScreen} />
 
         <Tab.Screen name="Reimbursement" component={ReimbursementScreen} />
 

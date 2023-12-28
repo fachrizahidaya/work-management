@@ -5,11 +5,11 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
-import EmployeeLeaveDashboard from "../../components/Tribe/Information/EmployeeLeaveDashboard";
-import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
-import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
+import EmployeeLeaveDashboard from "../../components/Tribe/MyInformation/EmployeeLeaveDashboard";
+import EmployeeInformation from "../../components/Tribe/MyInformation/EmployeeInformation";
+import SupervisorInformation from "../../components/Tribe/MyInformation/SupervisorInformation";
 
-const InformationScreen = () => {
+const MyInformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
 
   const navigation = useNavigation();
@@ -76,7 +76,7 @@ const InformationScreen = () => {
   );
 };
 
-export default InformationScreen;
+export default MyInformationScreen;
 
 const styles = StyleSheet.create({
   container: {

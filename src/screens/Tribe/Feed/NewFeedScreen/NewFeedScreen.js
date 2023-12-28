@@ -58,46 +58,6 @@ const NewFeedScreen = ({ route }) => {
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
   /**
-   * Create a new post handler
-   */
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      content: "",
-      type: selectedOption || "Public",
-      end_date: "",
-    },
-    // validationSchema: yup.object().shape({
-    //   content: yup.string().required("Content is required"),
-    // }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      const formData = new FormData();
-      for (let key in values) {
-        if (key === "content") {
-          const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
-          const modifiedContent = values[key].replace(mentionRegex, "@$1");
-          formData.append(key, modifiedContent);
-        } else {
-          formData.append(key, values[key]);
-        }
-      }
-
-      formData.append("file", image);
-
-      if (values.type === "Public") {
-        postSubmitHandler(formData, setSubmitting, setStatus);
-      } else {
-        if (values.end_date) {
-          postSubmitHandler(formData, setSubmitting, setStatus);
-        } else {
-          throw new Error("For Announcement type, end date is required");
-        }
-      }
-    },
-  });
-
-  /**
    * Submit a post handler
    * @param {*} form
    * @param {*} setSubmitting
@@ -110,11 +70,10 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      postRefetchHandler();
-      setScrollNewMessage(!scrollNewMessage);
       setSubmitting(false);
       setStatus("success");
-
+      setScrollNewMessage(!scrollNewMessage);
+      postRefetchHandler();
       Toast.show({
         type: "success",
         text1: "Posted successfully!",
@@ -124,7 +83,6 @@ const NewFeedScreen = ({ route }) => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -151,6 +109,46 @@ const NewFeedScreen = ({ route }) => {
     setSelectedOption("Announcement");
     formik.setFieldValue("type", "Announcement");
   };
+
+  /**
+   * Create a new post handler
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      content: "",
+      type: selectedOption || "Public",
+      end_date: "",
+    },
+    // validationSchema: yup.object().shape({
+    //   content: yup.string().required("Content is required"),
+    // }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      const formData = new FormData();
+      for (let key in values) {
+        if (key === "content") {
+          const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+          const modifiedContent = values[key].replace(mentionRegex, "@$1");
+          formData.append(key, modifiedContent);
+        } else {
+          formData.append(key, values[key]);
+        }
+      }
+
+      formData.append("file", image);
+
+      if (values.type === "Public") {
+        postSubmitHandler(formData, setSubmitting, setStatus);
+      } else {
+        if (values.end_date) {
+          postSubmitHandler(formData, setSubmitting, setStatus);
+        } else {
+          throw new Error("For Announcement type, end date is required");
+        }
+      }
+    },
+  });
 
   /**
    * Toggle to Public Handler
@@ -290,7 +288,6 @@ const NewFeedScreen = ({ route }) => {
             />
             <PostAction
               publicToggleHandler={publicToggleHandler}
-              postTypeIsOpen={postTypeIsOpen}
               postTypeIsClose={postTypeIsClose}
               announcementToggleHandler={announcementToggleHandler}
               isAnnouncementSelected={isAnnouncementSelected}

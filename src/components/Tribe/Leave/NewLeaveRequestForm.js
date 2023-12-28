@@ -33,7 +33,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
         />
 
         <FormControl.Label>Purpose of Leaving</FormControl.Label>
-        <Input multiline formik={formik} fieldName="reason" placeholder="Input Reason" value={formik.values.reason} />
+        <Input multiline formik={formik} fieldName="reason" placeHolder="Input Reason" value={formik.values.reason} />
 
         <FormControl isInvalid={formik.errors.begin_date}>
           <FormControl.Label>Start Date</FormControl.Label>

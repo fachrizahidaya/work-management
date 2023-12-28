@@ -5,7 +5,7 @@ import { View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { card } from "../../../styles/Card";
+import { card } from "../../../../styles/Card";
 
 const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, status, item, onSelect }) => {
   return (

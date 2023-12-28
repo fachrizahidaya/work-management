@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const AttendanceIcon = () => {
+const AttendanceColor = () => {
   const listIcons = [
     { key: "allGood", color: "#EDEDED", name: "All Good" },
     { key: "reportRequired", color: "#FDC500", name: "Report Required" },
@@ -26,7 +26,7 @@ const AttendanceIcon = () => {
   );
 };
 
-export default AttendanceIcon;
+export default AttendanceColor;
 
 const styles = StyleSheet.create({
   container: {

@@ -12,9 +12,9 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
-import FeedCard from "../../../components/Tribe/FeedPersonal/FeedCard";
-import FeedComment from "../../../components/Tribe/FeedPersonal/FeedComment";
-import PostAction from "../../../components/Tribe/FeedPersonal/PostAction";
+import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
+import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
+import PostAction from "../../../components/Tribe/Employee/FeedPersonal/PostAction";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);

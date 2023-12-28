@@ -5,12 +5,12 @@ import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList } from "rea
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
-import axiosInstance from "../../../config/api";
-import FeedCardItem from "../FeedPersonal/FeedCardItem";
-import EmployeeContact from "../Employee/EmployeeContact";
-import EmployeeProfile from "../Employee/EmployeeProfile";
-import EmployeeSelfProfile from "../Employee/EmployeeSelfProfile";
-import EmployeeTeammates from "../Employee/EmployeeTeammates";
+import axiosInstance from "../../../../config/api";
+import FeedCardItem from "./FeedCardItem";
+import EmployeeContact from "../EmployeeContact";
+import EmployeeProfile from "../EmployeeProfile";
+import EmployeeSelfProfile from "../EmployeeSelfProfile";
+import EmployeeTeammates from "../EmployeeTeammates";
 
 const FeedCard = ({
   posts,
@@ -103,7 +103,7 @@ const FeedCard = ({
         // Employee Information
         ListHeaderComponent={
           <View>
-            <Image source={require("../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
+            <Image source={require("../../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
             {/* When the employee id is not equal, it will appear the contacts of employee */}
             <View style={styles.information}>
               {userSelector?.id !== employee?.data?.user_id ? (

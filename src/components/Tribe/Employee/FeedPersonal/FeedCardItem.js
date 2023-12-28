@@ -6,8 +6,8 @@ import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "reac
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { card } from "../../../styles/Card";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { card } from "../../../../styles/Card";
 
 const FeedCardItem = ({
   id,
@@ -25,14 +25,14 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  forceRerender,
-  setForceRerender,
+  forceRerenderPersonal,
+  setForceRerenderPersonal,
   toggleFullScreen,
   handleLinkPress,
   handleEmailPress,
   copyToClipboard,
+  openSelectedPersonalPost,
   employeeUsername,
-  navigation,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -40,7 +40,6 @@ const FeedCardItem = ({
   /**
    * Like post control
    */
-
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -50,7 +49,7 @@ const FeedCardItem = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
-    setForceRerender(!forceRerender);
+    setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
   const words = content?.split(" ");
@@ -125,40 +124,29 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ ...card.card, gap: 20 }}>
+      <View gap={20} style={card.card}>
         <View style={styles.cardHeader}>
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: employeeId,
-                loggedEmployeeId: loggedEmployeeId,
-                loggedEmployeeImage: loggedEmployeeImage,
-              })
-            }
-          >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
-          </Pressable>
+          <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
 
           <View style={{ flex: 1, gap: 5 }}>
-            <TouchableOpacity style={styles.dockName}>
-              <Text
-                style={{ fontSize: 15, fontWeight: "400" }}
-                onPress={() =>
-                  navigation.navigate("Employee Profile", {
-                    employeeId: employeeId,
-                    loggedEmployeeId: loggedEmployeeId,
-                    loggedEmployeeImage: loggedEmployeeImage,
-                  })
-                }
-              >
+            <View style={styles.dockName}>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
+
               {type === "Announcement" ? (
-                <Badge style={{ borderRadius: 15, backgroundColor: "#ADD7FF" }}>
-                  <Text style={{ fontSize: 10, fontWeight: "500" }}>Announcement</Text>
+                <Badge borderRadius={15} backgroundColor="#ADD7FF">
+                  <Text style={{ fontSize: 10 }}>Announcement</Text>
                 </Badge>
               ) : null}
-            </TouchableOpacity>
+              {loggedEmployeeId === employeeId && (
+                <>
+                  <Pressable onPress={() => openSelectedPersonalPost(id)}>
+                    <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
+                  </Pressable>
+                </>
+              )}
+            </View>
             <Text style={styles.date}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
         </View>
@@ -166,15 +154,17 @@ const FeedCardItem = ({
         <Text style={{ fontSize: 12, fontWeight: "500" }}>{styledTexts}</Text>
 
         {attachment ? (
-          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
-            <Image
-              style={styles.image}
-              source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
-              alt="Feed Image"
-              resizeMethod="auto"
-              fadeDuration={0}
-            />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+              <Image
+                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
+                style={styles.image}
+                alt="Feed Image"
+                resizeMethod="auto"
+                fadeDuration={0}
+              />
+            </TouchableOpacity>
+          </>
         ) : null}
 
         <View style={styles.dockAction}>
@@ -191,7 +181,7 @@ const FeedCardItem = ({
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
+                <MaterialCommunityIcons name="heart" size={20} color="#FD7972" />
               </Pressable>
             )}
             {likeAction === "like" && (
@@ -211,15 +201,15 @@ const FeedCardItem = ({
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    marginVertical: 5,
-  },
   defaultText: {
     color: "#000000",
   },
   highlightedText: {
     color: "#72acdc",
+  },
+  container: {
+    flexDirection: "column",
+    marginVertical: 5,
   },
   cardHeader: {
     flexDirection: "row",
@@ -232,12 +222,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 1,
   },
-  image: {
-    borderRadius: 15,
-    width: "100%",
-    height: 250,
-    resizeMode: "contain",
-  },
   dockAction: {
     alignItems: "center",
     flexDirection: "row",
@@ -247,6 +231,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
+  },
+  image: {
+    borderRadius: 15,
+    width: "100%",
+    height: 250,
+    resizeMode: "contain",
   },
   date: {
     fontSize: 12,

@@ -8,7 +8,7 @@ import { card } from "../../../../styles/Card";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
 
-const TeamLeaveRequestItem = ({
+const MyTeamLeaveRequestItem = ({
   id,
   employee_image,
   employee_name,
@@ -84,4 +84,4 @@ const TeamLeaveRequestItem = ({
   );
 };
 
-export default TeamLeaveRequestItem;
+export default MyTeamLeaveRequestItem;

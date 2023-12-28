@@ -5,7 +5,7 @@ import { Spinner } from "native-base";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import axiosInstance from "../../../config/api";
+import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
 
 const FeedCard = ({
@@ -98,7 +98,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

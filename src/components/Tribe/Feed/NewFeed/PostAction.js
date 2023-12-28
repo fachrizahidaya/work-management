@@ -7,7 +7,6 @@ import ActionSheet from "react-native-actions-sheet";
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 
 const PostAction = ({
-  postTypeIsOpen,
   postTypeIsClose,
   publicToggleHandler,
   formik,
@@ -30,13 +29,15 @@ const PostAction = ({
         >
           <View
             style={{
-              width: formik.values.type === "Public" ? "70.6%" : null,
               flexDirection: "row",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            <MaterialIcons name="people" size={6} />
-            <Text>Public</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <MaterialIcons name="people" size={15} />
+              <Text>Public</Text>
+            </View>
             {formik.values.type === "Public" ? <MaterialCommunityIcons name="check" /> : ""}
           </View>
         </TouchableOpacity>
@@ -49,25 +50,27 @@ const PostAction = ({
         >
           <View
             style={{
-              width: formik.values.type === "Announcement" ? "85%" : null,
               flexDirection: "row",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            <MaterialCommunityIcons name="bullhorn" size={6} />
-            <View>
-              <Text>Announcement</Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                <Text style={{ fontSize: 12, fontWeight: 400 }}>End Date must be provided</Text>
-                {isAnnouncementSelected && dateShown ? (
-                  <CustomDateTimePicker
-                    defaultValue={formik.values.end_date}
-                    onChange={endDateAnnouncementHandler}
-                    withText={true}
-                    textLabel="Adjust date"
-                    fontSize={12}
-                  />
-                ) : null}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <MaterialCommunityIcons name="bullhorn" size={15} />
+              <View>
+                <Text>Announcement</Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                  <Text style={{ fontSize: 12, fontWeight: 400 }}>End Date must be provided</Text>
+                  {isAnnouncementSelected && dateShown ? (
+                    <CustomDateTimePicker
+                      defaultValue={formik.values.end_date}
+                      onChange={endDateAnnouncementHandler}
+                      withText={true}
+                      textLabel="Adjust date"
+                      fontSize={12}
+                    />
+                  ) : null}
+                </View>
               </View>
             </View>
             {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" /> : ""}

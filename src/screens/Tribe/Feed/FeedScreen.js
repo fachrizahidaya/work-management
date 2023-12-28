@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import FeedCard from "../../../components/Tribe/Feed/FeedCard";
+import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 

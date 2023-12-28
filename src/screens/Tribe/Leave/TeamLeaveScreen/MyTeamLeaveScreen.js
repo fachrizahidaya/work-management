@@ -7,13 +7,13 @@ import Toast from "react-native-toast-message";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import TeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/TeamLeaveRequestList";
+import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
 
-const TeamLeaveScreen = () => {
+const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
   const [pendingList, setPendingList] = useState([]);
   const [reloadPending, setReloadPending] = useState(false);
   const [approvedList, setApprovedList] = useState([]);
@@ -22,8 +22,8 @@ const TeamLeaveScreen = () => {
   const [reloadRejected, setReloadRejected] = useState(false);
   const [tabValue, setTabValue] = useState("waiting approval");
   const [currentPagePending, setCurrentPagePending] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
+  const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const tabs = useMemo(() => {
     return [{ title: "waiting approval" }, { title: "approved" }, { title: "rejected" }];
@@ -33,19 +33,19 @@ const TeamLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 20,
+    limit: 10,
     status: "Pending",
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
-    limit: 20,
+    limit: 10,
     status: "Approved",
   };
 
   const fetchMoreRejectedParameters = {
-    page: currentPage,
-    limit: 20,
+    page: currentPageRejected,
+    limit: 10,
     status: "Rejected",
   };
 
@@ -55,7 +55,8 @@ const TeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal"[(currentPagePending, reloadPending)],
+    tabValue === "pending" && "/hr/leave-requests/personal",
+    [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
 
@@ -65,7 +66,8 @@ const TeamLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal"[(currentPageApproved, reloadApproved)],
+    tabValue === "approved" && "/hr/leave-requests/personal",
+    [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
 
@@ -75,7 +77,8 @@ const TeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal"[(currentPage, reloadRejected)],
+    tabValue === "rejected" && "/hr/leave-requests/personal",
+    [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
 
@@ -92,8 +95,8 @@ const TeamLeaveScreen = () => {
   };
 
   const fetchMoreRejected = () => {
-    if (currentPage < rejectedLeaveRequest?.data?.last_page) {
-      setCurrentPage(currentPage + 1);
+    if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
+      setCurrentPageRejected(currentPageRejected + 1);
     }
   };
 
@@ -136,7 +139,7 @@ const TeamLeaveScreen = () => {
     setRejectedList([]);
     setCurrentPagePending(1);
     setCurrentPageApproved(1);
-    setCurrentPage(1);
+    setCurrentPageRejected(1);
   }, []);
 
   useEffect(() => {
@@ -172,7 +175,7 @@ const TeamLeaveScreen = () => {
               <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
-            <TeamLeaveRequestList
+            <MyTeamLeaveRequestList
               pendingLeaveRequests={pendingList}
               approvedLeaveRequests={approvedList}
               rejectedLeaveRequests={rejectedList}
@@ -182,8 +185,8 @@ const TeamLeaveScreen = () => {
               refetchPendingLeaveRequest={refetchPendingLeaveRequest}
               refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
               refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-              hasBeenScrolled={hasBeenScrolled}
-              setHasBeenScrolled={setHasBeenScrolled}
+              hasBeenScrolled={hasBeenScrolledRejected}
+              setHasBeenScrolled={setHasBeenScrolledRejected}
               hasBeenScrolledPending={hasBeenScrolledPending}
               setHasBeenScrolledPending={setHasBeenScrolledPending}
               hasBeenScrolledApproved={hasBeenScrolledApproved}
@@ -206,7 +209,7 @@ const TeamLeaveScreen = () => {
   );
 };
 
-export default TeamLeaveScreen;
+export default MyTeamLeaveScreen;
 
 const styles = StyleSheet.create({
   container: {

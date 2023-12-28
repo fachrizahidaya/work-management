@@ -4,7 +4,7 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Spinner } from "native-base";
 import { StyleSheet, View, Text, Image, FlatList } from "react-native";
 
-import Tabs from "../../shared/Tabs";
+import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
 
 const LeaveRequestList = ({
@@ -59,7 +59,7 @@ const LeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  pendingLeaveRequestIsLoading && hasBeenScrolledPending && <Spinner color="primary.600" />
+                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -85,7 +85,7 @@ const LeaveRequestList = ({
             >
               <View style={styles.content}>
                 <Image
-                  source={require("../../../assets/vectors/empty.png")}
+                  source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
@@ -113,7 +113,7 @@ const LeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  approvedLeaveRequestIsLoading && hasBeenScrolledApproved && <Spinner color="primary.600" />
+                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -139,7 +139,7 @@ const LeaveRequestList = ({
             >
               <View style={styles.content}>
                 <Image
-                  source={require("../../../assets/vectors/empty.png")}
+                  source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
@@ -159,7 +159,7 @@ const LeaveRequestList = ({
               estimatedItemSize={70}
               refreshing={true}
               ListFooterComponent={() =>
-                rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+                rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
               }
               refreshControl={
                 <RefreshControl
@@ -193,7 +193,7 @@ const LeaveRequestList = ({
           >
             <View style={styles.content}>
               <Image
-                source={require("../../../assets/vectors/empty.png")}
+                source={require("../../../../assets/vectors/empty.png")}
                 alt="empty"
                 style={{ height: 250, width: 250, resizeMode: "contain" }}
               />

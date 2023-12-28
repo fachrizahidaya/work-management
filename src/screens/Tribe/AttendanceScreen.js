@@ -13,8 +13,8 @@ import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
-import AttendanceAction from "../../components/Tribe/Attendance/AttendanceAction";
-import AddAttachment from "../../components/Tribe/Attendance/AddAttachment";
+import AttendanceForm from "../../components/Tribe/Attendance/AttendanceForm";
+import AddAttendanceAttachment from "../../components/Tribe/Attendance/AddAttendanceAttachment";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AttendanceScreen = () => {
@@ -28,6 +28,7 @@ const AttendanceScreen = () => {
   const [attachmentId, setAttachmentId] = useState(null);
 
   const attendanceScreenSheetRef = useRef(null);
+  const attachmentScreenSheetRef = useRef(null);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
@@ -67,6 +68,9 @@ const AttendanceScreen = () => {
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
   const hasSubmittedLateReport = date?.lateType && date?.lateReason && !date?.earlyType;
   const hasSubmittedEarlyReport = date?.earlyType && date?.earlyReason && !date?.lateType;
+  const hasSubmittedLateNotEarly =
+    date?.lateType && date?.lateReason && date?.lateStatus && !date?.earlyReason && !date?.earlyStatus;
+  const hasSubmittedEarlyNotLate = date?.earlyType && date?.earlyReason && !date?.lateType && !date?.lateReason;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
     (date?.attendanceType === "Alpa" || date?.attendanceType === "Permit" || date?.attendanceType === "Sick") &&
@@ -136,7 +140,6 @@ const AttendanceScreen = () => {
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
           if (item?.date && item?.confirmation === 0 && item?.dayType !== "Weekend") {
-            // toggleReport();
             attendanceScreenSheetRef.current?.show();
             setDate(item);
           }
@@ -155,7 +158,6 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      // toggleReport();
       attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
@@ -405,11 +407,12 @@ const AttendanceScreen = () => {
             onSelectFile={selectFile}
             onDelete={attachmentDeleteHandler}
             setAttachmentId={openDeleteAttachmentModalHandler}
+            reference={attachmentScreenSheetRef}
           />
         </ScrollView>
         <Toast />
       </SafeAreaView>
-      <AttendanceAction
+      <AttendanceForm
         reportIsOpen={reportIsOpen}
         toggleReport={attendanceScreenSheetRef}
         date={date}
@@ -418,6 +421,8 @@ const AttendanceScreen = () => {
         hasLateWithoutReason={hasLateWithoutReason}
         hasEarlyWithoutReason={hasEarlyWithoutReason}
         hasLateAndEarlyWithoutReason={hasLateAndEarlyWithoutReason}
+        hasSubmittedLateNotEarly={hasSubmittedLateNotEarly}
+        hasSubmittedEarlyNotLate={hasSubmittedEarlyNotLate}
         hasSubmittedBothReports={hasSubmittedBothReports}
         hasSubmittedReportAlpa={hasSubmittedReportAlpa}
         hasSubmittedLateReport={hasSubmittedLateReport}
@@ -428,13 +433,14 @@ const AttendanceScreen = () => {
         reference={attendanceScreenSheetRef}
       />
 
-      <AddAttachment
+      <AddAttendanceAttachment
         isOpen={addAttachmentIsOpen}
         toggle={toggleAddAttachment}
         onSelectFile={selectFile}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
+        reference={attachmentScreenSheetRef}
       />
 
       <ConfirmationModal

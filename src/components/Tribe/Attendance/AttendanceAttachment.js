@@ -1,57 +1,52 @@
 import dayjs from "dayjs";
 
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
-import { FlashList } from "@shopify/flash-list";
+import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { StyleSheet } from "react-native";
 
-const AttendanceAttachment = ({ attachment, toggle, setAttachmentId, forceRenderer }) => {
+const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, reference }) => {
   return (
-    <Flex gap={3} my={2} px={3}>
-      <Flex style={styles.header}>
-        <Text fontSize={14}>Attachment(s)</Text>
-        {attachment?.data.length > 0 && <Icon onPress={toggle} as={<MaterialCommunityIcons name="plus" />} size={5} />}
-      </Flex>
-      <Box gap={2} flex={1}>
+    <View style={{ gap: 5, marginVertical: 15, paddingHorizontal: 15 }}>
+      <View style={styles.header}>
+        <Text style={{ fontSize: 14, fontWeight: "500" }}>Attachment(s)</Text>
+        {attachment?.data.length > 0 && (
+          <MaterialCommunityIcons name="plus" size={20} onPress={() => reference.current?.show()} />
+        )}
+      </View>
+      <View style={{ flex: 1, gap: 5 }}>
         {attachment?.data.length > 0 ? (
-          <FlashList
+          <FlatList
             data={attachment?.data}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             extraData={forceRenderer}
             estimatedItemSize={30}
             renderItem={({ item, index }) => (
-              <Flex style={styles.card}>
-                <Flex flexDirection="row" alignItems="center" gap={3}>
-                  <Icon as={<MaterialCommunityIcons name="file-outline" />} size={6} />
-                  <Box>
-                    <Text fontSize={14} fontWeight={500}>
-                      {item?.title}
-                    </Text>
-                    <Text fontSize={12} fontWeight={400} opacity={0.5}>
+              <View style={styles.card}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                  <MaterialCommunityIcons name="file-outline" size={20} />
+                  <View style={{ gap: 3 }}>
+                    <Text style={{ fontSize: 14, fontWeight: "500" }}>{item?.title}</Text>
+                    <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
                       {dayjs(item?.begin_date).format("DD MMM YYYY")} - {dayjs(item?.end_date).format("DD MMM YYYY")}
                     </Text>
-                  </Box>
-                </Flex>
-                <Icon
-                  onPress={() => setAttachmentId(item?.id)}
-                  as={<MaterialCommunityIcons name="trash-can-outline" />}
-                  size={6}
-                />
-              </Flex>
+                  </View>
+                </View>
+
+                <MaterialCommunityIcons name="trash-can-outline" size={20} onPress={() => setAttachmentId(item?.id)} />
+              </View>
             )}
           />
         ) : (
-          <Box gap={3} alignItems="center" justifyContent="center">
-            <Pressable onPress={toggle} style={styles.addIcon}>
-              <Icon as={<MaterialCommunityIcons name="plus" />} size={75} />
+          <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+            <Pressable style={styles.addIcon} onPress={() => reference.current?.show()}>
+              <MaterialCommunityIcons name="plus" size={75} />
             </Pressable>
             <Text>No Data</Text>
-          </Box>
+          </View>
         )}
-      </Box>
-    </Flex>
+      </View>
+    </View>
   );
 };
 

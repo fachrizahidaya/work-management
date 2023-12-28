@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { Actionsheet, Icon } from "native-base";
 import { Platform, View, Text, Pressable, StyleSheet } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -12,7 +12,15 @@ import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
 
-const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAttachment, onSubmit }) => {
+const AddAttendanceAttachment = ({
+  isOpen,
+  toggle,
+  onSelectFile,
+  fileAttachment,
+  setFileAttachment,
+  onSubmit,
+  reference,
+}) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const formik = useFormik({
     initialValues: {
@@ -54,7 +62,7 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      toggle();
+      reference.current?.hide();
       formik.resetForm();
     }
   }, [formik.isSubmitting, formik.status]);
@@ -64,15 +72,15 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
   }, [fileAttachment]);
 
   return (
-    <Actionsheet
-      isOpen={isOpen}
+    <ActionSheet
+      ref={reference}
       onClose={() => {
         formik.resetForm();
         setFileAttachment(null);
-        toggle();
+        reference.current?.hide();
       }}
     >
-      <Actionsheet.Content>
+      <View style={styles.wrapper}>
         <View style={{ width: "95%", gap: 3, paddingBottom: Platform.OS === "ios" && keyboardHeight }}>
           <View style={{ width: "100%", gap: 3 }}>
             <View>
@@ -80,7 +88,7 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
                 formik={formik}
                 title="Title"
                 fieldName="title"
-                placeholder="Input title"
+                placeHolder="Input title"
                 value={formik.values.title}
               />
             </View>
@@ -107,7 +115,7 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
                 <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
                   {!fileAttachment ? "Upload file..." : fileAttachment?.name}
                 </Text>
-                <Icon as={<MaterialCommunityIcons name="attachment" />} style={{ transform: [{ rotate: "-35deg" }] }} />
+                <MaterialCommunityIcons name="attachment" style={{ transform: [{ rotate: "-35deg" }] }} />
               </Pressable>
               <Text style={{ color: "red" }}>{formik.errors.attachment}</Text>
             </View>
@@ -124,12 +132,12 @@ const AddAttachment = ({ isOpen, toggle, onSelectFile, fileAttachment, setFileAt
             )}
           </View>
         </View>
-      </Actionsheet.Content>
-    </Actionsheet>
+      </View>
+    </ActionSheet>
   );
 };
 
-export default AddAttachment;
+export default AddAttendanceAttachment;
 
 const styles = StyleSheet.create({
   attachment: {
@@ -140,5 +148,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
   },
 });

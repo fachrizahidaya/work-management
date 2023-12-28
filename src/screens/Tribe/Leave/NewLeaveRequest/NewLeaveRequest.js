@@ -79,10 +79,9 @@ const NewLeaveRequest = ({ route }) => {
   const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/leave-requests`, form);
-      refetchLeaveHistory();
       setSubmitting(false);
       setStatus("success");
-
+      refetchLeaveHistory();
       Toast.show({
         type: "success",
         text1: "Request created",
@@ -92,7 +91,6 @@ const NewLeaveRequest = ({ route }) => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -119,7 +117,6 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
       setIsLoading(false);
       setFormError(false);
-
       Toast.show({
         type: "success",
         text1: "Leave Request available",
@@ -129,7 +126,6 @@ const NewLeaveRequest = ({ route }) => {
       console.log(err);
       setIsLoading(false);
       setIsError(true);
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,

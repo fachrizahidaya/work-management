@@ -3,8 +3,8 @@ import { memo, useCallback, useState } from "react";
 import { Clipboard, Linking, StyleSheet, View, Text, ScrollView } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
-import FeedCommentList from "../Feed/FeedComment/FeedCommentList";
-import FeedCommentForm from "../Feed/FeedComment/FeedCommentForm";
+import FeedCommentList from "../../Feed/FeedComment/FeedCommentList";
+import FeedCommentForm from "../../Feed/FeedComment/FeedCommentForm";
 
 const FeedComment = ({
   postId,
@@ -13,7 +13,6 @@ const FeedComment = ({
   commentIsFetching,
   commentIsLoading,
   comments,
-  handleOpen,
   handleClose,
   refetchComment,
   onEndReached,

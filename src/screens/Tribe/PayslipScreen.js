@@ -75,7 +75,6 @@ const PayslipScreen = () => {
       setStatus("success");
       formik.resetForm();
       refetchPayslip();
-
       Toast.show({
         type: "success",
         text1: "Password updated",
@@ -113,7 +112,6 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -161,7 +159,9 @@ const PayslipScreen = () => {
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() => payslipIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
+            ListFooterComponent={() =>
+              payslipIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
+            }
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}

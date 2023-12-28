@@ -4,20 +4,20 @@ import _ from "lodash";
 
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
-import Button from "../../../components/shared/Forms/Button";
-import { useFetch } from "../../../hooks/useFetch";
-import PageHeader from "../../../components/shared/PageHeader";
-import useCheckAccess from "../../../hooks/useCheckAccess";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
-import CancelAction from "../../../components/Tribe/Leave/CancelAction";
+import Button from "../../../../components/shared/Forms/Button";
+import { useFetch } from "../../../../hooks/useFetch";
+import PageHeader from "../../../../components/shared/PageHeader";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import CancelAction from "../../../../components/Tribe/Leave/PersonalLeaveRequest/CancelAction";
 
-const LeaveScreen = () => {
+const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
   const [pendingList, setPendingList] = useState([]);
   const [reloadPending, setReloadPending] = useState(false);
   const [approvedList, setApprovedList] = useState([]);
@@ -26,7 +26,7 @@ const LeaveScreen = () => {
   const [reloadRejected, setReloadRejected] = useState(false);
   const [tabValue, setTabValue] = useState("pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageRejected, setCurrentPageRejected] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
@@ -39,24 +39,23 @@ const LeaveScreen = () => {
     return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
   }, []);
 
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 20,
+    limit: 10,
     status: "Pending",
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
-    limit: 20,
+    limit: 10,
     status: "Approved",
   };
 
   const fetchMoreRejectedParameters = {
-    page: currentPage,
-    limit: 20,
+    page: currentPageRejected,
+    limit: 10,
     status: "Rejected",
   };
 
@@ -89,9 +88,11 @@ const LeaveScreen = () => {
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "rejected" && "/hr/leave-requests/personal",
-    [currentPage, reloadRejected],
+    [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
+
+  const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
@@ -108,20 +109,18 @@ const LeaveScreen = () => {
   };
 
   const fetchMoreRejected = () => {
-    if (currentPage < rejectedLeaveRequest?.data?.last_page) {
-      setCurrentPage(currentPage + 1);
+    if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
+      setCurrentPageRejected(currentPageRejected + 1);
     }
   };
 
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
-    // toggleAction();
     cancleScreenSheetRef.current?.show();
   };
 
   const closeSelectedLeaveHandler = () => {
     setSelectedData(null);
-    // toggleAction();
     cancleScreenSheetRef.current?.hide();
   };
 
@@ -132,14 +131,14 @@ const LeaveScreen = () => {
     setRejectedList([]);
     setCurrentPagePending(1);
     setCurrentPageApproved(1);
-    setCurrentPage(1);
+    setCurrentPageRejected(1);
   }, []);
 
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data?.length) {
       setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data, pendingLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
@@ -182,8 +181,8 @@ const LeaveScreen = () => {
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
+            hasBeenScrolled={hasBeenScrolledRejected}
+            setHasBeenScrolled={setHasBeenScrolledRejected}
             hasBeenScrolledPending={hasBeenScrolledPending}
             setHasBeenScrolledPending={setHasBeenScrolledPending}
             hasBeenScrolledApproved={hasBeenScrolledApproved}
@@ -210,11 +209,11 @@ const LeaveScreen = () => {
         isOpen={cancelModalIsOpen}
         toggle={toggleCancelModal}
         apiUrl={`/hr/leave-requests/${selectedData?.id}/cancel`}
-        hasSuccessFunc={true}
         header="Cancel Leave Request"
+        hasSuccessFunc={true}
         onSuccess={() => {
           cancleScreenSheetRef.current?.hide();
-          refetchPendingLeaveRequest;
+          refetchPendingLeaveRequest();
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"
@@ -225,7 +224,7 @@ const LeaveScreen = () => {
   );
 };
 
-export default LeaveScreen;
+export default PersonalLeaveScreen;
 
 const styles = StyleSheet.create({
   container: {
