@@ -3,7 +3,6 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import { Spinner } from "native-base";
 import Toast from "react-native-toast-message";
 
 import PageHeader from "../../../components/shared/PageHeader";

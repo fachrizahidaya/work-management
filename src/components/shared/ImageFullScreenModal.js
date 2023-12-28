@@ -1,9 +1,15 @@
-import { Icon, Modal } from "native-base";
-import { Linking, StyleSheet, TouchableOpacity, View, Image } from "react-native";
+import Modal from "react-native-modal";
+import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const attachmentDownloadHandler = async (file_path) => {
     try {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
@@ -13,7 +19,13 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
   };
 
   return (
-    <Modal backgroundColor="#272A2B" isOpen={isFullScreen} onClose={() => setIsFullScreen(false)}>
+    <Modal
+      isVisible={isFullScreen}
+      onBackdropPress={() => setIsFullScreen(false)}
+      backdropColor="#272A2B"
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+    >
       <View style={styles.imageBox}>
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
@@ -22,10 +34,10 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
         />
         <View style={styles.actionGroup}>
           <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
-            <Icon as={<MaterialCommunityIcons name="download" />} size={6} color="#FFFFFF" />
+            <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsFullScreen(false)}>
-            <Icon as={<MaterialCommunityIcons name="close" />} size={6} color="#FFFFFF" />
+            <MaterialCommunityIcons name="close" size={30} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>
@@ -38,10 +50,12 @@ export default ImageFullScreenModal;
 const styles = StyleSheet.create({
   imageBox: {
     position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    height: 300,
     width: 400,
+    height: 300,
     resizeMode: "contain",
   },
   actionGroup: {
@@ -51,8 +65,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    paddingRight: 5,
-    paddingTop: 5,
     gap: 5,
   },
 });

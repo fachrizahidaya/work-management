@@ -1,5 +1,4 @@
 import { TouchableOpacity, View, Text } from "react-native";
-import { Divider } from "native-base";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
@@ -50,8 +49,6 @@ const SupervisorInformation = ({
           </View>
         </View>
       </View>
-
-      <Divider />
 
       <View>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

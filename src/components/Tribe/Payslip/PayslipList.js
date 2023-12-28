@@ -2,7 +2,6 @@ import { memo } from "react";
 import dayjs from "dayjs";
 
 import { View, Text, Pressable } from "react-native";
-import { Icon } from "native-base";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { card } from "../../../styles/Card";
@@ -19,7 +18,7 @@ const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
         </Text>
 
         <Pressable onPress={() => openSelectedPayslip(id)}>
-          <Icon as={<MaterialCommunityIcons name="tray-arrow-down" />} size={6} color="#186688" />
+          <MaterialCommunityIcons name="tray-arrow-down" size={20} color="#186688" />
         </Pressable>
       </View>
     </View>

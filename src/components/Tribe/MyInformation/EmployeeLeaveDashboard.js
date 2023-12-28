@@ -1,4 +1,3 @@
-import { Icon } from "native-base";
 import { StyleSheet, View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -37,7 +36,7 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
         return (
           <View key={item.id} style={styles.content}>
             <View style={{ ...styles.card, backgroundColor: item.backgroundColor }}>
-              <Icon as={<MaterialCommunityIcons name={item.icon} />} size={10} color={item.iconColor} />
+              <MaterialCommunityIcons name={item.icon} size={30} color={item.iconColor} />
             </View>
             <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.qty}</Text>
             <Text
