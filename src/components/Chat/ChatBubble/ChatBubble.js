@@ -43,6 +43,7 @@ const ChatBubble = ({
   onSwipe,
   isOptimistic,
   memberName,
+  position,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
