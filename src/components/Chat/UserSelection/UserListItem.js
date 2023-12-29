@@ -1,10 +1,9 @@
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
-
 import { useSelector } from "react-redux";
 
-import { Box, Flex, Icon, Text } from "native-base";
+import { View, Text } from "react-native";
 import { TouchableOpacity } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
@@ -53,25 +52,23 @@ const UserListItem = ({
           }
         }}
       >
-        <Flex flexDir="row" justifyContent="space-between" alignItems="center">
-          <Flex flexDir="row" alignItems="center" gap={2} mb={2}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
             <AvatarPlaceholder image={image} name={name} size="md" />
-            <Box>
+            <View>
               <Text>{name}</Text>
-              <Text fontSize={12} opacity={0.5}>
-                {userType}
-              </Text>
-            </Box>
-          </Flex>
+              <Text style={{ fontSize: 12, opacity: 0.5 }}>{userType}</Text>
+            </View>
+          </View>
 
           {multiSelect && (
-            <Box>
+            <View>
               {selectedUsers.find((val) => val.id === id) && (
-                <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
+                <MaterialCommunityIcons name="checkbox-marked" size={20} color="primary.600" />
               )}
-            </Box>
+            </View>
           )}
-        </Flex>
+        </View>
       </TouchableOpacity>
     )
   );
