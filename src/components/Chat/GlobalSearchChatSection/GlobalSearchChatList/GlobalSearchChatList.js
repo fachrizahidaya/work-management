@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-
 import { useSelector } from "react-redux";
 
 import RenderHtml from "react-native-render-html";
-import { Box, Flex, HStack, Text, VStack } from "native-base";
-import { Dimensions, TouchableOpacity } from "react-native";
+import { Dimensions, TouchableOpacity, View, Text } from "react-native";
 
 import ChatTimeStamp from "../../ChatTimeStamp/ChatTimeStamp";
 
@@ -43,51 +41,47 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
         }
       }}
     >
-      <Flex p={4} borderBottomWidth={1} borderColor="#E8E9EB">
+      <View style={{ padding: 10, borderColor: "#E8E9EB", borderBottomWidth: 1 }}>
         {group ? (
           <>
-            <HStack justifyContent="space-between">
-              <Text fontSize={16} fontWeight={600}>
-                {group.name}
-              </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              <Text style={{ fontSize: 16, fontWeight: "600" }}>{group.name}</Text>
 
               <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
-            </HStack>
-            <HStack space={1}>
+            </View>
+            <View style={{ gap: 5 }}>
               <Text>{userSelector.id === chat?.user?.id ? "You: " : `${chat?.user?.name}: `}</Text>
 
-              <Box flex={1} style={{ marginTop: 3 }}>
+              <View style={{ flex: 1, marginTop: 5 }}>
                 <RenderHtml
                   contentWidth={width}
                   source={{
                     html: renderChat(),
                   }}
                 />
-              </Box>
-            </HStack>
+              </View>
+            </View>
           </>
         ) : (
           <>
-            <VStack>
-              <HStack justifyContent="space-between">
-                <Text fontSize={16} fontWeight={600}>
-                  {chat?.user?.name}
-                </Text>
+            <View>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Text style={{ fontSize: 16, fontWeight: "600" }}>{chat?.user?.name}</Text>
 
                 <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
-              </HStack>
-              <Box flex={1} style={{ marginTop: 3 }}>
+              </View>
+              <View style={{ flex: 1, marginTop: 5 }}>
                 <RenderHtml
                   contentWidth={width}
                   source={{
                     html: renderChat(),
                   }}
                 />
-              </Box>
-            </VStack>
+              </View>
+            </View>
           </>
         )}
-      </Flex>
+      </View>
     </TouchableOpacity>
   );
 };

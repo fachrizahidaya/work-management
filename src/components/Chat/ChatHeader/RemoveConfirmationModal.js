@@ -1,33 +1,56 @@
-import { Button, Image, Modal, Spinner, Text, VStack } from "native-base";
+import { Spinner } from "native-base";
+import { Dimensions, Image, Platform, Text, View } from "react-native";
+import Modal from "react-native-modal";
+
+import Button from "../../shared/Forms/Button";
 
 const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoading }) => {
-  return (
-    <Modal isOpen={isOpen} onClose={toggle} size="xl">
-      <Modal.Content>
-        <Modal.Body bgColor="white">
-          <VStack alignItems="center">
-            <Image
-              source={require("../../../assets/vectors/confirmation.jpg")}
-              alt="confirmation"
-              resizeMode="contain"
-              h={150}
-              w={150}
-            />
-            <Text textAlign="center">{description}</Text>
-          </VStack>
-        </Modal.Body>
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
-        <Modal.Footer bgColor="white">
-          <Button.Group space={2} width="full">
-            <Button onPress={!isLoading && toggle} variant="outline" flex={1}>
-              Cancel
-            </Button>
-            <Button disabled={isLoading} bgColor={"red.600"} onPress={onPress} flex={1}>
-              {isLoading ? <Spinner color="#FFFFFF" /> : "Confirm"}
-            </Button>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
+  return (
+    <Modal
+      backdropColor="#272A2B"
+      isVisible={isOpen}
+      onBackdropPress={toggle}
+      deviceWidth={deviceWidth}
+      deviceHeight={deviceHeight}
+    >
+      <View style={{ backgroundColor: "#FFFFFF" }}>
+        <View style={{ alignItems: "center" }}>
+          <Image
+            source={require("../../../assets/vectors/confirmation.jpg")}
+            alt="confirmation"
+            style={{ height: 150, width: 150, resizeMode: "contain" }}
+          />
+          <Text style={{ textAlign: "center" }}>{description}</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
+          <Button
+            onPress={!isLoading && toggle}
+            variant="outline"
+            padding={5}
+            backgroundColor="#FFFFFF"
+            children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#000000" }}>Cancel</Text>}
+          />
+          <Button
+            disabled={isLoading}
+            backgroundColor="#E53935"
+            padding={5}
+            onPress={onPress}
+            children={
+              isLoading ? (
+                <Spinner color="#FFFFFF" />
+              ) : (
+                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Confirm</Text>
+              )
+            }
+          />
+        </View>
+      </View>
     </Modal>
   );
 };

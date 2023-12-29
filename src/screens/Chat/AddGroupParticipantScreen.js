@@ -1,20 +1,19 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-
+import { useCallback, useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, HStack, Icon, IconButton, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { Spinner, Pressable } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../hooks/useFetch";
-import { ErrorToast } from "../../components/shared/ToastDialog";
+import Input from "../../components/shared/Forms/Input";
 import PageHeader from "../../components/shared/PageHeader";
 import UserListItem from "../../components/Chat/UserSelection/UserListItem";
 
 const AddGroupParticipantScreen = () => {
-  const toast = useToast();
   const navigation = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -70,10 +69,10 @@ const AddGroupParticipantScreen = () => {
 
   const onPressAddHandler = () => {
     if (!selectedUsers.length) {
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="At least 1 user must be selected" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: "At least 1 user must be selected",
+        position: "bottom",
       });
     } else {
       navigation.navigate("Group Form", {
@@ -100,39 +99,28 @@ const AddGroupParticipantScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flex={1} gap={2}>
-        <HStack alignItems="center" justifyContent="space-between" paddingHorizontal={16}>
-          <VStack>
+      <View style={{ flex: 1, gap: 5 }}>
+        <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
+          <View>
             <PageHeader title="New Group" onPress={() => navigation.goBack()} />
-            <Text fontSize={12} ml={9}>
-              Add participants
-            </Text>
-          </VStack>
-        </HStack>
+            <Text style={{ fontSize: 12, marginLeft: 10 }}>Add participants</Text>
+          </View>
+        </View>
 
-        <VStack flex={1} paddingHorizontal={16} space={2}>
+        <View style={{ flex: 1, gap: 5, paddingHorizontal: 20 }}>
           <Input
-            autoFocus
+            fieldName="search"
             value={inputToShow}
-            placeholder="Search user..."
-            size="lg"
+            placeHolder="Search user..."
             onChangeText={(value) => {
               searchHandler(value);
               setInputToShow(value);
             }}
-            InputRightElement={
-              inputToShow && (
-                <IconButton
-                  onPress={() => {
-                    setSearchKeyword("");
-                    setInputToShow("");
-                  }}
-                  icon={<Icon as={<MaterialCommunityIcons name="close" />} size="lg" />}
-                  rounded="full"
-                  mr={2}
-                />
-              )
-            }
+            endIcon={inputToShow && "close"}
+            onPressEndIcon={() => {
+              setSearchKeyword("");
+              setInputToShow("");
+            }}
           />
           <FlashList
             extraData={forceRerender}
@@ -143,7 +131,7 @@ const AddGroupParticipantScreen = () => {
             onEndReachedThreshold={0.1}
             onEndReached={fetchMoreData}
             renderItem={({ item }) => (
-              <Box marginBottom={2}>
+              <View style={{ marginBottom: 10 }}>
                 <UserListItem
                   user={item}
                   id={item?.id}
@@ -159,26 +147,28 @@ const AddGroupParticipantScreen = () => {
                   onPressRemoveHandler={removeSelectedUserFromArray}
                   selectedGroupMembers={selectedUsers}
                 />
-              </Box>
+              </View>
             )}
           />
-        </VStack>
-      </Flex>
+        </View>
+      </View>
 
       <Pressable
-        position="absolute"
-        right={5}
-        bottom={20}
+        style={{
+          position: "absolute",
+          right: 10,
+          bottom: 30,
+          padding: 15,
+          borderRadius: 30,
+          borderWidth: 3,
+          borderColor: "#FFFFFF",
+        }}
         rounded="full"
-        bgColor="primary.600"
-        p={15}
+        backgroundColor="primary.600"
         shadow="0"
-        borderRadius="full"
-        borderWidth={3}
-        borderColor="#FFFFFF"
         onPress={onPressAddHandler}
       >
-        <Icon as={<MaterialCommunityIcons name="arrow-right" />} size="xl" color="white" />
+        <MaterialCommunityIcons name="arrow-right" size={25} color="#FFFFFF" />
       </Pressable>
     </SafeAreaView>
   );
