@@ -36,7 +36,6 @@ const ChatHeader = ({
   isPinned,
   reference,
 }) => {
-  console.log("s", selectedGroupMembers);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
