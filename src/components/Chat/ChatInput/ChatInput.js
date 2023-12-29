@@ -156,30 +156,33 @@ const ChatInput = ({
               </Pressable>
 
               <FormControl display="flex" flex={1} justifyContent="center">
-                {/* <Input
-                  size="md"
-                  variant="unstyled"
-                  placeholder="Type a message..."
-                  value={formik.values.message}
-                  onChangeText={(value) => formik.setFieldValue("message", value)}
-                /> */}
-                <MentionInput
-                  value={formik.values.message}
-                  onChange={handleChange}
-                  partTypes={[
-                    {
-                      pattern:
-                        /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                      textStyle: { color: "blue" },
-                    },
-                    {
-                      trigger: "@",
-                      renderSuggestions: renderSuggestions,
-                    },
-                  ]}
-                  placeholder="Type a message..."
-                  style={{ padding: 12 }}
-                />
+                {type === "group" ? (
+                  <MentionInput
+                    value={formik.values.message}
+                    onChange={handleChange}
+                    partTypes={[
+                      {
+                        pattern:
+                          /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
+                        textStyle: { color: "blue" },
+                      },
+                      {
+                        trigger: "@",
+                        renderSuggestions: renderSuggestions,
+                      },
+                    ]}
+                    placeholder="Type a message..."
+                    style={{ padding: 12 }}
+                  />
+                ) : (
+                  <Input
+                    size="md"
+                    variant="unstyled"
+                    placeholder="Type a message..."
+                    value={formik.values.message}
+                    onChangeText={(value) => formik.setFieldValue("message", value)}
+                  />
+                )}
               </FormControl>
 
               <IconButton
