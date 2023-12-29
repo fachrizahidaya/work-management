@@ -4,16 +4,25 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { Button, Flex, FormControl, Icon, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
+import {
+  ActivityIndicator,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Toast from "react-native-toast-message";
 
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
+import Input from "../../components/shared/Forms/Input";
+import Button from "../../components/shared/Forms/Button";
 
 const ChangePasswordScreen = () => {
-  const toast = useToast();
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(true);
   const [showNewPassword, setShowNewPassword] = useState(true);
@@ -28,21 +37,23 @@ const ChangePasswordScreen = () => {
     try {
       // Send a POST request to change the user's password
       await axiosInstance.post("/auth/change-password", form);
-      setSubmitting(false);
       resetForm();
-      navigation.navigate("Log Out");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Password saved, redirecting to login screen"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Password saved, redirecting to login screen...",
+        position: "bottom",
       });
+      setTimeout(() => {
+        setSubmitting(false);
+        navigation.navigate("Log Out");
+      }, 1500);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -76,83 +87,64 @@ const ChangePasswordScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <Flex marginHorizontal={16} marginVertical={13} flex={1} style={{ gap: 24 }}>
+        <View style={{ gap: 24, display: "flex", marginHorizontal: 16, marginVertical: 13, flex: 1 }}>
           <PageHeader title="Password" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-          <VStack space={17}>
-            <FormControl isInvalid={formik.errors.old_password}>
-              <FormControl.Label>Old Password</FormControl.Label>
-              <Input
-                size="md"
-                type={!showPassword ? "text" : "password"}
-                value={formik.values.old_password}
-                onChangeText={(value) => formik.setFieldValue("old_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setShowPassword(!showPassword)}>
-                    <Icon
-                      as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
-              />
-              <FormControl.ErrorMessage>{formik.errors.old_password}</FormControl.ErrorMessage>
-            </FormControl>
+          <View style={{ display: "flex", gap: 17 }}>
+            <Input
+              formik={formik}
+              value={formik.values.old_password}
+              title="Old password"
+              secureTextEntry={showPassword}
+              placeHolder="Input your old password..."
+              fieldName="old_password"
+              endAdornment={
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} />
+                </Pressable>
+              }
+            />
 
-            <FormControl isInvalid={formik.errors.new_password}>
-              <FormControl.Label>New Password</FormControl.Label>
-              <Input
-                size="md"
-                type={!showNewPassword ? "text" : "password"}
-                value={formik.values.new_password}
-                onChangeText={(value) => formik.setFieldValue("new_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
-                    <Icon
-                      as={<MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
-              />
-              <FormControl.ErrorMessage>{formik.errors.new_password}</FormControl.ErrorMessage>
-            </FormControl>
+            <Input
+              formik={formik}
+              value={formik.values.new_password}
+              title="New password"
+              secureTextEntry={showNewPassword}
+              placeHolder="Input your new password..."
+              fieldName="new_password"
+              endAdornment={
+                <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
+                  <MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} size={20} />
+                </Pressable>
+              }
+            />
 
-            <FormControl mb={8} isInvalid={formik.errors.confirm_password}>
-              <FormControl.Label>Confirm New Password</FormControl.Label>
-              <Input
-                size="md"
-                type={!showRepeatPassword ? "text" : "password"}
-                value={formik.values.confirm_password}
-                onChangeText={(value) => formik.setFieldValue("confirm_password", value)}
-                InputRightElement={
-                  <Pressable onPress={() => setShowRepeatPassword(!showRepeatPassword)}>
-                    <Icon
-                      as={<MaterialIcons name={showRepeatPassword ? "visibility" : "visibility-off"} />}
-                      size={5}
-                      mr="3"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
-              />
-              <FormControl.ErrorMessage>{formik.errors.confirm_password}</FormControl.ErrorMessage>
-            </FormControl>
+            <Input
+              formik={formik}
+              value={formik.values.confirm_password}
+              title="Repeat new password"
+              secureTextEntry={showRepeatPassword}
+              placeHolder="Repeat your new password..."
+              fieldName="confirm_password"
+              endAdornment={
+                <Pressable onPress={() => setShowRepeatPassword(!showRepeatPassword)}>
+                  <MaterialIcons name={showRepeatPassword ? "visibility" : "visibility-off"} size={20} />
+                </Pressable>
+              }
+            />
 
             <Button
               onPress={formik.handleSubmit}
               disabled={formik.isSubmitting}
-              bgColor={formik.isSubmitting ? "coolGray.500" : "primary.600"}
+              bgColor={formik.isSubmitting ? "gray" : "#176688"}
             >
-              {!formik.isSubmitting ? <Text color="white">Save</Text> : <Spinner color="white" size="sm" />}
+              {!formik.isSubmitting ? <Text style={{ color: "white" }}>Save</Text> : <ActivityIndicator />}
             </Button>
-          </VStack>
-        </Flex>
+          </View>
+        </View>
       </TouchableWithoutFeedback>
+
+      <Toast />
     </SafeAreaView>
   );
 };

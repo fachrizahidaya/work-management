@@ -21,7 +21,7 @@ const Input = ({
   numberOfLines,
   style,
   editable = true,
-  ref,
+  innerRef,
   height,
   width,
   onTouchStart,
@@ -42,7 +42,7 @@ const Input = ({
 
         <TextInput
           keyboardType={keyboardType}
-          ref={ref}
+          ref={innerRef}
           editable={editable}
           selectTextOnFocus={editable}
           multiline={multiline}
