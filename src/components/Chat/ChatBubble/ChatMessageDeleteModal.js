@@ -1,4 +1,7 @@
-import { Button, Modal, Spinner, Text } from "native-base";
+import { Spinner } from "native-base";
+import { Dimensions, Platform, Text, View } from "react-native";
+import Modal from "react-native-modal";
+import Button from "../../shared/Forms/Button";
 
 const ChatMessageDeleteModal = ({
   id,
@@ -9,44 +12,58 @@ const ChatMessageDeleteModal = ({
   isLoading,
   isDeleted,
 }) => {
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   return (
-    <Modal size="xl" isOpen={deleteModalChatIsOpen} onClose={toggleDeleteModalChat}>
-      <Modal.Content>
-        <Modal.Header>Delete message?</Modal.Header>
-        <Modal.Body gap={1} alignItems="center" display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outline" onPress={toggleDeleteModalChat}>
-            <Text fontSize={12} fontWeight={400} color="primary.600">
-              Cancel
-            </Text>
+    <Modal
+      isVisible={deleteModalChatIsOpen}
+      onBackdropPress={toggleDeleteModalChat}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+      backdropColor="#272A2B"
+    >
+      <View style={{ backgroundColor: "#FFFFFF", padding: 15, borderRadius: 10 }}>
+        <View>
+          <Text>Delete message?</Text>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}>
+          <Button padding={10} variant="outline" onPress={toggleDeleteModalChat}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>Cancel</Text>
           </Button>
 
           <Button
+            padding={10}
             disabled={isLoading}
             variant="outline"
             onPress={async () => {
               await onDeleteMessage(id, "me");
             }}
           >
-            <Text fontSize={12} fontWeight={400} color="primary.600">
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>
               {isLoading ? <Spinner color="primary.600" /> : "Delete for Me"}
             </Text>
           </Button>
 
           {myMessage && !isDeleted && (
             <Button
+              padding={10}
               disabled={isLoading}
               variant="outline"
               onPress={async () => {
                 await onDeleteMessage(id, "everyone");
               }}
             >
-              <Text fontSize={12} fontWeight={400} color="primary.600">
+              <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>
                 {isLoading ? <Spinner color="primary.600" /> : "Delete for Everyone"}
               </Text>
             </Button>
           )}
-        </Modal.Body>
-      </Modal.Content>
+        </View>
+      </View>
     </Modal>
   );
 };

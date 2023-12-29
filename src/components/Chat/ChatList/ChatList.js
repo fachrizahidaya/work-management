@@ -24,6 +24,7 @@ const ChatList = ({
   setBandAttachment,
   onSwipeToReply,
   memberName,
+  position,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -119,6 +120,7 @@ const ChatList = ({
               onSwipe={onSwipeToReply}
               isOptimistic={item?.isOptimistic}
               memberName={memberName}
+              position={position}
             />
           </>
         )}
