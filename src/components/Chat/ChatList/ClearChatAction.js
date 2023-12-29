@@ -14,6 +14,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ActionSheet from "react-native-actions-sheet";
 
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, reference }) => {
   return (
