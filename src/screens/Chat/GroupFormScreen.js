@@ -6,19 +6,19 @@ import * as ImagePicker from "expo-image-picker";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Keyboard, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
-import { HStack, Icon, Image, Input, Pressable, Spinner, Text, VStack, useToast } from "native-base";
+import { Keyboard, SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
+import { Pressable, Spinner } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
+import Input from "../../components/shared/Forms/Input";
 import PageHeader from "../../components/shared/PageHeader";
 import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  const toast = useToast();
   const navigation = useNavigation();
   const { userArray, groupData } = route.params;
   const [image, setImage] = useState(null);
@@ -45,18 +45,27 @@ const GroupFormScreen = ({ route }) => {
         roomId: res.data.data.id,
       });
       setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group created!" close={() => toast.close(id)} />;
-        },
+      // toast.show({
+      //   render: ({ id }) => {
+      //     return <SuccessToast message="Group created!" close={() => toast.close(id)} />;
+      //   },
+      // });
+      Toast.show({
+        type: "success",
+        text1: "Group created!",
+        position: "bottom",
       });
     } catch (error) {
       console.log(error);
       setSubmitting(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      // toast.show({
+      //   render: ({ id }) => {
+      //     return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
+      //   },
+      // });
+      Toast.show({
+        type: "error",
+        text1: error.rersponse.data.message,
       });
     }
   };
@@ -126,46 +135,48 @@ const GroupFormScreen = ({ route }) => {
       <Pressable flex={1} display="flex" paddingHorizontal={16} gap={8} onPress={Keyboard.dismiss} accessible={false}>
         <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-        <HStack alignItems="center" space={2}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
-              <Image rounded="full" alt="group-image" source={{ uri: image.uri }} h={50} w={50} />
+              <Image
+                style={{ height: 50, width: 50, borderRadius: 30 }}
+                alt="group-image"
+                source={{ uri: image.uri }}
+              />
             ) : (
-              <Icon as={<MaterialCommunityIcons name="camera" />} size="lg" color="white" />
+              <MaterialCommunityIcons name="camera" size={20} color="#FFFFFF" />
             )}
           </TouchableOpacity>
 
-          <VStack flex={1}>
+          <View style={{ flex: 1 }}>
             <Input
-              autoCapitalize="words"
-              isInvalid={formik.errors.name}
-              flex={1}
-              variant="underlined"
-              placeholder="Group name"
-              size="lg"
+              // autoCapitalize="words"
+              // isInvalid={formik.errors.name}
+              // flex={1}
+              // variant="underlined"
+              placeHolder="Group name"
+              // size="lg"
               value={formik.values.name}
               onChangeText={(value) => formik.setFieldValue("name", value)}
             />
-            {formik.errors.name && (
-              <Text color="red.500" fontSize={12}>
-                {formik.errors.name}
-              </Text>
-            )}
-          </VStack>
-        </HStack>
+            {formik.errors.name && <Text style={{ fontSize: 12, color: "#F44336" }}>{formik.errors.name}</Text>}
+          </View>
+        </View>
 
         <Text>Participants: {userArray?.length}</Text>
-        <HStack space={2} flexWrap="wrap">
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
-                <VStack key={user.id} alignItems="center">
+                <View key={user.id} style={{ alignItems: "center" }}>
                   <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="md" />
-                  <Text fontSize={12}>{user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}</Text>
-                </VStack>
+                  <Text style={{ fontSize: 12 }}>
+                    {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
+                  </Text>
+                </View>
               );
             })}
-        </HStack>
+        </View>
       </Pressable>
 
       <Pressable
@@ -185,7 +196,7 @@ const GroupFormScreen = ({ route }) => {
         {formik.isSubmitting ? (
           <Spinner color="white" size="lg" />
         ) : (
-          <Icon as={<MaterialCommunityIcons name="check" />} size="xl" color="white" />
+          <MaterialCommunityIcons name="check" size={25} color="#FFFFFF" />
         )}
       </Pressable>
     </SafeAreaView>
