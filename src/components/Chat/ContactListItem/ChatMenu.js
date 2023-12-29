@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Actionsheet, Box, Flex, Text } from "native-base";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
-const ChatMenu = ({ isOpen, onClose }) => {
+const ChatMenu = ({ onClose, reference }) => {
   const navigation = useNavigation();
   const menuOptions = [
     {
@@ -23,33 +24,36 @@ const ChatMenu = ({ isOpen, onClose }) => {
     //   name: "Select Message",
     // },
   ];
-  return (
-    <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content gap={1}>
-        <Box gap={1}>
-          {menuOptions.map((option, index) => {
-            return (
-              <Actionsheet.Item borderRadius={10} key={index} onPress={option.onPress} backgroundColor="#F5F5F5">
-                <Flex width={350} justifyContent="space-between" alignItems="center" flexDirection="row">
-                  <Text fontSize={16} fontWeight={400}>
-                    {option.name}
-                  </Text>
-                </Flex>
-              </Actionsheet.Item>
-            );
-          })}
-        </Box>
 
-        <Actionsheet.Item onPress={onClose} mt={1} backgroundColor="#F5F5F5">
-          <Flex width={350} justifyContent="center" alignItems="center">
-            <Text fontSize={16} fontWeight={400} color="#176688">
-              Cancel
-            </Text>
-          </Flex>
-        </Actionsheet.Item>
-      </Actionsheet.Content>
-    </Actionsheet>
+  return (
+    <ActionSheet ref={reference} onClose={reference.current?.hide()}>
+      <View style={{ ...styles.wrapper, gap: 5 }}>
+        {menuOptions.map((option, index) => {
+          return (
+            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+              <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      <TouchableOpacity style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+      </TouchableOpacity>
+    </ActionSheet>
   );
 };
 
 export default ChatMenu;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+});

@@ -1,26 +1,22 @@
-import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { Flex, Icon, Text } from "native-base";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOption, onSwipeControl, onPinControl }) => {
+const GroupSection = ({ groupChats, searchKeyword, searchResult, onSwipeControl, onPinControl }) => {
   const navigation = useNavigation();
 
   return !searchKeyword ? (
     <>
-      <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-        <Text opacity={0.5} fontWeight={500}>
-          TEAMS
-        </Text>
+      <View style={styles.header}>
+        <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
 
         <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
-          <Icon as={<MaterialIcons name="add" />} color="black" />
+          <MaterialIcons name="add" color="black" size={15} />
         </TouchableOpacity>
-      </Flex>
+      </View>
 
       {groupChats.length > 0 &&
         groupChats.map((group) => (
@@ -52,15 +48,13 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOptio
     <>
       {searchResult?.length > 0 && (
         <>
-          <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-            <Text opacity={0.5} fontWeight={500}>
-              TEAMS
-            </Text>
+          <View style={styles.header}>
+            <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
 
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
-              <Icon as={<MaterialIcons name="add" />} color="black" />
+              <MaterialIcons name="add" color="black" size={15} />
             </TouchableOpacity>
-          </Flex>
+          </View>
 
           {searchResult.map((group) => (
             <ContactListItem
@@ -89,6 +83,12 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, toggleChatOptio
 export default GroupSection;
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 15,
+  },
   addButton: {
     backgroundColor: "#f1f2f3",
     alignItems: "center",
