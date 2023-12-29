@@ -16,11 +16,6 @@ const GlobalSearchInput = ({ setGlobalKeyword, globalKeyword }) => {
 
   return (
     <Input
-      // m={4}
-      // variant="unstyled"
-      // size="lg"
-      // borderColor="white"
-      // bgColor="#F8F8F8"
       ref={searchFormRef}
       placeHolder="Search..."
       startIcon="magnify"
