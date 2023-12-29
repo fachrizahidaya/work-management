@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
@@ -8,8 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, View } from "react-native";
-import { useToast } from "native-base";
+import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
 import Toast from "react-native-toast-message";
 
 import axiosInstance from "../../config/api";
@@ -17,7 +16,6 @@ import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
 import ChatInput from "../../components/Chat/ChatInput/ChatInput";
 import ChatList from "../../components/Chat/ChatList/ChatList";
@@ -43,6 +41,7 @@ const ChatRoom = () => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [placement, setPlacement] = useState(undefined);
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
+  const [chatBubblePos, setChatBubblePos] = useState(false);
 
   const swipeToReply = (message) => {
     setMessageToReply(message);
@@ -61,7 +60,8 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
 
-  const toast = useToast();
+  const clearChatScreenSheetRef = useRef(null);
+  const menuAttachmentScreenSheetRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -83,6 +83,7 @@ const ChatRoom = () => {
    * @param {*} chat
    */
   const openChatBubbleHandler = (chat, placement) => {
+    setChatBubblePos(true);
     setSelectedChatBubble(chat);
     setPlacement(placement);
     toggleOption();
@@ -92,12 +93,14 @@ const ChatRoom = () => {
    * Close chat options handler
    */
   const closeChatBubbleHandler = () => {
+    setChatBubblePos(false);
     setSelectedChatBubble(null);
     toggleOption();
   };
 
   const openAddAttachmentHandler = () => {
-    toggleMenu();
+    // toggleMenu();
+    menuAttachmentScreenSheetRef.current?.show();
     Keyboard.dismiss();
   };
 
@@ -193,29 +196,7 @@ const ChatRoom = () => {
 
   /**
    * Handles submission of chat message
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
    */
-  const sendMessageHandler = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/chat/${type}/message`, form, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      if (currentUser === null) {
-        setCurrentUser(res.data.data?.chat_personal_id);
-      }
-      setSubmitting(false);
-      setStatus("success");
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-    }
-  };
-
   const { mutate, variables } = useMutation(
     (chat) => {
       startLoadingChat();
@@ -233,10 +214,11 @@ const ChatRoom = () => {
       },
       onError: (error) => {
         stopLoadingChat();
-        toast.show({
-          render: ({ id }) => {
-            return <ErrorToast message={error?.response?.data?.message} toast={toast} close={() => toast.close(id)} />;
-          },
+        console.log(error);
+
+        Toast.show({
+          type: "error",
+          text1: error.response.data.message,
         });
       },
     }
@@ -320,18 +302,20 @@ const ChatRoom = () => {
       toggleDeleteChatMessage();
       toggleDeleteModal();
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Chat Deleted" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Chat deleted",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -347,18 +331,20 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Chat cleared",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -371,14 +357,15 @@ const ChatRoom = () => {
    */
   const chatPinUpdateHandler = async (chatType, id, action) => {
     try {
-      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
       navigation.goBack();
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -503,18 +490,20 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Exited" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Group exited",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleChatRoom();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -530,18 +519,20 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "success",
+        text1: "Group deleted",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -652,6 +643,7 @@ const ChatRoom = () => {
               onSwipeToReply={swipeToReply}
               placement={placement}
               memberName={memberName}
+              position={chatBubblePos}
             />
 
             <ChatInput
@@ -709,6 +701,7 @@ const ChatRoom = () => {
             name={name}
             isLoading={clearMessageIsLoading}
             clearChat={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
+            reference={clearChatScreenSheetRef}
           />
 
           <ImageFullScreenModal
@@ -755,6 +748,7 @@ const ChatRoom = () => {
             type={type}
             active_member={active_member}
             isPinned={isPinned}
+            reference={menuAttachmentScreenSheetRef}
           />
         </SafeAreaView>
       ) : null}

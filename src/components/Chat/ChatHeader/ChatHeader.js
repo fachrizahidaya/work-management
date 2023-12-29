@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Icon, Pressable, Text } from "native-base";
+import { View, Text, Pressable } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -35,7 +35,6 @@ const ChatHeader = ({
   onUpdatePinHandler,
   isPinned,
 }) => {
-  console.log("s", selectedGroupMembers);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -53,7 +52,6 @@ const ChatHeader = ({
     return `${name}`;
   });
   const concatenatedNames = membersName.join(", ");
-  console.log("m", concatenatedNames);
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -66,10 +64,19 @@ const ChatHeader = ({
 
   return (
     <>
-      <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
-        <Flex direction="row" alignItems="center" gap={4}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          padding: 20,
+          borderBottomWidth: 1,
+          borderColor: "#E8E9EB",
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Pressable onPress={() => !isLoading && navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+            <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
           </Pressable>
 
           <Pressable
@@ -97,37 +104,35 @@ const ChatHeader = ({
                 toggleClearChatMessage: toggleClearChatMessage,
               })
             }
-            display="flex"
-            gap={4}
-            flexDirection="row"
+            style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
             <AvatarPlaceholder name={name} image={image} size="md" />
 
-            <Flex>
-              <Text fontSize={16}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+            <View>
+              <Text style={{ fontSize: 16 }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text fontSize={12} fontWeight={400}>
-                  {email}
-                </Text>
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>{email}</Text>
               ) : (
-                <Flex alignItems="center" flexDirection="row">
-                  <Flex flexDirection="row" overflow="hidden" flexWrap="nowrap">
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={{ flexDirection: "row" }}>
                     <Text
-                      fontSize={10}
-                      fontWeight={400}
-                      overflow="hidden"
-                      width={200}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "400",
+                        width: 200,
+                        overflow: "hidden",
+                      }}
                       numberOfLines={1}
                       ellipsizeMode="tail"
                     >
                       {concatenatedNames}
                     </Text>
-                  </Flex>
-                </Flex>
+                  </View>
+                </View>
               )}
-            </Flex>
+            </View>
           </Pressable>
-        </Flex>
+        </View>
 
         <MenuHeader
           fileAttachment={fileAttachment}
@@ -142,7 +147,7 @@ const ChatHeader = ({
           roomId={roomId}
           isPinned={isPinned}
         />
-      </Flex>
+      </View>
 
       {searchVisible && (
         <SearchBox
