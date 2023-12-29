@@ -20,7 +20,6 @@ const Header = () => {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
   const [routeName, setRouteName] = useState([]);
-  const [initiate, setInitiate] = useState("Band");
   const {
     isOpen: notificationCardIsOpen,
     open: openNotificationCard,
@@ -95,6 +94,9 @@ const Header = () => {
         position="relative"
       >
         <Flex direction="row" alignItems="center" gap={2}>
+          {routeName[1]?.name === "Chat List" && (
+            <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} />
+          )}
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
           <Box>
@@ -154,27 +156,29 @@ const Header = () => {
             }
             position="relative"
           >
-            {unreadMessages?.data?.total_unread > 0 && (
-              <Box
-                style={{
-                  height: 22,
-                  width: 22,
-                }}
-                position="absolute"
-                top={-12}
-                right={-8}
-                bgColor="#FD7972"
-                borderRadius="full"
-                zIndex={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize={12} textAlign="center" color="white">
-                  {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
-                </Text>
-              </Box>
-            )}
+            {!routeName[0]?.state?.routeNames[2].includes("Tribe") &&
+              !routeName[0]?.state?.routeNames[2].includes("Band") &&
+              unreadMessages?.data?.total_unread > 0 && (
+                <Box
+                  style={{
+                    height: 22,
+                    width: 22,
+                  }}
+                  position="absolute"
+                  top={-12}
+                  right={-8}
+                  bgColor="#FD7972"
+                  borderRadius="full"
+                  zIndex={1}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text fontSize={12} textAlign="center" color="white">
+                    {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
+                  </Text>
+                </Box>
+              )}
             {routeName[0]?.state?.routeNames[2]?.includes("Tribe") ? (
               <>
                 <Image
