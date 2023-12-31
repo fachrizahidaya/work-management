@@ -1,30 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { FlashList } from "@shopify/flash-list";
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Spinner } from "native-base";
+import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 
-import { useFetch } from "../hooks/useFetch";
 import NotificationItem from "../components/Notification/NotificationItem/NotificationItem";
 import PageHeader from "../components/shared/PageHeader";
 import NotificationTimeStamp from "../components/Notification/NotificationTimeStamp/NotificationTimeStamp";
 import axiosInstance from "../config/api";
+import { useFocusEffect } from "@react-navigation/native";
+import { useLoading } from "../hooks/useLoading";
 
 const NotificationScreen = ({ route }) => {
   const { module, refetch } = route.params;
   const [currentPage, setCurrentPage] = useState(1);
   const [cumulativeNotifs, setCumulativeNotifs] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [notifications, setNotifications] = useState({});
+  const { isLoading: notifIsFetching, toggle: toggleNotifIsFetching } = useLoading(false);
 
   const notificationFetchParameters = {
     page: currentPage,
     limit: 20,
   };
 
-  const { data: notifications, isFetching: notifIsFetching } = useFetch(
-    module === "BAND" ? "/pm/notifications" : "/hr/notifications",
-    [currentPage],
-    notificationFetchParameters
-  );
+  const fetchAllNotifications = async () => {
+    try {
+      toggleNotifIsFetching();
+      const res = await axiosInstance.get(module === "BAND" ? "/pm/notifications" : "/hr/notifications", {
+        params: notificationFetchParameters,
+      });
+      setNotifications(res.data);
+      toggleNotifIsFetching();
+    } catch (error) {
+      console.log(error);
+      toggleNotifIsFetching();
+    }
+  };
+
+  useEffect(() => {
+    fetchAllNotifications();
+  }, [currentPage]);
 
   const fetchMoreData = () => {
     if (currentPage < notifications?.data?.last_page) {
@@ -38,31 +53,31 @@ const NotificationScreen = ({ route }) => {
     }
   }, [notifications]);
 
-  useEffect(() => {
-    const readAllNotifications = async () => {
-      try {
-        await axiosInstance.get(module === "BAND" ? "/pm/notifications/read" : "/hr/notifications/read");
-        refetch();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    readAllNotifications();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      return async () => {
+        try {
+          await axiosInstance.get(module === "BAND" ? "/pm/notifications/read" : "/hr/notifications/read");
+          refetch();
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex marginHorizontal={16} marginVertical={13} flex={1} style={{ gap: 24 }}>
+      <View style={{ flex: 1, display: "flex", gap: 24, marginHorizontal: 16, marginVertical: 13 }}>
         <PageHeader backButton={false} title="Notifications" />
 
-        <FlashList
+        <FlatList
+          refreshControl={<RefreshControl refreshing={notifIsFetching} onRefresh={fetchAllNotifications} />}
           data={cumulativeNotifs}
           keyExtractor={(item, index) => index}
+          onScrollBeginDrag={() => setIsScrolled(true)}
           onEndReachedThreshold={0.1}
-          onEndReached={fetchMoreData}
-          estimatedItemSize={50}
-          ListFooterComponent={notifIsFetching && <Spinner color="primary.600" size="sm" />}
+          onEndReached={isScrolled ? fetchMoreData : null}
           renderItem={({ item, index }) => (
             <>
               {cumulativeNotifs[index - 1] ? (
@@ -86,11 +101,12 @@ const NotificationScreen = ({ route }) => {
                 content={item.description}
                 itemId={item.reference_id}
                 time={item.created_at}
+                isRead={item.is_read}
               />
             </>
           )}
         />
-      </Flex>
+      </View>
     </SafeAreaView>
   );
 };

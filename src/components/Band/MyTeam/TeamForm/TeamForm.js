@@ -4,14 +4,21 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useSelector } from "react-redux";
 
-import { Button, FormControl, Input, Modal, Text, useToast } from "native-base";
+import Modal from "react-native-modal";
+import { Dimensions, Platform, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import FormButton from "../../../shared/FormButton";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import axiosInstance from "../../../../config/api";
+import Input from "../../../shared/Forms/Input";
 
 const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelectedTeamId }) => {
-  const toast = useToast();
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const userSelector = useSelector((state) => state.auth);
 
   const submitTeam = async (form, setSubmitting, setStatus) => {
@@ -39,20 +46,13 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       refetch();
       setSubmitting(false);
       setStatus("success");
-
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Team Saved"} close={() => toast.close(id)} />;
-        },
-      });
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -77,40 +77,34 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
   }, [formik.isSubmitting, formik.status]);
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={() => !formik.isSubmitting && formik.status !== "processing" && toggle(formik.resetForm)}
+      isVisible={isOpen}
+      onBackdropPress={() => !formik.isSubmitting && formik.status !== "processing" && toggle(formik.resetForm)}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
     >
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>{teamData ? "Edit Team" : "New Team"}</Modal.Header>
-        <Modal.Body>
-          <FormControl>
-            <FormControl.Label>Team Name</FormControl.Label>
-            <Input
-              placeholder="Input team name..."
-              value={formik.values.name}
-              onChangeText={(value) => formik.setFieldValue("name", value)}
-            />
-          </FormControl>
-        </Modal.Body>
+      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+        <Text style={{ fontWeight: 500 }}>{teamData ? "Edit Team" : "New Team"}</Text>
 
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <FormButton
-              isSubmitting={formik.isSubmitting}
-              onPress={() => toggle(formik.resetForm)}
-              color="transparent"
-              variant="outline"
-            >
-              <Text>Cancel</Text>
-            </FormButton>
+        <Input formik={formik} fieldName="name" placeHolder="Input team name..." value={formik.values.name} />
 
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text color="white">Submit</Text>
-            </FormButton>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
+        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", gap: 5 }}>
+          <FormButton
+            isSubmitting={formik.isSubmitting}
+            onPress={() => toggle(formik.resetForm)}
+            variant="outline"
+            backgroundColor="white"
+            style={{ paddingHorizontal: 8 }}
+          >
+            <Text style={{ fontWeight: 500 }}>Cancel</Text>
+          </FormButton>
+
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} style={{ paddingHorizontal: 8 }}>
+            <Text style={{ fontWeight: 500, color: "white" }}>Submit</Text>
+          </FormButton>
+        </View>
+
+        <Toast position="bottom" />
+      </View>
     </Modal>
   );
 };

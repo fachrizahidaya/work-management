@@ -138,9 +138,9 @@ const PeopleSection = ({
                                     );
                                   })
                                 ) : (
-                                  <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>
+                                  <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
                                     <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
-                                  </Actionsheet.Item>
+                                  </TouchableOpacity>
                                 )}
                               </View>
                             ),
@@ -173,9 +173,9 @@ const PeopleSection = ({
                               );
                             })
                           ) : (
-                            <Actionsheet.Item onPress={() => takeTask(userSelector.id)}>
+                            <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
                               <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
-                            </Actionsheet.Item>
+                            </TouchableOpacity>
                           )}
                         </View>
                       ),

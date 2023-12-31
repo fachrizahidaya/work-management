@@ -111,9 +111,8 @@ const CustomDateTimePicker = ({
                 style={{ position: "absolute", zIndex: 2, top: 0, right: 0, bottom: 0, left: 0 }}
               />
               <Input
-                ref={inputRef}
+                innerRef={inputRef}
                 placeHolder="DD/MM/YYYY"
-                editable={false}
                 value={value}
                 height={height}
                 width={width}

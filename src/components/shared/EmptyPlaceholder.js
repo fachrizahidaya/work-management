@@ -1,13 +1,18 @@
 import React from "react";
 
-import { Center, Image, Text } from "native-base";
+import { Image, Text, View } from "react-native";
 
 const EmptyPlaceholder = ({ text, height, width }) => {
   return (
-    <Center flex={1}>
-      <Image source={require("../../assets/vectors/empty.png")} alt="empty" h={height} w={width} resizeMode="contain" />
-      <Text fontWeight={400}>{text}</Text>
-    </Center>
+    <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
+      <Image
+        style={{ height: height, width: width, resizeMode: "contain" }}
+        source={require("../../assets/vectors/empty.png")}
+        alt="empty"
+        resizeMode="contain"
+      />
+      <Text stl={{ fontWeight: 400 }}>{text}</Text>
+    </View>
   );
 };
 

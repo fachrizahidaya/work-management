@@ -2,10 +2,9 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
-import { Box, Flex, Text, VStack } from "native-base";
-import { Dimensions, TouchableOpacity } from "react-native";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
-const NotificationItem = ({ name, modul, content, itemId, time }) => {
+const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
   const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
 
@@ -19,23 +18,30 @@ const NotificationItem = ({ name, modul, content, itemId, time }) => {
         }
       }}
     >
-      <Flex flexDir="row" mb={25} style={{ gap: 12 }} alignItems="center">
-        <Text style={{ width: 42 }}>{time.split(" ")[1]}</Text>
+      <View style={{ display: "flex", flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 25 }}>
+        <Text style={{ width: 42, fontWeight: !isRead ? "bold" : 500 }}>{time.split(" ")[1]}</Text>
 
-        <Box borderWidth={2} borderRadius={10} h="full" borderColor={modul === "Task" ? "#FF965D" : "#49C96D"} />
+        <View
+          style={{
+            borderWidth: 2,
+            borderRadius: 10,
+            height: "100%",
+            borderColor: modul === "Task" ? "#FF965D" : "#49C96D",
+          }}
+        />
 
-        <VStack flex={1}>
-          <Text fontWeight={400}>{name}</Text>
-          <Box>
+        <View style={{ flex: 1, display: "flex" }}>
+          <Text style={{ fontWeight: !isRead ? "bold" : 400 }}>{name}</Text>
+          <View>
             <RenderHtml
               contentWidth={width}
               source={{
-                html: content,
+                html: !isRead ? `<span style="fontWeight: bold;">${content}<span>` : content,
               }}
             />
-          </Box>
-        </VStack>
-      </Flex>
+          </View>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };

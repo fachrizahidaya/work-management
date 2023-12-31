@@ -1,32 +1,37 @@
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { Flex, Icon, Pressable, Skeleton, VStack, View, useToast } from "native-base";
+import { useMutation } from "react-query";
+
+import { RefreshControl } from "react-native-gesture-handler";
+import {
+  FlatList,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { FlashList } from "@shopify/flash-list";
+import Toast from "react-native-toast-message";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import NoteItem from "../../components/Band/Note/NoteItem/NoteItem";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
-import NewNoteSlider from "../../components/Band/Note/NewNoteSlider/NewNoteSlider";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import { useMutation } from "react-query";
 
 const NotesScreen = () => {
-  const { height } = Dimensions.get("screen");
-  const toast = useToast();
+  const navigation = useNavigation();
+  const firstTimeRef = useRef(true);
   const [noteToDelete, setNoteToDelete] = useState({});
-  const [selectedNote, setSelectedNote] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: editFormIsOpen, toggle: toggleEditForm } = useDisclosure(false);
-  const { isOpen: newFormIsOpen, toggle: toggleNewForm } = useDisclosure(false);
   const createCheckAccess = useCheckAccess("create", "Notes");
   const { data: notes, isLoading, refetch } = useFetch("/pm/notes");
 
@@ -36,19 +41,7 @@ const NotesScreen = () => {
   };
 
   const openEditFormHandler = (note) => {
-    setSelectedNote(note);
-    toggleEditForm();
-  };
-
-  const closeEditFormHandler = (resetForm) => {
-    setSelectedNote({});
-    toggleEditForm();
-    resetForm();
-  };
-
-  const closeNewFormHandler = (resetForm) => {
-    toggleNewForm();
-    resetForm();
+    navigation.navigate("Note Form", { noteData: note, refresh: refetch, refreshFunc: true });
   };
 
   const {
@@ -62,17 +55,17 @@ const NotesScreen = () => {
     {
       onSuccess: () => {
         refetch();
-        toast.show({
-          render: ({ id }) => {
-            return <SuccessToast message={`Note updated!`} toast={toast} close={() => toast.close(id)} />;
-          },
+        Toast.show({
+          type: "success",
+          text1: "Note updated!",
+          position: "bottom",
         });
       },
       onError: (error) => {
-        toast.show({
-          render: ({ id }) => {
-            return <ErrorToast message={error?.response?.data?.message} toast={toast} close={() => toast.close(id)} />;
-          },
+        Toast.show({
+          type: "error",
+          text1: error.response.data.message,
+          position: "bottom",
         });
       },
     }
@@ -95,89 +88,75 @@ const NotesScreen = () => {
 
   const renderList = pinIsLoading ? optimisticList : filteredData;
 
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetch();
+    }, [refetch])
+  );
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <VStack space={21} flex={1}>
+          <View style={{ display: "flex", gap: 21, flex: 1 }}>
             <PageHeader backButton={false} title="Notes" />
-            <Flex flexDir="row">
+            <View style={{ display: "flex", flexDirection: "row" }}>
               <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
-            </Flex>
+            </View>
 
-            <ScrollView
-              style={{ maxHeight: height }}
-              refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
-            >
-              <View flex={1} minH={2}>
-                {!isLoading ? (
-                  <FlashList
-                    data={renderList}
-                    keyExtractor={(item) => item.id}
-                    estimatedItemSize={270}
-                    renderItem={({ item }) => (
-                      <NoteItem
-                        note={item}
-                        id={item.id}
-                        title={item.title}
-                        date={item.created_at}
-                        isPinned={item.pinned}
-                        onPress={mutate}
-                        openDeleteModal={openDeleteModalHandler}
-                        openEditForm={openEditFormHandler}
-                      />
-                    )}
-                  />
-                ) : (
-                  <Skeleton height={270} />
-                )}
-              </View>
-            </ScrollView>
-          </VStack>
+            <View style={{ flex: 1 }}>
+              {!isLoading ? (
+                <FlatList
+                  refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
+                  data={renderList}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <NoteItem
+                      note={item}
+                      id={item.id}
+                      title={item.title}
+                      date={item.created_at}
+                      isPinned={item.pinned}
+                      onPress={mutate}
+                      openDeleteModal={openDeleteModalHandler}
+                      openEditForm={openEditFormHandler}
+                    />
+                  )}
+                />
+              ) : (
+                <Text>Loading...</Text>
+                // <Skeleton height={270} />
+              )}
+            </View>
+          </View>
         </TouchableWithoutFeedback>
 
         {createCheckAccess && (
           <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleNewForm}
+            style={styles.hoverButton}
+            onPress={() => navigation.navigate("Note Form", { noteData: null, refresh: refetch, refreshFunc: true })}
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
+
+        <Toast />
       </SafeAreaView>
 
-      {deleteModalIsOpen && (
-        <ConfirmationModal
-          isOpen={deleteModalIsOpen}
-          toggle={toggleDeleteModal}
-          apiUrl={`/pm/notes/${noteToDelete?.id}`}
-          successMessage="Note deleted"
-          header="Delete Note"
-          description={`Are you sure to delete ${noteToDelete?.title}?`}
-          hasSuccessFunc={true}
-          onSuccess={refetch}
-        />
-      )}
-
-      {editFormIsOpen && (
-        <NewNoteSlider
-          isOpen={editFormIsOpen}
-          onClose={closeEditFormHandler}
-          noteData={selectedNote}
-          refresh={refetch}
-        />
-      )}
-
-      {newFormIsOpen && <NewNoteSlider isOpen={newFormIsOpen} onClose={closeNewFormHandler} refresh={refetch} />}
+      <ConfirmationModal
+        isOpen={deleteModalIsOpen}
+        toggle={toggleDeleteModal}
+        apiUrl={`/pm/notes/${noteToDelete?.id}`}
+        successMessage="Note deleted"
+        header="Delete Note"
+        description={`Are you sure to delete ${noteToDelete?.title}?`}
+        hasSuccessFunc={true}
+        onSuccess={refetch}
+      />
     </>
   );
 };
@@ -191,5 +170,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 13,
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });

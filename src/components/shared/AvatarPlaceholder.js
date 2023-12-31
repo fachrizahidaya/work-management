@@ -126,7 +126,7 @@ const AvatarPlaceholder = ({ image, name, email, size = "sm", borderRadius, isTh
         </>
       )}
 
-      {/* {isOpen && (
+      {isOpen && (
         <UserPreviewModal
           isOpen={isOpen}
           onClose={toggle}
@@ -136,7 +136,7 @@ const AvatarPlaceholder = ({ image, name, email, size = "sm", borderRadius, isTh
           stringToColor={stringToColor}
           userInitialGenerator={userInitialGenerator}
         />
-      )} */}
+      )}
     </>
   );
 };

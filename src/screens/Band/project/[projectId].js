@@ -37,6 +37,7 @@ const ProjectDetailScreen = ({ route }) => {
   const { projectId } = route.params;
   const [tabValue, setTabValue] = useState("comments");
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [isReady, setIsReady] = useState(false);
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
   const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
@@ -44,7 +45,10 @@ const ProjectDetailScreen = ({ route }) => {
   const editCheckAccess = useCheckAccess("update", "Projects");
 
   const tabs = useMemo(() => {
-    return [{ title: "comments" }, { title: "activity" }];
+    return [
+      { title: "comments", value: "comments" },
+      { title: "activity", value: "activity" },
+    ];
   }, []);
 
   const { data: projectData, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
@@ -114,7 +118,13 @@ const ProjectDetailScreen = ({ route }) => {
     };
   }, [projectId]);
 
-  return (
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 150);
+  }, []);
+
+  return isReady ? (
     <>
       <View style={styles.container}>
         <KeyboardAwareScrollView
@@ -320,6 +330,18 @@ const ProjectDetailScreen = ({ route }) => {
         description="Are you sure to delete this project?"
       />
     </>
+  ) : (
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: 13,
+          paddingHorizontal: 16,
+        },
+      ]}
+    >
+      <Text>Loading...</Text>
+    </View>
   );
 };
 

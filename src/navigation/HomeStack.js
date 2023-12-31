@@ -20,6 +20,9 @@ import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import ProjectForm from "../screens/Band/ProjectForm";
 import TaskForm from "../screens/Band/TaskForm";
+import ProjectScreen from "../screens/Chat/ProjectScreen";
+import ProjectDetail from "../screens/Chat/ProjectDetail";
+import TaskDetail from "../screens/Chat/TaskDetail";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
@@ -45,9 +48,7 @@ import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 import UserDetail from "../screens/Chat/UserDetail";
 import EditGroupProfile from "../screens/Chat/EditGroupProfile";
 import MediaScreen from "../screens/Chat/MediaScreen";
-import ProjectScreen from "../screens/Chat/ProjectScreen";
-import ProjectDetail from "../screens/Chat/ProjectDetail";
-import TaskDetail from "../screens/Chat/TaskDetail";
+import NoteForm from "../screens/Band/NoteForm";
 
 const Stack = createStackNavigator();
 
@@ -147,6 +148,8 @@ const HomeStack = () => {
       <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
 
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />

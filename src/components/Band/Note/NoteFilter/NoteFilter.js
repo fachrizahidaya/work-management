@@ -4,8 +4,10 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Icon, Input, Pressable } from "native-base";
+import { Pressable } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import Input from "../../../shared/Forms/Input";
 
 const NoteFilter = ({ data = [], setFilteredData }) => {
   let filteredArr = data;
@@ -49,22 +51,22 @@ const NoteFilter = ({ data = [], setFilteredData }) => {
   }, [formik.values, filteredArr]);
   return (
     <Input
-      w="100%"
-      size="md"
-      placeholder="Search note..."
+      placeHolder="Search note..."
+      formik={formik}
       value={formik.values.title}
+      fieldName="title"
       onChangeText={(value) => {
         formik.setFieldValue("title", value);
         formik.handleSubmit();
       }}
-      InputRightElement={
+      endAdornment={
         formik.values.title && (
           <Pressable
             onPress={() => {
               formik.resetForm();
             }}
           >
-            <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+            <MaterialCommunityIcons name="close" size={20} />
           </Pressable>
         )
       }
