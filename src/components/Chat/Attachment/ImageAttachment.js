@@ -1,20 +1,33 @@
-import { Box, Flex, Icon, Image, Pressable } from "native-base";
+import { View, Image, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ImageAttachment = ({ image, setImage }) => {
   return (
-    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-      <Flex flexDir="row-reverse">
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row-reverse" }}>
         <Pressable onPress={() => setImage(null)}>
-          <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
+          <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
-      </Flex>
-      <Box alignSelf="center">
+      </View>
+      <View style={{ alignSelf: "center" }}>
         <Image source={{ uri: image.uri }} style={{ width: 300, height: 300, borderRadius: 15 }} alt="image selected" />
-      </Box>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
 export default ImageAttachment;
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+});

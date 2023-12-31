@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Linking } from "react-native";
-import { Flex, Icon, Image, Pressable, Text } from "native-base";
+import { View, Text, Pressable, Image, Linking } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -48,13 +47,15 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
   return (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
-      gap={3}
-      p={2}
-      borderRadius={5}
-      backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
+        borderRadius: 5,
+        gap: 5,
+        padding: 5,
+      }}
     >
       <Image
         source={
@@ -68,34 +69,40 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             ? require(ppt)
             : null
         }
-        alignSelf="center"
-        h={8}
-        w={8}
-        resizeMode="cover"
+        style={{
+          height: 8,
+          width: 8,
+          alignSelf: "center",
+          resizeMode: "cover",
+        }}
         alt={`${file_type} format`}
       />
 
-      <Flex>
+      <View>
         <Text
-          width={160}
+          style={{
+            fontSize: 12,
+            fontWeight: "400",
+            color: !myMessage ? "#000000" : "#FFFFFF",
+            width: 160,
+            overflow: "hidden",
+          }}
           numberOfLines={2}
           overflow="hidden"
           ellipsizeMode="tail"
-          fontSize={12}
-          fontWeight={400}
-          color={!myMessage ? "#000000" : "#FFFFFF"}
         >
           {file_name}
         </Text>
-        <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+        <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
           {getFileExt()} • {file_size}
         </Text>
-      </Flex>
-      <Icon
-        onPress={() => attachmentDownloadHandler(file_path)}
-        as={<MaterialCommunityIcons name="download" />}
+      </View>
+
+      <MaterialCommunityIcons
+        name="download"
         color={!myMessage ? "#000000" : "#FFFFFF"}
-        size={5}
+        size={10}
+        onPress={() => attachmentDownloadHandler(file_path)}
       />
     </Pressable>
   );

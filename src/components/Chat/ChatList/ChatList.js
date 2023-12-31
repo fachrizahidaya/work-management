@@ -2,7 +2,8 @@ import { useCallback, useState, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex, Spinner } from "native-base";
+import { Spinner } from "native-base";
+import { View } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
@@ -74,7 +75,7 @@ const ChatList = ({
   );
 
   return (
-    <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
+    <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA", paddingHorizontal: 5 }}>
       <FlashList
         inverted
         ListFooterComponent={() => isLoading && <Spinner size="sm" />}
@@ -143,7 +144,7 @@ const ChatList = ({
           setBandAttachment={setBandAttachment}
         />
       )}
-    </Flex>
+    </View>
   );
 };
 

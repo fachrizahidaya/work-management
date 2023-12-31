@@ -1,8 +1,7 @@
 import { memo } from "react";
 import { useSelector } from "react-redux";
 
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
-import { Flex, Icon, Image, Pressable, Text } from "native-base";
+import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -155,22 +154,16 @@ const ChatBubble = ({
   });
 
   return (
-    <Flex
-      alignItems="flex-end"
-      gap={1}
-      mb={isGrouped ? 1 : 2}
-      px={2}
-      flexDirection={!myMessage ? "row" : "row-reverse"}
+    <View
+      style={{
+        flexDirection: !myMessage ? "row" : "row-reverse",
+        alignItems: "flex-end",
+        gap: 5,
+        marginBottom: isGrouped ? 3 : 5,
+      }}
     >
-      <Pressable
-        style={styles.iconContainer}
-        width={50}
-        alignItems="center"
-        justifyContent="center"
-        padding={3}
-        mr={myMessage ? 5 : null}
-      >
-        <Icon as={<MaterialIcons name="reply" />} />
+      <Pressable style={{ ...styles.iconContainer, marginRight: myMessage ? 5 : null }}>
+        <MaterialIcons name="reply" size={5} />
       </Pressable>
       {/* {type === "group" && !myMessage && image ? (
           <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
@@ -181,21 +174,28 @@ const ChatBubble = ({
       <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
-            maxWidth={300}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              maxWidth: 300,
+              borderRadius: 10,
+              paddingVertical: 3,
+              paddingHorizontal: 3,
+              backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
+              gap: 5,
+            }}
             onLongPress={() => {
               !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
             }}
             delayLongPress={200}
-            borderRadius={10}
-            display="flex"
-            justifyContent="center"
-            py={1.5}
-            px={1.5}
-            bgColor={isOptimistic ? "gray.500" : !myMessage ? "#FFFFFF" : "primary.600"}
-            gap={1}
           >
             {type === "group" && name && !myMessage && (
-              <Text fontSize={12} fontWeight={700} color={!myMessage ? "primary.600" : "#FFFFFF"}>
+              <Text
+                style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "primary.600" : "#FFFFFF" }}
+                fontSize={12}
+                fontWeight={700}
+                color={!myMessage ? "#377893" : "#FFFFFF"}
+              >
                 {name}
               </Text>
             )}
@@ -210,14 +210,16 @@ const ChatBubble = ({
                       <>
                         <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
                           <Image
-                            width={260}
-                            height={200}
-                            borderRadius={5}
+                            style={{
+                              width: 260,
+                              height200,
+                              borderRadius: 5,
+                              resizeMode: "contain",
+                            }}
                             source={{
                               uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
                             }}
                             alt="Chat Image"
-                            resizeMode="contain"
                             resizeMethod="auto"
                           />
                         </TouchableOpacity>
@@ -246,25 +248,27 @@ const ChatBubble = ({
               </>
             ) : null}
 
-            <Flex gap={2} flexDirection="row" alignItems="center" justifyContent="space-between">
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
               {!isDeleted ? (
-                <Text fontSize={14} fontWeight={400} color={!myMessage ? "#3F434A" : "#FFFFFF"} flexShrink={1}>
+                <Text
+                  style={{ flexShrink: 1, fontSize: 14, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}
+                >
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#f1f1f1">
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1" }}>
                   You have deleted this message
                 </Text>
               ) : !myMessage && isDeleted ? (
-                <Text fontSize={14} fontWeight={400} fontStyle="italic" color="#000000">
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#000000" }}>
                   This message has been deleted
                 </Text>
               ) : null}
 
-              <Text alignSelf="flex-end" fontSize={8} color={!myMessage ? "#8A9099" : "#FFFFFF"}>
+              <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>
                 {time}
               </Text>
-            </Flex>
+            </View>
           </Pressable>
         </Animated.View>
       </PanGestureHandler>
@@ -289,7 +293,7 @@ const ChatBubble = ({
             zIndex={-1}
           ></Box>
         )} */}
-    </Flex>
+    </View>
   );
 };
 
@@ -303,13 +307,7 @@ const styles = StyleSheet.create({
   coloredText: {
     color: "#72acdc",
   },
-  container: {
-    alignItems: "flex-end",
-    gap: 1,
-    // mb:isGrouped ? 1 : 2,
-    px: 2,
-    flexDirection: "row",
-  },
+
   taskContainer: {
     width: "100%",
     alignItems: "center",
@@ -334,5 +332,9 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    padding: 5,
   },
 });

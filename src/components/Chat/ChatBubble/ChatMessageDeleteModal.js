@@ -1,6 +1,7 @@
 import { Spinner } from "native-base";
 import { Dimensions, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";
+
 import Button from "../../shared/Forms/Button";
 
 const ChatMessageDeleteModal = ({
