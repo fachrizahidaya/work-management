@@ -62,6 +62,7 @@ const ChatRoom = () => {
 
   const clearChatScreenSheetRef = useRef(null);
   const menuAttachmentScreenSheetRef = useRef(null);
+  const menuHeaderScreenSheetRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -626,6 +627,7 @@ const ChatRoom = () => {
               chatRoomIsLoading={chatRoomIsLoading}
               deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
+              reference={menuHeaderScreenSheetRef}
             />
 
             <ChatList

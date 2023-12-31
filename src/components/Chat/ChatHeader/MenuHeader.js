@@ -1,6 +1,5 @@
-import { Flex, Icon, Menu, Pressable, Text } from "native-base";
-
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
 const MenuHeader = ({
   fileAttachment,
@@ -13,49 +12,47 @@ const MenuHeader = ({
   onUpdatePinHandler,
   roomId,
   isPinned,
+  reference,
 }) => {
   return (
-    <Flex flexDirection="row" alignItems="center">
-      <Menu
-        w={160}
-        mt={10}
-        trigger={(trigger) => {
-          return fileAttachment ? null : (
-            <Pressable {...trigger} mr={1}>
-              <Icon as={<MaterialIcons name="more-horiz" />} color="black" size="md" />
-            </Pressable>
-          );
-        }}
+    <ActionSheet ref={reference} onClose={reference.current?.hide()}>
+      {/* <TouchableOpacity style={styles.wrapper}>
+        <Text>Search</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        onPress={() => onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin")}
+        style={styles.wrapper}
       >
-        {/* <Menu.Item onPress={toggleSearch}>
-          <Text>Search</Text>
-        </Menu.Item> */}
-        <Menu.Item onPress={() => onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin")}>
-          <Text>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
-        </Menu.Item>
-
-        {type === "group" ? (
-          <>
-            {active_member === 1 ? (
-              <Menu.Item onPress={toggleExitModal}>
-                <Text>Exit Group</Text>
-              </Menu.Item>
-            ) : (
-              <Menu.Item onPress={toggleDeleteGroupModal}>
-                <Text>Delete Group</Text>
-              </Menu.Item>
-            )}
-          </>
-        ) : (
-          <>
-            <Menu.Item onPress={toggleDeleteModal}>
-              <Text>Delete Chat</Text>
-            </Menu.Item>
-          </>
-        )}
-      </Menu>
-    </Flex>
+        <Text>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+      </TouchableOpacity>
+      {type === "group" ? (
+        <>
+          {active_member === 1 ? (
+            <TouchableOpacity onPress={toggleExitModal} style={styles.wrapper}>
+              <Text>Exit Group</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={toggleDeleteGroupModal} style={styles.wrapper}>
+              <Text>Delete Group</Text>
+            </TouchableOpacity>
+          )}
+        </>
+      ) : (
+        <>
+          <TouchableOpacity onPress={toggleDeleteModal} style={styles.wrapper}>
+            <Text>Delete Chat</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </ActionSheet>
   );
 };
 
 export default MenuHeader;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+});

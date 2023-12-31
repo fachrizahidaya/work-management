@@ -1,33 +1,46 @@
-import { Flex, Icon, Pressable, Text } from "native-base";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ProjectTaskAttachmentPreview = ({ bandAttachment, setBandAttachment, bandAttachmentType }) => {
   return (
-    <Flex px={5} py={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between">
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text>{bandAttachment?.title}</Text>
         <Pressable onPress={() => setBandAttachment(null)}>
-          <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
+          <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
-      </Flex>
-      <Flex mt={100} justifyContent="center" alignItems="center">
+      </View>
+      <View style={{ alignItems: "center", justifyContent: "center", marginTop: 100 }}>
         {bandAttachmentType === "project" ? (
           <>
-            <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} size={100} />
+            <MaterialCommunityIcons name="lightning-bolt" size={100} color="#595f69" />
             <Text>{bandAttachment?.title}</Text>
             <Text>#{bandAttachment?.project_no}</Text>
           </>
         ) : (
           <>
-            <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} size={100} />
+            <MaterialCommunityIcons name="checkbox-marked-circle-outline" size={100} color="#595f69" />
             <Text>{bandAttachment?.title}</Text>
             <Text>#{bandAttachment?.task_no}</Text>
           </>
         )}
-      </Flex>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
 export default ProjectTaskAttachmentPreview;
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+});
