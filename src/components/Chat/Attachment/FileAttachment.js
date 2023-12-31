@@ -1,8 +1,10 @@
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const FileAttachment = ({ file, setFile }) => {
+  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
+
   /**
    * Convert byte into proper unit
    *
@@ -18,23 +20,56 @@ const FileAttachment = ({ file, setFile }) => {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   };
 
+  const formatMimeType = (type = "") => {
+    if (!type) return "Undefined";
+    const typeArr = type.split("/");
+    return typeArr.pop();
+  };
+
   return (
-    <Flex px={5} py={5} gap={5} bgColor="white" position="absolute" top={0} bottom={0} left={0} right={0}>
-      <Flex flexDirection="row" justifyContent="space-between">
-        <Text numberOfLines={1} width={300} overflow="hidden">
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ width: 300, overflow: "hidden" }} numberOfLines={1} ellipsizeMode="tail">
           {file.name}
         </Text>
         <Pressable onPress={() => setFile(null)}>
-          <Icon as={<MaterialCommunityIcons name="close" />} size={5} />
+          <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
-      </Flex>
-      <Box alignItems="center">
-        <Icon as={<MaterialCommunityIcons name="file-pdf-box" />} size={250} />
+      </View>
+      <View alignItems="center">
+        <MaterialCommunityIcons
+          name={
+            formatMimeType(file.type) === "pdf"
+              ? "file-pdf-box"
+              : formatMimeType(file.type) === "pptx" || formatMimeType(file.type) === "ppt"
+              ? "file-powerpoint-box"
+              : formatMimeType(file.type) === "docx" || formatMimeType(file.type) === "doc"
+              ? "file-word-box"
+              : formatMimeType(file.type) === "xlsx" || formatMimeType(file.type) === "xls"
+              ? "file-excel-box"
+              : "text-box"
+          }
+          size={250}
+          color="#595f69"
+        />
         <Text>No Preview Available</Text>
         <Text>{formatBytes(file.size)}</Text>
-      </Box>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
 export default FileAttachment;
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+});

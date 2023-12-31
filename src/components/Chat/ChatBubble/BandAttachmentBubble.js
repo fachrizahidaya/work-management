@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Icon, Pressable, Text } from "native-base";
+import { View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -18,38 +18,34 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
   return (
     <Pressable
       onPress={() => redirectPage(id, type)}
-      gap={1}
-      px={2}
-      py={2}
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="flex-start"
-      borderRadius={5}
-      backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
+        borderRadius: 5,
+        gap: 5,
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+      }}
     >
       {type === "Project" && (
-        <Icon
-          as={<MaterialCommunityIcons name="lightning-bolt" />}
-          size={5}
-          color={!myMessage ? "#000000" : "#FFFFFF"}
-        />
+        <MaterialCommunityIcons name="lightning-bolt" size={10} color={!myMessage ? "#000000" : "#FFFFFF"} />
       )}
       {type === "Task" && (
-        <Icon
-          as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
-          size={5}
+        <MaterialCommunityIcons
+          name="checkbox-marked-circle-outline"
+          size={10}
           color={!myMessage ? "#000000" : "#FFFFFF"}
         />
       )}
 
-      <Flex>
-        <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+      <View>
+        <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
           {title.length > 50 ? title.slice(0, 30) + "..." : title}
         </Text>
-        <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-          #{number_id}
-        </Text>
-      </Flex>
+        <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>#{number_id}</Text>
+      </View>
     </Pressable>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Flex, Icon, Text } from "native-base";
+import { View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -27,63 +27,65 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
   const renderMessage = (attachment_type) => {
     if (attachment_type === "image") {
       return (
-        <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-            <Icon
-              as={<MaterialCommunityIcons name="image" />}
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <MaterialCommunityIcons
+              name="image"
               color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
             />
+
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
           </Text>
-        </Flex>
+        </View>
       );
     } else if (attachment_type === "document") {
       return (
-        <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-            <Icon
-              as={<MaterialCommunityIcons name="file-outline" />}
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <MaterialCommunityIcons
+              name="file-outline"
               color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
             />
+
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
-        </Flex>
+        </View>
       );
     } else {
       if (message?.project_id) {
         return (
-          <Flex alignItems="flex-start" flexDirection="row">
-            <Text fontSize={12} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
-              <Icon
-                as={<MaterialCommunityIcons name="lightning-bolt" />}
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+              <MaterialCommunityIcons
+                name="lightning-bolt"
                 color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
               />
+
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
-          </Flex>
+          </View>
         );
       } else if (message?.task_id) {
         return (
-          <Flex alignItems="flex-start" flexDirection="row">
-            <Text
-              fontSize={12}
-              fontWeight={400}
-              color={!myMessage ? "#000000" : type === "group" ? "#000000" : "#FFFFFF"}
-            >
-              <Icon
-                as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />}
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+              <MaterialCommunityIcons
+                name="checkbox-marked-circle-outline"
                 color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
               />
+
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
-          </Flex>
+          </View>
         );
       } else {
         return (
           <Text
-            fontSize={12}
-            fontWeight={400}
-            color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#9E9E9E"}
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: !myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#9E9E9E",
+            }}
           >
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
@@ -101,7 +103,9 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
   return (
     <>
       {message?.delete_for_everyone ? (
-        <Text fontSize={12} fontWeight={400} color={!myMessage ? "black" : "white"} fontStyle="italic">
+        <Text
+          style={{ fontSize: 12, fontWeight: "400", fontStyle: "italic", color: !myMessage ? "#000000" : "#FFFFFF" }}
+        >
           Message has been deleted
         </Text>
       ) : (
