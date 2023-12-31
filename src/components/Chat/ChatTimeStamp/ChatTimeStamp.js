@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 const isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
 
-import { Text } from "native-base";
+import { Text } from "react-native";
 
 const ChatTimeStamp = ({ time, timestamp, useDay }) => {
   const [currentTimestamp, setCurrentTimestamp] = useState(null);
@@ -33,7 +33,7 @@ const ChatTimeStamp = ({ time, timestamp, useDay }) => {
     }
   };
 
-  return currentTimestamp && <Text fontSize={12}>{formatTimestamp()}</Text>;
+  return currentTimestamp && <Text style={{ fontSize: 12 }}>{formatTimestamp()}</Text>;
 };
 
 export default ChatTimeStamp;

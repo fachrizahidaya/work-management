@@ -1,7 +1,8 @@
 import { Spinner } from "native-base";
 import { Text, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ActionSheet from "react-native-actions-sheet";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, reference }) => {
   return (

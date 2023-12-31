@@ -34,6 +34,7 @@ const ChatHeader = ({
   toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
+  reference,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -67,6 +68,7 @@ const ChatHeader = ({
       <View
         style={{
           flexDirection: "row",
+          alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
           padding: 20,
@@ -133,6 +135,9 @@ const ChatHeader = ({
             </View>
           </Pressable>
         </View>
+        <Pressable onPress={() => reference.current?.show()}>
+          <MaterialIcons name="more-horiz" size={20} color="#000000" />
+        </Pressable>
 
         <MenuHeader
           fileAttachment={fileAttachment}
@@ -146,6 +151,7 @@ const ChatHeader = ({
           onUpdatePinHandler={onUpdatePinHandler}
           roomId={roomId}
           isPinned={isPinned}
+          reference={reference}
         />
       </View>
 

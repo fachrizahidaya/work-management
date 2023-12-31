@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Flex, Icon, Text } from "native-base";
+import { Flex, Icon } from "native-base";
+import { View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -27,44 +28,44 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
   const renderMessage = (attachment_type) => {
     if (attachment_type === "image") {
       return (
-        <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color="#000000">
-            <Icon as={<MaterialCommunityIcons name="image" />} color="#000000" />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
+            <MaterialCommunityIcons name="image" color="#000000" />
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
           </Text>
-        </Flex>
+        </View>
       );
     } else if (attachment_type === "document") {
       return (
-        <Flex alignItems="flex-start" flexDirection="row">
-          <Text fontSize={12} fontWeight={400} color="#000000">
-            <Icon as={<MaterialCommunityIcons name="file-outline" />} color="#000000" />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
+            <MaterialCommunityIcons name="file-outline" color="#000000" />
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
-        </Flex>
+        </View>
       );
     } else {
       if (message?.project_id) {
         return (
-          <Flex alignItems="flex-start" flexDirection="row">
-            <Text fontSize={12} fontWeight={400} color="#000000">
-              <Icon as={<MaterialCommunityIcons name="lightning-bolt" />} color="#000000" />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
+              <MaterialCommunityIcons name="lightning-bolt" color="#000000" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
-          </Flex>
+          </View>
         );
       } else if (message?.task_id) {
         return (
-          <Flex alignItems="flex-start" flexDirection="row">
-            <Text fontSize={12} fontWeight={400} color="#000000">
-              <Icon as={<MaterialCommunityIcons name="checkbox-marked-circle-outline" />} color="#000000" />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
+              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#000000" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
-          </Flex>
+          </View>
         );
       } else {
         return (
-          <Text fontSize={12} fontWeight={400} color="#3F434A">
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
         );

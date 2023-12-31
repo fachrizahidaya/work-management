@@ -193,7 +193,7 @@ const ContactListItem = ({
                       <View
                         style={{
                           flex: 1,
-                          flexDirection: "row-reverse",
+                          flexDirection: "row",
                           alignItems: "center",
                           justifyContent: "space-between",
                         }}
