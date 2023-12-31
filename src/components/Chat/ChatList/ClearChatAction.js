@@ -5,6 +5,8 @@ import ActionSheet from "react-native-actions-sheet";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ActionSheet from "react-native-actions-sheet";
 
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, reference }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()}>
