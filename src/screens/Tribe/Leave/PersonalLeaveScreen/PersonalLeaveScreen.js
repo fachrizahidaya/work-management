@@ -1,23 +1,23 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, Flex, Image, Skeleton, Text, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
-import { useFetch } from "../../../hooks/useFetch";
-import PageHeader from "../../../components/shared/PageHeader";
-import useCheckAccess from "../../../hooks/useCheckAccess";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import LeaveRequestList from "../../../components/Tribe/Leave/LeaveRequestList";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
-import CancelAction from "../../../components/Tribe/Leave/CancelAction";
+import Button from "../../../../components/shared/Forms/Button";
+import { useFetch } from "../../../../hooks/useFetch";
+import PageHeader from "../../../../components/shared/PageHeader";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import CancelAction from "../../../../components/Tribe/Leave/PersonalLeaveRequest/CancelAction";
 
-const LeaveScreen = () => {
+const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
   const [pendingList, setPendingList] = useState([]);
   const [reloadPending, setReloadPending] = useState(false);
   const [approvedList, setApprovedList] = useState([]);
@@ -26,10 +26,12 @@ const LeaveScreen = () => {
   const [reloadRejected, setReloadRejected] = useState(false);
   const [tabValue, setTabValue] = useState("pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageRejected, setCurrentPageRejected] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
+
+  const cancleScreenSheetRef = useRef(null);
 
   const navigation = useNavigation();
 
@@ -37,34 +39,23 @@ const LeaveScreen = () => {
     return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
   }, []);
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPage(1);
-  }, []);
-
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 20,
+    limit: 10,
     status: "Pending",
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
-    limit: 20,
+    limit: 10,
     status: "Approved",
   };
 
   const fetchMoreRejectedParameters = {
-    page: currentPage,
-    limit: 20,
+    page: currentPageRejected,
+    limit: 10,
     status: "Rejected",
   };
 
@@ -72,6 +63,7 @@ const LeaveScreen = () => {
     data: pendingLeaveRequest,
     refetch: refetchPendingLeaveRequest,
     isFetching: pendingLeaveRequestIsFetching,
+    isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "pending" && "/hr/leave-requests/personal",
     [currentPagePending, reloadPending],
@@ -82,6 +74,7 @@ const LeaveScreen = () => {
     data: approvedLeaveRequest,
     refetch: refetchApprovedLeaveRequest,
     isFetching: approvedLeaveRequestIsFetching,
+    isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "approved" && "/hr/leave-requests/personal",
     [currentPageApproved, reloadApproved],
@@ -95,18 +88,11 @@ const LeaveScreen = () => {
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "rejected" && "/hr/leave-requests/personal",
-    [currentPage, reloadRejected],
+    [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
 
-  const {
-    data: personalLeaveRequest,
-    refetch: refetchPersonalLeaveRequest,
-    isFetching: personalLeaveRequestIsFetching,
-    isLoading: personalLeaveRequestIsLoading,
-  } = useFetch("/hr/leave-requests/personal");
-
-  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
+  const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
@@ -123,26 +109,36 @@ const LeaveScreen = () => {
   };
 
   const fetchMoreRejected = () => {
-    if (currentPage < rejectedLeaveRequest?.data?.last_page) {
-      setCurrentPage(currentPage + 1);
+    if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
+      setCurrentPageRejected(currentPageRejected + 1);
     }
   };
 
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
-    toggleAction();
+    cancleScreenSheetRef.current?.show();
   };
 
   const closeSelectedLeaveHandler = () => {
     setSelectedData(null);
-    toggleAction();
+    cancleScreenSheetRef.current?.hide();
   };
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setPendingList([]);
+    setApprovedList([]);
+    setRejectedList([]);
+    setCurrentPagePending(1);
+    setCurrentPageApproved(1);
+    setCurrentPageRejected(1);
+  }, []);
 
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data?.length) {
       setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data, pendingLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
@@ -159,20 +155,21 @@ const LeaveScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Leave Request" backButton={false} />
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
-            <Button onPress={() => navigation.navigate("Team Leave Request")} size="sm">
-              My Team
-            </Button>
+            <Button
+              onPress={() => navigation.navigate("Team Leave Request")}
+              padding={5}
+              children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}> My Team</Text>}
+            />
           )}
-        </Flex>
+        </View>
 
         <>
           {/* Content here */}
           <LeaveRequestList
-            refetchProfile={refetchProfile}
             onSelect={openSelectedLeaveHandler}
             onDeselect={closeSelectedLeaveHandler}
             pendingList={pendingList}
@@ -184,8 +181,8 @@ const LeaveScreen = () => {
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
+            hasBeenScrolled={hasBeenScrolledRejected}
+            setHasBeenScrolled={setHasBeenScrolledRejected}
             hasBeenScrolledPending={hasBeenScrolledPending}
             setHasBeenScrolledPending={setHasBeenScrolledPending}
             hasBeenScrolledApproved={hasBeenScrolledApproved}
@@ -193,6 +190,8 @@ const LeaveScreen = () => {
             fetchMorePending={fetchMorePending}
             fetchMoreApproved={fetchMoreApproved}
             fetchMoreRejected={fetchMoreRejected}
+            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
             rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
             tabValue={tabValue}
             setTabValue={setTabValue}
@@ -202,20 +201,19 @@ const LeaveScreen = () => {
         </>
       </SafeAreaView>
       <CancelAction
-        actionIsOpen={actionIsOpen}
         onDeselect={closeSelectedLeaveHandler}
         toggleCancelModal={toggleCancelModal}
+        reference={cancleScreenSheetRef}
       />
       <ConfirmationModal
         isOpen={cancelModalIsOpen}
         toggle={toggleCancelModal}
         apiUrl={`/hr/leave-requests/${selectedData?.id}/cancel`}
-        hasSuccessFunc={true}
         header="Cancel Leave Request"
+        hasSuccessFunc={true}
         onSuccess={() => {
-          toggleAction();
-          refetchPersonalLeaveRequest();
-          refetchProfile();
+          cancleScreenSheetRef.current?.hide();
+          refetchPendingLeaveRequest();
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"
@@ -226,7 +224,7 @@ const LeaveScreen = () => {
   );
 };
 
-export default LeaveScreen;
+export default PersonalLeaveScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -239,5 +237,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
 });

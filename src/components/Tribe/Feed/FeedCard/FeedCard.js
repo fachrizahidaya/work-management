@@ -2,11 +2,10 @@ import { memo, useCallback } from "react";
 
 import { Clipboard, FlatList, Linking, StyleSheet, View } from "react-native";
 import { Spinner } from "native-base";
-import { FlashList } from "@shopify/flash-list";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 
-import axiosInstance from "../../../config/api";
+import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
 
 const FeedCard = ({
@@ -37,7 +36,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
+      // refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -99,7 +98,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

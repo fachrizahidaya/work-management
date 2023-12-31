@@ -1,31 +1,42 @@
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Flex, Image, Text, VStack } from "native-base";
+import { useNavigation } from "@react-navigation/core";
+
+import { SafeAreaView, StyleSheet, View, Text, Image, Linking } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../hooks/useFetch";
 import PageHeader from "../../components/shared/PageHeader";
-import EmployeeLeaveDashboard from "../../components/Tribe/Information/EmployeeLeaveDashboard";
-import EmployeeInformation from "../../components/Tribe/Information/EmployeeInformation";
-import SupervisorInformation from "../../components/Tribe/Information/SupervisorInformation";
+import EmployeeLeaveDashboard from "../../components/Tribe/MyInformation/EmployeeLeaveDashboard";
+import EmployeeInformation from "../../components/Tribe/MyInformation/EmployeeInformation";
+import SupervisorInformation from "../../components/Tribe/MyInformation/SupervisorInformation";
 
-const InformationScreen = () => {
+const MyInformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
+
+  const navigation = useNavigation();
+
+  const handleCallPress = (phone) => {
+    Linking.openURL(phone).catch((err) => console.log(err));
+  };
 
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex style={styles.header} py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Information" backButton={false} />
-        </Flex>
+        </View>
 
         <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
-          <Flex px={3} flex={1} gap={5} py={5}>
+          <View style={styles.content}>
             {/* Content here */}
             {!profile?.data ? (
-              <VStack space={2} alignItems="center" justifyContent="center">
-                <Image source={require("../../assets/vectors/empty.png")} resizeMode="contain" size="2xl" alt="empty" />
+              <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+                <Image
+                  source={require("../../assets/vectors/empty.png")}
+                  style={{ width: 300, height: 300, resizeMode: "contain" }}
+                  alt="empty"
+                />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             ) : (
               <>
                 <EmployeeLeaveDashboard
@@ -41,11 +52,9 @@ const InformationScreen = () => {
                   email={profile?.data?.email}
                   phone={profile?.data?.phone_number}
                   image={profile?.data?.image}
-                  refetch={refetchProfile}
+                  navigation={navigation}
                 />
-                <Text fontSize={16} fontWeight={500} px={3}>
-                  My Supervisor
-                </Text>
+                <Text style={{ fontSize: 16, fontWeight: "500", paddingHorizontal: 10 }}>My Supervisor</Text>
                 <SupervisorInformation
                   supervisorId={profile?.data?.supervisor_employee_id}
                   supervisorName={profile?.data?.supervisor_name}
@@ -55,17 +64,19 @@ const InformationScreen = () => {
                   supervisorPosition={profile?.data?.supervisor_position}
                   refetch={refetchProfile}
                   id={profile?.data?.id}
+                  navigation={navigation}
+                  onClickCall={handleCallPress}
                 />
               </>
             )}
-          </Flex>
+          </View>
         </ScrollView>
       </SafeAreaView>
     </>
   );
 };
 
-export default InformationScreen;
+export default MyInformationScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -78,5 +89,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  content: {
+    paddingHorizontal: 15,
+    flex: 1,
+    gap: 20,
+    paddingVertical: 20,
   },
 });

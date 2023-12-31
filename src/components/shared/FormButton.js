@@ -15,6 +15,7 @@ const FormButton = ({
   variant,
   style,
   borderRadius,
+  padding,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -44,6 +45,7 @@ const FormButton = ({
           borderWidth: variant === "dashed" || variant === "outline" ? 1 : 0,
           borderStyle: variant === "dashed" ? "dashed" : "solid",
           borderColor: variant === "dashed" || variant === "outline" ? "#E8E9EB" : "white",
+          padding: padding ? padding : null,
         },
       ]}
       disabled={disabled || isLoading}

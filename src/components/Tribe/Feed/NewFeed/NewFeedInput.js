@@ -55,7 +55,7 @@ const NewFeedInput = ({ employees, formik }) => {
             renderSuggestions: renderSuggestions,
           },
         ]}
-        placeholder="Type here..."
+        placeholder="Type something..."
         style={{ padding: 12 }}
       />
     </>

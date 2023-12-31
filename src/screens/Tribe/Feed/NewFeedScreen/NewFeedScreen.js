@@ -7,13 +7,14 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Icon, Button } from "native-base";
+import { Icon } from "native-base";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
 import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import Button from "../../../../components/shared/Forms/Button";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
@@ -30,6 +31,8 @@ const NewFeedScreen = ({ route }) => {
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+
+  const postActionScreenSheetRef = useRef(null);
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
@@ -55,46 +58,6 @@ const NewFeedScreen = ({ route }) => {
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
   /**
-   * Create a new post handler
-   */
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      content: "",
-      type: selectedOption || "Public",
-      end_date: "",
-    },
-    validationSchema: yup.object().shape({
-      content: yup.string().required("Content is required"),
-    }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      const formData = new FormData();
-      for (let key in values) {
-        if (key === "content") {
-          const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
-          const modifiedContent = values[key].replace(mentionRegex, "@$1");
-          formData.append(key, modifiedContent);
-        } else {
-          formData.append(key, values[key]);
-        }
-      }
-
-      formData.append("file", image);
-
-      if (values.type === "Public") {
-        postSubmitHandler(formData, setSubmitting, setStatus);
-      } else {
-        if (values.end_date) {
-          postSubmitHandler(formData, setSubmitting, setStatus);
-        } else {
-          throw new Error("For Announcement type, end date is required");
-        }
-      }
-    },
-  });
-
-  /**
    * Submit a post handler
    * @param {*} form
    * @param {*} setSubmitting
@@ -107,11 +70,10 @@ const NewFeedScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-      postRefetchHandler();
-      setScrollNewMessage(!scrollNewMessage);
       setSubmitting(false);
       setStatus("success");
-
+      setScrollNewMessage(!scrollNewMessage);
+      postRefetchHandler();
       Toast.show({
         type: "success",
         text1: "Posted successfully!",
@@ -121,7 +83,6 @@ const NewFeedScreen = ({ route }) => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -148,6 +109,46 @@ const NewFeedScreen = ({ route }) => {
     setSelectedOption("Announcement");
     formik.setFieldValue("type", "Announcement");
   };
+
+  /**
+   * Create a new post handler
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      content: "",
+      type: selectedOption || "Public",
+      end_date: "",
+    },
+    // validationSchema: yup.object().shape({
+    //   content: yup.string().required("Content is required"),
+    // }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      const formData = new FormData();
+      for (let key in values) {
+        if (key === "content") {
+          const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+          const modifiedContent = values[key].replace(mentionRegex, "@$1");
+          formData.append(key, modifiedContent);
+        } else {
+          formData.append(key, values[key]);
+        }
+      }
+
+      formData.append("file", image);
+
+      if (values.type === "Public") {
+        postSubmitHandler(formData, setSubmitting, setStatus);
+      } else {
+        if (values.end_date) {
+          postSubmitHandler(formData, setSubmitting, setStatus);
+        } else {
+          throw new Error("For Announcement type, end date is required");
+        }
+      }
+    },
+  });
 
   /**
    * Toggle to Public Handler
@@ -242,21 +243,24 @@ const NewFeedScreen = ({ route }) => {
               <View style={{ gap: 5 }}>
                 <Button
                   disabled={checkAccess ? false : true}
-                  height={25}
-                  onPress={() => togglePostType()}
-                  borderRadius="full"
+                  padding={10}
+                  height={30}
+                  backgroundColor="#FFFFFF"
+                  onPress={() => postActionScreenSheetRef.current?.show()}
+                  borderRadius={15}
                   variant="outline"
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
-                    {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
-                  </View>
-                </Button>
+                  children={
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
+                      {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
+                    </View>
+                  }
+                />
                 {formik.values.type === "Public" ? (
                   ""
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
+                    <MaterialCommunityIcons name="clock-time-three-outline" />
                     <Text style={{ fontSize: 12 }}>
                       {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                     </Text>
@@ -284,13 +288,13 @@ const NewFeedScreen = ({ route }) => {
             />
             <PostAction
               publicToggleHandler={publicToggleHandler}
-              postTypeIsOpen={postTypeIsOpen}
               postTypeIsClose={postTypeIsClose}
               announcementToggleHandler={announcementToggleHandler}
               isAnnouncementSelected={isAnnouncementSelected}
               dateShown={dateShown}
               endDateAnnouncementHandler={endDateAnnouncementHandler}
               formik={formik}
+              reference={postActionScreenSheetRef}
             />
           </View>
         ) : (

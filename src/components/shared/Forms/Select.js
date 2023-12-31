@@ -5,7 +5,7 @@ import { SheetManager } from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName = "" }) => {
+const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName = "", defaultValue, value1 }) => {
   const onPressValue = (value) => {
     onChange(value);
     SheetManager.hide("select-sheet");
@@ -25,7 +25,7 @@ const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName 
           })
         }
       >
-        <Text>{value ? value : placeHolder}</Text>
+        <Text>{defaultValue ? defaultValue : value1 ? value1 : value ? value : placeHolder}</Text>
 
         <MaterialCommunityIcons name="chevron-down" style={styles.dropdownIcon} size={20} />
       </TouchableOpacity>

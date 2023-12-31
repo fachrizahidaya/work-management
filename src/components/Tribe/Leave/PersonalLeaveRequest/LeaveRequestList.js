@@ -1,11 +1,10 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Box, Flex, Image, Spinner, Text, VStack } from "native-base";
-import { StyleSheet } from "react-native";
+import { Spinner } from "native-base";
+import { StyleSheet, View, Text, Image, FlatList } from "react-native";
 
-import Tabs from "../../shared/Tabs";
-import { FlashList } from "@shopify/flash-list";
+import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
 
 const LeaveRequestList = ({
@@ -24,6 +23,8 @@ const LeaveRequestList = ({
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
+  pendingLeaveRequestIsLoading,
+  approvedLeaveRequestIsLoading,
   rejectedLeaveRequestIsLoading,
   tabValue,
   tabs,
@@ -37,11 +38,11 @@ const LeaveRequestList = ({
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
-      <Flex px={3} style={styles.container}>
+      <View style={styles.container}>
         {tabValue === "pending" ? (
-          pendingList.length > 0 ? (
-            <Box flex={1}>
-              <FlashList
+          pendingList?.length > 0 ? (
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlatList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
@@ -57,57 +58,8 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                renderItem={({ item, index }) => (
-                  <LeaveRequestItem
-                    item={item}
-                    key={index}
-                    id={item?.id}
-                    leave_name={item?.leave_name}
-                    reason={item?.reason}
-                    days={item?.days}
-                    begin_date={item?.begin_date}
-                    end_date={item?.end_date}
-                    status={item?.status}
-                    onSelect={onSelect}
-                  />
-                )}
-              />
-            </Box>
-          ) : (
-            <ScrollView
-              refreshControl={
-                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
-              }
-            >
-              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-                <Image
-                  source={require("../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  resizeMode="contain"
-                  size="2xl"
-                />
-                <Text>No Data</Text>
-              </VStack>
-            </ScrollView>
-          )
-        ) : tabValue === "approved" ? (
-          approvedList.length > 0 ? (
-            <Box flex={1}>
-              <FlashList
-                data={approvedList}
-                onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
-                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
-                keyExtractor={(item, index) => index}
-                estimatedItemSize={70}
-                refreshing={true}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={approvedLeaveRequestIsFetching}
-                    onRefresh={() => {
-                      refetchApprovedLeaveRequest();
-                    }}
-                  />
+                ListFooterComponent={() =>
+                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -124,27 +76,80 @@ const LeaveRequestList = ({
                   />
                 )}
               />
-            </Box>
+            </View>
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
+              }
+            >
+              <View style={styles.content}>
+                <Image
+                  source={require("../../../../assets/vectors/empty.png")}
+                  alt="empty"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
+                />
+                <Text>No Data</Text>
+              </View>
+            </ScrollView>
+          )
+        ) : tabValue === "approved" ? (
+          approvedList?.length > 0 ? (
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlatList
+                data={approvedList}
+                onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={70}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={approvedLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchApprovedLeaveRequest();
+                    }}
+                  />
+                }
+                ListFooterComponent={() =>
+                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
+                }
+                renderItem={({ item, index }) => (
+                  <LeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    onSelect={onSelect}
+                  />
+                )}
+              />
+            </View>
           ) : (
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
               }
             >
-              <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+              <View style={styles.content}>
                 <Image
-                  source={require("../../../assets/vectors/empty.png")}
+                  source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
-                  resizeMode="contain"
-                  size="2xl"
+                  style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
                 <Text>No Data</Text>
-              </VStack>
+              </View>
             </ScrollView>
           )
-        ) : rejectedList.length > 0 ? (
-          <Box flex={1}>
-            <FlashList
+        ) : rejectedList?.length > 0 ? (
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <FlatList
               removeClippedSubviews={true}
               data={rejectedList}
               onEndReachedThreshold={0.1}
@@ -154,7 +159,7 @@ const LeaveRequestList = ({
               estimatedItemSize={70}
               refreshing={true}
               ListFooterComponent={() =>
-                rejectedLeaveRequestIsLoading && hasBeenScrolled && <Spinner color="primary.600" />
+                rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
               }
               refreshControl={
                 <RefreshControl
@@ -179,25 +184,24 @@ const LeaveRequestList = ({
                 />
               )}
             />
-          </Box>
+          </View>
         ) : (
           <ScrollView
             refreshControl={
               <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
             }
           >
-            <VStack mt={20} space={2} alignItems="center" justifyContent="center">
+            <View style={styles.content}>
               <Image
-                source={require("../../../assets/vectors/empty.png")}
+                source={require("../../../../assets/vectors/empty.png")}
                 alt="empty"
-                resizeMode="contain"
-                size="2xl"
+                style={{ height: 250, width: 250, resizeMode: "contain" }}
               />
               <Text>No Data</Text>
-            </VStack>
+            </View>
           </ScrollView>
         )}
-      </Flex>
+      </View>
     </>
   );
 };
@@ -209,5 +213,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     flex: 1,
     flexDirection: "column",
+    paddingHorizontal: 5,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

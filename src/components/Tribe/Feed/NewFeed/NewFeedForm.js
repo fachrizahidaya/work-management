@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Icon, Spinner } from "native-base";
+import { Spinner } from "native-base";
 import { StyleSheet, View, Pressable, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -20,7 +20,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
             <View style={{ alignSelf: "center" }}>
               <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
               <Pressable style={styles.close} onPress={() => setImage(null)}>
-                <Icon as={<MaterialCommunityIcons name="close" />} size={5} color="#FFFFFF" />
+                <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>
           ) : null}
@@ -29,8 +29,8 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
       <View style={styles.action}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Pressable onPress={pickImageHandler}>
-            <Icon
-              as={<MaterialCommunityIcons name="attachment" />}
+            <MaterialCommunityIcons
+              name="attachment"
               size={25}
               color="#377893"
               style={{ transform: [{ rotate: "-35deg" }] }}
@@ -48,12 +48,13 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
                   formik.handleSubmit();
                 }
           }
+          disabled={formik.values.content === "" ? true : false}
         >
           {isLoading ? (
             <Spinner color="#FFFFFF" />
           ) : (
-            <Icon
-              as={<MaterialCommunityIcons name={formik.values.type === "Public" ? "send" : "bullhorn-variant"} />}
+            <MaterialCommunityIcons
+              name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}
               size={25}
               color="#FFFFFF"
               style={{ transform: [{ rotate: "-45deg" }] }}

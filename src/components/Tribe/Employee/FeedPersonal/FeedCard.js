@@ -1,17 +1,16 @@
 import { memo } from "react";
 
 import { Spinner } from "native-base";
-import { Linking, Clipboard, StyleSheet, View, Text, Image } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
-import FeedCardItem from "../FeedPersonal/FeedCardItem";
-import EmployeeContact from "../Employee/EmployeeContact";
-import EmployeeProfile from "../Employee/EmployeeProfile";
-import EmployeeSelfProfile from "../Employee/EmployeeSelfProfile";
-import EmployeeTeammates from "../Employee/EmployeeTeammates";
-import axiosInstance from "../../../config/api";
+import axiosInstance from "../../../../config/api";
+import FeedCardItem from "./FeedCardItem";
+import EmployeeContact from "../EmployeeContact";
+import EmployeeProfile from "../EmployeeProfile";
+import EmployeeSelfProfile from "../EmployeeSelfProfile";
+import EmployeeTeammates from "../EmployeeTeammates";
 
 const FeedCard = ({
   posts,
@@ -34,6 +33,7 @@ const FeedCard = ({
   openSelectedPersonalPost,
   employeeUsername,
   userSelector,
+  reference,
 }) => {
   /**
    * Like a Post handler
@@ -43,7 +43,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPersonalPost();
+      // refetchPersonalPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -83,7 +83,7 @@ const FeedCard = ({
 
   return (
     <View style={styles.container}>
-      <FlashList
+      <FlatList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
@@ -91,7 +91,7 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
-        ListFooterComponent={() => personalPostIsFetching && <Spinner color="primary.600" />}
+        ListFooterComponent={() => personalPostIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}
@@ -103,7 +103,7 @@ const FeedCard = ({
         // Employee Information
         ListHeaderComponent={
           <View>
-            <Image source={require("../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
+            <Image source={require("../../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
             {/* When the employee id is not equal, it will appear the contacts of employee */}
             <View style={styles.information}>
               {userSelector?.id !== employee?.data?.user_id ? (
@@ -111,17 +111,23 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
+                  <EmployeeProfile
+                    employee={employee}
+                    toggleTeammates={toggleTeammates}
+                    teammates={teammates}
+                    reference={reference}
+                  />
                 </>
               ) : (
-                <EmployeeSelfProfile employee={employee} toggleTeammates={toggleTeammates} teammates={teammates} />
+                <EmployeeSelfProfile
+                  employee={employee}
+                  toggleTeammates={toggleTeammates}
+                  teammates={teammates}
+                  reference={reference}
+                />
               )}
 
-              <EmployeeTeammates
-                teammatesIsOpen={teammatesIsOpen}
-                toggleTeammates={toggleTeammates}
-                teammates={teammates}
-              />
+              <EmployeeTeammates teammatesIsOpen={teammatesIsOpen} teammates={teammates} reference={reference} />
             </View>
           </View>
         }
@@ -153,7 +159,6 @@ const FeedCard = ({
                 loggedEmployeeId={loggedEmployeeId}
                 loggedEmployeeImage={loggedEmployeeImage}
                 onCommentToggle={onCommentToggle}
-                refetchPersonalPost={refetchPersonalPost}
                 forceRerenderPersonal={forceRerender}
                 setForceRerenderPersonal={setForceRerender}
                 toggleFullScreen={toggleFullScreen}

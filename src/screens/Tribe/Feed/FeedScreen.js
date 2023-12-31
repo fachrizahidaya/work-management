@@ -3,14 +3,13 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
-import { Icon } from "native-base";
 import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import FeedCard from "../../../components/Tribe/Feed/FeedCard";
+import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 
@@ -31,6 +30,8 @@ const FeedScreen = () => {
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const commentScreenSheetRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -125,14 +126,14 @@ const FeedScreen = () => {
    * Action sheet for comment handler
    */
   const commentsOpenHandler = (post_id) => {
+    commentScreenSheetRef.current?.show();
     setPostId(post_id);
-    setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
 
   const commentsCloseHandler = () => {
-    setCommentsOpen(false);
+    commentScreenSheetRef.current?.hide();
     setPostId(null);
   };
 
@@ -240,7 +241,7 @@ const FeedScreen = () => {
             });
           }}
         >
-          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
+          <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
         </Pressable>
 
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
@@ -266,25 +267,24 @@ const FeedScreen = () => {
               employeeUsername={employeeUsername}
               navigation={navigation}
             />
-            {commentsOpen && (
-              <FeedComment
-                postId={postId}
-                loggedEmployeeName={userSelector?.name}
-                loggedEmployeeImage={profile?.data?.image}
-                comments={comments}
-                commentIsFetching={commentIsFetching}
-                refetchComment={refetchComment}
-                handleOpen={commentsOpenHandler}
-                handleClose={commentsCloseHandler}
-                onEndReached={commentEndReachedHandler}
-                commentRefetchHandler={commentRefetchHandler}
-                parentId={commentParentId}
-                onSubmit={commentSubmitHandler}
-                onReply={replyHandler}
-                employeeUsername={employeeUsername}
-                employees={employees?.data}
-              />
-            )}
+
+            <FeedComment
+              postId={postId}
+              loggedEmployeeName={userSelector?.name}
+              loggedEmployeeImage={profile?.data?.image}
+              comments={comments}
+              commentIsFetching={commentIsFetching}
+              refetchComment={refetchComment}
+              handleClose={commentsCloseHandler}
+              onEndReached={commentEndReachedHandler}
+              commentRefetchHandler={commentRefetchHandler}
+              parentId={commentParentId}
+              onSubmit={commentSubmitHandler}
+              onReply={replyHandler}
+              employeeUsername={employeeUsername}
+              employees={employees?.data}
+              reference={commentScreenSheetRef}
+            />
           </>
         </View>
         <Toast />

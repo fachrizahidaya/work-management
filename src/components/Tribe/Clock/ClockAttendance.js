@@ -1,39 +1,33 @@
-import { Box, Flex, Icon, Text } from "native-base";
+import { StyleSheet, View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ClockAttendance = ({ attendance, item, currentTime, attendanceCheckHandler }) => {
   return (
-    <Flex
-      flexDir="row"
-      bg={!attendance?.time_in ? "#daecfc" : "#feedaf"}
-      borderRadius={5}
-      alignItems="center"
-      py={2}
-      px={2}
-    >
-      <Box px={1}>
-        <Icon
-          as={<MaterialCommunityIcons name={item.icons} />}
-          size={6}
-          color={!attendance?.time_in ? "#2984c3" : "#fdc500"}
-        />
-      </Box>
+    <View style={{ ...styles.container, backgroundColor: !attendance?.time_in ? "#daecfc" : "#feedaf" }}>
+      <View style={{ paddingHorizontal: 1 }}>
+        <MaterialCommunityIcons name={item.icons} size={20} color={!attendance?.time_in ? "#2984c3" : "#fdc500"} />
+      </View>
       {!attendance?.time_in ? (
-        <Text fontWeight={700} color="#2984c3" mx={5}>
-          Clock in
-        </Text>
+        <Text style={{ fontWeight: "700", color: "#2984c3", marginHorizontal: 22 }}>Clock in</Text>
       ) : (
-        <Text fontWeight={700} color="#fdc500" mx={5}>
-          Clock out
-        </Text>
+        <Text style={{ fontWeight: "700", color: "#fdc500", marginHorizontal: 22 }}>Clock out</Text>
       )}
 
-      <Text ml={170} color={!attendance?.time_in ? "#2984c3" : "#fdc500"}>
+      <Text style={{ fontWeight: "700", color: !attendance?.time_in ? "#2984c3" : "#fdc500", marginLeft: 170 }}>
         {currentTime}
       </Text>
-    </Flex>
+    </View>
   );
 };
 
 export default ClockAttendance;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+    borderRadius: 5,
+  },
+});
