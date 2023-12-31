@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text, Image, Button } from "react-native";
+import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";

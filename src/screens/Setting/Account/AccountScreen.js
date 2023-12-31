@@ -1,14 +1,14 @@
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { Button, Flex, Icon, Image, Pressable, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Options from "../../../components/Setting/Account/Options";
+import Button from "../../../components/shared/Forms/Button";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
@@ -19,21 +19,44 @@ const AccountScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <Flex flexDir="row" gap={1}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "white",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 2,
+            alignItems: "center",
+          }}
+        >
           <Pressable onPress={() => navigation.goBack()}>
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+            <MaterialCommunityIcons name="chevron-left" size={20} />
           </Pressable>
-          <Text fontSize={16}>My</Text>
-          <Text color="primary.600" fontWeight={700} fontSize={16}>
-            KSS
-          </Text>
-          <Text fontSize={16}>Account</Text>
-        </Flex>
-      </Flex>
+          <Text style={{ fontSize: 16, fontWeight: 500 }}>My</Text>
+          <Text style={{ fontSize: 16, fontWeight: 500, color: "#176688" }}>KSS</Text>
+          <Text style={{ fontSize: 16, fontWeight: 500 }}>Account</Text>
+        </View>
+      </View>
 
       <ScrollView>
-        <Flex gap={1} alignItems="center" justifyContent="center" my={3}>
+        <View
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+            marginVertical: 3,
+          }}
+        >
           <AvatarPlaceholder
             borderRadius="full"
             size="xl"
@@ -41,54 +64,71 @@ const AccountScreen = ({ route }) => {
             image={userSelector?.image}
             isThumb={false}
           />
-          <Text fontSize={20} fontWeight={700}>
-            {userSelector?.name}
-          </Text>
-          <Text fontSize={12} fontWeight={400}>
-            {profile?.data?.email}
-          </Text>
-        </Flex>
-        <Flex bgColor="white" p={5} pb={10} gap={33}>
+          <Text style={{ fontSize: 20, fontWeight: 700 }}>{userSelector?.name}</Text>
+          <Text style={{ fontSize: 12, fontWeight: 400 }}>{profile?.data?.email}</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            backgroundColor: "white",
+            padding: 5,
+            paddingBottom: 10,
+            gap: 33,
+          }}
+        >
           <Options profile={profile} />
 
           <Pressable
-            display="flex"
-            flexDir="row"
-            alignItems="center"
-            justifyContent="space-between"
-            bgColor="#FAFAFA"
-            borderRadius={9}
-            h={42}
-            p="8px 12px"
-            opacity={0.5}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: "#FAFAFA",
+              borderRadius: 9,
+              height: 42,
+              paddingVertical: 8,
+              paddingHorizontal: 12,
+              opacity: 0.5,
+            }}
           >
-            <Flex flexDir="row" alignItems="center" gap={4}>
-              <Flex flexDirection="row" gap={1}>
-                <Text fontSize={14} fontWeight={400} color="primary.600" bold>
-                  KSS
-                </Text>
-                <Text fontSize={14} fontWeight={400}>
-                  Drive |{" "}
-                </Text>
-                <Text fontSize={14} fontWeight={400} color="primary.600">
-                  2 TB
-                </Text>
-              </Flex>
-            </Flex>
-            <Flex alignItems="center" justifyContent="center" flexDir="row">
-              <Text fontSize={14} fontWeight={400} color="primary.600">
-                Upgrade
-              </Text>
-              <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
-            </Flex>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                }}
+              >
+                <Text style={{ fontWeight: "bold", color: "#176688" }}>KSS</Text>
+                <Text style={{ fontWeight: 400 }}>Drive | </Text>
+                <Text style={{ fontWeight: 400, color: "#176688" }}>2 TB</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontWeight: 400, color: "#176688" }}>Upgrade</Text>
+              <MaterialCommunityIcons name="chevron-right" size={20} />
+            </View>
           </Pressable>
 
-          <Button onPress={() => navigation.navigate("Log Out")} bgColor="#FAFAFA" borderRadius={9}>
-            <Text color="#FF6262" bold>
-              Log out
-            </Text>
+          <Button onPress={() => navigation.navigate("Log Out")} backgroundColor="#FAFAFA">
+            <Text style={{ color: "#FF6262", fontWeight: "bold" }}>Log out</Text>
           </Button>
-        </Flex>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
