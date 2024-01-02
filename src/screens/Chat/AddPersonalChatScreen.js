@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { Spinner } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
@@ -89,7 +88,7 @@ const AddPersonalChatScreen = () => {
           />
 
           <FlashList
-            ListFooterComponent={isLoading && <Spinner size="lg" color="primary.600" />}
+            ListFooterComponent={isLoading && <ActivityIndicator />}
             estimatedItemSize={200}
             data={cumulativeData.length ? cumulativeData : filteredDataArray}
             keyExtractor={(item, index) => index}
