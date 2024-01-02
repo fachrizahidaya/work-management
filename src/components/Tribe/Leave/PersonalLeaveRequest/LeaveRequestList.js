@@ -56,9 +56,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <ActivityIndicator />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -105,9 +103,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <ActivityIndicator />
-                }
+                ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -146,7 +142,7 @@ const LeaveRequestList = ({
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() => rejectedLeaveRequestIsFetching && hasBeenScrolled && <ActivityIndicator />}
+              ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}

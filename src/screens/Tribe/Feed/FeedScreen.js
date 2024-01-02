@@ -254,6 +254,7 @@ const FeedScreen = () => {
             postRefetchHandler={postRefetchHandler}
             postEndReachedHandler={postEndReachedHandler}
             postIsFetching={postIsFetching}
+            postIsLoading={postIsLoading}
             refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
@@ -273,6 +274,7 @@ const FeedScreen = () => {
             loggedEmployeeImage={profile?.data?.image}
             comments={comments}
             commentIsFetching={commentIsFetching}
+            commentIsLoading={commentIsLoading}
             refetchComment={refetchComment}
             handleClose={commentsCloseHandler}
             onEndReached={commentEndReachedHandler}

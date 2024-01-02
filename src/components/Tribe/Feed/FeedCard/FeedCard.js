@@ -16,6 +16,7 @@ const FeedCard = ({
   hasBeenScrolled,
   setHasBeenScrolled,
   postIsFetching,
+  postIsLoading,
   refetchPost,
   scrollNewMessage,
   flashListRef,
@@ -34,7 +35,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      // refetchPost();
+      refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -96,7 +97,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <ActivityIndicator />}
+        ListFooterComponent={() => postIsLoading && <ActivityIndicator />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

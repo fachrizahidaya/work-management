@@ -12,6 +12,7 @@ const FeedComment = ({
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
+  commentIsLoading,
   comments,
   handleClose,
   refetchComment,
@@ -71,6 +72,7 @@ const FeedComment = ({
                 commentEndReachedHandler={onEndReached}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
+                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
                 handleLinkPress={handleLinkPress}
                 handleEmailPress={handleEmailPress}
