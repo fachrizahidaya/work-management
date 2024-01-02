@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-
-import { Flex, Icon, Pressable, Text } from "native-base";
+import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -42,30 +41,38 @@ const Options = ({ profile }) => {
   ];
 
   return (
-    <Flex bgColor="#FAFAFA" borderRadius={9}>
+    <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10 }}>
       {titles.map((title) => {
         return (
           <Pressable
             key={title.id}
-            display="flex"
-            flexDir="row"
-            alignItems="center"
-            justifyContent="space-between"
-            h={42}
-            p="8px 12px"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              height: 42,
+              paddingVertical: 8,
+              paddingHorizontal: 12,
+            }}
             onPress={title.navigate}
           >
-            <Flex flexDir="row" alignItems="center" gap={4}>
-              <Text fontSize={14} fontWeight={400}>
-                {title.name}
-              </Text>
-            </Flex>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Text style={{ fontWeight: 400 }}>{title.name}</Text>
+            </View>
 
-            <Icon as={<MaterialCommunityIcons name="chevron-right" />} size="md" color="#3F434A" />
+            <MaterialCommunityIcons name="chevron-right" size={20} />
           </Pressable>
         );
       })}
-    </Flex>
+    </View>
   );
 };
 

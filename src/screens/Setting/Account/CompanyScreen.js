@@ -1,55 +1,40 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Box, Flex, Icon, Pressable, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+
 import PageHeader from "../../../components/shared/PageHeader";
 
-const CompanyScreen = ({ route }) => {
-  const { profile, editProfileHandler } = route.params;
+const CompanyScreen = () => {
+  const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <Flex flexDir="row" gap={1}>
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Account Screen", { profile: profile, editProfileHandler: editProfileHandler })
-            }
-          >
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-          </Pressable>
-          <Text fontSize={16}>Company</Text>
-        </Flex>
-      </Flex>
+      <View style={{ display: "flex", marginVertical: 15, paddingHorizontal: 16, gap: 24 }}>
+        <PageHeader title="My Company" onPress={() => navigation.goBack()} />
 
-      <Flex my={3} gap={11} px={5}>
-        <Box width={250}>
-          <Text color="#3F434A">This account is under subscription of PT Kolabora Group Indonesia</Text>
-        </Box>
-        <Box width={300}>
-          <Text color="#3F434A" fontWeight={700}>
-            Address:
+        <View>
+          <Text style={{ fontWeight: 500 }}>
+            This account is under subscription of <Text style={{ fontWeight: "bold" }}>{userSelector.company}</Text>
           </Text>
-          <Text color="#3F434A">
+        </View>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>Address:</Text>
+          <Text style={{ fontWeight: 500 }}>
             ONE PM Buildiing Level 5, Kav M5 17-18, Boulevard Gading Serpong, Tangerang, Banten, Indonesia, 15810
           </Text>
-        </Box>
-        <Box width={250}>
-          <Text color="#3F434A" fontWeight={700}>
-            Phone:
-          </Text>
-          <Text color="#3F434A">+62 21 588 8220</Text>
-        </Box>
-        <Box width={250}>
-          <Text color="#3F434A" fontWeight={700}>
-            Email:
-          </Text>
-          <Text>admin@kolabora.com</Text>
-        </Box>
-      </Flex>
+        </View>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>Phone:</Text>
+          <Text style={{ fontWeight: 500 }}>+62 21 588 8220</Text>
+        </View>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>Email:</Text>
+          <Text>{userSelector.email}</Text>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

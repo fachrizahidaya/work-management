@@ -4,8 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import jwt_decode from "jwt-decode";
 
-import { Image } from "native-base";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
@@ -51,12 +50,7 @@ const LaunchScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loadingContainer}>
-        {/* <Image
-          resizeMode="contain"
-          source={require("../../assets/icons/kss_logo.png")}
-          alt="KSS_LOGO"
-          style={styles.logo}
-        /> */}
+        <Image source={require("../../assets/icons/kss_logo.png")} alt="KSS_LOGO" style={styles.logo} />
       </View>
     </SafeAreaView>
   );
@@ -80,5 +74,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 67,
     height: 67,
+    resizeMode: "contain",
   },
 });

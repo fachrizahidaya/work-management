@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text, Image, Button } from "react-native";
+import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
@@ -101,11 +101,28 @@ const SettingScreen = () => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.item}>
-              <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
                 {team?.data?.length > 0 &&
                   (!teamIsLoading ? (
-                    team.data.map((item) => {
-                      return <AvatarPlaceholder key={item.id} image={item.image} name={item.name} size="xs" />;
+                    team.data.map((item, index) => {
+                      return (
+                        <AvatarPlaceholder
+                          key={item.id}
+                          image={item.image}
+                          name={item.name}
+                          style={{
+                            marginLeft: index === 0 ? 0 : -12,
+                          }}
+                          size="xs"
+                        />
+                      );
                     })
                   ) : (
                     // <Skeleton h={35} />
