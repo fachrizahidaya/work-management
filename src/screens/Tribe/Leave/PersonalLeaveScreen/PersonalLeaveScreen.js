@@ -144,7 +144,7 @@ const PersonalLeaveScreen = () => {
     if (pendingLeaveRequest?.data?.data?.length) {
       setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data, pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
@@ -216,8 +216,8 @@ const PersonalLeaveScreen = () => {
         header="Cancel Leave Request"
         hasSuccessFunc={true}
         onSuccess={() => {
-          cancleScreenSheetRef.current?.hide;
-          refetchLeaveRequest;
+          cancleScreenSheetRef.current?.hide();
+          refetchPendingLeaveRequest();
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"
