@@ -1,7 +1,6 @@
 import { memo } from "react";
 
-import { Spinner } from "native-base";
-import { FlatList, View } from "react-native";
+import { FlatList, View, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 
 import FeedCommentItem from "./FeedCommentItem";
@@ -28,7 +27,7 @@ const FeedCommentList = ({
           keyExtractor={(item, index) => item.id}
           onEndReachedThreshold={0.1}
           onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          ListFooterComponent={() => commentIsFetching && <Spinner />}
+          ListFooterComponent={() => commentIsFetching && <ActivityIndicator />}
           onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
           estimatedItemSize={80}
           refreshControl={

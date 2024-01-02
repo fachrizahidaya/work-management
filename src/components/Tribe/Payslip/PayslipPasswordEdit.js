@@ -123,8 +123,6 @@ export default PayslipPasswordEdit;
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
+    paddingVertical: 15,
   },
 });

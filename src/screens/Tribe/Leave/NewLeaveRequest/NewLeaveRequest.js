@@ -4,8 +4,7 @@ import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
 
-import { Dimensions, StyleSheet, View, Text } from "react-native";
-import { Skeleton } from "native-base";
+import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -236,8 +235,7 @@ const NewLeaveRequest = ({ route }) => {
           <View style={styles.history}>
             {leaveHistoryIsFetching ? (
               <View style={{ alignItems: "center", gap: 5 }}>
-                <Skeleton h={41} w={10} />
-                <Skeleton h={5} w={100} />
+                <ActivityIndicator />
               </View>
             ) : (
               availableLeaves?.map((item, index) => {

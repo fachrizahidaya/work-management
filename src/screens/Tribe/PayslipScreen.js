@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList } from "react-native";
-import { Spinner } from "native-base";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -159,9 +158,7 @@ const PayslipScreen = () => {
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() =>
-              payslipIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
-            }
+            ListFooterComponent={() => payslipIsFetching && hasBeenScrolled && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}
@@ -178,8 +175,6 @@ const PayslipScreen = () => {
               />
             )}
           />
-        ) : payslipIsLoading ? (
-          <Spinner />
         ) : (
           <View style={styles.imageContainer}>
             <Image

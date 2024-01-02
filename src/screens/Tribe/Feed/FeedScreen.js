@@ -246,46 +246,44 @@ const FeedScreen = () => {
 
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           {/* Content here */}
-          <>
-            <FeedCard
-              posts={posts}
-              loggedEmployeeId={profile?.data?.id}
-              loggedEmployeeImage={profile?.data?.image}
-              postRefetchHandler={postRefetchHandler}
-              postEndReachedHandler={postEndReachedHandler}
-              postIsFetching={postIsFetching}
-              postIsLoading={postIsLoading}
-              refetchPost={refetchPost}
-              hasBeenScrolled={hasBeenScrolled}
-              setHasBeenScrolled={setHasBeenScrolled}
-              scrollNewMessage={scrollNewMessage}
-              flashListRef={flashListRef}
-              onCommentToggle={commentsOpenHandler}
-              forceRerender={forceRerender}
-              setForceRerender={setForceRerender}
-              toggleFullScreen={toggleFullScreen}
-              employeeUsername={employeeUsername}
-              navigation={navigation}
-            />
 
-            <FeedComment
-              postId={postId}
-              loggedEmployeeName={userSelector?.name}
-              loggedEmployeeImage={profile?.data?.image}
-              comments={comments}
-              commentIsFetching={commentIsFetching}
-              refetchComment={refetchComment}
-              handleClose={commentsCloseHandler}
-              onEndReached={commentEndReachedHandler}
-              commentRefetchHandler={commentRefetchHandler}
-              parentId={commentParentId}
-              onSubmit={commentSubmitHandler}
-              onReply={replyHandler}
-              employeeUsername={employeeUsername}
-              employees={employees?.data}
-              reference={commentScreenSheetRef}
-            />
-          </>
+          <FeedCard
+            posts={posts}
+            loggedEmployeeId={profile?.data?.id}
+            loggedEmployeeImage={profile?.data?.image}
+            postRefetchHandler={postRefetchHandler}
+            postEndReachedHandler={postEndReachedHandler}
+            postIsFetching={postIsFetching}
+            refetchPost={refetchPost}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            scrollNewMessage={scrollNewMessage}
+            flashListRef={flashListRef}
+            onCommentToggle={commentsOpenHandler}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
+            toggleFullScreen={toggleFullScreen}
+            employeeUsername={employeeUsername}
+            navigation={navigation}
+          />
+
+          <FeedComment
+            postId={postId}
+            loggedEmployeeName={userSelector?.name}
+            loggedEmployeeImage={profile?.data?.image}
+            comments={comments}
+            commentIsFetching={commentIsFetching}
+            refetchComment={refetchComment}
+            handleClose={commentsCloseHandler}
+            onEndReached={commentEndReachedHandler}
+            commentRefetchHandler={commentRefetchHandler}
+            parentId={commentParentId}
+            onSubmit={commentSubmitHandler}
+            onReply={replyHandler}
+            employeeUsername={employeeUsername}
+            employees={employees?.data}
+            reference={commentScreenSheetRef}
+          />
         </View>
         <Toast />
       </SafeAreaView>
