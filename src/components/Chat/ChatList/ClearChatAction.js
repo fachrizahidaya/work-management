@@ -3,9 +3,6 @@ import { Text, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ActionSheet from "react-native-actions-sheet";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, reference }) => {
   return (
