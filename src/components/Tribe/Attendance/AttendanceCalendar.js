@@ -5,7 +5,7 @@ import { View } from "react-native";
 import AttendanceColor from "./AttendanceColor";
 import AttendanceAttachment from "./AttendanceAttachment";
 
-const AttendanceCalendar = ({ renderCalendar, attachment, toggle, setAttachmentId, reference }) => {
+const AttendanceCalendar = ({ renderCalendar, attachment, setAttachmentId, reference }) => {
   return (
     <View style={{ flex: 1, gap: 1 }}>
       <Fragment>{renderCalendar()}</Fragment>

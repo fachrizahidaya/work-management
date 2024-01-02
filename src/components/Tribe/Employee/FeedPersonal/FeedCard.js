@@ -1,7 +1,6 @@
 import { memo } from "react";
 
-import { Spinner } from "native-base";
-import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList } from "react-native";
+import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -91,7 +90,7 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
-        ListFooterComponent={() => personalPostIsLoading && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => personalPostIsLoading && hasBeenScrolled && <ActivityIndicator />}
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}

@@ -1,35 +1,45 @@
-import { Button, Image, Modal, Text, VStack } from "native-base";
-import React from "react";
+import { View, Text, Image, Dimensions, Platform } from "react-native";
+import Modal from "react-native-modal";
+
+import Button from "./Forms/Button";
 
 const ReturnConfirmationModal = ({ isOpen, toggle, onPress, description }) => {
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   return (
-    <Modal isOpen={isOpen} onClose={toggle} size="xl">
-      <Modal.Content>
-        <Modal.Body bgColor="white">
-          <VStack alignItems="center">
-            <Image
-              source={require("../../assets/vectors/confirmation.jpg")}
-              alt="confirmation"
-              resizeMode="contain"
-              h={150}
-              w={150}
-            />
-            <Text textAlign="center">{description}</Text>
-          </VStack>
-        </Modal.Body>
+    <Modal
+      isVisible={isOpen}
+      onBackdropPress={toggle}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+      backdropColor="#FFFFFF"
+    >
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../assets/vectors/confirmation.jpg")}
+          alt="confirmation"
+          style={{
+            height: 150,
+            width: 180,
+            resizeMode: "contain",
+          }}
+        />
+        <Text style={{ textAlign: "center" }}>{description}</Text>
+      </View>
 
-        <Modal.Footer bgColor="white">
-          <Button.Group space={2} width="full">
-            <Button onPress={toggle} flex={1} variant="outline">
-              Cancel
-            </Button>
+      <View style={{ gap: 5 }}>
+        <Button onPress={toggle} flex={1} variant="outline">
+          Cancel
+        </Button>
 
-            <Button bgColor={"primary.600"} onPress={onPress} flex={1}>
-              Confirm
-            </Button>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
+        <Button backgroundColor="#377893" onPress={onPress} flex={1}>
+          Confirm
+        </Button>
+      </View>
     </Modal>
   );
 };

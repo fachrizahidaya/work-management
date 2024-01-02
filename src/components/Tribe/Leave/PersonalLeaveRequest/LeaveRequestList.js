@@ -1,8 +1,7 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Spinner } from "native-base";
-import { StyleSheet, View, Text, Image, FlatList } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
@@ -23,9 +22,6 @@ const LeaveRequestList = ({
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
-  pendingLeaveRequestIsLoading,
-  approvedLeaveRequestIsLoading,
-  rejectedLeaveRequestIsLoading,
   tabValue,
   tabs,
   onChangeTab,
@@ -59,7 +55,7 @@ const LeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
+                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <ActivityIndicator />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -113,7 +109,7 @@ const LeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
+                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <ActivityIndicator />
                 }
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
@@ -158,9 +154,7 @@ const LeaveRequestList = ({
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() =>
-                rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
-              }
+              ListFooterComponent={() => rejectedLeaveRequestIsFetching && hasBeenScrolled && <ActivityIndicator />}
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}

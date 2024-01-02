@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Icon } from "native-base";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -243,16 +242,16 @@ const NewFeedScreen = ({ route }) => {
               <View style={{ gap: 5 }}>
                 <Button
                   disabled={checkAccess ? false : true}
-                  padding={10}
-                  height={30}
+                  padding={8}
+                  height={32}
                   backgroundColor="#FFFFFF"
-                  onPress={() => postActionScreenSheetRef.current?.show()}
+                  onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
                   borderRadius={15}
                   variant="outline"
                   children={
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                       <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
-                      {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" /> : null}
                     </View>
                   }
                 />

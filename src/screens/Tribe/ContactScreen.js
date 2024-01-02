@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import _ from "lodash";
 
-import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
-import { Spinner } from "native-base";
+import { FlatList, SafeAreaView, StyleSheet, View, ActivityIndicator } from "react-native";
 
 import { useFetch } from "../../hooks/useFetch";
 import Input from "../../components/shared/Forms/Input";
@@ -107,7 +106,7 @@ const ContactScreen = () => {
           onEndReachedThreshold={0.1}
           estimatedItemSize={60}
           onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-          ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <Spinner />}
+          ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
           renderItem={({ item, index }) => (
             <ContactList
               key={index}

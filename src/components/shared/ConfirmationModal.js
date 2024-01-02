@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 
 import { ActivityIndicator, Dimensions, Image, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";

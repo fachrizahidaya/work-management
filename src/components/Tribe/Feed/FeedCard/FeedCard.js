@@ -1,7 +1,6 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard, FlatList, Linking, StyleSheet, View } from "react-native";
-import { Spinner } from "native-base";
+import { Clipboard, FlatList, Linking, StyleSheet, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -17,7 +16,6 @@ const FeedCard = ({
   hasBeenScrolled,
   setHasBeenScrolled,
   postIsFetching,
-  postIsLoading,
   refetchPost,
   scrollNewMessage,
   flashListRef,
@@ -98,7 +96,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <ActivityIndicator />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

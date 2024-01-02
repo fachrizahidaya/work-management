@@ -1,5 +1,5 @@
+import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions, Platform } from "react-native";
 import Modal from "react-native-modal";
-import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

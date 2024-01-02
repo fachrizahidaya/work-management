@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { FormControl, Spinner } from "native-base";
-import { TouchableWithoutFeedback, Keyboard, View, Text } from "react-native";
+import { TouchableWithoutFeedback, Keyboard, View, Text, ActivityIndicator } from "react-native";
 
 import Select from "../../shared/Forms/Select";
 import Input from "../../shared/Forms/Input";
@@ -32,32 +31,32 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
           key="leave_id"
         />
 
-        <FormControl.Label>Purpose of Leaving</FormControl.Label>
+        <Text>Purpose of Leaving</Text>
         <Input multiline formik={formik} fieldName="reason" placeHolder="Input Reason" value={formik.values.reason} />
 
-        <FormControl isInvalid={formik.errors.begin_date}>
-          <FormControl.Label>Start Date</FormControl.Label>
+        <View>
+          <Text>Start Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.begin_date}
             onChange={onChangeStartDate}
             disabled={!formik.values.leave_id}
           />
-          <FormControl.ErrorMessage>{formik.errors.begin_date}</FormControl.ErrorMessage>
-        </FormControl>
+          <Text>{formik.errors.begin_date}</Text>
+        </View>
 
-        <FormControl isInvalid={formik.errors.end_date}>
-          <FormControl.Label>End Date</FormControl.Label>
+        <View>
+          <Text>End Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.end_date}
             onChange={onChangeEndDate}
             disabled={!formik.values.leave_id}
           />
-          <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
-        </FormControl>
+          <Text>{formik.errors.end_date}</Text>
+        </View>
 
         {isLoading && (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Spinner />
+            <ActivityIndicator />
             <Text style={{ fontSize: 10, fontWeight: "400" }}>Checking availability...</Text>
           </View>
         )}
