@@ -22,7 +22,7 @@ import ChatList from "../../components/Chat/ChatList/ChatList";
 import ChatOptionMenu from "../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../components/Chat/ChatBubble/ChatMessageDeleteModal";
 import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
 import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
 import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
 

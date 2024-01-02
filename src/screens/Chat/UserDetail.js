@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
-import { Flex, Icon, Pressable, Text, useToast } from "native-base";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View, Text, Pressable } from "react-native";
+import Toast from "react-native-toast-message";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRoute } from "@react-navigation/native";
@@ -12,9 +12,8 @@ import { useRoute } from "@react-navigation/native";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
 import { useFetch } from "../../hooks/useFetch";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
 import UserListModal from "../../components/Chat/UserDetail/UserListModal";
 import MemberListActionModal from "../../components/Chat/UserDetail/MemberListActionModal";
 import UserAvatar from "../../components/Chat/UserDetail/UserAvatar";
@@ -72,8 +71,6 @@ const UserDetail = () => {
   const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } = useLoading(false);
   const { isLoading: addMemberIsLoading, toggle: toggleAddMember } = useLoading(false);
 
-  const toast = useToast();
-
   const fetchUserParameters = {
     page: currentPage,
     search: searchInput,
@@ -99,6 +96,9 @@ const UserDetail = () => {
     }
   };
 
+  /**
+   * Fetch media for pictures and docs
+   */
   const { data: media, isFetching: mediaIsFetching, refetch: refetchMedia } = useFetch(`/chat/${type}/${roomId}/media`);
   const {
     data: document,
@@ -122,19 +122,19 @@ const UserDetail = () => {
       toggleAddMember();
       toggleMemberList();
       setSelectedUsers(null);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Member Added" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Member added",
+        position: "bottom",
       });
     } catch (err) {
-      console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
-      });
       toggleAddMember();
+      console.log(err);
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
+      });
     }
   };
 
@@ -152,10 +152,10 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -172,18 +172,18 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
       toggleRemoveMember();
       toggleRemoveMemberAction();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Member Removed" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Member removed",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleRemoveMember();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -200,19 +200,19 @@ const UserDetail = () => {
       setSubmitting(false);
       setStatus("success");
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Profile Updated" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Group Profile updated",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -300,16 +300,23 @@ const UserDetail = () => {
   return (
     <>
       {isReady ? (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-          <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-            <Flex direction="row" alignItems="center" gap={4}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              backgroundColor: "#FFFFFF",
+              padding: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <Pressable onPress={() => navigation.goBack()}>
-                <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+                <MaterialIcons name="keyboard-backspace" size={20} color="#3F434A" />
               </Pressable>
               <Text>{type === "personal" ? "Contact Detail" : "Group Detail"}</Text>
-            </Flex>
-          </Flex>
-          <Flex gap={2} flex={1} bg="#FAFAFA" position="relative">
+            </View>
+          </View>
+          <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>
             <UserAvatar
               roomId={roomId}
               type={type}
@@ -349,7 +356,7 @@ const UserDetail = () => {
               toggleExitModal={toggleExitModal}
               toggleDeleteGroupModal={toggleDeleteGroupModal}
             />
-          </Flex>
+          </View>
           <RemoveConfirmationModal
             isOpen={
               type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen

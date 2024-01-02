@@ -1,4 +1,4 @@
-import { Flex, Spinner } from "native-base";
+import { View, ActivityIndicator } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import ChatProjectItem from "./ChatProjectItem";
@@ -33,7 +33,7 @@ const ChatProjectList = ({
   setTaskId,
 }) => {
   return (
-    <Flex borderRadius={10} mx={3} flex={1} bgColor="#fafafa">
+    <View style={{ flex: 1, backgroundColor: "#FAFAFA", borderRadius: 10, paddingHorizontal: 10 }}>
       {tabValue === "project" ? (
         <FlashList
           data={projects.length ? projects : filteredDataArray}
@@ -42,7 +42,7 @@ const ChatProjectList = ({
           onEndReachedThreshold={0.1}
           renderItem={({ item, index }) =>
             projectIsLoading ? (
-              <Spinner />
+              <ActivityIndicator />
             ) : (
               <ChatProjectItem
                 key={index}
@@ -78,7 +78,7 @@ const ChatProjectList = ({
           onEndReachedThreshold={0.1}
           renderItem={({ item, index }) =>
             taskIsLoading ? (
-              <Spinner color="primary.600" size="sm" />
+              <ActivityIndicator />
             ) : (
               <ChatTaskItem
                 id={item?.id}
@@ -109,7 +109,7 @@ const ChatProjectList = ({
           }
         />
       )}
-    </Flex>
+    </View>
   );
 };
 

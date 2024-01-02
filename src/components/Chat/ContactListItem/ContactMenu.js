@@ -135,7 +135,7 @@ const ContactMenu = ({
           ? menuOptions.map((option, index) => {
               return (
                 <>
-                  <View style={styles.container}>
+                  <View key={index} style={styles.container}>
                     <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
                     <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
                   </View>

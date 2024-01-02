@@ -1,9 +1,28 @@
-import { Flex, Pressable, Text } from "native-base";
+import { View, Text, Pressable } from "react-native";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow }) => {
   return (
-    <Flex ml={60} flexDir="row" background="#ffffff" flex={0} justifyContent="center" alignItems="center">
-      <Flex
+    <View
+      style={{
+        flex: 0,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#FFFFFF",
+        marginLeft: 60,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#FAFAFA",
+          padding: 5,
+          marginVertical: 5,
+          gap: 5,
+          borderRadius: 10,
+        }}
         bgColor="#fafafa"
         gap={3}
         borderRadius={10}
@@ -14,9 +33,11 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
         my={2}
       >
         <Pressable
-          p={2}
-          borderRadius={10}
-          bgColor={tabValue === "project" ? "#E6E6E6" : null}
+          style={{
+            backgroundColor: tabValue === "project" ? "#E6E6E6" : null,
+            borderRadius: 10,
+            padding: 5,
+          }}
           onPress={() => {
             tabValue === "task" && setTabValue("project");
             setInputToShow("");
@@ -26,9 +47,11 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
           <Text>Project</Text>
         </Pressable>
         <Pressable
-          p={2}
-          borderRadius={10}
-          bgColor={tabValue === "task" ? "#E6E6E6" : null}
+          style={{
+            backgroundColor: tabValue === "task" ? "#E6E6E6" : null,
+            borderRadius: 10,
+            padding: 5,
+          }}
           onPress={() => {
             tabValue === "project" && setTabValue("task");
             setInputToShow("");
@@ -37,8 +60,8 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
         >
           <Text>Ad Hoc</Text>
         </Pressable>
-      </Flex>
-    </Flex>
+      </View>
+    </View>
   );
 };
 
