@@ -95,6 +95,8 @@ const NoteForm = ({ route }) => {
               value={`${formik.values.content}`}
               placeHolder="Input note content..."
               multiline
+              numberOfLines={10}
+              height={300}
             />
 
             {editCheckAccess && (

@@ -65,6 +65,7 @@ const Input = ({
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",
               textAlignVertical: "top",
+              color: !editable ? "#cbcbcb" : "black",
             },
           ]}
           defaultValue={defaultValue}
