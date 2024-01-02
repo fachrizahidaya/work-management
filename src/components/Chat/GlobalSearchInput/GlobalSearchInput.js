@@ -2,6 +2,8 @@ import React, { useCallback, useRef } from "react";
 
 import _ from "lodash";
 
+import { View } from "react-native";
+
 import Input from "../../shared/Forms/Input";
 
 const GlobalSearchInput = ({ setGlobalKeyword, globalKeyword }) => {
@@ -15,17 +17,19 @@ const GlobalSearchInput = ({ setGlobalKeyword, globalKeyword }) => {
   );
 
   return (
-    <Input
-      ref={searchFormRef}
-      placeHolder="Search..."
-      startIcon="magnify"
-      endIcon={globalKeyword && "close"}
-      onPressEndIcon={() => {
-        searchFormRef.current.clear();
-        setGlobalKeyword("");
-      }}
-      onChangeText={(value) => keywordSearchHandler(value)}
-    />
+    <View style={{ padding: 10 }}>
+      <Input
+        ref={searchFormRef}
+        placeHolder="Search..."
+        startIcon="magnify"
+        endIcon={globalKeyword && "close"}
+        onPressEndIcon={() => {
+          searchFormRef.current?.clear();
+          setGlobalKeyword("");
+        }}
+        onChangeText={(value) => keywordSearchHandler(value)}
+      />
+    </View>
   );
 };
 
