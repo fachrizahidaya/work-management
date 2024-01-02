@@ -159,7 +159,7 @@ const PayslipScreen = () => {
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() => payslipIsFetching && hasBeenScrolled && <ActivityIndicator />}
+            ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}

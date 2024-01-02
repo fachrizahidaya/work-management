@@ -61,8 +61,6 @@ const ContactScreen = () => {
     setFilteredDataArray([]);
   }, [searchInput]);
 
-  console.log("c", contacts);
-
   useEffect(() => {
     if (employeeData?.data?.data.length) {
       if (!searchInput) {

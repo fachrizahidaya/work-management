@@ -73,11 +73,11 @@ const FeedComment = ({
                 commentEndReachedHandler={onEndReached}
                 commentsRefetchHandler={commentRefetchHandler}
                 commentIsFetching={commentIsFetching}
+                commentIsLoading={commentIsLoading}
                 refetchComment={refetchComment}
                 handleLinkPress={handleLinkPress}
                 handleEmailPress={handleEmailPress}
                 copyToClipboard={copyToClipboard}
-                commentIsLoading={commentIsLoading}
                 employeeUsername={employeeUsername}
               />
             </View>

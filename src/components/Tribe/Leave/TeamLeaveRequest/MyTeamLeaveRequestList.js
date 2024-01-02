@@ -96,9 +96,7 @@ const MyTeamLeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <ActivityIndicator />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
                     item={item}
@@ -154,9 +152,7 @@ const MyTeamLeaveRequestList = ({
                   }}
                 />
               }
-              ListFooterComponent={() =>
-                approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <ActivityIndicator />
-              }
+              ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
               renderItem={({ item, index }) => (
                 <MyTeamLeaveRequestItem
                   item={item}
@@ -207,7 +203,7 @@ const MyTeamLeaveRequestList = ({
                 }}
               />
             }
-            ListFooterComponent={() => rejectedLeaveRequestIsFetching && hasBeenScrolled && <ActivityIndicator />}
+            ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <MyTeamLeaveRequestItem
                 item={item}
