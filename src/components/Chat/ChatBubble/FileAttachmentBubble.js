@@ -54,7 +54,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
         backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
         borderRadius: 5,
         gap: 5,
-        padding: 5,
+        padding: 10,
       }}
     >
       <Image
@@ -70,8 +70,8 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             : null
         }
         style={{
-          height: 8,
-          width: 8,
+          height: 20,
+          width: 20,
           alignSelf: "center",
           resizeMode: "cover",
         }}
@@ -101,7 +101,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
       <MaterialCommunityIcons
         name="download"
         color={!myMessage ? "#000000" : "#FFFFFF"}
-        size={10}
+        size={20}
         onPress={() => attachmentDownloadHandler(file_path)}
       />
     </Pressable>

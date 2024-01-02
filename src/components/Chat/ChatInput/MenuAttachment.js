@@ -74,6 +74,7 @@ const MenuAttachment = ({
       {attachmentOptions.map((option, index) => {
         return (
           <TouchableOpacity
+            key={index}
             onPress={option.onPress}
             style={{
               ...styles.wrapper,

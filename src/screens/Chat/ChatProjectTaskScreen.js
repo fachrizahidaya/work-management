@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import { Flex, Icon, Pressable, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,7 +12,7 @@ import OptionButton from "../../components/Chat/ProjectTask/OptionButton";
 import ChatProjectList from "../../components/Chat/ProjectTask/ChatProjectList";
 import SearchBox from "../../components/Chat/ProjectTask/SearchBox";
 
-const ProjectScreen = () => {
+const ChatProjectTaskScreen = () => {
   const [tabValue, setTabValue] = useState("project");
   const [searchInput, setSearchInput] = useState("");
   const [currentPageProject, setCurrentPageProject] = useState(1);
@@ -150,20 +149,23 @@ const ProjectScreen = () => {
     <SafeAreaView style={styles.container}>
       {isReady ? (
         <>
-          <Flex direction="row" bg="white" p={4}>
-            <Flex flex={1} direction="row" alignItems="center">
-              <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
-                <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+          <View style={{ flexDirection: "row", backgroundColor: "#FFFFFF", padding: 10 }}>
+            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+              <Pressable
+                style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+                onPress={() => navigation.goBack()}
+              >
+                <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
               </Pressable>
-              <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
+              <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
               <OptionButton
                 setSearchInput={setSearchInput}
                 setInputToShow={setInputToShow}
                 tabValue={tabValue}
                 setTabValue={setTabValue}
               />
-            </Flex>
-          </Flex>
+            </View>
+          </View>
 
           <SearchBox
             handleSearch={handleSearch}
@@ -206,7 +208,7 @@ const ProjectScreen = () => {
   );
 };
 
-export default ProjectScreen;
+export default ChatProjectTaskScreen;
 
 const styles = StyleSheet.create({
   container: {

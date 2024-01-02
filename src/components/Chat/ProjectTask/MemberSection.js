@@ -1,14 +1,13 @@
-import { Flex, Text } from "native-base";
+import { View, Text } from "react-native";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const MemberSection = ({ name, image }) => {
   return (
-    <Flex py={1} gap={2} flexDirection="row">
+    <View style={{ flexDirection: "row", padding: 5 }} flexDirection="row">
       <AvatarPlaceholder name={name} image={image} />
-      <Text fontSize={12} fontWeight={400}>
-        {name?.split(" ")[0]}
-      </Text>
-    </Flex>
+      <Text style={{ fontSize: 12, fontWeight: "400" }}>{name?.split(" ")[0]}</Text>
+    </View>
   );
 };
 

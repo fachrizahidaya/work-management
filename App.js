@@ -51,19 +51,19 @@ export default function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        {/* <NativeBaseProvider theme={customTheme}> */}
-        <SheetProvider>
-          <WebsocketContextProvider>
-            <NavigationContainer>
-              <SafeAreaProvider>
-                <UserModuleVerificationGuard>
-                  <Navigations />
-                </UserModuleVerificationGuard>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </WebsocketContextProvider>
-        </SheetProvider>
-        {/* </NativeBaseProvider> */}
+        <NativeBaseProvider theme={customTheme}>
+          <SheetProvider>
+            <WebsocketContextProvider>
+              <NavigationContainer>
+                <SafeAreaProvider>
+                  <UserModuleVerificationGuard>
+                    <Navigations />
+                  </UserModuleVerificationGuard>
+                </SafeAreaProvider>
+              </NavigationContainer>
+            </WebsocketContextProvider>
+          </SheetProvider>
+        </NativeBaseProvider>
       </QueryClientProvider>
     </Provider>
   );
