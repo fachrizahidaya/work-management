@@ -1,8 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { ScrollView, StyleSheet, View, Image, Text, FlatList } from "react-native";
-import { Spinner } from "native-base";
+import { ScrollView, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import Tabs from "../../../shared/Tabs";
@@ -98,7 +97,7 @@ const MyTeamLeaveRequestList = ({
                   />
                 }
                 ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
+                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <ActivityIndicator />
                 }
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
@@ -156,7 +155,7 @@ const MyTeamLeaveRequestList = ({
                 />
               }
               ListFooterComponent={() =>
-                approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
+                approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <ActivityIndicator />
               }
               renderItem={({ item, index }) => (
                 <MyTeamLeaveRequestItem
@@ -208,9 +207,7 @@ const MyTeamLeaveRequestList = ({
                 }}
               />
             }
-            ListFooterComponent={() =>
-              rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
-            }
+            ListFooterComponent={() => rejectedLeaveRequestIsFetching && hasBeenScrolled && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <MyTeamLeaveRequestItem
                 item={item}

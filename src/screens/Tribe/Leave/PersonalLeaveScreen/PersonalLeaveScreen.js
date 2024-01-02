@@ -98,6 +98,8 @@ const PersonalLeaveScreen = () => {
 
   const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
 
+  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
+
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
   const fetchMorePending = () => {
@@ -198,6 +200,7 @@ const PersonalLeaveScreen = () => {
             setTabValue={setTabValue}
             tabs={tabs}
             onChangeTab={onChangeTab}
+            refetchLeaveRequest={refetchLeaveRequest}
           />
         </>
       </SafeAreaView>
@@ -213,8 +216,8 @@ const PersonalLeaveScreen = () => {
         header="Cancel Leave Request"
         hasSuccessFunc={true}
         onSuccess={() => {
-          cancleScreenSheetRef.current?.hide();
-          refetchPendingLeaveRequest();
+          cancleScreenSheetRef.current?.hide;
+          refetchLeaveRequest;
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"

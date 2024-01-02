@@ -31,31 +31,34 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
           key="leave_id"
         />
 
-        <Text>Purpose of Leaving</Text>
-        <Input multiline formik={formik} fieldName="reason" placeHolder="Input Reason" value={formik.values.reason} />
+        <Input
+          multiline
+          formik={formik}
+          title="Purpose of Leaving"
+          fieldName="reason"
+          placeHolder="Input Reason"
+          value={formik.values.reason}
+        />
 
-        <View>
-          <Text>Start Date</Text>
+        <View style={{ gap: 10 }}>
+          <Text style={{ fontSize: 14, fontWeight: "400" }}>Start Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.begin_date}
             onChange={onChangeStartDate}
             disabled={!formik.values.leave_id}
           />
-          <Text>{formik.errors.begin_date}</Text>
-        </View>
-
-        <View>
-          <Text>End Date</Text>
+          <Text style={{ color: "#FF6262" }}>{formik.errors.begin_date}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400" }}>End Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.end_date}
             onChange={onChangeEndDate}
             disabled={!formik.values.leave_id}
           />
-          <Text>{formik.errors.end_date}</Text>
+          <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text>
         </View>
 
         {isLoading && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <ActivityIndicator />
             <Text style={{ fontSize: 10, fontWeight: "400" }}>Checking availability...</Text>
           </View>
