@@ -1,8 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
-import { View, Text } from "react-native";
-import { TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -64,7 +63,7 @@ const UserListItem = ({
           {multiSelect && (
             <View>
               {selectedUsers.find((val) => val.id === id) && (
-                <MaterialCommunityIcons name="checkbox-marked" size={20} color="primary.600" />
+                <MaterialCommunityIcons name="checkbox-marked" size={20} color="#176688" />
               )}
             </View>
           )}

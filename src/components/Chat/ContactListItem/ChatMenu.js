@@ -37,7 +37,10 @@ const ChatMenu = ({ onClose, reference }) => {
         })}
       </View>
 
-      <TouchableOpacity style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}>
+      <TouchableOpacity
+        style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}
+        onPress={() => reference.current?.hide()}
+      >
         <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
       </TouchableOpacity>
     </ActionSheet>
