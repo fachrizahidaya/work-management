@@ -11,34 +11,30 @@ const ReturnConfirmationModal = ({ isOpen, toggle, onPress, description }) => {
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
   return (
-    <Modal
-      isVisible={isOpen}
-      onBackdropPress={toggle}
-      deviceHeight={deviceHeight}
-      deviceWidth={deviceWidth}
-      backdropColor="#FFFFFF"
-    >
-      <View style={{ alignItems: "center" }}>
-        <Image
-          source={require("../../assets/vectors/confirmation.jpg")}
-          alt="confirmation"
-          style={{
-            height: 150,
-            width: 180,
-            resizeMode: "contain",
-          }}
-        />
-        <Text style={{ textAlign: "center" }}>{description}</Text>
-      </View>
+    <Modal isVisible={isOpen} onBackdropPress={toggle} deviceHeight={deviceHeight} deviceWidth={deviceWidth}>
+      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+        <View style={{ display: "flex", alignItems: "center" }}>
+          <Image
+            source={require("../../assets/vectors/confirmation.jpg")}
+            alt="confirmation"
+            style={{
+              height: 150,
+              width: 180,
+              resizeMode: "contain",
+            }}
+          />
+          <Text style={{ textAlign: "center" }}>{description}</Text>
+        </View>
 
-      <View style={{ gap: 5 }}>
-        <Button onPress={toggle} flex={1} variant="outline">
-          Cancel
-        </Button>
+        <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+          <Button onPress={toggle} flex={1} variant="outline" backgroundColor="#FD7972">
+            <Text>Cancel</Text>
+          </Button>
 
-        <Button backgroundColor="#377893" onPress={onPress} flex={1}>
-          Confirm
-        </Button>
+          <Button backgroundColor="#E53935" onPress={onPress} flex={1}>
+            <Text style={{ color: "#FFFFFF" }}>Confirm</Text>
+          </Button>
+        </View>
       </View>
     </Modal>
   );
