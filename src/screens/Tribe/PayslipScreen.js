@@ -14,6 +14,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
+import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -177,12 +178,13 @@ const PayslipScreen = () => {
           />
         ) : (
           <View style={styles.imageContainer}>
-            <Image
+            {/* <Image
               source={require("./../../assets/vectors/empty.png")}
               alt="empty"
               style={{ resizeMode: "contain", height: 300, width: 300 }}
             />
-            <Text>No Data</Text>
+            <Text>No Data</Text> */}
+            <EmptyPlaceholder height={300} width={300} text="No Data" />
           </View>
         )}
       </SafeAreaView>
