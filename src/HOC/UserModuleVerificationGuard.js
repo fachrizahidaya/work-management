@@ -27,7 +27,7 @@ const UserModuleVerificationGuard = ({ children }) => {
       Toast.show({
         type: "error",
         text1: "Something went wrong",
-        text2: error.response.data.message,
+        text2: error?.response?.data?.message,
         position: "bottom",
       });
     }
