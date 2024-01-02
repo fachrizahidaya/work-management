@@ -25,18 +25,16 @@ const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, 
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69", maxWidth: 300 }}>{reason}</Text>
         </View>
-        <View style={{ borderRadius: 10, width: 20 }}>
-          <View style={{ flexDirection: "row", gap: 5 }}>
-            <MaterialCommunityIcons name="clock-outline" size={20} color="#186688" />
-            <Text>{days > 1 ? `${days} days` : `${days} day`}</Text>
-          </View>
+        <View style={{ flexDirection: "row", gap: 5, padding: 5, borderRadius: 10, backgroundColor: "#F8F8F8" }}>
+          <MaterialCommunityIcons name="clock-outline" size={20} color="#186688" />
+          <Text>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
           {dayjs(begin_date).format("DD.MM.YYYY")} - {dayjs(end_date).format("DD.MM.YYYY")}
         </Text>
-        <Text style={{ color: "#FF6262" }}>{status}</Text>
+        <Text style={{ color: "#F0C290" }}>{status}</Text>
       </View>
     </View>
   );

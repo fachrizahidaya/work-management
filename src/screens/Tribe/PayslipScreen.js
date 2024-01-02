@@ -177,15 +177,16 @@ const PayslipScreen = () => {
             )}
           />
         ) : (
-          <View style={styles.imageContainer}>
-            {/* <Image
-              source={require("./../../assets/vectors/empty.png")}
-              alt="empty"
-              style={{ resizeMode: "contain", height: 300, width: 300 }}
-            />
-            <Text>No Data</Text> */}
-            <EmptyPlaceholder height={300} width={300} text="No Data" />
-          </View>
+          <>
+            <View style={styles.imageContainer}>
+              <Image
+                source={require("./../../assets/vectors/empty.png")}
+                alt="empty"
+                style={{ resizeMode: "contain", height: 300, width: 300 }}
+              />
+              <Text>No Data</Text>
+            </View>
+          </>
         )}
       </SafeAreaView>
       <PayslipDownload

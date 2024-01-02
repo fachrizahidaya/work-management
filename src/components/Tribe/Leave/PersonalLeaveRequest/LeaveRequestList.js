@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
+import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
@@ -30,6 +30,7 @@ const LeaveRequestList = ({
   setHasBeenScrolledPending,
   hasBeenScrolledApproved,
   setHasBeenScrolledApproved,
+  refetchLeaveRequest,
 }) => {
   return (
     <>
@@ -81,12 +82,6 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                {/* <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text> */}
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
@@ -136,12 +131,6 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                {/* <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text> */}
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
@@ -189,12 +178,6 @@ const LeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              {/* <Image
-                source={require("../../../../assets/vectors/empty.png")}
-                alt="empty"
-                style={{ height: 250, width: 250, resizeMode: "contain" }}
-              />
-              <Text>No Data</Text> */}
               <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>

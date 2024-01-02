@@ -318,7 +318,7 @@ const EmployeeProfileScreen = ({ route }) => {
         hasSuccessFunc={true}
         onSuccess={() => {
           actionsScreenSheetRef.current?.hide();
-          // refetchPersonalPost();
+          refetchPersonalPost();
         }}
         description="Are you sure to delete this post?"
         successMessage="Post deleted"

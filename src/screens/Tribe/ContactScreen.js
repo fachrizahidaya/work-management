@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import _ from "lodash";
 
-import { FlatList, SafeAreaView, StyleSheet, View, ActivityIndicator } from "react-native";
+import { SafeAreaView, StyleSheet, View, ActivityIndicator } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
 import Input from "../../components/shared/Forms/Input";
@@ -60,6 +61,8 @@ const ContactScreen = () => {
     setFilteredDataArray([]);
   }, [searchInput]);
 
+  console.log("c", contacts);
+
   useEffect(() => {
     if (employeeData?.data?.data.length) {
       if (!searchInput) {
@@ -99,7 +102,7 @@ const ContactScreen = () => {
 
       {/* Content here */}
       <View style={{ flex: 1, paddingHorizontal: 15 }}>
-        <FlatList
+        <FlashList
           data={contacts.length ? contacts : filteredDataArray}
           onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
           keyExtractor={(item, index) => index}
