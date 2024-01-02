@@ -12,7 +12,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
 import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
+import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
 import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";

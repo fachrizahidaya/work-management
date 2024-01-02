@@ -25,17 +25,16 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
         backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
         borderRadius: 5,
         gap: 5,
-        paddingHorizontal: 5,
-        paddingVertical: 5,
+        padding: 10,
       }}
     >
       {type === "Project" && (
-        <MaterialCommunityIcons name="lightning-bolt" size={10} color={!myMessage ? "#000000" : "#FFFFFF"} />
+        <MaterialCommunityIcons name="lightning-bolt" size={20} color={!myMessage ? "#000000" : "#FFFFFF"} />
       )}
       {type === "Task" && (
         <MaterialCommunityIcons
           name="checkbox-marked-circle-outline"
-          size={10}
+          size={20}
           color={!myMessage ? "#000000" : "#FFFFFF"}
         />
       )}

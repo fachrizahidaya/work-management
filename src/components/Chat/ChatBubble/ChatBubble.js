@@ -162,9 +162,11 @@ const ChatBubble = ({
         marginBottom: isGrouped ? 3 : 5,
       }}
     >
-      <Pressable style={{ ...styles.iconContainer, marginRight: myMessage ? 5 : null }}>
-        <MaterialIcons name="reply" size={5} />
-      </Pressable>
+      {!isOptimistic && (
+        <Pressable style={{ ...styles.iconContainer, marginRight: myMessage ? 5 : null, alignSelf: "center" }}>
+          <MaterialIcons name="reply" size={5} />
+        </Pressable>
+      )}
       {/* {type === "group" && !myMessage && image ? (
           <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
           ) : type === "group" && !myMessage ? (
@@ -179,8 +181,8 @@ const ChatBubble = ({
               justifyContent: "center",
               maxWidth: 300,
               borderRadius: 10,
-              paddingVertical: 3,
-              paddingHorizontal: 3,
+              paddingVertical: 5,
+              paddingHorizontal: 5,
               backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
               gap: 5,
             }}

@@ -1,21 +1,25 @@
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
-import { StyleSheet, SafeAreaView } from "react-native";
+
+import { StyleSheet, SafeAreaView, Text, Pressable, Image, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import Description from "../../components/Chat/ProjectTask/Description";
 import DateSection from "../../components/Chat/ProjectTask/DateSection";
-import CreatorSection from "./CreatorSection";
-import ObserverSection from "./ObserverSection";
-import ChecklistSection from "./ChecklistSection";
-import { useFetch } from "../../hooks/useFetch";
+import CreatorSection from "../../components/Chat/ProjectTask/CreatorSection";
+import ObserverSection from "../../components/Chat/ProjectTask/ObserverSection";
+import ChecklistSection from "../../components/Chat/ProjectTask/ChecklistSection";
 
 const TaskDetail = () => {
   const navigation = useNavigation();
+
   const routes = useRoute();
+
   const {
     task_id,
     setBandAttachment,
@@ -31,43 +35,47 @@ const TaskDetail = () => {
     isPinned,
     taskData,
   } = routes.params;
+
   const { data: task, isFetching: taskIsFetching, refetch: refetchTask } = useFetch(`/chat/task/${task_id}`);
+
   const filteredData = task?.data?.checklist.filter((item) => item.status === "Finish");
   const percentage =
     task?.data?.checklist?.length > 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
+
   return (
     <SafeAreaView style={styles.container}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-        <Flex justifyContent="space-between" flex={1} direction="row" alignItems="center">
-          <Flex gap={2} flexDirection="row" alignItems="center">
-            <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
-              <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 5 }}>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Pressable
+              style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+              onPress={() => navigation.goBack()}
+            >
+              <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
             </Pressable>
-            <Flex>
-              <Text fontSize={14} fontWeight={400}>
+            <View>
+              <Text style={{ fontSize: 14, fontWeight: "400" }}>
                 {task?.data?.title.length > 50 ? task?.data?.title.slice(0, 30) + "..." : task?.data?.title}
               </Text>
-              <Text opacity={0.5} fontSize={12} fontWeight={300}>
+              <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
                 Due {dayjs(task?.data?.deadline).format("DD MMMM YYYY")}
               </Text>
-            </Flex>
-          </Flex>
-          <Flex gap={2} flexDirection="row" alignItems="center">
-            <Text fontSize={10} fontWeight={400}>
-              Assigned to
-            </Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Text style={{ fontSize: 10, fontWeight: "400" }}>Assigned to</Text>
             <AvatarPlaceholder
               name={task?.data?.responsible?.user?.name}
               image={task?.data?.responsible?.user?.image}
             />
-          </Flex>
-        </Flex>
-      </Flex>
-      <Flex borderRadius={10} mx={3} my={2} bgColor="#fafafa">
+          </View>
+        </View>
+      </View>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, margin: 5 }}>
         <Description description={task?.data?.description} navigation={navigation} />
-      </Flex>
-      <Flex flex={1} gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
-        <Flex gap={2}>
+      </View>
+      <View style={{ flex: 1, flexDirection: "row", borderRadius: 10, margin: 5, gap: 5, backgroundColor: "#FAFAFA" }}>
+        <View style={{ gap: 5 }}>
           <DateSection
             start={dayjs(task?.data?.created_at).format("MMM DD, YYYY")}
             end={dayjs(task?.data?.deadline).format("MMM DD, YYYY")}
@@ -76,10 +84,8 @@ const TaskDetail = () => {
             image={task?.data?.responsible?.user?.image}
             name={task?.data?.responsible?.user?.name.split(" ")[0]}
           />
-          <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
-            <Text fontSize={12} fontWeight={400}>
-              Observed by
-            </Text>
+          <View style={{ flex: 1, padding: 5, backgroundColor: "#FFFFFF", borderRadius: 10 }}>
+            <Text style={{ fontSize: 12, fontWeight: "400" }}>Observed by</Text>
             <FlashList
               data={task?.data?.observer}
               estimatedItemSize={50}
@@ -89,24 +95,26 @@ const TaskDetail = () => {
                 <ObserverSection key={index} name={item?.user?.name.split(" ")[0]} image={item?.user?.image} />
               )}
             />
-          </Flex>
-        </Flex>
-        <Flex px={2} py={1} borderRadius={10} flex={1} bgColor="#FFFFFF">
-          <Text fontSize={12} fontWeight={400}>
+          </View>
+        </View>
+        <View style={{ flex: 1, padding: 5, borderRadius: 10, backgroundColor: "#FFFFFF" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400" }}>
             Checklist ({typeof percentage === "undefined" ? 0 : Math.round(percentage)}
             %)
           </Text>
           {task?.data?.checklist.length === 0 ? (
-            <Flex gap={3} justifyContent="center" alignItems="center">
+            <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                alt="attachment"
-                h={150}
-                w={180}
-                resizeMode="cover"
                 source={require("../../assets/vectors/empty.png")}
+                alt="attachment"
+                style={{
+                  height: 150,
+                  width: 180,
+                  resizeMode: "cover",
+                }}
               />
               <Text>No Task</Text>
-            </Flex>
+            </View>
           ) : (
             <FlashList
               data={task?.data?.checklist}
@@ -118,46 +126,49 @@ const TaskDetail = () => {
               )}
             />
           )}
-        </Flex>
-      </Flex>
+        </View>
+      </View>
 
       <Pressable
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        bgColor="#ffffff"
-        py={3}
-        px={3}
-        mx={3}
-        my={2}
-        borderRadius={10}
-        gap={3}
-        flex={1}
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#FFFFFF",
+          padding: 5,
+          margin: 5,
+          gap: 5,
+          borderRadius: 10,
+        }}
       >
-        <Flex gap={3} justifyContent="center" alignItems="center">
+        <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
           <Image
-            alt="attachment"
-            h={150}
-            w={180}
-            resizeMode="cover"
             source={require("../../assets/vectors/empty.png")}
+            alt="attachment"
+            style={{
+              height: 150,
+              width: 180,
+              resizeMode: "cover",
+            }}
           />
-          <Box>
+          <View>
             <Text>No Data</Text>
-          </Box>
-        </Flex>
+          </View>
+        </View>
       </Pressable>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 10 }}>
         <Pressable
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          flex={1}
-          direction="row"
-          alignItems="center"
-          bgColor="#f5f5f5"
-          borderRadius={10}
-          p={2}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 5,
+          }}
           onPress={() => {
             setBandAttachment(taskData);
             setBandAttachmentType("task");
@@ -174,12 +185,10 @@ const TaskDetail = () => {
             });
           }}
         >
-          <Text fontSize={14} fontWeight={400} color="#176688">
-            Import Task
-          </Text>
-          <Icon as={<MateriaCommunitylIcons name="checkbox-outline" />} size="xl" color="#176688" />
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>Import Task</Text>
+          <MateriaCommunitylIcons name="checkbox-outline" size={25} color="#176688" />
         </Pressable>
-      </Flex>
+      </View>
     </SafeAreaView>
   );
 };

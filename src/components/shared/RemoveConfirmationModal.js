@@ -2,7 +2,7 @@ import { Spinner } from "native-base";
 import { Dimensions, Image, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";
 
-import Button from "../../shared/Forms/Button";
+import Button from "./Forms/Button";
 
 const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoading }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -22,7 +22,7 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
       <View style={{ backgroundColor: "#FFFFFF" }}>
         <View style={{ alignItems: "center" }}>
           <Image
-            source={require("../../../assets/vectors/confirmation.jpg")}
+            source={require("../../assets/vectors/confirmation.jpg")}
             alt="confirmation"
             style={{ height: 150, width: 150, resizeMode: "contain" }}
           />
