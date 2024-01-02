@@ -66,26 +66,29 @@ const AddPersonalChatScreen = () => {
       <View style={{ flex: 1, gap: 5 }}>
         <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
           <View>
-            <PageHeader title="Select User" onPress={() => navigation.goBack()} />
+            <PageHeader title="New Chat" onPress={() => navigation.goBack()} />
             <Text style={{ fontSize: 12, marginLeft: 10 }}>{data?.data?.total} users</Text>
           </View>
         </View>
 
-        <View style={{ flex: 1, gap: 5, paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, gap: 15, paddingHorizontal: 20 }}>
           <Input
             fieldName="search"
             value={inputToShow}
-            placeHolder="Search user..."
+            placeHolder="Search..."
             onChangeText={(value) => {
               searchHandler(value);
               setInputToShow(value);
             }}
+            startIcon="magnify"
             endIcon={inputToShow && "close"}
             onPressEndIcon={() => {
               setSearchKeyword("");
               setInputToShow("");
             }}
           />
+
+          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
 
           <FlashList
             ListFooterComponent={isLoading && <ActivityIndicator />}

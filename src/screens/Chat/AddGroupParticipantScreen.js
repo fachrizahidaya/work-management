@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { Spinner, Pressable } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
@@ -102,29 +101,33 @@ const AddGroupParticipantScreen = () => {
       <View style={{ flex: 1, gap: 5 }}>
         <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
           <View>
-            <PageHeader title="New Group" onPress={() => navigation.goBack()} />
+            <PageHeader title="Add Group Participant" onPress={() => navigation.goBack()} />
             <Text style={{ fontSize: 12, marginLeft: 10 }}>Add participants</Text>
           </View>
         </View>
 
-        <View style={{ flex: 1, gap: 5, paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, gap: 15, paddingHorizontal: 20 }}>
           <Input
             fieldName="search"
             value={inputToShow}
-            placeHolder="Search user..."
+            placeHolder="Search..."
             onChangeText={(value) => {
               searchHandler(value);
               setInputToShow(value);
             }}
+            startIcon="magnify"
             endIcon={inputToShow && "close"}
             onPressEndIcon={() => {
               setSearchKeyword("");
               setInputToShow("");
             }}
           />
+
+          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
+
           <FlashList
             extraData={forceRerender}
-            ListFooterComponent={isLoading && <Spinner size="lg" color="primary.600" />}
+            ListFooterComponent={isLoading && <ActivityIndicator />}
             estimatedItemSize={200}
             data={cumulativeData.length ? cumulativeData : filteredDataArray}
             keyExtractor={(item, index) => index}
@@ -162,10 +165,9 @@ const AddGroupParticipantScreen = () => {
           borderRadius: 30,
           borderWidth: 3,
           borderColor: "#FFFFFF",
+          backgroundColor: "#176688",
+          shadowOffset: 0,
         }}
-        rounded="full"
-        backgroundColor="primary.600"
-        shadow="0"
         onPress={onPressAddHandler}
       >
         <MaterialCommunityIcons name="arrow-right" size={25} color="#FFFFFF" />

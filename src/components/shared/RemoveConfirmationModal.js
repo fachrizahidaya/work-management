@@ -1,5 +1,4 @@
-import { Spinner } from "native-base";
-import { Dimensions, Image, Platform, Text, View } from "react-native";
+import { Dimensions, Image, Platform, Text, View, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 
 import Button from "./Forms/Button";
@@ -43,7 +42,7 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
             onPress={onPress}
             children={
               isLoading ? (
-                <Spinner color="#FFFFFF" />
+                <ActivityIndicator />
               ) : (
                 <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Confirm</Text>
               )
