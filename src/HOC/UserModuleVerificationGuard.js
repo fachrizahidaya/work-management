@@ -2,15 +2,13 @@ import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { useToast } from "native-base";
+import Toast from "react-native-toast-message";
 
-import { ErrorToast } from "../components/shared/ToastDialog";
 import axiosInstance from "../config/api";
 import { login } from "../redux/reducer/auth";
 import { push } from "../redux/reducer/user_menu";
 
 const UserModuleVerificationGuard = ({ children }) => {
-  const toast = useToast();
   const dispatch = useDispatch();
   const moduleSelector = useSelector((state) => state.module);
   const userSelector = useSelector((state) => state.auth);
@@ -26,10 +24,11 @@ const UserModuleVerificationGuard = ({ children }) => {
       dispatch(login(userResponse));
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={"Something went wrong, check console!"} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+        text2: error.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -56,7 +55,12 @@ const UserModuleVerificationGuard = ({ children }) => {
     }
   }, [userSelector.user_role_menu]);
 
-  return children;
+  return (
+    <>
+      {children}
+      <Toast />
+    </>
+  );
 };
 
 export default UserModuleVerificationGuard;
