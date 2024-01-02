@@ -127,12 +127,13 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -180,12 +181,13 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -232,12 +234,13 @@ const MyTeamLeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              <Image
+              {/* <Image
                 source={require("../../../../assets/vectors/empty.png")}
                 alt="empty"
                 style={{ height: 250, width: 250, resizeMode: "contain" }}
               />
-              <Text>No Data</Text>
+              <Text>No Data</Text> */}
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>
         )}

@@ -5,6 +5,7 @@ import { StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "reac
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
+import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const LeaveRequestList = ({
   onSelect,
@@ -80,12 +81,13 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -134,12 +136,13 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -186,12 +189,13 @@ const LeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              <Image
+              {/* <Image
                 source={require("../../../../assets/vectors/empty.png")}
                 alt="empty"
                 style={{ height: 250, width: 250, resizeMode: "contain" }}
               />
-              <Text>No Data</Text>
+              <Text>No Data</Text> */}
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>
         )}
