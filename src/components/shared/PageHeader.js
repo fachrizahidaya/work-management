@@ -1,7 +1,10 @@
 import React, { memo } from "react";
 
+import { Skeleton } from "moti/skeleton";
 import { Dimensions, View, Pressable, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { SkeletonCommonProps } from "./CustomStylings";
 
 const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, isLoading, onPress }) => {
   const { width: screenWidth } = Dimensions.get("screen");
@@ -28,7 +31,7 @@ const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, is
             {subTitle && <Text style={{ color: "#176688", fontWeight: 500 }}> #{subTitle}</Text>}
           </Text>
         ) : (
-          <Text>Loading...</Text>
+          <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
         )
       ) : (
         <Text style={{ fontSize: 16, fontWeight: 500 }} numberOfLines={2}>

@@ -55,7 +55,7 @@ const ProjectList = () => {
   const renderSkeletons = () => {
     const skeletons = [];
     for (let i = 0; i < 2; i++) {
-      skeletons.push(<Text key={i}>Loading...</Text>);
+      skeletons.push(<ProjectSkeleton key={i} />);
     }
     return skeletons;
   };

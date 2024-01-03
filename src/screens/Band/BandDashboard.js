@@ -2,11 +2,13 @@ import React, { useMemo } from "react";
 
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Skeleton } from "moti/skeleton";
 
 import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard/ProgressChartCard";
 import ProjectAndTaskCard from "../../components/Band/Dashboard/ProjectAndTaskCard/ProjectAndTaskCard";
 import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/ActiveTaskCard";
 import { useFetch } from "../../hooks/useFetch";
+import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
 
 const BandDashboard = () => {
   const {
@@ -85,8 +87,7 @@ const BandDashboard = () => {
           {!tasksThisYearIsLoading ? (
             <ProgressChartCard data={data} open={openTasks} onProgress={onProgressTasks} finish={finishTasks} />
           ) : (
-            // <Skeleton height={300} />
-            <Text>Loading...</Text>
+            <Skeleton width="100%" height={300} radius={20} {...SkeletonCommonProps} />
           )}
 
           <ActiveTaskCard />

@@ -3,14 +3,16 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { Skeleton } from "native-base";
-import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
+import { Skeleton } from "moti/skeleton";
+import { StyleSheet, TouchableOpacity, View, Image, Text, Dimensions } from "react-native";
 
 import { card } from "../../../../styles/Card";
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
+  const { width } = Dimensions.get("screen");
 
   return (
     <View style={styles.container}>
@@ -27,8 +29,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
           </View>
         </TouchableOpacity>
       ) : (
-        // <Skeleton h={160} flex={1} />
-        <Text>Loading...</Text>
+        <Skeleton width={width / 2 - 20} height={160} radius={20} {...SkeletonCommonProps} />
       )}
 
       {!taskIsLoading ? (
@@ -40,8 +41,7 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
           </View>
         </TouchableOpacity>
       ) : (
-        // <Skeleton h={160} flex={1} />
-        <Text>Loading...</Text>
+        <Skeleton width={width / 2 - 20} height={160} radius={20} {...SkeletonCommonProps} />
       )}
     </View>
   );
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     height: 160,
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     gap: 8,
     flex: 1,
   },
