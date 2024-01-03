@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Divider, Flex, Icon, Input, Pressable, Select, Skeleton, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Pressable, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -17,16 +16,16 @@ import PageHeader from "../../components/shared/PageHeader";
 import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import NewProjectSlider from "../../components/Band/Project/NewProjectSlider/NewProjectSlider";
+import Input from "../../components/shared/Forms/Input";
+import Select from "../../components/shared/Forms/Select";
 
 const ProjectList = () => {
+  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const createActionCheck = useCheckAccess("create", "Projects");
-  const { isOpen: projectFormIsOpen, toggle: toggleProjectForm } = useDisclosure(false);
 
   const dependencies = [status, currentPage, searchInput];
 
@@ -38,11 +37,6 @@ const ProjectList = () => {
     limit: 10,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
-
-  const closeProjectFormHandler = (resetForm) => {
-    toggleProjectForm();
-    resetForm();
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -83,64 +77,79 @@ const ProjectList = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="white" py={14} px={15}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "white",
+            paddingVertical: 14,
+            paddingHorizontal: 15,
+          }}
+        >
           <PageHeader title="My Project" backButton={false} />
-        </Flex>
+        </View>
 
-        <Flex flex={1} gap={14} bgColor={"white"} m={4} borderRadius={15} pb={4}>
-          <Box pt={4} px={4}>
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            gap: 14,
+            backgroundColor: "white",
+            paddingTop: 17,
+            paddingBottom: 4,
+            marginHorizontal: 16,
+            marginVertical: 20,
+            borderRadius: 10,
+          }}
+        >
+          <View style={{ paddingTop: 4, paddingHorizontal: 16 }}>
             <Input
               value={formik.values.search}
-              size="md"
-              InputRightElement={
-                searchInput && (
+              onChangeText={(value) => {
+                handleSearch(value);
+                formik.setFieldValue("search", value);
+              }}
+              placeHolder="Search project..."
+              endAdornment={
+                formik.values.search && (
                   <Pressable
                     onPress={() => {
                       handleSearch("");
                       formik.resetForm();
                     }}
                   >
-                    <Icon as={<MaterialCommunityIcons name="close" />} size="md" mr={3} />
+                    <MaterialCommunityIcons name="close" size={20} />
                   </Pressable>
                 )
               }
-              InputLeftElement={
+              startAdornment={
                 <Pressable>
-                  <Icon as={<MaterialCommunityIcons name="magnify" />} size="md" ml={2} color="muted.400" />
+                  <MaterialCommunityIcons name="magnify" size={20} />
                 </Pressable>
               }
-              placeholder="Search project..."
-              onChangeText={(value) => {
-                handleSearch(value);
-                formik.setFieldValue("search", value);
-              }}
             />
-          </Box>
+          </View>
 
-          <Box px={4} pb={1}>
+          <View style={{ paddingHorizontal: 16, paddingBottom: 1 }}>
             <Select
-              variant="unstyled"
-              size="md"
-              dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-              borderRadius={15}
-              borderWidth={1}
-              style={{ height: 40 }}
-              onValueChange={(value) => setStatus(value)}
-              defaultValue={status}
-            >
-              <Select.Item label="Open" value="Open" />
-              <Select.Item label="On Progress" value="On Progress" />
-              <Select.Item label="Finish" value="Finish" />
-              <Select.Item label="Archived" value="Archived" />
-            </Select>
-          </Box>
+              onChange={(value) => setStatus(value)}
+              value={status}
+              items={[
+                { label: "Open", value: "Open" },
+                { label: "On Progress", value: "On Progress" },
+                { label: "Finish", value: "Finish" },
+                { label: "Archived", value: "Open" },
+              ]}
+            />
+          </View>
 
-          <Divider></Divider>
+          <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
 
           {!isLoading ? (
             data?.data?.data?.length > 0 ? (
               <>
-                <Box flex={1}>
+                <View style={{ flex: 1 }}>
                   <FlashList
                     refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
                     data={data?.data.data}
@@ -160,7 +169,7 @@ const ProjectList = () => {
                       />
                     )}
                   />
-                </Box>
+                </View>
 
                 {data?.data?.last_page > 1 && (
                   <Pagination data={data} setCurrentPage={setCurrentPage} currentPage={currentPage} />
@@ -170,33 +179,19 @@ const ProjectList = () => {
               <EmptyPlaceholder height={200} width={240} text="No project" />
             )
           ) : (
-            <VStack px={2} space={2}>
-              {renderSkeletons()}
-            </VStack>
+            <View style={{ display: "flex", paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
           )}
-        </Flex>
+        </View>
 
         {createActionCheck && (
           <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleProjectForm}
+            style={styles.hoverButton}
+            onPress={() => navigation.navigate("Project Form", { projectData: null })}
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
       </SafeAreaView>
-
-      {/* Create project form */}
-      {projectFormIsOpen && <NewProjectSlider isOpen={projectFormIsOpen} onClose={closeProjectFormHandler} />}
     </>
   );
 };
@@ -206,6 +201,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Linking } from "react-native";
-import { Flex, Icon, Image, Pressable, Text } from "native-base";
+import { View, Text, Pressable, Image, Linking } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -9,6 +8,7 @@ const doc = "../../../assets/doc-icons/doc-format.png";
 const pdf = "../../../assets/doc-icons/pdf-format.png";
 const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
+const txt = "../../../assets/doc-icons/other-format.png";
 
 const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
   const [fileImage, setFileImage] = useState("");
@@ -20,6 +20,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     { type: "xls", image: xls },
     { type: "ppt", image: ppt },
     { type: "pdf", image: pdf },
+    { type: "txt", image: txt },
   ];
 
   const getFileExt = () => {
@@ -48,54 +49,71 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
   return (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
-      gap={3}
-      p={2}
-      borderRadius={5}
-      backgroundColor={!myMessage ? "#f1f1f1" : "#1b536b"}
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
+        borderRadius: 5,
+        gap: 5,
+        padding: 10,
+      }}
     >
       <Image
         source={
-          getFileExt() === "doc"
+          getFileExt() === "doc" || getFileExt() === "docx" || getFileExt() === "document"
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx"
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
             ? require(xls)
-            : getFileExt() === "ppt" || getFileExt() === "pptxs"
+            : getFileExt() === "ppt" || getFileExt() === "pptx"
             ? require(ppt)
-            : null
+            : require(txt)
         }
-        alignSelf="center"
-        h={8}
-        w={8}
-        resizeMode="cover"
+        style={{
+          height: 20,
+          width: 20,
+          alignSelf: "center",
+          resizeMode: "cover",
+        }}
         alt={`${file_type} format`}
       />
 
-      <Flex>
+      <View>
         <Text
-          width={160}
+          style={{
+            fontSize: 12,
+            fontWeight: "400",
+            color: !myMessage ? "#000000" : "#FFFFFF",
+            width: 160,
+            overflow: "hidden",
+          }}
           numberOfLines={2}
-          overflow="hidden"
           ellipsizeMode="tail"
-          fontSize={12}
-          fontWeight={400}
-          color={!myMessage ? "#000000" : "#FFFFFF"}
         >
           {file_name}
         </Text>
-        <Text fontSize={10} fontWeight={400} color={!myMessage ? "#000000" : "#FFFFFF"}>
+        <Text
+          style={{
+            fontSize: 10,
+            fontWeight: "400",
+            width: 150,
+            color: !myMessage ? "#000000" : "#FFFFFF",
+            overflow: "hidden",
+          }}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
           {getFileExt()} • {file_size}
         </Text>
-      </Flex>
-      <Icon
-        onPress={() => attachmentDownloadHandler(file_path)}
-        as={<MaterialCommunityIcons name="download" />}
+      </View>
+
+      <MaterialCommunityIcons
+        name="download"
         color={!myMessage ? "#000000" : "#FFFFFF"}
-        size={5}
+        size={20}
+        onPress={() => attachmentDownloadHandler(file_path)}
       />
     </Pressable>
   );

@@ -1,21 +1,19 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking } from "react-native";
-import { Flex, ScrollView, Text, Actionsheet } from "native-base";
+import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
+import { ScrollView } from "react-native-gesture-handler";
 
-import { useFetch } from "../../../../hooks/useFetch";
 import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
 
 const FeedComment = ({
   postId,
-  loggedEmployeeId,
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
   commentIsLoading,
   comments,
-  handleOpen,
   handleClose,
   refetchComment,
   onEndReached,
@@ -23,8 +21,9 @@ const FeedComment = ({
   parentId,
   onSubmit,
   onReply,
-  latestExpandedReply,
   employeeUsername,
+  employees,
+  reference,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -55,27 +54,18 @@ const FeedComment = ({
   };
 
   return (
-    <Actionsheet isOpen={handleOpen} onClose={handleClose}>
-      <Actionsheet.Content>
-        <Flex flexDir="column" justifyContent="center">
-          <Flex
-            flexDir="row"
-            alignItems="center"
-            justifyContent="center"
-            borderBottomWidth={1}
-            borderBottomColor="#DBDBDB"
-          >
-            <Flex mb={2} alignItems="center">
-              <Text fontSize={15} fontWeight={500}>
-                Comments
-              </Text>
-            </Flex>
-          </Flex>
-          <ScrollView flex={1} style={{ maxHeight: 600 }}>
-            <Flex gap={1} mt={1} flex={1}>
+    <ActionSheet ref={reference} onClose={handleClose}>
+      <View style={{ flexDirection: "column", justifyContent: "center" }}>
+        <View style={styles.wrapper}>
+          <View style={styles.header}>
+            <View style={{ alignItems: "center", marginBottom: 5 }}>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
+            </View>
+          </View>
+          <ScrollView style={{ paddingHorizontal: 5 }}>
+            <View style={styles.content}>
               <FeedCommentList
                 comments={comments}
-                latestExpandedReply={latestExpandedReply}
                 hasBeenScrolled={hasBeenScrolled}
                 setHasBeenScrolled={setHasBeenScrolled}
                 onReply={onReply}
@@ -89,7 +79,7 @@ const FeedComment = ({
                 copyToClipboard={copyToClipboard}
                 employeeUsername={employeeUsername}
               />
-            </Flex>
+            </View>
           </ScrollView>
 
           <FeedCommentForm
@@ -98,11 +88,29 @@ const FeedComment = ({
             loggedEmployeeName={loggedEmployeeName}
             parentId={parentId}
             onSubmit={onSubmit}
+            employees={employees}
           />
-        </Flex>
-      </Actionsheet.Content>
-    </Actionsheet>
+        </View>
+      </View>
+    </ActionSheet>
   );
 };
 
-export default FeedComment;
+export default memo(FeedComment);
+
+const styles = StyleSheet.create({
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#DBDBDB",
+  },
+  content: {},
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
+});

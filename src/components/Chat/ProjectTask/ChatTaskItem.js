@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
-import { Box, Flex, Pressable, Text } from "native-base";
+import { View, Pressable, Text } from "react-native";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const ChatTaskItem = ({
@@ -24,7 +25,7 @@ const ChatTaskItem = ({
   item,
 }) => {
   return (
-    <Box my={1}>
+    <View style={{ marginVertical: 5 }}>
       <Pressable
         onPress={() => {
           navigation.navigate("Task Detail Screen", {
@@ -43,25 +44,25 @@ const ChatTaskItem = ({
             taskData: item,
           });
         }}
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        bgColor="#ffffff"
-        p={5}
-        borderRadius={10}
-        justifyContent="space-between"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          padding: 10,
+          borderRadius: 10,
+        }}
       >
-        <Flex>
-          <Text fontSize={14} fontWeight={400}>
-            {name}
-          </Text>
-          <Text opacity={0.5} fontSize={12} fontWeight={300}>
+        <View>
+          <Text style={{ fontSize: 14, fontWeight: "400" }}>{name.length > 50 ? name.slice(0, 30) + "..." : name}</Text>
+          <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
             Due {dayjs(date).format("DD MMMM YYYY")}
           </Text>
-        </Flex>
+        </View>
         <AvatarPlaceholder name={owner} image={image} size="sm" />
       </Pressable>
-    </Box>
+    </View>
   );
 };
 

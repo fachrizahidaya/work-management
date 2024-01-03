@@ -1,40 +1,39 @@
 import React from "react";
 
-import { Flex, HStack, Icon, IconButton, Text } from "native-base";
+import { Pressable, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CheckListItem = ({ id, title, status, onPress, onPressDelete, disabled }) => {
   return (
-    <Flex flexDir="row" justifyContent="space-between" alignItems="center" mb={2}>
-      <HStack space={3} alignItems="center">
-        <IconButton
-          rounded="full"
-          disabled={disabled}
-          onPress={() => onPress(id, status)}
-          icon={
-            <Icon
-              as={
-                <MaterialCommunityIcons
-                  name={status === "Open" ? "checkbox-blank-circle-outline" : "checkbox-marked-circle-outline"}
-                />
-              }
-              color={status === "Finish" && "primary.600"}
-            />
-          }
-          size="md"
-        />
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
+      }}
+    >
+      <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
+        <Pressable disabled={disabled} onPress={() => onPress(id, status)}>
+          <MaterialCommunityIcons
+            name={status === "Open" ? "checkbox-blank-circle-outline" : "checkbox-marked-circle-outline"}
+            color={status === "Finish" && "#176688"}
+            size={20}
+          />
+        </Pressable>
 
-        <Text textDecorationLine={status === "Finish" ? "line-through" : "none"}>{title}</Text>
-      </HStack>
+        <Text style={{ fontWeight: 500, textDecorationLine: status === "Finish" ? "line-through" : "none" }}>
+          {title}
+        </Text>
+      </View>
 
       {!disabled && (
-        <IconButton
-          onPress={() => onPressDelete(id)}
-          rounded="full"
-          icon={<Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="gray.600" />}
-        />
+        <Pressable disabled={disabled} onPress={() => onPressDelete(id)}>
+          <MaterialCommunityIcons name="delete-outline" size={20} />
+        </Pressable>
       )}
-    </Flex>
+    </View>
   );
 };
 

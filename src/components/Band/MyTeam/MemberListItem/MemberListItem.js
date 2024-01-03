@@ -1,8 +1,9 @@
 import React from "react";
 
-import { Avatar, Divider, Flex, HStack, Icon, IconButton, Image, Menu, Text, VStack } from "native-base";
+import { SheetManager } from "react-native-actions-sheet";
+
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { StyleSheet } from "react-native";
 
 const MemberListItem = ({
   member,
@@ -49,81 +50,100 @@ const MemberListItem = ({
   };
 
   return (
-    <Flex style={styles.card} gap={23}>
-      <HStack alignItems="center" space={2} position="relative">
+    <View style={styles.card}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          position: "relative",
+        }}
+      >
         {image ? (
           <Image
+            style={{ height: 63, width: 63, resizeMode: "contain", borderRadius: 10 }}
             source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${image}` }}
-            h={63}
-            w={63}
-            borderRadius={20}
             alt={`${name} avatar`}
           />
         ) : (
-          <Avatar h={63} w={63} bgColor={stringToColor(name)} borderRadius={20}>
-            {userInitialGenerator()}
-          </Avatar>
+          <View
+            style={{
+              height: 63,
+              width: 63,
+              backgroundColor: stringToColor(name),
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontWeight: 500, fontSize: 20, color: "white" }}>{userInitialGenerator()}</Text>
+          </View>
         )}
 
-        <VStack>
-          <Text w={125} numberOfLines={2}>
+        <View style={{ display: "flex" }}>
+          <Text style={{ width: 125, fontWeight: 500 }} numberOfLines={2}>
             {name}
           </Text>
 
-          {master === name && (
-            <Icon as={<MaterialCommunityIcons name="shield-account-variant" />} size="lg" color="yellow.400" />
-          )}
-        </VStack>
+          {master === name && <MaterialCommunityIcons name="shield-account-variant" size={20} color="#FFD240" />}
+        </View>
 
-        <HStack position="absolute" bottom={0} right={0} space={2}>
-          <VStack alignItems="center">
-            <Text opacity={0.5}>Task</Text>
-            <Text>{totalTasks}</Text>
-          </VStack>
-          <Divider orientation="vertical" />
-          <VStack alignItems="center">
-            <Text opacity={0.5}>Project</Text>
-            <Text>{totalProjects}</Text>
-          </VStack>
-        </HStack>
+        <View style={{ position: "absolute", bottom: 0, right: 0, display: "flex", flexDirection: "row", gap: 10 }}>
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <Text style={{ fontWeight: 500, opacity: 0.5 }}>Task</Text>
+            <Text style={{ fontWeight: 500 }}>{totalTasks}</Text>
+          </View>
+
+          <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
+
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <Text style={{ fontWeight: 500, opacity: 0.5 }}>Project</Text>
+            <Text style={{ fontWeight: 500 }}>{totalProjects}</Text>
+          </View>
+        </View>
+
         {loggedInUser === master && (
           <>
             {name !== master && (
-              <Menu
-                trigger={(triggerProps) => {
-                  return (
-                    <IconButton
-                      position="absolute"
-                      top={-20}
-                      right={-10}
-                      borderRadius="full"
-                      {...triggerProps}
-                      icon={<Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="#3F434A" />}
-                    />
-                  );
-                }}
+              <Pressable
+                style={{ position: "absolute", top: -15, right: -5, borderRadius: 50 }}
+                onPress={() =>
+                  SheetManager.show("form-sheet", {
+                    payload: {
+                      children: (
+                        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              openRemoveMemberModal(member);
+                            }}
+                          >
+                            <Text style={{ fontWeight: 500, color: "red" }}>Remove Member</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ),
+                    },
+                  })
+                }
               >
-                <Menu.Item onPress={() => openRemoveMemberModal(member)}>
-                  <Flex flexDir="row" alignItems="center" gap={2}>
-                    <Icon as={<MaterialCommunityIcons name="account-remove-outline" />} size="md" color="red.600" />
-                    <Text color="red.600">Remove Member</Text>
-                  </Flex>
-                </Menu.Item>
-              </Menu>
+                <MaterialCommunityIcons name="dots-vertical" size={20} />
+              </Pressable>
             )}
           </>
         )}
-      </HStack>
+      </View>
 
-      <Divider orientation="horizontal" bgColor="#E8E9EB" />
+      <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
 
-      <VStack space={2}>
-        <Flex flexDir="row" justifyContent="space-between">
-          <Text>Email:</Text>
-          <Text>{email}</Text>
-        </Flex>
-      </VStack>
-    </Flex>
+      <View style={{ display: "flex", gap: 10 }}>
+        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ fontWeight: 500 }}>Email:</Text>
+          <Text style={{ fontWeight: 500 }}>{email}</Text>
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -131,8 +151,10 @@ export default MemberListItem;
 
 const styles = StyleSheet.create({
   card: {
+    display: "flex",
+    gap: 23,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 16,
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: { width: 0, height: 4 },

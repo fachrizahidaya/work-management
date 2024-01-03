@@ -1,18 +1,13 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 
-import { Box, Button, Flex, Icon, Text } from "native-base";
-import { ScrollView } from "react-native-gesture-handler";
-import { FlatList } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { FlatList, View, Text, Image } from "react-native";
 
-import CustomAccordion from "../../../shared/CustomAccordion";
 import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
-import useCheckAccess from "../../../../hooks/useCheckAccess";
+import Tabs from "../../../shared/Tabs";
+import { RefreshControl } from "react-native-gesture-handler";
 
-const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation }) => {
-  const createActionCheck = useCheckAccess("create", "Tasks");
-
+const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, refetch, setSelectedStatus }) => {
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
@@ -24,161 +19,75 @@ const TaskList = ({ tasks, isLoading, openNewTaskForm, openCloseTaskConfirmation
     return task.status === "Finish" || task.status === "Closed";
   });
 
+  const dataToRender = () => {
+    if (tabValue.includes("Open")) {
+      return todoTasks;
+    } else if (tabValue.includes("On Progress")) {
+      return onProgressTasks;
+    } else return finishTasks;
+  };
+
+  const tabs = useMemo(() => {
+    return [
+      { title: `Open (${todoTasks?.length || 0})`, value: "Open" },
+      { title: `On Progress (${onProgressTasks?.length || 0})`, value: "On Progress" },
+      { title: `Finish (${finishTasks?.length || 0})`, value: "Finish" },
+    ];
+  }, [tasks]);
+
+  const [tabValue, setTabValue] = useState("Open");
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setSelectedStatus(value);
+  }, []);
+
   return (
-    <Flex gap={8}>
-      <CustomAccordion title="ToDo" subTitle={todoTasks?.length || 0}>
-        {!isLoading ? (
-          <>
-            <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
-                  data={todoTasks}
-                  keyExtractor={(item) => item.id}
-                  onEndReachedThreshold={0.1}
-                  renderItem={({ item }) => (
-                    <TaskListItem
-                      id={item.id}
-                      no={item.task_no}
-                      task={item}
-                      title={item.title}
-                      image={item.responsible_image}
-                      deadline={item.deadline}
-                      priority={item.priority}
-                      totalAttachments={item.total_attachment}
-                      totalChecklists={item.total_checklist}
-                      totalChecklistsDone={item.total_checklist_finish}
-                      totalComments={item.total_comment}
-                      status={item.status}
-                      responsible={item.responsible_name}
-                      responsibleId={item.responsible_id}
-                      openCloseTaskConfirmation={openCloseTaskConfirmation}
-                    />
-                  )}
-                />
-              </Box>
-            </ScrollView>
+    <View style={{ display: "flex", gap: 10, flex: 1, marginHorizontal: 16, marginTop: 10 }}>
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
-            {createActionCheck && (
-              <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("Open")}
-              >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
-              </Button>
+      {!isLoading ? (
+        dataToRender()?.length > 0 ? (
+          <FlatList
+            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            style={{ flexGrow: 0 }}
+            data={dataToRender()}
+            keyExtractor={(item) => item.id}
+            onEndReachedThreshold={0.1}
+            renderItem={({ item }) => (
+              <TaskListItem
+                id={item.id}
+                no={item.task_no}
+                task={item}
+                title={item.title}
+                image={item.responsible_image}
+                deadline={item.deadline}
+                priority={item.priority}
+                totalAttachments={item.total_attachment}
+                totalChecklists={item.total_checklist}
+                totalChecklistsDone={item.total_checklist_finish}
+                totalComments={item.total_comment}
+                status={item.status}
+                responsible={item.responsible_name}
+                responsibleId={item.responsible_id}
+                openCloseTaskConfirmation={openCloseTaskConfirmation}
+              />
             )}
-          </>
+          />
         ) : (
-          <TaskSkeleton />
-        )}
-      </CustomAccordion>
-
-      <CustomAccordion title="In Progress" subTitle={onProgressTasks?.length || 0}>
-        {!isLoading ? (
-          <>
-            <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
-                  data={onProgressTasks}
-                  keyExtractor={(item) => item.id}
-                  onEndReachedThreshold={0.1}
-                  renderItem={({ item }) => (
-                    <TaskListItem
-                      id={item.id}
-                      no={item.task_no}
-                      task={item}
-                      title={item.title}
-                      image={item.responsible_image}
-                      deadline={item.deadline}
-                      priority={item.priority}
-                      totalAttachments={item.total_attachment}
-                      totalChecklists={item.total_checklist}
-                      totalChecklistsDone={item.total_checklist_finish}
-                      totalComments={item.total_comment}
-                      status={item.status}
-                      responsible={item.responsible_name}
-                      responsibleId={item.responsible_id}
-                      openCloseTaskConfirmation={openCloseTaskConfirmation}
-                    />
-                  )}
-                />
-              </Box>
-            </ScrollView>
-
-            {createActionCheck && (
-              <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("On Progress")}
-              >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
-              </Button>
-            )}
-          </>
-        ) : (
-          <TaskSkeleton />
-        )}
-      </CustomAccordion>
-
-      <CustomAccordion title="Completed" subTitle={finishTasks?.length || 0}>
-        {!isLoading ? (
-          <>
-            <ScrollView style={{ maxHeight: 300 }}>
-              <Box flex={1} minHeight={2}>
-                <FlatList
-                  data={finishTasks}
-                  keyExtractor={(item) => item.id}
-                  onEndReachedThreshold={0.1}
-                  renderItem={({ item }) => (
-                    <TaskListItem
-                      id={item.id}
-                      no={item.task_no}
-                      task={item}
-                      title={item.title}
-                      image={item.responsible_image}
-                      deadline={item.deadline}
-                      priority={item.priority}
-                      totalAttachments={item.total_attachment}
-                      totalChecklists={item.total_checklist}
-                      totalChecklistsDone={item.total_checklist_finish}
-                      totalComments={item.total_comment}
-                      status={item.status}
-                      responsible={item.responsible_name}
-                      responsibleId={item.responsible_id}
-                      openCloseTaskConfirmation={openCloseTaskConfirmation}
-                    />
-                  )}
-                />
-              </Box>
-            </ScrollView>
-
-            {createActionCheck && (
-              <Button
-                variant="outline"
-                borderStyle="dashed"
-                style={{ height: 56 }}
-                onPress={() => openNewTaskForm("Finish")}
-              >
-                <Flex flexDir="row" alignItems="center" gap={1}>
-                  <Icon as={<MaterialCommunityIcons name="plus" />} color="primary.600" />
-                  <Text color="primary.600">ADD TASK</Text>
-                </Flex>
-              </Button>
-            )}
-          </>
-        ) : (
-          <TaskSkeleton />
-        )}
-      </CustomAccordion>
-    </Flex>
+          <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
+            <Image
+              alt="empty"
+              style={{ resizeMode: "contain", height: 200, width: 200 }}
+              source={require("../../../../assets/vectors/empty.png")}
+            />
+            <Text>No task available</Text>
+          </View>
+        )
+      ) : (
+        <TaskSkeleton />
+      )}
+    </View>
   );
 };
 

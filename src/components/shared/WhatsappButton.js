@@ -1,4 +1,3 @@
-import { Icon } from "native-base";
 import { Linking, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,7 +16,7 @@ const WhatsappButton = ({ phone, size }) => {
   };
   return (
     <TouchableOpacity onPress={handleWhatsappPress}>
-      <Icon as={<MaterialCommunityIcons name="whatsapp" />} size={size ? size : 5} />
+      <MaterialCommunityIcons name="whatsapp" size={size ? size : 10} />
     </TouchableOpacity>
   );
 };

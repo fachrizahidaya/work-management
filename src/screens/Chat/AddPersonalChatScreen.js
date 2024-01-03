@@ -1,14 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, HStack, Icon, IconButton, Input, Spinner, Text, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../hooks/useFetch";
+import Input from "../../components/shared/Forms/Input";
 import PageHeader from "../../components/shared/PageHeader";
 import UserListItem from "../../components/Chat/UserSelection/UserListItem";
 
@@ -19,8 +18,6 @@ const AddPersonalChatScreen = () => {
   const [inputToShow, setInputToShow] = useState("");
   const [cumulativeData, setCumulativeData] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
-
-  const route = useRoute();
 
   const userFetchParameters = {
     page: currentPage,
@@ -66,50 +63,42 @@ const AddPersonalChatScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flex={1} gap={2}>
-        <HStack alignItems="center" justifyContent="space-between" paddingHorizontal={16}>
-          <VStack>
-            <PageHeader title="Select User" onPress={() => navigation.goBack()} />
-            <Text fontSize={12} ml={9}>
-              {data?.data?.total} users
-            </Text>
-          </VStack>
-        </HStack>
+      <View style={{ flex: 1, gap: 5 }}>
+        <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
+          <View>
+            <PageHeader title="New Chat" onPress={() => navigation.goBack()} />
+            <Text style={{ fontSize: 12, marginLeft: 10 }}>{data?.data?.total} users</Text>
+          </View>
+        </View>
 
-        <VStack flex={1} paddingHorizontal={16} space={2}>
+        <View style={{ flex: 1, gap: 15, paddingHorizontal: 20 }}>
           <Input
-            autoFocus
+            fieldName="search"
             value={inputToShow}
-            placeholder="Search user..."
-            size="lg"
+            placeHolder="Search..."
             onChangeText={(value) => {
               searchHandler(value);
               setInputToShow(value);
             }}
-            InputRightElement={
-              inputToShow && (
-                <IconButton
-                  onPress={() => {
-                    setSearchKeyword("");
-                    setInputToShow("");
-                  }}
-                  icon={<Icon as={<MaterialCommunityIcons name="close" />} size="lg" />}
-                  rounded="full"
-                  mr={2}
-                />
-              )
-            }
+            startIcon="magnify"
+            endIcon={inputToShow && "close"}
+            onPressEndIcon={() => {
+              setSearchKeyword("");
+              setInputToShow("");
+            }}
           />
 
+          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
+
           <FlashList
-            ListFooterComponent={isLoading && <Spinner size="lg" color="primary.600" />}
+            ListFooterComponent={isLoading && <ActivityIndicator />}
             estimatedItemSize={200}
             data={cumulativeData.length ? cumulativeData : filteredDataArray}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             onEndReached={fetchMoreData}
             renderItem={({ item }) => (
-              <Box marginBottom={2}>
+              <View style={{ marginBottom: 10 }}>
                 <UserListItem
                   user={item}
                   roomId={item?.chat_personal_id}
@@ -122,11 +111,11 @@ const AddPersonalChatScreen = () => {
                   type="personal"
                   active_member={0}
                 />
-              </Box>
+              </View>
             )}
           />
-        </VStack>
-      </Flex>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

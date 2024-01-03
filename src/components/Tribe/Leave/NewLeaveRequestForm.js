@@ -1,89 +1,67 @@
-import { Flex, FormControl, HStack, Icon, Select, Spinner, Text, TextArea } from "native-base";
-import { TouchableWithoutFeedback, Keyboard } from "react-native";
+import { useState } from "react";
+import { TouchableWithoutFeedback, Keyboard, View, Text, ActivityIndicator } from "react-native";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
+import Select from "../../shared/Forms/Select";
+import Input from "../../shared/Forms/Input";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
 
-const NewLeaveRequestForm = ({
-  formik,
-  leaveType,
-  onChangeEndDate,
-  onChangeStartDate,
-  selectedGenerateType,
-  isLoading,
-  isError,
-}) => {
+const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEndDate, isLoading, isError }) => {
+  const [selectedValue, setSelectedValue] = useState(null);
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <Flex px={1} gap={11}>
-        <FormControl isInvalid={formik.errors.leave_id}>
-          <FormControl.Label>Leave Type</FormControl.Label>
-        </FormControl>
-
+      <View style={{ paddingHorizontal: 3, gap: 20 }}>
         <Select
-          mt={-3}
-          selectedValue={formik.values.leave_id}
-          onValueChange={(value) => formik.setFieldValue("leave_id", value)}
-          borderRadius={15}
-          borderWidth={1}
-          variant="unstyled"
+          formik={formik}
+          value={formik.values.leave_id}
+          value1={selectedValue}
+          title="Leave Type"
+          placeHolder="Select Leave Type"
+          fieldName="leave_id"
+          items={leaveType}
+          onChange={(value) => {
+            formik.setFieldValue("leave_id", value);
+            const selectedLeave = leaveType.find((item) => item.value === value);
+            setSelectedValue(selectedLeave ? selectedLeave.value1 : null);
+          }}
           key="leave_id"
-          accessibilityLabel="Select Leave type"
-          placeholder="Select Leave type"
-          dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-        >
-          {leaveType?.data.map((item, index) => {
-            return (
-              <Select.Item _pressed={{ backgroundColor: "#f1f1f1" }} key={index} label={item?.name} value={item?.id} />
-            );
-          })}
-        </Select>
-        <FormControl mt={-2} isInvalid={formik.errors.leave_id}>
-          <FormControl.ErrorMessage>{formik.errors.leave_id}</FormControl.ErrorMessage>
-        </FormControl>
+        />
 
-        <FormControl isInvalid={formik.errors.reason}>
-          <FormControl.Label>Purpose of Leaving</FormControl.Label>
-          <TextArea
-            value={formik.values.reason}
-            h={100}
-            onChangeText={(value) => formik.setFieldValue("reason", value)}
-            placeholder="Input purpose"
-          />
-          <FormControl.ErrorMessage>{formik.errors.reason}</FormControl.ErrorMessage>
-        </FormControl>
+        <Input
+          multiline
+          formik={formik}
+          title="Purpose of Leaving"
+          fieldName="reason"
+          placeHolder="Input Reason"
+          value={formik.values.reason}
+        />
 
-        <FormControl isInvalid={formik.errors.begin_date}>
-          <FormControl.Label>Start Date</FormControl.Label>
+        <View style={{ gap: 10 }}>
+          <Text style={{ fontSize: 14, fontWeight: "400" }}>Start Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.begin_date}
             onChange={onChangeStartDate}
             disabled={!formik.values.leave_id}
           />
-          <FormControl.ErrorMessage>{formik.errors.begin_date}</FormControl.ErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={formik.errors.end_date}>
-          <FormControl.Label>End Date</FormControl.Label>
+          <Text style={{ color: "#FF6262" }}>{formik.errors.begin_date}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400" }}>End Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.end_date}
             onChange={onChangeEndDate}
-            disabled={!formik.values.leave_id || !selectedGenerateType}
+            disabled={!formik.values.leave_id}
           />
-          <FormControl.ErrorMessage>{formik.errors.end_date}</FormControl.ErrorMessage>
-        </FormControl>
+          <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text>
+        </View>
+
         {isLoading && (
-          <HStack>
-            <Spinner />
-            <Text fontSize={10} fontWeight={400}>
-              Checking availability...
-            </Text>
-          </HStack>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <ActivityIndicator />
+            <Text style={{ fontSize: 10, fontWeight: "400" }}>Checking availability...</Text>
+          </View>
         )}
 
         {formik.values.leave_id &&
@@ -93,14 +71,14 @@ const NewLeaveRequestForm = ({
         !isLoading &&
         !isError ? (
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="#FFFFFF">Submit</Text>
+            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
           </FormButton>
         ) : (
           <FormButton opacity={0.5}>
-            <Text color="#FFFFFF">Submit</Text>
+            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
           </FormButton>
         )}
-      </Flex>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

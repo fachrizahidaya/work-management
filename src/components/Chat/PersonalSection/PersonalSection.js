@@ -1,25 +1,30 @@
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { Flex, Icon, Text } from "native-base";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleChatOption, onSwipeControl }) => {
+const PersonalSection = ({
+  personalChats,
+  searchKeyword,
+  searchResult,
+  onSwipeControl,
+  onPinControl,
+
+  reference,
+}) => {
   const navigation = useNavigation();
+
   return !searchKeyword ? (
     <>
-      <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-        <Text opacity={0.5} fontWeight={500}>
-          PEOPLE
-        </Text>
+      <View style={styles.header}>
+        <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={toggleChatOption}>
-          <Icon as={<MaterialIcons name="add" />} color="black" />
+        <TouchableOpacity style={styles.addButton} onPress={() => reference.current?.show()}>
+          <MaterialIcons name="add" color="black" size={15} />
         </TouchableOpacity>
-      </Flex>
+      </View>
 
       {personalChats.length > 0 &&
         personalChats.map((personal) => {
@@ -45,6 +50,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleCha
               isPinned={personal?.pin_personal}
               active_member={0}
               onSwipe={onSwipeControl}
+              onPin={onPinControl}
             />
           );
         })}
@@ -53,15 +59,13 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleCha
     <>
       {searchResult?.length > 0 && (
         <>
-          <Flex p={4} direction="row" alignItems="center" justifyContent="space-between">
-            <Text opacity={0.5} fontWeight={500}>
-              PEOPLE
-            </Text>
+          <View style={styles.header}>
+            <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
-              <Icon as={<MaterialIcons name="add" />} color="black" />
+              <MaterialIcons name="add" color="black" size={15} />
             </TouchableOpacity>
-          </Flex>
+          </View>
 
           {searchResult.map((personal) => (
             <ContactListItem
@@ -91,6 +95,12 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, toggleCha
 export default PersonalSection;
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 15,
+  },
   addButton: {
     backgroundColor: "#f1f2f3",
     alignItems: "center",

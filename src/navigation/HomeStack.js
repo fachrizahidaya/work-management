@@ -18,12 +18,14 @@ import NotificationScreen from "../screens/NotificationScreen";
 import ProjectDetailScreen from "../screens/Band/project/[projectId]";
 import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
+import ProjectForm from "../screens/Band/ProjectForm";
+import TaskForm from "../screens/Band/TaskForm";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
 import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
-import TeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/TeamLeaveScreen";
+import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 
 // Settings Screens
@@ -43,7 +45,8 @@ import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
 import UserDetail from "../screens/Chat/UserDetail";
 import EditGroupProfile from "../screens/Chat/EditGroupProfile";
 import MediaScreen from "../screens/Chat/MediaScreen";
-import ProjectScreen from "../screens/Chat/ProjectScreen";
+import NoteForm from "../screens/Band/NoteForm";
+import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail";
 
@@ -129,7 +132,7 @@ const HomeStack = () => {
 
       <Stack.Screen name="Media" component={MediaScreen} options={{ headerShown: false }} />
 
-      <Stack.Screen name="Project Screen" component={ProjectScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Project Screen" component={ChatProjectTaskScreen} options={{ headerShown: false }} />
 
       <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
 
@@ -142,6 +145,12 @@ const HomeStack = () => {
 
       <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
 
+      <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
+
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
 
@@ -149,7 +158,7 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Team Leave Request" component={TeamLeaveScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Team Leave Request" component={MyTeamLeaveScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 

@@ -2,10 +2,12 @@ import React, { memo, useCallback, useState } from "react";
 
 import _ from "lodash";
 
-import { Actionsheet, Button, FormControl, Icon, IconButton, Input, Select, Skeleton, VStack } from "native-base";
+import { TouchableOpacity, View } from "react-native";
+import { Actionsheet, Button, FormControl, Icon, IconButton, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import Input from "../../../shared/Forms/Input";
 
 const TaskFilter = ({
   members,
@@ -53,33 +55,28 @@ const TaskFilter = ({
           handleChangeInput(value);
           setShownInput(value);
         }}
-        width="full"
-        placeholder="Search task..."
-        size="md"
-        InputRightElement={
-          <Button.Group mr={2}>
+        placeHolder="Search task..."
+        endAdornment={
+          <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
             {shownInput && (
-              <IconButton
+              <TouchableOpacity
                 onPress={() => {
                   setSearchInput("");
                   setShownInput("");
                 }}
-                icon={<Icon as={<MaterialCommunityIcons name="close" />} color="#3F434A" />}
-                rounded="full"
-                size="sm"
-              />
+              >
+                <MaterialCommunityIcons name="close" size={20} />
+              </TouchableOpacity>
             )}
-            <IconButton
-              onPress={() => openFilterHandler()}
-              icon={<Icon as={<MaterialCommunityIcons name="tune-variant" />} color="#3F434A" />}
-              rounded="full"
-              size="sm"
-            />
-          </Button.Group>
+
+            {/* <TouchableOpacity onPress={() => openFilterHandler()}>
+              <MaterialCommunityIcons name="tune-variant" size={20} />
+            </TouchableOpacity> */}
+          </View>
         }
       />
 
-      {filterIsOpen && (
+      {/* {filterIsOpen && (
         <Actionsheet
           isOpen={filterIsOpen}
           onClose={() => {
@@ -90,7 +87,6 @@ const TaskFilter = ({
           <Actionsheet.Content>
             {isReady ? (
               <VStack w="95%" space={2}>
-                {/* Member */}
                 <FormControl.Label>Member</FormControl.Label>
                 <Select
                   onValueChange={(value) => setResponsibleId(value)}
@@ -111,7 +107,6 @@ const TaskFilter = ({
                     })}
                 </Select>
 
-                {/* Label */}
                 <FormControl.Label>Label</FormControl.Label>
                 <Select
                   defaultValue={selectedLabel}
@@ -125,7 +120,6 @@ const TaskFilter = ({
                   })}
                 </Select>
 
-                {/* Deadline */}
                 <FormControl.Label>Due Date</FormControl.Label>
                 <Select
                   defaultValue={deadlineSort}
@@ -136,7 +130,6 @@ const TaskFilter = ({
                   <Select.Item label="Latest" value="desc" />
                 </Select>
 
-                {/* Priority */}
                 <FormControl.Label>Priority</FormControl.Label>
                 <Select
                   defaultValue={selectedPriority}
@@ -170,7 +163,7 @@ const TaskFilter = ({
             )}
           </Actionsheet.Content>
         </Actionsheet>
-      )}
+      )} */}
     </>
   );
 };

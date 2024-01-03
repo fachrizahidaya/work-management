@@ -1,19 +1,21 @@
-import { Box, Flex, Image, Text } from "native-base";
+import { View, Text, Image } from "react-native";
 
 const AttachmentSection = () => {
   return (
-    <Flex justifyContent="center" alignItems="center">
+    <View style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
       <Image
-        alt="attachment"
-        h={150}
-        w={180}
-        resizeMode="cover"
         source={require("../../../assets/vectors/empty.png")}
+        alt="attachment"
+        style={{
+          height: 150,
+          width: 180,
+          resizeMode: "cover",
+        }}
       />
-      <Box>
+      <View>
         <Text>No Data</Text>
-      </Box>
-    </Flex>
+      </View>
+    </View>
   );
 };
 

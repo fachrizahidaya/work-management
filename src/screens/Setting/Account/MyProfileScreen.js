@@ -7,17 +7,18 @@ import * as ImagePicker from "expo-image-picker";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Box, Flex, FormControl, Image, Input, Text, Pressable, Icon, useToast } from "native-base";
+import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../../components/shared/FormButton";
-import { ErrorToast, SuccessToast } from "../../../components/shared/ToastDialog";
 import { update_image } from "../../../redux/reducer/auth";
 import { update_profile } from "../../../redux/reducer/auth";
 import axiosInstance from "../../../config/api";
+import PageHeader from "../../../components/shared/PageHeader";
+import Input from "../../../components/shared/Forms/Input";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -29,8 +30,6 @@ const MyProfileScreen = ({ route }) => {
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
-
-  const toast = useToast();
 
   const phoneNumber = profile?.data?.phone_number.toString();
 
@@ -54,17 +53,15 @@ const MyProfileScreen = ({ route }) => {
       navigation.goBack({ profile: profile });
       setSubmitting(false);
       setStatus("success");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Profile Updated"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Profile updated!",
       });
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Update Failed`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
       });
       setSubmitting(false);
       setStatus("error");
@@ -110,7 +107,10 @@ const MyProfileScreen = ({ route }) => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (fileInfo.size >= 1000000) {
-      toast.show({ description: "Image size is too large" });
+      Toast.show({
+        type: "error",
+        text1: "File size is too large!",
+      });
       return;
     }
 
@@ -140,119 +140,103 @@ const MyProfileScreen = ({ route }) => {
       });
       dispatch(update_image(res.data.data));
       setImage(null);
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Profile Picture Updated"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Profile picture updated!",
       });
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Update failed, please try again later..."} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
       });
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-        <Flex flexDir="row" gap={1}>
-          <Pressable
-            onPress={() =>
-              !formik.isSubmitting &&
-              formik.status !== "processing" &&
-              navigation.goBack({ profile: profile, editProfileHandler: editProfileHandler })
-            }
-          >
-            <Icon as={<MaterialCommunityIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
-          </Pressable>
-          <Text fontSize={16}>My Profile Screen</Text>
-        </Flex>
-      </Flex>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "white",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
+        <PageHeader
+          title="My Profile Screen"
+          onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack({ profile })}
+        />
+      </View>
 
-      <ScrollView>
-        <Flex alignItems="center" justifyContent="center" gap={2} my={3}>
-          <Box borderStyle="dashed" borderColor="#C6C9CC" borderRadius={20} padding={2} borderWidth={1}>
+      <ScrollView
+        style={{
+          paddingHorizontal: 16,
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            marginVertical: 3,
+          }}
+        >
+          <View style={{ borderStyle: "dashed", borderColor: "#C6C9CC", borderRadius: 20, padding: 2, borderWidth: 1 }}>
             <Image
+              style={{ resizeMode: "contain", borderRadius: 20, width: 120, height: 120 }}
               source={{
                 uri: !image ? `${process.env.EXPO_PUBLIC_API}/image/${userSelector?.image}` : image.uri,
               }}
-              resizeMode="contain"
-              borderRadius={20}
-              w={120}
-              h={120}
               alt="profile picture"
             />
-            <Pressable
-              style={styles.editPicture}
-              shadow="0"
-              borderRadius="full"
-              borderWidth={1}
-              borderColor="#C6C9CC"
-              onPress={!image ? pickImageHandler : () => setImage(null)}
-            >
-              <Icon
-                as={<MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} />}
-                size={5}
-                color="#3F434A"
-              />
+            <Pressable style={styles.editPicture} onPress={!image ? pickImageHandler : () => setImage(null)}>
+              <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} />
             </Pressable>
-          </Box>
-          {image && <FormButton onPress={editProfilePictureHandler} children="Save" />}
-        </Flex>
+          </View>
+          {image && (
+            <FormButton onPress={editProfilePictureHandler} style={{ paddingHorizontal: 8 }}>
+              <Text style={{ color: "white" }}>Save</Text>
+            </FormButton>
+          )}
+        </View>
 
-        <Flex my={3} gap={11} px={5}>
-          <FormControl isInvalid={formik.errors.name}>
-            <FormControl.Label>Name</FormControl.Label>
-            <Input
-              type="text"
-              value={formik.values.name}
-              onChangeText={(value) => formik.setFieldValue("name", value)}
-              defaultValue={profile?.data?.name.length > 30 ? profile?.data?.name.split(" ")[0] : profile?.data?.name}
-            />
-            <FormControl.ErrorMessage>{formik.errors.name}</FormControl.ErrorMessage>
-          </FormControl>
+        <View
+          style={{
+            display: "flex",
+            gap: 20,
+            marginVertical: 3,
+            paddingHorizontal: 5,
+          }}
+        >
+          <Input
+            title="Name"
+            formik={formik}
+            value={formik.values.name}
+            fieldName="name"
+            defaultValue={profile?.data?.name.length > 30 ? profile?.data?.name.split(" ")[0] : profile?.data?.name}
+          />
 
           {forms.map((form) => {
-            return (
-              <FormControl key={form.title}>
-                <FormControl.Label>{form.title}</FormControl.Label>
-                <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-                  <Text fontSize={12} fontWeight={400} color="gray.400">
-                    {form.source}
-                  </Text>
-                </Box>
-              </FormControl>
-            );
+            return <Input key={form.title} title={form.title} editable={false} defaultValue={form.source} />;
           })}
 
-          <FormControl>
-            <FormControl.Label>Phone Number</FormControl.Label>
+          <Input title="Phone Number" editable={false} defaultValue={`+62 ${phoneNumber}`} />
 
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                +62 {phoneNumber}
-              </Text>
-            </Box>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>Address</FormControl.Label>
-
-            <Box borderRadius={15} padding={3} borderWidth={1} borderColor="gray.200">
-              <Text fontSize={12} fontWeight={400} color="gray.400">
-                {profile?.data?.address}
-              </Text>
-            </Box>
-          </FormControl>
+          <Input title="Address" editable={false} defaultValue={profile?.data?.address} multiline />
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text color="#FFFFFF">Save</Text>
+            <Text style={{ color: "white" }}>Save</Text>
           </FormButton>
-        </Flex>
+        </View>
       </ScrollView>
+
+      <Toast position="bottom" />
     </SafeAreaView>
   );
 };
@@ -274,5 +258,9 @@ const styles = StyleSheet.create({
     top: -5,
     right: -10,
     zIndex: 2,
+    // shadow="0"
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: "#C6C9CC",
   },
 });

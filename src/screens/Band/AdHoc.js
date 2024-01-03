@@ -1,14 +1,11 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { StyleSheet } from "react-native";
-import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
+import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useFetch } from "../../hooks/useFetch";
-import NewTaskSlider from "../../components/Band/Task/NewTaskSlider/NewTaskSlider";
 import TaskList from "../../components/Band/Task/TaskList/TaskList";
 import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../components/shared/PageHeader";
@@ -16,8 +13,8 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
 
 const AdHocScreen = () => {
+  const navigation = useNavigation();
   const firstTimeRef = useRef(true);
-  const [view, setView] = useState("Task List");
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [searchInput, setSearchInput] = useState("");
@@ -35,8 +32,6 @@ const AdHocScreen = () => {
     priority: selectedPriority,
     sort_deadline: deadlineSort,
   };
-
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const {
     data: tasks,
@@ -65,21 +60,6 @@ const AdHocScreen = () => {
     return acc;
   }, []);
 
-  const onOpenTaskFormWithStatus = useCallback((status) => {
-    toggleTaskForm();
-    setSelectedStatus(status);
-  }, []);
-
-  const onCloseTaskForm = useCallback((resetForm) => {
-    toggleTaskForm();
-    setSelectedStatus("Open");
-    resetForm();
-  }, []);
-
-  const changeView = useCallback((value) => {
-    setView(value);
-  }, []);
-
   const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
@@ -94,103 +74,70 @@ const AdHocScreen = () => {
       refetchTasks();
     }, [refetchTasks])
   );
+
   return (
     <>
-      <Flex style={styles.container}>
-        <Flex gap={15} style={{ marginTop: 13 }}>
-          <PageHeader title="Ad Hoc" backButton={false} />
+      <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ gap: 15, marginTop: 13, paddingHorizontal: 16 }}>
+            <PageHeader title="Ad Hoc" backButton={false} />
 
-          <Flex flexDir="row" mt={11} mb={21}>
-            <TaskFilter
-              data={tasks?.data}
-              members={noDuplicateResponsibleArr}
-              labels={labels}
-              searchInput={searchInput}
-              responsibleId={responsibleId}
-              deadlineSort={deadlineSort}
-              selectedPriority={selectedPriority}
-              selectedLabelId={selectedLabelId}
-              setSelectedLabelId={setSelectedLabelId}
-              setSearchInput={setSearchInput}
-              setResponsibleId={setResponsibleId}
-              setDeadlineSort={setDeadlineSort}
-              setSelectedPriority={setSelectedPriority}
-            />
-          </Flex>
-        </Flex>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
-          style={{ marginBottom: 10 }}
-        >
-          {/* Task List view */}
-          {view === "Task List" && (
-            <TaskList
-              tasks={tasks?.data}
-              isLoading={taskIsLoading}
-              openNewTaskForm={onOpenTaskFormWithStatus}
-              openCloseTaskConfirmation={onOpenCloseConfirmation}
-            />
-          )}
-
-          {(view === "Kanban" || view === "Gantt Chart") && (
-            <Center>
-              <Image
-                source={require("../../assets/vectors/desktop.jpg")}
-                h={180}
-                w={250}
-                alt="desktop-only"
-                resizeMode="contain"
+            <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
+              <TaskFilter
+                data={tasks?.data}
+                members={noDuplicateResponsibleArr}
+                labels={labels}
+                searchInput={searchInput}
+                responsibleId={responsibleId}
+                deadlineSort={deadlineSort}
+                selectedPriority={selectedPriority}
+                selectedLabelId={selectedLabelId}
+                setSelectedLabelId={setSelectedLabelId}
+                setSearchInput={setSearchInput}
+                setResponsibleId={setResponsibleId}
+                setDeadlineSort={setDeadlineSort}
+                setSelectedPriority={setSelectedPriority}
               />
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
-          )}
-        </ScrollView>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
 
-        {/* Task Form */}
-        {taskFormIsOpen && (
-          <NewTaskSlider
-            selectedStatus={selectedStatus}
-            onClose={onCloseTaskForm}
-            isOpen={taskFormIsOpen}
-            refetch={refetchTasks}
-          />
-        )}
+        <TaskList
+          tasks={tasks?.data}
+          isLoading={taskIsLoading}
+          openCloseTaskConfirmation={onOpenCloseConfirmation}
+          isFetching={taskIsFetching}
+          refetch={refetchTasks}
+          setSelectedStatus={setSelectedStatus}
+        />
 
         {createActionCheck && (
           <Pressable
-            position="absolute"
-            right={5}
-            bottom={5}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleTaskForm}
+            style={styles.hoverButton}
+            onPress={() =>
+              navigation.navigate("Task Form", {
+                selectedStatus: selectedStatus,
+                refetch: refetchTasks,
+              })
+            }
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
-      </Flex>
+      </View>
 
-      {closeConfirmationIsOpen && (
-        <ConfirmationModal
-          isDelete={false}
-          isOpen={closeConfirmationIsOpen}
-          toggle={toggleCloseConfirmation}
-          apiUrl={"/pm/tasks/close"}
-          body={{ id: selectedTask?.id }}
-          header="Close Task"
-          description={`Are you sure to close task ${selectedTask?.title}?`}
-          successMessage="Task closed"
-          hasSuccessFunc
-          onSuccess={refetchTasks}
-        />
-      )}
+      <ConfirmationModal
+        isDelete={false}
+        isOpen={closeConfirmationIsOpen}
+        toggle={toggleCloseConfirmation}
+        apiUrl={"/pm/tasks/close"}
+        body={{ id: selectedTask?.id }}
+        header="Close Task"
+        description={`Are you sure to close task ${selectedTask?.title}?`}
+        successMessage="Task closed"
+        hasSuccessFunc
+        onSuccess={refetchTasks}
+      />
     </>
   );
 };
@@ -201,7 +148,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 16,
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });

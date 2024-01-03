@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Box, Icon, Input, Modal, Pressable, Spinner, Text } from "native-base";
+import { View, Pressable, ActivityIndicator, Dimensions, Platform, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
+import Modal from "react-native-modal";
 
 import UserListItemModal from "./UserListItemModal";
+import Input from "../../shared/Forms/Input";
 
 const UserListModal = ({
   roomId,
@@ -31,88 +33,90 @@ const UserListModal = ({
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const userSelector = useSelector((state) => state.auth);
 
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   return (
-    <Modal isOpen={memberListIsopen} onClose={toggleMemberList} size="xl">
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>Choose User</Modal.Header>
-        <Modal.Body>
-          <Input
-            value={inputToShow}
-            placeholder="Search here..."
-            InputRightElement={
-              inputToShow && (
-                <Pressable
-                  onPress={() => {
-                    setInputToShow("");
-                    setSearchInput("");
-                  }}
-                >
-                  <Icon
-                    as={<MaterialCommunityIcons name="close-circle-outline" />}
-                    size="md"
-                    mr={2}
-                    color="muted.400"
-                  />
-                </Pressable>
-              )
-            }
-            onChangeText={(value) => {
-              handleSearch(value);
-              setInputToShow(value);
-            }}
-          />
-          <Box flex={1} height={300} mt={4}>
-            <FlashList
-              data={cumulativeData.length ? cumulativeData : filteredDataArray}
-              extraData={forceRerender}
-              estimatedItemSize={100}
-              keyExtractor={(item, index) => index}
-              onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-              onEndReached={hasBeenScrolled ? fetchMoreData : null}
-              onEndReachedThreshold={0.1}
-              ListFooterComponent={userListIsLoading && <Spinner color="primary.600" />}
-              renderItem={({ item }) => (
-                <UserListItemModal
-                  id={item?.id}
-                  user={item}
-                  name={item?.name}
-                  userType={item?.user_type}
-                  image={item?.image}
-                  multiSelect={true}
-                  type="group"
-                  onPressAddHandler={onPressAddHandler}
-                  onPressRemoveHandler={onPressRemoveHandler}
-                  userSelector={userSelector}
-                  selectedUsers={selectedUsers}
-                  setSelectedUsers={setSelectedUsers}
-                />
-              )}
-            />
-          </Box>
-          <Pressable
-            position="absolute"
-            right={5}
-            bottom={10}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={() => {
-              onAddMoreMember(roomId, selectedUsers, toggleAddMember);
-            }}
-          >
-            {addMemberIsLoading ? (
-              <Spinner size="sm" color="#FFFFFF" />
-            ) : (
-              <Icon as={<MaterialCommunityIcons name="arrow-right" />} size="md" color="white" />
+    <Modal
+      isVisible={memberListIsopen}
+      onBackdropPress={toggleMemberList}
+      deviceHeight={deviceHeight}
+      deviceWidth={deviceWidth}
+    >
+      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+        {/* <Modal.Content> */}
+        {/* <Modal.CloseButton /> */}
+        <Text>Choose User</Text>
+        {/* <Modal.Body> */}
+        <Input
+          value={inputToShow}
+          placeHolder="Search here..."
+          endIcon="close-circle-outline"
+          onPressEndIcon={() => {
+            setInputToShow("");
+            setSearchInput("");
+          }}
+          onChangeText={(value) => {
+            handleSearch(value);
+            setInputToShow(value);
+          }}
+        />
+        <View style={{ height: 300, marginTop: 5 }}>
+          <FlashList
+            data={cumulativeData.length ? cumulativeData : filteredDataArray}
+            extraData={forceRerender}
+            estimatedItemSize={100}
+            keyExtractor={(item, index) => index}
+            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+            onEndReached={hasBeenScrolled ? fetchMoreData : null}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={userListIsLoading && <ActivityIndicator />}
+            renderItem={({ item }) => (
+              <UserListItemModal
+                id={item?.id}
+                user={item}
+                name={item?.name}
+                userType={item?.user_type}
+                image={item?.image}
+                multiSelect={true}
+                type="group"
+                onPressAddHandler={onPressAddHandler}
+                onPressRemoveHandler={onPressRemoveHandler}
+                userSelector={userSelector}
+                selectedUsers={selectedUsers}
+                setSelectedUsers={setSelectedUsers}
+              />
             )}
-          </Pressable>
-        </Modal.Body>
-      </Modal.Content>
+          />
+        </View>
+        <Pressable
+          style={{
+            position: "absolute",
+            right: 10,
+            bottom: 20,
+            backgroundColor: "#176688",
+            borderRadius: 40,
+            shadowOffset: 0,
+            padding: 20,
+            borderWidth: 3,
+            borderColor: "#FFFFFF",
+          }}
+          onPress={() => {
+            onAddMoreMember(roomId, selectedUsers, toggleAddMember);
+          }}
+        >
+          {addMemberIsLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+          )}
+        </Pressable>
+      </View>
+      {/* </Modal.Body> */}
+      {/* </Modal.Content> */}
     </Modal>
   );
 };

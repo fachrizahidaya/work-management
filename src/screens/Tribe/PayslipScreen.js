@@ -1,20 +1,20 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet } from "react-native";
-import { Box, Button, Flex, Image, Spinner, Text, VStack, useToast } from "native-base";
-import { FlashList } from "@shopify/flash-list";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import PageHeader from "../../components/shared/PageHeader";
+import Button from "../../components/shared/Forms/Button";
 import axiosInstance from "../../config/api";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
-import _ from "lodash";
+import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -25,20 +25,17 @@ const PayslipScreen = () => {
   const [passwordDownloadError, setPasswordDownloadError] = useState("");
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
   const [payslips, setPayslips] = useState([]);
-  const [filteredDataArray, setFilteredDataArray] = useState([]);
+
+  const payslipDownloadScreenSheetRef = useRef(null);
+  const payslipPasswordEditScreenSheetRef = useRef(null);
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
-  const { isOpen: formIsOpen, toggle: toggleForm } = useDisclosure(false);
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
-
-  const toast = useToast();
 
   const fetchPayslipParameters = {
     page: currentPage,
-    search: searchInput,
     limit: 10,
   };
 
@@ -47,7 +44,7 @@ const PayslipScreen = () => {
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
     isLoading: payslipIsLoading,
-  } = useFetch("/hr/payslip", [currentPage, searchInput], fetchPayslipParameters);
+  } = useFetch("/hr/payslip", [currentPage], fetchPayslipParameters);
 
   const fetchMorePayslip = () => {
     if (currentPage < payslip?.data?.last_page) {
@@ -55,22 +52,14 @@ const PayslipScreen = () => {
     }
   };
 
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      setCurrentPage(1);
-    }, 1000),
-    []
-  );
-
-  const openSelectedPayslip = useCallback((data) => {
-    toggleDownloadDialog();
+  const openSelectedPayslip = (data) => {
     setSelectedPayslip(data);
-  }, []);
+    payslipDownloadScreenSheetRef.current?.show();
+  };
 
   const closeSelectedPayslip = () => {
-    toggleDownloadDialog();
     setSelectedPayslip(null);
+    payslipDownloadScreenSheetRef.current?.hide();
   };
 
   /**
@@ -86,20 +75,20 @@ const PayslipScreen = () => {
       setStatus("success");
       formik.resetForm();
       refetchPayslip();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={"Password Updated"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Password updated",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={err.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -123,40 +112,33 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={"Download failed, please try again later"} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
 
   useEffect(() => {
     if (payslip?.data?.data.length) {
-      if (!searchInput) {
-        setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
-        setFilteredDataArray([]);
-      } else {
-        setFilteredDataArray((prevData) => [...prevData, ...payslip?.data?.data]);
-        setPayslips([]);
-      }
+      setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
     }
   }, [payslip?.data]);
 
   return (
     <>
       <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+        <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
-          <Button onPress={() => toggleForm()}>
-            <Text color="#FFFFFF" fontSize={12} fontWeight={500}>
-              Change PIN
-            </Text>
-          </Button>
+          <Button
+            onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
+            padding={5}
+            children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
+          />
+
           <PayslipPasswordEdit
-            formIsOpen={formIsOpen}
-            toggleForm={toggleForm}
-            passwordError={passwordError}
+            reference={payslipPasswordEditScreenSheetRef}
             setPasswordError={setPasswordError}
             hideNewPassword={hideNewPassword}
             setHideNewPassword={setHideNewPassword}
@@ -166,18 +148,18 @@ const PayslipScreen = () => {
             setHideConfirmPassword={setHideConfirmPassword}
             onUpdatePassword={payslipPasswordUpdateHandler}
           />
-        </Flex>
+        </View>
 
         {payslip?.data?.data.length > 0 ? (
-          <FlashList
-            data={payslips.length ? payslips : filteredDataArray}
+          <FlatList
+            data={payslips}
             keyExtractor={(item, index) => index}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}
             onEndReachedThreshold={0.1}
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() => payslipIsLoading && hasBeenScrolled && <Spinner color="primary.600" size="lg" />}
+            ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}
@@ -190,22 +172,26 @@ const PayslipScreen = () => {
                 toggleDownloadDialog={toggleDownloadDialog}
                 openSelectedPayslip={openSelectedPayslip}
                 closeSelectedPayslip={closeSelectedPayslip}
+                reference={payslipDownloadScreenSheetRef}
               />
             )}
           />
-        ) : payslipIsFetching ? (
-          <Spinner />
         ) : (
-          <VStack mt={20} space={2} alignItems="center" justifyContent="center">
-            <Image source={require("./../../assets/vectors/empty.png")} alt="empty" resizeMode="contain" size="2xl" />
-            <Text>No Data</Text>
-          </VStack>
+          <>
+            <View style={styles.imageContainer}>
+              <Image
+                source={require("./../../assets/vectors/empty.png")}
+                alt="empty"
+                style={{ resizeMode: "contain", height: 300, width: 300 }}
+              />
+              <Text>No Data</Text>
+            </View>
+          </>
         )}
       </SafeAreaView>
       <PayslipDownload
-        downloadDialogIsOpen={downloadDialogIsOpen}
+        reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
-        passwordError={passwordDownloadError}
         setPasswordError={setPasswordDownloadError}
         downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
@@ -226,5 +212,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
     position: "relative",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  imageContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
   },
 });

@@ -2,17 +2,16 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Pressable, Skeleton, Text, VStack, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
-import FeedCard from "../../../components/Tribe/Feed/FeedCard";
+import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
-import ImageFullScreenModal from "../../../components/Chat/ChatBubble/ImageFullScreenModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -32,11 +31,11 @@ const FeedScreen = () => {
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
+  const commentScreenSheetRef = useRef(null);
+
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
-
-  const toast = useToast();
 
   const flashListRef = useRef(null);
 
@@ -51,7 +50,7 @@ const FeedScreen = () => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 5,
   };
 
   const {
@@ -91,7 +90,7 @@ const FeedScreen = () => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + post?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 20);
+      setCurrentOffsetPost(currentOffsetPost + 5);
     }
   };
 
@@ -127,14 +126,14 @@ const FeedScreen = () => {
    * Action sheet for comment handler
    */
   const commentsOpenHandler = (post_id) => {
+    commentScreenSheetRef.current?.show();
     setPostId(post_id);
-    setCommentsOpen(true);
     const togglePostComment = posts.find((post) => post.id === post_id);
     setPostTotalComment(togglePostComment.total_comment);
   };
 
   const commentsCloseHandler = () => {
-    setCommentsOpen(false);
+    commentScreenSheetRef.current?.hide();
     setPostId(null);
   };
 
@@ -166,10 +165,10 @@ const FeedScreen = () => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
       setSubmitting(false);
       setStatus("error");
@@ -220,24 +219,16 @@ const FeedScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
-          <Flex flexDir="row" gap={1}>
-            <Text color="primary.600" fontWeight={700} fontSize={16}>
-              News
-            </Text>
-            <Text fontSize={16}>& Feed</Text>
-          </Flex>
-          <Text fontWeight={700} fontSize={12}>
-            PT Kolabora Group Indonesia
-          </Text>
-        </Flex>
+        <View style={styles.header}>
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}> & Feed</Text>
+          </View>
+          <Text style={{ fontSize: 12, fontWeight: "700" }}>PT Kolabora Group Indonesia</Text>
+        </View>
 
         <Pressable
           style={styles.createPostIcon}
-          shadow="0"
-          borderRadius="full"
-          borderWidth={3}
-          borderColor="#FFFFFF"
           onPress={() => {
             navigation.navigate("New Feed", {
               postRefetchHandler: postRefetchHandler, // To get new post after create one
@@ -250,54 +241,53 @@ const FeedScreen = () => {
             });
           }}
         >
-          <Icon as={<MaterialCommunityIcons name="pencil" />} size={30} color="#FFFFFF" />
+          <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
         </Pressable>
 
-        <Box flex={1} px={3}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
           {/* Content here */}
-          <>
-            <FeedCard
-              posts={posts}
-              loggedEmployeeId={profile?.data?.id}
-              loggedEmployeeImage={profile?.data?.image}
-              postRefetchHandler={postRefetchHandler}
-              postEndReachedHandler={postEndReachedHandler}
-              postIsFetching={postIsFetching}
-              postIsLoading={postIsLoading}
-              refetchPost={refetchPost}
-              hasBeenScrolled={hasBeenScrolled}
-              setHasBeenScrolled={setHasBeenScrolled}
-              scrollNewMessage={scrollNewMessage}
-              flashListRef={flashListRef}
-              onCommentToggle={commentsOpenHandler}
-              forceRerender={forceRerender}
-              setForceRerender={setForceRerender}
-              toggleFullScreen={toggleFullScreen}
-              employeeUsername={employeeUsername}
-            />
-            {commentsOpen && (
-              <FeedComment
-                postId={postId}
-                loggedEmployeeId={profile?.data?.id}
-                loggedEmployeeName={userSelector?.name}
-                loggedEmployeeImage={profile?.data?.image}
-                comments={comments}
-                commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
-                refetchComment={refetchComment}
-                handleOpen={commentsOpenHandler}
-                handleClose={commentsCloseHandler}
-                onEndReached={commentEndReachedHandler}
-                commentRefetchHandler={commentRefetchHandler}
-                parentId={commentParentId}
-                onSubmit={commentSubmitHandler}
-                onReply={replyHandler}
-                latestExpandedReply={latestExpandedReply}
-                employeeUsername={employeeUsername}
-              />
-            )}
-          </>
-        </Box>
+
+          <FeedCard
+            posts={posts}
+            loggedEmployeeId={profile?.data?.id}
+            loggedEmployeeImage={profile?.data?.image}
+            postRefetchHandler={postRefetchHandler}
+            postEndReachedHandler={postEndReachedHandler}
+            postIsFetching={postIsFetching}
+            postIsLoading={postIsLoading}
+            refetchPost={refetchPost}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            scrollNewMessage={scrollNewMessage}
+            flashListRef={flashListRef}
+            onCommentToggle={commentsOpenHandler}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
+            toggleFullScreen={toggleFullScreen}
+            employeeUsername={employeeUsername}
+            navigation={navigation}
+          />
+
+          <FeedComment
+            postId={postId}
+            loggedEmployeeName={userSelector?.name}
+            loggedEmployeeImage={profile?.data?.image}
+            comments={comments}
+            commentIsFetching={commentIsFetching}
+            commentIsLoading={commentIsLoading}
+            refetchComment={refetchComment}
+            handleClose={commentsCloseHandler}
+            onEndReached={commentEndReachedHandler}
+            commentRefetchHandler={commentRefetchHandler}
+            parentId={commentParentId}
+            onSubmit={commentSubmitHandler}
+            onReply={replyHandler}
+            employeeUsername={employeeUsername}
+            employees={employees?.data}
+            reference={commentScreenSheetRef}
+          />
+        </View>
+        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -321,5 +311,17 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
   },
 });

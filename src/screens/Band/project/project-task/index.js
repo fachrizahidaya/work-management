@@ -1,15 +1,19 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { Dimensions, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Center, Flex, Icon, Image, Pressable, Text } from "native-base";
+import {
+  Dimensions,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import TaskList from "../../../../components/Band/Task/TaskList/TaskList";
-import NewTaskSlider from "../../../../components/Band/Task/NewTaskSlider/NewTaskSlider";
-import TaskViewSection from "../../../../components/Band/Project/ProjectTask/TaskViewSection";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import TaskFilter from "../../../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -18,10 +22,9 @@ import useCheckAccess from "../../../../hooks/useCheckAccess";
 
 const ProjectTaskScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
-  const { projectId, view: viewType } = route.params;
+  const { projectId } = route.params;
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
-  const [view, setView] = useState(viewType);
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [searchInput, setSearchInput] = useState("");
@@ -40,7 +43,6 @@ const ProjectTaskScreen = ({ route }) => {
   };
 
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
-  const { isOpen: taskFormIsOpen, toggle: toggleTaskForm } = useDisclosure(false);
 
   const { data, isLoading } = useFetch(`/pm/projects/${projectId}`);
   const {
@@ -56,24 +58,9 @@ const ProjectTaskScreen = ({ route }) => {
   const { data: members } = useFetch(`/pm/projects/${projectId}/member`);
   const { data: labels } = useFetch(`/pm/projects/${projectId}/label`);
 
-  const onOpenTaskFormWithStatus = useCallback((status) => {
-    toggleTaskForm();
-    setSelectedStatus(status);
-  }, []);
-
-  const onCloseTaskForm = useCallback((resetForm) => {
-    toggleTaskForm();
-    resetForm();
-    setSelectedStatus("Open");
-  }, []);
-
   const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
-  }, []);
-
-  const changeView = useCallback((value) => {
-    setView(value);
   }, []);
 
   useFocusEffect(
@@ -85,11 +72,12 @@ const ProjectTaskScreen = ({ route }) => {
       refetchTasks();
     }, [refetchTasks])
   );
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <Flex gap={15} style={{ marginTop: 13, paddingHorizontal: 16 }}>
+          <View style={{ gap: 15, marginTop: 13, paddingHorizontal: 16 }}>
             <PageHeader
               title={data?.data.title}
               width={width - 65}
@@ -98,9 +86,7 @@ const ProjectTaskScreen = ({ route }) => {
               onPress={() => navigation.navigate("Project Detail", { projectId: projectId })}
             />
 
-            {/* <TaskViewSection changeView={changeView} view={view} /> */}
-
-            <Flex flexDir="row" mt={11} mb={21}>
+            <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
               <TaskFilter
                 data={tasks?.data}
                 members={members?.data}
@@ -116,68 +102,34 @@ const ProjectTaskScreen = ({ route }) => {
                 setDeadlineSort={setDeadlineSort}
                 setSelectedPriority={setSelectedPriority}
               />
-            </Flex>
-          </Flex>
+            </View>
+          </View>
         </TouchableWithoutFeedback>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={taskIsFetching} onRefresh={refetchTasks} />}
-          style={{ paddingHorizontal: 16, marginBottom: 10 }}
-        >
-          {/* Task List view */}
-          {view === "Task List" && (
-            <TaskList
-              tasks={tasks?.data}
-              isLoading={taskIsLoading}
-              openNewTaskForm={onOpenTaskFormWithStatus}
-              openCloseTaskConfirmation={onOpenCloseConfirmation}
-            />
-          )}
-
-          {(view === "Kanban" || view === "Gantt Chart") && (
-            <Center>
-              <Image
-                source={require("../../../../assets/vectors/desktop.jpg")}
-                h={180}
-                w={250}
-                alt="desktop-only"
-                resizeMode="contain"
-              />
-              <Text bold>This feature only available for desktop</Text>
-            </Center>
-          )}
-        </ScrollView>
+        <TaskList
+          tasks={tasks?.data}
+          isLoading={taskIsLoading}
+          openCloseTaskConfirmation={onOpenCloseConfirmation}
+          isFetching={taskIsFetching}
+          refetch={refetchTasks}
+          setSelectedStatus={setSelectedStatus}
+        />
 
         {createCheckAccess && (
           <Pressable
-            position="absolute"
-            right={5}
-            bottom={81}
-            rounded="full"
-            bgColor="primary.600"
-            p={15}
-            shadow="0"
-            borderRadius="full"
-            borderWidth={3}
-            borderColor="#FFFFFF"
-            onPress={toggleTaskForm}
+            style={styles.hoverButton}
+            onPress={() =>
+              navigation.navigate("Task Form", {
+                selectedStatus: selectedStatus,
+                refetch: refetchTasks,
+                projectId: projectId,
+              })
+            }
           >
-            <Icon as={<MaterialCommunityIcons name="plus" />} size="xl" color="white" />
+            <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
       </SafeAreaView>
-
-      {/* Task Form */}
-      {taskFormIsOpen && (
-        <NewTaskSlider
-          isOpen={taskFormIsOpen}
-          selectedStatus={selectedStatus}
-          onClose={onCloseTaskForm}
-          projectId={projectId}
-          refetch={refetchTasks}
-        />
-      )}
 
       {closeConfirmationIsOpen && (
         <ConfirmationModal
@@ -204,5 +156,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     position: "relative",
+  },
+  hoverButton: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    borderRadius: 50,
+    backgroundColor: "#176688",
+    padding: 15,
+    elevation: 0,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });

@@ -1,22 +1,21 @@
+import { useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Box, Icon, Image } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
-import InformationScreen from "../../screens/Tribe/InformationScreen";
+import InformationScreen from "../../screens/Tribe/MyInformationScreen";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import TribeScreenSlider from "../../components/layout/ScreensSlider/TribeScreenSlider";
-import AddNewTribeSlider from "../../components/layout/AddNewSlider/AddNewTribeSlider";
-import ModuleSelectSlider from "../../components/layout/ModuleSelectSlider";
 import PayslipScreen from "../../screens/Tribe/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/ContactScreen";
-import LeaveScreen from "../../screens/Tribe/Leave/LeaveScreen";
+import PersonalLeaveScreen from "../../screens/Tribe/Leave/PersonalLeaveScreen/PersonalLeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
 import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
 import ReimbursementScreen from "../../screens/Tribe/Reimbursement/ReimbursementScreen";
-import { useDisclosure } from "../../hooks/useDisclosure";
+import TribeScreenSheet from "../../components/shared/ActionSheet/TribeScreenSheet";
+import TribeAddNewSheet from "../../components/shared/ActionSheet/TribeAddNewSheet";
+import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,42 +24,14 @@ function EmptyScreen() {
 }
 
 const TribeTab = ({ setSelectedModule }) => {
-  const { isOpen: addSliderIsOpen, close: closeAddSlider, toggle: toggleAddSlider } = useDisclosure(false);
-  const { isOpen: moduleSliderIsOpen, close: closeModuleSlider, toggle: toggleModuleSlider } = useDisclosure(false);
-  const { isOpen: searchSliderIsOpen, close: closeSearchSlider, toggle: toggleSearchSlider } = useDisclosure(false);
-  const {
-    isOpen: menuScreenSliderIsOpen,
-    close: closeMenuScreenSlider,
-    toggle: toggleMenuScreenSlider,
-  } = useDisclosure(false);
+  const tribeScreenSheetRef = useRef(null);
+  const tribeAddNewSheetRef = useRef(null);
+  const moduleSelectSheetRef = useRef(null);
 
   /**
    * Toggles the specified state and resets other states to false.
    * @param {string} stateToToggle - The state key to toggle.
    */
-  const handleStateToggle = (stateToToggle) => {
-    if (stateToToggle === "moduleSelectIsOpen") {
-      toggleModuleSlider();
-      closeSearchSlider();
-      closeAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "searchIsOpen") {
-      closeModuleSlider();
-      toggleSearchSlider();
-      closeAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "addIsOpen") {
-      closeModuleSlider();
-      closeSearchSlider();
-      toggleAddSlider();
-      closeMenuScreenSlider();
-    } else if (stateToToggle === "screenSelectIsOpen") {
-      closeModuleSlider();
-      closeSearchSlider();
-      closeAddSlider();
-      toggleMenuScreenSlider();
-    }
-  };
 
   return (
     <>
@@ -92,12 +63,12 @@ const TribeTab = ({ setSelectedModule }) => {
           component={FeedScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="FBFBFB" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="menu" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="menu" size={20} color="#000000" />
+              </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => handleStateToggle("screenSelectIsOpen")}>
+              <TouchableOpacity {...props} onPress={() => tribeScreenSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -109,7 +80,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <Box bg="#FBFBFB" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#186688" />
+                <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#000000" />
               </Box>
             ),
             tabBarButton: (props) => (
@@ -129,17 +100,12 @@ const TribeTab = ({ setSelectedModule }) => {
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="plus" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="plus" size={20} color="#000000" />
+              </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  handleStateToggle("addIsOpen");
-                }}
-              >
+              <TouchableOpacity {...props} onPress={() => tribeAddNewSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -150,9 +116,9 @@ const TribeTab = ({ setSelectedModule }) => {
           component={SettingScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#FBFBFB" borderRadius="full" padding={2} position="fixed">
-                <Icon as={<MaterialCommunityIcons name="cog-outline" />} size={size} color="#186688" />
-              </Box>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="cog-outline" size={20} color="#000000" />
+              </View>
             ),
           }}
         />
@@ -161,15 +127,14 @@ const TribeTab = ({ setSelectedModule }) => {
           component={EmptyScreen}
           options={{
             tabBarIcon: () => (
-              <Image source={require("../../assets/icons/tribe_logo.png")} size={35} alt="tribe logo" />
+              <Image
+                source={require("../../assets/icons/tribe_logo.png")}
+                style={styles.moduleImage}
+                alt="tribe logo"
+              />
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  handleStateToggle("moduleSelectIsOpen");
-                }}
-              >
+              <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -179,7 +144,7 @@ const TribeTab = ({ setSelectedModule }) => {
 
         <Tab.Screen name="Attendance" component={AttendanceScreen} />
 
-        <Tab.Screen name="Leave Requests" component={LeaveScreen} />
+        <Tab.Screen name="Leave Requests" component={PersonalLeaveScreen} />
 
         <Tab.Screen name="Reimbursement" component={ReimbursementScreen} />
 
@@ -192,20 +157,37 @@ const TribeTab = ({ setSelectedModule }) => {
         <Tab.Screen name="Contact" component={ContactScreen} />
       </Tab.Navigator>
 
+      {/* Sheets */}
+      <TribeScreenSheet reference={tribeScreenSheetRef} />
+
       {/* Sliders */}
-      {<TribeScreenSlider toggle={toggleMenuScreenSlider} isOpen={menuScreenSliderIsOpen} />}
 
-      {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />}
+      {/* {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />} */}
+      <TribeAddNewSheet reference={tribeAddNewSheetRef} />
 
-      {
+      {/* {
         <ModuleSelectSlider
           toggle={toggleModuleSlider}
           isOpen={moduleSliderIsOpen}
           setSelectedModule={setSelectedModule}
         />
-      }
+      } */}
+      <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );
 };
 
 export default TribeTab;
+
+const styles = StyleSheet.create({
+  menuIcon: {
+    backgroundColor: "#fbfbfb",
+    borderRadius: 50,
+    padding: 2,
+  },
+  moduleImage: {
+    resizeMode: "contain",
+    height: 35,
+    width: 35,
+  },
+});

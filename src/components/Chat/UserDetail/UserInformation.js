@@ -1,5 +1,4 @@
-import { TouchableOpacity } from "react-native";
-import { Badge, Box, Flex, Icon, Text } from "native-base";
+import { TouchableOpacity, View, Text } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -18,19 +17,24 @@ const UserInformation = ({
 }) => {
   return (
     <>
-      <Flex borderRadius={10} px={2} mx={3} py={2} gap={2} bg="#FFFFFF">
-        <Box gap={2}>
+      <View
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderRadius: 10,
+          marginHorizontal: 10,
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          gap: 5,
+        }}
+      >
+        <View gap={2}>
           {type === "group" && (
-            <Text color="#b8a9a3" fontSize={12} fontWeight={400}>
-              Group Participant
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#b8a9a3" }}>Group Participant</Text>
           )}
           {type === "personal" ? (
-            <Text fontSize={14} fontWeight={400}>
-              Active
-            </Text>
+            <Text style={{ fontSize: 14, fontWeight: "400" }}>Active</Text>
           ) : (
-            <Flex gap={2} flexDirection="row" flexWrap="wrap" alignItems="center">
+            <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 5 }}>
               {selectedGroupMembers.map((member, index) => {
                 return (
                   <TouchableOpacity
@@ -42,41 +46,43 @@ const UserInformation = ({
                       setMemberAdminStatus(member?.is_admin);
                     }}
                   >
-                    <Badge key={index} borderRadius={15}>
-                      <Flex gap={2} alignItems="center" flexDirection="row">
+                    <View style={{ borderRadius: 15, backgroundColor: "#ededed", padding: 5 }} key={index}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <AvatarPlaceholder
                           name={!member?.user ? member?.name : member?.user?.name}
                           image={!member?.user ? member?.image : member?.user?.image}
                         />
-                        {!member?.user
-                          ? loggedInUser === member?.id
+                        <Text>
+                          {!member?.user
+                            ? loggedInUser === member?.id
+                              ? "You"
+                              : member?.name
+                            : loggedInUser === member?.user?.id
                             ? "You"
-                            : member?.name
-                          : loggedInUser === member?.user?.id
-                          ? "You"
-                          : member?.user?.name}
+                            : member?.user?.name}
+                        </Text>
                         {member?.is_admin ? (
-                          <Badge borderRadius={15} colorScheme="#186688">
-                            Admin
-                          </Badge>
+                          <View style={{ borderRadius: 10, padding: 5, backgroundColor: "#186688" }}>
+                            <Text style={{ color: "#FFFFFF" }}>Admin</Text>
+                          </View>
                         ) : null}
                         {currentUserIsAdmin && loggedInUser !== member?.user_id && (
-                          <Icon as={<MaterialIcons name="chevron-right" />} />
+                          <MaterialIcons name="chevron-right" />
                         )}
-                      </Flex>
-                    </Badge>
+                      </View>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
               {currentUserIsAdmin && (
-                <Badge borderRadius="full">
-                  <Icon onPress={toggleMemberList} as={<MaterialIcons name={"add"} />} size={5} />
-                </Badge>
+                <View style={{ borderRadius: 20 }}>
+                  <MaterialIcons name="add" size={20} onPress={toggleMemberList} />
+                </View>
               )}
-            </Flex>
+            </View>
           )}
-        </Box>
-      </Flex>
+        </View>
+      </View>
     </>
   );
 };

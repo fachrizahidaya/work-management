@@ -1,38 +1,50 @@
-import { Actionsheet, Flex, Text, VStack } from "native-base";
+import { StyleSheet, View, Text } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
-const EmployeeTeammates = ({ teammatesIsOpen, toggleTeammates, teammates }) => {
+const EmployeeTeammates = ({ teammates, reference }) => {
   return (
-    <Actionsheet isOpen={teammatesIsOpen} onClose={toggleTeammates}>
-      <Actionsheet.Content>
-        <VStack w="95%">
+    <ActionSheet ref={reference} onClose={() => reference.current?.hide()}>
+      <View style={styles.wrapper}>
+        <View style={{ width: "95%", gap: 10 }}>
           {teammates?.data.map((item, index) => {
             return (
-              <Actionsheet.Item key={index} px={-1}>
-                <Flex key={index} flexDir="row" alignItems="center" gap={3}>
-                  <AvatarPlaceholder
-                    image={item?.image}
-                    name={item?.name}
-                    size="md"
-                    borderRadius="full"
-                    isThumb={false}
-                  />
-                  <Flex>
-                    <Text fontWeight={500} fontSize={14} color="#3F434A">
-                      {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
-                    </Text>
-                    <Text fontWeight={400} fontSize={12} color="#20A144">
-                      {item?.position_name}
-                    </Text>
-                  </Flex>
-                </Flex>
-              </Actionsheet.Item>
+              <View key={index} style={styles.content}>
+                <AvatarPlaceholder
+                  image={item?.image}
+                  name={item?.name}
+                  size="md"
+                  borderRadius="full"
+                  isThumb={false}
+                />
+                <View>
+                  <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
+                    {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
+                  </Text>
+                  <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{item?.position_name}</Text>
+                </View>
+              </View>
             );
           })}
-        </VStack>
-      </Actionsheet.Content>
-    </Actionsheet>
+        </View>
+      </View>
+    </ActionSheet>
   );
 };
 
 export default EmployeeTeammates;
+
+const styles = StyleSheet.create({
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
+});

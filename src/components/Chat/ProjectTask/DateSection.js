@@ -1,24 +1,24 @@
-import { Box, Flex, Pressable, Text } from "native-base";
+import { View, Pressable, Text } from "react-native";
 
 const DateSection = ({ start, end }) => {
   return (
-    <Pressable display="flex" bgColor="#ffffff" p={3} borderRadius={10} justifyContent="space-between">
-      <Flex gap={2} flexDirection="row">
-        <Text fontSize={12} fontWeight={400}>
-          Start
-        </Text>
-        <Text fontSize={12} fontWeight={500}>
-          {start}
-        </Text>
-      </Flex>
-      <Flex gap={3} flexDirection="row">
-        <Text fontSize={12} fontWeight={400}>
-          Due
-        </Text>
-        <Text fontSize={12} fontWeight={500}>
-          {end}
-        </Text>
-      </Flex>
+    <Pressable
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 10,
+        padding: 10,
+      }}
+    >
+      <View style={{ flexDirection: "row", gap: 5 }}>
+        <Text style={{ fontSize: 12, fontWeight: "400" }}>Start</Text>
+        <Text style={{ fontSize: 12, fontWeight: "500" }}>{start}</Text>
+      </View>
+      <View style={{ flexDirection: "row", gap: 5 }}>
+        <Text style={{ fontSize: 12, fontWeight: "400" }}>Due</Text>
+        <Text style={{ fontSize: 12, fontWeight: "500" }}>{end}</Text>
+      </View>
     </Pressable>
   );
 };

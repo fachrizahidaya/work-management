@@ -1,9 +1,9 @@
 import React, { memo } from "react";
 
 import dayjs from "dayjs";
+import { SheetManager } from "react-native-actions-sheet";
 
-import { Platform, StyleSheet } from "react-native";
-import { Flex, HStack, Icon, IconButton, Menu, Pressable, Text, View } from "native-base";
+import { Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import useCheckAccess from "../../../../hooks/useCheckAccess";
@@ -13,57 +13,69 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
 
   return (
     <Pressable onPress={() => openEditForm(note)}>
-      <Flex style={styles.card} gap={18}>
-        <Flex
-          flexDir="row"
-          alignItems="center"
-          justifyContent="space-between"
-          borderStyle={Platform.OS === "android" && "dashed"}
-          borderBottomWidth={Platform.OS === "android" && 2.5}
-          paddingBottom={Platform.OS === "android" && 18}
-          borderColor={Platform.OS === "android" && "#E8E9EB"}
+      <View style={styles.card}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderStyle: Platform.OS === "android" && "dashed",
+            borderBottomWidth: Platform.OS === "android" && 2.5,
+            paddingBottom: Platform.OS === "android" && 18,
+            borderColor: Platform.OS === "android" && "#E8E9EB",
+          }}
         >
-          <HStack space={2}>
-            <Icon as={<MaterialCommunityIcons name="calendar-month" />} size="md" />
+          <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <MaterialCommunityIcons name="calendar-month" size={20} />
 
-            <Text>{dayjs(date).format("DD MMMM, YYYY")}</Text>
-          </HStack>
+            <Text style={{ fontWeight: 500 }}>{dayjs(date).format("DD MMMM, YYYY")}</Text>
+          </View>
 
-          <HStack space={2}>
-            <IconButton
-              icon={
-                <Icon
-                  as={<MaterialCommunityIcons name={!isPinned ? "pin-outline" : "pin"} />}
-                  style={{ transform: [{ rotate: "45deg" }] }}
-                  color="#3F434A"
-                />
-              }
-              borderRadius="full"
+          <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <Pressable
+              style={{ borderRadius: 50 }}
               onPress={() => onPress({ ...note, status: !isPinned ? "pinned" : "unpinned" })}
-            />
-
-            <Menu
-              trigger={(triggerProps) => {
-                return (
-                  <IconButton
-                    {...triggerProps}
-                    icon={<Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="#3F434A" />}
-                    borderRadius="full"
-                  />
-                );
-              }}
             >
-              {deleteCheckAccess && (
-                <Menu.Item onPress={() => openDeleteModal(note)}>
-                  <Flex flexDir="row" alignItems="center" gap={2}>
-                    <Icon as={<MaterialCommunityIcons name="delete-outline" />} color="red.500" />
-                    <Text color="red.500">Delete</Text>
-                  </Flex>
-                </Menu.Item>
-              )}
-            </Menu>
-          </HStack>
-        </Flex>
+              <MaterialCommunityIcons
+                name={!isPinned ? "pin-outline" : "pin"}
+                style={{
+                  transform: [{ rotate: "45deg" }],
+                }}
+                size={20}
+              />
+            </Pressable>
+
+            {deleteCheckAccess && (
+              <Pressable
+                style={{ borderRadius: 50 }}
+                onPress={() =>
+                  SheetManager.show("form-sheet", {
+                    payload: {
+                      children: (
+                        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              openDeleteModal(note);
+                            }}
+                          >
+                            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+                              <MaterialCommunityIcons name="delete-outline" color="red" size={20} />
+                              <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      ),
+                    },
+                  })
+                }
+              >
+                <MaterialCommunityIcons name="dots-vertical" size={20} />
+              </Pressable>
+            )}
+          </View>
+        </View>
 
         {Platform.OS === "ios" && (
           <View style={{ overflow: "hidden" }}>
@@ -80,8 +92,8 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
           </View>
         )}
 
-        <Text>{title}</Text>
-      </Flex>
+        <Text style={{ fontWeight: 500 }}>{title}</Text>
+      </View>
     </Pressable>
   );
 };
@@ -99,6 +111,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
-    // height: 270,
+    display: "flex",
+    gap: 20,
   },
 });

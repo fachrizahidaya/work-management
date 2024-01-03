@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 
-import { StyleSheet } from "react-native";
-import { Center, Flex, Icon, Pressable, Text } from "native-base";
+import { Pressable, StyleSheet, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 /**
@@ -12,7 +11,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const Pagination = ({ data, setCurrentPage, currentPage }) => {
   // State to store pagination array
   const [pagination, setPagination] = useState([]);
-  console.log(data);
 
   // Generate pagination array based on data and current page
   const paginationHandler = () => {
@@ -45,28 +43,31 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
     paginationHandler();
   }, [data]);
   return (
-    <Center>
-      <Flex flexDir="row" gap={1}>
+    <View style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
         {/* Previous page button */}
         <Pressable
-          style={styles.page}
+          style={[styles.page, { backgroundColor: "#176688" }]}
           disabled={currentPage == 1}
           onPress={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-          background="#176688"
         >
-          <Icon as={<MaterialCommunityIcons name="chevron-left" />} color="white" size="md" />
+          <MaterialCommunityIcons name="chevron-left" color="white" size={20} />
         </Pressable>
 
         {/* Page number buttons */}
         {pagination.map((page, idx) => {
           return (
             <Pressable
-              style={styles.page}
+              style={[
+                styles.page,
+                {
+                  background: currentPage === page ? "#FAFAFA" : "#176688",
+                  borderWidth: 1,
+                  borderColor: currentPage === page ? "#FAFAFA" : "#176688",
+                },
+              ]}
               key={idx}
               onPress={() => (page !== "..." ? setCurrentPage(page) : null)}
-              background={currentPage === page ? "#FAFAFA" : "#176688"}
-              borderWidth={1}
-              borderColor={currentPage === page ? "#FAFAFA" : "#176688"}
             >
               <Text color={currentPage === page ? "#176688" : "white"}>{page}</Text>
             </Pressable>
@@ -75,15 +76,14 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
 
         {/* Next page button */}
         <Pressable
-          style={styles.page}
+          style={[styles.page, { backgroundColor: "#176688" }]}
           disabled={currentPage == data?.data?.last_page}
           onPress={() => pagination?.length > 1 && setCurrentPage(currentPage + 1)}
-          background="#176688"
         >
-          <Icon as={<MaterialCommunityIcons name="chevron-right" />} color="white" size="md" />
+          <MaterialCommunityIcons name="chevron-right" color="white" size={20} />
         </Pressable>
-      </Flex>
-    </Center>
+      </View>
+    </View>
   );
 };
 

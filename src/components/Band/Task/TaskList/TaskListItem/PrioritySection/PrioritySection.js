@@ -1,14 +1,16 @@
 import React from "react";
 
-import { Box, Flex } from "native-base";
+import { View } from "react-native";
 
 const PrioritySection = ({ priority }) => {
   return (
-    <Flex flexDir="row" gap={1}>
-      <Box bgColor="#49C96D" w={3} h={3} borderRadius={50}></Box>
-      {(priority === "Medium" || priority === "High") && <Box bgColor="#FF965D" w={3} h={3} borderRadius={50}></Box>}
-      {priority === "High" && <Box bgColor="#FD7972" w={3} h={3} borderRadius={50}></Box>}
-    </Flex>
+    <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+      <View style={{ backgroundColor: "#49C96D", width: 10, height: 10, borderRadius: 50 }} />
+      {(priority === "Medium" || priority === "High") && (
+        <View style={{ backgroundColor: "#FF965D", width: 10, height: 10, borderRadius: 50 }} />
+      )}
+      {priority === "High" && <View style={{ backgroundColor: "#FD7972", width: 10, height: 10, borderRadius: 50 }} />}
+    </View>
   );
 };
 

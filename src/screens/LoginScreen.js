@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
@@ -17,31 +16,19 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  Box,
-  Button,
-  FormControl,
-  Icon,
-  Input,
-  Image,
-  Text,
-  Flex,
-  Divider,
-  Pressable,
-  Checkbox,
-  useToast,
-} from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
+import Toast from "react-native-toast-message";
 
 import axiosInstance from "../config/api";
 import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
+import Input from "../components/shared/Forms/Input";
+import FormButton from "../components/shared/FormButton";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
-  const toast = useToast();
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
   const [hidePassword, setHidePassword] = useState(true);
@@ -133,10 +120,11 @@ const LoginScreen = () => {
       .catch((error) => {
         console.log(error);
         formik.setSubmitting(false);
-        toast.show({
-          render: ({ id }) => {
-            return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-          },
+
+        Toast.show({
+          type: "error",
+          text1: error.response.data.message,
+          position: "bottom",
         });
       });
   };
@@ -188,123 +176,126 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={[styles.container, { height: height, width: width }]}>
-      <Flex bg="white" borderRadius={15} py={38} gap={36} w="full" maxWidth={500} style={{ paddingHorizontal: 16 }}>
-        <Flex gap={22} w="100%">
-          <Flex gap={15} alignItems="center">
-            <Image resizeMode="contain" source={require("../assets/icons/kss_logo.png")} alt="KSS_LOGO" h={45} w={45} />
-            <Text fontSize={20}>Login</Text>
-          </Flex>
-
-          {/* <Flex position="relative">
+      <View
+        style={{
+          backgroundColor: "white",
+          borderRadius: 15,
+          paddingVertical: 38,
+          paddingHorizontal: 16,
+          display: "flex",
+          gap: 36,
+          maxWidth: 500,
+          width: "100%",
+        }}
+      >
+        <View style={{ display: "flex", gap: 22, width: "100%" }}>
+          <View style={{ display: "flex", gap: 15, alignItems: "center" }}>
             <Image
-              resizeMode="contain"
+              style={{ height: 55, width: 55, resizeMode: "contain" }}
+              source={require("../assets/icons/kss_logo.png")}
+              alt="KSS_LOGO"
+            />
+            <Text style={{ fontSize: 20, fontWeight: 500 }}>Login</Text>
+          </View>
+
+          <View style={{ position: "relative", borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
+            <Image
               source={require("../assets/icons/google.png")}
               alt="KSS_LOGO"
-              style={{ width: 15, height: 16 }}
-              position="absolute"
-              zIndex={1}
-              left={14}
-              bottom={3}
+              style={{
+                height: 16,
+                width: 15,
+                resizeMode: "contain",
+                position: "absolute",
+                zIndex: 1,
+                left: 14,
+                bottom: 12,
+              }}
             />
+            <FormButton disabled={isLoading} backgroundColor="white" fontSize={12} fontColor="#595F69">
+              {isLoading ? "Checking google account..." : "Login with Google"}
+            </FormButton>
 
-            <Button
+            {/* <Button
               disabled={isLoading}
               variant="ghost"
               borderWidth={1}
               borderColor="#E8E9EB"
               bg="white"
-              // onPress={() => {
-              //   if (Platform.OS === "android") {
-              //     onGoogleButtonPress();
-              //   } else {
-              //     promptAsync();
-              //   }
-              //   toggleLoading();
-              // }}
-              // onPress={() => {
-              //   Platform.OS === "ios" && promptAsync();
-              // }}
+              onPress={() => {
+                if (Platform.OS === "android") {
+                  onGoogleButtonPress();
+                } else {
+                  promptAsync();
+                }
+                toggleLoading();
+              }}
+              onPress={() => {
+                Platform.OS === "ios" && promptAsync();
+              }}
             >
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
-            </Button>
-          </Flex> */}
-        </Flex>
-        {/* 
-        <Flex position="relative" w="100%" alignItems="center" justifyContent="center">
-          <Divider />
-          <Box style={{ paddingHorizontal: 16 }} position="absolute" top={-10} bg="white">
-            <Text color="#8A9099" fontWeight={400}>
-              OR LOGIN WITH EMAIL
-            </Text>
-          </Box>
-        </Flex> */}
+            </Button> */}
+          </View>
+        </View>
 
-        <Flex w="100%" style={{ gap: 20 }}>
-          <FormControl width="100%" isInvalid={formik.errors.email}>
-            <FormControl.Label>Email</FormControl.Label>
-            <Input
-              size="md"
-              placeholder="Insert your email..."
-              onChangeText={(value) => formik.setFieldValue("email", value)}
-              autoCapitalize="none"
-            />
-            <FormControl.ErrorMessage>{formik.errors.email}</FormControl.ErrorMessage>
-          </FormControl>
+        <View
+          style={{
+            position: "relative",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View style={{ borderWidth: 1, borderColor: "#E8E9EB", width: "100%" }} />
 
-          <FormControl width="100%" isInvalid={formik.errors.password}>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input
-              size="md"
-              placeholder="Insert your password..."
-              autoCapitalize="none"
-              type={!hidePassword ? "text" : "password"}
-              onChangeText={(value) => formik.setFieldValue("password", value)}
-              InputRightElement={
-                <Pressable onPress={() => setHidePassword(!hidePassword)}>
-                  <Icon
-                    as={<MaterialIcons name={hidePassword ? "visibility" : "visibility-off"} />}
-                    size={5}
-                    mr="3"
-                    color="muted.400"
-                  />
-                </Pressable>
-              }
-            />
-            <FormControl.ErrorMessage>{formik.errors.password}</FormControl.ErrorMessage>
-          </FormControl>
+          <View style={{ paddingHorizontal: 16, position: "absolute", top: -8, backgroundColor: "white" }}>
+            <Text style={{ color: "#8A9099", fontWeight: 400 }}>OR LOGIN WITH EMAIL</Text>
+          </View>
+        </View>
 
-          {/* <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-            <Flex>
+        <View style={{ display: "flex", gap: 10, width: "100%" }}>
+          <Input fieldName="email" title="Email" formik={formik} placeHolder="Insert your email..." />
+
+          <Input
+            fieldName="password"
+            title="Password"
+            formik={formik}
+            placeHolder="Insert your password..."
+            secureTextEntry={hidePassword}
+            endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
+            onPressEndIcon={() => setHidePassword(!hidePassword)}
+          />
+
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
+            Log In
+          </FormButton>
+
+          <View
+            style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
+          >
+            <Text style={{ color: "#176688", fontWeight: 400 }}>Forgot Password?</Text>
+          </View>
+        </View>
+
+        <View style={{ width: "100%" }} />
+
+        <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
+          <Text style={{ fontWeight: 500 }}>Don't have an account?</Text>
+          <Text style={{ fontWeight: 500, color: "#176688" }}>Sign Up</Text>
+        </View>
+
+        <Toast />
+      </View>
+
+      {/* <View>
               <Checkbox color="primary.600">
                 <Text fontWeight={400}>Remember Me</Text>
               </Checkbox>
-            </Flex>
-
-            <Text color="primary.600" fontWeight={400}>
-              Forgot Password?
-            </Text>
-          </Flex> */}
-        </Flex>
-
-        <Flex w="100%">
-          <Button
-            onPress={formik.handleSubmit}
-            isLoading={formik.isSubmitting}
-            disabled={formik.isSubmitting || isLoading}
-            bgColor={formik.isSubmitting || isLoading ? "gray.500" : "primary.600"}
-            isLoadingText="Loging in..."
-          >
-            Log In
-          </Button>
-        </Flex>
-
-        {/* <Flex w="100%" flexDir="row" gap={1} justifyContent="center">
-          <Text>Don't have an account?</Text>
-          <Text color="primary.600">Sign Up</Text>
-        </Flex> */}
-      </Flex>
+            </View> */}
     </KeyboardAvoidingView>
   );
 };

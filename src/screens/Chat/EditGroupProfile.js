@@ -5,23 +5,22 @@ import * as FileSystem from "expo-file-system";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Box, Flex, Icon, Image, Input, Pressable, Text, useToast } from "native-base";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, Image } from "react-native";
+import Toast from "react-native-toast-message";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import axiosInstance from "../../config/api";
 import FormButton from "../../components/shared/FormButton";
+import Input from "../../components/shared/Forms/Input";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
   const [editName, setEditName] = useState(false);
 
   const navigation = useNavigation();
-  const toast = useToast();
 
   const route = useRoute();
 
@@ -47,19 +46,19 @@ const EditGroupProfile = () => {
       setSubmitting(false);
       setStatus("success");
       navigation.navigate("Chat List");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Profile Updated" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Group Profile updated",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -81,7 +80,12 @@ const EditGroupProfile = () => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (fileInfo.size >= 1000000) {
-      toast.show({ description: "Image size is too large" });
+      // toast.show({ description: "Image size is too large" });
+      Toast.show({
+        type: "error",
+        text1: "Image size is too large",
+        position: "bottom",
+      });
       return;
     }
 
@@ -125,94 +129,89 @@ const EditGroupProfile = () => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-        <Flex direction="row" alignItems="center" gap={4}>
+    <SafeAreaView style={styles.container}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+            <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
           <Text>Edit Profile</Text>
-        </Flex>
-      </Flex>
-      <Flex flex={1} px={4} py={2} gap={5} bg="#FFFFFF">
-        <Flex gap={5} px={3} flexDirection="row" alignItems="center" justifyContent="space-between">
-          <Flex flexDirection="row" alignItems="center">
-            <Box>
+        </View>
+      </View>
+      <View style={{ flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 20, paddingVertical: 10, gap: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 5,
+            gap: 10,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View>
               {!imageAttachment ? (
-                <AvatarPlaceholder size="2xl" name={name} image={!imageAttachment ? image : imageAttachment.uri} />
+                <AvatarPlaceholder size="xl" name={name} image={!imageAttachment ? image : imageAttachment.uri} />
               ) : (
                 <Image
                   source={{
                     uri: `${imageAttachment?.uri}`,
                   }}
-                  resizeMode="contain"
-                  borderRadius="full"
-                  w={120}
-                  h={120}
                   alt="profile picture"
+                  style={{
+                    width: 120,
+                    height: 120,
+                    resizeMode: "contain",
+                    borderRadius: 20,
+                  }}
                 />
               )}
               <Pressable
                 style={styles.editPicture}
-                shadow="0"
-                borderRadius="full"
-                borderWidth={1}
-                borderColor="#C6C9CC"
                 onPress={!imageAttachment ? pickImageHandler : () => setImageAttachment(null)}
               >
-                <Icon
-                  as={<MaterialCommunityIcons name={!imageAttachment ? "camera-outline" : "close"} />}
-                  size={5}
+                <MaterialCommunityIcons
+                  name={!imageAttachment ? "camera-outline" : "close"}
+                  size={20}
                   color="#3F434A"
                 />
               </Pressable>
-            </Box>
-          </Flex>
+            </View>
+          </View>
 
-          <Flex alignItems="center">
+          <View style={{ alignItems: "center" }}>
             {editName ? (
-              <Flex flexDirection="row" alignItems="center">
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Input
-                  width={180}
+                  width={220}
                   numberOfLines={2}
-                  type="text"
-                  size="lg"
                   value={formik.values.name}
                   onChangeText={(value) => formik.setFieldValue("name", value)}
                   defaultValue={name}
-                  variant="underlined"
-                  InputRightElement={
-                    <Icon
-                      onPress={() => {
-                        editGroupNameHandler();
-                        formik.setFieldValue("name", name);
-                      }}
-                      as={<MaterialCommunityIcons name="close" />}
-                    />
-                  }
+                  endIcon="close"
+                  onPressEndIcon={() => {
+                    editGroupNameHandler();
+                    formik.setFieldValue("name", name);
+                  }}
                 />
-              </Flex>
+              </View>
             ) : (
-              <Flex flexDirection="row" alignItems="center" gap={1}>
-                <Text width={150} numberOfLines={2} fontSize={16} fontWeight={500}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                <Text style={{ fontSize: 16, fontWeight: "500", width: 150 }} numberOfLines={2}>
                   {name}
                 </Text>
-                <Icon
-                  onPress={editGroupNameHandler}
-                  as={<MaterialCommunityIcons name="pencil" />}
-                  size={5}
-                  color="#3F434A"
-                />
-              </Flex>
+
+                <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
+              </View>
             )}
-          </Flex>
-        </Flex>
+          </View>
+        </View>
         {imageAttachment || formik.values.name !== name ? (
           <FormButton fontColor="white" onPress={formik.handleSubmit} children="Save" />
         ) : (
           <FormButton fontColor="white" opacity={0.5} onPress={null} children="Save" />
         )}
-      </Flex>
+      </View>
     </SafeAreaView>
   );
 };
@@ -234,5 +233,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     zIndex: 2,
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#C6C9CC",
+    shadowOffset: 0,
   },
 });

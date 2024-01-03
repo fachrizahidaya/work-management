@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useToast } from "native-base";
+import Toast from "react-native-toast-message";
 
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import { useFetch } from "../../hooks/useFetch";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import { useLoading } from "../../hooks/useLoading";
 import axiosInstance from "../../config/api";
+import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
 import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
 import GroupSection from "../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
 import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import { ErrorToast, SuccessToast } from "../../components/shared/ToastDialog";
-import RemoveConfirmationModal from "../../components/Chat/ChatHeader/RemoveConfirmationModal";
 import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
-import ContactInformation from "../../components/Chat/ContactListItem/ContactInformation";
 import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();
-  const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
@@ -34,19 +31,14 @@ const ChatListScreen = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
-  const swipeToReply = (contact) => {
-    setSelectedContact(contact);
-    toggleContactOption();
-  };
+  const contactMenuScreenSheetRef = useRef(null);
+  const chatMenuScreenSheetRef = useRef(null);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: contactOptionIsOpen, toggle: toggleContactOption } = useDisclosure(false);
-  const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
-  const { isOpen: contactInformationIsOpen, toggle: toggleContactInformation } = useDisclosure(false);
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
@@ -95,6 +87,18 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Swipe Contact List Item handler
+   * @param {*} contact
+   */
+  const swipeMore = (contact) => {
+    setSelectedContact(contact);
+    contactMenuScreenSheetRef.current?.show();
+  };
+
+  /**
+   * Delete message Handler
+   */
   const openSelectedChatHandler = () => {
     setSelectedChat(selectedContact);
     toggleDeleteModal();
@@ -105,6 +109,9 @@ const ChatListScreen = () => {
     toggleDeleteModal();
   };
 
+  /**
+   * Clear personal chat message handler
+   */
   const openSelectedChatToClearHandler = () => {
     setSelectedChat(selectedContact);
     toggleClearChatMessage();
@@ -115,6 +122,9 @@ const ChatListScreen = () => {
     toggleClearChatMessage();
   };
 
+  /**
+   * Clear personal chat message handler
+   */
   const openSelectedGroupChatHandler = () => {
     setSelectedChat(selectedContact);
     toggleDeleteGroupModal();
@@ -125,24 +135,9 @@ const ChatListScreen = () => {
     toggleDeleteGroupModal();
   };
 
-  const openSelectedContactMenuHandler = (contact) => {
-    setSelectedContact(contact);
-    toggleContactOption();
-  };
-
   const closeSelectedContactMenuHandler = () => {
     setSelectedContact(null);
-    toggleContactOption();
-  };
-
-  const openContactInformationHandler = () => {
-    setSelectedChat(selectedContact);
-    toggleContactInformation();
-  };
-
-  const closeContactInformationHandler = () => {
-    setSelectedChat(null);
-    toggleContactInformation();
+    contactMenuScreenSheetRef.current?.hide();
   };
 
   /**
@@ -155,18 +150,18 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/personal/${id}`);
       toggleDeleteChatMessage();
       toggleDeleteModal();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Chat Deleted" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Chat deleted",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -181,18 +176,18 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Group Deleted" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Group deleted",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -203,18 +198,18 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       toggleClearChatMessage();
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message="Chat Cleared" close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "success",
+        text1: "Chat cleared",
+        position: "bottom",
       });
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -230,10 +225,10 @@ const ChatListScreen = () => {
       const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
     } catch (err) {
       console.log(err);
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message="Process Failed, please try again later." close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -278,16 +273,17 @@ const ChatListScreen = () => {
                 groupChats={groupChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.group}
-                toggleChatOption={toggleChatOption}
-                onSwipeControl={swipeToReply}
+                onSwipeControl={swipeMore}
+                onPinControl={chatPinUpdateHandler}
               />
 
               <PersonalSection
                 personalChats={personalChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.personal}
-                toggleChatOption={toggleChatOption}
-                onSwipeControl={swipeToReply}
+                onSwipeControl={swipeMore}
+                onPinControl={chatPinUpdateHandler}
+                reference={chatMenuScreenSheetRef}
               />
 
               {searchResult?.message?.length > 0 && (
@@ -297,13 +293,11 @@ const ChatListScreen = () => {
           </SafeAreaView>
 
           <ContactMenu
-            isOpen={contactOptionIsOpen}
             onClose={closeSelectedContactMenuHandler}
             chat={selectedContact}
             toggleDeleteModal={openSelectedChatHandler}
             toggleDeleteGroupModal={openSelectedGroupChatHandler}
             toggleClearChatMessage={openSelectedChatToClearHandler}
-            toggleContactInformation={openContactInformationHandler}
             loggedInUser={userSelector?.id}
             toggleDeleteChatMessage={toggleDeleteChatMessage}
             toggleExitModal={toggleExitModal}
@@ -313,8 +307,11 @@ const ChatListScreen = () => {
             deleteChatPersonal={deleteChatPersonal}
             deleteChatMessageIsLoading={deleteChatMessageIsLoading}
             chatRoomIsLoading={chatRoomIsLoading}
+            reference={contactMenuScreenSheetRef}
           />
-          <ChatMenu isOpen={chatOptionIsOpen} onClose={toggleChatOption} />
+
+          <ChatMenu reference={chatMenuScreenSheetRef} />
+
           {selectedChat?.pin_personal ? (
             <RemoveConfirmationModal
               isLoading={deleteChatMessageIsLoading}

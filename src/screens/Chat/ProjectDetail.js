@@ -1,24 +1,25 @@
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, View, Text, Pressable, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import Description from "../../components/Chat/ProjectTask/Description";
 import DateSection from "../../components/Chat/ProjectTask/DateSection";
 import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
 import MemberSection from "../../components/Chat/ProjectTask/MemberSection";
 import AttachmentSection from "../../components/Chat/ProjectTask/AttachmentSection";
-import { useFetch } from "../../hooks/useFetch";
 
 const ProjectDetail = () => {
   const navigation = useNavigation();
+
   const routes = useRoute();
+
   const {
     project_id,
     image,
@@ -34,6 +35,7 @@ const ProjectDetail = () => {
     setBandAttachment,
     setBandAttachmentType,
   } = routes.params;
+
   const {
     data: project,
     isFetching: projectIsFetching,
@@ -44,36 +46,49 @@ const ProjectDetail = () => {
     isFetching: projectTaskIsFetching,
     refetch: refetchProjectTask,
   } = useFetch(`/chat/task/project/${project_id}`);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-        <Flex justifyContent="space-between" flex={1} direction="row" alignItems="center">
-          <Flex gap={2} flexDirection="row" alignItems="center">
-            <Pressable display="flex" flexDirection="row" alignItems="center" onPress={() => navigation.goBack()}>
-              <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Pressable
+              style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+              onPress={() => navigation.goBack()}
+            >
+              <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
-            <Icon as={<MateriaCommunitylIcons name="circle-slice-2" />} size="xl" color="#3F434A" />
-            <Flex>
-              <Text fontSize={14} fontWeight={400} width={200} numberOfLines={1} overflow="hidden" ellipsizeMode="tail">
+            <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
+            <View>
+              <Text
+                style={{ fontSize: 14, fontWeight: "400", width: 200, overflow: "hidden" }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {project?.data?.title}
               </Text>
-              <Text opacity={0.5} fontSize={12} fontWeight={300}>
+              <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
                 Due {dayjs(project?.data?.deadline).format("DD MMMM YYYY")}
               </Text>
-            </Flex>
-          </Flex>
-          <Flex gap={2} flexDirection="row" alignItems="center">
-            <Text fontSize={10} fontWeight={400}>
-              Created by
-            </Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Text style={{ fontSize: 10, fontWeight: "400" }}>Created by</Text>
             <AvatarPlaceholder name={project?.data?.owner?.name} image={project?.data?.owner?.image} />
-          </Flex>
-        </Flex>
-      </Flex>
-      <Flex borderRadius={10} mx={3} my={2} bgColor="#fafafa">
+            <Text style={{ fontSize: 10 }}>
+              {project?.data?.owner?.name.length > 30
+                ? project?.data?.owner?.name?.split(" ")[0]
+                : project?.data?.owner?.name}
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 15 }}>
         <Description description={project?.data?.description} navigation={navigation} />
-      </Flex>
-      <Flex gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
+      </View>
+      <View
+        style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", marginVertical: 10, marginHorizontal: 15 }}
+      >
         <DateSection
           start={dayjs(project?.data?.created_at).format("MMM DD, YYYY")}
           end={dayjs(project?.data?.deadline).format("MMM DD, YYYY")}
@@ -83,9 +98,18 @@ const ProjectDetail = () => {
           onProgress={project?.data?.task_onprogress_count}
           finish={project?.data?.task_finish_count}
         />
-      </Flex>
-      <Flex gap={3} flexDirection="row" borderRadius={10} mx={3} my={2} bgColor="#fafafa">
-        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={0.5}>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#FAFAFA",
+          gap: 5,
+          borderRadius: 10,
+          marginVertical: 10,
+          marginHorizontal: 15,
+        }}
+      >
+        <View style={{ flex: 0.5, borderRadius: 10, padding: 10, backgroundColor: "#FFFFFF" }}>
           <FlashList
             data={project?.data?.member}
             estimatedItemSize={50}
@@ -95,12 +119,21 @@ const ProjectDetail = () => {
               <MemberSection key={index} name={item?.user?.name} image={item?.user?.image} />
             )}
           />
-        </Flex>
-        <Flex px={2} py={1} borderRadius={10} bgColor="#FFFFFF" flex={1}>
+        </View>
+        <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: 10, padding: 5 }}>
           <AttachmentSection />
-        </Flex>
-      </Flex>
-      <Flex gap={2} borderRadius={10} mx={3} my={2} flex={1} bgColor="#fafafa">
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#FAFAFA",
+          borderRadius: 10,
+          gap: 5,
+          marginVertical: 10,
+          marginHorizontal: 15,
+        }}
+      >
         {projectTask?.data.length > 0 ? (
           <FlashList
             data={projectTask?.data}
@@ -108,7 +141,7 @@ const ProjectDetail = () => {
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             renderItem={({ item, index }) => (
-              <Box key={index} gap={2}>
+              <View style={{ gap: 5 }} key={index}>
                 <Pressable
                   onPress={() =>
                     navigation.navigate("Task Detail Screen", {
@@ -127,64 +160,70 @@ const ProjectDetail = () => {
                       taskData: item,
                     })
                   }
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  bgColor="#ffffff"
-                  p={5}
-                  my={1}
-                  borderRadius={10}
-                  justifyContent="space-between"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 10,
+                    padding: 10,
+                    marginVertical: 5,
+                  }}
                 >
-                  <Flex>
-                    <Text fontSize={14} fontWeight={400}>
-                      {item?.title}
+                  <View>
+                    <Text style={{ fontSize: 14, fontWeight: "400" }}>
+                      {item?.title.length > 50 ? item?.title.slice(0, 30) + "..." : item?.title}
                     </Text>
-                    <Text opacity={0.5} fontSize={12} fontWeight={300}>
+                    <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
                       Due {dayjs(item?.deadline).format("DD MMMM YYYY")}
                     </Text>
-                  </Flex>
+                  </View>
                   <AvatarPlaceholder name={item?.owner?.name} image={item?.owner?.image} size="sm" />
                 </Pressable>
-              </Box>
+              </View>
             )}
           />
         ) : (
           <Pressable
-            display="flex"
-            alignItems="center"
-            bgColor="#ffffff"
-            py={3}
-            px={3}
-            borderRadius={10}
-            justifyContent="center"
-            gap={3}
-            flex={1}
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#FFFFFF",
+              borderRadius: 10,
+              gap: 5,
+              padding: 5,
+            }}
           >
-            <Flex gap={3} justifyContent="center" alignItems="center">
+            <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                alt="attachment"
-                h={150}
-                w={180}
-                resizeMode="cover"
                 source={require("../../assets/vectors/empty.png")}
+                alt="attachment"
+                style={{
+                  width: 180,
+                  height: 150,
+                  resizeMode: "cover",
+                }}
               />
               <Text>No Task</Text>
-            </Flex>
+            </View>
           </Pressable>
         )}
-      </Flex>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
         <Pressable
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          flex={1}
-          direction="row"
-          alignItems="center"
-          bgColor="#f5f5f5"
-          borderRadius={10}
-          p={2}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 5,
+            padding: 10,
+          }}
           onPress={() => {
             setBandAttachment(projectData);
             setBandAttachmentType("project");
@@ -201,12 +240,10 @@ const ProjectDetail = () => {
             });
           }}
         >
-          <Text fontSize={14} fontWeight={400} color="#176688">
-            Import Project
-          </Text>
-          <Icon as={<MateriaCommunitylIcons name="lightning-bolt" />} size="xl" color="#176688" />
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>Import Project</Text>
+          <MateriaCommunitylIcons name="lightning-bolt" size={25} color="#176688" />
         </Pressable>
-      </Flex>
+      </View>
     </SafeAreaView>
   );
 };

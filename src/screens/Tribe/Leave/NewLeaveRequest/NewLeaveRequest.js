@@ -1,28 +1,27 @@
 import { useState, useEffect } from "react";
-import { useFormik } from "formik";
 import { useNavigation } from "@react-navigation/native";
+import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
 
-import { Dimensions } from "react-native";
-import { Box, Flex, Skeleton, Spinner, Text, VStack, useToast } from "native-base";
+import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import Toast from "react-native-toast-message";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
 import { useFetch } from "../../../../hooks/useFetch";
-import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 
 const NewLeaveRequest = ({ route }) => {
+  const [availableLeaves, setAvailableLeaves] = useState(null);
+  const [isReady, setIsReady] = useState(false);
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
   const [dateChanges, setDateChanges] = useState(true);
-  const [availableLeaves, setAvailableLeaves] = useState(null);
-  const [formError, setFormError] = useState(true);
-  const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [formError, setFormError] = useState(true);
 
   const { width, height } = Dimensions.get("window");
 
@@ -30,17 +29,23 @@ const NewLeaveRequest = ({ route }) => {
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
-  const toast = useToast();
-
   const navigation = useNavigation();
-
-  const { data: leaveType } = useFetch("/hr/leaves");
 
   const {
     data: leaveHistory,
     refetch: refetchLeaveHistory,
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
+
+  const { data: leaveType } = useFetch("/hr/leaves");
+  const leaveOptions = leaveType?.data.map((item) => ({
+    value: item.id,
+    value1: item.name,
+    label: item.name,
+    active: item.active,
+    days: item.days,
+    generate_type: item.generate_type,
+  }));
 
   /**
    * Calculate available leave quota and day-off
@@ -64,6 +69,36 @@ const NewLeaveRequest = ({ route }) => {
   };
 
   /**
+   * Submit leave request handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+
+  const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post(`/hr/leave-requests`, form);
+      setSubmitting(false);
+      setStatus("success");
+      refetchLeaveHistory();
+      Toast.show({
+        type: "success",
+        text1: "Request created",
+        position: "bottom",
+      });
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
+      });
+    }
+  };
+
+  /**
    * Calculate leave quota handler
    * @param {*} action
    */
@@ -80,50 +115,20 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
       setIsLoading(false);
-      toast.show({
-        render: () => {
-          return <SuccessToast message="Leave request available" />;
-        },
-      });
       setFormError(false);
+      Toast.show({
+        type: "success",
+        text1: "Leave Request available",
+        position: "bottom",
+      });
     } catch (err) {
       console.log(err);
       setIsLoading(false);
       setIsError(true);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={err.response.data.message} />;
-        },
-      });
-    }
-  };
-
-  /**
-   * Submit leave request handler
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-
-  const leaveRequestAddHandler = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/hr/leave-requests`, form);
-      refetchLeaveHistory();
-      setSubmitting(false);
-      setStatus("success");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Request Created`} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Creating failed,${err.response.data.message}`} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
       });
     }
   };
@@ -132,11 +137,10 @@ const NewLeaveRequest = ({ route }) => {
    * Create leave request handler
    */
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       leave_id: "",
-      begin_date: "",
-      end_date: "",
+      begin_date: dayjs().format("YYYY-MM-DD"),
+      end_date: dayjs().format("YYYY-MM-DD"),
       days: "",
       reason: "",
     },
@@ -149,7 +153,6 @@ const NewLeaveRequest = ({ route }) => {
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
       leaveRequestAddHandler(values, setSubmitting, setStatus);
-      // resetForm();
     },
   });
 
@@ -159,28 +162,20 @@ const NewLeaveRequest = ({ route }) => {
    */
   const onChangeStartDate = (value) => {
     formik.setFieldValue("begin_date", value);
+    setDateChanges(true); // every time there is change of date, it will set to true
   };
 
   const onChangeEndDate = (value) => {
     formik.setFieldValue("end_date", value);
+    setDateChanges(true); // every time there is change of date, it will set to true
   };
 
   useEffect(() => {
-    if (formik.values.leave_id && formik.values.begin_date && formik.values.end_date && dateChanges) {
+    if (formik.values.leave_id && dateChanges) {
       countLeave();
       setDateChanges(false);
     }
-    if (!formik.isSubmitting && formik.status === "success") {
-      navigation.goBack();
-    }
-  }, [
-    formik.values.leave_id,
-    formik.values.begin_date,
-    formik.values.end_date,
-    formik.isSubmitting,
-    formik.status,
-    dateChanges,
-  ]);
+  }, [formik.values.leave_id, dateChanges]);
 
   useEffect(() => {
     if (selectedGenerateType === null) {
@@ -196,6 +191,12 @@ const NewLeaveRequest = ({ route }) => {
   }, [formik.values.leave_id]);
 
   useEffect(() => {
+    if (!formik.isSubmitting && formik.status === "success") {
+      navigation.goBack();
+    }
+  }, [formik.isSubmitting, formik.status]);
+
+  useEffect(() => {
     filterAvailableLeaveHistory();
   }, [leaveHistory?.data]);
 
@@ -206,9 +207,9 @@ const NewLeaveRequest = ({ route }) => {
   }, []);
 
   return (
-    <Box>
+    <View>
       {isReady ? (
-        <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
+        <View style={{ ...styles.container, width: width, height: height }}>
           <PageHeader
             title="New Leave Request"
             onPress={
@@ -231,45 +232,58 @@ const NewLeaveRequest = ({ route }) => {
             description="Are you sure want to exit? It will be deleted"
           />
 
-          <Flex alignItems="center" justifyContent="center" gap={3} flexDir="row" my={3}>
+          <View style={styles.history}>
             {leaveHistoryIsFetching ? (
-              <VStack space={2} alignItems="center">
-                <Skeleton h={41} w={10} />
-                <Skeleton h={5} w={100} />
-              </VStack>
+              <View style={{ alignItems: "center", gap: 5 }}>
+                <ActivityIndicator />
+              </View>
             ) : (
               availableLeaves?.map((item, index) => {
                 return (
-                  <Box key={index} alignItems="center" justifyContent="center" gap={2}>
-                    <Text fontWeight={500} fontSize={20}>
-                      {item.quota}
-                    </Text>
-                    <Text width={20} height={10} fontWeight={400} fontSize={12} color="#8A9099" textAlign="center">
-                      {item.leave_name}
-                    </Text>
-                  </Box>
+                  <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
+                    <Text style={styles.name}>{item.leave_name}</Text>
+                  </View>
                 );
               })
             )}
-          </Flex>
+          </View>
 
           <NewLeaveRequestForm
+            onSubmit={leaveRequestAddHandler}
             formik={formik}
-            leaveType={leaveType}
-            onChangeEndDate={onChangeEndDate}
             onChangeStartDate={onChangeStartDate}
-            selectedGenerateType={selectedGenerateType}
+            onChangeEndDate={onChangeEndDate}
             isLoading={isLoading}
             isError={isError}
+            leaveType={leaveOptions}
           />
-        </Box>
-      ) : (
-        <VStack mt={10} px={4} space={2}>
-          <Spinner color="primary.600" size="lg" />
-        </VStack>
-      )}
-    </Box>
+        </View>
+      ) : null}
+    </View>
   );
 };
 
 export default NewLeaveRequest;
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+  },
+  history: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    marginVertical: 20,
+  },
+  name: {
+    width: 100,
+    height: 30,
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#8A9099",
+    textAlign: "center",
+  },
+});

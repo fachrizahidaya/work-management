@@ -1,31 +1,17 @@
 import { Fragment, memo } from "react";
 
-import { Flex } from "native-base";
+import { View } from "react-native";
 
-import AttendanceIcon from "./AttendanceIcon";
+import AttendanceColor from "./AttendanceColor";
 import AttendanceAttachment from "./AttendanceAttachment";
 
-const AttendanceCalendar = ({
-  renderCalendar,
-  attachment,
-  toggle,
-  onSelectFile,
-  onDelete,
-  setAttachmentId,
-  forceRenderer,
-}) => {
+const AttendanceCalendar = ({ renderCalendar, attachment, setAttachmentId, reference }) => {
   return (
-    <Flex flex={1} gap={1}>
+    <View style={{ flex: 1, gap: 1 }}>
       <Fragment>{renderCalendar()}</Fragment>
-      <AttendanceIcon />
-      <AttendanceAttachment
-        attachment={attachment}
-        toggle={toggle}
-        onSelectFile={onSelectFile}
-        onDelete={onDelete}
-        setAttachmentId={setAttachmentId}
-      />
-    </Flex>
+      <AttendanceColor />
+      <AttendanceAttachment attachment={attachment} setAttachmentId={setAttachmentId} reference={reference} />
+    </View>
   );
 };
 

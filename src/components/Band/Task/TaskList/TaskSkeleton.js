@@ -1,25 +1,29 @@
 import React from "react";
 
-import { StyleSheet } from "react-native";
-import { Flex, HStack, Skeleton } from "native-base";
+import { StyleSheet, View } from "react-native";
+import { Skeleton } from "moti/skeleton";
+
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const TaskSkeleton = () => {
   return (
-    <Flex style={styles.wrapper}>
-      <HStack space={2}>
-        <Skeleton flex={3} h={31} />
-        <Skeleton flex={1} h={31} />
-      </HStack>
-      <HStack space={1}>
-        <Skeleton h={21} borderRadius="full" w={21} />
-        <Skeleton h={21} borderRadius="full" w={21} />
-        <Skeleton h={21} borderRadius="full" w={21} />
-      </HStack>
-      <HStack justifyContent="space-between" alignItems="center">
-        <Skeleton h={21} borderRadius="full" w={41} />
-        <Skeleton h={31} borderRadius="full" w={31} />
-      </HStack>
-    </Flex>
+    <View style={styles.wrapper}>
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <Skeleton show height={20} width={100} radius="round" {...SkeletonCommonProps} />
+
+        <Skeleton show height={20} width={100} radius="round" {...SkeletonCommonProps} />
+      </View>
+
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Skeleton show height={15} width={15} radius="round" {...SkeletonCommonProps} />
+          <Skeleton show height={15} width={15} radius="round" {...SkeletonCommonProps} />
+          <Skeleton show height={15} width={15} radius="round" {...SkeletonCommonProps} />
+        </View>
+
+        <Skeleton show height={30} width={30} radius="round" {...SkeletonCommonProps} />
+      </View>
+    </View>
   );
 };
 
@@ -27,6 +31,7 @@ export default TaskSkeleton;
 
 const styles = StyleSheet.create({
   wrapper: {
+    display: "flex",
     backgroundColor: "white",
     paddingVertical: 18,
     paddingHorizontal: 16,
@@ -39,6 +44,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     marginHorizontal: 2,
     borderRadius: 15,
-    gap: 5,
+    gap: 10,
   },
 });

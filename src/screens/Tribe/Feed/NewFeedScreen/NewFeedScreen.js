@@ -7,19 +7,19 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Box, Flex, Icon, Text, useToast, Button, VStack, Spinner } from "native-base";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
+import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
+import Button from "../../../../components/shared/Forms/Button";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { ErrorToast, SuccessToast } from "../../../../components/shared/ToastDialog";
+import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import PageHeader from "../../../../components/shared/PageHeader";
-import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
-import { useFetch } from "../../../../hooks/useFetch";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
 
 const NewFeedScreen = ({ route }) => {
@@ -30,12 +30,12 @@ const NewFeedScreen = ({ route }) => {
 
   const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
-  const { isOpen: mentionIsOpen, toggle: toggleMention } = useDisclosure(false);
+
+  const postActionScreenSheetRef = useRef(null);
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
-  const toast = useToast();
 
   const navigation = useNavigation();
 
@@ -57,6 +57,59 @@ const NewFeedScreen = ({ route }) => {
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
   /**
+   * Submit a post handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const postSubmitHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.post("/hr/posts", form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      setSubmitting(false);
+      setStatus("success");
+      setScrollNewMessage(!scrollNewMessage);
+      postRefetchHandler();
+      Toast.show({
+        type: "success",
+        text1: "Posted successfully!",
+        position: "bottom",
+      });
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      Toast.show({
+        type: "error",
+        text1: err.response.data.message,
+        position: "bottom",
+      });
+    }
+  };
+
+  /**
+   * End date of announcement handler
+   * @param {*} value
+   */
+  const endDateAnnouncementHandler = (value) => {
+    formik.setFieldValue("end_date", value);
+  };
+
+  /**
+   * Date for announcement handler
+   */
+  const [dateShown, setDateShown] = useState(false);
+  const announcementToggleHandler = () => {
+    setDateShown(true);
+    setIsAnnouncementSelected(true);
+    setSelectedOption("Announcement");
+    formik.setFieldValue("type", "Announcement");
+  };
+
+  /**
    * Create a new post handler
    */
   const formik = useFormik({
@@ -66,10 +119,10 @@ const NewFeedScreen = ({ route }) => {
       type: selectedOption || "Public",
       end_date: "",
     },
-    validationSchema: yup.object().shape({
-      content: yup.string().required("Content is required"),
-    }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+    // validationSchema: yup.object().shape({
+    //   content: yup.string().required("Content is required"),
+    // }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
@@ -95,59 +148,6 @@ const NewFeedScreen = ({ route }) => {
       }
     },
   });
-
-  /**
-   * Submit a post handler
-   * @param {*} form
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const postSubmitHandler = async (form, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post("/hr/posts", form, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      postRefetchHandler();
-      setScrollNewMessage(!scrollNewMessage);
-      setSubmitting(false);
-      setStatus("success");
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Posted succesfuly!`} close={() => toast.close(id)} />;
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={`Process Failed, please try again later...`} close={() => toast.close(id)} />;
-        },
-      });
-    }
-  };
-
-  /**
-   * End date of announcement handler
-   * @param {*} value
-   */
-  const endDateAnnouncementHandler = (value) => {
-    formik.setFieldValue("end_date", value);
-  };
-
-  /**
-   * Date for announcement handler
-   */
-  const [dateShown, setDateShown] = useState(false);
-  const announcementToggleHandler = () => {
-    setDateShown(true);
-    setIsAnnouncementSelected(true);
-    setSelectedOption("Announcement");
-    formik.setFieldValue("type", "Announcement");
-  };
 
   /**
    * Toggle to Public Handler
@@ -209,100 +209,115 @@ const NewFeedScreen = ({ route }) => {
   }, []);
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      {isReady ? (
-        <Box flex={1} bgColor="#FFFFFF" p={5}>
-          <PageHeader
-            title="New Post"
-            onPress={
-              formik.values.content || image !== null
-                ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-                : () => {
-                    !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
-                    formik.resetForm();
-                    setImage(null);
+    <>
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        {isReady ? (
+          <View style={styles.container}>
+            <PageHeader
+              title="New Post"
+              onPress={
+                formik.values.content || image !== null
+                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                  : () => {
+                      !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                      formik.resetForm();
+                      setImage(null);
+                    }
+              }
+            />
+
+            <ReturnConfirmationModal
+              isOpen={returnModalIsOpen}
+              toggle={toggleReturnModal}
+              onPress={() => {
+                toggleReturnModal();
+                navigation.goBack();
+                setImage(null);
+              }}
+              description="Are you sure want to exit? It will be deleted."
+            />
+
+            <View style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? null : "center" }}>
+              <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
+              <View style={{ gap: 5 }}>
+                <Button
+                  disabled={checkAccess ? false : true}
+                  padding={8}
+                  height={32}
+                  backgroundColor="#FFFFFF"
+                  onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
+                  borderRadius={15}
+                  variant="outline"
+                  children={
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" /> : null}
+                    </View>
                   }
-            }
-          />
+                />
+                {formik.values.type === "Public" ? (
+                  ""
+                ) : (
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                    <MaterialCommunityIcons name="clock-time-three-outline" />
+                    <Text style={{ fontSize: 12 }}>
+                      {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
 
-          <ReturnConfirmationModal
-            isOpen={returnModalIsOpen}
-            toggle={toggleReturnModal}
-            onPress={() => {
-              toggleReturnModal();
-              navigation.goBack();
-              setImage(null);
-            }}
-            description="Are you sure want to exit? It will be deleted."
-          />
-
-          <Flex mt={22} mx={2} gap={2} flexDir="row" alignItems="center">
-            <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
-            <Flex gap={1}>
-              <Button
-                disabled={checkAccess ? false : true}
-                height={25}
-                onPress={() => togglePostType()}
-                borderRadius="full"
-                variant="outline"
-              >
-                <Flex alignItems="center" flexDir="row">
-                  <Text fontSize={10}>{formik.values.type}</Text>
-                  {checkAccess ? <Icon as={<MaterialCommunityIcons name="chevron-down" />} /> : null}
-                </Flex>
-              </Button>
-              {formik.values.type === "Public" ? (
-                ""
-              ) : (
-                <Flex alignItems="center" gap={2} flexDir="row">
-                  <Icon as={<MaterialCommunityIcons name="clock-time-three-outline" />} />
-                  <Text fontSize={12}>
-                    {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
-                  </Text>
-                </Flex>
-              )}
-            </Flex>
-          </Flex>
-
-          <NewFeedForm
-            formik={formik}
-            image={image}
-            setImage={setImage}
-            pickImageHandler={pickImageHandler}
-            postTypeIsOpen={postTypeIsOpen}
-            postTypeIsClose={postTypeIsClose}
-            publicToggleHandler={publicToggleHandler}
-            announcementToggleHandler={announcementToggleHandler}
-            isAnnouncementSelected={isAnnouncementSelected}
-            dateShown={dateShown}
-            endDateAnnouncementHandler={endDateAnnouncementHandler}
-            loggedEmployeeDivision={loggedEmployeeDivision}
-            employees={employees?.data}
-            mentionSelectHandler={mentionSelectHandler}
-            inputRef={inputRef}
-            mentionIsOpen={mentionIsOpen}
-            toggleMention={toggleMention}
-            checkAccess={checkAccess}
-          />
-          <PostAction
-            publicToggleHandler={publicToggleHandler}
-            postTypeIsOpen={postTypeIsOpen}
-            postTypeIsClose={postTypeIsClose}
-            announcementToggleHandler={announcementToggleHandler}
-            isAnnouncementSelected={isAnnouncementSelected}
-            dateShown={dateShown}
-            endDateAnnouncementHandler={endDateAnnouncementHandler}
-            loggedEmployeeDivision={loggedEmployeeDivision}
-            formik={formik}
-          />
-        </Box>
-      ) : (
-        <VStack mt={10} px={4} space={2}>
-          <Spinner color="primary.600" size="lg" />
-        </VStack>
-      )}
-    </TouchableWithoutFeedback>
+            <NewFeedForm
+              formik={formik}
+              image={image}
+              setImage={setImage}
+              pickImageHandler={pickImageHandler}
+              postTypeIsOpen={postTypeIsOpen}
+              postTypeIsClose={postTypeIsClose}
+              publicToggleHandler={publicToggleHandler}
+              announcementToggleHandler={announcementToggleHandler}
+              isAnnouncementSelected={isAnnouncementSelected}
+              dateShown={dateShown}
+              endDateAnnouncementHandler={endDateAnnouncementHandler}
+              loggedEmployeeDivision={loggedEmployeeDivision}
+              employees={employees?.data}
+              mentionSelectHandler={mentionSelectHandler}
+              inputRef={inputRef}
+            />
+            <PostAction
+              publicToggleHandler={publicToggleHandler}
+              postTypeIsClose={postTypeIsClose}
+              announcementToggleHandler={announcementToggleHandler}
+              isAnnouncementSelected={isAnnouncementSelected}
+              dateShown={dateShown}
+              endDateAnnouncementHandler={endDateAnnouncementHandler}
+              formik={formik}
+              reference={postActionScreenSheetRef}
+            />
+          </View>
+        ) : (
+          <></> // handle if screen not ready
+        )}
+      </TouchableWithoutFeedback>
+      <Toast />
+    </>
   );
 };
 
 export default NewFeedScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+  },
+  inputHeader: {
+    flexDirection: "row",
+
+    gap: 5,
+    marginHorizontal: 2,
+    marginTop: 22,
+  },
+});

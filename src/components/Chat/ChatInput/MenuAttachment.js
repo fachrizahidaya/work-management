@@ -1,4 +1,6 @@
-import { Actionsheet, Flex, Icon, Text } from "native-base";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const MenuAttachment = ({
@@ -6,7 +8,6 @@ const MenuAttachment = ({
   onClose,
   selectFile,
   pickImageHandler,
-  selectBandHandler,
   navigation,
   bandAttachment,
   setBandAttachment,
@@ -21,6 +22,7 @@ const MenuAttachment = ({
   type,
   active_member,
   isPinned,
+  reference,
 }) => {
   const attachmentOptions = [
     {
@@ -28,8 +30,8 @@ const MenuAttachment = ({
       name: "Document",
       color: "#1E4AB9",
       onPress: () => {
-        selectFile();
         onClose();
+        selectFile();
       },
     },
     {
@@ -37,8 +39,8 @@ const MenuAttachment = ({
       name: "Photo",
       color: "#39B326",
       onPress: () => {
-        pickImageHandler();
         onClose();
+        pickImageHandler();
       },
     },
     {
@@ -68,31 +70,37 @@ const MenuAttachment = ({
   ];
 
   return (
-    <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content gap={1}>
-        {attachmentOptions.map((option, index) => {
-          return (
-            <Actionsheet.Item key={index} onPress={option.onPress} backgroundColor="#F5F5F5">
-              <Flex width={350} justifyContent="space-between" alignItems="center" flexDirection="row">
-                <Text fontSize={16} fontWeight={400}>
-                  {option.name}
-                </Text>
-                <Icon as={<MaterialCommunityIcons name={option.icon} />} color={option.color} />
-              </Flex>
-            </Actionsheet.Item>
-          );
-        })}
+    <ActionSheet ref={reference} onClose={reference.current?.hide()}>
+      {attachmentOptions.map((option, index) => {
+        return (
+          <TouchableOpacity
+            key={index}
+            onPress={option.onPress}
+            style={{
+              ...styles.wrapper,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+            <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+          </TouchableOpacity>
+        );
+      })}
 
-        <Actionsheet.Item onPress={onClose} mt={1} backgroundColor="#F5F5F5">
-          <Flex width={350} justifyContent="center" alignItems="center">
-            <Text fontSize={16} fontWeight={400} color="#176688">
-              Cancel
-            </Text>
-          </Flex>
-        </Actionsheet.Item>
-      </Actionsheet.Content>
-    </Actionsheet>
+      <TouchableOpacity onPress={onClose} style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+      </TouchableOpacity>
+    </ActionSheet>
   );
 };
 
 export default MenuAttachment;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+});

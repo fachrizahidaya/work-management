@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import { Flex, Icon, Image, Text } from "native-base";
+import { StyleSheet, View, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,18 +22,9 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
 
   return (
     messageToReply && (
-      <Flex
-        backgroundColor="#17668814"
-        flexDirection="row"
-        alignItems="center"
-        py={3}
-        px={4}
-        justifyContent="space-between"
-        borderLeftWidth={10}
-        borderLeftColor="#176688"
-      >
-        <Flex width={mimeTypeInfo?.file_type === "image" ? 200 : null}>
-          <Text fontSize={12} fontWeight={700} color="#176688">
+      <View style={styles.container}>
+        <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : null }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", color: "#176688" }}>
             {messageToReply?.from_user_id === loggedInUser.id ? "You" : messageToReply?.user?.name}
           </Text>
           <ChatReplyPreviewMessage
@@ -41,26 +32,41 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
             myMessage={messageToReply?.from_user_id === loggedInUser?.id}
             type={type}
           />
-        </Flex>
+        </View>
         {mimeTypeInfo?.file_type === "image" && (
           <Image
             source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${messageToReply?.file_path}` }}
             alt="Attachment Preview"
-            width={10}
-            height={10}
-            resizeMode="contain"
+            style={{
+              width: 10,
+              height: 10,
+              resizeMode: "contain",
+            }}
           />
         )}
 
-        <Icon
-          onPress={() => setMessageToReply(null)}
-          as={<MaterialCommunityIcons name="close-circle-outline" />}
-          size={6}
+        <MaterialCommunityIcons
+          name="close-circle-outline"
+          size={20}
           color="#9E9E9E"
+          onPress={() => setMessageToReply(null)}
         />
-      </Flex>
+      </View>
     )
   );
 };
 
 export default ChatReplyPreview;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: '"#17668814"',
+    borderLeftWidth: 1,
+    borderLeftColor: "#176688",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+});

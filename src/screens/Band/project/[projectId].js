@@ -5,17 +5,17 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
+import { SheetManager } from "react-native-actions-sheet";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import { Dimensions, Platform, StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Box, Button, Flex, Icon, Menu, Pressable, Text, useToast } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
-import ProjectForm from "../../../components/Band/Project/NewProjectSlider/NewProjectSlider";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import MemberSection from "../../../components/Band/Project/ProjectDetail/MemberSection";
 import StatusSection from "../../../components/Band/Project/ProjectDetail/StatusSection";
@@ -26,18 +26,16 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import PageHeader from "../../../components/shared/PageHeader";
 import AddMemberModal from "../../../components/Band/shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../config/api";
-import { ErrorToast } from "../../../components/shared/ToastDialog";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import Description from "../../../components/Band/Project/ProjectDetail/Description";
+import Button from "../../../components/shared/Forms/Button";
 
 const ProjectDetailScreen = ({ route }) => {
-  const toast = useToast();
   const userSelector = useSelector((state) => state.auth);
   const { width } = Dimensions.get("screen");
   const navigation = useNavigation();
   const { projectId } = route.params;
   const [tabValue, setTabValue] = useState("comments");
-  const [openEditForm, setOpenEditForm] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
@@ -46,7 +44,10 @@ const ProjectDetailScreen = ({ route }) => {
   const editCheckAccess = useCheckAccess("update", "Projects");
 
   const tabs = useMemo(() => {
-    return [{ title: "comments" }, { title: "activity" }];
+    return [
+      { title: "comments", value: "comments" },
+      { title: "activity", value: "activity" },
+    ];
   }, []);
 
   const { data: projectData, isLoading, refetch } = useFetch(`/pm/projects/${projectId}`);
@@ -66,10 +67,32 @@ const ProjectDetailScreen = ({ route }) => {
       refetchMember();
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
+      });
+    }
+  };
+
+  /**
+   * Handles project status change
+   * @param {*} status - selected status
+   */
+  const changeProjectStatusHandler = async (status) => {
+    try {
+      await axiosInstance.post(`/pm/projects/${status.toLowerCase()}`, {
+        id: projectId,
+      });
+      refetch();
+      Toast.show({
+        type: "success",
+        text1: `Project ${status}ed`,
+      });
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -77,15 +100,6 @@ const ProjectDetailScreen = ({ route }) => {
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
   }, []);
-
-  const openEditFormHandler = () => {
-    setOpenEditForm(true);
-  };
-
-  const onCloseEditForm = (resetForm) => {
-    setOpenEditForm(false);
-    resetForm();
-  };
 
   const onPressUserToDelegate = (userId) => {
     toggleConfirmationModal();
@@ -104,176 +118,211 @@ const ProjectDetailScreen = ({ route }) => {
   }, [projectId]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        extraHeight={200}
-        enableOnAndroid={true}
-        enableAutomaticScroll={Platform.OS === "ios"}
-      >
-        <Flex gap={15} marginHorizontal={16} marginVertical={13}>
-          <Flex flexDir="row" alignItems="center" justifyContent="space-between">
-            <PageHeader
-              title={projectData?.data?.title}
-              withLoading
-              isLoading={isLoading}
-              width={width / 1.3}
-              onPress={() => navigation.navigate("Projects")}
+    <>
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          extraHeight={200}
+          enableOnAndroid={true}
+          enableAutomaticScroll={Platform.OS === "ios"}
+        >
+          <View style={{ display: "flex", gap: 15, marginHorizontal: 16, marginVertical: 13 }}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <PageHeader
+                title={projectData?.data?.title}
+                withLoading
+                isLoading={isLoading}
+                width={width / 1.3}
+                onPress={() => navigation.navigate("Projects")}
+              />
+
+              {isAllowed && (
+                <Pressable
+                  style={{ marginRight: 1 }}
+                  onPress={() =>
+                    SheetManager.show("form-sheet", {
+                      payload: {
+                        children: (
+                          <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                toggleUserModal();
+                              }}
+                            >
+                              <Text style={{ fontWeight: 500 }}>Change Ownership</Text>
+                            </TouchableOpacity>
+
+                            {editCheckAccess && (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.navigate("Project Form", {
+                                    projectData: projectData?.data,
+                                    refetchSelectedProject: refetch,
+                                  });
+                                  SheetManager.hide("form-sheet");
+                                }}
+                              >
+                                <Text style={{ fontWeight: 500 }}>Edit</Text>
+                              </TouchableOpacity>
+                            )}
+
+                            {deleteCheckAccess && (
+                              <TouchableOpacity
+                                onPress={async () => {
+                                  await SheetManager.hide("form-sheet");
+                                  toggle();
+                                }}
+                              >
+                                <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        ),
+                      },
+                    })
+                  }
+                >
+                  <MaterialCommunityIcons name="dots-vertical" size={20} />
+                </Pressable>
+              )}
+            </View>
+
+            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+              <StatusSection projectData={projectData?.data} onChange={changeProjectStatusHandler} />
+
+              <Button
+                variant="outline"
+                backgroundColor="#E8E9EB"
+                styles={{ paddingHorizontal: 10, paddingVertical: 2 }}
+                onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
+              >
+                <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <MaterialCommunityIcons name="format-list-bulleted" size={20} />
+                  <Text>Task List</Text>
+                </View>
+              </Button>
+            </View>
+
+            <Description description={projectData?.data?.description} />
+
+            <FileSection projectId={projectId} isAllowed={isAllowed} />
+
+            <MemberSection
+              projectId={projectId}
+              projectData={projectData?.data}
+              members={members}
+              refetchMember={refetchMember}
+              isAllowed={isAllowed}
             />
 
-            {isAllowed && (
-              <Menu
-                trigger={(triggerProps) => {
-                  return (
-                    <Pressable {...triggerProps} mr={1}>
-                      <Icon as={<MaterialCommunityIcons name="dots-vertical" />} color="black" size="md" />
-                    </Pressable>
-                  );
-                }}
-              >
-                <Menu.Item onPress={toggleUserModal}>Change Ownership</Menu.Item>
-                {editCheckAccess && <Menu.Item onPress={openEditFormHandler}>Edit</Menu.Item>}
-                {deleteCheckAccess && (
-                  <Menu.Item onPress={toggle}>
-                    <Text color="red.600">Delete</Text>
-                  </Menu.Item>
-                )}
-              </Menu>
-            )}
+            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
 
-            {/* Delete confirmation modal */}
-            {deleteModalIsOpen && (
-              <ConfirmationModal
-                isOpen={deleteModalIsOpen}
-                toggle={toggle}
-                apiUrl={`/pm/projects/${projectId}`}
-                color="red.600"
-                successMessage="Project deleted"
-                hasSuccessFunc={true}
-                onSuccess={() => navigation.navigate("Projects")}
-                header="Delete Project"
-                description="Are you sure to delete this project?"
-              />
-            )}
+            {tabValue === "comments" ? (
+              <CommentInput projectId={projectId} data={projectData?.data} />
+            ) : (
+              <ScrollView style={{ maxHeight: 400 }}>
+                <View style={{ flex: 1, minHeight: 2 }}>
+                  <FlashList
+                    data={activities?.data}
+                    keyExtractor={(item) => item.id}
+                    onEndReachedThreshold={0.1}
+                    estimatedItemSize={51}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (item.modul === "Task") {
+                            navigation.navigate("Task Detail", {
+                              taskId: item.reference_id,
+                            });
+                          } else if (item.modul === "Project") {
+                            navigation.navigate("Project Detail", {
+                              projectId: item.reference_id,
+                            });
+                          }
+                        }}
+                      >
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, marginBottom: 8 }}>
+                          <AvatarPlaceholder
+                            name={item.user_name}
+                            image={item.user_image}
+                            style={{ marginTop: 4 }}
+                            size="xs"
+                          />
 
-            {userModalIsOpen && (
-              <AddMemberModal
-                header="New Project Owner"
-                isOpen={userModalIsOpen}
-                onClose={closeUserModal}
-                multiSelect={false}
-                onPressHandler={onPressUserToDelegate}
-              />
-            )}
-
-            {confirmationModalIsOpen && (
-              <ConfirmationModal
-                isDelete={false}
-                isOpen={confirmationModalIsOpen}
-                toggle={toggleConfirmationModal}
-                apiUrl={"/pm/projects/delegate"}
-                body={{ id: projectId, user_id: selectedUserId }}
-                header="Change Project Ownership"
-                description="Are you sure to change ownership of this project?"
-                successMessage="Project ownership changed"
-                hasSuccessFunc
-                onSuccess={onDelegateSuccess}
-              />
-            )}
-          </Flex>
-
-          <Flex flexDir="row" style={{ gap: 8 }}>
-            <StatusSection projectId={projectId} projectData={projectData?.data} refetch={refetch} />
-
-            <Button
-              variant="outline"
-              onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
-            >
-              <Flex flexDir="row" alignItems="center" style={{ gap: 6 }}>
-                <Icon as={<MaterialCommunityIcons name="format-list-bulleted" />} color="#3F434A" size="md" />
-                <Text>Task List</Text>
-              </Flex>
-            </Button>
-          </Flex>
-
-          <Description description={projectData?.data?.description} />
-
-          <FileSection projectId={projectId} isAllowed={isAllowed} />
-
-          <MemberSection
-            projectId={projectId}
-            projectData={projectData?.data}
-            members={members}
-            refetchMember={refetchMember}
-            isAllowed={isAllowed}
-          />
-
-          <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
-
-          {tabValue === "comments" ? (
-            <CommentInput projectId={projectId} data={projectData?.data} />
-          ) : (
-            <ScrollView style={{ maxHeight: 400 }}>
-              <Box flex={1} minHeight={2}>
-                <FlashList
-                  data={activities?.data}
-                  keyExtractor={(item) => item.id}
-                  onEndReachedThreshold={0.1}
-                  estimatedItemSize={200}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (item.modul === "Task") {
-                          navigation.navigate("Task Detail", {
-                            taskId: item.reference_id,
-                          });
-                        } else if (item.modul === "Project") {
-                          navigation.navigate("Project Detail", {
-                            projectId: item.reference_id,
-                          });
-                        }
-                      }}
-                    >
-                      <Flex flexDir="row" gap={1.5} mb={2}>
-                        <AvatarPlaceholder name={item.user_name} image={item.user_image} style={{ marginTop: 4 }} />
-
-                        <Box>
-                          <Flex flexDir="row" gap={1} alignItems="center">
-                            <Text>{item?.user_name.split(" ")[0]}</Text>
-                            <Text color="#8A9099">{dayjs(item?.created_at).fromNow()}</Text>
-                          </Flex>
-
-                          <Flex>
-                            <Text fontWeight={400}>{item?.description}</Text>
-
-                            <Text fontWeight={400} width={300} numberOfLines={2}>
-                              {item.object_title}
-                              <Text color="#377893" fontWeight={500}>
-                                {" "}
-                                #{item.reference_no}
+                          <View>
+                            <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "center" }}>
+                              <Text style={{ fontWeight: 500 }}>{item?.user_name.split(" ")[0]}</Text>
+                              <Text style={{ fontWeight: 500, color: "#8A9099" }}>
+                                {dayjs(item?.created_at).fromNow()}
                               </Text>
-                            </Text>
-                          </Flex>
-                        </Box>
-                      </Flex>
-                    </TouchableOpacity>
-                  )}
-                />
-              </Box>
-            </ScrollView>
-          )}
-        </Flex>
-      </KeyboardAwareScrollView>
+                            </View>
 
-      {openEditForm && (
-        <ProjectForm
-          isOpen={openEditForm}
-          projectData={projectData?.data}
-          refetchSelectedProject={refetch}
-          onClose={onCloseEditForm}
-        />
-      )}
-    </SafeAreaView>
+                            <View>
+                              <Text style={{ fontWeight: 400 }}>{item?.description}</Text>
+
+                              <Text style={{ fontWeight: 400, width: 300 }} numberOfLines={2}>
+                                {item.object_title}
+                                <Text style={{ fontWeight: 500, color: "#377893" }}> #{item.reference_no}</Text>
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+              </ScrollView>
+            )}
+          </View>
+        </KeyboardAwareScrollView>
+
+        <Toast position="bottom" />
+      </View>
+
+      {/* Add member modal */}
+      <AddMemberModal
+        header="New Project Owner"
+        isOpen={userModalIsOpen}
+        onClose={closeUserModal}
+        multiSelect={false}
+        onPressHandler={onPressUserToDelegate}
+      />
+
+      {/* Delegate project confirmation modal */}
+      <ConfirmationModal
+        isDelete={false}
+        isOpen={confirmationModalIsOpen}
+        toggle={toggleConfirmationModal}
+        apiUrl={"/pm/projects/delegate"}
+        body={{ id: projectId, user_id: selectedUserId }}
+        header="Change Project Ownership"
+        description="Are you sure to change ownership of this project?"
+        successMessage="Project ownership changed"
+        hasSuccessFunc
+        onSuccess={onDelegateSuccess}
+      />
+
+      {/* Delete confirmation modal */}
+      <ConfirmationModal
+        isOpen={deleteModalIsOpen}
+        toggle={toggle}
+        apiUrl={`/pm/projects/${projectId}`}
+        color="red.600"
+        successMessage="Project deleted"
+        hasSuccessFunc={true}
+        onSuccess={() => navigation.navigate("Projects")}
+        header="Delete Project"
+        description="Are you sure to delete this project?"
+      />
+    </>
   );
 };
 

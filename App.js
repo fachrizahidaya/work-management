@@ -8,12 +8,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClientProvider, QueryClient } from "react-query";
 import messaging from "@react-native-firebase/messaging";
 
+import { Alert, PermissionsAndroid, Platform } from "react-native";
+
 import { customTheme } from "./src/theme";
 import { Navigations } from "./src/navigation";
 import UserModuleVerificationGuard from "./src/HOC/UserModuleVerificationGuard";
 import { WebsocketContextProvider } from "./src/HOC/WebsocketContextProvider";
 
-import { Alert, PermissionsAndroid, Platform } from "react-native";
+import { SheetProvider } from "react-native-actions-sheet";
+import "./src/components/shared/ActionSheet/sheets";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +51,8 @@ export default function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <NativeBaseProvider theme={customTheme}>
+        {/* <NativeBaseProvider theme={customTheme}> */}
+        <SheetProvider>
           <WebsocketContextProvider>
             <NavigationContainer>
               <SafeAreaProvider>
@@ -58,7 +62,8 @@ export default function App() {
               </SafeAreaProvider>
             </NavigationContainer>
           </WebsocketContextProvider>
-        </NativeBaseProvider>
+        </SheetProvider>
+        {/* </NativeBaseProvider> */}
       </QueryClientProvider>
     </Provider>
   );

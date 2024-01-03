@@ -7,15 +7,15 @@ dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Alert, Linking } from "react-native";
-import { Box, Flex, FormControl, Icon, IconButton, Image, Pressable, Text, TextArea, useToast } from "native-base";
+import { Alert, Image, Linking, Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../shared/ToastDialog";
 import FormButton from "../../../shared/FormButton";
 import CommentList from "./CommentList/CommentList";
+import Input from "../../../shared/Forms/Input";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -28,7 +28,6 @@ const xls = "../../../../assets/doc-icons/xls-format.png";
 const zip = "../../../../assets/doc-icons/zip-format.png";
 
 const CommentInput = ({ taskId, projectId, data }) => {
-  const toast = useToast();
   const [files, setFiles] = useState([]);
 
   const { data: comments, refetch: refetchComments } = useFetch(
@@ -64,20 +63,13 @@ const CommentInput = ({ taskId, projectId, data }) => {
       setFiles([]);
       setSubmitting(false);
       setStatus("success");
-
-      toast.show({
-        render: ({ id }) => {
-          return <SuccessToast message={`Comment added`} close={() => toast.close(id)} />;
-        },
-      });
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      toast.show({
-        render: ({ id }) => {
-          return <ErrorToast message={error.response.data.message} close={() => toast.close(id)} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -91,7 +83,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
     validationSchema: yup.object().shape({
       comments: yup.string().required("Comment can't be empty"),
     }),
-    validateOnChange: true,
+    validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
 
@@ -168,10 +160,9 @@ const CommentInput = ({ taskId, projectId, data }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
+      Toast.show({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -189,16 +180,20 @@ const CommentInput = ({ taskId, projectId, data }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <Flex gap={5}>
+    <View style={{ display: "flex", gap: 10 }}>
       {/* Render selected attachments here */}
       {files.length > 0 && (
-        <Flex flexDir="row" gap={1} flexWrap="wrap">
+        <View style={{ display: "flex", flexDirection: "row", gap: 2, flexWrap: "wrap" }}>
           {files.map((file, idx) => {
             // If file is image : render the image uri
             if (file.type.includes("image")) {
               return (
                 <Pressable key={idx} onPress={() => removeFile(idx)}>
-                  <Image alt="file" source={{ uri: file.uri }} h={60} w={60} />
+                  <Image
+                    style={{ height: 60, width: 60, resizeMode: "contain" }}
+                    alt="file"
+                    source={{ uri: file.uri }}
+                  />
                 </Pressable>
               );
             } else {
@@ -226,58 +221,46 @@ const CommentInput = ({ taskId, projectId, data }) => {
                         ? require(zip)
                         : require(other)
                     }
-                    h={60}
-                    w={60}
+                    style={{ height: 60, width: 60, resizeMode: "contain" }}
                   />
                 </Pressable>
               );
             }
           })}
 
-          <Text fontSize={10} opacity={0.5} alignSelf="center">
-            Tap item to remove
-          </Text>
-        </Flex>
+          <Text style={{ fontSize: 10, opacity: 0.5, alignSelf: "center", fontWeight: 500 }}>Tap item to remove</Text>
+        </View>
       )}
-      <Box borderWidth={1} borderRadius={10} borderColor="gray.300" p={2}>
-        <FormControl>
-          <TextArea
-            isInvalid={formik.errors.comments}
-            variant="unstyled"
-            size="md"
-            placeholder="Add comment..."
-            value={formik.values.comments}
-            onChangeText={(value) => formik.setFieldValue("comments", value)}
-          />
-          <FormControl.ErrorMessage>{formik.errors.comments}</FormControl.ErrorMessage>
-        </FormControl>
+      <View style={{ borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB", padding: 4 }}>
+        <Input
+          formik={formik}
+          fieldName="comments"
+          value={formik.values.comments}
+          placeHolder="Add comment..."
+          multiline
+          style={{ borderWidth: 0 }}
+        />
 
-        <Flex flexDir="row" justifyContent="flex-end" alignItems="center">
-          <Flex flexDir="row" alignItems="center" gap={1}>
-            <IconButton
-              size="sm"
-              borderRadius="full"
-              icon={
-                <Icon
-                  as={<MaterialCommunityIcons name="attachment" />}
-                  color="gray.500"
-                  size="lg"
-                  style={{ transform: [{ rotate: "-35deg" }] }}
-                />
-              }
-              onPress={selectFile}
-            />
-          </Flex>
+        <View
+          style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 20 }}
+        >
+          <TouchableOpacity style={{ borderRadius: 50 }} onPress={selectFile}>
+            <MaterialCommunityIcons name="attachment" size={20} />
+          </TouchableOpacity>
 
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} color="white">
-            <Icon
-              as={<MaterialCommunityIcons name="send" />}
-              style={{ transform: [{ rotate: "-45deg" }] }}
-              color="gray.500"
-            />
+          <FormButton
+            isSubmitting={formik.isSubmitting}
+            onPress={formik.handleSubmit}
+            color="white"
+            borderRadius={50}
+            style={{ height: 40, width: 40, transform: [{ rotate: "-45deg" }] }}
+          >
+            <MaterialCommunityIcons name="send" size={20} color="white" />
           </FormButton>
-        </Flex>
-      </Box>
+        </View>
+
+        <Toast position="bottom" />
+      </View>
 
       {/* Comment list */}
       <CommentList
@@ -288,7 +271,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
         refetchComments={refetchComments}
         downloadAttachment={downloadAttachment}
       />
-    </Flex>
+    </View>
   );
 };
 

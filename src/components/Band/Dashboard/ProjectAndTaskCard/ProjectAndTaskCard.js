@@ -3,66 +3,71 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { Flex, Image, Skeleton, Text } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Skeleton } from "moti/skeleton";
+import { StyleSheet, TouchableOpacity, View, Image, Text, Dimensions } from "react-native";
 
 import { card } from "../../../../styles/Card";
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
+  const { width } = Dimensions.get("screen");
 
   return (
-    <Flex height={160} flexDir="row" gap={4} flex={1}>
+    <View style={styles.container}>
       {!projectIsLoading ? (
-        <TouchableOpacity
-          onPress={() => {
-            menuSelector?.user_menu?.menu[1]?.sub[0]?.is_allow && navigation.navigate("Projects");
-          }}
-          style={[card.card, { flex: 1 }]}
-        >
-          <Flex flex={1} alignItems="center" justifyContent="center" gap={1}>
+        <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Projects")}>
+          <View style={styles.imageWrapper}>
             <Image
               source={require("../../../../assets/icons/project_chart.png")}
-              height={50}
               alt="project chart"
-              resizeMode="contain"
+              style={styles.image}
             />
-            <Text color="muted.500">On going project</Text>
-            <Text fontWeight={500} fontSize={20}>
-              {projects}
-            </Text>
-          </Flex>
+            <Text style={{ color: "gray" }}>On going projects</Text>
+            <Text style={{ fontWeight: 500, fontSize: 20 }}>{projects}</Text>
+          </View>
         </TouchableOpacity>
       ) : (
-        <Skeleton h={160} flex={1} />
+        <Skeleton width={width / 2 - 20} height={160} radius={20} {...SkeletonCommonProps} />
       )}
 
       {!taskIsLoading ? (
-        <TouchableOpacity
-          onPress={() => {
-            menuSelector?.user_menu?.menu[1]?.sub[1]?.is_allow && navigation.navigate("Tasks");
-          }}
-          style={[card.card, { flex: 1 }]}
-        >
-          <Flex flex={1} alignItems="center" justifyContent="center" gap={1}>
-            <Image
-              source={require("../../../../assets/icons/task_chart.png")}
-              height={50}
-              alt="task chart"
-              resizeMode="contain"
-            />
-            <Text color="muted.500">Total tasks</Text>
-            <Text fontWeight={500} fontSize={20}>
-              {tasks}
-            </Text>
-          </Flex>
+        <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Tasks")}>
+          <View style={styles.imageWrapper}>
+            <Image source={require("../../../../assets/icons/task_chart.png")} alt="task chart" style={styles.image} />
+            <Text style={{ color: "gray" }}>Total tasks</Text>
+            <Text style={{ fontWeight: 500, fontSize: 20 }}>{tasks}</Text>
+          </View>
         </TouchableOpacity>
       ) : (
-        <Skeleton h={160} flex={1} />
+        <Skeleton width={width / 2 - 20} height={160} radius={20} {...SkeletonCommonProps} />
       )}
-    </Flex>
+    </View>
   );
 };
 
 export default memo(ProjectAndTaskCard);
+
+const styles = StyleSheet.create({
+  container: {
+    height: 160,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+    flex: 1,
+  },
+  imageWrapper: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 1,
+  },
+  image: {
+    height: 80,
+    width: 80,
+    resizeMode: "contain",
+  },
+});

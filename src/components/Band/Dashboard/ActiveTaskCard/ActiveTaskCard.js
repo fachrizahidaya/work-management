@@ -1,13 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Button, Flex, Image, Modal, Skeleton, Text, VStack } from "native-base";
+import { View, Text, Image } from "react-native";
+import { Skeleton } from "moti/skeleton";
 
 import ActiveTaskList from "./ActiveTaskList";
 import { card } from "../../../../styles/Card";
 import { useFetch } from "../../../../hooks/useFetch";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import Button from "../../../shared/Forms/Button";
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const ActiveTaskCard = () => {
   const navigation = useNavigation();
@@ -31,37 +34,52 @@ const ActiveTaskCard = () => {
 
   return (
     <>
-      <Flex style={card.card} minH={300}>
-        <Flex gap={3}>
-          <Text fontSize={20} fontWeight={500}>
-            Active Tasks
-          </Text>
-          <Flex direction="row" w="100%" borderWidth={1} borderRadius={12} p={0.5} borderColor="#E8E9EB">
+      <View style={[card.card, { minHeight: 300 }]}>
+        <View style={{ display: "flex", gap: 10 }}>
+          <Text style={{ fontSize: 20, fontWeight: 500 }}>Active Tasks</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              borderRadius: 12,
+              borderWidth: 1,
+              padding: 0.5,
+              borderColor: "#E8E9EB",
+            }}
+          >
             <Button
               flex={1}
-              rounded={"xl"}
-              bgColor={status === "month" ? "primary.600" : "#fff"}
+              backgroundColor={status === "month" ? "#176688" : "#fff"}
               onPress={() => setStatus("month")}
             >
-              <Text color={status === "month" ? "#fff" : "#3F434A"}>Month</Text>
+              <Text
+                style={{
+                  color: status === "month" ? "#fff" : "#3F434A",
+                }}
+              >
+                Month
+              </Text>
             </Button>
-            <Button
-              flex={1}
-              rounded={"xl"}
-              bgColor={status === "week" ? "primary.600" : "#fff"}
-              onPress={() => setStatus("week")}
-            >
-              <Text color={status === "week" ? "#fff" : "#3F434A"}>Week</Text>
+            <Button flex={1} backgroundColor={status === "week" ? "#176688" : "#fff"} onPress={() => setStatus("week")}>
+              <Text
+                style={{
+                  color: status === "week" ? "#fff" : "#3F434A",
+                }}
+              >
+                Week
+              </Text>
             </Button>
-            <Button
-              flex={1}
-              rounded={"xl"}
-              bgColor={status === "day" ? "primary.600" : "#fff"}
-              onPress={() => setStatus("day")}
-            >
-              <Text color={status === "day" ? "#fff" : "#3F434A"}>Day</Text>
+            <Button flex={1} backgroundColor={status === "day" ? "#176688" : "#fff"} onPress={() => setStatus("day")}>
+              <Text
+                style={{
+                  color: status === "day" ? "#fff" : "#3F434A",
+                }}
+              >
+                Day
+              </Text>
             </Button>
-          </Flex>
+          </View>
           {!isLoading ? (
             tasks?.data?.data?.length > 0 ? (
               <>
@@ -79,35 +97,36 @@ const ActiveTaskCard = () => {
                   />
                 ))}
                 {tasks.data.data.length > 4 && (
-                  <Button variant="ghost" onPress={toggleMore}>
-                    More
+                  <Button backgroundColor="white" variant="dashed" onPress={toggleMore} title="More">
+                    <Text style={{ color: "#176688" }}>More</Text>
                   </Button>
                 )}
               </>
             ) : (
-              <VStack space={2} alignItems="center" justifyContent="center">
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Image
                   source={require("../../../../assets/vectors/items.jpg")}
-                  h={200}
-                  w={200}
                   alt="empty"
-                  resizeMode="contain"
+                  style={{ height: 200, width: 200, resizeMode: "contain" }}
                 />
                 <Text>You have no tasks.</Text>
-              </VStack>
+              </View>
             )
           ) : (
-            <VStack space={2}>
-              <Skeleton h={41} />
-              <Skeleton h={41} />
-              <Skeleton h={41} />
-              <Skeleton h={41} />
-            </VStack>
+            <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
           )}
-        </Flex>
-      </Flex>
+        </View>
+      </View>
 
-      {isOpen && (
+      {/* {isOpen && (
         <ConfirmationModal
           isDelete={false}
           isOpen={isOpen}
@@ -120,10 +139,10 @@ const ActiveTaskCard = () => {
           hasSuccessFunc
           onSuccess={refetch}
         />
-      )}
+      )} */}
 
       {/* More tasks modal */}
-      {openMore && (
+      {/* {openMore && (
         <Modal isOpen={openMore} onClose={toggleMore} size="xl">
           <Modal.Content>
             <Modal.CloseButton />
@@ -154,7 +173,7 @@ const ActiveTaskCard = () => {
             </Modal.Body>
           </Modal.Content>
         </Modal>
-      )}
+      )} */}
     </>
   );
 };

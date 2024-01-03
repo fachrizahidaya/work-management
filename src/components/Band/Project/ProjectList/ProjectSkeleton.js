@@ -1,19 +1,21 @@
 import React from "react";
 
-import { StyleSheet } from "react-native";
-import { Flex, Skeleton } from "native-base";
+import { StyleSheet, View } from "react-native";
+import { Skeleton } from "moti/skeleton";
+
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const ProjectSkeleton = () => {
   return (
-    <Flex style={styles.wrapper}>
-      <Flex gap={2} w={200}>
-        <Skeleton h={21} />
-        <Skeleton h={21} w={120} />
-        <Skeleton h={21} w={21} />
-      </Flex>
+    <View style={styles.wrapper}>
+      <View style={{ display: "flex", gap: 4, width: 200 }}>
+        <Skeleton height={20} width="100%" radius={10} {...SkeletonCommonProps} />
+        <Skeleton height={20} width={120} radius={10} {...SkeletonCommonProps} />
+        <Skeleton height={20} width={20} radius={10} {...SkeletonCommonProps} />
+      </View>
 
-      <Skeleton h={21} w={79} />
-    </Flex>
+      <Skeleton height={20} width={80} radius={10} {...SkeletonCommonProps} />
+    </View>
   );
 };
 

@@ -5,10 +5,9 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
-import { Box, Flex, Pressable, Text } from "native-base";
+import { Dimensions, Pressable, View, Text } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import { Dimensions } from "react-native";
 
 const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName, ownerEmail }) => {
   const navigation = useNavigation();
@@ -16,48 +15,60 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
 
   return (
     <Pressable onPress={() => navigation.navigate("Project Detail", { projectId: id })}>
-      <Flex
-        flexDir="row"
-        justifyContent="space-between"
-        alignItems="center"
-        borderBottomColor="#cbcbcb"
-        borderBottomWidth={1}
-        py={2}
-        px={4}
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottomColor: "#cbcbcb",
+          borderBottomWidth: 1,
+          paddingVertical: 8,
+          paddingHorizontal: 16,
+        }}
       >
-        <Flex gap={0.5}>
-          <Text width={width / 2} numberOfLines={1}>
+        <View style={{ display: "flex", gap: 1 }}>
+          <Text style={{ width: width / 2, fontWeight: 500 }} numberOfLines={1}>
             {title}
           </Text>
 
           <Text
-            fontWeight={400}
-            color={
-              isArchive ? "#979797" : status === "Open" ? "#E8A30A" : status === "On Progress" ? "#0090FF" : "#49C96D"
-            }
+            style={{
+              fontWeight: 400,
+              color: isArchive
+                ? "#979797"
+                : status === "Open"
+                ? "#E8A30A"
+                : status === "On Progress"
+                ? "#0090FF"
+                : "#49C96D",
+            }}
           >
             {isArchive ? "Archived" : status}
           </Text>
 
-          <Box alignSelf="flex-start">
-            <AvatarPlaceholder name={ownerName} image={image} email={ownerEmail} isPressable={true} />
-          </Box>
-        </Flex>
-        <Box
+          <View style={{ alignSelf: "flex-start" }}>
+            <AvatarPlaceholder size="xs" name={ownerName} image={image} email={ownerEmail} isPressable={true} />
+          </View>
+        </View>
+        <View
           alignItems="center"
           justifyContent="center"
-          bgColor={dayjs(deadline).fromNow().includes("ago") ? "#fff5ef" : "#f8f8f8"}
-          borderRadius={10}
           style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 10,
             paddingVertical: 8,
             paddingHorizontal: 12,
+            backgroundColor: dayjs(deadline).fromNow().includes("ago") ? "#fff5ef" : "#f8f8f8",
           }}
         >
-          <Text color={dayjs(deadline).fromNow().includes("ago") ? "#e56e19" : "#3f434a"}>
+          <Text style={{ color: dayjs(deadline).fromNow().includes("ago") ? "#e56e19" : "#3f434a", fontWeight: 500 }}>
             {dayjs(deadline).fromNow().includes("ago") ? "Overdue" : `Over ${dayjs(deadline).fromNow()}`}
           </Text>
-        </Box>
-      </Flex>
+        </View>
+      </View>
     </Pressable>
   );
 };

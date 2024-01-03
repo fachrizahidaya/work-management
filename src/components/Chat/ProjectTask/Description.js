@@ -1,14 +1,21 @@
-import { Box, ScrollView, Text } from "native-base";
+import { View, ScrollView, Text } from "react-native";
 
-const Description = ({ navigation, description }) => {
+const Description = ({ description }) => {
   return (
-    <Box bgColor="#FFFFFF" gap={2} p={3} borderRadius={10} minH={100} maxH={150}>
+    <View
+      style={{
+        minHeight: 100,
+        maxHeight: 150,
+        backgroundColor: "#FFFFFF",
+        gap: 5,
+        padding: 10,
+        borderRadius: 10,
+      }}
+    >
       <ScrollView>
-        <Text fontSize={14} fontWeight={400}>
-          {description}
-        </Text>
+        <Text style={{ fontSize: 14, fontWeight: "400" }}>{description}</Text>
       </ScrollView>
-    </Box>
+    </View>
   );
 };
 
