@@ -1,4 +1,3 @@
-import { Icon } from "native-base";
 import { Linking, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
