@@ -6,6 +6,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import Tabs from "../../../shared/Tabs";
 import MyTeamLeaveRequestItem from "./MyTeamLeaveRequestItem";
+import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const MyTeamLeaveRequestList = ({
   refetchTeamLeaveRequest,
@@ -124,12 +125,6 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                {/* <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text> */}
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
@@ -176,12 +171,6 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                {/* <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text> */}
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
@@ -227,12 +216,6 @@ const MyTeamLeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              {/* <Image
-                source={require("../../../../assets/vectors/empty.png")}
-                alt="empty"
-                style={{ height: 250, width: 250, resizeMode: "contain" }}
-              />
-              <Text>No Data</Text> */}
               <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>

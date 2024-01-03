@@ -18,7 +18,7 @@ const PhoneButton = ({ phone, size }) => {
 
   return (
     <TouchableOpacity onPress={handleCallPress}>
-      <Icon as={<MaterialCommunityIcons name="phone-outline" />} size={!size ? 5 : size} />
+      <MaterialCommunityIcons name="phone-outline" size={!size ? 10 : size} />
     </TouchableOpacity>
   );
 };

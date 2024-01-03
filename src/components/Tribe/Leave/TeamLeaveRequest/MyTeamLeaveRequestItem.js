@@ -51,7 +51,8 @@ const MyTeamLeaveRequestItem = ({
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-          {dayjs(begin_date).format("DD.MM.YYYY")} - {dayjs(end_date).format("DD.MM.YYYY")}
+          {dayjs(begin_date).format("DD.MM.YYYY")} - {dayjs(end_date).format("DD.MM.YYYY")} • {days}{" "}
+          {days < 2 ? "day" : "days"}
         </Text>
         {status === "Pending" ? (
           <View style={{ flexDirection: "row", gap: 5 }} gap={1}>
@@ -59,8 +60,9 @@ const MyTeamLeaveRequestItem = ({
               onPress={() => responseHandler("Rejected", item)}
               isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
               size="xs"
-              color="red.500"
+              backgroundColor="#FF6262"
               fontColor="white"
+              padding={5}
             >
               <Text>Decline</Text>
             </FormButton>
@@ -68,8 +70,9 @@ const MyTeamLeaveRequestItem = ({
               onPress={() => responseHandler("Approved", item)}
               isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
               size="xs"
-              bgColor="#377893"
+              backgroundColor="#377893"
               fontColor="white"
+              padding={5}
             >
               <Text>Approve</Text>
             </FormButton>

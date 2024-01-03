@@ -24,7 +24,7 @@ const ContactList = ({
   navigation,
 }) => {
   return (
-    <View style={{ ...card.card, flexDirection: "column", marginVertical: 10 }}>
+    <View style={{ ...card.card, flexDirection: "column", marginVertical: 5 }}>
       <View style={styles.content}>
         <TouchableOpacity
           onPress={() =>
@@ -46,9 +46,9 @@ const ContactList = ({
           </View>
         </TouchableOpacity>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <WhatsappButton phone={phone} size={5} />
-          <EmailButton email={email} size={5} />
-          <PhoneButton phone={phone} size={5} />
+          <WhatsappButton phone={phone} size={20} />
+          <EmailButton email={email} size={20} />
+          <PhoneButton phone={phone} size={20} />
           {user && (
             <PersonalNestButton
               email={email}

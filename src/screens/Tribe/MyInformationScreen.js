@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   content: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     flex: 1,
-    gap: 20,
+    gap: 10,
     paddingVertical: 20,
   },
 });

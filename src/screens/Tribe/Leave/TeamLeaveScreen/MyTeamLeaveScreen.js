@@ -26,7 +26,11 @@ const MyTeamLeaveScreen = () => {
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const tabs = useMemo(() => {
-    return [{ title: "waiting approval" }, { title: "approved" }, { title: "rejected" }];
+    return [
+      { title: "waiting approval", value: "waiting approval" },
+      { title: "approved", value: "approved" },
+      { title: "rejected", value: "rejected" },
+    ];
   }, []);
 
   const navigation = useNavigation();
@@ -55,7 +59,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal",
+    tabValue === "waiting approval" && "/hr/leave-requests/waiting-approval",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
@@ -66,7 +70,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal",
+    tabValue === "approved" && "/hr/leave-requests/waiting-approval",
     [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
@@ -77,7 +81,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal",
+    tabValue === "rejected" && "/hr/leave-requests/waiting-approval",
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
@@ -112,8 +116,6 @@ const MyTeamLeaveScreen = () => {
       setSubmitting(false);
       setStatus("success");
       refetchPendingLeaveRequest();
-      refetchApprovedLeaveRequest();
-      refetchRejectedLeaveRequest();
       Toast.show({
         type: "success",
         text1: data.status === "Approved" ? "Request Approved" : "Request Rejected",
@@ -123,7 +125,6 @@ const MyTeamLeaveScreen = () => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,

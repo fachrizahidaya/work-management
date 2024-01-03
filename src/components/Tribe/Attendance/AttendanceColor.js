@@ -1,4 +1,3 @@
-import { Flex, Icon } from "native-base";
 import { View, Text, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,7 +16,7 @@ const AttendanceColor = () => {
       {listIcons.map((item) => {
         return (
           <View key={item?.key} style={styles.content}>
-            <Icon as={<MaterialCommunityIcons name="circle" />} color={item.color} size={3} />
+            <MaterialCommunityIcons name="circle" color={item.color} size={15} />
             <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
           </View>
         );

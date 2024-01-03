@@ -129,15 +129,17 @@ const FeedCardItem = ({
 
           <View style={{ flex: 1, gap: 5 }}>
             <View style={styles.dockName}>
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                  {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+                </Text>
+                {type === "Announcement" ? (
+                  <View style={{ borderRadius: 15, backgroundColor: "#ADD7FF", padding: 5 }}>
+                    <Text style={{ fontSize: 10 }}>Announcement</Text>
+                  </View>
+                ) : null}
+              </View>
 
-              {type === "Announcement" ? (
-                <View style={{ borderRadius: 15, backgroundColor: "#ADD7FF", padding: 5 }}>
-                  <Text style={{ fontSize: 10 }}>Announcement</Text>
-                </View>
-              ) : null}
               {loggedEmployeeId === employeeId && (
                 <>
                   <Pressable onPress={() => openSelectedPersonalPost(id)}>
