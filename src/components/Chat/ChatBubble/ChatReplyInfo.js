@@ -19,8 +19,8 @@ const ChatReplyInfo = ({ message, myMessage, type }) => {
   }, [message]);
 
   return (
-    <View style={styles.container}>
-      <View width={mimeTypeInfo?.file_type === "image" ? 200 : null}>
+    <View style={{ ...styles.container, backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }}>
+      <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : null }}>
         <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#000000" : "#FFFFFF" }}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
@@ -45,10 +45,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderLeftColor: "#37b4ea",
-    borderLeftWidth: 1,
+    borderLeftWidth: 5,
     borderRadius: 5,
-    px: 5,
-    py: 5,
+    padding: 10,
     gap: 5,
   },
 });
