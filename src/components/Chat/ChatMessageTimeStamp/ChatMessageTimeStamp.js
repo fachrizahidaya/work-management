@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { Badge } from "native-base";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 /**
  * this import to run isBetween from dayjs
@@ -38,9 +38,9 @@ const ChatMessageTimeStamp = ({ timestamp }) => {
   return (
     <View style={{ marginVertical: 10 }}>
       {currentTimeStamp && (
-        <Badge borderRadius={10} alignSelf="center">
-          {formatTimeStamp()}
-        </Badge>
+        <View style={{ borderRadius: 5, padding: 5, alignSelf: "center", backgroundColor: "#F0F0F0" }}>
+          <Text>{formatTimeStamp()}</Text>
+        </View>
       )}
     </View>
   );

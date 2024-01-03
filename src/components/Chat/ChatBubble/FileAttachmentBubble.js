@@ -8,6 +8,7 @@ const doc = "../../../assets/doc-icons/doc-format.png";
 const pdf = "../../../assets/doc-icons/pdf-format.png";
 const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
+const txt = "../../../assets/doc-icons/other-format.png";
 
 const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
   const [fileImage, setFileImage] = useState("");
@@ -19,6 +20,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     { type: "xls", image: xls },
     { type: "ppt", image: ppt },
     { type: "pdf", image: pdf },
+    { type: "txt", image: txt },
   ];
 
   const getFileExt = () => {
@@ -59,15 +61,15 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     >
       <Image
         source={
-          getFileExt() === "doc"
+          getFileExt() === "doc" || getFileExt() === "docx" || getFileExt() === "document"
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx"
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
             ? require(xls)
-            : getFileExt() === "ppt" || getFileExt() === "pptxs"
+            : getFileExt() === "ppt" || getFileExt() === "pptx"
             ? require(ppt)
-            : null
+            : require(txt)
         }
         style={{
           height: 20,
@@ -88,12 +90,21 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             overflow: "hidden",
           }}
           numberOfLines={2}
-          overflow="hidden"
           ellipsizeMode="tail"
         >
           {file_name}
         </Text>
-        <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+        <Text
+          style={{
+            fontSize: 10,
+            fontWeight: "400",
+            width: 150,
+            color: !myMessage ? "#000000" : "#FFFFFF",
+            overflow: "hidden",
+          }}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
           {getFileExt()} • {file_size}
         </Text>
       </View>

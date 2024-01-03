@@ -1,5 +1,4 @@
-import { Spinner } from "native-base";
-import { Text, View } from "react-native";
+import { Text, View, ActivityIndicator } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,7 +21,7 @@ const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, referenc
 
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: 350 }}>
         <Text style={{ fontSize: 16, fontWeight: "400", color: "#FF0303", textAlign: isLoading ? "center" : null }}>
-          {isLoading ? <Spinner color="primary.600" /> : "Clear All Messages"}
+          {isLoading ? <ActivityIndicator /> : "Clear All Messages"}
         </Text>
         <MaterialCommunityIcons onPress={() => reference.current?.hide()} name="trash-can" size={10} color="#FF0303" />
       </View>

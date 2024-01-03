@@ -159,12 +159,13 @@ const ChatBubble = ({
         flexDirection: !myMessage ? "row" : "row-reverse",
         alignItems: "flex-end",
         gap: 5,
+        paddingHorizontal: 5,
         marginBottom: isGrouped ? 3 : 5,
       }}
     >
       {!isOptimistic && (
         <Pressable style={{ ...styles.iconContainer, marginRight: myMessage ? 5 : null, alignSelf: "center" }}>
-          <MaterialIcons name="reply" size={5} />
+          <MaterialIcons name="reply" size={15} />
         </Pressable>
       )}
       {/* {type === "group" && !myMessage && image ? (
@@ -193,7 +194,7 @@ const ChatBubble = ({
           >
             {type === "group" && name && !myMessage && (
               <Text
-                style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "primary.600" : "#FFFFFF" }}
+                style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#176688" : "#FFFFFF" }}
                 fontSize={12}
                 fontWeight={700}
                 color={!myMessage ? "#377893" : "#FFFFFF"}
@@ -227,7 +228,8 @@ const ChatBubble = ({
                         </TouchableOpacity>
                       </>
                     )}
-                    {docTypes.includes(formatMimeType(file_type)) && (
+                    {
+                      // docTypes.includes(formatMimeType(file_type)) &&
                       <FileAttachmentBubble
                         file_type={file_type}
                         file_name={file_name}
@@ -235,7 +237,7 @@ const ChatBubble = ({
                         file_size={file_size}
                         myMessage={myMessage}
                       />
-                    )}
+                    }
                   </>
                 )}
                 {band_attachment_id && (
