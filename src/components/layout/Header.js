@@ -97,6 +97,9 @@ const Header = () => {
         }}
       >
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+          {routeName[1]?.name === "Chat List" && (
+            <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} />
+          )}
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
           <View>
@@ -169,35 +172,46 @@ const Header = () => {
             )}
           </View>
 
-          <Pressable onPress={() => navigation.navigate("Chat List")} style={{ position: "relative" }}>
-            {unreadMessages?.data?.total_unread > 0 && (
-              <View
-                style={{
-                  height: 22,
-                  width: 22,
-                  position: "absolute",
-                  top: -12,
-                  right: -8,
-                  backgroundColor: "#FD7972",
-                  borderRadius: 50,
-                  zIndex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
+          <Pressable
+            onPress={() =>
+              routeName[0]?.state?.routeNames[2] == "Setting Tribe"
+                ? navigation.navigate("Dashboard")
+                : routeName[0]?.state?.routeNames[2] == "Setting Band"
+                ? navigation.navigate("Dashboard")
+                : navigation.navigate("Chat List")
+            }
+            style={{ position: "relative" }}
+          >
+            {!routeName[0]?.state?.routeNames[2].includes("Tribe") &&
+              !routeName[0]?.state?.routeNames[2].includes("Band") &&
+              unreadMessages?.data?.total_unread > 0 && (
+                <View
                   style={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    textAlign: "center",
-                    color: "white",
+                    height: 22,
+                    width: 22,
+                    position: "absolute",
+                    top: -12,
+                    right: -8,
+                    backgroundColor: "#FD7972",
+                    borderRadius: 50,
+                    zIndex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
-                </Text>
-              </View>
-            )}
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                      textAlign: "center",
+                      color: "white",
+                    }}
+                  >
+                    {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
+                  </Text>
+                </View>
+              )}
 
             {routeName[0]?.state?.routeNames[2]?.includes("Tribe") ? (
               <>
