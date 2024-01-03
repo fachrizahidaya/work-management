@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import { Badge } from "native-base";
 import { Text, View } from "react-native";
 
 /**
