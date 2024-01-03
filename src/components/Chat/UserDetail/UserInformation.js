@@ -53,16 +53,18 @@ const UserInformation = ({
                           name={!member?.user ? member?.name : member?.user?.name}
                           image={!member?.user ? member?.image : member?.user?.image}
                         />
-                        {!member?.user
-                          ? loggedInUser === member?.id
+                        <Text>
+                          {!member?.user
+                            ? loggedInUser === member?.id
+                              ? "You"
+                              : member?.name
+                            : loggedInUser === member?.user?.id
                             ? "You"
-                            : member?.name
-                          : loggedInUser === member?.user?.id
-                          ? "You"
-                          : member?.user?.name}
+                            : member?.user?.name}
+                        </Text>
                         {member?.is_admin ? (
                           <Badge borderRadius={15} colorScheme="#186688">
-                            Admin
+                            <Text>Admin</Text>
                           </Badge>
                         ) : null}
                         {currentUserIsAdmin && loggedInUser !== member?.user_id && (
