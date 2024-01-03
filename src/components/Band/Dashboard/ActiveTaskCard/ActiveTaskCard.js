@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { View, Text, Image } from "react-native";
-// import { Image, Modal, Skeleton, VStack } from "native-base";
+import { Skeleton } from "moti/skeleton";
 
 import ActiveTaskList from "./ActiveTaskList";
 import { card } from "../../../../styles/Card";
@@ -10,6 +10,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import Button from "../../../shared/Forms/Button";
+import { SkeletonCommonProps } from "../../../shared/CustomStylings";
 
 const ActiveTaskCard = () => {
   const navigation = useNavigation();
@@ -120,7 +121,7 @@ const ActiveTaskCard = () => {
               </View>
             )
           ) : (
-            <Text>Loading... </Text>
+            <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
           )}
         </View>
       </View>

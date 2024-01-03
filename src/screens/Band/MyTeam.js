@@ -6,6 +6,7 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { Image, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { Skeleton } from "moti/skeleton";
 import Toast from "react-native-toast-message";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -20,6 +21,7 @@ import AddMemberModal from "../../components/Band/shared/AddMemberModal/AddMembe
 import axiosInstance from "../../config/api";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import Button from "../../components/shared/Forms/Button";
+import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
 
 const MyTeamScreen = () => {
   const navigation = useNavigation();
@@ -135,8 +137,7 @@ const MyTeamScreen = () => {
             )}
           </>
         ) : (
-          // <Skeleton h={41} />
-          <Text>Loading...</Text>
+          <Skeleton width="100%" height={40} radius="round" {...SkeletonCommonProps} />
         )}
       </View>
 
@@ -162,8 +163,7 @@ const MyTeamScreen = () => {
               )}
             />
           ) : (
-            // <Skeleton h={10} />
-            <Text>Loading...</Text>
+            <Skeleton width="100%" height={10} radius="round" {...SkeletonCommonProps} />
           )
         ) : (
           <>

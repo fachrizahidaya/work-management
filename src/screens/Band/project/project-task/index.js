@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import {
@@ -7,7 +7,6 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -33,7 +32,6 @@ const ProjectTaskScreen = ({ route }) => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isReady, setIsReady] = useState(false);
   const createCheckAccess = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
@@ -75,12 +73,7 @@ const ProjectTaskScreen = ({ route }) => {
     }, [refetchTasks])
   );
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsReady(true);
-    }, 150);
-  }, []);
-  return isReady ? (
+  return (
     <>
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -153,18 +146,6 @@ const ProjectTaskScreen = ({ route }) => {
         />
       )}
     </>
-  ) : (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: 13,
-          paddingHorizontal: 16,
-        },
-      ]}
-    >
-      <Text>Loading...</Text>
-    </View>
   );
 };
 

@@ -4,16 +4,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useMutation } from "react-query";
 
 import { RefreshControl } from "react-native-gesture-handler";
-import {
-  FlatList,
-  Keyboard,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { FlatList, Keyboard, Pressable, SafeAreaView, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { Skeleton } from "moti/skeleton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
 
@@ -25,6 +17,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
 
 const NotesScreen = () => {
   const navigation = useNavigation();
@@ -128,8 +121,7 @@ const NotesScreen = () => {
                   )}
                 />
               ) : (
-                <Text>Loading...</Text>
-                // <Skeleton height={270} />
+                <Skeleton width="100%" height={270} radius={10} {...SkeletonCommonProps} />
               )}
             </View>
           </View>

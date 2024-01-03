@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
@@ -29,7 +29,6 @@ const TaskDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
   const { taskId } = route.params;
   const loggedUser = userSelector.id;
-  const [isReady, setIsReady] = useState(false);
   const { isLoading: statusIsLoading, toggle: toggleLoading } = useLoading(false);
 
   const { data: selectedTask, refetch: refetchSelectedTask } = useFetch(taskId && `/pm/tasks/${taskId}`);
@@ -102,12 +101,6 @@ const TaskDetailScreen = ({ route }) => {
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsReady(true);
-    }, 150);
-  }, []);
-
   const baseStyles = useMemo(
     () => ({
       color: "#000",
@@ -118,115 +111,105 @@ const TaskDetailScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isReady ? (
-        <KeyboardAwareScrollView
-          showsVerticalScrollIndicator={false}
-          extraHeight={200}
-          enableOnAndroid={true}
-          enableAutomaticScroll={Platform.OS === "ios"}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              display: "flex",
-              gap: 20,
-              marginTop: 13,
-              paddingHorizontal: 16,
-            }}
-          >
-            <View style={{ display: "flex", gap: 20 }}>
-              <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <PageHeader
-                  title={selectedTask?.data?.title}
-                  subTitle={selectedTask?.data?.task_no}
-                  onPress={() => navigation.goBack()}
-                  width={width - 100}
-                />
-
-                {!inputIsDisabled && (
-                  <MenuSection
-                    selectedTask={selectedTask?.data}
-                    onTakeTask={takeTask}
-                    openEditForm={onOpenTaskForm}
-                    disabled={inputIsDisabled}
-                  />
-                )}
-              </View>
-
-              <ControlSection
-                taskStatus={selectedTask?.data?.status}
-                selectedTask={selectedTask?.data}
-                onChangeStatus={changeTaskStatus}
-                isLoading={statusIsLoading}
-              />
-            </View>
-
-            {/* Reponsible, Creator and Observer section */}
-            <PeopleSection
-              observers={observers?.data}
-              responsibleArr={responsible?.data}
-              ownerId={selectedTask?.data?.owner_id}
-              ownerImage={selectedTask?.data?.owner_image}
-              ownerName={selectedTask?.data?.owner_name}
-              ownerEmail={selectedTask?.data?.owner_email}
-              refetchObservers={refetchObservers}
-              refetchTask={refetchSelectedTask}
-              disabled={inputIsDisabled}
-              selectedTask={selectedTask?.data}
-              refetchResponsible={refetchResponsible}
-            />
-
-            {/* Labels */}
-            <LabelSection projectId={selectedTask?.data?.project_id} taskId={taskId} disabled={inputIsDisabled} />
-
-            {/* Due date and cost */}
-            <View style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
-              <DeadlineSection
-                deadline={selectedTask?.data?.deadline}
-                projectDeadline={selectedTask?.data?.project_deadline}
-                disabled={inputIsDisabled}
-                taskId={taskId}
-              />
-
-              <CostSection taskId={taskId} disabled={inputIsDisabled} />
-            </View>
-
-            {/* Description */}
-            <View style={{ display: "flex", gap: 10 }}>
-              <Text style={{ fontWeight: 500 }}>DESCRIPTION</Text>
-
-              <RenderHtml
-                contentWidth={width}
-                baseStyle={baseStyles}
-                source={{
-                  html: hyperlinkConverter(selectedTask?.data?.description) || "",
-                }}
-              />
-            </View>
-
-            {/* Checklists */}
-            <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
-
-            {/* Attachments */}
-            <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
-
-            {/* Comments */}
-            <View style={{ display: "flex", gap: 10 }}>
-              <Text style={{ fontWeight: 500 }}>COMMENTS</Text>
-              <CommentInput taskId={taskId} data={selectedTask?.data} />
-            </View>
-          </View>
-        </KeyboardAwareScrollView>
-      ) : (
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        extraHeight={200}
+        enableOnAndroid={true}
+        enableAutomaticScroll={Platform.OS === "ios"}
+      >
         <View
           style={{
+            backgroundColor: "white",
+            display: "flex",
+            gap: 20,
             marginTop: 13,
             paddingHorizontal: 16,
           }}
         >
-          <Text>Loading...</Text>
+          <View style={{ display: "flex", gap: 20 }}>
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <PageHeader
+                title={selectedTask?.data?.title}
+                subTitle={selectedTask?.data?.task_no}
+                onPress={() => navigation.goBack()}
+                width={width - 100}
+              />
+
+              {!inputIsDisabled && (
+                <MenuSection
+                  selectedTask={selectedTask?.data}
+                  onTakeTask={takeTask}
+                  openEditForm={onOpenTaskForm}
+                  disabled={inputIsDisabled}
+                />
+              )}
+            </View>
+
+            <ControlSection
+              taskStatus={selectedTask?.data?.status}
+              selectedTask={selectedTask?.data}
+              onChangeStatus={changeTaskStatus}
+              isLoading={statusIsLoading}
+            />
+          </View>
+
+          {/* Reponsible, Creator and Observer section */}
+          <PeopleSection
+            observers={observers?.data}
+            responsibleArr={responsible?.data}
+            ownerId={selectedTask?.data?.owner_id}
+            ownerImage={selectedTask?.data?.owner_image}
+            ownerName={selectedTask?.data?.owner_name}
+            ownerEmail={selectedTask?.data?.owner_email}
+            refetchObservers={refetchObservers}
+            refetchTask={refetchSelectedTask}
+            disabled={inputIsDisabled}
+            selectedTask={selectedTask?.data}
+            refetchResponsible={refetchResponsible}
+          />
+
+          {/* Labels */}
+          <LabelSection projectId={selectedTask?.data?.project_id} taskId={taskId} disabled={inputIsDisabled} />
+
+          {/* Due date and cost */}
+          <View style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
+            <DeadlineSection
+              deadline={selectedTask?.data?.deadline}
+              projectDeadline={selectedTask?.data?.project_deadline}
+              disabled={inputIsDisabled}
+              taskId={taskId}
+            />
+
+            <CostSection taskId={taskId} disabled={inputIsDisabled} />
+          </View>
+
+          {/* Description */}
+          <View style={{ display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500 }}>DESCRIPTION</Text>
+
+            <RenderHtml
+              contentWidth={width}
+              baseStyle={baseStyles}
+              source={{
+                html: hyperlinkConverter(selectedTask?.data?.description) || "",
+              }}
+            />
+          </View>
+
+          {/* Checklists */}
+          <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
+
+          {/* Attachments */}
+          <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
+
+          {/* Comments */}
+          <View style={{ display: "flex", gap: 10 }}>
+            <Text style={{ fontWeight: 500 }}>COMMENTS</Text>
+            <CommentInput taskId={taskId} data={selectedTask?.data} />
+          </View>
         </View>
-      )}
+      </KeyboardAwareScrollView>
+
       <Toast position="bottom" />
     </SafeAreaView>
   );

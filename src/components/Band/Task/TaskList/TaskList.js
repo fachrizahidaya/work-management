@@ -85,7 +85,7 @@ const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, ref
           </View>
         )
       ) : (
-        <Text>Loading...</Text>
+        <TaskSkeleton />
       )}
     </View>
   );

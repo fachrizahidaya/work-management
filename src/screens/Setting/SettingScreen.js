@@ -5,12 +5,14 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text } from "react-native";
+import { Skeleton } from "moti/skeleton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import FormButton from "../../components/shared/FormButton";
+import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
@@ -110,7 +112,7 @@ const SettingScreen = () => {
                 }}
               >
                 {team?.data?.length > 0 &&
-                  (!teamIsLoading ? (
+                  (teamIsLoading ? (
                     team.data.map((item, index) => {
                       return (
                         <AvatarPlaceholder
@@ -125,8 +127,7 @@ const SettingScreen = () => {
                       );
                     })
                   ) : (
-                    // <Skeleton h={35} />
-                    <Text>Loading...</Text>
+                    <Skeleton height={30} width={100} radius="round" {...SkeletonCommonProps} />
                   ))}
 
                 {myProfile?.data && (
