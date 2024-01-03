@@ -69,8 +69,6 @@ const ChatRoom = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
-  const { isOpen: taskListIsOpen, toggle: toggleTaskList } = useDisclosure(false);
-  const { isOpen: projectListIsOpen, toggle: toggleProjectList } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
   const { isOpen: menuIsOpen, toggle: toggleMenu } = useDisclosure(false);
 
@@ -100,7 +98,6 @@ const ChatRoom = () => {
   };
 
   const openAddAttachmentHandler = () => {
-    // toggleMenu();
     menuAttachmentScreenSheetRef.current?.show();
     Keyboard.dismiss();
   };
@@ -112,15 +109,6 @@ const ChatRoom = () => {
   const toggleFullScreen = (chat) => {
     setSelectedChatBubble(chat);
     setIsFullScreen(!isFullScreen);
-  };
-
-  const selectBandHandler = (bandType) => {
-    if (bandType === "project") {
-      toggleProjectList();
-    } else {
-      toggleTaskList();
-    }
-    setBandAttachmentType(bandType);
   };
 
   const openDeleteChatMessageHandler = () => {
@@ -303,7 +291,6 @@ const ChatRoom = () => {
       toggleDeleteChatMessage();
       toggleDeleteModal();
       navigation.navigate("Chat List");
-
       Toast.show({
         type: "success",
         text1: "Chat deleted",
@@ -312,7 +299,6 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -332,7 +318,6 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       navigation.navigate("Chat List");
-
       Toast.show({
         type: "success",
         text1: "Chat cleared",
@@ -341,7 +326,6 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -362,7 +346,6 @@ const ChatRoom = () => {
       navigation.goBack();
     } catch (err) {
       console.log(err);
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -491,7 +474,6 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
-
       Toast.show({
         type: "success",
         text1: "Group exited",
@@ -500,7 +482,6 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleChatRoom();
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -520,7 +501,6 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.navigate("Chat List");
-
       Toast.show({
         type: "success",
         text1: "Group deleted",
@@ -529,7 +509,6 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-
       Toast.show({
         type: "error",
         text1: err.response.data.message,
@@ -662,8 +641,6 @@ const ChatRoom = () => {
               messageToReply={messageToReply}
               setMessageToReply={setMessageToReply}
               onSendMessage={mutate}
-              toggleProjectList={toggleProjectList}
-              toggleTaskList={toggleTaskList}
               toggleMenu={openAddAttachmentHandler}
               groupMember={selectedGroupMembers}
             />

@@ -2,8 +2,7 @@ import { useCallback, useState, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Spinner } from "native-base";
-import { View } from "react-native";
+import { View, ActivityIndicator, FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
@@ -78,7 +77,7 @@ const ChatList = ({
     <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA", paddingHorizontal: 10 }}>
       <FlashList
         inverted
-        ListFooterComponent={() => isLoading && <Spinner size="sm" />}
+        ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
         onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
