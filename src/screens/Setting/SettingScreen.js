@@ -112,7 +112,7 @@ const SettingScreen = () => {
                 }}
               >
                 {team?.data?.length > 0 &&
-                  (teamIsLoading ? (
+                  (!teamIsLoading ? (
                     team.data.map((item, index) => {
                       return (
                         <AvatarPlaceholder
