@@ -1,6 +1,18 @@
 import { View, Text, Pressable } from "react-native";
 
-const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow }) => {
+const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, setProjects, setTasks }) => {
+  const changeBandType = () => {
+    if (tabValue === "project") {
+      setTabValue("task");
+      setTasks([]);
+    } else {
+      setTabValue("project");
+      setProjects([]);
+    }
+    setInputToShow("");
+    setSearchInput("");
+  };
+
   return (
     <View
       style={{
@@ -9,7 +21,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
-        marginLeft: 60,
+        marginLeft: 90,
       }}
     >
       <View
@@ -23,14 +35,6 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
           gap: 5,
           borderRadius: 10,
         }}
-        bgColor="#fafafa"
-        gap={3}
-        borderRadius={10}
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        p={2}
-        my={2}
       >
         <Pressable
           style={{
@@ -38,11 +42,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
             borderRadius: 10,
             padding: 5,
           }}
-          onPress={() => {
-            tabValue === "task" && setTabValue("project");
-            setInputToShow("");
-            setSearchInput("");
-          }}
+          onPress={changeBandType}
         >
           <Text>Project</Text>
         </Pressable>
@@ -52,11 +52,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow })
             borderRadius: 10,
             padding: 5,
           }}
-          onPress={() => {
-            tabValue === "project" && setTabValue("task");
-            setInputToShow("");
-            setSearchInput("");
-          }}
+          onPress={changeBandType}
         >
           <Text>Ad Hoc</Text>
         </Pressable>

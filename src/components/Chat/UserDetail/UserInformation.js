@@ -1,5 +1,4 @@
 import { TouchableOpacity, View, Text } from "react-native";
-import { Badge } from "native-base";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -47,7 +46,7 @@ const UserInformation = ({
                       setMemberAdminStatus(member?.is_admin);
                     }}
                   >
-                    <Badge key={index} borderRadius={15}>
+                    <View style={{ borderRadius: 15, backgroundColor: "#ededed", padding: 5 }} key={index}>
                       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <AvatarPlaceholder
                           name={!member?.user ? member?.name : member?.user?.name}
@@ -63,22 +62,22 @@ const UserInformation = ({
                             : member?.user?.name}
                         </Text>
                         {member?.is_admin ? (
-                          <Badge borderRadius={15} colorScheme="#186688">
-                            <Text>Admin</Text>
-                          </Badge>
+                          <View style={{ borderRadius: 10, padding: 5, backgroundColor: "#186688" }}>
+                            <Text style={{ color: "#FFFFFF" }}>Admin</Text>
+                          </View>
                         ) : null}
                         {currentUserIsAdmin && loggedInUser !== member?.user_id && (
                           <MaterialIcons name="chevron-right" />
                         )}
                       </View>
-                    </Badge>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
               {currentUserIsAdmin && (
-                <Badge borderRadius="full">
-                  <MaterialIcons name="add" size={10} onPress={toggleMemberList} />
-                </Badge>
+                <View style={{ borderRadius: 20 }}>
+                  <MaterialIcons name="add" size={20} onPress={toggleMemberList} />
+                </View>
               )}
             </View>
           )}

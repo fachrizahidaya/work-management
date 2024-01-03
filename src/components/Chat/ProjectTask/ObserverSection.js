@@ -1,4 +1,3 @@
-import { Flex } from "native-base";
 import { View, Text } from "react-native";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";

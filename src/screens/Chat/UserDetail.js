@@ -3,7 +3,7 @@ import _ from "lodash";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
-import { SafeAreaView, View, Text, Pressable } from "react-native";
+import { SafeAreaView, View, Text, Pressable, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -121,7 +121,7 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
       toggleAddMember();
       toggleMemberList();
-      setSelectedUsers(null);
+      // setSelectedUsers(null);
       Toast.show({
         type: "success",
         text1: "Member added",
@@ -300,18 +300,18 @@ const UserDetail = () => {
   return (
     <>
       {isReady ? (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <SafeAreaView style={styles.container}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFFFFF",
-              padding: 10,
+              padding: 20,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <Pressable onPress={() => navigation.goBack()}>
-                <MaterialIcons name="keyboard-backspace" size={20} color="#3F434A" />
+                <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
               <Text>{type === "personal" ? "Contact Detail" : "Group Detail"}</Text>
             </View>
@@ -434,3 +434,10 @@ const UserDetail = () => {
 };
 
 export default UserDetail;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+});
