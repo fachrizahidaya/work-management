@@ -2,15 +2,6 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ActionSheet from "react-native-actions-sheet";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ActionSheet from "react-native-actions-sheet";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ActionSheet from "react-native-actions-sheet";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const MenuAttachment = ({
   isOpen,
