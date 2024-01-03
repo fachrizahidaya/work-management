@@ -215,7 +215,7 @@ const ChatBubble = ({
                           <Image
                             style={{
                               width: 260,
-                              height200,
+                              height: 200,
                               borderRadius: 5,
                               resizeMode: "contain",
                             }}

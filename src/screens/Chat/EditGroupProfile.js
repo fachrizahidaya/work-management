@@ -129,16 +129,16 @@ const EditGroupProfile = () => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 10 }}>
+    <SafeAreaView style={styles.container}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 20 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
-            <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
+            <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
           <Text>Edit Profile</Text>
         </View>
       </View>
-      <View style={{ flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 10, paddingVertical: 10, gap: 10 }}>
+      <View style={{ flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 20, paddingVertical: 10, gap: 10 }}>
         <View
           style={{
             flexDirection: "row",
@@ -172,7 +172,7 @@ const EditGroupProfile = () => {
               >
                 <MaterialCommunityIcons
                   name={!imageAttachment ? "camera-outline" : "close"}
-                  size={10}
+                  size={20}
                   color="#3F434A"
                 />
               </Pressable>
@@ -183,10 +183,8 @@ const EditGroupProfile = () => {
             {editName ? (
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Input
-                  width={180}
+                  width={220}
                   numberOfLines={2}
-                  // type="text"
-                  // size="lg"
                   value={formik.values.name}
                   onChangeText={(value) => formik.setFieldValue("name", value)}
                   defaultValue={name}
@@ -195,16 +193,6 @@ const EditGroupProfile = () => {
                     editGroupNameHandler();
                     formik.setFieldValue("name", name);
                   }}
-                  // variant="underlined"
-                  // InputRightElement={
-                  //   <Icon
-                  //     onPress={() => {
-                  //       editGroupNameHandler();
-                  //       formik.setFieldValue("name", name);
-                  //     }}
-                  //     as={<MaterialCommunityIcons name="close" />}
-                  //   />
-                  // }
                 />
               </View>
             ) : (
@@ -213,7 +201,7 @@ const EditGroupProfile = () => {
                   {name}
                 </Text>
 
-                <MaterialCommunityIcons name="pencil" size={10} color="#3F434A" onPress={editGroupNameHandler} />
+                <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
               </View>
             )}
           </View>

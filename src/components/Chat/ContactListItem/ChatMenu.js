@@ -3,13 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
-const ChatMenu = ({ onClose, reference }) => {
+const ChatMenu = ({ reference }) => {
   const navigation = useNavigation();
   const menuOptions = [
     {
       name: "New Chat",
       onPress: () => {
-        onClose();
+        reference.current?.hide();
         navigation.navigate("New Chat");
       },
     },

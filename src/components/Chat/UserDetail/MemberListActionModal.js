@@ -1,5 +1,4 @@
-// import { Button, Modal } from "native-base";
-import { Dimensions, Platform, Text } from "react-native";
+import { Dimensions, Platform, Text, View } from "react-native";
 import Button from "../../shared/Forms/Button";
 import Modal from "react-native-modal";
 
@@ -29,36 +28,39 @@ const MemberListActionModal = ({
         <Modal.CloseButton /> */}
       {/* <Modal.Header>{memberName}</Modal.Header> */}
       {/* <Modal.Body display="flex" gap={2}> */}
-      {memberAdminStatus ? (
+      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+        <Text>{memberName}</Text>
+        {memberAdminStatus ? (
+          <Button
+            onPress={() => {
+              onUpdateAdminStatus(memberId, 0);
+              toggleMemberListAction();
+            }}
+            variant="outline"
+          >
+            <Text>Dismiss as Admin</Text>
+          </Button>
+        ) : (
+          <Button
+            onPress={() => {
+              onUpdateAdminStatus(memberId, 1);
+              toggleMemberListAction();
+            }}
+            variant="outline"
+          >
+            <Text>Make Group Admin</Text>
+          </Button>
+        )}
         <Button
           onPress={() => {
-            onUpdateAdminStatus(memberId, 0);
             toggleMemberListAction();
+            toggleRemoveMemberAction();
           }}
           variant="outline"
         >
-          <Text>Dismiss as Admin</Text>
+          <Text>Remove from Group</Text>
         </Button>
-      ) : (
-        <Button
-          onPress={() => {
-            onUpdateAdminStatus(memberId, 1);
-            toggleMemberListAction();
-          }}
-          variant="outline"
-        >
-          <Text>Make Group Admin</Text>
-        </Button>
-      )}
-      <Button
-        onPress={() => {
-          toggleMemberListAction();
-          toggleRemoveMemberAction();
-        }}
-        variant="outline"
-      >
-        <Text>Remove from Group</Text>
-      </Button>
+      </View>
       {/* </Modal.Body> */}
       {/* </Modal.Content> */}
     </Modal>

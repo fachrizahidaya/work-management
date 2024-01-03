@@ -11,7 +11,7 @@ const UserAvatar = ({ roomId, type, name, image, position, selectedMembers = [],
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF", paddingBottom: 5 }}>
-      <View>
+      <View style={{ gap: 10 }}>
         <AvatarPlaceholder size="xl" name={name} image={image} isThumb={false} />
         {type === "group" && currentUserIsAdmin ? (
           <Pressable

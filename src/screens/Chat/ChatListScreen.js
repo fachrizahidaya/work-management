@@ -38,7 +38,6 @@ const ChatListScreen = () => {
 
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: chatOptionIsOpen, toggle: toggleChatOption } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
@@ -311,7 +310,7 @@ const ChatListScreen = () => {
             reference={contactMenuScreenSheetRef}
           />
 
-          <ChatMenu onClose={toggleChatOption} reference={chatMenuScreenSheetRef} />
+          <ChatMenu reference={chatMenuScreenSheetRef} />
 
           {selectedChat?.pin_personal ? (
             <RemoveConfirmationModal
