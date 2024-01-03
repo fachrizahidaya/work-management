@@ -137,7 +137,7 @@ const ChatInput = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#FFFFFF",
-          padding: 5,
+          padding: 10,
         }}
       >
         <View
@@ -183,7 +183,7 @@ const ChatInput = ({
                       },
                     ]}
                     placeholder="Type a message..."
-                    style={{ padding: 12 }}
+                    style={{ padding: 12, height: 40, borderWidth: 1, borderColor: "#CBCBCB", borderRadius: 10 }}
                   />
                 ) : (
                   <Input

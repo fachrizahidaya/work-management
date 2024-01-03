@@ -49,14 +49,14 @@ const ProjectDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 10 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable
               style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
               onPress={() => navigation.goBack()}
             >
-              <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
+              <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
             <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
             <View>
@@ -75,13 +75,20 @@ const ProjectDetail = () => {
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={{ fontSize: 10, fontWeight: "400" }}>Created by</Text>
             <AvatarPlaceholder name={project?.data?.owner?.name} image={project?.data?.owner?.image} />
+            <Text style={{ fontSize: 10 }}>
+              {project?.data?.owner?.name.length > 30
+                ? project?.data?.owner?.name?.split(" ")[0]
+                : project?.data?.owner?.name}
+            </Text>
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, margin: 5 }}>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 15 }}>
         <Description description={project?.data?.description} navigation={navigation} />
       </View>
-      <View style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", margin: 5 }}>
+      <View
+        style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", marginVertical: 10, marginHorizontal: 15 }}
+      >
         <DateSection
           start={dayjs(project?.data?.created_at).format("MMM DD, YYYY")}
           end={dayjs(project?.data?.deadline).format("MMM DD, YYYY")}
@@ -92,8 +99,17 @@ const ProjectDetail = () => {
           finish={project?.data?.task_finish_count}
         />
       </View>
-      <View style={{ flexDirection: "row", backgroundColor: "#FAFAFA", gap: 5, borderRadius: 10, margin: 5 }}>
-        <View style={{ flex: 0.5, borderRadius: 10, padding: 5 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#FAFAFA",
+          gap: 5,
+          borderRadius: 10,
+          marginVertical: 10,
+          marginHorizontal: 15,
+        }}
+      >
+        <View style={{ flex: 0.5, borderRadius: 10, padding: 10, backgroundColor: "#FFFFFF" }}>
           <FlashList
             data={project?.data?.member}
             estimatedItemSize={50}
@@ -108,7 +124,16 @@ const ProjectDetail = () => {
           <AttachmentSection />
         </View>
       </View>
-      <View style={{ flex: 1, backgroundColor: "#FAFAFA", borderRadius: 10, gap: 5, margin: 5 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#FAFAFA",
+          borderRadius: 10,
+          gap: 5,
+          marginVertical: 10,
+          marginHorizontal: 15,
+        }}
+      >
         {projectTask?.data.length > 0 ? (
           <FlashList
             data={projectTask?.data}
@@ -187,7 +212,7 @@ const ProjectDetail = () => {
           </Pressable>
         )}
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 5 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
         <Pressable
           style={{
             flex: 1,
@@ -196,8 +221,8 @@ const ProjectDetail = () => {
             alignItems: "center",
             justifyContent: "space-between",
             backgroundColor: "#F5F5F5",
-            borderRadius: 10,
-            padding: 5,
+            borderRadius: 5,
+            padding: 10,
           }}
           onPress={() => {
             setBandAttachment(projectData);
