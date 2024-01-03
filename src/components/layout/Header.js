@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigation, useNavigationState, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { SafeAreaView } from "react-native";
-import { Box, Flex, Icon, Image, Pressable, Text } from "native-base";
+import { SafeAreaView, View, Pressable, Text, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
@@ -17,10 +16,9 @@ const Header = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
   const moduleSelector = useSelector((state) => state.module);
+  const [routeName, setRouteName] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
-  const [routeName, setRouteName] = useState([]);
-  const [initiate, setInitiate] = useState("Band");
   const {
     isOpen: notificationCardIsOpen,
     open: openNotificationCard,
@@ -83,32 +81,52 @@ const Header = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: "white" }}>
-      <Flex
-        direction="row"
-        bg="#fff"
-        alignItems="center"
-        justifyContent="space-between"
-        px={4}
-        py={3}
-        borderBottomWidth={1}
-        borderColor="#E8E9EB"
-        position="relative"
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#fff",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          borderBottomWidth: 1,
+          borderColor: "#E8E9EB",
+          position: "relative",
+          display: "flex",
+          margin: 0,
+        }}
       >
-        <Flex direction="row" alignItems="center" gap={2}>
+        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
-          <Box>
-            <Text fontWeight={700} fontSize={18} lineHeight={24}>
+          <View>
+            <Text
+              style={{
+                fontWeight: 700,
+                fontSize: 18,
+                lineHeight: 24,
+              }}
+            >
               {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
             </Text>
 
-            {myProfile?.data && <Text fontWeight={400}>{myProfile.data.position_name || "You have no position"}</Text>}
-          </Box>
-        </Flex>
+            {myProfile?.data && (
+              <Text style={{ fontSize: 16, fontWeight: 400 }}>
+                {myProfile.data.position_name || "You have no position"}
+              </Text>
+            )}
+          </View>
+        </View>
 
-        <Flex flexDir="row" gap={8} alignItems="center">
-          {/* {selectedModule && ( */}
-          <Box position="relative">
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 20,
+            alignItems: "center",
+          }}
+        >
+          <View style={{ position: "relative" }}>
             <Pressable
               onPress={() =>
                 navigation.navigate("Notification", {
@@ -117,96 +135,102 @@ const Header = () => {
                 })
               }
             >
-              <Icon as={<MaterialCommunityIcons name="bell-outline" />} color="#3f434b" size="md" />
+              <MaterialCommunityIcons name="bell-outline" size={20} />
             </Pressable>
 
             {unreadNotificationList?.length > 0 && (
-              <Box
+              <View
                 style={{
                   height: 22,
                   width: 22,
+                  position: "absolute",
+                  top: -12,
+                  right: -8,
+                  backgroundColor: "#FD7972",
+                  borderRadius: 50,
+                  zIndex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                position="absolute"
-                top={-12}
-                right={-8}
-                bgColor="#FD7972"
-                borderRadius="full"
-                zIndex={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
               >
-                <Text fontSize={12} textAlign="center" color="white">
+                <Text
+                  style={{
+                    display: "flex",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    textAlign: "center",
+                    color: "white",
+                  }}
+                >
                   {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
                 </Text>
-              </Box>
+              </View>
             )}
-          </Box>
-          {/* )} */}
+          </View>
 
-          <Pressable
-            onPress={() =>
-              routeName[0]?.state?.routeNames[2] == "Setting Tribe"
-                ? navigation.navigate("Dashboard")
-                : routeName[0]?.state?.routeNames[2] == "Setting Band"
-                ? navigation.navigate("Dashboard")
-                : navigation.navigate("Chat List")
-            }
-            position="relative"
-          >
+          <Pressable onPress={() => navigation.navigate("Chat List")} style={{ position: "relative" }}>
             {unreadMessages?.data?.total_unread > 0 && (
-              <Box
+              <View
                 style={{
                   height: 22,
                   width: 22,
+                  position: "absolute",
+                  top: -12,
+                  right: -8,
+                  backgroundColor: "#FD7972",
+                  borderRadius: 50,
+                  zIndex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                position="absolute"
-                top={-12}
-                right={-8}
-                bgColor="#FD7972"
-                borderRadius="full"
-                zIndex={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
               >
-                <Text fontSize={12} textAlign="center" color="white">
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    textAlign: "center",
+                    color: "white",
+                  }}
+                >
                   {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
                 </Text>
-              </Box>
+              </View>
             )}
+
             {routeName[0]?.state?.routeNames[2]?.includes("Tribe") ? (
               <>
                 <Image
                   source={require("../../assets/icons/tribe_logo.png")}
-                  alt="nest"
-                  style={{ height: 25, width: 25 }}
+                  alt="Tribe"
+                  style={{ height: 30, width: 30 }}
                 />
               </>
             ) : routeName[0]?.state?.routeNames[2]?.includes("Band") ? (
               <>
                 <Image
                   source={require("../../assets/icons/band_logo.png")}
-                  alt="nest"
-                  style={{ height: 25, width: 25 }}
+                  alt="Band"
+                  style={{ height: 30, width: 30 }}
                 />
               </>
             ) : (
               <Image
                 source={require("../../assets/icons/nest_logo.png")}
-                alt="nest"
-                style={{ height: 25, width: 25 }}
+                alt="Nest"
+                style={{ height: 30, width: 30 }}
               />
             )}
           </Pressable>
-        </Flex>
+        </View>
 
         <InAppNotificationCard
           message={unreadMessages?.notification}
           isOpen={notificationCardIsOpen}
           close={toggleNotificationCard}
         />
-      </Flex>
+      </View>
     </SafeAreaView>
   );
 };
