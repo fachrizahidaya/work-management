@@ -1,5 +1,4 @@
-import { Flex, Icon, Text } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -32,27 +31,23 @@ const UserListItemModal = ({
           }
         }}
       >
-        <Flex alignItems="center" justifyContent="space-between" flexDirection="row">
-          <Flex flexDirection="row" alignItems="center" my={1} gap={2}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 5, gap: 5 }}>
             <AvatarPlaceholder name={name} image={image} />
 
-            <Flex>
-              <Text fontSize={14} fontWeight={400} color="#000000">
-                {name}
-              </Text>
-              <Text fontSize={12} fontWeight={400} opacity={0.5}>
-                {userType}
-              </Text>
-            </Flex>
-          </Flex>
+            <View>
+              <Text style={{ fontSize: 14, fontWeight: "400", color: "#000000" }}>{name}</Text>
+              <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>{userType}</Text>
+            </View>
+          </View>
           {multiSelect && (
-            <Flex>
+            <View>
               {selectedUsers?.find((val) => val.id === id) && (
-                <Icon as={<MaterialCommunityIcons name="checkbox-marked" />} size="md" color="primary.600" />
+                <MaterialCommunityIcons name="checkbox-marked" size={20} color="#176688" />
               )}
-            </Flex>
+            </View>
           )}
-        </Flex>
+        </View>
       </TouchableOpacity>
     )
   );

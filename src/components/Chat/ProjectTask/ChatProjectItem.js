@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Pressable, Text } from "native-base";
+import { View, Pressable, Text } from "react-native";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
@@ -54,7 +54,7 @@ const ChatProjectItem = ({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
-          padding: 5,
+          padding: 10,
           borderRadius: 10,
         }}
       >

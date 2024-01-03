@@ -25,7 +25,7 @@ const UserAction = ({ type, active_member, toggleClearChatMessage, toggleExitMod
           style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
           onPress={toggleExitModal}
         >
-          <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={10} />
+          <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={15} />
           <Text style={{ fontSize: 14, fontWeight: "400" }}>Exit Group</Text>
         </Pressable>
       )}

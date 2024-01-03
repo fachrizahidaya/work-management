@@ -71,14 +71,14 @@ const ChatHeader = ({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
-          padding: 15,
+          padding: 20,
           borderBottomWidth: 1,
           borderColor: "#E8E9EB",
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Pressable onPress={() => !isLoading && navigation.goBack()}>
-            <MaterialIcons name="chevron-left" size={25} color="#3F434A" />
+            <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
 
           <Pressable

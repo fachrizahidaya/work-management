@@ -84,7 +84,7 @@ const MenuAttachment = ({
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
-            <MaterialCommunityIcons name={option.icon} color={option.color} />
+            <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
           </TouchableOpacity>
         );
       })}

@@ -149,20 +149,22 @@ const ChatProjectTaskScreen = () => {
     <SafeAreaView style={styles.container}>
       {isReady ? (
         <>
-          <View style={{ flexDirection: "row", backgroundColor: "#FFFFFF", padding: 10 }}>
+          <View style={{ flexDirection: "row", backgroundColor: "#FFFFFF", padding: 20 }}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
               <Pressable
                 style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
                 onPress={() => navigation.goBack()}
               >
-                <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
+                <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
-              <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
+              <MateriaCommunitylIcons name="circle-slice-2" size={20} color="#3F434A" />
               <OptionButton
                 setSearchInput={setSearchInput}
                 setInputToShow={setInputToShow}
                 tabValue={tabValue}
                 setTabValue={setTabValue}
+                setProjects={setProjects}
+                setTasks={setTasks}
               />
             </View>
           </View>

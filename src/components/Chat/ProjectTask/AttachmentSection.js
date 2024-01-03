@@ -2,7 +2,7 @@ import { View, Text, Image } from "react-native";
 
 const AttachmentSection = () => {
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
+    <View style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
       <Image
         source={require("../../../assets/vectors/empty.png")}
         alt="attachment"

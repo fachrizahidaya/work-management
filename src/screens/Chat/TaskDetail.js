@@ -44,14 +44,14 @@ const TaskDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 5 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable
               style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
               onPress={() => navigation.goBack()}
             >
-              <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
+              <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
             <View>
               <Text style={{ fontSize: 14, fontWeight: "400" }}>
@@ -68,13 +68,28 @@ const TaskDetail = () => {
               name={task?.data?.responsible?.user?.name}
               image={task?.data?.responsible?.user?.image}
             />
+            <Text style={{ fontSize: 10 }}>
+              {task?.data?.responsible?.user?.name.length > 30
+                ? task?.data?.responsible?.user?.name?.split(" ")[0]
+                : task?.data?.responsible?.user?.name}
+            </Text>
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, margin: 5 }}>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 15 }}>
         <Description description={task?.data?.description} navigation={navigation} />
       </View>
-      <View style={{ flex: 1, flexDirection: "row", borderRadius: 10, margin: 5, gap: 5, backgroundColor: "#FAFAFA" }}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          borderRadius: 10,
+          marginVertical: 10,
+          marginHorizontal: 15,
+          gap: 5,
+          backgroundColor: "#FAFAFA",
+        }}
+      >
         <View style={{ gap: 5 }}>
           <DateSection
             start={dayjs(task?.data?.created_at).format("MMM DD, YYYY")}
@@ -137,7 +152,8 @@ const TaskDetail = () => {
           justifyContent: "center",
           backgroundColor: "#FFFFFF",
           padding: 5,
-          margin: 5,
+          marginVertical: 10,
+          marginHorizontal: 15,
           gap: 5,
           borderRadius: 10,
         }}
@@ -157,7 +173,7 @@ const TaskDetail = () => {
           </View>
         </View>
       </Pressable>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 10 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
         <Pressable
           style={{
             flex: 1,
@@ -166,8 +182,8 @@ const TaskDetail = () => {
             alignItems: "center",
             justifyContent: "space-between",
             backgroundColor: "#F5F5F5",
-            borderRadius: 10,
-            padding: 5,
+            borderRadius: 5,
+            padding: 10,
           }}
           onPress={() => {
             setBandAttachment(taskData);
