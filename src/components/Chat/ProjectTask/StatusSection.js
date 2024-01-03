@@ -11,21 +11,21 @@ const StatusSection = ({ open, onProgress, finish }) => {
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         borderRadius: 10,
-        padding: 5,
+        padding: 10,
         gap: 5,
       }}
     >
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#FF965D" }}>{open}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400" }}>Open</Text>
+        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>Open</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#304FFD" }}>{onProgress}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400" }}>On Progress</Text>
+        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>On Progress</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFD240" }}>{finish}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400" }}>Finish</Text>
+        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>Finish</Text>
       </View>
     </Pressable>
   );

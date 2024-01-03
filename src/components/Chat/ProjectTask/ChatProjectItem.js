@@ -54,7 +54,7 @@ const ChatProjectItem = ({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
-          padding: 5,
+          padding: 10,
           borderRadius: 10,
         }}
       >

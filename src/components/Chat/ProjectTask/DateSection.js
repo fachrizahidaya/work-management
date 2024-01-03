@@ -8,7 +8,7 @@ const DateSection = ({ start, end }) => {
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         borderRadius: 10,
-        padding: 5,
+        padding: 10,
       }}
     >
       <View style={{ flexDirection: "row", gap: 5 }}>
