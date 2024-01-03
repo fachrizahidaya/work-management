@@ -1,11 +1,11 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { Spinner } from "native-base";
-import { StyleSheet, View, Text, Image, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
+import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const LeaveRequestList = ({
   onSelect,
@@ -23,9 +23,6 @@ const LeaveRequestList = ({
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
-  pendingLeaveRequestIsLoading,
-  approvedLeaveRequestIsLoading,
-  rejectedLeaveRequestIsLoading,
   tabValue,
   tabs,
   onChangeTab,
@@ -33,6 +30,7 @@ const LeaveRequestList = ({
   setHasBeenScrolledPending,
   hasBeenScrolledApproved,
   setHasBeenScrolledApproved,
+  refetchLeaveRequest,
 }) => {
   return (
     <>
@@ -58,9 +56,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -84,12 +80,7 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -112,9 +103,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
-                }
+                ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -138,12 +127,7 @@ const LeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
-                  source={require("../../../../assets/vectors/empty.png")}
-                  alt="empty"
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                />
-                <Text>No Data</Text>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -158,9 +142,7 @@ const LeaveRequestList = ({
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() =>
-                rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
-              }
+              ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}
@@ -192,12 +174,7 @@ const LeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              <Image
-                source={require("../../../../assets/vectors/empty.png")}
-                alt="empty"
-                style={{ height: 250, width: 250, resizeMode: "contain" }}
-              />
-              <Text>No Data</Text>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>
         )}

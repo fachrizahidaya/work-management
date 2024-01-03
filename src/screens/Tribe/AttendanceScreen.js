@@ -8,14 +8,14 @@ import { Calendar } from "react-native-calendars";
 import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../hooks/useFetch";
-import PageHeader from "../../components/shared/PageHeader";
-import axiosInstance from "../../config/api";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import axiosInstance from "../../config/api";
+import PageHeader from "../../components/shared/PageHeader";
+import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceForm from "../../components/Tribe/Attendance/AttendanceForm";
 import AddAttendanceAttachment from "../../components/Tribe/Attendance/AddAttendanceAttachment";
-import ConfirmationModal from "../../components/shared/ConfirmationModal";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -33,7 +33,6 @@ const AttendanceScreen = () => {
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
-  const { isOpen: addAttachmentIsOpen, toggle: toggleAddAttachment } = useDisclosure(false);
   const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
 
   const attendanceFetchParameters = filter;
@@ -403,7 +402,6 @@ const AttendanceScreen = () => {
             items={items}
             renderCalendar={renderCalendarWithMultiDotMarking}
             attachment={attachment}
-            toggle={toggleAddAttachment}
             onSelectFile={selectFile}
             onDelete={attachmentDeleteHandler}
             setAttachmentId={openDeleteAttachmentModalHandler}
@@ -434,8 +432,6 @@ const AttendanceScreen = () => {
       />
 
       <AddAttendanceAttachment
-        isOpen={addAttachmentIsOpen}
-        toggle={toggleAddAttachment}
         onSelectFile={selectFile}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}

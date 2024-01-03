@@ -1,7 +1,6 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard, FlatList, Linking, StyleSheet, View } from "react-native";
-import { Spinner } from "native-base";
+import { Clipboard, FlatList, Linking, StyleSheet, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -36,7 +35,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      // refetchPost();
+      refetchPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -98,7 +97,7 @@ const FeedCard = ({
             }}
           />
         }
-        ListFooterComponent={() => postIsFetching && hasBeenScrolled && <Spinner color="primary.600" />}
+        ListFooterComponent={() => postIsLoading && <ActivityIndicator />}
         renderItem={({ item, index }) => (
           <FeedCardItem
             key={index}

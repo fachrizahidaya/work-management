@@ -13,6 +13,7 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, refe
           <MaterialCommunityIcons name="plus" size={20} onPress={() => reference.current?.show()} />
         )}
       </View>
+
       <View style={{ flex: 1, gap: 5 }}>
         {attachment?.data.length > 0 ? (
           <FlatList

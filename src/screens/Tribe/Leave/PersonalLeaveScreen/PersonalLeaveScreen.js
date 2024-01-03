@@ -8,9 +8,9 @@ import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
-import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import CancelAction from "../../../../components/Tribe/Leave/PersonalLeaveRequest/CancelAction";
 
 const PersonalLeaveScreen = () => {
@@ -36,7 +36,11 @@ const PersonalLeaveScreen = () => {
   const navigation = useNavigation();
 
   const tabs = useMemo(() => {
-    return [{ title: "pending" }, { title: "approved" }, { title: "rejected" }];
+    return [
+      { title: "pending", value: "pending" },
+      { title: "approved", value: "approved" },
+      { title: "rejected", value: "rejected" },
+    ];
   }, []);
 
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
@@ -94,6 +98,8 @@ const PersonalLeaveScreen = () => {
 
   const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
 
+  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
+
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
   const fetchMorePending = () => {
@@ -138,7 +144,7 @@ const PersonalLeaveScreen = () => {
     if (pendingLeaveRequest?.data?.data?.length) {
       setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data, pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
@@ -190,13 +196,11 @@ const PersonalLeaveScreen = () => {
             fetchMorePending={fetchMorePending}
             fetchMoreApproved={fetchMoreApproved}
             fetchMoreRejected={fetchMoreRejected}
-            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
-            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
-            rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
             tabValue={tabValue}
             setTabValue={setTabValue}
             tabs={tabs}
             onChangeTab={onChangeTab}
+            refetchLeaveRequest={refetchLeaveRequest}
           />
         </>
       </SafeAreaView>

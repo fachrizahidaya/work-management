@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import _ from "lodash";
 
-import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
-import { Spinner } from "native-base";
+import { SafeAreaView, StyleSheet, View, ActivityIndicator } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
 import Input from "../../components/shared/Forms/Input";
@@ -100,14 +100,14 @@ const ContactScreen = () => {
 
       {/* Content here */}
       <View style={{ flex: 1, paddingHorizontal: 15 }}>
-        <FlatList
+        <FlashList
           data={contacts.length ? contacts : filteredDataArray}
           onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
           estimatedItemSize={60}
           onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-          ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <Spinner />}
+          ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
           renderItem={({ item, index }) => (
             <ContactList
               key={index}

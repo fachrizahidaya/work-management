@@ -59,7 +59,7 @@ const PostAction = ({
               <MaterialCommunityIcons name="bullhorn" size={15} />
               <View>
                 <Text>Announcement</Text>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                   <Text style={{ fontSize: 12, fontWeight: 400 }}>End Date must be provided</Text>
                   {isAnnouncementSelected && dateShown ? (
                     <CustomDateTimePicker
@@ -105,7 +105,5 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
   },
 });

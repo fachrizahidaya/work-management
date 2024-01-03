@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 
-import { Badge } from "native-base";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -44,12 +43,11 @@ const MyTeamLeaveRequestItem = ({
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>{item?.reason}</Text>
         </View>
-        <Badge borderRadius={10} w={20}>
-          <View style={{ flexDirection: "row", gap: 5 }}>
-            <MaterialCommunityIcons name="clock-outline" size={20} color="#186688" />
-            <Text>{days > 1 ? `${days} days` : `${days} day`}</Text>
-          </View>
-        </Badge>
+
+        <View style={{ flexDirection: "row", gap: 5, padding: 5, borderRadius: 10, backgroundColor: "#F8F8F8" }}>
+          <MaterialCommunityIcons name="clock-outline" size={20} color="#186688" />
+          <Text>{days > 1 ? `${days} days` : `${days} day`}</Text>
+        </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>

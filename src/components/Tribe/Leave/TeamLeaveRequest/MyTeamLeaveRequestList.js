@@ -1,8 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { ScrollView, StyleSheet, View, Image, Text, FlatList } from "react-native";
-import { Spinner } from "native-base";
+import { ScrollView, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import Tabs from "../../../shared/Tabs";
@@ -97,9 +96,7 @@ const MyTeamLeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsFetching && hasBeenScrolledPending && <Spinner color="primary.600" />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
                     item={item}
@@ -127,12 +124,13 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -154,9 +152,7 @@ const MyTeamLeaveRequestList = ({
                   }}
                 />
               }
-              ListFooterComponent={() =>
-                approvedLeaveRequestIsFetching && hasBeenScrolledApproved && <Spinner color="primary.600" />
-              }
+              ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
               renderItem={({ item, index }) => (
                 <MyTeamLeaveRequestItem
                   item={item}
@@ -180,12 +176,13 @@ const MyTeamLeaveRequestList = ({
               }
             >
               <View style={styles.content}>
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/empty.png")}
                   alt="empty"
                   style={{ height: 250, width: 250, resizeMode: "contain" }}
                 />
-                <Text>No Data</Text>
+                <Text>No Data</Text> */}
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
@@ -206,9 +203,7 @@ const MyTeamLeaveRequestList = ({
                 }}
               />
             }
-            ListFooterComponent={() =>
-              rejectedLeaveRequestIsFetching && hasBeenScrolled && <Spinner color="primary.600" />
-            }
+            ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <MyTeamLeaveRequestItem
                 item={item}
@@ -232,12 +227,13 @@ const MyTeamLeaveRequestList = ({
             }
           >
             <View style={styles.content}>
-              <Image
+              {/* <Image
                 source={require("../../../../assets/vectors/empty.png")}
                 alt="empty"
                 style={{ height: 250, width: 250, resizeMode: "contain" }}
               />
-              <Text>No Data</Text>
+              <Text>No Data</Text> */}
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>
         )}

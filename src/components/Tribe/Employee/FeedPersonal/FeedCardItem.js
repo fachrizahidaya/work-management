@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import { Badge } from "native-base";
 import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -135,9 +134,9 @@ const FeedCardItem = ({
               </Text>
 
               {type === "Announcement" ? (
-                <Badge borderRadius={15} backgroundColor="#ADD7FF">
+                <View style={{ borderRadius: 15, backgroundColor: "#ADD7FF", padding: 5 }}>
                   <Text style={{ fontSize: 10 }}>Announcement</Text>
-                </Badge>
+                </View>
               ) : null}
               {loggedEmployeeId === employeeId && (
                 <>

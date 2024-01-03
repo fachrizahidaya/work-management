@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList } from "react-native";
-import { Spinner } from "native-base";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -15,6 +14,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
+import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -159,9 +159,7 @@ const PayslipScreen = () => {
             onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
             estimatedItemSize={50}
             refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() =>
-              payslipIsFetching && hasBeenScrolled && <Spinner color="primary.600" size="lg" />
-            }
+            ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
             renderItem={({ item, index }) => (
               <PayslipList
                 key={index}
@@ -178,17 +176,17 @@ const PayslipScreen = () => {
               />
             )}
           />
-        ) : payslipIsLoading ? (
-          <Spinner />
         ) : (
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("./../../assets/vectors/empty.png")}
-              alt="empty"
-              style={{ resizeMode: "contain", height: 300, width: 300 }}
-            />
-            <Text>No Data</Text>
-          </View>
+          <>
+            <View style={styles.imageContainer}>
+              <Image
+                source={require("./../../assets/vectors/empty.png")}
+                alt="empty"
+                style={{ resizeMode: "contain", height: 300, width: 300 }}
+              />
+              <Text>No Data</Text>
+            </View>
+          </>
         )}
       </SafeAreaView>
       <PayslipDownload
