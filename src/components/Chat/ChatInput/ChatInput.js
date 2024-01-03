@@ -183,7 +183,13 @@ const ChatInput = ({
                       },
                     ]}
                     placeholder="Type a message..."
-                    style={{ padding: 12, height: 40, borderWidth: 1, borderColor: "#CBCBCB", borderRadius: 10 }}
+                    style={{
+                      padding: 12,
+                      height: 40,
+                      // borderWidth: 1,
+                      // borderColor: "#CBCBCB",
+                      // borderRadius: 10
+                    }}
                   />
                 ) : (
                   <Input

@@ -19,12 +19,12 @@ const GlobalSearchInput = ({ setGlobalKeyword, globalKeyword }) => {
   return (
     <View style={{ padding: 10 }}>
       <Input
-        ref={searchFormRef}
+        innerRef={searchFormRef}
         placeHolder="Search..."
         startIcon="magnify"
         endIcon={globalKeyword && "close"}
         onPressEndIcon={() => {
-          searchFormRef.current?.clear();
+          searchFormRef.current.clear();
           setGlobalKeyword("");
         }}
         onChangeText={(value) => keywordSearchHandler(value)}

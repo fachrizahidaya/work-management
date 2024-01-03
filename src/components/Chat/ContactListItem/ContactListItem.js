@@ -199,17 +199,17 @@ const ContactListItem = ({
                         }}
                       >
                         <View style={{ flexDirection: "row" }}>
-                          {type === "group" && chat?.latest_message && (
+                          {type === "group" && chat?.latest_message ? (
                             <Text>{chat?.latest_message?.user?.name}: </Text>
-                          )}
+                          ) : null}
                           {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                          {message === null && (project || task || fileName) && (
+                            <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                              <MaterialCommunityIcons name={generateIcon()} size={20} />
+                              <Text>{generateAttachmentText()}</Text>
+                            </View>
+                          )}
                         </View>
-                        {message === null && (project || task || fileName) && (
-                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                            <MaterialCommunityIcons name={generateIcon()} size={20} />
-                            <Text>{generateAttachmentText()}</Text>
-                          </View>
-                        )}
                         {!!isRead && (
                           <View
                             style={{

@@ -47,7 +47,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
 
         <MaterialCommunityIcons
           name="close-circle-outline"
-          size={15}
+          size={20}
           color="#9E9E9E"
           onPress={() => setMessageToReply(null)}
         />
