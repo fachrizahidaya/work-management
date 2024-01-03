@@ -40,25 +40,3 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
 };
 
 export default RemoveConfirmationModal;
-<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
-  <Button
-    onPress={!isLoading && toggle}
-    variant="outline"
-    padding={5}
-    backgroundColor="#FFFFFF"
-    children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#000000" }}>Cancel</Text>}
-  />
-  <Button
-    disabled={isLoading}
-    backgroundColor="#E53935"
-    padding={5}
-    onPress={onPress}
-    children={
-      isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Confirm</Text>
-      )
-    }
-  />
-</View>;
