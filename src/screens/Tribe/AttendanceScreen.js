@@ -68,8 +68,9 @@ const AttendanceScreen = () => {
   const hasSubmittedLateReport = date?.lateType && date?.lateReason && !date?.earlyType;
   const hasSubmittedEarlyReport = date?.earlyType && date?.earlyReason && !date?.lateType;
   const hasSubmittedLateNotEarly =
-    date?.lateType && date?.lateReason && date?.lateStatus && !date?.earlyReason && !date?.earlyStatus;
-  const hasSubmittedEarlyNotLate = date?.earlyType && date?.earlyReason && !date?.lateType && !date?.lateReason;
+    date?.lateType && date?.lateReason && date?.earlyType && !date?.earlyReason && !date?.earlyStatus;
+  const hasSubmittedEarlyNotLate =
+    date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
     (date?.attendanceType === "Alpa" || date?.attendanceType === "Permit" || date?.attendanceType === "Sick") &&
@@ -138,7 +139,7 @@ const AttendanceScreen = () => {
       const dateData = items[selectedDate];
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
-          if (item?.date && item?.confirmation === 0 && item?.dayType !== "Weekend") {
+          if (item?.date && item?.confirmation === 0 && item?.dayType === "Work Day") {
             attendanceScreenSheetRef.current?.show();
             setDate(item);
           }
@@ -318,6 +319,8 @@ const AttendanceScreen = () => {
               event?.lateReason &&
               event?.attendanceType === "Attend" &&
               !event?.confirmation) ||
+            (event?.late && event?.lateReason && event?.earlyType && !event?.earlyReason && !event?.earlyStatus) ||
+            (event?.early && event?.earlyReason && event?.lateType && !event?.lateReason && !event?.lateStatus) ||
             // (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
             // (event?.dayType === "Work Day" && event?.attendanceType !== "Sick" && event?.attendanceReason) ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||

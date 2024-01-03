@@ -1,4 +1,3 @@
-import { Icon } from "native-base";
 import { Linking, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -18,7 +17,7 @@ const EmailButton = ({ email, size }) => {
 
   return (
     <TouchableOpacity onPress={handleEmailPress}>
-      <Icon as={<MaterialCommunityIcons name="email-outline" />} size={!size ? 5 : size} />
+      <MaterialCommunityIcons name="email-outline" size={!size ? 10 : size} />
     </TouchableOpacity>
   );
 };
