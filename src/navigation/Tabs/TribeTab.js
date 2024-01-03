@@ -160,18 +160,8 @@ const TribeTab = ({ setSelectedModule }) => {
       {/* Sheets */}
       <TribeScreenSheet reference={tribeScreenSheetRef} />
 
-      {/* Sliders */}
-
-      {/* {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />} */}
       <TribeAddNewSheet reference={tribeAddNewSheetRef} />
 
-      {/* {
-        <ModuleSelectSlider
-          toggle={toggleModuleSlider}
-          isOpen={moduleSliderIsOpen}
-          setSelectedModule={setSelectedModule}
-        />
-      } */}
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );
