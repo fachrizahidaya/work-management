@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 /**
@@ -69,7 +69,14 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
               key={idx}
               onPress={() => (page !== "..." ? setCurrentPage(page) : null)}
             >
-              <Text color={currentPage === page ? "#176688" : "white"}>{page}</Text>
+              <Text
+                style={{
+                  color: currentPage === page ? "#176688" : "white",
+                  fontWeight: 500,
+                }}
+              >
+                {page}
+              </Text>
             </Pressable>
           );
         })}
