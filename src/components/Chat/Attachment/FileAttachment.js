@@ -43,9 +43,13 @@ const FileAttachment = ({ file, setFile }) => {
               ? "file-pdf-box"
               : formatMimeType(file.type) === "pptx" || formatMimeType(file.type) === "ppt"
               ? "file-powerpoint-box"
-              : formatMimeType(file.type) === "docx" || formatMimeType(file.type) === "doc"
+              : formatMimeType(file.type) === "docx" ||
+                formatMimeType(file.type) === "doc" ||
+                formatMimeType(file.type) === "document"
               ? "file-word-box"
-              : formatMimeType(file.type) === "xlsx" || formatMimeType(file.type) === "xls"
+              : formatMimeType(file.type) === "xlsx" ||
+                formatMimeType(file.type) === "xls" ||
+                formatMimeType(file.type) === "spreadsheet"
               ? "file-excel-box"
               : "text-box"
           }

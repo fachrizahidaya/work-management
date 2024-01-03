@@ -1,5 +1,4 @@
-import { Spinner } from "native-base";
-import { Dimensions, Platform, Text, View } from "react-native";
+import { Dimensions, Platform, Text, View, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 
 import Button from "../../shared/Forms/Button";
@@ -45,7 +44,7 @@ const ChatMessageDeleteModal = ({
             }}
           >
             <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>
-              {isLoading ? <Spinner color="primary.600" /> : "Delete for Me"}
+              {isLoading ? <ActivityIndicator /> : "Delete for Me"}
             </Text>
           </Button>
 
@@ -59,7 +58,8 @@ const ChatMessageDeleteModal = ({
               }}
             >
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>
-                {isLoading ? <Spinner color="primary.600" /> : "Delete for Everyone"}
+                {/* {isLoading ? <ActivityIndicator /> : "Delete for Everyone"} */}
+                Delete for Everyone
               </Text>
             </Button>
           )}
