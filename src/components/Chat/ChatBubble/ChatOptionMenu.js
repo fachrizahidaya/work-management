@@ -1,8 +1,14 @@
-import { Icon, Modal, Pressable, Text } from "native-base";
+import { View, Text, Pressable, Dimensions, Platform } from "react-native";
+import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggleDeleteModal, placement }) => {
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
   const options = [
     {
       name: "Reply",
@@ -63,41 +69,35 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
           </Actionsheet.Item>
         </Actionsheet.Content>
       </Actionsheet> */}
-      <Modal isOpen={optionIsOpen} onClose={onClose} safeAreaTop={true}>
-        <Modal.Content width={200} {...styles[placement]}>
-          <Modal.Body gap={3}>
+      <Modal
+        isVisible={optionIsOpen}
+        onBackdropPress={onClose}
+        backdropColor="#272A2B"
+        deviceHeight={deviceHeight}
+        deviceWidth={deviceWidth}
+      >
+        <View style={{ ...styles[placement], width: 200 }}>
+          <View style={{ backgroundColor: "#FFFFFF", padding: 15, gap: 10, borderRadius: 15 }}>
             {options.map((option, index) => {
               return (
                 <Pressable
                   key={index}
                   onPress={option.onPress}
-                  display="flex"
-                  borderBottomColor="#F6F6F6"
-                  alignItems="center"
-                  flexDirection="row"
-                  justifyContent="space-between"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderBottomColor: "#F6F6F6",
+                  }}
                 >
-                  <Text fontSize={16} fontWeight={400}>
-                    {option.name}
-                  </Text>
-                  <Icon as={<MaterialCommunityIcons name={option.icon} />} size={6} color={option.color} />
+                  <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                  <MaterialCommunityIcons name={option.icon} size={25} color={option.color} />
                 </Pressable>
               );
             })}
-            {/* <Flex alignItems="center" flexDirection="row" justifyContent="space-between">
-              <Text fontSize={16} fontWeight={400}>
-                test
-              </Text>
-              <Icon as={<MaterialCommunityIcons name="reply-outline" />} size={6} color="#176688" />
-            </Flex> */}
-            {/* <Flex alignItems="center" flexDirection="row" justifyContent="space-between">
-              <Text fontSize={16} fontWeight={400}>
-                test
-              </Text>
-              <Icon as={<MaterialCommunityIcons name="trash-can-outline" />} size={6} color="#FF0303" />
-            </Flex> */}
-          </Modal.Body>
-        </Modal.Content>
+          </View>
+        </View>
       </Modal>
     </>
   );

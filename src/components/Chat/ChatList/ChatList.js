@@ -2,7 +2,7 @@ import { useCallback, useState, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { Flex, Spinner } from "native-base";
+import { View, ActivityIndicator, FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
@@ -24,6 +24,7 @@ const ChatList = ({
   setBandAttachment,
   onSwipeToReply,
   memberName,
+  position,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -73,10 +74,10 @@ const ChatList = ({
   );
 
   return (
-    <Flex flex={1} bg="#FAFAFA" paddingX={2} position="relative">
+    <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA", paddingHorizontal: 10 }}>
       <FlashList
         inverted
-        ListFooterComponent={() => isLoading && <Spinner size="sm" />}
+        ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
         onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
@@ -119,6 +120,7 @@ const ChatList = ({
               onSwipe={onSwipeToReply}
               isOptimistic={item?.isOptimistic}
               memberName={memberName}
+              position={position}
             />
           </>
         )}
@@ -141,7 +143,7 @@ const ChatList = ({
           setBandAttachment={setBandAttachment}
         />
       )}
-    </Flex>
+    </View>
   );
 };
 

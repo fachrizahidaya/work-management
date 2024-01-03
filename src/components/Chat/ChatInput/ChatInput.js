@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { Box, Flex, FormControl, Icon, IconButton, Input, Pressable, Text } from "native-base";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import Input from "../../shared/Forms/Input";
 import ChatReplyPreview from "./ChatReplyPreview";
 
 const ChatInput = ({
@@ -78,7 +79,7 @@ const ChatInput = ({
     const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <Box height={200}>
+      <View style={{ height: 200 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -90,7 +91,7 @@ const ChatInput = ({
             </Pressable>
           )}
         />
-      </Box>
+      </View>
     );
   };
 
@@ -127,62 +128,73 @@ const ChatInput = ({
   }, [bandAttachment, bandAttachmentType]);
 
   return (
-    <Box>
+    <View>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
 
-      <Flex backgroundColor="#FFFFFF" flexDirection="row" alignItems="center" justifyContent="center" p={2}>
-        <Flex
-          borderRadius={10}
-          px={1}
-          backgroundColor="#F8F8F8"
-          gap={1}
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="center"
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#FFFFFF",
+          padding: 5,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#F8F8F8",
+            paddingHorizontal: 5,
+            gap: 5,
+            borderRadius: 10,
+          }}
         >
           {type === "group" && !active_member ? (
-            <Text textAlign="center" fontSize={12} fontWeight={500}>
+            <Text style={{ fontSize: 12, fontWeight: "500", textAlign: "center" }}>
               You can't send message to this group because you're no longer a participant
             </Text>
           ) : (
             <>
               <Pressable onPress={toggleMenu}>
-                <Icon
-                  as={<MaterialCommunityIcons name="plus" />}
-                  size={6}
-                  style={{ transform: [{ rotate: "270deg" }] }}
+                <MaterialCommunityIcons
+                  name="plus"
+                  size={20}
                   color="#8A9099"
+                  style={{ transform: [{ rotate: "270deg" }] }}
                 />
               </Pressable>
 
-              <FormControl display="flex" flex={1} justifyContent="center">
-                {/* <Input
-                  size="md"
-                  variant="unstyled"
-                  placeholder="Type a message..."
-                  value={formik.values.message}
-                  onChangeText={(value) => formik.setFieldValue("message", value)}
-                /> */}
-                <MentionInput
-                  value={formik.values.message}
-                  onChange={handleChange}
-                  partTypes={[
-                    {
-                      pattern:
-                        /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                      textStyle: { color: "blue" },
-                    },
-                    {
-                      trigger: "@",
-                      renderSuggestions: renderSuggestions,
-                    },
-                  ]}
-                  placeholder="Type a message..."
-                  style={{ padding: 12 }}
-                />
-              </FormControl>
+              <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+                {type === "group" ? (
+                  <MentionInput
+                    value={formik.values.message}
+                    onChange={handleChange}
+                    partTypes={[
+                      {
+                        pattern:
+                          /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
+                        textStyle: { color: "blue" },
+                      },
+                      {
+                        trigger: "@",
+                        renderSuggestions: renderSuggestions,
+                      },
+                    ]}
+                    placeholder="Type a message..."
+                    style={{ padding: 12 }}
+                  />
+                ) : (
+                  <Input
+                    placeHolder="Type a message..."
+                    value={formik.values.message}
+                    onChangeText={(value) => formik.setFieldValue("message", value)}
+                  />
+                )}
+              </View>
 
-              <IconButton
+              <TouchableOpacity
                 onPress={
                   formik.values.message !== "" ||
                   formik.values.file !== "" ||
@@ -192,13 +204,14 @@ const ChatInput = ({
                     : null
                 }
                 opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
-                icon={<Icon as={<MaterialIcons name="send" />} size={6} color="#8A9099" />}
-              />
+              >
+                <MaterialIcons name="send" size={25} color="#8A9099" />
+              </TouchableOpacity>
             </>
           )}
-        </Flex>
-      </Flex>
-    </Box>
+        </View>
+      </View>
+    </View>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Flex, Icon, Pressable, Text } from "native-base";
+import { View, Text, Pressable } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -34,12 +34,25 @@ const ChatHeader = ({
   toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
+  reference,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
 
   const navigation = useNavigation();
+
+  const membersName = selectedGroupMembers.map((item) => {
+    const name = !item?.user
+      ? loggedInUser === item?.id
+        ? "You"
+        : item?.name
+      : loggedInUser === item?.user?.id
+      ? "You"
+      : item?.user?.name;
+    return `${name}`;
+  });
+  const concatenatedNames = membersName.join(", ");
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
@@ -52,10 +65,20 @@ const ChatHeader = ({
 
   return (
     <>
-      <Flex direction="row" justifyContent="space-between" bg="white" borderBottomWidth={1} borderColor="#E8E9EB" p={4}>
-        <Flex direction="row" alignItems="center" gap={4}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          padding: 15,
+          borderBottomWidth: 1,
+          borderColor: "#E8E9EB",
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Pressable onPress={() => !isLoading && navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+            <MaterialIcons name="chevron-left" size={25} color="#3F434A" />
           </Pressable>
 
           <Pressable
@@ -83,47 +106,38 @@ const ChatHeader = ({
                 toggleClearChatMessage: toggleClearChatMessage,
               })
             }
-            display="flex"
-            gap={4}
-            flexDirection="row"
+            style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
             <AvatarPlaceholder name={name} image={image} size="md" />
 
-            <Flex>
-              <Text fontSize={16}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+            <View>
+              <Text style={{ fontSize: 16 }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text fontSize={12} fontWeight={400}>
-                  {email}
-                </Text>
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>{email}</Text>
               ) : (
-                <Flex alignItems="center" flexDirection="row">
-                  <Flex flexDirection="row" overflow="hidden" width={200} flexWrap="nowrap">
-                    {selectedGroupMembers?.map((member, index) => {
-                      return (
-                        <Text key={index} fontSize={10} fontWeight={400} numberOfLines={1}>
-                          {!member?.user
-                            ? loggedInUser === member?.id
-                              ? "You"
-                              : member?.name
-                            : loggedInUser === member?.user?.id
-                            ? "You"
-                            : member?.user?.name}
-                          {index < selectedGroupMembers.length - 1 && `${", "}`}
-                        </Text>
-                      );
-                    })}
-                  </Flex>
-                  {/* Handle if members overflow the flex size */}
-                  {selectedGroupMembers.length > 2 ? (
-                    <Text fontSize={10} fontWeight={400} numberOfLines={1}>
-                      ...
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "400",
+                        width: 200,
+                        overflow: "hidden",
+                      }}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {concatenatedNames}
                     </Text>
-                  ) : null}
-                </Flex>
+                  </View>
+                </View>
               )}
-            </Flex>
+            </View>
           </Pressable>
-        </Flex>
+        </View>
+        <Pressable onPress={() => reference.current?.show()}>
+          <MaterialIcons name="more-horiz" size={20} color="#000000" />
+        </Pressable>
 
         <MenuHeader
           fileAttachment={fileAttachment}
@@ -137,8 +151,9 @@ const ChatHeader = ({
           onUpdatePinHandler={onUpdatePinHandler}
           roomId={roomId}
           isPinned={isPinned}
+          reference={reference}
         />
-      </Flex>
+      </View>
 
       {searchVisible && (
         <SearchBox

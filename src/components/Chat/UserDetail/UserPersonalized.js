@@ -1,21 +1,25 @@
-import { Box, Flex, Text } from "native-base";
-import React from "react";
+import { View, Text } from "react-native";
 
 const UserPersonalized = () => {
   return (
-    <Flex borderRadius={10} px={2} mx={3} py={2} gap={3} bg="#FFFFFF">
-      <Box>
-        <Text fontSize={14} fontWeight={400}>
-          Search message
-        </Text>
-      </Box>
+    <View
+      style={{
+        backgroundColor: "#FFFFFF",
+        borderRadius: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        gap: 5,
+      }}
+    >
+      <View>
+        <Text style={{ fontSize: 14, fontWeight: "400" }}>Search message</Text>
+      </View>
 
-      <Box>
-        <Text fontSize={14} fontWeight={400}>
-          Mute notifications
-        </Text>
-      </Box>
-    </Flex>
+      <View>
+        <Text style={{ fontSize: 14, fontWeight: "400" }}>Mute notifications</Text>
+      </View>
+    </View>
   );
 };
 
