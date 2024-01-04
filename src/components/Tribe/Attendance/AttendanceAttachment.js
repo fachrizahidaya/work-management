@@ -2,10 +2,11 @@ import dayjs from "dayjs";
 
 import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, reference }) => {
+const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
     <View style={{ flex: 1, gap: 5, marginVertical: 15, paddingHorizontal: 15 }}>
       <View style={styles.header}>
@@ -15,16 +16,16 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, refe
         )}
       </View>
 
-      <View style={{ flex: 1, gap: 5 }}>
+      <View style={{ height: 250, gap: 5 }}>
         {attachment?.data.length > 0 ? (
           <FlashList
             data={attachment?.data}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
-            extraData={forceRenderer}
             estimatedItemSize={30}
+            refreshControl={<RefreshControl refreshing={attachmentIsFetching} onRefresh={() => refetchAttachment()} />}
             renderItem={({ item, index }) => (
-              <View style={styles.card}>
+              <View key={index} style={styles.card}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                   <MaterialCommunityIcons name="file-outline" size={20} />
                   <View style={{ gap: 3 }}>
