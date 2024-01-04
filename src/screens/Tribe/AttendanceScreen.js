@@ -26,6 +26,7 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
+  console.log("i", items);
 
   const attendanceScreenSheetRef = useRef(null);
   const attachmentScreenSheetRef = useRef(null);
@@ -73,7 +74,10 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    (date?.attendanceType === "Alpa" || date?.attendanceType === "Permit" || date?.attendanceType === "Sick") &&
+    (date?.attendanceType === "Alpa" ||
+      date?.attendanceType === "Permit" ||
+      date?.attendanceType === "Sick" ||
+      date?.attendanceType === "Other") &&
     date?.attendanceReason &&
     date?.dayType === "Work Day";
   const notAttend =
@@ -322,10 +326,10 @@ const AttendanceScreen = () => {
             // (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
             // (event?.dayType === "Work Day" && event?.attendanceType !== "Sick" && event?.attendanceReason) ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||
-            (event?.dayType === "Work Day" &&
-              event?.attendanceType === "Alpa" &&
+            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa") ||
+            (event?.attendanceType === "Other" &&
               event?.attendanceReason &&
-              event?.confirmation === 0 &&
+              !event?.confirmation &&
               event?.date !== CURRENT_DATE)
           ) {
             backgroundColor = submittedReport.color;
@@ -344,7 +348,17 @@ const AttendanceScreen = () => {
             (!event?.confirmation &&
               event?.dayType === "Work Day" &&
               event?.attendanceType === "Alpa" &&
-              !event?.timeIn)
+              !event?.timeIn) ||
+            (!event?.confirmation &&
+              event?.dayType === "Work Day" &&
+              event?.attendanceType === "Attend" &&
+              event?.timeIn &&
+              event?.timeOut) ||
+            (!event?.confirmation &&
+              event?.dayType === "Work Day" &&
+              event?.attendanceType === "Attend" &&
+              event?.timeIn &&
+              !event?.timeOut)
           ) {
             backgroundColor = allGood.color;
             textColor = allGood.textColor;
