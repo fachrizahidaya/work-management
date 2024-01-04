@@ -76,7 +76,7 @@ const FeedCard = ({
 
   return (
     <View style={styles.container}>
-      <FlashList
+      <FlatList
         removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
         data={posts}

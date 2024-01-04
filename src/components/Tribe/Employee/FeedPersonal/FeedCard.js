@@ -83,7 +83,7 @@ const FeedCard = ({
 
   return (
     <View style={styles.container}>
-      <FlashList
+      <FlatList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
