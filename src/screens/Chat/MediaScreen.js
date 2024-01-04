@@ -1,7 +1,8 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { Flex, Icon, Pressable, Text } from "native-base";
-import { SafeAreaView } from "react-native";
+
+import { SafeAreaView, View, Pressable, StyleSheet } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import MediaList from "../../components/Chat/Media/MediaList";
 
 const MediaScreen = () => {
@@ -9,18 +10,26 @@ const MediaScreen = () => {
   const route = useRoute();
 
   const { media, docs } = route.params;
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
-      <Flex direction="row" justifyContent="space-between" bg="white" p={4}>
-        <Flex direction="row" alignItems="center" gap={4}>
+    <SafeAreaView style={styles.container}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 5 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
           <Pressable onPress={() => navigation.goBack()}>
-            <Icon as={<MaterialIcons name="keyboard-backspace" />} size="xl" color="#3F434A" />
+            <MaterialIcons name="keyboard-backspace" size={25} color="#3F434A" />
           </Pressable>
-        </Flex>
-      </Flex>
+        </View>
+      </View>
       <MediaList media={media} docs={docs} />
     </SafeAreaView>
   );
 };
 
 export default MediaScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F8F8F8",
+  },
+});

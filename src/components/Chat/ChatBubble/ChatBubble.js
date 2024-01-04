@@ -182,8 +182,7 @@ const ChatBubble = ({
               justifyContent: "center",
               maxWidth: 300,
               borderRadius: 10,
-              paddingVertical: 5,
-              paddingHorizontal: 5,
+              padding: 8,
               backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
               gap: 5,
             }}
@@ -211,13 +210,18 @@ const ChatBubble = ({
                   <>
                     {imgTypes.includes(formatMimeType(file_type)) && (
                       <>
-                        <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
+                        <TouchableOpacity
+                          style={{ borderRadius: 5 }}
+                          onPress={() => file_path && toggleFullScreen(file_path)}
+                        >
                           <Image
                             style={{
+                              flex: 1,
                               width: 260,
                               height: 200,
-                              borderRadius: 5,
+                              // borderRadius: 5,
                               resizeMode: "contain",
+                              backgroundColor: "black",
                             }}
                             source={{
                               uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,

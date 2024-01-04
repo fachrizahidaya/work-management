@@ -20,11 +20,11 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Input from "../../components/shared/Forms/Input";
-import PageHeader from "../../components/shared/PageHeader";
-import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
-import axiosInstance from "../../config/api";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Input from "../../../components/shared/Forms/Input";
+import PageHeader from "../../../components/shared/PageHeader";
+import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import axiosInstance from "../../../config/api";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);

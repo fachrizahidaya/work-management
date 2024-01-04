@@ -7,13 +7,13 @@ import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../hooks/useFetch";
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Description from "../../components/Chat/ProjectTask/Description";
-import DateSection from "../../components/Chat/ProjectTask/DateSection";
-import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
-import MemberSection from "../../components/Chat/ProjectTask/MemberSection";
-import AttachmentSection from "../../components/Chat/ProjectTask/AttachmentSection";
+import { useFetch } from "../../../hooks/useFetch";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Description from "../../../components/Chat/ProjectTask/Description";
+import DateSection from "../../../components/Chat/ProjectTask/DateSection";
+import StatusSection from "../../../components/Chat/ProjectTask/StatusSection";
+import MemberSection from "../../../components/Chat/ProjectTask/MemberSection";
+import AttachmentSection from "../../../components/Chat/ProjectTask/AttachmentSection";
 
 const ProjectDetail = () => {
   const navigation = useNavigation();
@@ -199,7 +199,7 @@ const ProjectDetail = () => {
           >
             <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                source={require("../../assets/vectors/empty.png")}
+                source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
                 style={{
                   width: 180,

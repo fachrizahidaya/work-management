@@ -46,7 +46,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     getFileImage();
   }, [file_type]);
 
-  return (
+  return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
       style={{

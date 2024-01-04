@@ -7,18 +7,18 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
-import { useFetch } from "../../hooks/useFetch";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
-import GroupSection from "../../components/Chat/GroupSection/GroupSection";
-import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
-import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
-import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
+import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
+import { useFetch } from "../../../hooks/useFetch";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import axiosInstance from "../../../config/api";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import GlobalSearchInput from "../../../components/Chat/GlobalSearchInput/GlobalSearchInput";
+import GroupSection from "../../../components/Chat/GroupSection/GroupSection";
+import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSection";
+import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
+import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
+import ChatMenu from "../../../components/Chat/ContactListItem/ChatMenu";
 
 const ChatListScreen = () => {
   const navigation = useNavigation();

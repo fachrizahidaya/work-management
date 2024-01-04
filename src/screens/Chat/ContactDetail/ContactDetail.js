@@ -9,20 +9,20 @@ import Toast from "react-native-toast-message";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import { useFetch } from "../../hooks/useFetch";
-import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import UserListModal from "../../components/Chat/UserDetail/UserListModal";
-import MemberListActionModal from "../../components/Chat/UserDetail/MemberListActionModal";
-import UserAvatar from "../../components/Chat/UserDetail/UserAvatar";
-import UserInformation from "../../components/Chat/UserDetail/UserInformation";
-import UserAction from "../../components/Chat/UserDetail/UserAction";
-import UserMedia from "../../components/Chat/UserDetail/UserMedia";
-import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import { useFetch } from "../../../hooks/useFetch";
+import axiosInstance from "../../../config/api";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import UserListModal from "../../../components/Chat/UserDetail/UserListModal";
+import MemberListActionModal from "../../../components/Chat/UserDetail/MemberListActionModal";
+import UserAvatar from "../../../components/Chat/UserDetail/UserAvatar";
+import UserInformation from "../../../components/Chat/UserDetail/UserInformation";
+import UserAction from "../../../components/Chat/UserDetail/UserAction";
+import UserMedia from "../../../components/Chat/UserDetail/UserMedia";
+import UserPersonalized from "../../../components/Chat/UserDetail/UserPersonalized";
 
-const UserDetail = () => {
+const ContactDetail = () => {
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentUserIsAdmin, setCurrentUserIsAdmin] = useState(false);
@@ -433,7 +433,7 @@ const UserDetail = () => {
   );
 };
 
-export default UserDetail;
+export default ContactDetail;
 
 const styles = StyleSheet.create({
   container: {
