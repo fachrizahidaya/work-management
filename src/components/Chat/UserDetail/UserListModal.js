@@ -47,10 +47,7 @@ const UserListModal = ({
       deviceWidth={deviceWidth}
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        {/* <Modal.Content> */}
-        {/* <Modal.CloseButton /> */}
         <Text>Choose User</Text>
-        {/* <Modal.Body> */}
         <Input
           value={inputToShow}
           placeHolder="Search here..."
@@ -115,8 +112,6 @@ const UserListModal = ({
           )}
         </Pressable>
       </View>
-      {/* </Modal.Body> */}
-      {/* </Modal.Content> */}
     </Modal>
   );
 };

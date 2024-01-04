@@ -7,22 +7,13 @@ const ChatMenu = ({ reference }) => {
   const navigation = useNavigation();
   const menuOptions = [
     {
+      id: 1,
       name: "New Chat",
       onPress: () => {
         reference.current?.hide();
         navigation.navigate("New Chat");
       },
     },
-    // {
-    //   name: "New Group",
-    //   onPress: () => {
-    //     onClose();
-    //     navigation.navigate("Group Participant");
-    //   },
-    // },
-    // {
-    //   name: "Select Message",
-    // },
   ];
 
   return (

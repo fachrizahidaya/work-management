@@ -70,7 +70,6 @@ const ChatRoom = () => {
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
-  const { isOpen: menuIsOpen, toggle: toggleMenu } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -643,6 +642,14 @@ const ChatRoom = () => {
               onSendMessage={mutate}
               toggleMenu={openAddAttachmentHandler}
               groupMember={selectedGroupMembers}
+              navigation={navigation}
+              selectFile={selectFile}
+              pickImageHandler={pickImageHandler}
+              name={name}
+              image={image}
+              position={position}
+              email={email}
+              isPinned={isPinned}
             />
           </>
 
@@ -708,9 +715,7 @@ const ChatRoom = () => {
             onDeleteMessage={messagedeleteHandler}
           />
 
-          <MenuAttachment
-            isOpen={menuIsOpen}
-            onClose={toggleMenu}
+          {/* <MenuAttachment
             selectFile={selectFile}
             pickImageHandler={pickImageHandler}
             navigation={navigation}
@@ -728,7 +733,7 @@ const ChatRoom = () => {
             active_member={active_member}
             isPinned={isPinned}
             reference={menuAttachmentScreenSheetRef}
-          />
+          /> */}
         </SafeAreaView>
       ) : null}
     </>

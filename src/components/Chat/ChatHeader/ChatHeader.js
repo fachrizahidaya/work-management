@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import MenuHeader from "./MenuHeader";
 import SearchBox from "./SearchBox";
 
 const ChatHeader = ({
@@ -84,7 +84,6 @@ const ChatHeader = ({
           <Pressable
             onPress={() =>
               navigation.navigate("User Detail", {
-                navigation: navigation,
                 name: name,
                 image: image,
                 position: position,
@@ -111,7 +110,7 @@ const ChatHeader = ({
             <AvatarPlaceholder name={name} image={image} size="md" />
 
             <View>
-              <Text style={{ fontSize: 16 }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
                 <Text style={{ fontSize: 12, fontWeight: "400" }}>{email}</Text>
               ) : (
@@ -135,24 +134,67 @@ const ChatHeader = ({
             </View>
           </Pressable>
         </View>
-        <Pressable onPress={() => reference.current?.show()}>
-          <MaterialIcons name="more-horiz" size={20} color="#000000" />
-        </Pressable>
 
-        <MenuHeader
-          fileAttachment={fileAttachment}
-          toggleDeleteGroupModal={toggleDeleteGroupModal}
-          toggleDeleteModal={toggleDeleteModal}
-          toggleExitModal={toggleExitModal}
-          toggleSearch={toggleSearch}
-          toggleClearChatMessage={toggleClearChatMessage}
-          type={type}
-          active_member={active_member}
-          onUpdatePinHandler={onUpdatePinHandler}
-          roomId={roomId}
-          isPinned={isPinned}
-          reference={reference}
-        />
+        <Pressable
+          style={{ marginRight: 1 }}
+          onPress={() =>
+            SheetManager.show("form-sheet", {
+              payload: {
+                children: (
+                  <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                    {/* <TouchableOpacity >
+         <Text>Search</Text>
+       </TouchableOpacity> */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text style={{ fontWeight: 500 }}>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+                    </TouchableOpacity>
+                    {type === "group" ? (
+                      <>
+                        {active_member === 1 ? (
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              toggleExitModal();
+                            }}
+                          >
+                            <Text style={{ fontWeight: 500 }}>Exit Group</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              toggleDeleteGroupModal();
+                            }}
+                          >
+                            <Text style={{ fontWeight: 500 }}>Delete Group</Text>
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            await SheetManager.hide("form-sheet");
+                            toggleDeleteModal();
+                          }}
+                        >
+                          <Text style={{ fontWeight: 500 }}>Delete Chat</Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                ),
+              },
+            })
+          }
+        >
+          <MaterialIcons name="more-horiz" size={20} />
+        </Pressable>
       </View>
 
       {searchVisible && (

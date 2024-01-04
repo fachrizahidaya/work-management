@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { SheetManager } from "react-native-actions-sheet";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
@@ -16,14 +17,53 @@ const PersonalSection = ({
 }) => {
   const navigation = useNavigation();
 
+  const menuOptions = [
+    {
+      id: 1,
+      name: "New Chat",
+      onPress: () => {
+        navigation.navigate("New Chat");
+        SheetManager.hide("form-sheet");
+      },
+    },
+  ];
+
   return !searchKeyword ? (
     <>
       <View style={styles.header}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => reference.current?.show()}>
+        {/* <TouchableOpacity style={styles.addButton} onPress={() => reference.current?.show()}>
           <MaterialIcons name="add" color="black" size={15} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Pressable
+          style={{ marginRight: 1 }}
+          onPress={() =>
+            SheetManager.show("form-sheet", {
+              payload: {
+                children: (
+                  <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                    {menuOptions.map((option, index) => {
+                      return (
+                        <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                          <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                    <TouchableOpacity
+                      style={{ alignItems: "center", justifyContent: "center" }}
+                      onPress={() => SheetManager.hide("form-sheet")}
+                    >
+                      <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                ),
+              },
+            })
+          }
+        >
+          <MaterialIcons name="add" size={15} />
+        </Pressable>
       </View>
 
       {personalChats.length > 0 &&
@@ -107,5 +147,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 6,
     borderRadius: 8,
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

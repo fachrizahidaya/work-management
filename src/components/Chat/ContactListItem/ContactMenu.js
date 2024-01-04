@@ -27,12 +27,14 @@ const ContactMenu = ({
   const navigation = useNavigation();
   const menuOptions = [
     // {
+    // id: 1,
     //   icon: "volume-off",
     //   name: "Mute Notifications",
     //   color: "#176688",
     //   onPress: null
     // },
     {
+      id: 2,
       icon: "information-outline",
       name: "Contact Info",
       color: "#176688",
@@ -63,6 +65,7 @@ const ContactMenu = ({
       },
     },
     {
+      id: 3,
       icon: "close-circle-outline",
       name: "Clear Chat",
       color: "#176688",
@@ -72,12 +75,14 @@ const ContactMenu = ({
       },
     },
     // {
+    // id: 4,
     //   icon: "minus-circle-outline",
     //   name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
     //   color: "#EB0E29",
     //   onPress: null,
     // },
     {
+      id: 5,
       icon: "trash-can-outline",
       name: `Delete ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
       color: "#EB0E29",
@@ -110,12 +115,10 @@ const ContactMenu = ({
       <View style={{ ...styles.wrapper, gap: 20 }}>
         {menuOptions.splice(0, 2).map((option, index) => {
           return (
-            <>
-              <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
-                <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+              <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+              <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -123,23 +126,19 @@ const ContactMenu = ({
       <View style={{ ...styles.wrapper, gap: 5, marginTop: 5 }}>
         {menuOptions.splice(0, 1).map((option, index) => {
           return (
-            <>
-              <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
-                <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
+              <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+            </TouchableOpacity>
           );
         })}
         {!chat?.active_member
           ? menuOptions.map((option, index) => {
               return (
-                <>
-                  <View key={index} style={styles.container}>
-                    <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
-                    <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-                  </View>
-                </>
+                <View key={index} style={styles.container}>
+                  <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
+                  <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+                </View>
               );
             })
           : null}
@@ -152,7 +151,6 @@ const ContactMenu = ({
             </Text>
           </Flex>
         </Actionsheet.Item> */}
-      {/* </Actionsheet.Content> */}
     </ActionSheet>
   );
 };

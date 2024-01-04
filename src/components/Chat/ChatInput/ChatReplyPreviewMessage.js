@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { Flex, Icon } from "native-base";
 import { View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
