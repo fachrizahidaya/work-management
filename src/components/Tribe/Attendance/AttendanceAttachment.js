@@ -1,12 +1,14 @@
 import dayjs from "dayjs";
 
 import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, reference }) => {
+const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
-    <View style={{ gap: 5, marginVertical: 15, paddingHorizontal: 15 }}>
+    <View style={{ flex: 1, gap: 5, marginVertical: 15, paddingHorizontal: 15 }}>
       <View style={styles.header}>
         <Text style={{ fontSize: 14, fontWeight: "500" }}>Attachment(s)</Text>
         {attachment?.data.length > 0 && (
@@ -14,16 +16,16 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, refe
         )}
       </View>
 
-      <View style={{ flex: 1, gap: 5 }}>
+      <View style={{ height: 250, gap: 5 }}>
         {attachment?.data.length > 0 ? (
-          <FlatList
+          <FlashList
             data={attachment?.data}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
-            extraData={forceRenderer}
             estimatedItemSize={30}
+            refreshControl={<RefreshControl refreshing={attachmentIsFetching} onRefresh={() => refetchAttachment()} />}
             renderItem={({ item, index }) => (
-              <View style={styles.card}>
+              <View key={index} style={styles.card}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                   <MaterialCommunityIcons name="file-outline" size={20} />
                   <View style={{ gap: 3 }}>
@@ -39,9 +41,9 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, forceRenderer, refe
             )}
           />
         ) : (
-          <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+          <View style={{ alignItems: "center", justifyContent: "center", gap: 5, padding: 50 }}>
             <Pressable style={styles.addIcon} onPress={() => reference.current?.show()}>
-              <MaterialCommunityIcons name="plus" size={75} />
+              <MaterialCommunityIcons name="plus" size={60} />
             </Pressable>
             <Text>No Data</Text>
           </View>

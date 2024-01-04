@@ -37,7 +37,7 @@ const MyTeamLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 10,
+    limit: 100,
     status: "Pending",
   };
 
@@ -59,7 +59,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "waiting approval" && "/hr/leave-requests/waiting-approval",
+    tabValue === "waiting approval" && "/hr/leave-requests/my-team",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
@@ -70,7 +70,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/waiting-approval",
+    tabValue === "approved" && "/hr/leave-requests/my-team",
     [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
@@ -81,7 +81,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/waiting-approval",
+    tabValue === "rejected" && "/hr/leave-requests/my-team",
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
@@ -89,18 +89,21 @@ const MyTeamLeaveScreen = () => {
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
+      setReloadPending(!reloadPending);
     }
   };
 
   const fetchMoreApproved = () => {
     if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
       setCurrentPageApproved(currentPageApproved + 1);
+      setReloadApproved(!reloadApproved);
     }
   };
 
   const fetchMoreRejected = () => {
     if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
       setCurrentPageRejected(currentPageRejected + 1);
+      setReloadRejected(!reloadRejected);
     }
   };
 
@@ -150,19 +153,19 @@ const MyTeamLeaveScreen = () => {
   });
 
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data?.length) {
-      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    if (pendingLeaveRequest?.data?.data.length >= 0) {
+      setPendingList(() => [...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
-    if (approvedLeaveRequest?.data?.data.length) {
+    if (approvedLeaveRequest?.data?.data?.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
-    if (rejectedLeaveRequest?.data?.data.length) {
+    if (rejectedLeaveRequest?.data?.data?.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);

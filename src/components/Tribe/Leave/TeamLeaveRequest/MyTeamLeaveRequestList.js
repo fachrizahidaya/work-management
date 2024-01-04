@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 
 import { ScrollView, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
 
 import Tabs from "../../../shared/Tabs";
 import MyTeamLeaveRequestItem from "./MyTeamLeaveRequestItem";
@@ -81,7 +82,7 @@ const MyTeamLeaveRequestList = ({
         {tabValue === "waiting approval" ? (
           pendingLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlatList
+              <FlashList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
@@ -97,7 +98,7 @@ const MyTeamLeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
+                ListFooterComponent={() => pendingLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
                     item={item}
@@ -131,23 +132,71 @@ const MyTeamLeaveRequestList = ({
           )
         ) : tabValue === "approved" ? (
           approvedLeaveRequests.length > 0 ? (
-            <FlatList
-              data={approvedLeaveRequests}
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlashList
+                data={approvedLeaveRequests}
+                onEndReachedThreshold={0.1}
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={approvedLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchApprovedLeaveRequest();
+                    }}
+                  />
+                }
+                ListFooterComponent={() => approvedLeaveRequestIsLoading && <ActivityIndicator />}
+                renderItem={({ item, index }) => (
+                  <MyTeamLeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    employee_name={item?.employee_name}
+                    employee_image={item?.employee_image}
+                  />
+                )}
+              />
+            </View>
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+              }
+            >
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+          )
+        ) : rejectedLeaveRequests.length > 0 ? (
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <FlashList
+              data={rejectedLeaveRequests}
               onEndReachedThreshold={0.1}
-              onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
-              onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
+              onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
+              onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
               keyExtractor={(item, index) => index}
               estimatedItemSize={200}
               refreshing={true}
               refreshControl={
                 <RefreshControl
-                  refreshing={approvedLeaveRequestIsFetching}
+                  refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
-                    refetchApprovedLeaveRequest();
+                    refetchRejectedLeaveRequest();
                   }}
                 />
               }
-              ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
+              ListFooterComponent={() => rejectedLeaveRequestIsLoading && <ActivityIndicator />}
               renderItem={({ item, index }) => (
                 <MyTeamLeaveRequestItem
                   item={item}
@@ -164,51 +213,7 @@ const MyTeamLeaveRequestList = ({
                 />
               )}
             />
-          ) : (
-            <ScrollView
-              refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
-              }
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
-        ) : rejectedLeaveRequests.length > 0 ? (
-          <FlatList
-            data={rejectedLeaveRequests}
-            onEndReachedThreshold={0.1}
-            onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}
-            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            keyExtractor={(item, index) => index}
-            estimatedItemSize={200}
-            refreshing={true}
-            refreshControl={
-              <RefreshControl
-                refreshing={rejectedLeaveRequestIsFetching}
-                onRefresh={() => {
-                  refetchRejectedLeaveRequest();
-                }}
-              />
-            }
-            ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
-            renderItem={({ item, index }) => (
-              <MyTeamLeaveRequestItem
-                item={item}
-                key={index}
-                id={item?.id}
-                leave_name={item?.leave_name}
-                reason={item?.reason}
-                days={item?.days}
-                begin_date={item?.begin_date}
-                end_date={item?.end_date}
-                status={item?.status}
-                employee_name={item?.employee_name}
-                employee_image={item?.employee_image}
-              />
-            )}
-          />
+          </View>
         ) : (
           <ScrollView
             refreshControl={

@@ -6,12 +6,10 @@ import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
 import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
-import PageHeader from "../../../../components/shared/PageHeader";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
-import CancelAction from "../../../../components/Tribe/Leave/PersonalLeaveRequest/CancelAction";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -47,7 +45,7 @@ const PersonalLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 10,
+    limit: 100,
     status: "Pending",
   };
 
@@ -96,33 +94,32 @@ const PersonalLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
-
-  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
-
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
+      setReloadPending(!reloadPending);
     }
   };
 
   const fetchMoreApproved = () => {
     if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
       setCurrentPageApproved(currentPageApproved + 1);
+      setReloadApproved(!reloadApproved);
     }
   };
 
   const fetchMoreRejected = () => {
     if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
       setCurrentPageRejected(currentPageRejected + 1);
+      setReloadRejected(!reloadRejected);
     }
   };
 
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
-    cancleScreenSheetRef.current?.show();
+    toggleCancelModal();
   };
 
   const closeSelectedLeaveHandler = () => {
@@ -141,19 +138,19 @@ const PersonalLeaveScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data?.length) {
-      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    if (pendingLeaveRequest?.data?.data.length >= 0) {
+      setPendingList(() => [...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
-    if (approvedLeaveRequest?.data?.data.length) {
+    if (approvedLeaveRequest?.data?.data?.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
-    if (rejectedLeaveRequest?.data?.data.length) {
+    if (rejectedLeaveRequest?.data?.data?.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
@@ -162,10 +159,13 @@ const PersonalLeaveScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <PageHeader title="My Leave Request" backButton={false} />
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
+          </View>
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
             <Button
+              height={35}
               onPress={() => navigation.navigate("Team Leave Request")}
               padding={5}
               children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}> My Team</Text>}
@@ -184,6 +184,9 @@ const PersonalLeaveScreen = () => {
             pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
             approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
             rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
+            rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
@@ -200,15 +203,10 @@ const PersonalLeaveScreen = () => {
             setTabValue={setTabValue}
             tabs={tabs}
             onChangeTab={onChangeTab}
-            refetchLeaveRequest={refetchLeaveRequest}
           />
         </>
       </SafeAreaView>
-      <CancelAction
-        onDeselect={closeSelectedLeaveHandler}
-        toggleCancelModal={toggleCancelModal}
-        reference={cancleScreenSheetRef}
-      />
+
       <ConfirmationModal
         isOpen={cancelModalIsOpen}
         toggle={toggleCancelModal}
@@ -216,8 +214,8 @@ const PersonalLeaveScreen = () => {
         header="Cancel Leave Request"
         hasSuccessFunc={true}
         onSuccess={() => {
-          cancleScreenSheetRef.current?.hide();
           refetchPendingLeaveRequest();
+          cancleScreenSheetRef.current?.hide();
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"
