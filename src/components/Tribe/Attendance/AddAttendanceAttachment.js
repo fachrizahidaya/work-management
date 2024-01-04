@@ -103,7 +103,7 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
                 {!fileAttachment ? "Upload file..." : fileAttachment?.name}
               </Text>
-              <MaterialCommunityIcons name="attachment" style={{ transform: [{ rotate: "-35deg" }] }} />
+              <MaterialCommunityIcons name="attachment" size={20} style={{ transform: [{ rotate: "-35deg" }] }} />
             </Pressable>
             <Text style={{ color: "red" }}>{formik.errors.attachment}</Text>
           </View>

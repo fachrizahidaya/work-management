@@ -82,7 +82,7 @@ const MyTeamLeaveRequestList = ({
         {tabValue === "waiting approval" ? (
           pendingLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlatList
+              <FlashList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
@@ -133,7 +133,7 @@ const MyTeamLeaveRequestList = ({
         ) : tabValue === "approved" ? (
           approvedLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlatList
+              <FlashList
                 data={approvedLeaveRequests}
                 onEndReachedThreshold={0.1}
                 onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
@@ -180,7 +180,7 @@ const MyTeamLeaveRequestList = ({
           )
         ) : rejectedLeaveRequests.length > 0 ? (
           <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <FlatList
+            <FlashList
               data={rejectedLeaveRequests}
               onEndReachedThreshold={0.1}
               onEndReached={hasBeenScrolled === true ? fetchMoreRejected : null}

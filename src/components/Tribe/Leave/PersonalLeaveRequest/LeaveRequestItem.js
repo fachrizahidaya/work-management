@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
+import { SheetManager } from "react-native-actions-sheet";
 
 const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, status, item, onSelect }) => {
   return (
@@ -13,9 +14,25 @@ const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, 
         <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>{leave_name}</Text>
         {status === "Pending" ? (
           <Pressable
-            onPress={() => {
-              onSelect(item);
-            }}
+            style={{ marginRight: 1 }}
+            onPress={() =>
+              SheetManager.show("form-sheet", {
+                payload: {
+                  children: (
+                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                      <TouchableOpacity
+                        onPress={async () => {
+                          await SheetManager.hide("form-sheet");
+                          onSelect(item);
+                        }}
+                      >
+                        <Text style={{ fontWeight: "500" }}>Cancel Request</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ),
+                },
+              })
+            }
           >
             <MaterialCommunityIcons name="dots-vertical" size={20} color="#000000" style={{ borderRadius: 20 }} />
           </Pressable>

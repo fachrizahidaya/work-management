@@ -5,6 +5,7 @@ import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, Activit
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { FlashList } from "@shopify/flash-list";
+import { SheetManager } from "react-native-actions-sheet";
 
 import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -28,7 +29,6 @@ const PayslipScreen = () => {
   const [payslips, setPayslips] = useState([]);
 
   const payslipDownloadScreenSheetRef = useRef(null);
-  const payslipPasswordEditScreenSheetRef = useRef(null);
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
@@ -120,6 +120,24 @@ const PayslipScreen = () => {
     }
   };
 
+  const downloadPayslip = (data) => {
+    setSelectedPayslip(data);
+    SheetManager.show("form-sheet", {
+      payload: {
+        children: (
+          <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+            <PayslipDownload
+              reference={payslipDownloadScreenSheetRef}
+              toggleDownloadDialog={closeSelectedPayslip}
+              setPasswordError={setPasswordDownloadError}
+              onDownloadPayslip={payslipDownloadHandler}
+            />
+          </View>
+        ),
+      },
+    });
+  };
+
   useEffect(() => {
     if (payslip?.data?.data.length) {
       setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
@@ -132,22 +150,28 @@ const PayslipScreen = () => {
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button
-            onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
             height={35}
             padding={5}
             children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
-          />
-
-          <PayslipPasswordEdit
-            reference={payslipPasswordEditScreenSheetRef}
-            setPasswordError={setPasswordError}
-            hideNewPassword={hideNewPassword}
-            setHideNewPassword={setHideNewPassword}
-            hideOldPassword={hideOldPassword}
-            setHideOldPassword={setHideOldPassword}
-            hideConfirmPassword={hideConfirmPassword}
-            setHideConfirmPassword={setHideConfirmPassword}
-            onUpdatePassword={payslipPasswordUpdateHandler}
+            onPress={() =>
+              SheetManager.show("form-sheet", {
+                payload: {
+                  children: (
+                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                      <PayslipPasswordEdit
+                        hideNewPassword={hideNewPassword}
+                        setHideNewPassword={setHideNewPassword}
+                        hideOldPassword={hideOldPassword}
+                        setHideOldPassword={setHideOldPassword}
+                        hideConfirmPassword={hideConfirmPassword}
+                        setHideConfirmPassword={setHideConfirmPassword}
+                        onUpdatePassword={payslipPasswordUpdateHandler}
+                      />
+                    </View>
+                  ),
+                },
+              })
+            }
           />
         </View>
 
@@ -171,7 +195,7 @@ const PayslipScreen = () => {
                 onDownloadPayslip={payslipDownloadHandler}
                 downloadDialogIsOpen={downloadDialogIsOpen}
                 toggleDownloadDialog={toggleDownloadDialog}
-                openSelectedPayslip={openSelectedPayslip}
+                openSelectedPayslip={downloadPayslip}
                 closeSelectedPayslip={closeSelectedPayslip}
                 reference={payslipDownloadScreenSheetRef}
               />
@@ -190,13 +214,12 @@ const PayslipScreen = () => {
           </>
         )}
       </SafeAreaView>
-      <PayslipDownload
+      {/* <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
         setPasswordError={setPasswordDownloadError}
-        downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
-      />
+      /> */}
     </>
   );
 };

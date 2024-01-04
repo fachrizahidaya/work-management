@@ -2,11 +2,11 @@ import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
-import { FlashList } from "@shopify/flash-list";
 
 const LeaveRequestList = ({
   onSelect,

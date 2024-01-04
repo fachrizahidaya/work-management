@@ -6,12 +6,10 @@ import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
 import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
-import PageHeader from "../../../../components/shared/PageHeader";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
-import CancelAction from "../../../../components/Tribe/Leave/PersonalLeaveRequest/CancelAction";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -121,7 +119,7 @@ const PersonalLeaveScreen = () => {
 
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
-    cancleScreenSheetRef.current?.show();
+    toggleCancelModal();
   };
 
   const closeSelectedLeaveHandler = () => {
@@ -186,6 +184,9 @@ const PersonalLeaveScreen = () => {
             pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
             approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
             rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
+            rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
@@ -205,11 +206,7 @@ const PersonalLeaveScreen = () => {
           />
         </>
       </SafeAreaView>
-      <CancelAction
-        onDeselect={closeSelectedLeaveHandler}
-        toggleCancelModal={toggleCancelModal}
-        reference={cancleScreenSheetRef}
-      />
+
       <ConfirmationModal
         isOpen={cancelModalIsOpen}
         toggle={toggleCancelModal}

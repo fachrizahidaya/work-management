@@ -16,6 +16,8 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceForm from "../../components/Tribe/Attendance/AttendanceForm";
 import AddAttendanceAttachment from "../../components/Tribe/Attendance/AddAttendanceAttachment";
+import AttendanceAttachment from "../../components/Tribe/Attendance/AttendanceAttachment";
+import AttendanceColor from "../../components/Tribe/Attendance/AttendanceColor";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -26,14 +28,12 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
-  console.log("i", items);
 
   const attendanceScreenSheetRef = useRef(null);
   const attachmentScreenSheetRef = useRef(null);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
-  const { isOpen: reportIsOpen, toggle: toggleReport } = useDisclosure(false);
   const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
 
   const attendanceFetchParameters = filter;
@@ -144,8 +144,8 @@ const AttendanceScreen = () => {
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
           if (item?.date && item?.confirmation === 0 && item?.dayType === "Work Day") {
-            attendanceScreenSheetRef.current?.show();
             setDate(item);
+            attendanceScreenSheetRef.current?.show();
           }
         });
       }
@@ -258,32 +258,6 @@ const AttendanceScreen = () => {
   };
 
   /**
-   * Handle attachment delete event
-   *
-   * @param {*} attachment_id
-   */
-  const attachmentDeleteHandler = async (attachment_id, itemName, setIsLoading) => {
-    try {
-      const res = await axiosInstance.delete(`/hr/timesheets/personal/attachments/${attachment_id}`);
-      refetchAttachment();
-
-      Toast.show({
-        type: "success",
-        text1: "Attachment deleted",
-        position: "bottom",
-      });
-      setIsLoading(false);
-    } catch (err) {
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
-      setIsLoading(false);
-    }
-  };
-
-  /**
    * Marked dates in Calendar Handler
    * @returns
    */
@@ -323,8 +297,6 @@ const AttendanceScreen = () => {
               !event?.confirmation) ||
             (event?.late && event?.lateReason && event?.earlyType && !event?.earlyReason && !event?.earlyStatus) ||
             (event?.early && event?.earlyReason && event?.lateType && !event?.lateReason && !event?.lateStatus) ||
-            // (event?.dayType === "Work Day" && event?.attendanceType !== "Alpa" && event?.attendanceReason) ||
-            // (event?.dayType === "Work Day" && event?.attendanceType !== "Sick" && event?.attendanceReason) ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Alpa") ||
             (event?.attendanceType === "Other" &&
@@ -334,13 +306,7 @@ const AttendanceScreen = () => {
           ) {
             backgroundColor = submittedReport.color;
             textColor = submittedReport.textColor;
-          } else if (
-            event?.dayType === "Work Day" &&
-            event?.attendanceType === "Sick" &&
-            event?.attendanceReason
-            // ||
-            // event?.attendanceType === "Leave"
-          ) {
+          } else if (event?.dayType === "Work Day" && event?.attendanceType === "Sick" && event?.attendanceReason) {
             backgroundColor = sick.color;
             textColor = sick.textColor;
           } else if (
@@ -407,26 +373,19 @@ const AttendanceScreen = () => {
             />
           }
         >
-          <AttendanceCalendar
-            attendance={attendanceData?.data}
-            onMonthChange={switchMonthHandler}
-            onSubmit={attendanceReportSubmitHandler}
-            reportIsOpen={reportIsOpen}
-            updateAttendanceCheckAccess={updateAttendanceCheckAccess}
-            onSelectDate={toggleDateHandler}
-            items={items}
-            renderCalendar={renderCalendarWithMultiDotMarking}
+          <AttendanceCalendar renderCalendar={renderCalendarWithMultiDotMarking} />
+          <AttendanceColor />
+          <AttendanceAttachment
             attachment={attachment}
-            onSelectFile={selectFile}
-            onDelete={attachmentDeleteHandler}
-            setAttachmentId={openDeleteAttachmentModalHandler}
             reference={attachmentScreenSheetRef}
+            setAttachmentId={openDeleteAttachmentModalHandler}
+            attachmentIsFetching={attachmentIsFetching}
+            refetchAttachment={refetchAttachment}
           />
         </ScrollView>
         <Toast />
       </SafeAreaView>
       <AttendanceForm
-        reportIsOpen={reportIsOpen}
         toggleReport={attendanceScreenSheetRef}
         date={date}
         onSubmit={attendanceReportSubmitHandler}
@@ -461,6 +420,10 @@ const AttendanceScreen = () => {
         isDelete={true}
         description="Are you sure want to delete attachment?"
         apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
+        hasSuccessFunc={true}
+        onSuccess={() => {
+          refetchAttachment();
+        }}
       />
     </>
   );
