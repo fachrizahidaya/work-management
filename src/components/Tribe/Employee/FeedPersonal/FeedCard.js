@@ -3,6 +3,7 @@ import { memo } from "react";
 import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { FlashList } from "@shopify/flash-list";
 
 import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
@@ -42,7 +43,7 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      // refetchPersonalPost();
+      refetchPersonalPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -82,7 +83,7 @@ const FeedCard = ({
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}

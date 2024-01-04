@@ -37,7 +37,7 @@ const MyTeamLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 10,
+    limit: 100,
     status: "Pending",
   };
 
@@ -150,22 +150,22 @@ const MyTeamLeaveScreen = () => {
   });
 
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data?.length) {
-      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    if (pendingLeaveRequest?.data?.data.length >= 0) {
+      setPendingList(() => [...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
-  }, [approvedLeaveRequest?.data?.data?.length]);
+  }, [approvedLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
-  }, [rejectedLeaveRequest?.data?.data?.length]);
+  }, [rejectedLeaveRequest?.data?.data.length]);
 
   return (
     <>

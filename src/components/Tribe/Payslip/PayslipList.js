@@ -8,7 +8,7 @@ import { card } from "../../../styles/Card";
 
 const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
   return (
-    <View style={{ ...card.card, flexDirection: "column", marginHorizontal: 10, marginVertical: 10 }}>
+    <View style={{ ...card.card, flexDirection: "column", marginHorizontal: 10, marginVertical: 5 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
           {dayjs()

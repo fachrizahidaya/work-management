@@ -47,7 +47,7 @@ const PersonalLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 10,
+    limit: 100,
     status: "Pending",
   };
 
@@ -96,10 +96,6 @@ const PersonalLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const { data: leaveRequest, refetch: refetchLeaveRequest } = useFetch("/hr/leave-requests/personal");
-
-  const { data: profile, refetch: refetchProfile } = useFetch("/hr/my-profile");
-
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
 
   const fetchMorePending = () => {
@@ -141,31 +137,34 @@ const PersonalLeaveScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data?.length) {
-      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    if (pendingLeaveRequest?.data?.data.length >= 0) {
+      setPendingList(() => [...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
-  }, [approvedLeaveRequest?.data?.data?.length]);
+  }, [approvedLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
-  }, [rejectedLeaveRequest?.data?.data?.length]);
+  }, [rejectedLeaveRequest?.data?.data.length]);
 
   return (
     <>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <PageHeader title="My Leave Request" backButton={false} />
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
+          </View>
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
             <Button
+              height={35}
               onPress={() => navigation.navigate("Team Leave Request")}
               padding={5}
               children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}> My Team</Text>}
@@ -200,7 +199,6 @@ const PersonalLeaveScreen = () => {
             setTabValue={setTabValue}
             tabs={tabs}
             onChangeTab={onChangeTab}
-            refetchLeaveRequest={refetchLeaveRequest}
           />
         </>
       </SafeAreaView>
@@ -216,8 +214,8 @@ const PersonalLeaveScreen = () => {
         header="Cancel Leave Request"
         hasSuccessFunc={true}
         onSuccess={() => {
-          cancleScreenSheetRef.current?.hide();
           refetchPendingLeaveRequest();
+          cancleScreenSheetRef.current?.hide();
         }}
         description="Are you sure to cancel this request?"
         successMessage="Request canceled"
