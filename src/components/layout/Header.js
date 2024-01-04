@@ -11,6 +11,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
 import InAppNotificationCard from "./InAppNotificationCard";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import { TextProps } from "../shared/CustomStylings";
 
 const Header = () => {
   const navigation = useNavigation();
@@ -104,17 +105,20 @@ const Header = () => {
 
           <View>
             <Text
-              style={{
-                fontWeight: 700,
-                fontSize: 18,
-                lineHeight: 24,
-              }}
+              style={[
+                {
+                  fontWeight: 700,
+                  fontSize: 18,
+                  lineHeight: 24,
+                },
+                TextProps,
+              ]}
             >
               {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
             </Text>
 
             {myProfile?.data && (
-              <Text style={{ fontSize: 16, fontWeight: 400 }}>
+              <Text style={[{ fontSize: 16 }, TextProps]}>
                 {myProfile.data.position_name || "You have no position"}
               </Text>
             )}
@@ -161,7 +165,6 @@ const Header = () => {
                   style={{
                     display: "flex",
                     fontSize: 12,
-                    fontWeight: 500,
                     textAlign: "center",
                     color: "white",
                   }}
@@ -203,7 +206,6 @@ const Header = () => {
                   <Text
                     style={{
                       fontSize: 12,
-                      fontWeight: 500,
                       textAlign: "center",
                       color: "white",
                     }}

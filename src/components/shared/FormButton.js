@@ -58,11 +58,7 @@ const FormButton = ({
         }
       }}
     >
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <Text style={{ fontSize: fontSize || 14, fontWeight: 500, color: fontColor || "black" }}>{children}</Text>
-      )}
+      {isLoading ? <ActivityIndicator /> : children}
     </TouchableOpacity>
   );
 };

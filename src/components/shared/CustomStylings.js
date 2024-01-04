@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 const SkeletonCommonProps = {
   colorMode: "light",
   transition: {
@@ -7,10 +9,8 @@ const SkeletonCommonProps = {
   backgroundColor: "#D4D4D4",
 };
 
-const TextProps = {
-  fontWeight: 500,
-  color: "#8A9099",
-  fontSize: 14,
-};
+const TextProps = StyleSheet.create({
+  color: "#3F434A",
+});
 
 export { SkeletonCommonProps, TextProps };

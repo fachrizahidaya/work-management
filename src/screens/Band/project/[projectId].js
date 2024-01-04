@@ -29,6 +29,7 @@ import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import Description from "../../../components/Band/Project/ProjectDetail/Description";
 import Button from "../../../components/shared/Forms/Button";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const ProjectDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -157,7 +158,7 @@ const ProjectDetailScreen = ({ route }) => {
                                 toggleUserModal();
                               }}
                             >
-                              <Text style={{ fontWeight: 500 }}>Change Ownership</Text>
+                              <Text style={TextProps}>Change Ownership</Text>
                             </TouchableOpacity>
 
                             {editCheckAccess && (
@@ -170,7 +171,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   SheetManager.hide("form-sheet");
                                 }}
                               >
-                                <Text style={{ fontWeight: 500 }}>Edit</Text>
+                                <Text style={TextProps}>Edit</Text>
                               </TouchableOpacity>
                             )}
 
@@ -181,7 +182,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   toggle();
                                 }}
                               >
-                                <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
+                                <Text style={{ color: "red" }}>Delete</Text>
                               </TouchableOpacity>
                             )}
                           </View>
@@ -206,7 +207,7 @@ const ProjectDetailScreen = ({ route }) => {
               >
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 6 }}>
                   <MaterialCommunityIcons name="format-list-bulleted" size={20} />
-                  <Text>Task List</Text>
+                  <Text style={TextProps}>Task List</Text>
                 </View>
               </Button>
             </View>
@@ -259,18 +260,16 @@ const ProjectDetailScreen = ({ route }) => {
 
                           <View>
                             <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "center" }}>
-                              <Text style={{ fontWeight: 500 }}>{item?.user_name.split(" ")[0]}</Text>
-                              <Text style={{ fontWeight: 500, color: "#8A9099" }}>
-                                {dayjs(item?.created_at).fromNow()}
-                              </Text>
+                              <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.user_name.split(" ")[0]}</Text>
+                              <Text style={TextProps}>{dayjs(item?.created_at).fromNow()}</Text>
                             </View>
 
                             <View>
-                              <Text style={{ fontWeight: 400 }}>{item?.description}</Text>
+                              <Text style={TextProps}>{item?.description}</Text>
 
-                              <Text style={{ fontWeight: 400, width: 300 }} numberOfLines={2}>
+                              <Text style={[{ width: 300 }, TextProps]} numberOfLines={2}>
                                 {item.object_title}
-                                <Text style={{ fontWeight: 500, color: "#377893" }}> #{item.reference_no}</Text>
+                                <Text style={{ color: "#377893" }}> #{item.reference_no}</Text>
                               </Text>
                             </View>
                           </View>

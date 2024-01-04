@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 
 import { Agenda } from "react-native-calendars";
 import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
+import { TextProps } from "./CustomStylings";
 
 const CalendarWithSlider = ({ items }) => {
   const navigation = useNavigation();
@@ -20,7 +21,7 @@ const CalendarWithSlider = ({ items }) => {
           }
         }}
       >
-        <Text>{reservation.description}</Text>
+        <Text style={TextProps}>{reservation.description}</Text>
       </TouchableOpacity>
     );
   };
@@ -32,7 +33,7 @@ const CalendarWithSlider = ({ items }) => {
 
   return (
     <>
-      <Text style={styles.monthLabel}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
+      <Text style={[styles.monthLabel, TextProps]}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
       <Agenda
         items={items}
         showClosingKnob={true}
@@ -48,7 +49,7 @@ const CalendarWithSlider = ({ items }) => {
             <>
               <View style={styles.container}>
                 <Image source={require("../../assets/vectors/items.jpg")} alt="empty" style={styles.image} />
-                <Text>You have no agenda</Text>
+                <Text style={TextProps}>You have no agenda</Text>
               </View>
             </>
           );

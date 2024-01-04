@@ -13,6 +13,7 @@ import FormButton from "../../components/shared/FormButton";
 import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
+import { TextProps } from "../../components/shared/CustomStylings";
 
 const ProjectForm = ({ route }) => {
   const { width, height } = Dimensions.get("window");
@@ -132,7 +133,7 @@ const ProjectForm = ({ route }) => {
             />
 
             <View>
-              <Text style={{ marginBottom: 9, fontWeight: 500 }}>End Date</Text>
+              <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
               <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
             </View>

@@ -13,6 +13,7 @@ import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
 import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
 import { useFetch } from "../../../../../hooks/useFetch";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const PeopleSection = ({
   observers,
@@ -117,7 +118,7 @@ const PeopleSection = ({
         {/* Responsible and creator */}
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>ASSIGNED TO</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>ASSIGNED TO</Text>
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
@@ -133,13 +134,13 @@ const PeopleSection = ({
                                   members.data.map((member) => {
                                     return (
                                       <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
-                                        <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                        <Text style={TextProps}>{member.member_name}</Text>
                                       </TouchableOpacity>
                                     );
                                   })
                                 ) : (
                                   <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
-                                    <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                                    <Text style={TextProps}>{userSelector.name}</Text>
                                   </TouchableOpacity>
                                 )}
                               </View>
@@ -168,13 +169,13 @@ const PeopleSection = ({
                             members.data.map((member) => {
                               return (
                                 <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
-                                  <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                  <Text style={TextProps}>{member.member_name}</Text>
                                 </TouchableOpacity>
                               );
                             })
                           ) : (
                             <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
-                              <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                              <Text style={TextProps}>{userSelector.name}</Text>
                             </TouchableOpacity>
                           )}
                         </View>
@@ -197,7 +198,7 @@ const PeopleSection = ({
           </View>
 
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>CREATED BY</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>CREATED BY</Text>
 
             {ownerId && (
               <AvatarPlaceholder name={ownerName} image={ownerImage} email={ownerEmail} size="sm" isPressable={true} />
@@ -208,7 +209,7 @@ const PeopleSection = ({
         {/* Observers */}
         {(!disabled || (disabled && observers?.length > 0)) && (
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>OBSERVER</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>OBSERVER</Text>
             <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
               {observers?.length > 0 ? (
                 <>

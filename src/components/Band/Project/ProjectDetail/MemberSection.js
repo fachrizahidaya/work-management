@@ -13,6 +13,7 @@ import axiosInstance from "../../../../config/api";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const MemberSection = ({ projectId, projectData, members, refetchMember, isAllowed }) => {
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
@@ -63,7 +64,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
   return (
     <View style={{ display: "flex", gap: 18 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontSize: 16, fontWeight: 500 }}>MEMBERS</Text>
+        <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>MEMBERS</Text>
 
         {isAllowed && (
           <TouchableOpacity
@@ -113,7 +114,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                   <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
 
                   <View>
-                    <Text style={{ fontWeight: 500 }}>{item?.member_name}</Text>
+                    <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.member_name}</Text>
                     <Text style={{ fontWeight: 500, color: "#8A9099" }}>{item?.member_email}</Text>
                   </View>
                 </View>
@@ -136,7 +137,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                                   >
                                     <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
 
-                                    <Text style={{ fontWeight: 500, color: "red" }}>Remove Member</Text>
+                                    <Text style={{ color: "red" }}>Remove Member</Text>
                                   </TouchableOpacity>
                                 </View>
                               ),

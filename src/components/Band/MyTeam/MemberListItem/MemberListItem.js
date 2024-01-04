@@ -4,6 +4,7 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const MemberListItem = ({
   member,
@@ -83,7 +84,7 @@ const MemberListItem = ({
         )}
 
         <View style={{ display: "flex" }}>
-          <Text style={{ width: 125, fontWeight: 500 }} numberOfLines={2}>
+          <Text style={[{ width: 125 }, TextProps]} numberOfLines={2}>
             {name}
           </Text>
 
@@ -92,15 +93,15 @@ const MemberListItem = ({
 
         <View style={{ position: "absolute", bottom: 0, right: 0, display: "flex", flexDirection: "row", gap: 10 }}>
           <View style={{ display: "flex", alignItems: "center" }}>
-            <Text style={{ fontWeight: 500, opacity: 0.5 }}>Task</Text>
-            <Text style={{ fontWeight: 500 }}>{totalTasks}</Text>
+            <Text style={[{ opacity: 0.5 }, TextProps]}>Task</Text>
+            <Text style={TextProps}>{totalTasks}</Text>
           </View>
 
           <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
 
           <View style={{ display: "flex", alignItems: "center" }}>
-            <Text style={{ fontWeight: 500, opacity: 0.5 }}>Project</Text>
-            <Text style={{ fontWeight: 500 }}>{totalProjects}</Text>
+            <Text style={[{ opacity: 0.5 }, TextProps]}>Project</Text>
+            <Text style={TextProps}>{totalProjects}</Text>
           </View>
         </View>
 
@@ -139,8 +140,8 @@ const MemberListItem = ({
 
       <View style={{ display: "flex", gap: 10 }}>
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ fontWeight: 500 }}>Email:</Text>
-          <Text style={{ fontWeight: 500 }}>{email}</Text>
+          <Text style={TextProps}>Email:</Text>
+          <Text style={TextProps}>{email}</Text>
         </View>
       </View>
     </View>

@@ -2,6 +2,7 @@ import { Dimensions, Image, Platform, Text, View, ActivityIndicator } from "reac
 import Modal from "react-native-modal";
 
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoading }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -19,19 +20,15 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
             alt="confirmation"
             style={{ height: 150, width: 150, resizeMode: "contain" }}
           />
-          <Text style={{ textAlign: "center" }}>{description}</Text>
+          <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
         </View>
 
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
           <Button onPress={!isLoading && toggle} variant="outline" flex={1}>
-            <Text>Cancel</Text>
+            <Text style={TextProps}>Cancel</Text>
           </Button>
           <Button flex={1} disabled={isLoading} backgroundColor="#E53935" onPress={onPress}>
-            {isLoading ? (
-              <ActivityIndicator />
-            ) : (
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Confirm</Text>
-            )}
+            {isLoading ? <ActivityIndicator /> : <Text style={{ fontSize: 12, color: "#FFFFFF" }}>Confirm</Text>}
           </Button>
         </View>
       </View>

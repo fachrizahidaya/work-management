@@ -24,6 +24,7 @@ import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
+import { TextProps } from "../components/shared/CustomStylings";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -195,7 +196,7 @@ const LoginScreen = () => {
               source={require("../assets/icons/kss_logo.png")}
               alt="KSS_LOGO"
             />
-            <Text style={{ fontSize: 20, fontWeight: 500 }}>Login</Text>
+            <Text style={[{ fontSize: 20, fontWeight: 500 }, TextProps]}>Login</Text>
           </View>
 
           <View style={{ position: "relative", borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
@@ -213,7 +214,7 @@ const LoginScreen = () => {
               }}
             />
             <FormButton disabled={isLoading} backgroundColor="white" fontSize={12} fontColor="#595F69">
-              {isLoading ? "Checking google account..." : "Login with Google"}
+              <Text style={TextProps}>{isLoading ? "Checking google account..." : "Login with Google"}</Text>
             </FormButton>
 
             {/* <Button
@@ -271,7 +272,7 @@ const LoginScreen = () => {
           />
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
-            Log In
+            <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
 
           <View
@@ -284,8 +285,8 @@ const LoginScreen = () => {
         <View style={{ width: "100%" }} />
 
         <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
-          <Text style={{ fontWeight: 500 }}>Don't have an account?</Text>
-          <Text style={{ fontWeight: 500, color: "#176688" }}>Sign Up</Text>
+          <Text style={TextProps}>Don't have an account?</Text>
+          <Text style={{ color: "#176688" }}>Sign Up</Text>
         </View>
 
         <Toast />

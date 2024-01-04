@@ -2,6 +2,7 @@ import React from "react";
 
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../CustomStylings";
 
 const Input = ({
   formik,
@@ -29,7 +30,7 @@ const Input = ({
 }) => {
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
+      {title && <Text style={[{ marginBottom: 9 }, TextProps]}>{title}</Text>}
 
       <View style={styles.inputWrapper}>
         {startIcon && (
@@ -65,7 +66,7 @@ const Input = ({
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",
               textAlignVertical: "top",
-              color: !editable ? "#cbcbcb" : "black",
+              color: !editable ? "#cbcbcb" : "#3F434A",
             },
           ]}
           defaultValue={defaultValue}

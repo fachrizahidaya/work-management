@@ -17,6 +17,7 @@ import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
 import { hyperlinkConverter } from "../../../../../helpers/hyperlinkConverter";
 import Button from "../../../../shared/Forms/Button";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const CommentList = ({ comments, parentData, refetchComments, refetchAttachments, downloadAttachment, projectId }) => {
   const { width } = Dimensions.get("screen");
@@ -97,8 +98,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
   };
 
   const baseStyles = {
-    color: "#000",
-    fontWeight: 400,
+    color: "#3F434A",
   };
 
   useEffect(() => {
@@ -122,11 +122,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                 <Button onPress={deleteComments} styles={{ borderTopRadius: 8 }} disabled={isLoading}>
                   <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
                     {!isLoading && <MaterialCommunityIcons name="delete" size={20} color="white" />}
-                    {isLoading ? (
-                      <ActivityIndicator />
-                    ) : (
-                      <Text style={{ color: "white", fontWeight: 500 }}>Delete comments</Text>
-                    )}
+                    {isLoading ? <ActivityIndicator /> : <Text style={{ color: "white" }}>Delete comments</Text>}
                   </View>
                 </Button>
               </View>
@@ -168,8 +164,8 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
 
                   <View style={{ flex: 1 }}>
                     <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "center" }}>
-                      <Text style={{ fontWeight: 500 }}>{item?.comment_name.split(" ")[0]}</Text>
-                      <Text style={{ fontWeight: 500, color: "#8A9099" }}>{dayjs(item.comment_time).fromNow()}</Text>
+                      <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.comment_name.split(" ")[0]}</Text>
+                      <Text style={TextProps}>{dayjs(item.comment_time).fromNow()}</Text>
                     </View>
 
                     <View>
@@ -193,7 +189,7 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
                               style={{ borderWidth: 1, borderColor: "#8A9099", borderRadius: 10, padding: 2 }}
                               onPress={() => downloadAttachment(attachment.file_path)}
                             >
-                              <Text style={{ fontWeight: 500 }}>
+                              <Text style={TextProps}>
                                 {attachment.file_name.length > 15
                                   ? attachment.file_name.slice(0, 15)
                                   : attachment.file_name}

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 
 import { Pressable, Text, View } from "react-native";
+import { TextProps } from "./CustomStylings";
 
 /**
  * @param {Array} tabs - An array of tab objects.
@@ -31,7 +32,7 @@ const Tabs = ({ tabs = [], value, onChange, justify }) => {
                   paddingBottom: 12,
                 }}
               >
-                <Text style={{ textTransform: "uppercase", fontWeight: 500 }}>{tab.title}</Text>
+                <Text style={[{ textTransform: "uppercase" }, TextProps]}>{tab.title}</Text>
               </View>
             </Pressable>
           );

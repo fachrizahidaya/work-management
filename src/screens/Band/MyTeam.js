@@ -21,7 +21,7 @@ import AddMemberModal from "../../components/Band/shared/AddMemberModal/AddMembe
 import axiosInstance from "../../config/api";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import Button from "../../components/shared/Forms/Button";
-import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
+import { SkeletonCommonProps, TextProps } from "../../components/shared/CustomStylings";
 
 const MyTeamScreen = () => {
   const navigation = useNavigation();
@@ -128,9 +128,9 @@ const MyTeamScreen = () => {
                     source={require("../../assets/vectors/team.jpg")}
                     alt="team"
                   />
-                  <Text style={{ fontSize: 22, fontWeight: 500 }}>You don't have teams yet...</Text>
+                  <Text style={[{ fontSize: 22 }, TextProps]}>You don't have teams yet...</Text>
                   <Button onPress={toggleNewTeamForm}>
-                    <Text style={{ fontWeight: 500, color: "white" }}>Create here</Text>
+                    <Text style={{ color: "white" }}>Create here</Text>
                   </Button>
                 </View>
               )
@@ -174,9 +174,7 @@ const MyTeamScreen = () => {
                   alt="member"
                   style={{ resizeMode: "contain", height: 100, width: 100 }}
                 />
-                <Text style={{ fontSize: 22, position: "absolute", fontWeight: 500, bottom: 0 }}>
-                  Select team to show
-                </Text>
+                <Text style={[{ fontSize: 22, position: "absolute", bottom: 0 }, TextProps]}>Select team to show</Text>
               </View>
             )}
           </>
@@ -197,7 +195,7 @@ const MyTeamScreen = () => {
                         openNewTeamFormHandler();
                       }}
                     >
-                      <Text style={{ fontWeight: 500 }}>Create new team</Text>
+                      <Text style={TextProps}>Create new team</Text>
                     </TouchableOpacity>
                   )}
                   {team && (
@@ -209,7 +207,7 @@ const MyTeamScreen = () => {
                             navigation.navigate("Project Form", { projectData: null, teamMembers: members?.data });
                           }}
                         >
-                          <Text style={{ fontWeight: 500 }}>Create project with this team </Text>
+                          <Text style={TextProps}>Create project with this team </Text>
                         </TouchableOpacity>
                       )}
 
@@ -223,7 +221,7 @@ const MyTeamScreen = () => {
                                   openMemberModalHandler();
                                 }}
                               >
-                                <Text style={{ fontWeight: 500 }}>Add new member to this team</Text>
+                                <Text style={TextProps}>Add new member to this team</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity
@@ -232,7 +230,7 @@ const MyTeamScreen = () => {
                                   openEditTeamFormHandler();
                                 }}
                               >
-                                <Text style={{ fontWeight: 500 }}>Edit this team</Text>
+                                <Text style={TextProps}>Edit this team</Text>
                               </TouchableOpacity>
                             </>
                           )}
@@ -243,7 +241,7 @@ const MyTeamScreen = () => {
                                 toggleDeleteModal();
                               }}
                             >
-                              <Text style={{ fontWeight: 500, color: "red" }}>Delete this team</Text>
+                              <Text style={{ color: "red" }}>Delete this team</Text>
                             </TouchableOpacity>
                           )}
                         </>

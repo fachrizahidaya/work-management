@@ -6,12 +6,13 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import Button from "../../../../shared/Forms/Button";
 import Select from "../../../../shared/Forms/Select";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const FilterSheet = ({ members, setResponsibleId }) => {
   return (
     <View style={{ display: "flex", alignItems: "center", paddingHorizontal: 4, paddingVertical: 20 }}>
       <View style={{ width: "95%", display: "flex", gap: 15 }}>
-        <Text style={{ fontWeight: 500 }}>Member</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>Member</Text>
         <Select
           placeHolder="Select member"
           items={
@@ -72,7 +73,7 @@ const FilterSheet = ({ members, setResponsibleId }) => {
             })}
         </Select> */}
 
-        <Text style={{ fontWeight: 500 }}>Label</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>Label</Text>
         <Select placeHolder="Select label" />
 
         {/* <Select
@@ -87,7 +88,7 @@ const FilterSheet = ({ members, setResponsibleId }) => {
           })}
         </Select> */}
 
-        <Text style={{ fontWeight: 500 }}>Due Date</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>Due Date</Text>
         <Select placeHolder="No due date" />
 
         {/* <Select
@@ -99,7 +100,7 @@ const FilterSheet = ({ members, setResponsibleId }) => {
           <Select.Item label="Latest" value="desc" />
         </Select> */}
 
-        <Text style={{ fontWeight: 500 }}>Priority</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>Priority</Text>
         <Select placeHolder="Select priority" />
 
         {/* <Select

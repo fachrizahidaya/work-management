@@ -1,5 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import ActionSheet, { SheetProps } from "react-native-actions-sheet";
+import { TextProps } from "../CustomStylings";
 
 /**
  *
@@ -13,7 +14,7 @@ const SelectSheet = (props) => {
           props.payload.children.map((item, idx) => {
             return (
               <TouchableOpacity key={idx} onPress={() => props.payload?.onChange(item.value)}>
-                <Text style={{ fontSize: 18, fontWeight: 500 }}>{item.label}</Text>
+                <Text style={TextProps}>{item.label}</Text>
               </TouchableOpacity>
             );
           })}

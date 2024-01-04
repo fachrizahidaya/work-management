@@ -9,6 +9,7 @@ import Toast from "react-native-toast-message";
 import CustomDateTimePicker from "../../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   const { isLoading, start, stop } = useLoading(false);
@@ -57,7 +58,7 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
 
   return (
     <View style={{ display: "flex", gap: 10 }}>
-      <Text style={{ fontWeight: 500 }}>DUE DATE</Text>
+      <Text style={[{ fontWeight: 500 }, TextProps]}>DUE DATE</Text>
       <CustomDateTimePicker
         defaultValue={deadline}
         disabled={disabled || isLoading}
