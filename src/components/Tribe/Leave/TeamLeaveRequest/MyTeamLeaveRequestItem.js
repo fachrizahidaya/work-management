@@ -55,7 +55,7 @@ const MyTeamLeaveRequestItem = ({
           {days < 2 ? "day" : "days"}
         </Text>
         {status === "Pending" ? (
-          <View style={{ flexDirection: "row", gap: 5 }} gap={1}>
+          <View style={{ flexDirection: "row", gap: 5 }}>
             <FormButton
               onPress={() => responseHandler("Rejected", item)}
               isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
@@ -63,6 +63,7 @@ const MyTeamLeaveRequestItem = ({
               backgroundColor="#FF6262"
               fontColor="white"
               padding={5}
+              height={35}
             >
               <Text>Decline</Text>
             </FormButton>
@@ -73,6 +74,7 @@ const MyTeamLeaveRequestItem = ({
               backgroundColor="#377893"
               fontColor="white"
               padding={5}
+              height={35}
             >
               <Text>Approve</Text>
             </FormButton>
