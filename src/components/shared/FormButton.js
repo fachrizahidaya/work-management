@@ -16,6 +16,7 @@ const FormButton = ({
   style,
   borderRadius,
   padding,
+  height,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -38,7 +39,7 @@ const FormButton = ({
           backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
           opacity: opacity || 1,
           borderRadius: borderRadius || 10,
-          height: 42,
+          height: height ? height : 42,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

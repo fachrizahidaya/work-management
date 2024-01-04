@@ -101,18 +101,21 @@ const PersonalLeaveScreen = () => {
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
+      setReloadPending(!reloadPending);
     }
   };
 
   const fetchMoreApproved = () => {
     if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
       setCurrentPageApproved(currentPageApproved + 1);
+      setReloadApproved(!reloadApproved);
     }
   };
 
   const fetchMoreRejected = () => {
     if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
       setCurrentPageRejected(currentPageRejected + 1);
+      setReloadRejected(!reloadRejected);
     }
   };
 
@@ -143,16 +146,16 @@ const PersonalLeaveScreen = () => {
   }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
-    if (approvedLeaveRequest?.data?.data.length) {
+    if (approvedLeaveRequest?.data?.data?.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
-  }, [approvedLeaveRequest?.data?.data.length]);
+  }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
-    if (rejectedLeaveRequest?.data?.data.length) {
+    if (rejectedLeaveRequest?.data?.data?.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
-  }, [rejectedLeaveRequest?.data?.data.length]);
+  }, [rejectedLeaveRequest?.data?.data?.length]);
 
   return (
     <>
