@@ -7,10 +7,10 @@ import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
 
-import { useFetch } from "../../hooks/useFetch";
-import Input from "../../components/shared/Forms/Input";
-import PageHeader from "../../components/shared/PageHeader";
-import UserListItem from "../../components/Chat/UserSelection/UserListItem";
+import { useFetch } from "../../../hooks/useFetch";
+import Input from "../../../components/shared/Forms/Input";
+import PageHeader from "../../../components/shared/PageHeader";
+import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
 
 const AddGroupParticipantScreen = () => {
   const navigation = useNavigation();

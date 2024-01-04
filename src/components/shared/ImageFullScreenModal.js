@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   image: {
     width: 400,
     height: 300,
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
   actionGroup: {
     flexDirection: "row",

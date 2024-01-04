@@ -7,13 +7,13 @@ import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../hooks/useFetch";
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Description from "../../components/Chat/ProjectTask/Description";
-import DateSection from "../../components/Chat/ProjectTask/DateSection";
-import CreatorSection from "../../components/Chat/ProjectTask/CreatorSection";
-import ObserverSection from "../../components/Chat/ProjectTask/ObserverSection";
-import ChecklistSection from "../../components/Chat/ProjectTask/ChecklistSection";
+import { useFetch } from "../../../hooks/useFetch";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Description from "../../../components/Chat/ProjectTask/Description";
+import DateSection from "../../../components/Chat/ProjectTask/DateSection";
+import CreatorSection from "../../../components/Chat/ProjectTask/CreatorSection";
+import ObserverSection from "../../../components/Chat/ProjectTask/ObserverSection";
+import ChecklistSection from "../../../components/Chat/ProjectTask/ChecklistSection";
 
 const TaskDetail = () => {
   const navigation = useNavigation();
@@ -120,7 +120,7 @@ const TaskDetail = () => {
           {task?.data?.checklist.length === 0 ? (
             <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                source={require("../../assets/vectors/empty.png")}
+                source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
                 style={{
                   height: 150,
@@ -160,7 +160,7 @@ const TaskDetail = () => {
       >
         <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
           <Image
-            source={require("../../assets/vectors/empty.png")}
+            source={require("../../../assets/vectors/empty.png")}
             alt="attachment"
             style={{
               height: 150,

@@ -6,10 +6,10 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
-import { useFetch } from "../../hooks/useFetch";
-import Input from "../../components/shared/Forms/Input";
-import PageHeader from "../../components/shared/PageHeader";
-import UserListItem from "../../components/Chat/UserSelection/UserListItem";
+import { useFetch } from "../../../hooks/useFetch";
+import Input from "../../../components/shared/Forms/Input";
+import PageHeader from "../../../components/shared/PageHeader";
+import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
 
 const AddPersonalChatScreen = () => {
   const navigation = useNavigation();

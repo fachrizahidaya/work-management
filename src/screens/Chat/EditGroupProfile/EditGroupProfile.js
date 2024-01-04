@@ -11,10 +11,10 @@ import Toast from "react-native-toast-message";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import axiosInstance from "../../config/api";
-import FormButton from "../../components/shared/FormButton";
-import Input from "../../components/shared/Forms/Input";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import axiosInstance from "../../../config/api";
+import FormButton from "../../../components/shared/FormButton";
+import Input from "../../../components/shared/Forms/Input";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);

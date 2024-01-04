@@ -11,20 +11,20 @@ import Pusher from "pusher-js/react-native";
 import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
 import Toast from "react-native-toast-message";
 
-import axiosInstance from "../../config/api";
-import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
-import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
-import ChatInput from "../../components/Chat/ChatInput/ChatInput";
-import ChatList from "../../components/Chat/ChatList/ChatList";
-import ChatOptionMenu from "../../components/Chat/ChatBubble/ChatOptionMenu";
-import ChatMessageDeleteModal from "../../components/Chat/ChatBubble/ChatMessageDeleteModal";
-import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
-import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
+import axiosInstance from "../../../config/api";
+import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import ChatHeader from "../../../components/Chat/ChatHeader/ChatHeader";
+import ChatInput from "../../../components/Chat/ChatInput/ChatInput";
+import ChatList from "../../../components/Chat/ChatList/ChatList";
+import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
+import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import MenuAttachment from "../../../components/Chat/ChatInput/MenuAttachment";
+import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -359,7 +359,7 @@ const ChatRoom = () => {
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [3, 4],
       quality: 1,
     });
