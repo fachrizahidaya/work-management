@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import _ from "lodash";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -7,7 +8,6 @@ import { SafeAreaView, View, Text, Pressable, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useRoute } from "@react-navigation/native";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
 import { useLoading } from "../../hooks/useLoading";
@@ -39,9 +39,9 @@ const UserDetail = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
+  const navigation = useNavigation();
   const route = useRoute();
   const {
-    navigation,
     name,
     image,
     position,
@@ -67,7 +67,6 @@ const UserDetail = () => {
   const { isOpen: memberListActionIsopen, toggle: toggleMemberListAction } = useDisclosure(false);
   const { isOpen: removeMemberActionIsopen, toggle: toggleRemoveMemberAction } = useDisclosure(false);
 
-  const { isLoading: memberActionIsLoading, toggle: toggleMemberAction } = useLoading(false);
   const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } = useLoading(false);
   const { isLoading: addMemberIsLoading, toggle: toggleAddMember } = useLoading(false);
 
@@ -121,7 +120,7 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
       toggleAddMember();
       toggleMemberList();
-      // setSelectedUsers(null);
+      setSelectedUsers([]);
       Toast.show({
         type: "success",
         text1: "Member added",
@@ -313,11 +312,12 @@ const UserDetail = () => {
               <Pressable onPress={() => navigation.goBack()}>
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
-              <Text>{type === "personal" ? "Contact Detail" : "Group Detail"}</Text>
+              <Text style={{ fontWeight: "500" }}>{type === "personal" ? "Contact Info" : "Group Info"}</Text>
             </View>
           </View>
           <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>
             <UserAvatar
+              navigation={navigation}
               roomId={roomId}
               type={type}
               name={name}

@@ -135,7 +135,7 @@ const EditGroupProfile = () => {
           <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
             <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
-          <Text>Edit Profile</Text>
+          <Text style={{ fontWeight: "500" }}>Edit Profile</Text>
         </View>
       </View>
       <View style={{ flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 20, paddingVertical: 10, gap: 10 }}>
