@@ -229,9 +229,7 @@ const AttendanceScreen = () => {
           "content-type": "multipart/form-data",
         },
       });
-
       refetchAttachment();
-
       Toast.show({
         type: "success",
         text1: "Attachment submitted",

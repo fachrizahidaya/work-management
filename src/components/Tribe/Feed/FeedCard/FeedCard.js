@@ -3,6 +3,7 @@ import { memo, useCallback } from "react";
 import { Clipboard, FlatList, Linking, StyleSheet, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { RefreshControl } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
 
 import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
@@ -75,7 +76,7 @@ const FeedCard = ({
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <FlashList
         removeClippedSubviews={true}
         ref={scrollNewMessage ? flashListRef : null}
         data={posts}

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, View, ActivityIndicator } from "react-native";
+import { SafeAreaView, StyleSheet, View, ActivityIndicator, Text } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
@@ -76,10 +76,12 @@ const ContactScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader title="Contact" backButton={false} />
+        <View style={{ flexDirection: "row", gap: 1 }}>
+          <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
+        </View>
       </View>
 
-      <View style={styles.search} backgroundColor="#FFFFFF" py={4} px={3}>
+      <View style={styles.search} backgroundColor="#FFFFFF">
         <Input
           value={inputToShow}
           fieldName="search"
@@ -143,16 +145,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E8E9EB",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    paddingHorizontal: 16,
-  },
-  search: {
     backgroundColor: "#FFFFFF",
     paddingVertical: 15,
     paddingHorizontal: 15,
+  },
+  search: {
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    borderTopWidth: 1,
+    borderTopColor: "#E8E9EB",
   },
 });
 
