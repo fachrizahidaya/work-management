@@ -1,14 +1,10 @@
-import { useNavigation } from "@react-navigation/native";
-
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
-const UserAvatar = ({ roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
-  const navigation = useNavigation();
-
+const UserAvatar = ({ navigation, roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
   return (
     <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF", paddingBottom: 5 }}>
       <View style={{ gap: 10 }}>

@@ -310,7 +310,7 @@ const ChatListScreen = () => {
             reference={contactMenuScreenSheetRef}
           />
 
-          <ChatMenu reference={chatMenuScreenSheetRef} />
+          {/* <ChatMenu reference={chatMenuScreenSheetRef} /> */}
 
           {selectedChat?.pin_personal ? (
             <RemoveConfirmationModal

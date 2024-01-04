@@ -3,6 +3,7 @@ import { TouchableOpacity, View, Text } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { ScrollView } from "react-native-gesture-handler";
 
 const UserInformation = ({
   type,
@@ -16,7 +17,7 @@ const UserInformation = ({
   setMemberAdminStatus,
 }) => {
   return (
-    <>
+    <ScrollView>
       <View
         style={{
           backgroundColor: "#FFFFFF",
@@ -27,10 +28,11 @@ const UserInformation = ({
           gap: 5,
         }}
       >
+        {type === "group" && (
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#b8a9a3" }}>Group Participant</Text>
+        )}
+
         <View gap={2}>
-          {type === "group" && (
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#b8a9a3" }}>Group Participant</Text>
-          )}
           {type === "personal" ? (
             <Text style={{ fontSize: 14, fontWeight: "400" }}>Active</Text>
           ) : (
@@ -51,8 +53,9 @@ const UserInformation = ({
                         <AvatarPlaceholder
                           name={!member?.user ? member?.name : member?.user?.name}
                           image={!member?.user ? member?.image : member?.user?.image}
+                          size="xs"
                         />
-                        <Text>
+                        <Text style={{ fontSize: 12 }}>
                           {!member?.user
                             ? loggedInUser === member?.id
                               ? "You"
@@ -63,7 +66,7 @@ const UserInformation = ({
                         </Text>
                         {member?.is_admin ? (
                           <View style={{ borderRadius: 10, padding: 5, backgroundColor: "#186688" }}>
-                            <Text style={{ color: "#FFFFFF" }}>Admin</Text>
+                            <Text style={{ fontSize: 12, color: "#FFFFFF" }}>Admin</Text>
                           </View>
                         ) : null}
                         {currentUserIsAdmin && loggedInUser !== member?.user_id && (
@@ -83,7 +86,7 @@ const UserInformation = ({
           )}
         </View>
       </View>
-    </>
+    </ScrollView>
   );
 };
 

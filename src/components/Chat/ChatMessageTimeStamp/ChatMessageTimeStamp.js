@@ -38,7 +38,7 @@ const ChatMessageTimeStamp = ({ timestamp }) => {
     <View style={{ marginVertical: 10 }}>
       {currentTimeStamp && (
         <View style={{ borderRadius: 5, padding: 5, alignSelf: "center", backgroundColor: "#F0F0F0" }}>
-          <Text>{formatTimeStamp()}</Text>
+          <Text style={{ fontSize: 12 }}>{formatTimeStamp()}</Text>
         </View>
       )}
     </View>
