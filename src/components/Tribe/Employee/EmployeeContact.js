@@ -11,11 +11,11 @@ const EmployeeContact = ({ employee }) => {
   const contacts = [
     {
       id: 1,
-      component: <WhatsappButton phone={employee?.data?.phone_number} size={6} />,
+      component: <WhatsappButton phone={employee?.data?.phone_number} size={20} />,
     },
     {
       id: 2,
-      component: <EmailButton email={employee?.data?.email} size={6} />,
+      component: <EmailButton email={employee?.data?.email} size={20} />,
     },
     {
       id: 3,

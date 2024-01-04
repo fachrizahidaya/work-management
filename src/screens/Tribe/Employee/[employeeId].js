@@ -96,7 +96,7 @@ const EmployeeProfileScreen = ({ route }) => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + personalPost?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 5);
+      setCurrentOffsetPost(currentOffsetPost + 10);
     }
   };
 

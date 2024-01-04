@@ -30,7 +30,6 @@ const LeaveRequestList = ({
   setHasBeenScrolledPending,
   hasBeenScrolledApproved,
   setHasBeenScrolledApproved,
-  refetchLeaveRequest,
 }) => {
   return (
     <>

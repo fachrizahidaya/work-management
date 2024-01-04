@@ -4,6 +4,7 @@ import _ from "lodash";
 import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -14,7 +15,6 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
-import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -133,6 +133,7 @@ const PayslipScreen = () => {
           <PageHeader title="My Payslip" backButton={false} />
           <Button
             onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
+            height={35}
             padding={5}
             children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
           />
@@ -151,7 +152,7 @@ const PayslipScreen = () => {
         </View>
 
         {payslip?.data?.data.length > 0 ? (
-          <FlatList
+          <FlashList
             data={payslips}
             keyExtractor={(item, index) => index}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}

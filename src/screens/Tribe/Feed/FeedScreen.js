@@ -90,7 +90,7 @@ const FeedScreen = () => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + post?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 5);
+      setCurrentOffsetPost(currentOffsetPost + 10);
     }
   };
 
