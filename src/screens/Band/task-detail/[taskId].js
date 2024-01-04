@@ -22,6 +22,7 @@ import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/Me
 import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -103,8 +104,7 @@ const TaskDetailScreen = ({ route }) => {
 
   const baseStyles = useMemo(
     () => ({
-      color: "#000",
-      fontWeight: 500,
+      color: "#3F434A",
     }),
     []
   );
@@ -185,7 +185,7 @@ const TaskDetailScreen = ({ route }) => {
 
           {/* Description */}
           <View style={{ display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>DESCRIPTION</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>DESCRIPTION</Text>
 
             <RenderHtml
               contentWidth={width}
@@ -204,7 +204,7 @@ const TaskDetailScreen = ({ route }) => {
 
           {/* Comments */}
           <View style={{ display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>COMMENTS</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>COMMENTS</Text>
             <CommentInput taskId={taskId} data={selectedTask?.data} />
           </View>
         </View>

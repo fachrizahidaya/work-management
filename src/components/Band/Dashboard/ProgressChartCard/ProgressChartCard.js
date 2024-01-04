@@ -8,6 +8,7 @@ import { Divider } from "native-base";
 import { ProgressChart } from "react-native-chart-kit";
 
 import { card } from "../../../../styles/Card";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   const navigation = useNavigation();
@@ -29,7 +30,7 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   return (
     <TouchableOpacity style={[card.card, { flex: 1 }]}>
       <View style={{ display: "flex", flexDirection: "column" }}>
-        <Text style={{ fontSize: 20, fontWeight: 500 }}>This Year Tasks</Text>
+        <Text style={[{ fontSize: 20, fontWeight: 500 }, TextProps]}>This Year Tasks</Text>
         <View>
           <ProgressChart
             data={data}
@@ -53,24 +54,24 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
         <View style={{ display: "flex", flexDirection: "row", gap: 8, justifyContent: "center" }}>
           <View style={{ display: "flex", alignItems: "center" }}>
             <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#176688" }} />
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{open}</Text>
-            <Text style={{ fontWeight: 400 }}>Open</Text>
+            <Text style={[{ fontSize: 24, fontWeight: "bold" }, TextProps]}>{open}</Text>
+            <Text style={TextProps}>Open</Text>
           </View>
 
           <View style={{ borderWidth: 1, borderColor: "#f8f8f8" }} />
 
           <View style={{ display: "flex", alignItems: "center" }}>
             <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#fcd241" }}></View>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{onProgress}</Text>
-            <Text style={{ fontWeight: 400 }}>In Progress</Text>
+            <Text style={[{ fontSize: 24, fontWeight: "bold" }, TextProps]}>{onProgress}</Text>
+            <Text style={TextProps}>In Progress</Text>
           </View>
 
           <View style={{ borderWidth: 1, borderColor: "#f8f8f8" }} />
 
           <View style={{ display: "flex", alignItems: "center" }}>
             <View style={{ width: 8, height: 8, borderRadius: 50, backgroundColor: "#FF965D" }}></View>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{finish}</Text>
-            <Text style={{ fontWeight: 400 }}>Finish</Text>
+            <Text style={[{ fontSize: 24, fontWeight: "bold" }, TextProps]}>{finish}</Text>
+            <Text style={TextProps}>Finish</Text>
           </View>
         </View>
       </View>

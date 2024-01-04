@@ -44,10 +44,10 @@ const InAppNotificationCard = ({ message, isOpen, close }) => {
         <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "baseline" }}>
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>Nest</Text>
 
-          <Text style={{ fontSize: 12, color: "white", fontWeight: 500 }}>now</Text>
+          <Text style={{ fontSize: 12, color: "white" }}>now</Text>
         </View>
 
-        <Text style={{ color: "white", fontSize: 14, fontWeight: 500 }}>
+        <Text style={{ color: "white", fontSize: 14 }}>
           {message?.from_name} :{" "}
           {message?.message?.length > 30 ? message?.message?.slice(0, 30) + "..." : message?.message}
         </Text>

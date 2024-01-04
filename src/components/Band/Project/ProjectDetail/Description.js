@@ -9,8 +9,7 @@ const Description = ({ description }) => {
   const { width } = Dimensions.get("screen");
 
   const baseStyles = {
-    color: "#000",
-    fontWeight: 500,
+    color: "#3F434A",
   };
 
   return (

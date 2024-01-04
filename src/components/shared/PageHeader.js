@@ -4,7 +4,7 @@ import { Skeleton } from "moti/skeleton";
 import { Dimensions, View, Pressable, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { SkeletonCommonProps } from "./CustomStylings";
+import { SkeletonCommonProps, TextProps } from "./CustomStylings";
 
 const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, isLoading, onPress }) => {
   const { width: screenWidth } = Dimensions.get("screen");
@@ -26,17 +26,17 @@ const PageHeader = ({ width, title, subTitle, backButton = true, withLoading, is
 
       {withLoading ? (
         !isLoading ? (
-          <Text style={{ fontSize: 16, fontWeight: 500 }} numberOfLines={2}>
+          <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]} numberOfLines={2}>
             {title}
-            {subTitle && <Text style={{ color: "#176688", fontWeight: 500 }}> #{subTitle}</Text>}
+            {subTitle && <Text style={{ color: "#176688" }}> #{subTitle}</Text>}
           </Text>
         ) : (
           <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
         )
       ) : (
-        <Text style={{ fontSize: 16, fontWeight: 500 }} numberOfLines={2}>
+        <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]} numberOfLines={2}>
           {title}
-          {subTitle && <Text style={{ color: "#176688", fontWeight: 500 }}> #{subTitle}</Text>}
+          {subTitle && <Text style={{ color: "#176688" }}> #{subTitle}</Text>}
         </Text>
       )}
     </View>

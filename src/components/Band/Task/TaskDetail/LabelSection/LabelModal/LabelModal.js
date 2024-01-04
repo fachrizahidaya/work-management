@@ -14,6 +14,7 @@ import axiosInstance from "../../../../../../config/api";
 import { useLoading } from "../../../../../../hooks/useLoading";
 import Input from "../../../../../shared/Forms/Input";
 import Button from "../../../../../shared/Forms/Button";
+import { TextProps } from "../../../../../shared/CustomStylings";
 
 const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetch, refetchTaskLabels }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -109,13 +110,13 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
         <View>
-          <Text style={{ fontWeight: 500 }}>New Label</Text>
+          <Text style={[{ fontWeight: 500 }, TextProps]}>New Label</Text>
         </View>
 
         <View style={{ display: "flex", gap: 10 }}>
           {allLabels.length > 0 && (
             <>
-              <Text style={{ fontWeight: 500 }}>Select from labels:</Text>
+              <Text style={TextProps}>Select from labels:</Text>
               <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
                 {allLabels.map((label) => {
                   return (
@@ -143,17 +144,17 @@ const LabelModal = ({ isOpen, onClose, projectId, taskId, allLabels = [], refetc
           />
 
           <View style={{ display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500, color: formik.errors.color ? "red" : "black" }}>Select label color</Text>
+            <Text style={{ color: formik.errors.color ? "red" : "#3F434A" }}>Select label color</Text>
 
             <Button onPress={toggleColorPicker} backgroundColor={formik.values.color || "#f8f8f8"}>
-              <Text> {colorPickerIsOpen ? "Close color picker" : "Pick a color"}</Text>
+              <Text style={TextProps}> {colorPickerIsOpen ? "Close color picker" : "Pick a color"}</Text>
             </Button>
           </View>
         </View>
 
         <View>
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text style={{ color: "white", fontWeight: 500 }}>Save</Text>
+            <Text style={{ color: "white" }}>Save</Text>
           </FormButton>
         </View>
 

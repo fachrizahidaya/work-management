@@ -5,6 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import useCheckAccess from "../../../hooks/useCheckAccess";
+import { TextProps } from "../CustomStylings";
 
 const BandAddNewSheet = (props) => {
   const navigation = useNavigation();
@@ -51,7 +52,7 @@ const BandAddNewSheet = (props) => {
               <View style={styles.item}>
                 <MaterialCommunityIcons name={item.icons} size={20} />
               </View>
-              <Text key={item.title} style={styles.text}>
+              <Text key={item.title} style={TextProps}>
                 {item.title}
               </Text>
             </View>
@@ -84,9 +85,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });

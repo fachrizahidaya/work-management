@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import ActionSheet from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../CustomStylings";
 
 const BandScreenSheet = (props) => {
   const navigation = useNavigation();
@@ -25,7 +26,7 @@ const BandScreenSheet = (props) => {
               <View style={styles.item}>
                 <MaterialCommunityIcons size={20} name={item.mobile_icon} />
               </View>
-              <Text style={styles.text}>{item.name}</Text>
+              <Text style={TextProps}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         );
@@ -41,7 +42,7 @@ const BandScreenSheet = (props) => {
           <View style={styles.item}>
             <MaterialCommunityIcons size={20} name="calendar-clock" />
           </View>
-          <Text style={styles.text}>Calendar</Text>
+          <Text style={TextProps}>Calendar</Text>
         </View>
       </TouchableOpacity>
     </ActionSheet>
@@ -70,9 +71,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });

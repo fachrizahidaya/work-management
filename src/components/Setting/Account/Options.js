@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const Options = ({ profile }) => {
   const navigation = useNavigation();
@@ -65,7 +66,7 @@ const Options = ({ profile }) => {
                 gap: 4,
               }}
             >
-              <Text style={{ fontWeight: 400 }}>{title.name}</Text>
+              <Text style={[{ fontWeight: 400 }, TextProps]}>{title.name}</Text>
             </View>
 
             <MaterialCommunityIcons name="chevron-right" size={20} />

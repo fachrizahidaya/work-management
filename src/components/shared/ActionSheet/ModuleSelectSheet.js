@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ActionSheet from "react-native-actions-sheet";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { setModule } from "../../../redux/reducer/module";
+import { TextProps } from "../CustomStylings";
 
 /**
  * @function ModuleSelectSheet
@@ -39,10 +40,10 @@ const ModuleSelectSheet = (props) => {
                     style={styles.image}
                   />
                   <View style={styles.flex}>
-                    <Text style={styles.text}>
+                    <Text style={TextProps}>
                       {item.module_name.charAt(0).toUpperCase() + item.module_name.slice(1).toLowerCase()}
                     </Text>
-                    <Text style={styles.text}> | {item.module_label}</Text>
+                    <Text style={TextProps}> | {item.module_label}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -80,9 +81,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });

@@ -10,6 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import AttachmentList from "../../Task/TaskDetail/AttachmentSection/AttachmentList/AttachmentList";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const FileSection = ({ projectId, isAllowed }) => {
   const {
@@ -136,7 +137,7 @@ const FileSection = ({ projectId, isAllowed }) => {
   return (
     <View style={{ display: "flex", gap: 18 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontSize: 16, fontWeight: 500 }}>FILES</Text>
+        <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>FILES</Text>
 
         <TouchableOpacity
           onPress={selectFile}
@@ -186,7 +187,7 @@ const FileSection = ({ projectId, isAllowed }) => {
                 source={require("../../../../assets/vectors/no-file.jpg")}
                 style={{ height: 100, width: 140, resizeMode: "contain" }}
               />
-              <Text style={{ fontWeight: 400 }}>This project has no attachment</Text>
+              <Text style={TextProps}>This project has no attachment</Text>
             </View>
           )}
         </>

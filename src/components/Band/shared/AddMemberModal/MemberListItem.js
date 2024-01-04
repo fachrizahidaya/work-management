@@ -4,6 +4,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const MemberListItem = ({
   id,
@@ -38,8 +39,8 @@ const MemberListItem = ({
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <AvatarPlaceholder image={image} name={name} size={avatarSize} />
           <View>
-            <Text style={{ fontWeight: 500 }}>{name}</Text>
-            <Text style={{ fontWeight: 500, fontSize: descriptionSize || 10, opacity: 0.5 }}>{userType}</Text>
+            <Text style={TextProps}>{name}</Text>
+            <Text style={[{ fontSize: descriptionSize || 12, opacity: 0.5 }, TextProps]}>{userType}</Text>
           </View>
         </View>
 

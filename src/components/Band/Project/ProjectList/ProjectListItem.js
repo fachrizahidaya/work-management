@@ -8,6 +8,7 @@ dayjs.extend(relativeTime);
 import { Dimensions, Pressable, View, Text } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerName, ownerEmail }) => {
   const navigation = useNavigation();
@@ -28,13 +29,12 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
         }}
       >
         <View style={{ display: "flex", gap: 1 }}>
-          <Text style={{ width: width / 2, fontWeight: 500 }} numberOfLines={1}>
+          <Text style={[{ width: width / 2, fontWeight: 500 }, TextProps]} numberOfLines={1}>
             {title}
           </Text>
 
           <Text
             style={{
-              fontWeight: 400,
               color: isArchive
                 ? "#979797"
                 : status === "Open"

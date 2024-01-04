@@ -11,6 +11,7 @@ import LabelItem from "./LabelItem/LabelItem";
 import axiosInstance from "../../../../../config/api";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const LabelSection = ({ projectId, taskId, disabled }) => {
   const { isLoading, start, stop } = useLoading(false);
@@ -71,7 +72,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
     <>
       {(!disabled || (disabled && taskLabels?.data?.length > 0)) && (
         <View style={{ flex: 1, display: "flex", gap: 10 }}>
-          <Text style={{ fontWeight: 500 }}>LABELS</Text>
+          <Text style={[{ fontWeight: 500 }, TextProps]}>LABELS</Text>
           {taskLabels?.data.length > 0 ? (
             <>
               <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
@@ -102,9 +103,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                 )}
               </View>
               {!disabled && (
-                <Text style={{ fontWeight: 500, color: "gray", opacity: 0.5, marginTop: 2 }}>
-                  Press any label to remove.
-                </Text>
+                <Text style={{ color: "gray", opacity: 0.5, marginTop: 2 }}>Press any label to remove.</Text>
               )}
             </>
           ) : (

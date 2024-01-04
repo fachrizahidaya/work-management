@@ -16,6 +16,7 @@ import axiosInstance from "../../../../config/api";
 import FormButton from "../../../shared/FormButton";
 import CommentList from "./CommentList/CommentList";
 import Input from "../../../shared/Forms/Input";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -228,7 +229,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
             }
           })}
 
-          <Text style={{ fontSize: 10, opacity: 0.5, alignSelf: "center", fontWeight: 500 }}>Tap item to remove</Text>
+          <Text style={[{ fontSize: 12, opacity: 0.5, alignSelf: "center" }, TextProps]}>Tap item to remove</Text>
         </View>
       )}
       <View style={{ borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB", padding: 4 }}>

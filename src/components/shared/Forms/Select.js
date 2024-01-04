@@ -4,6 +4,7 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../CustomStylings";
 
 const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName = "", defaultValue, value1 }) => {
   const onPressValue = (value) => {
@@ -12,7 +13,7 @@ const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName 
   };
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
+      {title && <Text style={[{ marginBottom: 9 }, TextProps]}>{title}</Text>}
 
       <TouchableOpacity
         style={styles.select}
@@ -25,7 +26,7 @@ const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName 
           })
         }
       >
-        <Text>{defaultValue ? defaultValue : value1 ? value1 : value ? value : placeHolder}</Text>
+        <Text style={TextProps}>{defaultValue ? defaultValue : value1 ? value1 : value ? value : placeHolder}</Text>
 
         <MaterialCommunityIcons name="chevron-down" style={styles.dropdownIcon} size={20} />
       </TouchableOpacity>

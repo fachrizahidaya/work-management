@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const CompanyScreen = () => {
   const userSelector = useSelector((state) => state.auth);
@@ -16,23 +17,24 @@ const CompanyScreen = () => {
         <PageHeader title="My Company" onPress={() => navigation.goBack()} />
 
         <View>
-          <Text style={{ fontWeight: 500 }}>
-            This account is under subscription of <Text style={{ fontWeight: "bold" }}>{userSelector.company}</Text>
+          <Text style={TextProps}>
+            This account is under subscription of{" "}
+            <Text style={[{ fontWeight: "bold" }, TextProps]}>{userSelector.company}</Text>
           </Text>
         </View>
         <View>
-          <Text style={{ fontWeight: "bold" }}>Address:</Text>
-          <Text style={{ fontWeight: 500 }}>
+          <Text style={[{ fontWeight: "bold" }, TextProps]}>Address:</Text>
+          <Text style={TextProps}>
             ONE PM Buildiing Level 5, Kav M5 17-18, Boulevard Gading Serpong, Tangerang, Banten, Indonesia, 15810
           </Text>
         </View>
         <View>
-          <Text style={{ fontWeight: "bold" }}>Phone:</Text>
-          <Text style={{ fontWeight: 500 }}>+62 21 588 8220</Text>
+          <Text style={[{ fontWeight: "bold" }, TextProps]}>Phone:</Text>
+          <Text style={TextProps}>+62 21 588 8220</Text>
         </View>
         <View>
-          <Text style={{ fontWeight: "bold" }}>Email:</Text>
-          <Text>{userSelector.email}</Text>
+          <Text style={[{ fontWeight: "bold" }, TextProps]}>Email:</Text>
+          <Text style={TextProps}>{userSelector.email}</Text>
         </View>
       </View>
     </SafeAreaView>

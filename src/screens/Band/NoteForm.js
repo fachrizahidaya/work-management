@@ -101,7 +101,7 @@ const NoteForm = ({ route }) => {
 
             {editCheckAccess && (
               <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                <Text style={{ color: "white", fontWeight: 500 }}>{noteData ? "Save" : "Create"}</Text>
+                <Text style={{ color: "white" }}>{noteData ? "Save" : "Create"}</Text>
               </FormButton>
             )}
           </View>

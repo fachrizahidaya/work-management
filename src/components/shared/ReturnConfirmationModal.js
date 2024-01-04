@@ -2,6 +2,7 @@ import { View, Text, Image, Dimensions, Platform } from "react-native";
 import Modal from "react-native-modal";
 
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 const ReturnConfirmationModal = ({ isOpen, toggle, onPress, description }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -23,12 +24,12 @@ const ReturnConfirmationModal = ({ isOpen, toggle, onPress, description }) => {
               resizeMode: "contain",
             }}
           />
-          <Text style={{ textAlign: "center" }}>{description}</Text>
+          <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
         </View>
 
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
           <Button onPress={toggle} flex={1} variant="outline" backgroundColor="#FD7972">
-            <Text>Cancel</Text>
+            <Text style={TextProps}>Cancel</Text>
           </Button>
 
           <Button backgroundColor="#E53935" onPress={onPress} flex={1}>

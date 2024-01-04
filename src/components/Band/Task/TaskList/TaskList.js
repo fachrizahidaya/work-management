@@ -6,6 +6,7 @@ import TaskListItem from "./TaskListItem/TaskListItem";
 import TaskSkeleton from "./TaskSkeleton";
 import Tabs from "../../../shared/Tabs";
 import { RefreshControl } from "react-native-gesture-handler";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, refetch, setSelectedStatus }) => {
   const todoTasks = tasks?.filter((task) => {
@@ -81,7 +82,7 @@ const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, ref
               style={{ resizeMode: "contain", height: 200, width: 200 }}
               source={require("../../../../assets/vectors/empty.png")}
             />
-            <Text>No task available</Text>
+            <Text style={TextProps}>No task available</Text>
           </View>
         )
       ) : (

@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import RenderHtml from "react-native-render-html";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
   const { width } = Dimensions.get("screen");
@@ -19,7 +20,7 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
       }}
     >
       <View style={{ display: "flex", flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 25 }}>
-        <Text style={{ width: 42, fontWeight: !isRead ? "bold" : 500 }}>{time.split(" ")[1]}</Text>
+        <Text style={[{ width: 42, fontWeight: !isRead ? "bold" : 400 }, TextProps]}>{time.split(" ")[1]}</Text>
 
         <View
           style={{
@@ -31,12 +32,12 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
         />
 
         <View style={{ flex: 1, display: "flex" }}>
-          <Text style={{ fontWeight: !isRead ? "bold" : 400 }}>{name}</Text>
+          <Text style={[{ fontWeight: !isRead ? "bold" : 400 }, TextProps]}>{name}</Text>
           <View>
             <RenderHtml
               contentWidth={width}
               source={{
-                html: !isRead ? `<span style="fontWeight: bold;">${content}<span>` : content,
+                html: !isRead ? `<span style="fontWeight: bold; color: #3F434A;">${content}<span>` : content,
               }}
             />
           </View>

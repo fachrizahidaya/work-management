@@ -7,6 +7,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Input from "./Forms/Input";
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 /**
  * @param {number} width - The width of the component.
@@ -139,11 +140,11 @@ const CustomDateTimePicker = ({
       {calendarIsOpen && Platform.OS === "ios" && (
         <View style={{ display: "flex", flexDirection: "row", gap: 5, alignSelf: "center" }}>
           <Button onPress={toggleDatePicker} variant="outline" styles={{ paddingHorizontal: 8 }}>
-            <Text style={{ fontWeight: 500 }}>Cancel</Text>
+            <Text style={TextProps}>Cancel</Text>
           </Button>
 
           <Button onPress={confirmIOSDate} styles={{ paddingHorizontal: 8 }}>
-            <Text style={{ fontWeight: 500, color: "white" }}>Confirm</Text>
+            <Text style={{ color: "white" }}>Confirm</Text>
           </Button>
         </View>
       )}

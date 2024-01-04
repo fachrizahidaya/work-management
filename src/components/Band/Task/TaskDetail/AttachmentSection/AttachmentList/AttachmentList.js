@@ -4,6 +4,7 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../../../../shared/CustomStylings";
 
 const AttachmentList = ({
   id,
@@ -62,14 +63,14 @@ const AttachmentList = ({
         />
 
         <View>
-          <Text style={{ fontWeight: 500 }}>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
+          <Text style={TextProps}>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
 
           {time && (
-            <Text style={{ fontWeight: 500, opacity: 0.5, maxWidth: 150 }} numberOfLines={2}>
+            <Text style={[{ opacity: 0.5, maxWidth: 150 }, TextProps]} numberOfLines={2}>
               {time}
             </Text>
           )}
-          <Text style={{ fontWeight: 500, opacity: 0.5 }}>{size}</Text>
+          <Text style={[{ opacity: 0.5 }, TextProps]}>{size}</Text>
         </View>
       </View>
 
@@ -84,7 +85,7 @@ const AttachmentList = ({
                     onPress={() => downloadFileHandler(path)}
                   >
                     <MaterialCommunityIcons name="download-outline" size={20} />
-                    <Text style={{ fontWeight: 500 }}>Download</Text>
+                    <Text style={TextProps}>Download</Text>
                   </TouchableOpacity>
 
                   {!disabled && (
@@ -93,7 +94,7 @@ const AttachmentList = ({
                       onPress={() => deleteFileHandler(id, from)}
                     >
                       <MaterialCommunityIcons name="delete-outline" size={20} color="red" />
-                      <Text style={{ fontWeight: 500, color: "red" }}>Delete</Text>
+                      <Text style={{ color: "red" }}>Delete</Text>
                     </TouchableOpacity>
                   )}
                 </View>

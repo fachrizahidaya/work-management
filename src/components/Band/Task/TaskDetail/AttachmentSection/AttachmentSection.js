@@ -11,6 +11,7 @@ import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
 import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const AttachmentSection = ({ taskId, disabled }) => {
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
@@ -132,7 +133,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
   return (
     <View style={{ display: "flex", gap: 10 }}>
       <View style={{ display: "flex", gap: 10 }}>
-        <Text style={{ fontWeight: 500 }}>ATTACHMENTS</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>ATTACHMENTS</Text>
 
         {attachments?.data?.length > 0 && (
           <ScrollView style={{ maxHeight: 200 }}>

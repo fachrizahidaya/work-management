@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Image, Text, View } from "react-native";
+import { TextProps } from "./CustomStylings";
 
 const EmptyPlaceholder = ({ text, height, width }) => {
   return (
@@ -11,7 +12,7 @@ const EmptyPlaceholder = ({ text, height, width }) => {
         alt="empty"
         resizeMode="contain"
       />
-      <Text stl={{ fontWeight: 400 }}>{text}</Text>
+      <Text stl={TextProps}>{text}</Text>
     </View>
   );
 };

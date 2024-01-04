@@ -11,6 +11,7 @@ import Toast from "react-native-toast-message";
 import FormButton from "../../../shared/FormButton";
 import axiosInstance from "../../../../config/api";
 import Input from "../../../shared/Forms/Input";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelectedTeamId }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -83,7 +84,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       deviceWidth={deviceWidth}
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        <Text style={{ fontWeight: 500 }}>{teamData ? "Edit Team" : "New Team"}</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>{teamData ? "Edit Team" : "New Team"}</Text>
 
         <Input formik={formik} fieldName="name" placeHolder="Input team name..." value={formik.values.name} />
 
@@ -95,11 +96,11 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
             backgroundColor="white"
             style={{ paddingHorizontal: 8 }}
           >
-            <Text style={{ fontWeight: 500 }}>Cancel</Text>
+            <Text style={TextProps}>Cancel</Text>
           </FormButton>
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} style={{ paddingHorizontal: 8 }}>
-            <Text style={{ fontWeight: 500, color: "white" }}>Submit</Text>
+            <Text style={{ color: "white" }}>Submit</Text>
           </FormButton>
         </View>
 

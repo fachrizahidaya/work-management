@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import axiosInstance from "../../config/api";
 import { useLoading } from "../../hooks/useLoading";
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 const ConfirmationModal = ({
   isOpen,
@@ -83,7 +84,7 @@ const ConfirmationModal = ({
               resizeMode: "contain",
             }}
           />
-          <Text style={{ textAlign: "center", fontWeight: 500 }}>{description}</Text>
+          <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
         </View>
 
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
@@ -94,7 +95,7 @@ const ConfirmationModal = ({
             variant="outline"
             backgroundColor="#FD7972"
           >
-            <Text style={{ color: "#FD7972", fontWeight: 500 }}>Cancel</Text>
+            <Text style={{ color: "#FD7972" }}>Cancel</Text>
           </Button>
 
           <Button
@@ -103,7 +104,7 @@ const ConfirmationModal = ({
             startIcon={isDeleting && <ActivityIndicator />}
             flex={1}
           >
-            <Text style={{ color: "white", fontWeight: 500 }}>Confirm</Text>
+            <Text style={{ color: "white" }}>Confirm</Text>
           </Button>
         </View>
       </View>

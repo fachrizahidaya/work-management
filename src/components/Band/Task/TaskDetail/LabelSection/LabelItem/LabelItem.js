@@ -9,7 +9,7 @@ const LabelItem = ({ id, name, color, onPress, disabled }) => {
       onPress={() => onPress(id)}
       disabled={disabled}
     >
-      <Text style={{ color: "white", fontWeight: 500 }}>{name}</Text>
+      <Text style={{ color: "white" }}>{name}</Text>
     </Pressable>
   );
 };

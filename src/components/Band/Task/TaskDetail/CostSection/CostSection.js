@@ -16,6 +16,7 @@ import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import Input from "../../../../shared/Forms/Input";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const CostSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -104,7 +105,7 @@ const CostSection = ({ taskId, disabled }) => {
   return (
     <>
       <View style={{ display: "flex", gap: 10 }}>
-        <Text style={{ fontWeight: 500 }}>COST</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>COST</Text>
         <View style={{ position: "relative" }}>
           <Pressable
             onPress={toggle}
@@ -153,8 +154,8 @@ const CostSection = ({ taskId, disabled }) => {
                           }}
                         >
                           <View style={{ display: "flex", flexDirection: "row" }}>
-                            <Text style={{ fontSize: 16 }}>{item.cost_name} - </Text>
-                            <Text style={{ fontSize: 16 }}>Rp {item.cost_amount.toLocaleString()}</Text>
+                            <Text style={[{ fontSize: 16 }, TextProps]}>{item.cost_name} - </Text>
+                            <Text style={[{ fontSize: 16 }, TextProps]}>Rp {item.cost_amount.toLocaleString()}</Text>
                           </View>
 
                           <TouchableOpacity onPress={() => openDeleteModal(item.id)}>
@@ -166,7 +167,7 @@ const CostSection = ({ taskId, disabled }) => {
                   </View>
                 </ScrollView>
               ) : (
-                <Text style={{ fontWeight: 500 }}>This task has no cost yet.</Text>
+                <Text style={TextProps}>This task has no cost yet.</Text>
               )}
 
               {!disabled && (

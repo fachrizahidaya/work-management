@@ -19,6 +19,7 @@ import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 import Input from "../../../../shared/Forms/Input";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const ChecklistSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -128,7 +129,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
   return (
     <>
       <View style={{ display: "flex", gap: 10 }}>
-        <Text style={{ fontWeight: 500 }}>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>
           CHECKLIST ({(finishChecklists?.length / checklists?.data?.length || 0) * 100}%)
         </Text>
 
@@ -182,12 +183,12 @@ const ChecklistSection = ({ taskId, disabled }) => {
         deviceWidth={deviceWidth}
       >
         <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-          <Text style={{ alignSelf: "center", fontWeight: 500 }}>Add New Checklist</Text>
+          <Text style={[{ alignSelf: "center", fontWeight: 500 }, TextProps]}>Add New Checklist</Text>
 
           <Input placeHolder="Check List Title" value={formik.values.title} formik={formik} fieldName="title" />
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text style={{ fontWeight: 500, color: "white" }}>Save</Text>
+            <Text style={{ color: "white" }}>Save</Text>
           </FormButton>
         </View>
       </Modal>

@@ -72,7 +72,6 @@ const Pagination = ({ data, setCurrentPage, currentPage }) => {
               <Text
                 style={{
                   color: currentPage === page ? "#176688" : "white",
-                  fontWeight: 500,
                 }}
               >
                 {page}

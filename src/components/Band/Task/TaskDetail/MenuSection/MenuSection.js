@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import useCheckAccess from "../../../../../hooks/useCheckAccess";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
                       SheetManager.hide("form-sheet");
                     }}
                   >
-                    <Text style={{ fontWeight: 500 }}>Take task</Text>
+                    <Text style={TextProps}>Take task</Text>
                   </TouchableOpacity>
                   {editCheckAccess && (
                     <TouchableOpacity
@@ -40,7 +41,7 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
                         openEditForm();
                       }}
                     >
-                      <Text style={{ fontWeight: 500 }}>Edit</Text>
+                      <Text style={TextProps}>Edit</Text>
                     </TouchableOpacity>
                   )}
                   {deleteCheckAccess && (
@@ -50,7 +51,7 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
                         toggleDeleteModal();
                       }}
                     >
-                      <Text style={{ fontWeight: 500, color: "red" }}>Delete</Text>
+                      <Text style={{ color: "red" }}>Delete</Text>
                     </TouchableOpacity>
                   )}
                 </View>

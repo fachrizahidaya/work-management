@@ -2,6 +2,7 @@ import React from "react";
 
 import { Pressable, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../../../../shared/CustomStylings";
 
 const CheckListItem = ({ id, title, status, onPress, onPressDelete, disabled }) => {
   return (
@@ -23,9 +24,7 @@ const CheckListItem = ({ id, title, status, onPress, onPressDelete, disabled }) 
           />
         </Pressable>
 
-        <Text style={{ fontWeight: 500, textDecorationLine: status === "Finish" ? "line-through" : "none" }}>
-          {title}
-        </Text>
+        <Text style={[{ textDecorationLine: status === "Finish" ? "line-through" : "none" }, TextProps]}>{title}</Text>
       </View>
 
       {!disabled && (
