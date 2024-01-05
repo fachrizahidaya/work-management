@@ -8,6 +8,7 @@ import FormButton from "../../shared/FormButton";
 import Tabs from "../../shared/Tabs";
 import Input from "../../shared/Forms/Input";
 import Select from "../../shared/Forms/Select";
+import { TextProps } from "../../shared/CustomStylings";
 
 const AttendanceForm = ({
   toggleReport,
@@ -104,13 +105,13 @@ const AttendanceForm = ({
             <View style={{ width: "100%", gap: 5 }}>
               <View style={styles.clock}>
                 <View>
-                  <Text>Clock-in Time</Text>
-                  <Text>{date?.timeIn}</Text>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeIn}</Text>
                 </View>
                 {!date?.timeOut ? null : (
                   <View>
-                    <Text>Clock-out Time</Text>
-                    <Text>{date?.timeOut}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeOut}</Text>
                   </View>
                 )}
               </View>
@@ -185,14 +186,15 @@ const AttendanceForm = ({
             />
             <FormButton
               width="full"
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -222,14 +224,15 @@ const AttendanceForm = ({
               fieldName="early_reason"
             />
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -252,14 +255,15 @@ const AttendanceForm = ({
               fieldName="att_reason"
             />
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -271,13 +275,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>On Duty</Text>
-                    <Text>{date?.onDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-in Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeIn} ({date?.late})
                       </Text>
                     </View>
@@ -310,13 +314,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>On Duty</Text>
-                    <Text>{date?.offDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-out Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeOut} ({date?.early})
                       </Text>
                     </View>
@@ -347,14 +351,15 @@ const AttendanceForm = ({
               </>
             )}
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -365,13 +370,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>On Duty</Text>
-                    <Text>{date?.onDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-in Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeIn} ({date?.late})
                       </Text>
                     </View>
@@ -404,13 +409,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>Off Duty</Text>
-                    <Text>{date?.offDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-out Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeOut} ({date?.early})
                       </Text>
                     </View>
@@ -441,14 +446,15 @@ const AttendanceForm = ({
               </>
             )}
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -459,13 +465,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>On Duty</Text>
-                    <Text>{date?.onDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-in Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeIn} ({date?.late})
                       </Text>
                     </View>
@@ -498,13 +504,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>Off Duty</Text>
-                    <Text>{date?.offDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-out Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeOut} ({date?.early})
                       </Text>
                     </View>
@@ -535,14 +541,15 @@ const AttendanceForm = ({
               </>
             )}
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -554,13 +561,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>On Duty</Text>
-                    <Text>{date?.onDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-in Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeIn} ({date?.late})
                       </Text>
                     </View>
@@ -593,13 +600,13 @@ const AttendanceForm = ({
               <>
                 <View style={styles.clock}>
                   <View>
-                    <Text>Off Duty</Text>
-                    <Text>{date?.offDuty}</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <View>
-                      <Text>Clock-out Time</Text>
-                      <Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
                         {date?.timeOut} ({date?.early})
                       </Text>
                     </View>
@@ -630,14 +637,15 @@ const AttendanceForm = ({
               </>
             )}
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -655,14 +663,15 @@ const AttendanceForm = ({
             />
             <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
             <FormButton
-              children="Save"
               size="sm"
               variant="solid"
               fontSize={12}
               fontColor="white"
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-            />
+            >
+              <Text style={{ color: "#FFFFFF" }}>Save</Text>
+            </FormButton>
           </View>
         )}
 
@@ -674,7 +683,7 @@ const AttendanceForm = ({
           <View style={{ width: "95%", gap: 3 }}>
             <View style={{ width: "100%", gap: 5 }}>
               <View>
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>Please Clock-in</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>Please Clock-in</Text>
               </View>
             </View>
           </View>
@@ -721,14 +730,15 @@ const LateOrEarlyTime = ({
       />
       <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
       <FormButton
-        children="Save"
         size="sm"
         variant="solid"
         fontSize={12}
         fontColor="white"
         isSubmitting={formik.isSubmitting}
         onPress={formik.handleSubmit}
-      />
+      >
+        <Text style={{ color: "#FFFFFF" }}>Save</Text>
+      </FormButton>
     </View>
   );
 };
@@ -737,12 +747,12 @@ const LeaveOrPermit = ({ type, reason }) => {
   return (
     <View style={{ width: "100%", gap: 5 }}>
       <View>
-        <Text>Attendance Type</Text>
-        <Text>{type}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Attendance Type</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{type}</Text>
       </View>
       <View>
-        <Text>Reason</Text>
-        <Text>{reason}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Reason</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{reason}</Text>
       </View>
     </View>
   );
@@ -752,13 +762,13 @@ const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }
   return (
     <View style={styles.clock}>
       <View>
-        <Text>{titleDuty}</Text>
-        <Text>{timeDuty}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{titleDuty}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{timeDuty}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <View>
-          <Text>{titleClock}</Text>
-          <Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>{titleClock}</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>
             {timeInOrTimeOut} ({lateOrEarly})
           </Text>
         </View>

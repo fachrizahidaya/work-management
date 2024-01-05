@@ -16,6 +16,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
+import { TextProps } from "../../components/shared/CustomStylings";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -209,17 +210,11 @@ const PayslipScreen = () => {
                 alt="empty"
                 style={{ resizeMode: "contain", height: 300, width: 300 }}
               />
-              <Text>No Data</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
             </View>
           </>
         )}
       </SafeAreaView>
-      {/* <PayslipDownload
-        reference={payslipDownloadScreenSheetRef}
-        toggleDownloadDialog={closeSelectedPayslip}
-        setPasswordError={setPasswordDownloadError}
-        onDownloadPayslip={payslipDownloadHandler}
-      /> */}
     </>
   );
 };

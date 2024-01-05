@@ -4,13 +4,11 @@ import * as yup from "yup";
 
 import { Text, StyleSheet } from "react-native";
 
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 
 const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, onDownloadPayslip }) => {
   const [hidePassword, setHidePassword] = useState(true);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   /**
    * Input Password Handler

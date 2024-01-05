@@ -3,6 +3,7 @@ import { TouchableOpacity, View, Text } from "react-native";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import { card } from "../../../styles/Card";
+import { TextProps } from "../../shared/CustomStylings";
 
 const SupervisorInformation = ({
   supervisorId,
@@ -52,7 +53,7 @@ const SupervisorInformation = ({
 
       <View>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>Phone:</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Phone:</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
             <TouchableOpacity onPress={() => onClickCall(phoneUrl)}>
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>{supervisorPhone}</Text>
@@ -60,7 +61,7 @@ const SupervisorInformation = ({
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400" }}>Email:</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Email:</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
             <Text
               style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}

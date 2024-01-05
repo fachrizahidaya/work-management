@@ -36,7 +36,7 @@ const ContactList = ({
           }
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <AvatarPlaceholder image={image} name={name} size="sm" borderRadius="full" isThumb={false} />
+            <AvatarPlaceholder image={image} name={name} size="sm" isThumb={false} />
             <View>
               <Text style={{ fontSize: 12, fontWeight: "500", color: "#3F434A" }}>
                 {name.length > 30 ? name.split(" ")[0] : name}

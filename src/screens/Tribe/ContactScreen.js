@@ -8,7 +8,6 @@ import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
 import Input from "../../components/shared/Forms/Input";
-import PageHeader from "../../components/shared/PageHeader";
 import ContactList from "../../components/Tribe/Contact/ContactList";
 
 const ContactScreen = () => {

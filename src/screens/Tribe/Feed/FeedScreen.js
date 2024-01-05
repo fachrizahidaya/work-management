@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
+import { TextProps } from "../../../components/shared/CustomStylings";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
@@ -222,7 +223,7 @@ const FeedScreen = () => {
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}> & Feed</Text>
+            <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
           <Text style={{ fontSize: 12, fontWeight: "700" }}>PT Kolabora Group Indonesia</Text>
         </View>

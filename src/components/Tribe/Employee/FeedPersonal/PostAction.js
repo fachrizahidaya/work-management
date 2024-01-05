@@ -1,12 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const PostAction = ({ actionIsOpen, toggleAction, toggleDeleteModal, reference }) => {
   return (
     <ActionSheet ref={reference} onClose={toggleAction}>
       <TouchableOpacity onPress={toggleDeleteModal} style={{ ...styles.wrapper }}>
         <View>
-          <Text>Delete Post</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Delete Post</Text>
         </View>
       </TouchableOpacity>
     </ActionSheet>

@@ -4,8 +4,8 @@ import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from "react-native-gesture-handler";
 
-import FeedCommentForm from "./FeedCommentForm";
 import FeedCommentList from "./FeedCommentList";
+import FeedCommentForm from "./FeedCommentForm";
 
 const FeedComment = ({
   postId,

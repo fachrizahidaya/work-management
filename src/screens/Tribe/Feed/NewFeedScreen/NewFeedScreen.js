@@ -21,6 +21,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
+import { TextProps } from "../../../../components/shared/CustomStylings";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -250,8 +251,8 @@ const NewFeedScreen = ({ route }) => {
                   variant="outline"
                   children={
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                      <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
-                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" /> : null}
+                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
                     </View>
                   }
                 />
@@ -259,8 +260,8 @@ const NewFeedScreen = ({ route }) => {
                   ""
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <MaterialCommunityIcons name="clock-time-three-outline" />
-                    <Text style={{ fontSize: 12 }}>
+                    <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
+                    <Text style={[{ fontSize: 12 }, TextProps]}>
                       {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                     </Text>
                   </View>

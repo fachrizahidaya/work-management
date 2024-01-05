@@ -64,7 +64,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="menu" size={20} color="#000000" />
+                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -101,7 +101,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="plus" size={20} color="#000000" />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -117,7 +117,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="cog-outline" size={20} color="#000000" />
+                <MaterialCommunityIcons name="cog-outline" size={20} color="#3F434A" />
               </View>
             ),
           }}

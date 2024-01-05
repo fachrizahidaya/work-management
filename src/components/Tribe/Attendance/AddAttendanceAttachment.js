@@ -11,6 +11,7 @@ import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
+import { TextProps } from "../../shared/CustomStylings";
 
 const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
@@ -86,26 +87,31 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
-              <Text>Start Date</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>Start Date</Text>
               <CustomDateTimePicker width={180} defaultValue={formik.values.begin_date} onChange={onChangeStartDate} />
-              <Text style={{ color: "red" }}>{formik.errors.begin_date}</Text>
+              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
               <Text>End Date</Text>
               <CustomDateTimePicker width={180} defaultValue={formik.values.end_date} onChange={onChangeEndDate} />
-              <Text style={{ color: "red" }}>{formik.errors.end_date}</Text>
+              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.end_date}</Text>
             </View>
           </View>
 
           <View style={{ gap: 5 }}>
-            <Text>Attachment</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>Attachment</Text>
             <Pressable onPress={onSelectFile} style={styles.attachment}>
-              <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
+              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 {!fileAttachment ? "Upload file..." : fileAttachment?.name}
               </Text>
-              <MaterialCommunityIcons name="attachment" size={20} style={{ transform: [{ rotate: "-35deg" }] }} />
+              <MaterialCommunityIcons
+                name="attachment"
+                size={20}
+                style={{ transform: [{ rotate: "-35deg" }] }}
+                color="#3F434A"
+              />
             </Pressable>
-            <Text style={{ color: "red" }}>{formik.errors.attachment}</Text>
+            <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.attachment}</Text>
           </View>
 
           {!formik.values.attachment ? (

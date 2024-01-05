@@ -5,6 +5,7 @@ import ActionSheet from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
+import { TextProps } from "../CustomStylings";
 
 const TribeScreenSheet = (props) => {
   const navigation = useNavigation();
@@ -38,9 +39,9 @@ const TribeScreenSheet = (props) => {
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="rss" />
+            <MaterialCommunityIcons size={20} name="rss" color="#3F434A" />
           </View>
-          <Text style={styles.text}>Dashboard</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Dashboard</Text>
         </View>
       </TouchableOpacity>
 
@@ -56,9 +57,9 @@ const TribeScreenSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name={item.mobile_icon} />
+                <MaterialCommunityIcons size={20} name={item.mobile_icon} color="#3F434A" />
               </View>
-              <Text style={styles.text}>{item.name}</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         );
@@ -73,9 +74,9 @@ const TribeScreenSheet = (props) => {
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="account-outline" />
+            <MaterialCommunityIcons size={20} name="account-outline" color="#3F434A" />
           </View>
-          <Text style={styles.text}>My Information</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
         </View>
       </TouchableOpacity>
 
@@ -88,9 +89,9 @@ const TribeScreenSheet = (props) => {
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="calendar-clock" />
+            <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
           </View>
-          <Text style={styles.text}>Calendar</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
         </View>
       </TouchableOpacity>
     </ActionSheet>

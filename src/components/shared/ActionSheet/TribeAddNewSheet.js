@@ -11,6 +11,7 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import axiosInstance from "../../../config/api";
+import { TextProps } from "../CustomStylings";
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -115,9 +116,9 @@ const TribeAddNewSheet = (props) => {
             {item.title !== "Clock in" ? (
               <View style={styles.flex}>
                 <View style={styles.item}>
-                  <MaterialCommunityIcons name={item.icons} size={20} />
+                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
                 </View>
-                <Text key={item.title} style={styles.text}>
+                <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
                   {item.title}
                 </Text>
               </View>
