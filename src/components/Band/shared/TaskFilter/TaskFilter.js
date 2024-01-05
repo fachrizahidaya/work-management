@@ -65,12 +65,12 @@ const TaskFilter = ({
                   setShownInput("");
                 }}
               >
-                <MaterialCommunityIcons name="close" size={20} />
+                <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
               </TouchableOpacity>
             )}
 
             {/* <TouchableOpacity onPress={() => openFilterHandler()}>
-              <MaterialCommunityIcons name="tune-variant" size={20} />
+              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A"/>
             </TouchableOpacity> */}
           </View>
         }

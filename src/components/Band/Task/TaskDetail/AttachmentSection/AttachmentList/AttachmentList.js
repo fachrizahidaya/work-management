@@ -84,7 +84,7 @@ const AttachmentList = ({
                     style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
                     onPress={() => downloadFileHandler(path)}
                   >
-                    <MaterialCommunityIcons name="download-outline" size={20} />
+                    <MaterialCommunityIcons name="download-outline" size={20} color="#3F434A" />
                     <Text style={TextProps}>Download</Text>
                   </TouchableOpacity>
 
@@ -103,7 +103,7 @@ const AttachmentList = ({
           })
         }
       >
-        <MaterialCommunityIcons name="dots-vertical" size={20} />
+        <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
       </Pressable>
     </View>
   );

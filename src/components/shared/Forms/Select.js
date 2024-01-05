@@ -28,7 +28,7 @@ const Select = ({ placeHolder, items, value, onChange, title, formik, fieldName 
       >
         <Text style={TextProps}>{defaultValue ? defaultValue : value1 ? value1 : value ? value : placeHolder}</Text>
 
-        <MaterialCommunityIcons name="chevron-down" style={styles.dropdownIcon} size={20} />
+        <MaterialCommunityIcons name="chevron-down" style={styles.dropdownIcon} size={20} color="#3F434A" />
       </TouchableOpacity>
 
       {formik?.errors[fieldName] && <Text style={{ color: "red", marginTop: 9 }}>{formik.errors[fieldName]}</Text>}

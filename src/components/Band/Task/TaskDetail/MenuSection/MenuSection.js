@@ -60,7 +60,12 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
           })
         }
       >
-        <MaterialCommunityIcons name="dots-vertical" size={20} style={{ opacity: disabled ? 0.5 : 1 }} />
+        <MaterialCommunityIcons
+          name="dots-vertical"
+          size={20}
+          style={{ opacity: disabled ? 0.5 : 1 }}
+          color="#3F434A"
+        />
       </TouchableOpacity>
 
       <ConfirmationModal

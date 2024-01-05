@@ -191,7 +191,7 @@ const ProjectDetailScreen = ({ route }) => {
                     })
                   }
                 >
-                  <MaterialCommunityIcons name="dots-vertical" size={20} />
+                  <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
                 </Pressable>
               )}
             </View>
@@ -206,7 +206,7 @@ const ProjectDetailScreen = ({ route }) => {
                 onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
               >
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <MaterialCommunityIcons name="format-list-bulleted" size={20} />
+                  <MaterialCommunityIcons name="format-list-bulleted" size={20} color="#3F434A" />
                   <Text style={TextProps}>Task List</Text>
                 </View>
               </Button>

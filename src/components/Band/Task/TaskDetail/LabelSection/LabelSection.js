@@ -98,7 +98,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                       borderRadius: 10,
                     }}
                   >
-                    <MaterialCommunityIcons name="plus" size={20} />
+                    <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                   </TouchableOpacity>
                 )}
               </View>
@@ -119,7 +119,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                   borderRadius: 10,
                 }}
               >
-                <MaterialCommunityIcons name="plus" size={20} />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </TouchableOpacity>
             )
           )}

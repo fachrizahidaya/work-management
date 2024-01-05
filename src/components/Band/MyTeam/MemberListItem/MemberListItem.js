@@ -129,7 +129,7 @@ const MemberListItem = ({
                   })
                 }
               >
-                <MaterialCommunityIcons name="dots-vertical" size={20} />
+                <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
               </Pressable>
             )}
           </>

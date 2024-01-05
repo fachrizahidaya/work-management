@@ -196,7 +196,7 @@ const MyProfileScreen = ({ route }) => {
               alt="profile picture"
             />
             <Pressable style={styles.editPicture} onPress={!image ? pickImageHandler : () => setImage(null)}>
-              <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} />
+              <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} color="#3F434A" />
             </Pressable>
           </View>
           {image && (

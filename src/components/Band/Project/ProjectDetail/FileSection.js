@@ -149,7 +149,7 @@ const FileSection = ({ projectId, isAllowed }) => {
             borderRadius: 10,
           }}
         >
-          <MaterialCommunityIcons name="plus" size={20} />
+          <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
         </TouchableOpacity>
       </View>
       {!attachmentIsLoading && (

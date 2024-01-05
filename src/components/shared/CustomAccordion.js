@@ -14,7 +14,7 @@ const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <View>
           <Pressable style={{ display: "flex", flexDirection: "row", gap: 4 }} onPress={toggle}>
-            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
+            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} color="#3F434A" />
             <Text style={({ fontSize: 16 }, TextProps)}>{title}</Text>
             <Text style={({ fontSize: 16 }, TextProps)}>({subTitle})</Text>
           </Pressable>
@@ -22,7 +22,7 @@ const CustomAccordion = ({ children, title, subTitle, hasAction }) => {
 
         {hasAction && (
           <Pressable>
-            <MaterialCommunityIcons name="dots-horizontal" size={20} />
+            <MaterialCommunityIcons name="dots-horizontal" size={20} color="#3F434A" />
           </Pressable>
         )}
       </View>

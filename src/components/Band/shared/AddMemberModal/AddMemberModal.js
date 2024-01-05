@@ -121,7 +121,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
                     setInputToShow("");
                   }}
                 >
-                  <MaterialCommunityIcons name="close" size={20} />
+                  <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
                 </Pressable>
               )
             }

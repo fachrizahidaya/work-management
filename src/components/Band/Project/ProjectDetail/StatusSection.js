@@ -97,7 +97,7 @@ const StatusSection = ({ projectData, onChange }) => {
           </View>
 
           {projectData?.owner_id === userSelector.id && (
-            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
+            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} color="#3F434A" />
           )}
         </View>
       </Pressable>

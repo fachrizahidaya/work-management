@@ -77,7 +77,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
               borderRadius: 10,
             }}
           >
-            <MaterialCommunityIcons name="plus" size={20} />
+            <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
       </View>
@@ -143,7 +143,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                           })
                         }
                       >
-                        <MaterialCommunityIcons name="dots-vertical" size={20} />
+                        <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
                       </Pressable>
                     )}
                   </>

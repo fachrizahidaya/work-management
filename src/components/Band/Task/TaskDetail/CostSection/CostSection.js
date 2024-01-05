@@ -159,7 +159,7 @@ const CostSection = ({ taskId, disabled }) => {
                           </View>
 
                           <TouchableOpacity onPress={() => openDeleteModal(item.id)}>
-                            <MaterialCommunityIcons name="delete-outline" size={20} />
+                            <MaterialCommunityIcons name="delete-outline" size={20} color="#3F434A" />
                           </TouchableOpacity>
                         </View>
                       )}

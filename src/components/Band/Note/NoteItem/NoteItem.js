@@ -28,7 +28,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
           }}
         >
           <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <MaterialCommunityIcons name="calendar-month" size={20} />
+            <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
 
             <Text style={[{ fontWeight: 500 }, TextProps]}>{dayjs(date).format("DD MMMM, YYYY")}</Text>
           </View>
@@ -44,6 +44,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
                   transform: [{ rotate: "45deg" }],
                 }}
                 size={20}
+                color="#3F434A"
               />
             </Pressable>
 
@@ -72,7 +73,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
                   })
                 }
               >
-                <MaterialCommunityIcons name="dots-vertical" size={20} />
+                <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
               </Pressable>
             )}
           </View>

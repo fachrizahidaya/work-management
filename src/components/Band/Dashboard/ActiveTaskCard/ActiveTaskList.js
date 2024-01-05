@@ -50,7 +50,7 @@ const ActiveTaskList = ({ id, task, title, responsible, image, status, priority,
             <MaterialCommunityIcons
               size={20}
               name={renderIcon()}
-              color={status === "Open" || status === "On Progress" ? "#E8E9EB" : "black"}
+              color={status === "Open" || status === "On Progress" ? "#E8E9EB" : "#3F434A"}
             />
           </Pressable>
           <Text

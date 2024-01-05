@@ -192,7 +192,7 @@ const PeopleSection = ({
                   borderRadius: 10,
                 }}
               >
-                <MaterialCommunityIcons name="plus" size={20} />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </TouchableOpacity>
             )}
           </View>
@@ -237,7 +237,7 @@ const PeopleSection = ({
                           borderRadius: 10,
                         }}
                       >
-                        <MaterialCommunityIcons name="plus" size={20} />
+                        <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -254,7 +254,7 @@ const PeopleSection = ({
                       borderRadius: 10,
                     }}
                   >
-                    <MaterialCommunityIcons name="plus" size={20} />
+                    <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                   </TouchableOpacity>
                 )
               )}

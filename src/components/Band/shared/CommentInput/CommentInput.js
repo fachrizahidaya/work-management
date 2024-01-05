@@ -246,7 +246,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
           style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 20 }}
         >
           <TouchableOpacity style={{ borderRadius: 50 }} onPress={selectFile}>
-            <MaterialCommunityIcons name="attachment" size={20} />
+            <MaterialCommunityIcons name="attachment" size={20} color="#3F434A" />
           </TouchableOpacity>
 
           <FormButton
