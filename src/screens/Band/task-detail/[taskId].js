@@ -2,11 +2,11 @@ import React, { memo, useCallback, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
+import Toast from "react-native-root-toast";
 
 import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../hooks/useFetch";
 import ChecklistSection from "../../../components/Band/Task/TaskDetail/ChecklistSection/ChecklistSection";

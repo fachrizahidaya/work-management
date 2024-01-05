@@ -6,13 +6,13 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
@@ -29,7 +29,7 @@ import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import Description from "../../../components/Band/Project/ProjectDetail/Description";
 import Button from "../../../components/shared/Forms/Button";
-import { TextProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
 
 const ProjectDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -68,10 +68,7 @@ const ProjectDetailScreen = ({ route }) => {
       refetchMember();
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -85,16 +82,10 @@ const ProjectDetailScreen = ({ route }) => {
         id: projectId,
       });
       refetch();
-      Toast.show({
-        type: "success",
-        text1: `Project ${status}ed`,
-      });
+      Toast.show(`Project ${status}ed`, SuccessToastProps);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -282,8 +273,6 @@ const ProjectDetailScreen = ({ route }) => {
             )}
           </View>
         </KeyboardAwareScrollView>
-
-        <Toast position="bottom" />
       </View>
 
       {/* Add member modal */}

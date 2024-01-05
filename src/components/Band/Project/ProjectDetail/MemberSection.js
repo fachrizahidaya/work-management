@@ -1,19 +1,19 @@
 import React, { memo, useState } from "react";
 
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../../config/api";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { TextProps } from "../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../shared/CustomStylings";
 
 const MemberSection = ({ projectId, projectData, members, refetchMember, isAllowed }) => {
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
@@ -45,18 +45,13 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
       }
       setIsLoading(false);
       refetchMember();
-      Toast.show({
-        type: "success",
-        text1: "New member added",
-      });
+      Toast.show("New member added", SuccessToastProps);
+
       toggleMemberModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
       toggleMemberModal();
     }
   };
@@ -164,8 +159,6 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
         hasSuccessFunc={true}
         onSuccess={refetchMember}
       />
-
-      <Toast position="bottom" />
     </View>
   );
 };

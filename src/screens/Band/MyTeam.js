@@ -3,11 +3,11 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { Image, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Skeleton } from "moti/skeleton";
-import Toast from "react-native-toast-message";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import TeamSelection from "../../components/Band/MyTeam/TeamSelection/TeamSelection";
@@ -21,7 +21,12 @@ import AddMemberModal from "../../components/Band/shared/AddMemberModal/AddMembe
 import axiosInstance from "../../config/api";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import Button from "../../components/shared/Forms/Button";
-import { SkeletonCommonProps, TextProps } from "../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SkeletonCommonProps,
+  SuccessToastProps,
+  TextProps,
+} from "../../components/shared/CustomStylings";
 
 const MyTeamScreen = () => {
   const navigation = useNavigation();
@@ -89,18 +94,12 @@ const MyTeamScreen = () => {
       }
       refetchMembers();
       setIsLoading(false);
-      Toast.show({
-        type: "success",
-        text1: `Team saved`,
-      });
+      Toast.show("Member added", SuccessToastProps);
       toggleAddMemberModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
       toggleAddMemberModal();
     }
   };
@@ -311,8 +310,6 @@ const MyTeamScreen = () => {
           SheetManager.hide("form-sheet");
         }}
       />
-
-      <Toast position="bottom" />
     </SafeAreaView>
   );
 };

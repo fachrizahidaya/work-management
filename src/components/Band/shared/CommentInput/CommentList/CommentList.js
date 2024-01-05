@@ -4,20 +4,20 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
+import Toast from "react-native-root-toast";
 
 import RenderHTML from "react-native-render-html";
 import { ScrollView } from "react-native-gesture-handler";
 import { ActivityIndicator, Dimensions, Pressable, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
 import { hyperlinkConverter } from "../../../../../helpers/hyperlinkConverter";
 import Button from "../../../../shared/Forms/Button";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const CommentList = ({ comments, parentData, refetchComments, refetchAttachments, downloadAttachment, projectId }) => {
   const { width } = Dimensions.get("screen");
@@ -83,17 +83,11 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
       }
       onDeleteSuccess();
       toggleLoading();
-      Toast.show({
-        type: "success",
-        text1: "Comment deleted",
-      });
+      Toast.show("Comment deleted", SuccessToastProps);
     } catch (error) {
       console.log(error);
       toggleLoading();
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -205,7 +199,6 @@ const CommentList = ({ comments, parentData, refetchComments, refetchAttachments
           )}
         />
       </View>
-      <Toast position="bottom" />
     </ScrollView>
   );
 };

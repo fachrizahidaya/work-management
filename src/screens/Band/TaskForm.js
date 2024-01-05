@@ -3,10 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions, View, Text } from "react-native";
-import Toast from "react-native-toast-message";
 
 import CustomDateTimePicker from "../../components/shared/CustomDateTimePicker";
 import axiosInstance from "../../config/api";
@@ -14,6 +14,7 @@ import FormButton from "../../components/shared/FormButton";
 import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
+import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const TaskForm = ({ route }) => {
   const { taskData, projectId, selectedStatus, refetch } = route.params;
@@ -47,20 +48,12 @@ const TaskForm = ({ route }) => {
       setSubmitting(false);
       setStatus("success");
 
-      Toast.show({
-        type: "success",
-        text1: "Task saved!",
-        position: "bottom",
-      });
+      Toast.show("Task saved", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -169,8 +162,6 @@ const TaskForm = ({ route }) => {
             </FormButton>
           </View>
         </ScrollView>
-
-        <Toast />
       </View>
     </View>
   );
