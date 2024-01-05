@@ -5,7 +5,6 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
@@ -27,6 +26,7 @@ const PeopleSection = ({
   selectedTask,
   refetchResponsible,
   refetchTask,
+  toast,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const [selectedObserver, setSelectedObserver] = useState({});
@@ -66,14 +66,14 @@ const PeopleSection = ({
       refetchTask();
       SheetManager.hide("form-sheet");
 
-      Toast.show({
+      toast({
         type: "success",
         text1: "Task assigned",
       });
     } catch (error) {
       console.log(error);
 
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -95,7 +95,7 @@ const PeopleSection = ({
       refetchObservers();
       setIsLoading(false);
 
-      Toast.show({
+      toast({
         type: "success",
         text1: "New observer added",
       });
@@ -105,7 +105,7 @@ const PeopleSection = ({
       setIsLoading(false);
       toggleObserverModal();
 
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -261,8 +261,6 @@ const PeopleSection = ({
             </View>
           </View>
         )}
-
-        <Toast position="bottom" />
       </View>
 
       <AddMemberModal

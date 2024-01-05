@@ -8,7 +8,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { FlashList } from "@shopify/flash-list";
 import { Dimensions, Platform, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -18,7 +17,7 @@ import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import Input from "../../../../shared/Forms/Input";
 import { TextProps } from "../../../../shared/CustomStylings";
 
-const CostSection = ({ taskId, disabled }) => {
+const CostSection = ({ taskId, disabled, toast }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -58,7 +57,7 @@ const CostSection = ({ taskId, disabled }) => {
       setSubmitting(false);
       refechCosts();
 
-      Toast.show({
+      toast({
         type: "success",
         text1: "Cost added",
       });
@@ -67,7 +66,7 @@ const CostSection = ({ taskId, disabled }) => {
       setStatus("error");
       setSubmitting(false);
 
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -208,8 +207,6 @@ const CostSection = ({ taskId, disabled }) => {
           hasSuccessFunc={true}
           onSuccess={refechCosts}
         />
-
-        <Toast position="bottom" />
       </View>
     </>
   );

@@ -1,19 +1,19 @@
 import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
+import { SheetManager } from "react-native-actions-sheet";
+
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
 import { TextProps } from "../../../../shared/CustomStylings";
 
-const AttachmentSection = ({ taskId, disabled }) => {
+const AttachmentSection = ({ taskId, disabled, toast }) => {
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
 
   /**
@@ -29,10 +29,9 @@ const AttachmentSection = ({ taskId, disabled }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
+      toast({
+        type: "error",
+        text1: error.response.data.message,
       });
     }
   };
@@ -49,14 +48,14 @@ const AttachmentSection = ({ taskId, disabled }) => {
       refetchAttachments();
 
       // Display toast if success
-      Toast.show({
+      toast({
         type: "success",
         text1: "Attachment uploaded",
       });
     } catch (error) {
       console.log(error);
       // Display toast if error
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -109,6 +108,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
       } else {
         await axiosInstance.delete(`/pm/tasks/attachment/${attachmentId}`);
       }
+      SheetManager.hide("form-sheet");
       // Refetch attachments after deletion
       refetchAttachments();
 
@@ -118,13 +118,13 @@ const AttachmentSection = ({ taskId, disabled }) => {
         refetchComments();
       }
 
-      Toast.show({
+      toast({
         type: "success",
         text1: "Attachment deleted",
       });
     } catch (error) {
       console.log(error);
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -160,8 +160,6 @@ const AttachmentSection = ({ taskId, disabled }) => {
             </View>
           </ScrollView>
         )}
-
-        <Toast />
       </View>
 
       <TouchableOpacity onPress={selectFile}>

@@ -5,11 +5,10 @@ import * as yup from "yup";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
-import { ActivityIndicator, Dimensions, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Platform, Text, TouchableOpacity, View } from "react-native";
 import { Bar } from "react-native-progress";
 import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import { useFetch } from "../../../../../hooks/useFetch";
@@ -21,7 +20,7 @@ import { useLoading } from "../../../../../hooks/useLoading";
 import Input from "../../../../shared/Forms/Input";
 import { TextProps } from "../../../../shared/CustomStylings";
 
-const ChecklistSection = ({ taskId, disabled }) => {
+const ChecklistSection = ({ taskId, disabled, toast }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -67,7 +66,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
       setStatus("success");
       setSubmitting(false);
 
-      Toast.show({
+      toast({
         type: "success",
         text1: "Checklist added",
       });
@@ -76,7 +75,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
       setStatus("error");
       setSubmitting(false);
 
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -92,7 +91,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
       refetchChecklists();
       stop();
 
-      Toast.show({
+      toast({
         type: "success",
         text1: currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked",
       });
@@ -100,7 +99,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
       console.log(error);
       stop();
 
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -171,8 +170,6 @@ const ChecklistSection = ({ taskId, disabled }) => {
             </View>
           </TouchableOpacity>
         )}
-
-        <Toast />
       </View>
 
       <Modal

@@ -4,14 +4,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { Text, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import CustomDateTimePicker from "../../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
 import { TextProps } from "../../../../shared/CustomStylings";
 
-const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
+const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, toast }) => {
   const { isLoading, start, stop } = useLoading(false);
 
   /**
@@ -23,14 +22,14 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
       start();
       await axiosInstance.patch(`/pm/tasks/${taskId}`, newDeadline);
       stop();
-      Toast.show({
+      toast({
         type: "success",
         text1: "New deadline saved",
       });
     } catch (error) {
       console.log(error);
       stop();
-      Toast.show({
+      toast({
         type: "error",
         text1: error.response.data.message,
       });
@@ -65,8 +64,6 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
         onChange={onChangeDeadline}
         maximumDate={maxDate}
       />
-
-      <Toast position="bottom" />
     </View>
   );
 };

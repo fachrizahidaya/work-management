@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
@@ -19,6 +19,7 @@ const TaskForm = ({ route }) => {
   const { taskData, projectId, selectedStatus, refetch } = route.params;
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
+  const [taskId, setTaskId] = useState(null);
 
   /**
    * Handles submission of task
@@ -30,11 +31,13 @@ const TaskForm = ({ route }) => {
   const submitHandler = async (form, status, setSubmitting, setStatus) => {
     try {
       if (!taskData) {
-        await axiosInstance.post("/pm/tasks", {
+        const res = await axiosInstance.post("/pm/tasks", {
           project_id: projectId,
           status: status,
           ...form,
         });
+        // Set the task id so navigation can redirect to the task detail screen
+        setTaskId(res.data.data.id);
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
       }
@@ -90,7 +93,11 @@ const TaskForm = ({ route }) => {
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      navigation.goBack();
+      if (taskData) {
+        navigation.goBack();
+      } else {
+        navigation.navigate("Task Detail", { taskId: taskId });
+      }
     }
   }, [formik.isSubmitting, formik.status]);
 

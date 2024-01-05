@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../../../../shared/CustomStylings";
 
@@ -16,13 +16,13 @@ const CheckListItem = ({ id, title, status, onPress, onPressDelete, disabled }) 
       }}
     >
       <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
-        <Pressable disabled={disabled} onPress={() => onPress(id, status)}>
+        <TouchableOpacity disabled={disabled} onPress={() => onPress(id, status)}>
           <MaterialCommunityIcons
             name={status === "Open" ? "checkbox-blank-circle-outline" : "checkbox-marked-circle-outline"}
             color={status === "Finish" ? "#176688" : "#3F434A"}
             size={20}
           />
-        </Pressable>
+        </TouchableOpacity>
 
         <Text style={[{ textDecorationLine: status === "Finish" ? "line-through" : "none" }, TextProps]}>{title}</Text>
       </View>

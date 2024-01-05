@@ -109,6 +109,28 @@ const TaskDetailScreen = ({ route }) => {
     []
   );
 
+  const { routes } = navigation.getState();
+
+  const onPressBackButton = () => {
+    const previousScreenIndex = routes.length - 2;
+    const screenToRedirect = routes.length - 3;
+    if (routes[previousScreenIndex].name === "Task Form") {
+      // If previous screen is task form, redirect to the screen before task form
+      navigation.navigate(`${routes[screenToRedirect].name}`);
+    } else {
+      // If previous screen is not task form, go back to previous screen
+      navigation.goBack();
+    }
+  };
+
+  const popToast = (data) => {
+    Toast.show({
+      type: data.type,
+      text1: data.text1,
+      position: "bottom",
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView
@@ -131,7 +153,7 @@ const TaskDetailScreen = ({ route }) => {
               <PageHeader
                 title={selectedTask?.data?.title}
                 subTitle={selectedTask?.data?.task_no}
-                onPress={() => navigation.goBack()}
+                onPress={onPressBackButton}
                 width={width - 100}
               />
 
@@ -166,10 +188,16 @@ const TaskDetailScreen = ({ route }) => {
             disabled={inputIsDisabled}
             selectedTask={selectedTask?.data}
             refetchResponsible={refetchResponsible}
+            toast={popToast}
           />
 
           {/* Labels */}
-          <LabelSection projectId={selectedTask?.data?.project_id} taskId={taskId} disabled={inputIsDisabled} />
+          <LabelSection
+            projectId={selectedTask?.data?.project_id}
+            taskId={taskId}
+            disabled={inputIsDisabled}
+            toast={popToast}
+          />
 
           {/* Due date and cost */}
           <View style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
@@ -178,9 +206,10 @@ const TaskDetailScreen = ({ route }) => {
               projectDeadline={selectedTask?.data?.project_deadline}
               disabled={inputIsDisabled}
               taskId={taskId}
+              toast={popToast}
             />
 
-            <CostSection taskId={taskId} disabled={inputIsDisabled} />
+            <CostSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
           </View>
 
           {/* Description */}
@@ -197,20 +226,20 @@ const TaskDetailScreen = ({ route }) => {
           </View>
 
           {/* Checklists */}
-          <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
+          <ChecklistSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
 
           {/* Attachments */}
-          <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
+          <AttachmentSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
 
           {/* Comments */}
           <View style={{ display: "flex", gap: 10 }}>
             <Text style={[{ fontWeight: 500 }, TextProps]}>COMMENTS</Text>
             <CommentInput taskId={taskId} data={selectedTask?.data} />
           </View>
+
+          <Toast position="bottom" />
         </View>
       </KeyboardAwareScrollView>
-
-      <Toast position="bottom" />
     </SafeAreaView>
   );
 };
