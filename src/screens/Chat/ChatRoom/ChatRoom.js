@@ -23,7 +23,6 @@ import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
-import MenuAttachment from "../../../components/Chat/ChatInput/MenuAttachment";
 import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
 
 const ChatRoom = () => {
@@ -75,6 +74,10 @@ const ChatRoom = () => {
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
   const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
   const { isLoading: chatIsLoading, stop: stopLoadingChat, start: startLoadingChat } = useLoading(false);
+
+  const memberName = selectedGroupMembers.map((item) => {
+    return item?.user?.name;
+  });
 
   /**
    * Open chat options handler
@@ -455,13 +458,6 @@ const ChatRoom = () => {
     }
   };
 
-  const memberName = selectedGroupMembers.map((item) => {
-    return {
-      id: item.user.id,
-      name: item.user.name,
-    };
-  });
-
   /**
    * Exit group handler
    * @param {*} group_id
@@ -605,7 +601,7 @@ const ChatRoom = () => {
               chatRoomIsLoading={chatRoomIsLoading}
               deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
-              reference={menuHeaderScreenSheetRef}
+              navigation={navigation}
             />
 
             <ChatList
@@ -624,6 +620,8 @@ const ChatRoom = () => {
               placement={placement}
               memberName={memberName}
               position={chatBubblePos}
+              userSelector={userSelector}
+              navigation={navigation}
             />
 
             <ChatInput
@@ -714,26 +712,6 @@ const ChatRoom = () => {
             isLoading={deleteChatMessageIsLoading}
             onDeleteMessage={messagedeleteHandler}
           />
-
-          {/* <MenuAttachment
-            selectFile={selectFile}
-            pickImageHandler={pickImageHandler}
-            navigation={navigation}
-            bandAttachment={bandAttachment}
-            setBandAttachment={setBandAttachment}
-            bandAttachmentType={bandAttachmentType}
-            setBandAttachmentType={setBandAttachmentType}
-            name={name}
-            userId={userId}
-            roomId={roomId}
-            image={image}
-            position={position}
-            email={email}
-            type={type}
-            active_member={active_member}
-            isPinned={isPinned}
-            reference={menuAttachmentScreenSheetRef}
-          /> */}
         </SafeAreaView>
       ) : null}
     </>

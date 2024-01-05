@@ -8,6 +8,7 @@ import Modal from "react-native-modal";
 
 import UserListItemModal from "./UserListItemModal";
 import Input from "../../shared/Forms/Input";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserListModal = ({
   roomId,
@@ -47,7 +48,7 @@ const UserListModal = ({
       deviceWidth={deviceWidth}
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        <Text>Choose User</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Choose User</Text>
         <Input
           value={inputToShow}
           placeHolder="Search here..."

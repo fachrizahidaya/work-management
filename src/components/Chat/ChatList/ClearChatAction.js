@@ -2,6 +2,7 @@ import { Text, View, ActivityIndicator } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, reference }) => {
   return (
@@ -14,9 +15,7 @@ const ClearChatAction = ({ isOpen, onClose, name, clearChat, isLoading, referenc
       </View>
 
       <View style={{ flexDirection: "row", width: 350 }}>
-        <Text style={{ fontSize: 16, fontWeight: "400" }}>
-          This chat will be empty but will remain in your chat list.
-        </Text>
+        <Text style={[{ fontSize: 16 }, TextProps]}>This chat will be empty but will remain in your chat list.</Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: 350 }}>

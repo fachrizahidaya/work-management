@@ -1,4 +1,5 @@
 import { View, Text } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserPersonalized = () => {
   return (
@@ -13,11 +14,11 @@ const UserPersonalized = () => {
       }}
     >
       <View>
-        <Text style={{ fontSize: 14, fontWeight: "400" }}>Search message</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>Search message</Text>
       </View>
 
       <View>
-        <Text style={{ fontSize: 14, fontWeight: "400" }}>Mute notifications</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>Mute notifications</Text>
       </View>
     </View>
   );

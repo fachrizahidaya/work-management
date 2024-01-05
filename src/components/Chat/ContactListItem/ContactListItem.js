@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useRef, useState } from "react";
 
 import { Swipeable } from "react-native-gesture-handler";
 import RenderHtml from "react-native-render-html";
@@ -10,6 +9,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+import { TextProps } from "../../shared/CustomStylings";
+import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
   chat,
@@ -33,13 +34,23 @@ const ContactListItem = ({
   isPinned,
   onSwipe,
   onPin,
+  navigation,
 }) => {
-  const navigation = useNavigation();
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const swipeableRef = useRef(null);
+
+  const memberName = selectedGroupMembers.map((item) => {
+    return item?.user?.name;
+  });
+
+  for (let i = 0; i < memberName.length; i++) {
+    let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+    message = message?.replace(placeholder, `@${memberName[i]}`);
+  }
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
-    return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
+    return sentence?.replace(regex, `<strong style="color: #176688;">$&</strong>`);
   };
 
   const renderName = () => {
@@ -112,8 +123,8 @@ const ContactListItem = ({
           backgroundColor: "#959595",
         }}
       >
-        <MaterialIcons name="push-pin" color="white" style={{ transform: [{ rotate: "45deg" }] }} />
-        <Text style={{ color: "#FFFFFF" }}>Pin</Text>
+        <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
+        <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
       </Pressable>
     );
   };
@@ -139,6 +150,22 @@ const ContactListItem = ({
       </Pressable>
     );
   };
+
+  /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${id}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSelectedGroupMembers();
+  }, [id]);
 
   return (
     <View>
@@ -172,7 +199,7 @@ const ContactListItem = ({
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                   {!searchKeyword ? (
-                    <Text>{name}</Text>
+                    <Text style={[{ fontSize: 12, fontWeight: "500" }]}>{name}</Text>
                   ) : (
                     <RenderHtml
                       contentWidth={400}
@@ -200,13 +227,17 @@ const ContactListItem = ({
                       >
                         <View style={{ flexDirection: "row" }}>
                           {type === "group" && chat?.latest_message ? (
-                            <Text>{chat?.latest_message?.user?.name}: </Text>
+                            <Text style={[{ fontSize: 12 }, TextProps]}>{chat?.latest_message?.user?.name}: </Text>
                           ) : null}
-                          {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
+                          {message && (
+                            <Text style={[{ fontSize: 12 }, TextProps]}>
+                              {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                            </Text>
+                          )}
                           {message === null && (project || task || fileName) && (
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                              <MaterialCommunityIcons name={generateIcon()} size={20} />
-                              <Text>{generateAttachmentText()}</Text>
+                              <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
+                              <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
                             </View>
                           )}
                         </View>
@@ -230,10 +261,17 @@ const ContactListItem = ({
                       </View>
                     </>
                   ) : (
-                    <Text style={{ fontStyle: "italic", opacity: 0.5 }}>Message has been deleted</Text>
+                    <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                      Message has been deleted
+                    </Text>
                   )}
                   {isPinned?.pin_chat ? (
-                    <MaterialCommunityIcons name="pin" size={20} style={{ transform: [{ rotate: "45deg" }] }} />
+                    <MaterialCommunityIcons
+                      name="pin"
+                      size={20}
+                      style={{ transform: [{ rotate: "45deg" }] }}
+                      color="#3F434A"
+                    />
                   ) : null}
                 </View>
               </View>

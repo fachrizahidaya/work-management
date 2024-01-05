@@ -1,11 +1,9 @@
-import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
-
 import { View, Text, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserListItem = ({
   user,
@@ -21,10 +19,9 @@ const UserListItem = ({
   email,
   type,
   active_member,
+  navigation,
+  userSelector,
 }) => {
-  const userSelector = useSelector((state) => state.auth);
-  const navigation = useNavigation();
-
   return (
     userSelector.id !== id && (
       <TouchableOpacity
@@ -55,8 +52,8 @@ const UserListItem = ({
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
             <AvatarPlaceholder image={image} name={name} size="md" />
             <View>
-              <Text>{name}</Text>
-              <Text style={{ fontSize: 12, opacity: 0.5 }}>{userType}</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{name}</Text>
+              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{userType}</Text>
             </View>
           </View>
 

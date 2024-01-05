@@ -6,6 +6,7 @@ import RenderHtml from "react-native-render-html";
 import { Dimensions, TouchableOpacity, View, Text } from "react-native";
 
 import ChatTimeStamp from "../../ChatTimeStamp/ChatTimeStamp";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
   const navigation = useNavigation();
@@ -50,7 +51,9 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
               <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
             </View>
             <View style={{ gap: 5 }}>
-              <Text>{userSelector.id === chat?.user?.id ? "You: " : `${chat?.user?.name}: `}</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>
+                {userSelector.id === chat?.user?.id ? "You: " : `${chat?.user?.name}: `}
+              </Text>
 
               <View style={{ flex: 1, marginTop: 5 }}>
                 <RenderHtml

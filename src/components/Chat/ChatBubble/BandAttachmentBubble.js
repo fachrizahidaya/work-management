@@ -1,12 +1,8 @@
-import { useNavigation } from "@react-navigation/native";
-
 import { View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
-  const navigation = useNavigation();
-
+const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, navigation }) => {
   const redirectPage = (id, type) => {
     if (type === "Project") {
       return navigation.navigate("Project Detail", { projectId: id });
@@ -29,21 +25,21 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage }) => {
       }}
     >
       {type === "Project" && (
-        <MaterialCommunityIcons name="lightning-bolt" size={20} color={!myMessage ? "#000000" : "#FFFFFF"} />
+        <MaterialCommunityIcons name="lightning-bolt" size={20} color={!myMessage ? "#3F434A" : "#FFFFFF"} />
       )}
       {type === "Task" && (
         <MaterialCommunityIcons
           name="checkbox-marked-circle-outline"
           size={20}
-          color={!myMessage ? "#000000" : "#FFFFFF"}
+          color={!myMessage ? "#3F434A" : "#FFFFFF"}
         />
       )}
 
       <View>
-        <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+        <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
           {title.length > 50 ? title.slice(0, 30) + "..." : title}
         </Text>
-        <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>#{number_id}</Text>
+        <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>#{number_id}</Text>
       </View>
     </Pressable>
   );

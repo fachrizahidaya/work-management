@@ -2,6 +2,7 @@ import { Dimensions, Platform, Text, View, ActivityIndicator } from "react-nativ
 import Modal from "react-native-modal";
 
 import Button from "../../shared/Forms/Button";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatMessageDeleteModal = ({
   id,
@@ -28,7 +29,7 @@ const ChatMessageDeleteModal = ({
     >
       <View style={{ backgroundColor: "#FFFFFF", padding: 15, borderRadius: 10 }}>
         <View>
-          <Text>Delete message?</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Delete message?</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}>
           <Button padding={10} variant="outline" onPress={toggleDeleteModalChat}>
