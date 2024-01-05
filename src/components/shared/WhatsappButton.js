@@ -16,7 +16,7 @@ const WhatsappButton = ({ phone, size }) => {
   };
   return (
     <TouchableOpacity onPress={handleWhatsappPress}>
-      <MaterialCommunityIcons name="whatsapp" size={size ? size : 10} />
+      <MaterialCommunityIcons name="whatsapp" size={size ? size : 10} color="#3F434A" />
     </TouchableOpacity>
   );
 };

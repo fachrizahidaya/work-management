@@ -5,6 +5,7 @@ import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
@@ -12,7 +13,7 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
       <View style={styles.header}>
         <Text style={{ fontSize: 14, fontWeight: "500" }}>Attachment(s)</Text>
         {attachment?.data.length > 0 && (
-          <MaterialCommunityIcons name="plus" size={20} onPress={() => reference.current?.show()} />
+          <MaterialCommunityIcons name="plus" size={20} onPress={() => reference.current?.show()} color="#3F434A" />
         )}
       </View>
 
@@ -29,8 +30,8 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                   <MaterialCommunityIcons name="file-outline" size={20} />
                   <View style={{ gap: 3 }}>
-                    <Text style={{ fontSize: 14, fontWeight: "500" }}>{item?.title}</Text>
-                    <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>
+                    <Text style={[{ fontSize: 14 }, TextProps]}>{item?.title}</Text>
+                    <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                       {dayjs(item?.begin_date).format("DD MMM YYYY")} - {dayjs(item?.end_date).format("DD MMM YYYY")}
                     </Text>
                   </View>
@@ -45,7 +46,7 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
             <Pressable style={styles.addIcon} onPress={() => reference.current?.show()}>
               <MaterialCommunityIcons name="plus" size={60} />
             </Pressable>
-            <Text>No Data</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
           </View>
         )}
       </View>

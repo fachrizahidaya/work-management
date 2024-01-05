@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { View, Pressable, Text } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const NewFeedInput = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -24,7 +25,7 @@ const NewFeedInput = ({ employees, formik }) => {
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text>{item.name}</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />

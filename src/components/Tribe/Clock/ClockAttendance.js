@@ -9,12 +9,19 @@ const ClockAttendance = ({ attendance, item, currentTime, attendanceCheckHandler
         <MaterialCommunityIcons name={item.icons} size={20} color={!attendance?.time_in ? "#2984c3" : "#fdc500"} />
       </View>
       {!attendance?.time_in ? (
-        <Text style={{ fontWeight: "700", color: "#2984c3", marginHorizontal: 22 }}>Clock in</Text>
+        <Text style={{ fontSize: 14, fontWeight: "400", color: "#2984c3", marginHorizontal: 22 }}>Clock in</Text>
       ) : (
-        <Text style={{ fontWeight: "700", color: "#fdc500", marginHorizontal: 22 }}>Clock out</Text>
+        <Text style={{ fontSize: 14, fontWeight: "400", color: "#fdc500", marginHorizontal: 22 }}>Clock out</Text>
       )}
 
-      <Text style={{ fontWeight: "700", color: !attendance?.time_in ? "#2984c3" : "#fdc500", marginLeft: 170 }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: "400",
+          color: !attendance?.time_in ? "#2984c3" : "#fdc500",
+          marginLeft: 170,
+        }}
+      >
         {currentTime}
       </Text>
     </View>

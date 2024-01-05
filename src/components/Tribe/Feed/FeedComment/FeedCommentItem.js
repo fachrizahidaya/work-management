@@ -1,10 +1,12 @@
 import { memo, useState } from "react";
 
 import { StyleSheet, View, Text, Pressable, FlatList } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../../hooks/useFetch";
-import FeedCommentReplyItem from "./FeedCommentReplyItem";
+import { TextProps } from "../../../shared/CustomStylings";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import FeedCommentReplyItem from "./FeedCommentReplyItem";
 
 const FeedCommentItem = ({
   postId,
@@ -100,7 +102,7 @@ const FeedCommentItem = ({
             <Text style={{ fontSize: 12, fontWeight: "500" }}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-            <Text style={{ fontSize: 13, fontWeight: "400" }}>{styledTexts}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
             <Pressable onPress={() => onReply(parentId)}>
               <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>
             </Pressable>
@@ -134,7 +136,7 @@ const FeedCommentItem = ({
         {viewReplyToggle === true && totalReplies > 0 && hideReplies === false && (
           <>
             <View style={{ flex: 1, minHeight: 2 }}>
-              <FlatList
+              <FlashList
                 data={commentRepliesData?.data}
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}

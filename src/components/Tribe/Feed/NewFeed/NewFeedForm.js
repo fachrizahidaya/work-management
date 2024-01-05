@@ -31,7 +31,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
             <MaterialCommunityIcons
               name="attachment"
               size={25}
-              color="#377893"
+              color="#3F434A"
               style={{ transform: [{ rotate: "-35deg" }] }}
             />
           </Pressable>

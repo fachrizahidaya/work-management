@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import { TextProps } from "../../shared/CustomStylings";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
 const EmployeeSelfProfile = ({ employee, teammates, reference }) => {
@@ -45,7 +46,7 @@ const EmployeeSelfProfile = ({ employee, teammates, reference }) => {
             </View>
           </View>
           <View style={styles.information}>
-            <Text>{teammates?.data.length}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{teammates?.data.length}</Text>
             <TouchableOpacity onPress={() => reference.current?.show()}>
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>Teammates</Text>
             </TouchableOpacity>
