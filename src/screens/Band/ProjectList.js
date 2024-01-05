@@ -139,7 +139,7 @@ const ProjectList = () => {
                 { label: "Open", value: "Open" },
                 { label: "On Progress", value: "On Progress" },
                 { label: "Finish", value: "Finish" },
-                { label: "Archived", value: "Open" },
+                { label: "Archived", value: "Archived" },
               ]}
             />
           </View>
