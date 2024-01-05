@@ -15,16 +15,16 @@ import messaging from "@react-native-firebase/messaging";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
-import Toast from "react-native-toast-message";
 
 import axiosInstance from "../config/api";
 import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
-import { TextProps } from "../components/shared/CustomStylings";
+import { ErrorToastProps, TextProps } from "../components/shared/CustomStylings";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -122,11 +122,7 @@ const LoginScreen = () => {
         console.log(error);
         formik.setSubmitting(false);
 
-        Toast.show({
-          type: "error",
-          text1: error.response.data.message,
-          position: "bottom",
-        });
+        Toast.show(error.response.data.message, ErrorToastProps);
       });
   };
 
@@ -144,11 +140,7 @@ const LoginScreen = () => {
   //   } catch (error) {
   //     console.log(error);
   //     toggleLoading();
-  //     toast.show({
-  //       render: () => {
-  //         return <ErrorToast message={error.response.data.message} />;
-  //       },
-  //     });
+  //     Toast.show(error.response.data.message, ErrorToastProps);
   //   }
   // };
 
@@ -288,8 +280,6 @@ const LoginScreen = () => {
           <Text style={TextProps}>Don't have an account?</Text>
           <Text style={{ color: "#176688" }}>Sign Up</Text>
         </View>
-
-        <Toast />
       </View>
 
       {/* <View>

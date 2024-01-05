@@ -2,12 +2,12 @@ import React, { useCallback, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { useMutation } from "react-query";
+import Toast from "react-native-root-toast";
 
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlatList, Keyboard, Pressable, SafeAreaView, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { Skeleton } from "moti/skeleton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
@@ -17,7 +17,7 @@ import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import NoteFilter from "../../components/Band/Note/NoteFilter/NoteFilter";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
+import { ErrorToastProps, SkeletonCommonProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const NotesScreen = () => {
   const navigation = useNavigation();
@@ -48,18 +48,10 @@ const NotesScreen = () => {
     {
       onSuccess: () => {
         refetch();
-        Toast.show({
-          type: "success",
-          text1: "Note updated!",
-          position: "bottom",
-        });
+        Toast.show("Note updated", SuccessToastProps);
       },
       onError: (error) => {
-        Toast.show({
-          type: "error",
-          text1: error.response.data.message,
-          position: "bottom",
-        });
+        Toast.show(error.response.data.message, ErrorToastProps);
       },
     }
   );
@@ -135,8 +127,6 @@ const NotesScreen = () => {
             <MaterialCommunityIcons name="plus" size={30} color="white" />
           </Pressable>
         )}
-
-        <Toast />
       </SafeAreaView>
 
       <ConfirmationModal

@@ -35,7 +35,7 @@ const Input = ({
       <View style={styles.inputWrapper}>
         {startIcon && (
           <TouchableOpacity style={styles.startIcon} onPress={onPressEndIcon}>
-            <MaterialCommunityIcons name={startIcon} size={20} />
+            <MaterialCommunityIcons name={startIcon} size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
 
@@ -76,7 +76,7 @@ const Input = ({
 
         {endIcon && (
           <TouchableOpacity style={styles.endIcon} onPress={onPressEndIcon}>
-            <MaterialCommunityIcons name={endIcon} size={20} />
+            <MaterialCommunityIcons name={endIcon} size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
 

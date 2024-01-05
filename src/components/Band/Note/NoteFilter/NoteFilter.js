@@ -66,7 +66,7 @@ const NoteFilter = ({ data = [], setFilteredData }) => {
               formik.resetForm();
             }}
           >
-            <MaterialCommunityIcons name="close" size={20} />
+            <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
           </Pressable>
         )
       }

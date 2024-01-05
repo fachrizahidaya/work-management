@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import {
   ActivityIndicator,
@@ -15,12 +16,12 @@ import {
   View,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Toast from "react-native-toast-message";
 
 import PageHeader from "../../components/shared/PageHeader";
 import axiosInstance from "../../config/api";
 import Input from "../../components/shared/Forms/Input";
 import Button from "../../components/shared/Forms/Button";
+import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
@@ -38,11 +39,8 @@ const ChangePasswordScreen = () => {
       // Send a POST request to change the user's password
       await axiosInstance.post("/auth/change-password", form);
       resetForm();
-      Toast.show({
-        type: "success",
-        text1: "Password saved, redirecting to login screen...",
-        position: "bottom",
-      });
+      Toast.show("Password saved, redirecting to login screen...", SuccessToastProps);
+
       setTimeout(() => {
         setSubmitting(false);
         navigation.navigate("Log Out");
@@ -50,11 +48,7 @@ const ChangePasswordScreen = () => {
     } catch (error) {
       console.log(error);
       setSubmitting(false);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -100,7 +94,7 @@ const ChangePasswordScreen = () => {
               fieldName="old_password"
               endAdornment={
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
-                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#3F434A" />
                 </Pressable>
               }
             />
@@ -114,7 +108,7 @@ const ChangePasswordScreen = () => {
               fieldName="new_password"
               endAdornment={
                 <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
-                  <MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} size={20} color="#3F434A" />
                 </Pressable>
               }
             />
@@ -128,7 +122,11 @@ const ChangePasswordScreen = () => {
               fieldName="confirm_password"
               endAdornment={
                 <Pressable onPress={() => setShowRepeatPassword(!showRepeatPassword)}>
-                  <MaterialIcons name={showRepeatPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons
+                    name={showRepeatPassword ? "visibility" : "visibility-off"}
+                    size={20}
+                    color="#3F434A"
+                  />
                 </Pressable>
               }
             />

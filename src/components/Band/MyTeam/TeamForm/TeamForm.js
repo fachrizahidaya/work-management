@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 
 import Modal from "react-native-modal";
 import { Dimensions, Platform, Text, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import FormButton from "../../../shared/FormButton";
 import axiosInstance from "../../../../config/api";
 import Input from "../../../shared/Forms/Input";
-import { TextProps } from "../../../shared/CustomStylings";
+import { ErrorToastProps, TextProps } from "../../../shared/CustomStylings";
 
 const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelectedTeamId }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -51,10 +51,7 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
   const formik = useFormik({
@@ -103,8 +100,6 @@ const TeamForm = ({ isOpen, toggle, teamData, refetch, setSelectedTeam, setSelec
             <Text style={{ color: "white" }}>Submit</Text>
           </FormButton>
         </View>
-
-        <Toast position="bottom" />
       </View>
     </Modal>
   );

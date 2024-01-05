@@ -6,17 +6,17 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Alert, Image, Linking, Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import FormButton from "../../../shared/FormButton";
 import CommentList from "./CommentList/CommentList";
 import Input from "../../../shared/Forms/Input";
-import { TextProps } from "../../../shared/CustomStylings";
+import { ErrorToastProps, TextProps } from "../../../shared/CustomStylings";
 
 const doc = "../../../../assets/doc-icons/doc-format.png";
 const gif = "../../../../assets/doc-icons/gif-format.png";
@@ -68,10 +68,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -161,10 +158,6 @@ const CommentInput = ({ taskId, projectId, data }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
     }
   };
 
@@ -246,7 +239,7 @@ const CommentInput = ({ taskId, projectId, data }) => {
           style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 20 }}
         >
           <TouchableOpacity style={{ borderRadius: 50 }} onPress={selectFile}>
-            <MaterialCommunityIcons name="attachment" size={20} />
+            <MaterialCommunityIcons name="attachment" size={20} color="#3F434A" />
           </TouchableOpacity>
 
           <FormButton
@@ -259,8 +252,6 @@ const CommentInput = ({ taskId, projectId, data }) => {
             <MaterialCommunityIcons name="send" size={20} color="white" />
           </FormButton>
         </View>
-
-        <Toast position="bottom" />
       </View>
 
       {/* Comment list */}

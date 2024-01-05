@@ -2,13 +2,13 @@ import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { Dimensions, Platform, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -16,7 +16,7 @@ import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import Input from "../../../../shared/Forms/Input";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const CostSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -58,19 +58,13 @@ const CostSection = ({ taskId, disabled }) => {
       setSubmitting(false);
       refechCosts();
 
-      Toast.show({
-        type: "success",
-        text1: "Cost added",
-      });
+      Toast.show("Cost added", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
 
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -159,7 +153,7 @@ const CostSection = ({ taskId, disabled }) => {
                           </View>
 
                           <TouchableOpacity onPress={() => openDeleteModal(item.id)}>
-                            <MaterialCommunityIcons name="delete-outline" size={20} />
+                            <MaterialCommunityIcons name="delete-outline" size={20} color="#3F434A" />
                           </TouchableOpacity>
                         </View>
                       )}
@@ -208,8 +202,6 @@ const CostSection = ({ taskId, disabled }) => {
           hasSuccessFunc={true}
           onSuccess={refechCosts}
         />
-
-        <Toast position="bottom" />
       </View>
     </>
   );

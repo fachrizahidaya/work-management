@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/kss-splash-screen.png",
       "resizeMode": "contain",
-      "backgroundColor": "#E5E5E5"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

@@ -40,7 +40,7 @@ const AccountScreen = ({ route }) => {
           }}
         >
           <Pressable onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="chevron-left" size={20} />
+            <MaterialCommunityIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
           <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>My</Text>
           <Text style={{ fontSize: 16, fontWeight: 500, color: "#176688" }}>KSS</Text>
@@ -122,7 +122,7 @@ const AccountScreen = ({ route }) => {
               }}
             >
               <Text style={{ fontWeight: 400, color: "#176688" }}>Upgrade</Text>
-              <MaterialCommunityIcons name="chevron-right" size={20} />
+              <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
             </View>
           </Pressable>
 

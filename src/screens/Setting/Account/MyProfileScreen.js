@@ -6,10 +6,10 @@ import * as ImagePicker from "expo-image-picker";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -19,6 +19,7 @@ import { update_profile } from "../../../redux/reducer/auth";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import Input from "../../../components/shared/Forms/Input";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -53,16 +54,10 @@ const MyProfileScreen = ({ route }) => {
       navigation.goBack({ profile: profile });
       setSubmitting(false);
       setStatus("success");
-      Toast.show({
-        type: "success",
-        text1: "Profile updated!",
-      });
-    } catch (err) {
-      console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-      });
+      Toast.show("Profile saved", SuccessToastProps);
+    } catch (error) {
+      console.log(error);
+      Toast.show(error.response.data.message, ErrorToastProps);
       setSubmitting(false);
       setStatus("error");
     }
@@ -107,10 +102,7 @@ const MyProfileScreen = ({ route }) => {
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
 
     if (fileInfo.size >= 1000000) {
-      Toast.show({
-        type: "error",
-        text1: "File size is too large!",
-      });
+      Toast.show("File size too large", ErrorToastProps);
       return;
     }
 
@@ -140,16 +132,10 @@ const MyProfileScreen = ({ route }) => {
       });
       dispatch(update_image(res.data.data));
       setImage(null);
-      Toast.show({
-        type: "success",
-        text1: "Profile picture updated!",
-      });
-    } catch (err) {
-      console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-      });
+      Toast.show("Profile picture updated", SuccessToastProps);
+    } catch (error) {
+      console.log(error);
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -196,7 +182,7 @@ const MyProfileScreen = ({ route }) => {
               alt="profile picture"
             />
             <Pressable style={styles.editPicture} onPress={!image ? pickImageHandler : () => setImage(null)}>
-              <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} />
+              <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} color="#3F434A" />
             </Pressable>
           </View>
           {image && (

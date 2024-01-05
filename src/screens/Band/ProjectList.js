@@ -119,13 +119,13 @@ const ProjectList = () => {
                       formik.resetForm();
                     }}
                   >
-                    <MaterialCommunityIcons name="close" size={20} />
+                    <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
                   </Pressable>
                 )
               }
               startAdornment={
                 <Pressable>
-                  <MaterialCommunityIcons name="magnify" size={20} />
+                  <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
                 </Pressable>
               }
             />
@@ -139,7 +139,7 @@ const ProjectList = () => {
                 { label: "Open", value: "Open" },
                 { label: "On Progress", value: "On Progress" },
                 { label: "Finish", value: "Finish" },
-                { label: "Archived", value: "Open" },
+                { label: "Archived", value: "Archived" },
               ]}
             />
           </View>

@@ -17,7 +17,7 @@ const EmailButton = ({ email, size }) => {
 
   return (
     <TouchableOpacity onPress={handleEmailPress}>
-      <MaterialCommunityIcons name="email-outline" size={!size ? 10 : size} />
+      <MaterialCommunityIcons name="email-outline" size={!size ? 10 : size} color="#3F434A" />
     </TouchableOpacity>
   );
 };

@@ -2,14 +2,14 @@ import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
-import { ActivityIndicator, Dimensions, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Platform, Text, TouchableOpacity, View } from "react-native";
 import { Bar } from "react-native-progress";
 import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import { useFetch } from "../../../../../hooks/useFetch";
@@ -19,7 +19,7 @@ import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 import Input from "../../../../shared/Forms/Input";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const ChecklistSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -67,19 +67,12 @@ const ChecklistSection = ({ taskId, disabled }) => {
       setStatus("success");
       setSubmitting(false);
 
-      Toast.show({
-        type: "success",
-        text1: "Checklist added",
-      });
+      Toast.show("Checklist added", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
-
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -91,19 +84,11 @@ const ChecklistSection = ({ taskId, disabled }) => {
       });
       refetchChecklists();
       stop();
-
-      Toast.show({
-        type: "success",
-        text1: currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked",
-      });
+      Toast.show(currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -130,7 +115,7 @@ const ChecklistSection = ({ taskId, disabled }) => {
     <>
       <View style={{ display: "flex", gap: 10 }}>
         <Text style={[{ fontWeight: 500 }, TextProps]}>
-          CHECKLIST ({(finishChecklists?.length / checklists?.data?.length || 0) * 100}%)
+          CHECKLIST ({Math.round((finishChecklists?.length / checklists?.data?.length || 0) * 100)}%)
         </Text>
 
         <Bar
@@ -171,8 +156,6 @@ const ChecklistSection = ({ taskId, disabled }) => {
             </View>
           </TouchableOpacity>
         )}
-
-        <Toast />
       </View>
 
       <Modal

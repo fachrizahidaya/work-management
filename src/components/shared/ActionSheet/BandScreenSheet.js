@@ -24,7 +24,7 @@ const BandScreenSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name={item.mobile_icon} />
+                <MaterialCommunityIcons size={20} name={item.mobile_icon} color="#3F434A" />
               </View>
               <Text style={TextProps}>{item.name}</Text>
             </View>
@@ -40,7 +40,7 @@ const BandScreenSheet = (props) => {
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="calendar-clock" />
+            <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
           </View>
           <Text style={TextProps}>Calendar</Text>
         </View>

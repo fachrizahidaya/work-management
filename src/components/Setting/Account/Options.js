@@ -69,7 +69,7 @@ const Options = ({ profile }) => {
               <Text style={[{ fontWeight: 400 }, TextProps]}>{title.name}</Text>
             </View>
 
-            <MaterialCommunityIcons name="chevron-right" size={20} />
+            <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
           </Pressable>
         );
       })}

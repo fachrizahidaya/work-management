@@ -99,7 +99,7 @@ const Header = () => {
       >
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
           {routeName[1]?.name === "Chat List" && (
-            <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} />
+            <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} color="#3F434A" />
           )}
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
@@ -142,7 +142,7 @@ const Header = () => {
                 })
               }
             >
-              <MaterialCommunityIcons name="bell-outline" size={20} />
+              <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
             </Pressable>
 
             {unreadNotificationList?.length > 0 && (

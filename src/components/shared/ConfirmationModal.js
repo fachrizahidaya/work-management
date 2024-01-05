@@ -1,13 +1,14 @@
 import { memo } from "react";
 
+import Toast from "react-native-root-toast";
+
 import { ActivityIndicator, Dimensions, Image, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";
-import Toast from "react-native-toast-message";
 
 import axiosInstance from "../../config/api";
 import { useLoading } from "../../hooks/useLoading";
 import Button from "./Forms/Button";
-import { TextProps } from "./CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "./CustomStylings";
 
 const ConfirmationModal = ({
   isOpen,
@@ -45,11 +46,7 @@ const ConfirmationModal = ({
       toggle();
       toggleIsDeleting();
 
-      Toast.show({
-        type: "success",
-        text1: successMessage,
-        position: placement ? placement : "bottom",
-      });
+      Toast.show(successMessage, SuccessToastProps);
 
       // If hasSuccessFunc passed then run the available onSuccess function
       if (hasSuccessFunc) {
@@ -59,11 +56,7 @@ const ConfirmationModal = ({
       console.log(error);
       toggleIsDeleting();
 
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
   return (

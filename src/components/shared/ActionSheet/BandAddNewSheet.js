@@ -50,7 +50,7 @@ const BandAddNewSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons name={item.icons} size={20} />
+                <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
               </View>
               <Text key={item.title} style={TextProps}>
                 {item.title}

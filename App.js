@@ -17,6 +17,7 @@ import { WebsocketContextProvider } from "./src/HOC/WebsocketContextProvider";
 
 import { SheetProvider } from "react-native-actions-sheet";
 import "./src/components/shared/ActionSheet/sheets";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 const queryClient = new QueryClient();
 
@@ -53,15 +54,17 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         {/* <NativeBaseProvider theme={customTheme}> */}
         <SheetProvider>
-          <WebsocketContextProvider>
-            <NavigationContainer>
-              <SafeAreaProvider>
-                <UserModuleVerificationGuard>
-                  <Navigations />
-                </UserModuleVerificationGuard>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </WebsocketContextProvider>
+          <RootSiblingParent>
+            <WebsocketContextProvider>
+              <NavigationContainer>
+                <SafeAreaProvider>
+                  <UserModuleVerificationGuard>
+                    <Navigations />
+                  </UserModuleVerificationGuard>
+                </SafeAreaProvider>
+              </NavigationContainer>
+            </WebsocketContextProvider>
+          </RootSiblingParent>
         </SheetProvider>
         {/* </NativeBaseProvider> */}
       </QueryClientProvider>

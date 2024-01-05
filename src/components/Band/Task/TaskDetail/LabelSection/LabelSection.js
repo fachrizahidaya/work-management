@@ -1,8 +1,9 @@
 import React, { memo } from "react";
 
+import Toast from "react-native-root-toast";
+
 import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -11,7 +12,7 @@ import LabelItem from "./LabelItem/LabelItem";
 import axiosInstance from "../../../../../config/api";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const LabelSection = ({ projectId, taskId, disabled }) => {
   const { isLoading, start, stop } = useLoading(false);
@@ -54,17 +55,11 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
       await axiosInstance.delete(`/pm/tasks/label/${labelId}`);
       refetchTaskLabels();
       stop();
-      Toast.show({
-        type: "success",
-        text1: "Label removed",
-      });
+      Toast.show("Label removed", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -98,7 +93,7 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                       borderRadius: 10,
                     }}
                   >
-                    <MaterialCommunityIcons name="plus" size={20} />
+                    <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                   </TouchableOpacity>
                 )}
               </View>
@@ -119,12 +114,10 @@ const LabelSection = ({ projectId, taskId, disabled }) => {
                   borderRadius: 10,
                 }}
               >
-                <MaterialCommunityIcons name="plus" size={20} />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </TouchableOpacity>
             )
           )}
-
-          <Toast position="bottom" />
         </View>
       )}
 
