@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -11,9 +12,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
-const AttachmentSection = ({ taskId, disabled, toast }) => {
+const AttachmentSection = ({ taskId, disabled }) => {
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
 
   /**
@@ -29,10 +30,7 @@ const AttachmentSection = ({ taskId, disabled, toast }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -47,18 +45,10 @@ const AttachmentSection = ({ taskId, disabled, toast }) => {
       // Refetch project's attachments
       refetchAttachments();
 
-      // Display toast if success
-      toast({
-        type: "success",
-        text1: "Attachment uploaded",
-      });
+      Toast.show("Attachment uploaded", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      // Display toast if error
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -118,16 +108,10 @@ const AttachmentSection = ({ taskId, disabled, toast }) => {
         refetchComments();
       }
 
-      toast({
-        type: "success",
-        text1: "Attachment deleted",
-      });
+      Toast.show("Attachment deleted", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
   return (

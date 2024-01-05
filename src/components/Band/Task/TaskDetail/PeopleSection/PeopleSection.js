@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,7 +13,7 @@ import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
 import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
 import { useFetch } from "../../../../../hooks/useFetch";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const PeopleSection = ({
   observers,
@@ -26,7 +27,6 @@ const PeopleSection = ({
   selectedTask,
   refetchResponsible,
   refetchTask,
-  toast,
 }) => {
   const userSelector = useSelector((state) => state.auth);
   const [selectedObserver, setSelectedObserver] = useState({});
@@ -65,18 +65,10 @@ const PeopleSection = ({
       refetchResponsible();
       refetchTask();
       SheetManager.hide("form-sheet");
-
-      toast({
-        type: "success",
-        text1: "Task assigned",
-      });
+      Toast.show("Task assigned", SuccessToastProps);
     } catch (error) {
       console.log(error);
-
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -94,21 +86,13 @@ const PeopleSection = ({
       }
       refetchObservers();
       setIsLoading(false);
-
-      toast({
-        type: "success",
-        text1: "New observer added",
-      });
+      Toast.show("New observer added", SuccessToastProps);
       toggleObserverModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
       toggleObserverModal();
-
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 

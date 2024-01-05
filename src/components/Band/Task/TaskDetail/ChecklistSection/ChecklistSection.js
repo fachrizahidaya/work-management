@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -18,9 +19,9 @@ import CheckListItem from "./CheckListItem/CheckListItem";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import { useLoading } from "../../../../../hooks/useLoading";
 import Input from "../../../../shared/Forms/Input";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
-const ChecklistSection = ({ taskId, disabled, toast }) => {
+const ChecklistSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -66,19 +67,12 @@ const ChecklistSection = ({ taskId, disabled, toast }) => {
       setStatus("success");
       setSubmitting(false);
 
-      toast({
-        type: "success",
-        text1: "Checklist added",
-      });
+      Toast.show("Checklist added", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
-
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -90,19 +84,11 @@ const ChecklistSection = ({ taskId, disabled, toast }) => {
       });
       refetchChecklists();
       stop();
-
-      toast({
-        type: "success",
-        text1: currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked",
-      });
+      Toast.show(currentStatus === "Open" ? "Checklist checked" : "Checklist unchecked", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -129,7 +115,7 @@ const ChecklistSection = ({ taskId, disabled, toast }) => {
     <>
       <View style={{ display: "flex", gap: 10 }}>
         <Text style={[{ fontWeight: 500 }, TextProps]}>
-          CHECKLIST ({(finishChecklists?.length / checklists?.data?.length || 0) * 100}%)
+          CHECKLIST ({Math.round((finishChecklists?.length / checklists?.data?.length || 0) * 100)}%)
         </Text>
 
         <Bar

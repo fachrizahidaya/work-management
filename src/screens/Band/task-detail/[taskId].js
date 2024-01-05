@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../hooks/useFetch";
 import ChecklistSection from "../../../components/Band/Task/TaskDetail/ChecklistSection/ChecklistSection";
@@ -22,7 +22,7 @@ import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/Me
 import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
-import { TextProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -61,16 +61,10 @@ const TaskDetailScreen = ({ route }) => {
       }
       refetchResponsible();
       refetchSelectedTask();
-      Toast.show({
-        type: "success",
-        text1: "Task assigned",
-      });
+      Toast.show("Task assigned", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -87,18 +81,12 @@ const TaskDetailScreen = ({ route }) => {
       toggleLoading();
       refetchSelectedTask();
 
-      Toast.show({
-        type: "success",
-        text1: `Task ${status}ed`,
-      });
+      Toast.show(`Task ${status}ed`, SuccessToastProps);
     } catch (error) {
       console.log(error);
       toggleLoading();
 
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -121,14 +109,6 @@ const TaskDetailScreen = ({ route }) => {
       // If previous screen is not task form, go back to previous screen
       navigation.goBack();
     }
-  };
-
-  const popToast = (data) => {
-    Toast.show({
-      type: data.type,
-      text1: data.text1,
-      position: "bottom",
-    });
   };
 
   return (
@@ -188,16 +168,10 @@ const TaskDetailScreen = ({ route }) => {
             disabled={inputIsDisabled}
             selectedTask={selectedTask?.data}
             refetchResponsible={refetchResponsible}
-            toast={popToast}
           />
 
           {/* Labels */}
-          <LabelSection
-            projectId={selectedTask?.data?.project_id}
-            taskId={taskId}
-            disabled={inputIsDisabled}
-            toast={popToast}
-          />
+          <LabelSection projectId={selectedTask?.data?.project_id} taskId={taskId} disabled={inputIsDisabled} />
 
           {/* Due date and cost */}
           <View style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
@@ -206,10 +180,9 @@ const TaskDetailScreen = ({ route }) => {
               projectDeadline={selectedTask?.data?.project_deadline}
               disabled={inputIsDisabled}
               taskId={taskId}
-              toast={popToast}
             />
 
-            <CostSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
+            <CostSection taskId={taskId} disabled={inputIsDisabled} />
           </View>
 
           {/* Description */}
@@ -226,18 +199,16 @@ const TaskDetailScreen = ({ route }) => {
           </View>
 
           {/* Checklists */}
-          <ChecklistSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
+          <ChecklistSection taskId={taskId} disabled={inputIsDisabled} />
 
           {/* Attachments */}
-          <AttachmentSection taskId={taskId} disabled={inputIsDisabled} toast={popToast} />
+          <AttachmentSection taskId={taskId} disabled={inputIsDisabled} />
 
           {/* Comments */}
           <View style={{ display: "flex", gap: 10 }}>
             <Text style={[{ fontWeight: 500 }, TextProps]}>COMMENTS</Text>
             <CommentInput taskId={taskId} data={selectedTask?.data} />
           </View>
-
-          <Toast position="bottom" />
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

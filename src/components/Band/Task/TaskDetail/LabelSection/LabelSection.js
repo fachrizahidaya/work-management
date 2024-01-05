@@ -1,5 +1,7 @@
 import React, { memo } from "react";
 
+import Toast from "react-native-root-toast";
+
 import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -10,9 +12,9 @@ import LabelItem from "./LabelItem/LabelItem";
 import axiosInstance from "../../../../../config/api";
 import { useJoinWithNoDuplicate } from "../../../../../hooks/useJoinWithNoDuplicate";
 import { useLoading } from "../../../../../hooks/useLoading";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
-const LabelSection = ({ projectId, taskId, disabled, toast }) => {
+const LabelSection = ({ projectId, taskId, disabled }) => {
   const { isLoading, start, stop } = useLoading(false);
 
   // Handles label modal
@@ -53,17 +55,11 @@ const LabelSection = ({ projectId, taskId, disabled, toast }) => {
       await axiosInstance.delete(`/pm/tasks/label/${labelId}`);
       refetchTaskLabels();
       stop();
-      toast({
-        type: "success",
-        text1: "Label removed",
-      });
+      Toast.show("Label removed", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 

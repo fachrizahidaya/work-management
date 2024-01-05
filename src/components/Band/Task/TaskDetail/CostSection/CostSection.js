@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -15,9 +16,9 @@ import FormButton from "../../../../shared/FormButton";
 import axiosInstance from "../../../../../config/api";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import Input from "../../../../shared/Forms/Input";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
-const CostSection = ({ taskId, disabled, toast }) => {
+const CostSection = ({ taskId, disabled }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -57,19 +58,13 @@ const CostSection = ({ taskId, disabled, toast }) => {
       setSubmitting(false);
       refechCosts();
 
-      toast({
-        type: "success",
-        text1: "Cost added",
-      });
+      Toast.show("Cost added", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setStatus("error");
       setSubmitting(false);
 
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 

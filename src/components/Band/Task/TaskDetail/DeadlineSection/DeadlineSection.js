@@ -2,15 +2,16 @@ import React, { memo } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Text, View } from "react-native";
 
 import CustomDateTimePicker from "../../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
-import { TextProps } from "../../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
-const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, toast }) => {
+const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   const { isLoading, start, stop } = useLoading(false);
 
   /**
@@ -22,17 +23,11 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId, toast })
       start();
       await axiosInstance.patch(`/pm/tasks/${taskId}`, newDeadline);
       stop();
-      toast({
-        type: "success",
-        text1: "New deadline saved",
-      });
+      Toast.show("New deadline saved", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-      toast({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
