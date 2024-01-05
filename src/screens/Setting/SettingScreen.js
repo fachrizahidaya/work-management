@@ -159,7 +159,7 @@ const SettingScreen = () => {
               <View style={{ backgroundColor: "#8B63E7", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="link-variant" color="white" size={20} />
               </View>
-              <View style={{ display: "flex", flexDirection: "row", gap: 1 }}>
+              <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
                 <Text style={{ fontWeight: "bold", color: "#176688" }}>KSS</Text>
                 <Text style={TextProps}>integrations</Text>
               </View>

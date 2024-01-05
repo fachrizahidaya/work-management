@@ -100,7 +100,7 @@ const ChangePasswordScreen = () => {
               fieldName="old_password"
               endAdornment={
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
-                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#3F434A" />
                 </Pressable>
               }
             />
@@ -114,7 +114,7 @@ const ChangePasswordScreen = () => {
               fieldName="new_password"
               endAdornment={
                 <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
-                  <MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons name={showNewPassword ? "visibility" : "visibility-off"} size={20} color="#3F434A" />
                 </Pressable>
               }
             />
@@ -128,7 +128,11 @@ const ChangePasswordScreen = () => {
               fieldName="confirm_password"
               endAdornment={
                 <Pressable onPress={() => setShowRepeatPassword(!showRepeatPassword)}>
-                  <MaterialIcons name={showRepeatPassword ? "visibility" : "visibility-off"} size={20} />
+                  <MaterialIcons
+                    name={showRepeatPassword ? "visibility" : "visibility-off"}
+                    size={20}
+                    color="#3F434A"
+                  />
                 </Pressable>
               }
             />
