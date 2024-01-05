@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
+import { useSelector } from "react-redux";
 
 import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -11,9 +12,9 @@ import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const AddGroupParticipantScreen = () => {
-  const navigation = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [inputToShow, setInputToShow] = useState("");
@@ -21,6 +22,9 @@ const AddGroupParticipantScreen = () => {
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
+
+  const userSelector = useSelector((state) => state.auth);
+  const navigation = useNavigation();
 
   const userFetchParameters = {
     page: currentPage,
@@ -102,7 +106,7 @@ const AddGroupParticipantScreen = () => {
         <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
           <View>
             <PageHeader title="Add Group Participant" onPress={() => navigation.goBack()} />
-            <Text style={{ fontSize: 12, marginLeft: 10 }}>Add participants</Text>
+            <Text style={[{ fontSize: 12, marginLeft: 10 }, TextProps]}>Add participants</Text>
           </View>
         </View>
 
@@ -149,6 +153,8 @@ const AddGroupParticipantScreen = () => {
                   onPressAddHandler={addSelectedUserToArray}
                   onPressRemoveHandler={removeSelectedUserFromArray}
                   selectedGroupMembers={selectedUsers}
+                  navigation={navigation}
+                  userSelector={userSelector}
                 />
               </View>
             )}

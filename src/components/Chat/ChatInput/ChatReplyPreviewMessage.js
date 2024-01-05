@@ -28,8 +28,12 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
     if (attachment_type === "image") {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-            <MaterialCommunityIcons name="image" color="#000000" />
+          <Text
+            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            <MaterialCommunityIcons name="image" color="#3F434A" />
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
           </Text>
         </View>
@@ -37,8 +41,12 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
     } else if (attachment_type === "document") {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-            <MaterialCommunityIcons name="file-outline" color="#000000" />
+          <Text
+            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            <MaterialCommunityIcons name="file-outline" color="#3F434A" />
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
         </View>
@@ -47,8 +55,12 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
       if (message?.project_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-              <MaterialCommunityIcons name="lightning-bolt" color="#000000" />
+            <Text
+              style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              <MaterialCommunityIcons name="lightning-bolt" color="#3F434A" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
           </View>
@@ -56,8 +68,12 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
       } else if (message?.task_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#000000" />
+            <Text
+              style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#3F434A" />
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
           </View>

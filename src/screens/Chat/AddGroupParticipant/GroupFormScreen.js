@@ -25,6 +25,7 @@ import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import axiosInstance from "../../../config/api";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
@@ -134,14 +135,14 @@ const GroupFormScreen = ({ route }) => {
       <Pressable style={{ flex: 1, display: "flex", gap: 10, paddingHorizontal: 20 }} onPress={Keyboard.dismiss}>
         <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-        <Text>Participants: {userArray?.length}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Participants: {userArray?.length}</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
                 <View key={user.id} style={{ alignItems: "center" }}>
                   <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="md" />
-                  <Text style={{ fontSize: 12 }}>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>
                     {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
                   </Text>
                 </View>

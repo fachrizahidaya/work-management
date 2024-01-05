@@ -28,10 +28,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     if (attachment_type === "image") {
       return (
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
             <MaterialCommunityIcons
               name="image"
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
             />
 
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
@@ -41,10 +41,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     } else if (attachment_type === "document") {
       return (
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
             <MaterialCommunityIcons
               name="file-outline"
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
             />
 
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
@@ -55,10 +55,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       if (message?.project_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
               <MaterialCommunityIcons
                 name="lightning-bolt"
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
               />
 
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
@@ -68,10 +68,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       } else if (message?.task_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
               <MaterialCommunityIcons
                 name="checkbox-marked-circle-outline"
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
               />
 
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
@@ -84,7 +84,7 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
             style={{
               fontSize: 12,
               fontWeight: "400",
-              color: !myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#9E9E9E",
+              color: !myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF",
             }}
           >
             {renderDangerouslyInnerHTMLContent(message?.message)}
@@ -104,7 +104,7 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     <>
       {message?.delete_for_everyone ? (
         <Text
-          style={{ fontSize: 12, fontWeight: "400", fontStyle: "italic", color: !myMessage ? "#000000" : "#FFFFFF" }}
+          style={{ fontSize: 12, fontWeight: "400", fontStyle: "italic", color: !myMessage ? "#3F434A" : "#FFFFFF" }}
         >
           Message has been deleted
         </Text>
