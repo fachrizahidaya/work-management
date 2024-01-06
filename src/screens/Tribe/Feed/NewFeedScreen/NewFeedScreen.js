@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -21,7 +21,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
-import { TextProps } from "../../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -74,20 +74,12 @@ const NewFeedScreen = ({ route }) => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show({
-        type: "success",
-        text1: "Posted successfully!",
-        position: "bottom",
-      });
+      Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -301,7 +293,6 @@ const NewFeedScreen = ({ route }) => {
           <></> // handle if screen not ready
         )}
       </TouchableWithoutFeedback>
-      <Toast />
     </>
   );
 };

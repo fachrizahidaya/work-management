@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../hooks/useFetch";
@@ -15,7 +15,7 @@ import useCheckAccess from "../../hooks/useCheckAccess";
 import PayslipList from "../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
-import { TextProps } from "../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -76,21 +76,13 @@ const PayslipScreen = () => {
       setStatus("success");
       formik.resetForm();
       refetchPayslip();
-      Toast.show({
-        type: "success",
-        text1: "Password updated",
-        position: "bottom",
-      });
+      Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
       setPasswordError(err.response.data.message);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -112,12 +104,7 @@ const PayslipScreen = () => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
       setPasswordDownloadError(err.response.data.message);
     }
   };

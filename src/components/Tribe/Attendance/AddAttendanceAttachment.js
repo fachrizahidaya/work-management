@@ -8,13 +8,11 @@ import ActionSheet from "react-native-actions-sheet";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FormButton from "../../shared/FormButton";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
 
 const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference }) => {
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
   const formik = useFormik({
     initialValues: {
       title: "",
