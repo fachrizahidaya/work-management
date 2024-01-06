@@ -7,6 +7,7 @@ import { View, Text, StyleSheet } from "react-native";
 import FormButton from "../../shared/FormButton";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import Input from "../../shared/Forms/Input";
+import ActionSheet from "react-native-actions-sheet";
 
 const PayslipPasswordEdit = ({
   hideNewPassword,
@@ -16,6 +17,8 @@ const PayslipPasswordEdit = ({
   hideConfirmPassword,
   setHideConfirmPassword,
   onUpdatePassword,
+  reference,
+  setPasswordError,
 }) => {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
@@ -50,55 +53,64 @@ const PayslipPasswordEdit = ({
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <>
-      <View style={{ gap: 5 }}>
-        <Input
-          formik={formik}
-          title="Old Password"
-          fieldName="old_password"
-          value={formik.values.old_password}
-          placeholder="Enter Old password"
-          secureTextEntry={hideOldPassword}
-          endIcon={hideOldPassword ? "eye-outline" : "eye-off-outline"}
-          onPressEndIcon={() => setHideOldPassword(!hideOldPassword)}
-        />
-      </View>
+    <ActionSheet
+      ref={reference}
+      onClose={() => {
+        formik.resetForm();
+        setPasswordError("");
+        reference.current?.hide();
+      }}
+    >
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+        <View style={{ gap: 5 }}>
+          <Input
+            formik={formik}
+            title="Old Password"
+            fieldName="old_password"
+            value={formik.values.old_password}
+            placeholder="Enter Old password"
+            secureTextEntry={hideOldPassword}
+            endIcon={hideOldPassword ? "eye-outline" : "eye-off-outline"}
+            onPressEndIcon={() => setHideOldPassword(!hideOldPassword)}
+          />
+        </View>
 
-      <View style={{ gap: 5 }}>
-        <Input
-          formik={formik}
-          title="New Password"
-          fieldName="new_password"
-          value={formik.values.new_password}
-          placeholder="Enter New password"
-          secureTextEntry={hideNewPassword}
-          endIcon={hideNewPassword ? "eye-outline" : "eye-off-outline"}
-          onPressEndIcon={() => setHideNewPassword(!hideNewPassword)}
-        />
-      </View>
+        <View style={{ gap: 5 }}>
+          <Input
+            formik={formik}
+            title="New Password"
+            fieldName="new_password"
+            value={formik.values.new_password}
+            placeholder="Enter New password"
+            secureTextEntry={hideNewPassword}
+            endIcon={hideNewPassword ? "eye-outline" : "eye-off-outline"}
+            onPressEndIcon={() => setHideNewPassword(!hideNewPassword)}
+          />
+        </View>
 
-      <View style={{ gap: 5 }}>
-        <Input
-          formik={formik}
-          title="Confirm New Password"
-          fieldName="confirm_password"
-          value={formik.values.confirm_password}
-          placeholder="Enter Confirm password"
-          secureTextEntry={hideConfirmPassword}
-          endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
-          onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}
-        />
+        <View style={{ gap: 5 }}>
+          <Input
+            formik={formik}
+            title="Confirm New Password"
+            fieldName="confirm_password"
+            value={formik.values.confirm_password}
+            placeholder="Enter Confirm password"
+            secureTextEntry={hideConfirmPassword}
+            endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
+            onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}
+          />
+        </View>
+        {formik.values.old_password && formik.values.new_password && formik.values.confirm_password ? (
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
+          </FormButton>
+        ) : (
+          <FormButton opacity={0.5}>
+            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
+          </FormButton>
+        )}
       </View>
-      {formik.values.old_password && formik.values.new_password && formik.values.confirm_password ? (
-        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-          <Text style={{ color: "#FFFFFF" }}>Submit</Text>
-        </FormButton>
-      ) : (
-        <FormButton opacity={0.5}>
-          <Text style={{ color: "#FFFFFF" }}>Submit</Text>
-        </FormButton>
-      )}
-    </>
+    </ActionSheet>
   );
 };
 
