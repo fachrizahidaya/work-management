@@ -6,13 +6,13 @@ import { useSelector } from "react-redux";
 import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
-import { TextProps } from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const AddGroupParticipantScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,11 +72,7 @@ const AddGroupParticipantScreen = () => {
 
   const onPressAddHandler = () => {
     if (!selectedUsers.length) {
-      Toast.show({
-        type: "error",
-        text1: "At least 1 user must be selected",
-        position: "bottom",
-      });
+      Toast.show("At least 1 user must be selected", SuccessToastProps);
     } else {
       navigation.navigate("Group Form", {
         userArray: selectedUsers,

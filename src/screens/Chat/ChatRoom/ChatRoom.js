@@ -9,7 +9,7 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import axiosInstance from "../../../config/api";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
@@ -24,6 +24,7 @@ import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMess
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -206,11 +207,7 @@ const ChatRoom = () => {
       onError: (error) => {
         stopLoadingChat();
         console.log(error);
-
-        Toast.show({
-          type: "error",
-          text1: error.response.data.message,
-        });
+        Toast.show(error.response.data.message, ErrorToastProps);
       },
     }
   );
@@ -293,19 +290,11 @@ const ChatRoom = () => {
       toggleDeleteChatMessage();
       toggleDeleteModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Chat deleted",
-        position: "bottom",
-      });
+      Toast.show("Chat deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -320,19 +309,11 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Chat cleared",
-        position: "bottom",
-      });
+      Toast.show("Chat cleared", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -348,11 +329,7 @@ const ChatRoom = () => {
       navigation.goBack();
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -469,19 +446,11 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group exited",
-        position: "bottom",
-      });
+      Toast.show("Group exited", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -496,19 +465,11 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group deleted",
-        position: "bottom",
-      });
+      Toast.show("Group deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 

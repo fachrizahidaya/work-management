@@ -18,14 +18,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import axiosInstance from "../../../config/api";
-import { TextProps } from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
@@ -55,18 +55,11 @@ const GroupFormScreen = ({ route }) => {
         roomId: res.data.data.id,
       });
       setSubmitting(false);
-      Toast.show({
-        type: "success",
-        text1: "Group created!",
-        position: "bottom",
-      });
+      Toast.show("Group created!", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
-      Toast.show({
-        type: "error",
-        text1: error.rersponse.data.message,
-      });
+      Toast.show(error.rersponse.data.message, ErrorToastProps);
     }
   };
 

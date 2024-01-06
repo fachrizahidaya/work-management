@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
 import { useFetch } from "../../../hooks/useFetch";
@@ -19,6 +19,7 @@ import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSe
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatListScreen = () => {
   const [personalChats, setPersonalChats] = useState([]);
@@ -173,19 +174,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/personal/${id}`);
       toggleDeleteChatMessage();
       toggleDeleteModal();
-      Toast.show({
-        type: "success",
-        text1: "Chat deleted",
-        position: "bottom",
-      });
+      Toast.show("Chat deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -199,19 +192,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
-      Toast.show({
-        type: "success",
-        text1: "Group deleted",
-        position: "bottom",
-      });
+      Toast.show("Group deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -221,19 +206,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       toggleClearChatMessage();
-      Toast.show({
-        type: "success",
-        text1: "Chat cleared",
-        position: "bottom",
-      });
+      Toast.show("Chat cleared", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -248,11 +225,7 @@ const ChatListScreen = () => {
       const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
