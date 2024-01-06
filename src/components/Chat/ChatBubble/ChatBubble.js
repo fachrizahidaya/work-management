@@ -45,9 +45,7 @@ const ChatBubble = ({
   userSelector,
   navigation,
 }) => {
-  console.log("c", content);
   const myMessage = userSelector?.id === fromUserId;
-  console.log("here", memberName);
 
   for (let i = 0; i < memberName.length; i++) {
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
@@ -69,8 +67,8 @@ const ChatBubble = ({
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
-      // let specificMember;
-      // specificMember = memberName?.find((member) => item?.includes(member.name));
+      let specificMember;
+      specificMember = memberName?.find((member) => item?.includes(member.name));
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
@@ -79,17 +77,14 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      }
-      // else if (specificMember) {
-      //   item = specificMember.name;
-      //   textStyle = styles.coloredText;
-      //   return (
-      //     <Text key={index} style={textStyle}>
-      //       @{item}{" "}
-      //     </Text>
-      //   );
-      // }
-      else if (item.includes("08") || item.includes("62")) {
+      } else if (item.includes(`@${memberName}`)) {
+        textStyle = styles.coloredText;
+        return (
+          <Text key={index} style={textStyle}>
+            {item}
+          </Text>
+        );
+      } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
@@ -232,7 +227,6 @@ const ChatBubble = ({
                               flex: 1,
                               width: 260,
                               height: 200,
-                              // borderRadius: 5,
                               resizeMode: "contain",
                               backgroundColor: "black",
                             }}
@@ -322,9 +316,7 @@ const ChatBubble = ({
 export default memo(ChatBubble);
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: "#FFFFFF",
-  },
+  defaultText: {},
   highlightedText: {
     textDecorationLine: "underline",
   },

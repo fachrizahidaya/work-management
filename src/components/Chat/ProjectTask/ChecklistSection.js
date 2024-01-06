@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChecklistSection = ({ title, status, id }) => {
   return (
@@ -8,10 +9,14 @@ const ChecklistSection = ({ title, status, id }) => {
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MateriaCommunitylIcons name="checkbox-marked-circle-outline" />
         <Text
-          style={{
-            textDecorationLine: status === "Finish" ? "line-through" : null,
-            textDecorationStyle: status === "Finish" ? "solid" : null,
-          }}
+          style={[
+            {
+              fontSize: 12,
+              textDecorationLine: status === "Finish" ? "line-through" : null,
+              textDecorationStyle: status === "Finish" ? "solid" : null,
+            },
+            TextProps,
+          ]}
         >
           {title}
         </Text>
