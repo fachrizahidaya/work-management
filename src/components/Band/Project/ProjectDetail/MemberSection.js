@@ -84,70 +84,69 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
         onPressHandler={addMember}
       />
 
-      <ScrollView style={{ maxHeight: 200 }}>
-        <View style={{ flex: 1, minHeight: 2 }}>
-          <FlashList
-            extraData={projectData?.owner_name}
-            data={members?.data}
-            keyExtractor={(item) => item?.id}
-            onEndReachedThreshold={0.2}
-            estimatedItemSize={34}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingRight: 3,
-                  marginBottom: 14,
-                }}
-              >
-                <View style={{ gap: 14, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                  <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
+      <FlashList
+        extraData={projectData?.owner_name}
+        data={members?.data}
+        keyExtractor={(item) => item?.id}
+        onEndReachedThreshold={0.2}
+        estimatedItemSize={34}
+        horizontal
+        renderItem={({ item }) => (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingRight: 3,
+              marginBottom: 14,
+              marginRight: 10,
+              gap: 20,
+            }}
+          >
+            <View style={{ gap: 14, display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
 
-                  <View>
-                    <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.member_name}</Text>
-                    <Text style={{ fontWeight: 500, color: "#8A9099" }}>{item?.member_email}</Text>
-                  </View>
-                </View>
-
-                {isAllowed && (
-                  <>
-                    {item?.user_id !== projectData?.owner_id && (
-                      <Pressable
-                        onPress={() =>
-                          SheetManager.show("form-sheet", {
-                            payload: {
-                              children: (
-                                <View style={{ padding: 20 }}>
-                                  <TouchableOpacity
-                                    onPress={async () => {
-                                      await SheetManager.hide("form-sheet");
-                                      getSelectedMember(item.id);
-                                    }}
-                                    style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
-                                  >
-                                    <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
-
-                                    <Text style={{ color: "red" }}>Remove Member</Text>
-                                  </TouchableOpacity>
-                                </View>
-                              ),
-                            },
-                          })
-                        }
-                      >
-                        <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
-                      </Pressable>
-                    )}
-                  </>
-                )}
+              <View>
+                <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.member_name}</Text>
+                <Text style={{ fontWeight: 500, color: "#8A9099" }}>{item?.member_email}</Text>
               </View>
+            </View>
+
+            {isAllowed && (
+              <>
+                {item?.user_id !== projectData?.owner_id && (
+                  <Pressable
+                    onPress={() =>
+                      SheetManager.show("form-sheet", {
+                        payload: {
+                          children: (
+                            <View style={{ padding: 20 }}>
+                              <TouchableOpacity
+                                onPress={async () => {
+                                  await SheetManager.hide("form-sheet");
+                                  getSelectedMember(item.id);
+                                }}
+                                style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
+                              >
+                                <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
+
+                                <Text style={{ color: "red" }}>Remove Member</Text>
+                              </TouchableOpacity>
+                            </View>
+                          ),
+                        },
+                      })
+                    }
+                  >
+                    <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
+                  </Pressable>
+                )}
+              </>
             )}
-          />
-        </View>
-      </ScrollView>
+          </View>
+        )}
+      />
 
       <ConfirmationModal
         isOpen={deleteMemberModalIsOpen}

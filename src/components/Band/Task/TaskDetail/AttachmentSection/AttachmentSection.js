@@ -120,29 +120,26 @@ const AttachmentSection = ({ taskId, disabled }) => {
         <Text style={[{ fontWeight: 500 }, TextProps]}>ATTACHMENTS</Text>
 
         {attachments?.data?.length > 0 && (
-          <ScrollView style={{ maxHeight: 200 }}>
-            <View style={{ flex: 1, minHeight: 2 }}>
-              <FlashList
-                data={attachments.data}
-                keyExtractor={(item) => item.id}
-                estimatedItemSize={67}
-                renderItem={({ item }) => (
-                  <AttachmentList
-                    id={item?.id}
-                    title={item.file_name}
-                    size={item.file_size}
-                    time={item.uploaded_at}
-                    type={item.mime_type}
-                    from={item.attachment_from}
-                    deleteFileHandler={deleteFileHandler}
-                    downloadFileHandler={downloadAttachment}
-                    path={item.file_path}
-                    disabled={disabled}
-                  />
-                )}
+          <FlashList
+            data={attachments.data}
+            keyExtractor={(item) => item.id}
+            estimatedItemSize={221}
+            horizontal
+            renderItem={({ item }) => (
+              <AttachmentList
+                id={item?.id}
+                title={item.file_name}
+                size={item.file_size}
+                time={item.uploaded_at}
+                type={item.mime_type}
+                from={item.attachment_from}
+                deleteFileHandler={deleteFileHandler}
+                downloadFileHandler={downloadAttachment}
+                path={item.file_path}
+                disabled={disabled}
               />
-            </View>
-          </ScrollView>
+            )}
+          />
         )}
       </View>
 

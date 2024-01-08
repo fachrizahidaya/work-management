@@ -32,7 +32,16 @@ const AttachmentList = ({
   const xls = "../../../../../../assets/doc-icons/xls-format.png";
   const zip = "../../../../../../assets/doc-icons/zip-format.png";
   return (
-    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 20,
+        marginRight: 10,
+      }}
+    >
       <View style={{ display: "flex", flexDirection: "row", gap: 5, alignItems: "center" }}>
         <Image
           style={{ height: iconHeight || 50, width: iconWidth || 50, resizeMode: "contain" }}
@@ -63,7 +72,7 @@ const AttachmentList = ({
         />
 
         <View>
-          <Text style={TextProps}>{title.length > 30 ? title.slice(0, 30) + "..." : title}</Text>
+          <Text style={TextProps}>{title.length > 10 ? title.slice(0, 10) + "..." : title}</Text>
 
           {time && (
             <Text style={[{ opacity: 0.5, maxWidth: 150 }, TextProps]} numberOfLines={2}>

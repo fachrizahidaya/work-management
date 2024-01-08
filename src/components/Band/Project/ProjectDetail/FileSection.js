@@ -2,8 +2,8 @@ import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
 import Toast from "react-native-root-toast";
+import { SheetManager } from "react-native-actions-sheet";
 
-import { ScrollView } from "react-native-gesture-handler";
 import { Alert, Image, Linking, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -113,6 +113,8 @@ const FileSection = ({ projectId, isAllowed }) => {
         refetchComments();
       }
 
+      SheetManager.hide("form-sheet");
+
       Toast.show("Attachment deleted", SuccessToastProps);
     } catch (error) {
       console.log(error);
@@ -141,31 +143,28 @@ const FileSection = ({ projectId, isAllowed }) => {
       {!attachmentIsLoading && (
         <>
           {attachments?.data?.length > 0 ? (
-            <ScrollView style={{ maxHeight: 200 }}>
-              <View style={{ flex: 1, minHeight: 2 }}>
-                <FlashList
-                  data={attachments.data}
-                  keyExtractor={(item) => item.id}
-                  onEndReachedThreshold={0.1}
-                  estimatedItemSize={57}
-                  renderItem={({ item }) => (
-                    <AttachmentList
-                      deleteFileHandler={deleteFileHandler}
-                      downloadFileHandler={downloadAttachment}
-                      from={item?.attachment_from}
-                      iconHeight={39}
-                      iconWidth={31}
-                      id={item.id}
-                      size={item.file_size}
-                      title={item.file_name}
-                      type={item.mime_type}
-                      path={item.file_path}
-                      disabled={!isAllowed}
-                    />
-                  )}
+            <FlashList
+              data={attachments.data}
+              keyExtractor={(item) => item.id}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={127}
+              horizontal
+              renderItem={({ item }) => (
+                <AttachmentList
+                  deleteFileHandler={deleteFileHandler}
+                  downloadFileHandler={downloadAttachment}
+                  from={item?.attachment_from}
+                  iconHeight={39}
+                  iconWidth={31}
+                  id={item.id}
+                  size={item.file_size}
+                  title={item.file_name}
+                  type={item.mime_type}
+                  path={item.file_path}
+                  disabled={!isAllowed}
                 />
-              </View>
-            </ScrollView>
+              )}
+            />
           ) : (
             <View style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Image
