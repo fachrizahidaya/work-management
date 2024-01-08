@@ -219,8 +219,8 @@ const AttendanceForm = ({
             />
             <Reason
               formik={formik}
-              value={formik.values.late_reason}
-              defaultValue={date?.lateReason}
+              value={formik.values.early_reason}
+              defaultValue={date?.earlyReason}
               fieldName="early_reason"
             />
             <FormButton

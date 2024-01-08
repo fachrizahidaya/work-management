@@ -5,13 +5,13 @@ import dayjs from "dayjs";
 import ActionSheet from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import axiosInstance from "../../../config/api";
-import { TextProps } from "../CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,26 +48,14 @@ const TribeAddNewSheet = (props) => {
 
         refetchAttendance();
 
-        Toast.show({
-          type: "success",
-          text1: !attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success",
-          position: "bottom",
-        });
+        Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
       } else {
-        Toast.show({
-          type: "success",
-          text1: "You already checked out at this time",
-          position: "bottom",
-        });
+        Toast.show("You already checked out at this time", ErrorToastProps);
       }
     } catch (err) {
-      console.log(err.response.data.message);
+      console.log(err);
 
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
