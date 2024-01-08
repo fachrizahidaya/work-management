@@ -152,7 +152,9 @@ const ChatHeader = ({
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text style={{ fontWeight: "500" }}>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
+                      </Text>
                     </TouchableOpacity>
                     {type === "group" ? (
                       <>
@@ -163,7 +165,7 @@ const ChatHeader = ({
                               toggleExitModal();
                             }}
                           >
-                            <Text style={{ fontWeight: "500" }}>Exit Group</Text>
+                            <Text style={[{ fontSize: 12 }, TextProps]}>Exit Group</Text>
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity
@@ -172,7 +174,7 @@ const ChatHeader = ({
                               toggleDeleteGroupModal();
                             }}
                           >
-                            <Text style={{ fontWeight: "500" }}>Delete Group</Text>
+                            <Text style={[{ fontSize: 12 }, TextProps]}>Delete Group</Text>
                           </TouchableOpacity>
                         )}
                       </>
@@ -184,7 +186,7 @@ const ChatHeader = ({
                             toggleDeleteModal();
                           }}
                         >
-                          <Text style={{ fontWeight: "500" }}>Delete Chat</Text>
+                          <Text style={[{ fontSize: 12 }, TextProps]}>Delete Chat</Text>
                         </TouchableOpacity>
                       </>
                     )}

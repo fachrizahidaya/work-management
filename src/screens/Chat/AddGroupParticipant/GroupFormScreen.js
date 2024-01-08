@@ -129,12 +129,22 @@ const GroupFormScreen = ({ route }) => {
         <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
         <Text style={[{ fontSize: 12 }, TextProps]}>Participants: {userArray?.length}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
-                <View key={user.id} style={{ alignItems: "center" }}>
-                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="md" />
+                <View
+                  key={user.id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: 5,
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: 15,
+                    gap: 5,
+                  }}
+                >
+                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
                   <Text style={[{ fontSize: 12 }, TextProps]}>
                     {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
                   </Text>
