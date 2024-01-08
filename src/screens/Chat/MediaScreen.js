@@ -6,16 +6,24 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import MediaList from "../../components/Chat/Media/MediaList";
 import { TextProps } from "../../components/shared/CustomStylings";
+import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
 
 const MediaScreen = () => {
   const [tabValue, setTabValue] = useState("photos");
   const [photos, setPhotos] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const navigation = useNavigation();
   const route = useRoute();
 
   const { media, docs } = route.params;
+
+  const toggleFullScreen = (image) => {
+    setSelectedImage(image);
+    setIsFullScreen(!isFullScreen);
+  };
 
   const changeBandType = () => {
     if (tabValue === "photos") {
@@ -44,12 +52,11 @@ const MediaScreen = () => {
         </View>
         <View
           style={{
-            flex: 0,
+            flex: 1,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#FFFFFF",
-            marginLeft: 90,
           }}
         >
           <View
@@ -66,28 +73,29 @@ const MediaScreen = () => {
           >
             <Pressable
               style={{
-                backgroundColor: tabValue === "project" ? "#E6E6E6" : null,
+                backgroundColor: tabValue === "photos" ? "#E6E6E6" : null,
                 borderRadius: 10,
                 padding: 5,
               }}
               onPress={changeBandType}
             >
-              <Text style={[{ fontSize: 12 }, TextProps]}>Project</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>Media</Text>
             </Pressable>
             <Pressable
               style={{
-                backgroundColor: tabValue === "task" ? "#E6E6E6" : null,
+                backgroundColor: tabValue === "documents" ? "#E6E6E6" : null,
                 borderRadius: 10,
                 padding: 5,
               }}
               onPress={changeBandType}
             >
-              <Text style={[{ fontSize: 12 }, TextProps]}>Ad Hoc</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>Docs</Text>
             </Pressable>
           </View>
         </View>
       </View>
-      <MediaList media={media} docs={docs} />
+      <MediaList media={media} docs={docs} tabValue={tabValue} toggleFullScreen={toggleFullScreen} />
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedImage} />
     </SafeAreaView>
   );
 };
