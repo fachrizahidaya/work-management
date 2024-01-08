@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 import Header from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
-import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
 
 // Independent Screens
@@ -90,13 +89,14 @@ const HomeStack = () => {
             return <BandTab />;
           } else if (moduleSelector.module_name === "TRIBE") {
             return <TribeTab />;
-          } else if (moduleSelector.module_name === "SETTING") {
-            return <SettingTab />;
-            // } else if (moduleSelector.module_name === "PIPE") {
-            //   return <PipeTab  />;
-            // } else if (moduleSelector.module_name === "COIN") {
-            //   return <CoinTab  />;
-          } else {
+          }
+          // else if (moduleSelector.module_name === "SETTING") {
+          //   return <SettingTab />;
+          // } else if (moduleSelector.module_name === "PIPE") {
+          //   return <PipeTab  />;
+          // } else if (moduleSelector.module_name === "COIN") {
+          //   return <CoinTab  />;
+          else {
             // Render a default component or handle unknown cases
             return <BandTab />;
           }
