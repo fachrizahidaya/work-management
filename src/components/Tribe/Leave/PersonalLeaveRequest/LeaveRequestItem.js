@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
-import { SheetManager } from "react-native-actions-sheet";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, status, item, onSelect }) => {

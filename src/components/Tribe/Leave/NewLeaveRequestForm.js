@@ -5,6 +5,7 @@ import Select from "../../shared/Forms/Select";
 import Input from "../../shared/Forms/Input";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
+import { TextProps } from "../../shared/CustomStylings";
 
 const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEndDate, isLoading, isError }) => {
   const [selectedValue, setSelectedValue] = useState(null);
@@ -41,14 +42,14 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
         />
 
         <View style={{ gap: 10 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400" }}>Start Date</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.begin_date}
             onChange={onChangeStartDate}
             disabled={!formik.values.leave_id}
           />
           <Text style={{ color: "#FF6262" }}>{formik.errors.begin_date}</Text>
-          <Text style={{ fontSize: 14, fontWeight: "400" }}>End Date</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
           <CustomDateTimePicker
             defaultValue={formik.values.end_date}
             onChange={onChangeEndDate}
@@ -60,7 +61,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
         {isLoading && (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <ActivityIndicator />
-            <Text style={{ fontSize: 10, fontWeight: "400" }}>Checking availability...</Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>Checking availability...</Text>
           </View>
         )}
 
