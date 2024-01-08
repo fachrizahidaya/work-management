@@ -3,7 +3,6 @@ import React, { memo, useCallback, useState } from "react";
 import _ from "lodash";
 
 import { TouchableOpacity, View } from "react-native";
-import { Actionsheet, Button, FormControl, Icon, IconButton, Select, Skeleton, VStack } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";

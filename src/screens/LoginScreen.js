@@ -20,7 +20,6 @@ import Toast from "react-native-root-toast";
 import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
 
 import axiosInstance from "../config/api";
-import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
