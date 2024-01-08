@@ -117,7 +117,7 @@ const ContactListItem = ({
           onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
         }}
         style={{
-          padding: 10,
+          padding: 20,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#959595",
@@ -139,7 +139,7 @@ const ContactListItem = ({
           onSwipe(chat);
         }}
         style={{
-          padding: 10,
+          padding: 20,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#959595",
