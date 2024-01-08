@@ -1,5 +1,4 @@
-import { Flex, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -18,9 +17,17 @@ const ReimbursementScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          padding: 10,
+        }}
+      >
         <PageHeader title="My Reimbursement" backButton={false} />
-      </Flex>
+      </View>
       <ScrollView>
         <ReimbursementList data={reimbursements} />
       </ScrollView>

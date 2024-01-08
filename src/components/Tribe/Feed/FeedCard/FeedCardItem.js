@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { card } from "../../../../styles/Card";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const FeedCardItem = ({
   id,
@@ -141,7 +142,7 @@ const FeedCardItem = ({
           <View style={{ flex: 1, gap: 5 }}>
             <TouchableOpacity style={styles.dockName}>
               <Text
-                style={{ fontSize: 15, fontWeight: "400" }}
+                style={[{ fontSize: 15 }, TextProps]}
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
@@ -153,16 +154,16 @@ const FeedCardItem = ({
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
-                <View style={{ borderRadius: 15, backgroundColor: "#ADD7FF", padding: 5 }}>
-                  <Text style={{ fontSize: 10, fontWeight: "500" }}>Announcement</Text>
+                <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
+                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
               ) : null}
             </TouchableOpacity>
-            <Text style={styles.date}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
         </View>
 
-        <Text style={{ fontSize: 12, fontWeight: "500" }}>{styledTexts}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
 
         {attachment ? (
           <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
@@ -183,9 +184,9 @@ const FeedCardItem = ({
                 onCommentToggle(id);
               }}
             >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#8A9099" />
+              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
             </Pressable>
-            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalComment}</Text>
+            <Text style={[{ fontSize: 15 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -195,11 +196,11 @@ const FeedCardItem = ({
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#8A9099" />
+                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
               </Pressable>
             )}
 
-            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalLike}</Text>
+            <Text style={[{ fontSize: 15 }, TextProps]}>{totalLike}</Text>
           </View>
         </View>
       </View>
@@ -232,9 +233,10 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   image: {
-    borderRadius: 15,
+    flex: 1,
     width: "100%",
     height: 250,
+    backgroundColor: "gray",
     resizeMode: "contain",
   },
   dockAction: {
@@ -246,10 +248,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
-  },
-  date: {
-    fontSize: 12,
-    fontWeight: "400",
-    opacity: 0.5,
   },
 });

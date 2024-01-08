@@ -3,12 +3,13 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
+import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
@@ -165,11 +166,7 @@ const FeedScreen = () => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
       setSubmitting(false);
       setStatus("error");
     }
@@ -222,7 +219,7 @@ const FeedScreen = () => {
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}> & Feed</Text>
+            <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
           <Text style={{ fontSize: 12, fontWeight: "700" }}>PT Kolabora Group Indonesia</Text>
         </View>
@@ -287,7 +284,6 @@ const FeedScreen = () => {
             reference={commentScreenSheetRef}
           />
         </View>
-        <Toast />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>

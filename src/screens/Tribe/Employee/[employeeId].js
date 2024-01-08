@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -14,6 +14,7 @@ import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModa
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
 import PostAction from "../../../components/Tribe/Employee/FeedPersonal/PostAction";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -181,11 +182,7 @@ const EmployeeProfileScreen = ({ route }) => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
       setSubmitting(false);
       setStatus("error");
     }
@@ -298,7 +295,6 @@ const EmployeeProfileScreen = ({ route }) => {
                   reference={commentsScreenSheetRef}
                 />
               </View>
-              <Toast />
             </>
           </>
         ) : null}

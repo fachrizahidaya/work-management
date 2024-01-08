@@ -1,8 +1,7 @@
 import { useFormik } from "formik";
 import { useNavigation } from "@react-navigation/native";
 
-import { Dimensions } from "react-native";
-import { Box, Text } from "native-base";
+import { Dimensions, View } from "react-native";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import NewReimbursementForm from "../../../../components/Tribe/Reimbursement/NewReimbursementForm";
@@ -29,8 +28,8 @@ const NewReimbursement = ({ route }) => {
   });
 
   return (
-    <Box position="absolute" zIndex={3}>
-      <Box w={width} height={height} bgColor="#FFFFFF" p={3}>
+    <View style={{ position: "absolute", zIndex: 3 }}>
+      <View style={{ width: width, height: height, backgroundColor: "#FFFFFF", padding: 5 }}>
         <PageHeader
           title="New Reimbursement"
           onPress={
@@ -51,8 +50,8 @@ const NewReimbursement = ({ route }) => {
         />
 
         <NewReimbursementForm formik={formik} />
-      </Box>
-    </Box>
+      </View>
+    </View>
   );
 };
 

@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
@@ -119,20 +120,12 @@ const MyTeamLeaveScreen = () => {
       setSubmitting(false);
       setStatus("success");
       refetchPendingLeaveRequest();
-      Toast.show({
-        type: "success",
-        text1: data.status === "Approved" ? "Request Approved" : "Request Rejected",
-        position: "bottom",
-      });
+      Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 

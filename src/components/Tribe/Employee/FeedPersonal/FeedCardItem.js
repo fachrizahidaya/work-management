@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { card } from "../../../../styles/Card";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const FeedCardItem = ({
   id,
@@ -130,12 +131,12 @@ const FeedCardItem = ({
           <View style={{ flex: 1, gap: 5 }}>
             <View style={styles.dockName}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                <Text style={[{ fontSize: 15 }, TextProps]}>
                   {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
                 </Text>
                 {type === "Announcement" ? (
-                  <View style={{ borderRadius: 15, backgroundColor: "#ADD7FF", padding: 5 }}>
-                    <Text style={{ fontSize: 10 }}>Announcement</Text>
+                  <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
+                    <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                   </View>
                 ) : null}
               </View>
@@ -148,11 +149,11 @@ const FeedCardItem = ({
                 </>
               )}
             </View>
-            <Text style={styles.date}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
         </View>
 
-        <Text style={{ fontSize: 12, fontWeight: "500" }}>{styledTexts}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
 
         {attachment ? (
           <>
@@ -177,7 +178,7 @@ const FeedCardItem = ({
             >
               <MaterialCommunityIcons name="comment-text-outline" size={20} color="#8A9099" />
             </Pressable>
-            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalComment}</Text>
+            <Text style={[{ fontSize: 15 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -191,7 +192,7 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalLike}</Text>
+            <Text style={[{ fontSize: 15 }, TextProps]}>{totalLike}</Text>
           </View>
         </View>
       </View>
@@ -234,14 +235,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   image: {
-    borderRadius: 15,
+    flex: 1,
     width: "100%",
     height: 250,
+    backgroundColor: "gray",
     resizeMode: "contain",
-  },
-  date: {
-    fontSize: 12,
-    fontWeight: "400",
-    opacity: 0.5,
   },
 });

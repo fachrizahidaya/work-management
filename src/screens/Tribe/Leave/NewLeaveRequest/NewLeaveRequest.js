@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 
 import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import axiosInstance from "../../../../config/api";
@@ -13,6 +13,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const NewLeaveRequest = ({ route }) => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
@@ -81,20 +82,12 @@ const NewLeaveRequest = ({ route }) => {
       setSubmitting(false);
       setStatus("success");
       refetchLeaveHistory();
-      Toast.show({
-        type: "success",
-        text1: "Request created",
-        position: "bottom",
-      });
+      Toast.show("Request created", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -116,20 +109,12 @@ const NewLeaveRequest = ({ route }) => {
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
       setIsLoading(false);
       setFormError(false);
-      Toast.show({
-        type: "success",
-        text1: "Leave Request available",
-        position: "bottom",
-      });
+      Toast.show("Leave Request available", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setIsLoading(false);
       setIsError(true);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 

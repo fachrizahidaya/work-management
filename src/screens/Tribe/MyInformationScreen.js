@@ -8,6 +8,7 @@ import PageHeader from "../../components/shared/PageHeader";
 import EmployeeLeaveDashboard from "../../components/Tribe/MyInformation/EmployeeLeaveDashboard";
 import EmployeeInformation from "../../components/Tribe/MyInformation/EmployeeInformation";
 import SupervisorInformation from "../../components/Tribe/MyInformation/SupervisorInformation";
+import { TextProps } from "../../components/shared/CustomStylings";
 
 const MyInformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
@@ -35,7 +36,7 @@ const MyInformationScreen = () => {
                   style={{ width: 300, height: 300, resizeMode: "contain" }}
                   alt="empty"
                 />
-                <Text>No Data</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
               </View>
             ) : (
               <>

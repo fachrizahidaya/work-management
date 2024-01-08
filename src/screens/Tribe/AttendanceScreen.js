@@ -5,10 +5,11 @@ import * as DocumentPicker from "expo-document-picker";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../hooks/useFetch";
 import { useDisclosure } from "../../hooks/useDisclosure";
+import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 import axiosInstance from "../../config/api";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
@@ -166,22 +167,12 @@ const AttendanceScreen = () => {
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
-
-      Toast.show({
-        type: "success",
-        text1: "Report submitted",
-        position: "bottom",
-      });
+      Toast.show("Report submitted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -234,19 +225,11 @@ const AttendanceScreen = () => {
         },
       });
       refetchAttachment();
-      Toast.show({
-        type: "success",
-        text1: "Attachment submitted",
-        position: "bottom",
-      });
+      Toast.show("Attachment submitted", SuccessToastProps);
       setStatus("success");
       setSubmitting(false);
     } catch (err) {
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
       setStatus("error");
       setSubmitting(false);
     }
@@ -383,7 +366,6 @@ const AttendanceScreen = () => {
             refetchAttachment={refetchAttachment}
           />
         </ScrollView>
-        <Toast />
       </SafeAreaView>
       <AttendanceForm
         toggleReport={attendanceScreenSheetRef}

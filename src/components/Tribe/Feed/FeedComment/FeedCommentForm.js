@@ -74,9 +74,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
 
   return (
     <View style={styles.container}>
-      <View>
-        <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
-      </View>
+      <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
 
       <MentionInput
         value={formik.values.comments}
@@ -94,19 +92,19 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
         ]}
         multiline
         placeholder="Type here..."
-        style={{ padding: 5, borderRadius: 10, width: 320, borderWidth: 1, borderColor: "#DBDBDB" }}
+        style={{ padding: 5, borderRadius: 10, width: 320, borderWidth: 1, borderColor: "#DBDBDB", height: 40 }}
       />
-      <View>
-        <FormButton
-          onPress={formik.handleSubmit}
-          isSubmitting={formik.isSubmitting}
-          opacity={formik.values.comments === "" ? 0.5 : 1}
-          padding={4}
-          disabled={formik.values.comments === "" ? true : false}
-        >
-          <Text style={{ color: "#FFFFFF" }}>{parentId ? "Reply" : "Post"}</Text>
-        </FormButton>
-      </View>
+
+      <FormButton
+        onPress={formik.handleSubmit}
+        isSubmitting={formik.isSubmitting}
+        opacity={formik.values.comments === "" ? 0.5 : 1}
+        padding={5}
+        height={40}
+        disabled={formik.values.comments === "" ? true : false}
+      >
+        <Text style={{ color: "#FFFFFF" }}>{parentId ? "Reply" : "Post"}</Text>
+      </FormButton>
     </View>
   );
 };
