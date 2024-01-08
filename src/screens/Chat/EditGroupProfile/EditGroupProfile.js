@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet, View, Text, Pressable, Image } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -15,6 +15,7 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import axiosInstance from "../../../config/api";
 import FormButton from "../../../components/shared/FormButton";
 import Input from "../../../components/shared/Forms/Input";
+import { SuccessToastProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
@@ -46,20 +47,12 @@ const EditGroupProfile = () => {
       setSubmitting(false);
       setStatus("success");
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group Profile updated",
-        position: "bottom",
-      });
+      Toast.show("Group Profile updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -81,11 +74,7 @@ const EditGroupProfile = () => {
 
     if (fileInfo.size >= 1000000) {
       // toast.show({ description: "Image size is too large" });
-      Toast.show({
-        type: "error",
-        text1: "Image size is too large",
-        position: "bottom",
-      });
+      Toast.show("Image size is too large", ErrorToastProps);
       return;
     }
 
