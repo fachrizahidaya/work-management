@@ -67,7 +67,10 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             ? require(pdf)
             : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
             ? require(xls)
-            : getFileExt() === "ppt" || getFileExt() === "pptx"
+            : getFileExt() === "ppt" ||
+              getFileExt() === "pptx" ||
+              getFileExt() === "powerpoint" ||
+              getFileExt() === "presentation"
             ? require(ppt)
             : require(txt)
         }

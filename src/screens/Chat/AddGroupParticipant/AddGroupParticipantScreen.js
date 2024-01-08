@@ -24,7 +24,6 @@ const AddGroupParticipantScreen = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
   const multiSelect = true;
-  console.log("user", selectedUsers);
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
