@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
 
 import axiosInstance from "../../../../config/api";
@@ -11,6 +11,7 @@ import EmployeeContact from "../EmployeeContact";
 import EmployeeProfile from "../EmployeeProfile";
 import EmployeeSelfProfile from "../EmployeeSelfProfile";
 import EmployeeTeammates from "../EmployeeTeammates";
+import { ErrorToastProps } from "../../../shared/CustomStylings";
 
 const FeedCard = ({
   posts,
@@ -47,11 +48,7 @@ const FeedCard = ({
       console.log("Process success");
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -172,7 +169,6 @@ const FeedCard = ({
           );
         }}
       />
-      <Toast />
     </View>
   );
 };
