@@ -8,9 +8,7 @@ const MediaItem = ({ image, path, type, name }) => {
       {type === "application/pdf" ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <MaterialCommunityIcons name="delete-outline" size={10} color="#E53935" />
-          <Text style={{ color }} color="#F44336">
-            {image}
-          </Text>
+          <Text style={{ color: "#F44336" }}>{image}</Text>
         </View>
       ) : (
         <Image

@@ -315,12 +315,12 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
-            {/* <UserMedia
-          qty={media?.data?.length + document?.data?.length}
-          media={media?.data}
-          docs={document?.data}
-          navigation={navigation}
-        /> */}
+            <UserMedia
+              qty={media?.data?.length + document?.data?.length}
+              media={media?.data}
+              docs={document?.data}
+              navigation={navigation}
+            />
             {/* <UserPersonalized /> */}
             <UserAction
               type={type}
