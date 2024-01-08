@@ -14,7 +14,6 @@ const ChatHeader = ({
   image,
   position,
   email,
-  fileAttachment,
   type,
   active_member,
   toggleExitModal,
@@ -35,6 +34,9 @@ const ChatHeader = ({
   onUpdatePinHandler,
   isPinned,
   navigation,
+  searchMessage,
+  setSearchMessage,
+  searchFormRef,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -143,9 +145,14 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                    {/* <TouchableOpacity >
-         <Text>Search</Text>
-       </TouchableOpacity> */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        toggleSearch();
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text>Search</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
                         onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
@@ -208,6 +215,9 @@ const ChatHeader = ({
           clearSearch={clearSearch}
           setInputToShow={setInputToShow}
           setSearchInput={setSearchInput}
+          searchMessage={searchMessage}
+          setSearchMessage={setSearchMessage}
+          searchFormRef={searchFormRef}
         />
       )}
     </>
