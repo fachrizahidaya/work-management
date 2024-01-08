@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -43,9 +42,15 @@ const ChatBubble = ({
   isOptimistic,
   memberName,
   position,
+  userSelector,
+  navigation,
 }) => {
-  const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
+
+  for (let i = 0; i < memberName.length; i++) {
+    let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+    content = content?.replace(placeholder, `@${memberName[i]}`);
+  }
 
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
@@ -54,9 +59,7 @@ const ChatBubble = ({
   if (content?.length !== 0) {
     let words;
 
-    if (memberName?.some((member) => content?.includes(member.name))) {
-      words = [content];
-    } else if (typeof content === "number" || typeof content === "bigint") {
+    if (typeof content === "number" || typeof content === "bigint") {
       words = content.toString().split(" ");
     } else {
       words = content?.split(" ");
@@ -74,12 +77,11 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (specificMember) {
-        item = specificMember.name;
+      } else if (item.includes(`@${memberName}`)) {
         textStyle = styles.coloredText;
         return (
           <Text key={index} style={textStyle}>
-            @{item}{" "}
+            {item}
           </Text>
         );
       } else if (item.includes("08") || item.includes("62")) {
@@ -182,8 +184,7 @@ const ChatBubble = ({
               justifyContent: "center",
               maxWidth: 300,
               borderRadius: 10,
-              paddingVertical: 5,
-              paddingHorizontal: 5,
+              padding: 8,
               backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
               gap: 5,
             }}
@@ -205,19 +206,29 @@ const ChatBubble = ({
             {!isDeleted ? (
               <>
                 {reply_to && (
-                  <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />
+                  <ChatReplyInfo
+                    message={reply_to}
+                    chatBubbleView={true}
+                    myMessage={myMessage}
+                    type={type}
+                    loggedInUser={userSelector}
+                  />
                 )}
                 {file_path && (
                   <>
                     {imgTypes.includes(formatMimeType(file_type)) && (
                       <>
-                        <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
+                        <TouchableOpacity
+                          style={{ borderRadius: 5 }}
+                          onPress={() => file_path && toggleFullScreen(file_path)}
+                        >
                           <Image
                             style={{
+                              flex: 1,
                               width: 260,
                               height: 200,
-                              borderRadius: 5,
                               resizeMode: "contain",
+                              backgroundColor: "black",
                             }}
                             source={{
                               uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
@@ -247,6 +258,7 @@ const ChatBubble = ({
                     number_id={band_attachment_no}
                     type={band_attachment_type}
                     myMessage={myMessage}
+                    navigation={navigation}
                   />
                 )}
               </>
@@ -264,7 +276,7 @@ const ChatBubble = ({
                   You have deleted this message
                 </Text>
               ) : !myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#000000" }}>
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A" }}>
                   This message has been deleted
                 </Text>
               ) : null}

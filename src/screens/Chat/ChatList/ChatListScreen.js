@@ -5,24 +5,23 @@ import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
-import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
-import { useFetch } from "../../hooks/useFetch";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import GlobalSearchInput from "../../components/Chat/GlobalSearchInput/GlobalSearchInput";
-import GroupSection from "../../components/Chat/GroupSection/GroupSection";
-import PersonalSection from "../../components/Chat/PersonalSection/PersonalSection";
-import GlobalSearchChatSection from "../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
-import ContactMenu from "../../components/Chat/ContactListItem/ContactMenu";
-import ChatMenu from "../../components/Chat/ContactListItem/ChatMenu";
+import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
+import { useFetch } from "../../../hooks/useFetch";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import axiosInstance from "../../../config/api";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import GlobalSearchInput from "../../../components/Chat/GlobalSearchInput/GlobalSearchInput";
+import GroupSection from "../../../components/Chat/GroupSection/GroupSection";
+import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSection";
+import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
+import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
+import { SheetManager } from "react-native-actions-sheet";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatListScreen = () => {
-  const navigation = useNavigation();
-  const userSelector = useSelector((state) => state.auth);
   const [personalChats, setPersonalChats] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const { laravelEcho } = useWebsocketContext();
@@ -31,8 +30,12 @@ const ChatListScreen = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
+  const navigation = useNavigation();
+  const userSelector = useSelector((state) => state.auth);
+
   const contactMenuScreenSheetRef = useRef(null);
   const chatMenuScreenSheetRef = useRef(null);
+  const searchFromRef = useRef(null);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
@@ -88,19 +91,10 @@ const ChatListScreen = () => {
   };
 
   /**
-   * Swipe Contact List Item handler
-   * @param {*} contact
-   */
-  const swipeMore = (contact) => {
-    setSelectedContact(contact);
-    contactMenuScreenSheetRef.current?.show();
-  };
-
-  /**
    * Delete message Handler
    */
-  const openSelectedChatHandler = () => {
-    setSelectedChat(selectedContact);
+  const openSelectedChatHandler = (contact) => {
+    setSelectedChat(contact);
     toggleDeleteModal();
   };
 
@@ -112,8 +106,8 @@ const ChatListScreen = () => {
   /**
    * Clear personal chat message handler
    */
-  const openSelectedChatToClearHandler = () => {
-    setSelectedChat(selectedContact);
+  const openSelectedChatToClearHandler = (contact) => {
+    setSelectedChat(contact);
     toggleClearChatMessage();
   };
 
@@ -123,10 +117,10 @@ const ChatListScreen = () => {
   };
 
   /**
-   * Clear personal chat message handler
+   * Clear group chat message handler
    */
-  const openSelectedGroupChatHandler = () => {
-    setSelectedChat(selectedContact);
+  const openSelectedGroupChatHandler = (contact) => {
+    setSelectedChat(contact);
     toggleDeleteGroupModal();
   };
 
@@ -137,7 +131,37 @@ const ChatListScreen = () => {
 
   const closeSelectedContactMenuHandler = () => {
     setSelectedContact(null);
-    contactMenuScreenSheetRef.current?.hide();
+  };
+
+  /**
+   * Swipe Contact List Item handler
+   * @param {*} contact
+   */
+  const swipeMore = (contact) => {
+    setSelectedContact(contact);
+    SheetManager.show("form-sheet", {
+      payload: {
+        children: (
+          <ContactMenu
+            onClose={closeSelectedContactMenuHandler}
+            chat={contact}
+            toggleDeleteModal={openSelectedChatHandler}
+            toggleDeleteGroupModal={openSelectedGroupChatHandler}
+            toggleClearChatMessage={openSelectedChatToClearHandler}
+            loggedInUser={userSelector?.id}
+            toggleDeleteChatMessage={toggleDeleteChatMessage}
+            toggleExitModal={toggleExitModal}
+            deleteModalIsOpen={deleteModalIsOpen}
+            exitModalIsOpen={exitModalIsOpen}
+            deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+            deleteChatPersonal={deleteChatPersonal}
+            deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+            chatRoomIsLoading={chatRoomIsLoading}
+            navigation={navigation}
+          />
+        ),
+      },
+    });
   };
 
   /**
@@ -150,19 +174,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/personal/${id}`);
       toggleDeleteChatMessage();
       toggleDeleteModal();
-      Toast.show({
-        type: "success",
-        text1: "Chat deleted",
-        position: "bottom",
-      });
+      Toast.show("Chat deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -176,19 +192,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/group/${group_id}`);
       toggleChatRoom();
       toggleDeleteGroupModal();
-      Toast.show({
-        type: "success",
-        text1: "Group deleted",
-        position: "bottom",
-      });
+      Toast.show("Group deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -198,19 +206,11 @@ const ChatListScreen = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       toggleClearChatMessage();
-      Toast.show({
-        type: "success",
-        text1: "Chat cleared",
-        position: "bottom",
-      });
+      Toast.show("Chat cleared", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -225,11 +225,7 @@ const ChatListScreen = () => {
       const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -267,7 +263,11 @@ const ChatListScreen = () => {
         <>
           <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <GlobalSearchInput globalKeyword={globalKeyword} setGlobalKeyword={setGlobalKeyword} />
+              <GlobalSearchInput
+                globalKeyword={globalKeyword}
+                setGlobalKeyword={setGlobalKeyword}
+                searchFormRef={searchFromRef}
+              />
 
               <GroupSection
                 groupChats={groupChats}
@@ -275,6 +275,22 @@ const ChatListScreen = () => {
                 searchResult={searchResult?.group}
                 onSwipeControl={swipeMore}
                 onPinControl={chatPinUpdateHandler}
+                navigation={navigation}
+                closeSelectedContactMenuHandler={closeSelectedContactMenuHandler}
+                selectedContact={selectedContact}
+                openSelectedChatHandler={openSelectedChatHandler}
+                openSelectedGroupChatHandler={openSelectedGroupChatHandler}
+                openSelectedChatToClearHandler={openSelectedChatToClearHandler}
+                toggleDeleteChatMessage={toggleDeleteChatMessage}
+                toggleExitModal={toggleExitModal}
+                deleteModalIsOpen={deleteModalIsOpen}
+                exitModalIsOpen={exitModalIsOpen}
+                deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+                deleteChatPersonal={deleteChatPersonal}
+                deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+                chatRoomIsLoading={chatRoomIsLoading}
+                userSelector={userSelector}
+                setSelectedContact={setSelectedContact}
               />
 
               <PersonalSection
@@ -283,7 +299,22 @@ const ChatListScreen = () => {
                 searchResult={searchResult?.personal}
                 onSwipeControl={swipeMore}
                 onPinControl={chatPinUpdateHandler}
-                reference={chatMenuScreenSheetRef}
+                navigation={navigation}
+                closeSelectedContactMenuHandler={closeSelectedContactMenuHandler}
+                selectedContact={selectedContact}
+                openSelectedChatHandler={openSelectedChatHandler}
+                openSelectedGroupChatHandler={openSelectedGroupChatHandler}
+                openSelectedChatToClearHandler={openSelectedChatToClearHandler}
+                toggleDeleteChatMessage={toggleDeleteChatMessage}
+                toggleExitModal={toggleExitModal}
+                deleteModalIsOpen={deleteModalIsOpen}
+                exitModalIsOpen={exitModalIsOpen}
+                deleteGroupModalIsOpen={deleteGroupModalIsOpen}
+                deleteChatPersonal={deleteChatPersonal}
+                deleteChatMessageIsLoading={deleteChatMessageIsLoading}
+                chatRoomIsLoading={chatRoomIsLoading}
+                userSelector={userSelector}
+                setSelectedContact={setSelectedContact}
               />
 
               {searchResult?.message?.length > 0 && (
@@ -292,7 +323,7 @@ const ChatListScreen = () => {
             </ScrollView>
           </SafeAreaView>
 
-          <ContactMenu
+          {/* <ContactMenu
             onClose={closeSelectedContactMenuHandler}
             chat={selectedContact}
             toggleDeleteModal={openSelectedChatHandler}
@@ -308,9 +339,8 @@ const ChatListScreen = () => {
             deleteChatMessageIsLoading={deleteChatMessageIsLoading}
             chatRoomIsLoading={chatRoomIsLoading}
             reference={contactMenuScreenSheetRef}
-          />
-
-          {/* <ChatMenu reference={chatMenuScreenSheetRef} /> */}
+            navigation={navigation}
+          /> */}
 
           {selectedChat?.pin_personal ? (
             <RemoveConfirmationModal

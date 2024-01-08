@@ -7,13 +7,14 @@ import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../hooks/useFetch";
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Description from "../../components/Chat/ProjectTask/Description";
-import DateSection from "../../components/Chat/ProjectTask/DateSection";
-import CreatorSection from "../../components/Chat/ProjectTask/CreatorSection";
-import ObserverSection from "../../components/Chat/ProjectTask/ObserverSection";
-import ChecklistSection from "../../components/Chat/ProjectTask/ChecklistSection";
+import { useFetch } from "../../../hooks/useFetch";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Description from "../../../components/Chat/ProjectTask/Description";
+import DateSection from "../../../components/Chat/ProjectTask/DateSection";
+import CreatorSection from "../../../components/Chat/ProjectTask/CreatorSection";
+import ObserverSection from "../../../components/Chat/ProjectTask/ObserverSection";
+import ChecklistSection from "../../../components/Chat/ProjectTask/ChecklistSection";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const TaskDetail = () => {
   const navigation = useNavigation();
@@ -54,25 +55,21 @@ const TaskDetail = () => {
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
             <View>
-              <Text style={{ fontSize: 14, fontWeight: "400" }}>
+              <Text style={[{ fontSize: 14 }, TextProps]}>
                 {task?.data?.title.length > 50 ? task?.data?.title.slice(0, 30) + "..." : task?.data?.title}
               </Text>
-              <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
+              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(task?.data?.deadline).format("DD MMMM YYYY")}
               </Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Text style={{ fontSize: 10, fontWeight: "400" }}>Assigned to</Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>Assigned to</Text>
             <AvatarPlaceholder
               name={task?.data?.responsible?.user?.name}
               image={task?.data?.responsible?.user?.image}
             />
-            <Text style={{ fontSize: 10 }}>
-              {task?.data?.responsible?.user?.name.length > 30
-                ? task?.data?.responsible?.user?.name?.split(" ")[0]
-                : task?.data?.responsible?.user?.name}
-            </Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>{task?.data?.responsible?.user?.name?.split(" ")[0]}</Text>
           </View>
         </View>
       </View>
@@ -100,7 +97,7 @@ const TaskDetail = () => {
             name={task?.data?.responsible?.user?.name.split(" ")[0]}
           />
           <View style={{ flex: 1, padding: 5, backgroundColor: "#FFFFFF", borderRadius: 10 }}>
-            <Text style={{ fontSize: 12, fontWeight: "400" }}>Observed by</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>Observed by</Text>
             <FlashList
               data={task?.data?.observer}
               estimatedItemSize={50}
@@ -113,14 +110,14 @@ const TaskDetail = () => {
           </View>
         </View>
         <View style={{ flex: 1, padding: 5, borderRadius: 10, backgroundColor: "#FFFFFF" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400" }}>
+          <Text style={[{ fontSize: 12 }, TextProps]}>
             Checklist ({typeof percentage === "undefined" ? 0 : Math.round(percentage)}
             %)
           </Text>
           {task?.data?.checklist.length === 0 ? (
             <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                source={require("../../assets/vectors/empty.png")}
+                source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
                 style={{
                   height: 150,
@@ -128,7 +125,7 @@ const TaskDetail = () => {
                   resizeMode: "cover",
                 }}
               />
-              <Text>No Task</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>No Task</Text>
             </View>
           ) : (
             <FlashList
@@ -160,7 +157,7 @@ const TaskDetail = () => {
       >
         <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
           <Image
-            source={require("../../assets/vectors/empty.png")}
+            source={require("../../../assets/vectors/empty.png")}
             alt="attachment"
             style={{
               height: 150,
@@ -169,7 +166,7 @@ const TaskDetail = () => {
             }}
           />
           <View>
-            <Text>No Data</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
           </View>
         </View>
       </Pressable>

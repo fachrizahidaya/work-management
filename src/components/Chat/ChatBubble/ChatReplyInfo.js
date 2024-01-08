@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 import { View, Text, Image, StyleSheet } from "react-native";
 
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, type }) => {
+const ChatReplyInfo = ({ message, myMessage, type, loggedInUser }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
-  const loggedInUser = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (message) {
@@ -21,7 +19,7 @@ const ChatReplyInfo = ({ message, myMessage, type }) => {
   return (
     <View style={{ ...styles.container, backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }}>
       <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : null }}>
-        <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+        <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
         <ChatMessageText message={message} myMessage={myMessage} type={type} />

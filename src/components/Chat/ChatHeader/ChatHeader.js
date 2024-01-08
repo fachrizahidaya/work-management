@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
@@ -8,6 +7,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import SearchBox from "./SearchBox";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatHeader = ({
   name,
@@ -34,13 +34,11 @@ const ChatHeader = ({
   toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
-  reference,
+  navigation,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
-  const navigation = useNavigation();
 
   const membersName = selectedGroupMembers.map((item) => {
     const name = !item?.user
@@ -112,17 +110,20 @@ const ChatHeader = ({
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>{email}</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>{email}</Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>
                     <Text
-                      style={{
-                        fontSize: 10,
-                        fontWeight: "400",
-                        width: 200,
-                        overflow: "hidden",
-                      }}
+                      style={[
+                        {
+                          fontSize: 10,
+
+                          width: 200,
+                          overflow: "hidden",
+                        },
+                        TextProps,
+                      ]}
                       numberOfLines={1}
                       ellipsizeMode="tail"
                     >
@@ -151,7 +152,9 @@ const ChatHeader = ({
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text style={{ fontWeight: 500 }}>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
+                      </Text>
                     </TouchableOpacity>
                     {type === "group" ? (
                       <>
@@ -162,7 +165,7 @@ const ChatHeader = ({
                               toggleExitModal();
                             }}
                           >
-                            <Text style={{ fontWeight: 500 }}>Exit Group</Text>
+                            <Text style={[{ fontSize: 12 }, TextProps]}>Exit Group</Text>
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity
@@ -171,7 +174,7 @@ const ChatHeader = ({
                               toggleDeleteGroupModal();
                             }}
                           >
-                            <Text style={{ fontWeight: 500 }}>Delete Group</Text>
+                            <Text style={[{ fontSize: 12 }, TextProps]}>Delete Group</Text>
                           </TouchableOpacity>
                         )}
                       </>
@@ -183,7 +186,7 @@ const ChatHeader = ({
                             toggleDeleteModal();
                           }}
                         >
-                          <Text style={{ fontWeight: 500 }}>Delete Chat</Text>
+                          <Text style={[{ fontSize: 12 }, TextProps]}>Delete Chat</Text>
                         </TouchableOpacity>
                       </>
                     )}
@@ -193,7 +196,7 @@ const ChatHeader = ({
             })
           }
         >
-          <MaterialIcons name="more-horiz" size={20} />
+          <MaterialIcons name="more-horiz" size={20} color="#3F434A" />
         </Pressable>
       </View>
 

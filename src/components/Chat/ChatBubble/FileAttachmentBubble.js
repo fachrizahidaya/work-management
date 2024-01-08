@@ -46,7 +46,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     getFileImage();
   }, [file_type]);
 
-  return (
+  return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
       style={{
@@ -67,7 +67,10 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             ? require(pdf)
             : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
             ? require(xls)
-            : getFileExt() === "ppt" || getFileExt() === "pptx"
+            : getFileExt() === "ppt" ||
+              getFileExt() === "pptx" ||
+              getFileExt() === "powerpoint" ||
+              getFileExt() === "presentation"
             ? require(ppt)
             : require(txt)
         }
@@ -85,7 +88,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
           style={{
             fontSize: 12,
             fontWeight: "400",
-            color: !myMessage ? "#000000" : "#FFFFFF",
+            color: !myMessage ? "#3F434A" : "#FFFFFF",
             width: 160,
             overflow: "hidden",
           }}
@@ -99,7 +102,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             fontSize: 10,
             fontWeight: "400",
             width: 150,
-            color: !myMessage ? "#000000" : "#FFFFFF",
+            color: !myMessage ? "#3F434A" : "#FFFFFF",
             overflow: "hidden",
           }}
           numberOfLines={2}
@@ -111,7 +114,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
 
       <MaterialCommunityIcons
         name="download"
-        color={!myMessage ? "#000000" : "#FFFFFF"}
+        color={!myMessage ? "#3F434A" : "#FFFFFF"}
         size={20}
         onPress={() => attachmentDownloadHandler(file_path)}
       />

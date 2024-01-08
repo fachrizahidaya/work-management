@@ -7,13 +7,14 @@ import { FlashList } from "@shopify/flash-list";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../hooks/useFetch";
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Description from "../../components/Chat/ProjectTask/Description";
-import DateSection from "../../components/Chat/ProjectTask/DateSection";
-import StatusSection from "../../components/Chat/ProjectTask/StatusSection";
-import MemberSection from "../../components/Chat/ProjectTask/MemberSection";
-import AttachmentSection from "../../components/Chat/ProjectTask/AttachmentSection";
+import { useFetch } from "../../../hooks/useFetch";
+import { TextProps } from "../../../components/shared/CustomStylings";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Description from "../../../components/Chat/ProjectTask/Description";
+import DateSection from "../../../components/Chat/ProjectTask/DateSection";
+import StatusSection from "../../../components/Chat/ProjectTask/StatusSection";
+import MemberSection from "../../../components/Chat/ProjectTask/MemberSection";
+import AttachmentSection from "../../../components/Chat/ProjectTask/AttachmentSection";
 
 const ProjectDetail = () => {
   const navigation = useNavigation();
@@ -61,25 +62,21 @@ const ProjectDetail = () => {
             <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
             <View>
               <Text
-                style={{ fontSize: 14, fontWeight: "400", width: 200, overflow: "hidden" }}
+                style={[{ fontSize: 14, width: 200, overflow: "hidden" }, TextProps]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
                 {project?.data?.title}
               </Text>
-              <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
+              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(project?.data?.deadline).format("DD MMMM YYYY")}
               </Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Text style={{ fontSize: 10, fontWeight: "400" }}>Created by</Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>Created by</Text>
             <AvatarPlaceholder name={project?.data?.owner?.name} image={project?.data?.owner?.image} />
-            <Text style={{ fontSize: 10 }}>
-              {project?.data?.owner?.name.length > 30
-                ? project?.data?.owner?.name?.split(" ")[0]
-                : project?.data?.owner?.name}
-            </Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>{project?.data?.owner?.name?.split(" ")[0]}</Text>
           </View>
         </View>
       </View>
@@ -172,10 +169,10 @@ const ProjectDetail = () => {
                   }}
                 >
                   <View>
-                    <Text style={{ fontSize: 14, fontWeight: "400" }}>
+                    <Text style={[{ fontSize: 14 }, TextProps]}>
                       {item?.title.length > 50 ? item?.title.slice(0, 30) + "..." : item?.title}
                     </Text>
-                    <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
+                    <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                       Due {dayjs(item?.deadline).format("DD MMMM YYYY")}
                     </Text>
                   </View>
@@ -199,7 +196,7 @@ const ProjectDetail = () => {
           >
             <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
-                source={require("../../assets/vectors/empty.png")}
+                source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
                 style={{
                   width: 180,
@@ -207,7 +204,7 @@ const ProjectDetail = () => {
                   resizeMode: "cover",
                 }}
               />
-              <Text>No Task</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>No Task</Text>
             </View>
           </Pressable>
         )}

@@ -18,15 +18,13 @@ const ChatMenu = ({ reference }) => {
 
   return (
     <ActionSheet ref={reference} onClose={reference.current?.hide()}>
-      <View style={{ ...styles.wrapper, gap: 5 }}>
-        {menuOptions.map((option, index) => {
-          return (
-            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-              <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      {menuOptions.map((option, index) => {
+        return (
+          <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+          </TouchableOpacity>
+        );
+      })}
 
       <TouchableOpacity
         style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}
@@ -45,9 +43,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
 });

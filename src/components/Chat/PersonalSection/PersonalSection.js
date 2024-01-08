@@ -1,22 +1,10 @@
-import { useNavigation } from "@react-navigation/native";
-
 import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { SheetManager } from "react-native-actions-sheet";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({
-  personalChats,
-  searchKeyword,
-  searchResult,
-  onSwipeControl,
-  onPinControl,
-
-  reference,
-}) => {
-  const navigation = useNavigation();
-
+const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeControl, onPinControl, navigation }) => {
   const menuOptions = [
     {
       id: 1,
@@ -33,11 +21,8 @@ const PersonalSection = ({
       <View style={styles.header}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-        {/* <TouchableOpacity style={styles.addButton} onPress={() => reference.current?.show()}>
-          <MaterialIcons name="add" color="black" size={15} />
-        </TouchableOpacity> */}
         <Pressable
-          style={{ marginRight: 1 }}
+          style={{ ...styles.addButton, marginRight: 1 }}
           onPress={() =>
             SheetManager.show("form-sheet", {
               payload: {
@@ -62,7 +47,7 @@ const PersonalSection = ({
             })
           }
         >
-          <MaterialIcons name="add" size={15} />
+          <MaterialIcons name="add" size={15} color="#3F434A" />
         </Pressable>
       </View>
 
@@ -91,6 +76,7 @@ const PersonalSection = ({
               active_member={0}
               onSwipe={onSwipeControl}
               onPin={onPinControl}
+              navigation={navigation}
             />
           );
         })}
@@ -124,6 +110,7 @@ const PersonalSection = ({
               isRead={personal.unread}
               timestamp={personal.latest_message?.created_at}
               searchKeyword={searchKeyword}
+              navigation={navigation}
             />
           ))}
         </>
@@ -152,5 +139,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserAvatar = ({ navigation, roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
   return (
@@ -34,7 +35,7 @@ const UserAvatar = ({ navigation, roomId, type, name, image, position, selectedM
 
       {type === "personal" ? (
         <View style={{ alignItems: "center" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400" }}>{position}</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>{position}</Text>
         </View>
       ) : null}
     </View>

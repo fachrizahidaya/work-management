@@ -5,24 +5,25 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
 import { SafeAreaView, View, Text, Pressable, StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import { useFetch } from "../../hooks/useFetch";
-import axiosInstance from "../../config/api";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import UserListModal from "../../components/Chat/UserDetail/UserListModal";
-import MemberListActionModal from "../../components/Chat/UserDetail/MemberListActionModal";
-import UserAvatar from "../../components/Chat/UserDetail/UserAvatar";
-import UserInformation from "../../components/Chat/UserDetail/UserInformation";
-import UserAction from "../../components/Chat/UserDetail/UserAction";
-import UserMedia from "../../components/Chat/UserDetail/UserMedia";
-import UserPersonalized from "../../components/Chat/UserDetail/UserPersonalized";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import { useFetch } from "../../../hooks/useFetch";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import axiosInstance from "../../../config/api";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import UserListModal from "../../../components/Chat/UserDetail/UserListModal";
+import MemberListActionModal from "../../../components/Chat/UserDetail/MemberListActionModal";
+import UserAvatar from "../../../components/Chat/UserDetail/UserAvatar";
+import UserInformation from "../../../components/Chat/UserDetail/UserInformation";
+import UserAction from "../../../components/Chat/UserDetail/UserAction";
+import UserMedia from "../../../components/Chat/UserDetail/UserMedia";
+import UserPersonalized from "../../../components/Chat/UserDetail/UserPersonalized";
 
-const UserDetail = () => {
+const ContactDetail = () => {
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentUserIsAdmin, setCurrentUserIsAdmin] = useState(false);
@@ -121,19 +122,11 @@ const UserDetail = () => {
       toggleAddMember();
       toggleMemberList();
       setSelectedUsers([]);
-      Toast.show({
-        type: "success",
-        text1: "Member added",
-        position: "bottom",
-      });
+      Toast.show("Member added", SuccessToastProps);
     } catch (err) {
       toggleAddMember();
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -151,11 +144,7 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -171,19 +160,11 @@ const UserDetail = () => {
       fetchSelectedGroupMembers();
       toggleRemoveMember();
       toggleRemoveMemberAction();
-      Toast.show({
-        type: "success",
-        text1: "Member removed",
-        position: "bottom",
-      });
+      Toast.show("Member removed", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleRemoveMember();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -199,20 +180,12 @@ const UserDetail = () => {
       setSubmitting(false);
       setStatus("success");
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group Profile updated",
-        position: "bottom",
-      });
+      Toast.show("Group Profile updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -433,7 +406,7 @@ const UserDetail = () => {
   );
 };
 
-export default UserDetail;
+export default ContactDetail;
 
 const styles = StyleSheet.create({
   container: {

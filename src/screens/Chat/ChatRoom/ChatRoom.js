@@ -9,22 +9,22 @@ import * as DocumentPicker from "expo-document-picker";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
-import axiosInstance from "../../config/api";
-import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
-import { useWebsocketContext } from "../../HOC/WebsocketContextProvider";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { useLoading } from "../../hooks/useLoading";
-import ChatHeader from "../../components/Chat/ChatHeader/ChatHeader";
-import ChatInput from "../../components/Chat/ChatInput/ChatInput";
-import ChatList from "../../components/Chat/ChatList/ChatList";
-import ChatOptionMenu from "../../components/Chat/ChatBubble/ChatOptionMenu";
-import ChatMessageDeleteModal from "../../components/Chat/ChatBubble/ChatMessageDeleteModal";
-import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
-import RemoveConfirmationModal from "../../components/shared/RemoveConfirmationModal";
-import MenuAttachment from "../../components/Chat/ChatInput/MenuAttachment";
-import ClearChatAction from "../../components/Chat/ChatList/ClearChatAction";
+import axiosInstance from "../../../config/api";
+import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
+import ChatHeader from "../../../components/Chat/ChatHeader/ChatHeader";
+import ChatInput from "../../../components/Chat/ChatInput/ChatInput";
+import ChatList from "../../../components/Chat/ChatList/ChatList";
+import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
+import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
+import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -75,6 +75,10 @@ const ChatRoom = () => {
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
   const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
   const { isLoading: chatIsLoading, stop: stopLoadingChat, start: startLoadingChat } = useLoading(false);
+
+  const memberName = selectedGroupMembers.map((item) => {
+    return item?.user?.name;
+  });
 
   /**
    * Open chat options handler
@@ -203,11 +207,7 @@ const ChatRoom = () => {
       onError: (error) => {
         stopLoadingChat();
         console.log(error);
-
-        Toast.show({
-          type: "error",
-          text1: error.response.data.message,
-        });
+        Toast.show(error.response.data.message, ErrorToastProps);
       },
     }
   );
@@ -290,19 +290,11 @@ const ChatRoom = () => {
       toggleDeleteChatMessage();
       toggleDeleteModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Chat deleted",
-        position: "bottom",
-      });
+      Toast.show("Chat deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -317,19 +309,11 @@ const ChatRoom = () => {
       await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
       toggleClearMessage();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Chat cleared",
-        position: "bottom",
-      });
+      Toast.show("Chat cleared", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleClearMessage();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -345,11 +329,7 @@ const ChatRoom = () => {
       navigation.goBack();
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -359,7 +339,7 @@ const ChatRoom = () => {
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [3, 4],
       quality: 1,
     });
@@ -455,13 +435,6 @@ const ChatRoom = () => {
     }
   };
 
-  const memberName = selectedGroupMembers.map((item) => {
-    return {
-      id: item.user.id,
-      name: item.user.name,
-    };
-  });
-
   /**
    * Exit group handler
    * @param {*} group_id
@@ -473,19 +446,11 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleExitModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group exited",
-        position: "bottom",
-      });
+      Toast.show("Group exited", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom();
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -500,19 +465,11 @@ const ChatRoom = () => {
       toggleChatRoom();
       toggleDeleteGroupModal();
       navigation.navigate("Chat List");
-      Toast.show({
-        type: "success",
-        text1: "Group deleted",
-        position: "bottom",
-      });
+      Toast.show("Group deleted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleChatRoom(false);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -605,7 +562,7 @@ const ChatRoom = () => {
               chatRoomIsLoading={chatRoomIsLoading}
               deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
-              reference={menuHeaderScreenSheetRef}
+              navigation={navigation}
             />
 
             <ChatList
@@ -624,6 +581,8 @@ const ChatRoom = () => {
               placement={placement}
               memberName={memberName}
               position={chatBubblePos}
+              userSelector={userSelector}
+              navigation={navigation}
             />
 
             <ChatInput
@@ -714,26 +673,6 @@ const ChatRoom = () => {
             isLoading={deleteChatMessageIsLoading}
             onDeleteMessage={messagedeleteHandler}
           />
-
-          {/* <MenuAttachment
-            selectFile={selectFile}
-            pickImageHandler={pickImageHandler}
-            navigation={navigation}
-            bandAttachment={bandAttachment}
-            setBandAttachment={setBandAttachment}
-            bandAttachmentType={bandAttachmentType}
-            setBandAttachmentType={setBandAttachmentType}
-            name={name}
-            userId={userId}
-            roomId={roomId}
-            image={image}
-            position={position}
-            email={email}
-            type={type}
-            active_member={active_member}
-            isPinned={isPinned}
-            reference={menuAttachmentScreenSheetRef}
-          /> */}
         </SafeAreaView>
       ) : null}
     </>

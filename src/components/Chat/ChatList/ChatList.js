@@ -25,6 +25,8 @@ const ChatList = ({
   onSwipeToReply,
   memberName,
   position,
+  userSelector,
+  navigation,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -121,6 +123,8 @@ const ChatList = ({
               isOptimistic={item?.isOptimistic}
               memberName={memberName}
               position={position}
+              userSelector={userSelector}
+              navigation={navigation}
             />
           </>
         )}

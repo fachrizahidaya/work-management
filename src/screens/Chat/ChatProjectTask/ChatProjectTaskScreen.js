@@ -7,10 +7,10 @@ import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useFetch } from "../../hooks/useFetch";
-import OptionButton from "../../components/Chat/ProjectTask/OptionButton";
-import ChatProjectList from "../../components/Chat/ProjectTask/ChatProjectList";
-import SearchBox from "../../components/Chat/ProjectTask/SearchBox";
+import { useFetch } from "../../../hooks/useFetch";
+import OptionButton from "../../../components/Chat/ProjectTask/OptionButton";
+import ChatProjectList from "../../../components/Chat/ProjectTask/ChatProjectList";
+import SearchBox from "../../../components/Chat/ProjectTask/SearchBox";
 
 const ChatProjectTaskScreen = () => {
   const [tabValue, setTabValue] = useState("project");

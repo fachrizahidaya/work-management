@@ -11,6 +11,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import Input from "../../shared/Forms/Input";
 import ChatReplyPreview from "./ChatReplyPreview";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatInput = ({
   userId,
@@ -141,7 +142,7 @@ const ChatInput = ({
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text>{item.name}</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />
@@ -206,7 +207,7 @@ const ChatInput = ({
           }}
         >
           {type === "group" && !active_member ? (
-            <Text style={{ fontSize: 12, fontWeight: "500", textAlign: "center" }}>
+            <Text style={[{ fontSize: 12, textAlign: "center", padding: 10 }, TextProps]}>
               You can't send message to this group because you're no longer a participant
             </Text>
           ) : (
@@ -221,7 +222,7 @@ const ChatInput = ({
                           {attachmentOptions.map((option, index) => {
                             return (
                               <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                                <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                                <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                                 <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
                               </TouchableOpacity>
                             );
@@ -265,7 +266,7 @@ const ChatInput = ({
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
-                      height: 40,
+                      height: 45,
                       // borderWidth: 1,
                       // borderColor: "#CBCBCB",
                       // borderRadius: 10

@@ -1,12 +1,13 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ProjectTaskAttachmentPreview = ({ bandAttachment, setBandAttachment, bandAttachmentType }) => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text>{bandAttachment?.title}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
         <Pressable onPress={() => setBandAttachment(null)}>
           <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
@@ -15,14 +16,14 @@ const ProjectTaskAttachmentPreview = ({ bandAttachment, setBandAttachment, bandA
         {bandAttachmentType === "project" ? (
           <>
             <MaterialCommunityIcons name="lightning-bolt" size={100} color="#595f69" />
-            <Text>{bandAttachment?.title}</Text>
-            <Text>#{bandAttachment?.project_no}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>#{bandAttachment?.project_no}</Text>
           </>
         ) : (
           <>
             <MaterialCommunityIcons name="checkbox-marked-circle-outline" size={100} color="#595f69" />
-            <Text>{bandAttachment?.title}</Text>
-            <Text>#{bandAttachment?.task_no}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>#{bandAttachment?.task_no}</Text>
           </>
         )}
       </View>

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { View, Pressable, Text } from "react-native";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatTaskItem = ({
   id,
@@ -55,10 +56,8 @@ const ChatTaskItem = ({
         }}
       >
         <View>
-          <Text style={{ fontSize: 14, fontWeight: "400" }}>{name.length > 50 ? name.slice(0, 30) + "..." : name}</Text>
-          <Text style={{ fontSize: 12, fontWeight: "300", opacity: 0.5 }}>
-            Due {dayjs(date).format("DD MMMM YYYY")}
-          </Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>{name.length > 50 ? name.slice(0, 30) + "..." : name}</Text>
+          <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>Due {dayjs(date).format("DD MMMM YYYY")}</Text>
         </View>
         <AvatarPlaceholder name={owner} image={image} size="sm" />
       </Pressable>

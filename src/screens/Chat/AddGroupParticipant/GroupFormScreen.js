@@ -18,13 +18,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
-import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
-import Input from "../../components/shared/Forms/Input";
-import PageHeader from "../../components/shared/PageHeader";
-import { useKeyboardChecker } from "../../hooks/useKeyboardChecker";
-import axiosInstance from "../../config/api";
+import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import Input from "../../../components/shared/Forms/Input";
+import PageHeader from "../../../components/shared/PageHeader";
+import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
+import axiosInstance from "../../../config/api";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
@@ -54,18 +55,11 @@ const GroupFormScreen = ({ route }) => {
         roomId: res.data.data.id,
       });
       setSubmitting(false);
-      Toast.show({
-        type: "success",
-        text1: "Group created!",
-        position: "bottom",
-      });
+      Toast.show("Group created!", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
-      Toast.show({
-        type: "error",
-        text1: error.rersponse.data.message,
-      });
+      Toast.show(error.rersponse.data.message, ErrorToastProps);
     }
   };
 
@@ -134,14 +128,24 @@ const GroupFormScreen = ({ route }) => {
       <Pressable style={{ flex: 1, display: "flex", gap: 10, paddingHorizontal: 20 }} onPress={Keyboard.dismiss}>
         <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-        <Text>Participants: {userArray?.length}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Participants: {userArray?.length}</Text>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
-                <View key={user.id} style={{ alignItems: "center" }}>
-                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="md" />
-                  <Text style={{ fontSize: 12 }}>
+                <View
+                  key={user.id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: 5,
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: 15,
+                    gap: 5,
+                  }}
+                >
+                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
+                  <Text style={[{ fontSize: 12 }, TextProps]}>
                     {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
                   </Text>
                 </View>

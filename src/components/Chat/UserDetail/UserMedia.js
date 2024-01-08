@@ -1,6 +1,7 @@
 import { TouchableOpacity, View, Text, Pressable } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserMedia = ({ qty, navigation, media, docs }) => {
   return (
@@ -19,7 +20,7 @@ const UserMedia = ({ qty, navigation, media, docs }) => {
     >
       <Pressable style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialIcons name="image" size={10} color="#377893" />
-        <Text style={{ fontSize: 14, fontWeight: "400" }}>Media & Docs</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>Media & Docs</Text>
       </Pressable>
       <TouchableOpacity
         style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}
@@ -30,8 +31,8 @@ const UserMedia = ({ qty, navigation, media, docs }) => {
           })
         }
       >
-        <Text style={{ fontSize: 14, fontWeight: "400", opacity: 0.5 }}>{qty}</Text>
-        <MaterialIcons name="chevron-right" size={10} style={{ opacity: 0.5 }} />
+        <Text style={[{ fontSize: 14, opacity: 0.5 }, TextProps]}>{qty}</Text>
+        <MaterialIcons name="chevron-right" size={10} style={{ opacity: 0.5 }} color="#3F434A" />
       </TouchableOpacity>
     </View>
   );

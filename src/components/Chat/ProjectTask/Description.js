@@ -1,4 +1,5 @@
 import { View, ScrollView, Text } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const Description = ({ description }) => {
   return (
@@ -13,7 +14,7 @@ const Description = ({ description }) => {
       }}
     >
       <ScrollView>
-        <Text style={{ fontSize: 14, fontWeight: "400" }}>{description}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>{description}</Text>
       </ScrollView>
     </View>
   );

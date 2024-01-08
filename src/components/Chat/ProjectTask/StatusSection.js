@@ -1,4 +1,5 @@
 import { View, Pressable, Text } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const StatusSection = ({ open, onProgress, finish }) => {
   return (
@@ -17,15 +18,15 @@ const StatusSection = ({ open, onProgress, finish }) => {
     >
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#FF965D" }}>{open}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>Open</Text>
+        <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>Open</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#304FFD" }}>{onProgress}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>On Progress</Text>
+        <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>On Progress</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFD240" }}>{finish}</Text>
-        <Text style={{ fontSize: 12, fontWeight: "400", opacity: 0.5 }}>Finish</Text>
+        <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>Finish</Text>
       </View>
     </Pressable>
   );
