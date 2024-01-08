@@ -141,7 +141,7 @@ const FileSection = ({ projectId, isAllowed }) => {
         </TouchableOpacity>
       </View>
       {!attachmentIsLoading && (
-        <>
+        <View style={{ flex: 1 }}>
           {attachments?.data?.length > 0 ? (
             <FlashList
               data={attachments.data}
@@ -175,7 +175,7 @@ const FileSection = ({ projectId, isAllowed }) => {
               <Text style={TextProps}>This project has no attachment</Text>
             </View>
           )}
-        </>
+        </View>
       )}
     </View>
   );
