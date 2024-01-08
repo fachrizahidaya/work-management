@@ -42,10 +42,8 @@ const ChatRoom = () => {
   const [placement, setPlacement] = useState(undefined);
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
   const [chatBubblePos, setChatBubblePos] = useState(false);
-
-  const swipeToReply = (message) => {
-    setMessageToReply(message);
-  };
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [searchMessage, setSearchMessage] = useState(null);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -62,7 +60,7 @@ const ChatRoom = () => {
 
   const clearChatScreenSheetRef = useRef(null);
   const menuAttachmentScreenSheetRef = useRef(null);
-  const menuHeaderScreenSheetRef = useRef(null);
+  const searchFormRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -100,6 +98,9 @@ const ChatRoom = () => {
     toggleOption();
   };
 
+  /**
+   * Handle for attachment ActionSheet
+   */
   const openAddAttachmentHandler = () => {
     menuAttachmentScreenSheetRef.current?.show();
     Keyboard.dismiss();
@@ -108,15 +109,25 @@ const ChatRoom = () => {
   /**
    * Toggle fullscreen image
    */
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = (chat) => {
     setSelectedChatBubble(chat);
     setIsFullScreen(!isFullScreen);
   };
 
+  /**
+   * Handle for delete Message
+   */
   const openDeleteChatMessageHandler = () => {
     setSelectedChatToDelete(selectedChatBubble);
     toggleDeleteModalChat();
+  };
+
+  /**
+   * Handle for swipe ChatBubble
+   * @param {*} message
+   */
+  const swipeToReply = (message) => {
+    setMessageToReply(message);
   };
 
   /**
@@ -166,6 +177,7 @@ const ChatRoom = () => {
             offset: offset,
             limit: 50,
             sort: "desc",
+            search: searchMessage,
           },
         });
 
@@ -542,7 +554,6 @@ const ChatRoom = () => {
               image={image}
               position={position}
               email={email}
-              fileAttachment={fileAttachment}
               type={type}
               active_member={active_member}
               roomId={roomId}
@@ -563,6 +574,9 @@ const ChatRoom = () => {
               deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
               navigation={navigation}
+              searchMessage={searchMessage}
+              setSearchMessage={setSearchMessage}
+              searchFormRef={searchFormRef}
             />
 
             <ChatList
@@ -640,14 +654,7 @@ const ChatRoom = () => {
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
 
-          <ClearChatAction
-            isOpen={clearChatMessageIsOpen}
-            onClose={toggleClearChatMessage}
-            name={name}
-            isLoading={clearMessageIsLoading}
-            clearChat={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
-            reference={clearChatScreenSheetRef}
-          />
+          <ClearChatAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
 
           <ImageFullScreenModal
             isFullScreen={isFullScreen}
