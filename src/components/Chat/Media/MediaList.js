@@ -1,34 +1,60 @@
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MediaItem from "./MediaItem";
+import DocItem from "./DocItem";
+import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 
-const MediaList = ({ media, docs }) => {
+const MediaList = ({ media, docs, tabValue, toggleFullScreen }) => {
   return (
     <View style={styles.container}>
-      <FlashList
-        keyExtractor={(item, index) => index}
-        onEndReachedThreshold={0.1}
-        estimatedItemSize={200}
-        data={media}
-        numColumns={6}
-        renderItem={({ item, index }) => (
-          <View style={{ flex: 1 }}>
-            <MediaItem key={index} image={item?.file_name} path={item?.file_path} />
-          </View>
-        )}
-      />
-      <FlashList
-        keyExtractor={(item, index) => index}
-        onEndReachedThreshold={0.1}
-        estimatedItemSize={200}
-        data={docs}
-        renderItem={({ item, index }) => (
-          <View style={{ flex: 1 }}>
-            <MediaItem key={index} image={item?.file_name} path={item?.file_path} type={item?.mime_type} />
-          </View>
-        )}
-      />
+      {tabValue === "photos" ? (
+        media.length > 0 ? (
+          <FlashList
+            keyExtractor={(item, index) => index}
+            onEndReachedThreshold={0.1}
+            estimatedItemSize={200}
+            data={media}
+            numColumns={5}
+            renderItem={({ item, index }) => (
+              <View style={{}}>
+                <MediaItem
+                  key={index}
+                  image={item?.file_name}
+                  path={item?.file_path}
+                  toggleFullScreen={toggleFullScreen}
+                />
+              </View>
+            )}
+          />
+        ) : (
+          <ScrollView>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </ScrollView>
+        )
+      ) : docs.length > 0 ? (
+        <FlashList
+          keyExtractor={(item, index) => index}
+          onEndReachedThreshold={0.1}
+          estimatedItemSize={200}
+          data={docs}
+          renderItem={({ item, index }) => (
+            <View style={{ gap: 10 }}>
+              <DocItem
+                key={index}
+                image={item?.file_name}
+                path={item?.file_path}
+                type={item?.mime_type}
+                size={item?.file_size}
+              />
+            </View>
+          )}
+        />
+      ) : (
+        <ScrollView>
+          <EmptyPlaceholder height={250} width={250} text="No Data" />
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -38,8 +64,9 @@ export default MediaList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 5,
-    marginTop: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginTop: 10,
     backgroundColor: "#FFFFFF",
   },
 });

@@ -105,7 +105,7 @@ const ChatHeader = ({
             }
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            <AvatarPlaceholder name={name} image={image} size="md" />
+            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
