@@ -226,7 +226,7 @@ const ProjectDetailScreen = ({ route }) => {
                     data={activities?.data}
                     keyExtractor={(item) => item.id}
                     onEndReachedThreshold={0.1}
-                    estimatedItemSize={51}
+                    estimatedItemSize={191}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => {
