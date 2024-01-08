@@ -29,6 +29,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 10,
         }}
       >
         <View style={styles.container}>
@@ -54,12 +55,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
             />
           )}
         </View>
-        <MaterialCommunityIcons
-          name="close-circle-outline"
-          size={20}
-          color="#9E9E9E"
-          onPress={() => setMessageToReply(null)}
-        />
+        <MaterialCommunityIcons name="close" size={20} color="#9E9E9E" onPress={() => setMessageToReply(null)} />
       </View>
     )
   );
@@ -69,6 +65,7 @@ export default ChatReplyPreview;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -79,5 +76,6 @@ const styles = StyleSheet.create({
     borderLeftColor: "#176688",
     paddingHorizontal: 10,
     paddingVertical: 10,
+    borderRadius: 10,
   },
 });
