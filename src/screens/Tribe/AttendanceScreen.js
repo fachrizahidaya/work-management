@@ -204,7 +204,7 @@ const AttendanceScreen = () => {
             webkitRelativePath: "",
           });
         } else {
-          Alert.alert("Max file size is 3MB");
+          Toast.show("Max file size is 3MB", ErrorToastProps);
         }
       }
     } catch (err) {
