@@ -14,7 +14,6 @@ const ChatHeader = ({
   image,
   position,
   email,
-  fileAttachment,
   type,
   active_member,
   toggleExitModal,
@@ -35,6 +34,9 @@ const ChatHeader = ({
   onUpdatePinHandler,
   isPinned,
   navigation,
+  searchMessage,
+  setSearchMessage,
+  searchFormRef,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -105,7 +107,7 @@ const ChatHeader = ({
             }
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            <AvatarPlaceholder name={name} image={image} size="md" />
+            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
@@ -143,16 +145,21 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                    {/* <TouchableOpacity >
-         <Text>Search</Text>
-       </TouchableOpacity> */}
+                    {/* <TouchableOpacity
+                      onPress={() => {
+                        toggleSearch();
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text style={[{ fontSize: 14 }, TextProps]}>Search</Text>
+                    </TouchableOpacity> */}
                     <TouchableOpacity
                       onPress={() => {
                         onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                      <Text style={[{ fontSize: 14 }, TextProps]}>
                         {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
                       </Text>
                     </TouchableOpacity>
@@ -165,7 +172,7 @@ const ChatHeader = ({
                               toggleExitModal();
                             }}
                           >
-                            <Text style={[{ fontSize: 12 }, TextProps]}>Exit Group</Text>
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity
@@ -174,7 +181,7 @@ const ChatHeader = ({
                               toggleDeleteGroupModal();
                             }}
                           >
-                            <Text style={[{ fontSize: 12 }, TextProps]}>Delete Group</Text>
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
                           </TouchableOpacity>
                         )}
                       </>
@@ -186,7 +193,7 @@ const ChatHeader = ({
                             toggleDeleteModal();
                           }}
                         >
-                          <Text style={[{ fontSize: 12 }, TextProps]}>Delete Chat</Text>
+                          <Text style={[{ fontSize: 14 }, TextProps]}>Delete Chat</Text>
                         </TouchableOpacity>
                       </>
                     )}
@@ -208,6 +215,9 @@ const ChatHeader = ({
           clearSearch={clearSearch}
           setInputToShow={setInputToShow}
           setSearchInput={setSearchInput}
+          searchMessage={searchMessage}
+          setSearchMessage={setSearchMessage}
+          searchFormRef={searchFormRef}
         />
       )}
     </>

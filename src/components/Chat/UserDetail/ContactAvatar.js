@@ -5,7 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 
-const UserAvatar = ({ navigation, roomId, type, name, image, position, selectedMembers = [], currentUserIsAdmin }) => {
+const ContactAvatar = ({ navigation, roomId, type, name, image, position, currentUserIsAdmin }) => {
   return (
     <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF", paddingBottom: 5 }}>
       <View style={{ gap: 10 }}>
@@ -42,7 +42,7 @@ const UserAvatar = ({ navigation, roomId, type, name, image, position, selectedM
   );
 };
 
-export default UserAvatar;
+export default ContactAvatar;
 
 const styles = StyleSheet.create({
   container: {

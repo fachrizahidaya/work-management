@@ -42,10 +42,9 @@ const ChatRoom = () => {
   const [placement, setPlacement] = useState(undefined);
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
   const [chatBubblePos, setChatBubblePos] = useState(false);
-
-  const swipeToReply = (message) => {
-    setMessageToReply(message);
-  };
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [searchMessage, setSearchMessage] = useState("");
+  const [filteredSearch, setFilteredSearch] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -62,7 +61,7 @@ const ChatRoom = () => {
 
   const clearChatScreenSheetRef = useRef(null);
   const menuAttachmentScreenSheetRef = useRef(null);
-  const menuHeaderScreenSheetRef = useRef(null);
+  const searchFormRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -100,6 +99,9 @@ const ChatRoom = () => {
     toggleOption();
   };
 
+  /**
+   * Handle for attachment ActionSheet
+   */
   const openAddAttachmentHandler = () => {
     menuAttachmentScreenSheetRef.current?.show();
     Keyboard.dismiss();
@@ -108,15 +110,25 @@ const ChatRoom = () => {
   /**
    * Toggle fullscreen image
    */
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = (chat) => {
     setSelectedChatBubble(chat);
     setIsFullScreen(!isFullScreen);
   };
 
+  /**
+   * Handle for delete Message
+   */
   const openDeleteChatMessageHandler = () => {
     setSelectedChatToDelete(selectedChatBubble);
     toggleDeleteModalChat();
+  };
+
+  /**
+   * Handle for swipe ChatBubble
+   * @param {*} message
+   */
+  const swipeToReply = (message) => {
+    setMessageToReply(message);
   };
 
   /**
@@ -166,20 +178,36 @@ const ChatRoom = () => {
             offset: offset,
             limit: 50,
             sort: "desc",
+            search: searchMessage,
           },
         });
 
-        setChatList((currentChats) => {
-          if (currentChats.length !== currentChats.length + res?.data?.data.length) {
-            return [...currentChats, ...res?.data?.data];
-          } else {
-            setHasMore(false);
-            return currentChats;
-          }
-        });
-        setOffset((prevState) => prevState + 50);
+        if (!searchMessage) {
+          setChatList((currentChats) => {
+            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+              return [...currentChats, ...res?.data?.data];
+            } else {
+              setHasMore(false);
+              return currentChats;
+            }
+          });
+          setOffset((prevState) => prevState + 50);
+          setFilteredSearch([]);
+        } else {
+          setFilteredSearch((currentChats) => {
+            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+              return [...currentChats, ...res?.data?.data];
+            } else {
+              setHasMore(false);
+              return currentChats;
+            }
+          });
+          setOffset((prevState) => prevState + 50);
+          setChatList([]);
+        }
       } catch (err) {
         console.log(err);
+        Toast.show(err.response.data.message, ErrorToastProps);
       } finally {
         setIsLoading(false);
       }
@@ -260,6 +288,7 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -383,11 +412,12 @@ const ChatRoom = () => {
             webkitRelativePath: "",
           });
         } else {
-          Alert.alert("Max file size is 3MB");
+          Toast.show("Max file size is 3MB", ErrorToastProps);
         }
       }
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -432,6 +462,7 @@ const ChatRoom = () => {
       setSelectedGroupMembers(res?.data?.data);
     } catch (err) {
       console.log(err);
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -515,6 +546,10 @@ const ChatRoom = () => {
     groupChatMessageEvent();
   }, [roomId, currentUser]);
 
+  // useEffect(() => {
+  //   setFilteredSearch([]);
+  // }, [searchMessage]);
+
   useEffect(() => {
     setTimeout(() => {
       setIsReady(true);
@@ -542,7 +577,6 @@ const ChatRoom = () => {
               image={image}
               position={position}
               email={email}
-              fileAttachment={fileAttachment}
               type={type}
               active_member={active_member}
               roomId={roomId}
@@ -563,6 +597,9 @@ const ChatRoom = () => {
               deleteChatPersonal={deleteChatPersonal}
               onUpdatePinHandler={chatPinUpdateHandler}
               navigation={navigation}
+              searchMessage={searchMessage}
+              setSearchMessage={setSearchMessage}
+              searchFormRef={searchFormRef}
             />
 
             <ChatList
@@ -583,6 +620,7 @@ const ChatRoom = () => {
               position={chatBubblePos}
               userSelector={userSelector}
               navigation={navigation}
+              filteredSearch={filteredSearch}
             />
 
             <ChatInput
@@ -640,14 +678,7 @@ const ChatRoom = () => {
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
 
-          <ClearChatAction
-            isOpen={clearChatMessageIsOpen}
-            onClose={toggleClearChatMessage}
-            name={name}
-            isLoading={clearMessageIsLoading}
-            clearChat={() => clearChatMessageHandler(roomId, type, toggleClearMessage)}
-            reference={clearChatScreenSheetRef}
-          />
+          <ClearChatAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
 
           <ImageFullScreenModal
             isFullScreen={isFullScreen}

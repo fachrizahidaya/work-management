@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
-const UserMedia = ({ qty, navigation, media, docs }) => {
+const ContactMedia = ({ qty, navigation, media, docs }) => {
   return (
     <View
       style={{
@@ -38,4 +38,4 @@ const UserMedia = ({ qty, navigation, media, docs }) => {
   );
 };
 
-export default UserMedia;
+export default ContactMedia;

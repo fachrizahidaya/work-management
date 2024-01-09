@@ -46,7 +46,10 @@ const FileAttachment = ({ file, setFile }) => {
           name={
             formatMimeType(file.type) === "pdf"
               ? "file-pdf-box"
-              : formatMimeType(file.type) === "pptx" || formatMimeType(file.type) === "ppt"
+              : formatMimeType(file.type) === "pptx" ||
+                formatMimeType(file.type) === "ppt" ||
+                formatMimeType(file.type) === "powerpoint" ||
+                formatMimeType(file.type) === "presentation"
               ? "file-powerpoint-box"
               : formatMimeType(file.type) === "docx" ||
                 formatMimeType(file.type) === "doc" ||

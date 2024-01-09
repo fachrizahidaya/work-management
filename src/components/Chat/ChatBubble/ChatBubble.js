@@ -228,7 +228,7 @@ const ChatBubble = ({
                               width: 260,
                               height: 200,
                               resizeMode: "contain",
-                              backgroundColor: "black",
+                              backgroundColor: "gray",
                             }}
                             source={{
                               uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,

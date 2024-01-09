@@ -4,7 +4,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const UserAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
+const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
   return (
     <View
       style={{
@@ -55,4 +55,4 @@ const UserAction = ({ type, active_member, toggleClearChatMessage, toggleExitMod
   );
 };
 
-export default UserAction;
+export default ContactAction;
