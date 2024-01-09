@@ -17,11 +17,11 @@ import axiosInstance from "../../../config/api";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import UserListModal from "../../../components/Chat/UserDetail/UserListModal";
 import MemberListActionModal from "../../../components/Chat/UserDetail/MemberListActionModal";
-import UserAvatar from "../../../components/Chat/UserDetail/UserAvatar";
-import UserInformation from "../../../components/Chat/UserDetail/UserInformation";
-import UserAction from "../../../components/Chat/UserDetail/UserAction";
-import UserMedia from "../../../components/Chat/UserDetail/UserMedia";
-import UserPersonalized from "../../../components/Chat/UserDetail/UserPersonalized";
+import ContactAvatar from "../../../components/Chat/UserDetail/ContactAvatar";
+import ContactInformation from "../../../components/Chat/UserDetail/ContactInformation";
+import ContactAction from "../../../components/Chat/UserDetail/ContactAction";
+import ContactMedia from "../../../components/Chat/UserDetail/ContactMedia";
+import ContactPersonalized from "../../../components/Chat/UserDetail/ContactPersonalized";
 
 const ContactDetail = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -93,6 +93,7 @@ const ContactDetail = () => {
       setSelectedGroupMembers(res?.data?.data);
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -289,21 +290,16 @@ const ContactDetail = () => {
             </View>
           </View>
           <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>
-            <UserAvatar
+            <ContactAvatar
               navigation={navigation}
               roomId={roomId}
               type={type}
               name={name}
               image={image}
               position={position}
-              onUpdateGroup={groupUpdateHandler}
-              selectedMembers={selectedMembers}
-              setSelectedMembers={setSelectedMembers}
-              imageAttachment={imageAttachment}
-              setImageAttachment={setImageAttachment}
               currentUserIsAdmin={currentUserIsAdmin}
             />
-            <UserInformation
+            <ContactInformation
               type={type}
               selectedGroupMembers={selectedGroupMembers}
               loggedInUser={loggedInUser}
@@ -315,14 +311,14 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
-            <UserMedia
+            <ContactMedia
               qty={media?.data?.length + document?.data?.length}
               media={media?.data}
               docs={document?.data}
               navigation={navigation}
             />
-            {/* <UserPersonalized /> */}
-            <UserAction
+            {/* <ContactPersonalized /> */}
+            <ContactAction
               type={type}
               active_member={active_member}
               toggleClearChatMessage={toggleClearChatMessage}

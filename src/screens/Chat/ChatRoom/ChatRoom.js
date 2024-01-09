@@ -207,6 +207,7 @@ const ChatRoom = () => {
         }
       } catch (err) {
         console.log(err);
+        Toast.show(err.response.data.message, ErrorToastProps);
       } finally {
         setIsLoading(false);
       }
@@ -287,6 +288,7 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
       toggleDeleteChatMessage();
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -415,6 +417,7 @@ const ChatRoom = () => {
       }
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -459,6 +462,7 @@ const ChatRoom = () => {
       setSelectedGroupMembers(res?.data?.data);
     } catch (err) {
       console.log(err);
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 

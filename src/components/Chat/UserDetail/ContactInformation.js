@@ -6,7 +6,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { ScrollView } from "react-native-gesture-handler";
 import { TextProps } from "../../shared/CustomStylings";
 
-const UserInformation = ({
+const ContactInformation = ({
   type,
   selectedGroupMembers,
   loggedInUser,
@@ -100,4 +100,4 @@ const UserInformation = ({
   );
 };
 
-export default UserInformation;
+export default ContactInformation;

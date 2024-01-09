@@ -73,6 +73,7 @@ const ChatListScreen = () => {
       setPersonalChats(res.data.data);
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -85,6 +86,7 @@ const ChatListScreen = () => {
       setGroupChats(res.data.data);
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 

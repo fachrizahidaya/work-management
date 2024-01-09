@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import { TextProps } from "../../shared/CustomStylings";
 
-const UserPersonalized = () => {
+const ContactPersonalized = () => {
   return (
     <View
       style={{
@@ -24,4 +24,4 @@ const UserPersonalized = () => {
   );
 };
 
-export default UserPersonalized;
+export default ContactPersonalized;
