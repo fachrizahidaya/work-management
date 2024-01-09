@@ -6,16 +6,16 @@ import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
 
-import { useFetch } from "../../hooks/useFetch";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import PageHeader from "../../components/shared/PageHeader";
-import Button from "../../components/shared/Forms/Button";
-import axiosInstance from "../../config/api";
-import useCheckAccess from "../../hooks/useCheckAccess";
-import PayslipList from "../../components/Tribe/Payslip/PayslipList";
-import PayslipPasswordEdit from "../../components/Tribe/Payslip/PayslipPasswordEdit";
-import PayslipDownload from "../../components/Tribe/Payslip/PayslipDownload";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
+import { useFetch } from "../../../hooks/useFetch";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import PageHeader from "../../../components/shared/PageHeader";
+import Button from "../../../components/shared/Forms/Button";
+import axiosInstance from "../../../config/api";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
+import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
+import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -169,7 +169,7 @@ const PayslipScreen = () => {
           <>
             <View style={styles.imageContainer}>
               <Image
-                source={require("./../../assets/vectors/empty.png")}
+                source={require("../../../assets/vectors/empty.png")}
                 alt="empty"
                 style={{ resizeMode: "contain", height: 300, width: 300 }}
               />
