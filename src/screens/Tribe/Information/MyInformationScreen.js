@@ -3,12 +3,12 @@ import { useNavigation } from "@react-navigation/core";
 import { SafeAreaView, StyleSheet, View, Text, Image, Linking } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
-import { useFetch } from "../../hooks/useFetch";
-import PageHeader from "../../components/shared/PageHeader";
-import EmployeeLeaveDashboard from "../../components/Tribe/MyInformation/EmployeeLeaveDashboard";
-import EmployeeInformation from "../../components/Tribe/MyInformation/EmployeeInformation";
-import SupervisorInformation from "../../components/Tribe/MyInformation/SupervisorInformation";
-import { TextProps } from "../../components/shared/CustomStylings";
+import { useFetch } from "../../../hooks/useFetch";
+import PageHeader from "../../../components/shared/PageHeader";
+import EmployeeLeaveDashboard from "../../../components/Tribe/MyInformation/EmployeeLeaveDashboard";
+import EmployeeInformation from "../../../components/Tribe/MyInformation/EmployeeInformation";
+import SupervisorInformation from "../../../components/Tribe/MyInformation/SupervisorInformation";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const MyInformationScreen = () => {
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
@@ -32,7 +32,7 @@ const MyInformationScreen = () => {
             {!profile?.data ? (
               <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
                 <Image
-                  source={require("../../assets/vectors/empty.png")}
+                  source={require("../../../assets/vectors/empty.png")}
                   style={{ width: 300, height: 300, resizeMode: "contain" }}
                   alt="empty"
                 />

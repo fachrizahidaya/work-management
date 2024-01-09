@@ -6,9 +6,9 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet, View, ActivityIndicator, Text } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
-import { useFetch } from "../../hooks/useFetch";
-import Input from "../../components/shared/Forms/Input";
-import ContactList from "../../components/Tribe/Contact/ContactList";
+import { useFetch } from "../../../hooks/useFetch";
+import Input from "../../../components/shared/Forms/Input";
+import ContactList from "../../../components/Tribe/Contact/ContactList";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
