@@ -1,15 +1,33 @@
 import React from "react";
+
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+
 import PageHeader from "../../../components/shared/PageHeader";
 import PerformanceStatistic from "../../../components/Tribe/Performance/PerformanceStatistic.js";
+import PerformancePoint from "../../../components/Tribe/Performance/PerformancePoint.js";
 
 const PerformanceScreen = () => {
+  const data = [
+    { period: "Q1", point: 60 },
+    { period: "Q2", point: 80 },
+  ];
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader width={200} title="My Performance" backButton={false} />
       </View>
       <PerformanceStatistic />
+      <FlashList
+        data={data}
+        onEndReachedThreshold={0.1}
+        keyExtractor={(item, index) => index}
+        renderItem={({ item, index }) => (
+          <View style={{ flex: 1, gap: 5, paddingVertical: 5, paddingHorizontal: 10 }}>
+            <PerformancePoint key={index} period={item.period} point={item.point} />
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 };
