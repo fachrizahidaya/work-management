@@ -88,10 +88,8 @@ const ProjectTaskScreen = ({ route }) => {
 
             <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
               <TaskFilter
-                data={tasks?.data}
                 members={members?.data}
                 labels={labels}
-                searchInput={searchInput}
                 responsibleId={responsibleId}
                 deadlineSort={deadlineSort}
                 selectedPriority={selectedPriority}

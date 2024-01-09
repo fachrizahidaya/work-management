@@ -84,10 +84,8 @@ const AdHocScreen = () => {
 
             <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
               <TaskFilter
-                data={tasks?.data}
                 members={noDuplicateResponsibleArr}
                 labels={labels}
-                searchInput={searchInput}
                 responsibleId={responsibleId}
                 deadlineSort={deadlineSort}
                 selectedPriority={selectedPriority}

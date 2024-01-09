@@ -5,7 +5,7 @@ import Select from "../../../shared/Forms/Select";
 const TeamSelection = ({ onChange, selectedTeam, teams }) => {
   return (
     <Select
-      value={selectedTeam?.name}
+      value={selectedTeam?.id}
       onChange={(value) => onChange(value)}
       items={
         teams.length > 0 &&

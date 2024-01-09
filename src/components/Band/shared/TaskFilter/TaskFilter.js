@@ -1,12 +1,13 @@
 import React, { memo, useCallback, useState } from "react";
 
 import _ from "lodash";
+import { SheetManager } from "react-native-actions-sheet";
 
 import { TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { useDisclosure } from "../../../../hooks/useDisclosure";
 import Input from "../../../shared/Forms/Input";
+import Select from "../../../shared/Forms/Select";
 
 const TaskFilter = ({
   members,
@@ -20,19 +21,8 @@ const TaskFilter = ({
   setDeadlineSort,
   setSelectedPriority,
   setSearchInput,
-  searchInput,
 }) => {
-  const [selectedLabel, setSelectedLabel] = useState("");
   const [shownInput, setShownInput] = useState("");
-  const [isReady, setIsReady] = useState(false);
-  const { isOpen: filterIsOpen, toggle: toggleFilter } = useDisclosure(false);
-
-  const openFilterHandler = () => {
-    toggleFilter();
-    setTimeout(() => {
-      setIsReady(true);
-    }, 150);
-  };
 
   const handleChangeInput = useCallback(
     _.debounce((value) => {
@@ -40,11 +30,6 @@ const TaskFilter = ({
     }, 300),
     []
   );
-
-  const onPressLabel = (label) => {
-    setSelectedLabelId(label);
-    setSelectedLabel(label);
-  };
 
   return (
     <>
@@ -68,101 +53,78 @@ const TaskFilter = ({
               </TouchableOpacity>
             )}
 
-            {/* <TouchableOpacity onPress={() => openFilterHandler()}>
-              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A"/>
-            </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={() =>
+                SheetManager.show("form-sheet", {
+                  payload: {
+                    children: (
+                      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                        <Select
+                          value={responsibleId}
+                          placeHolder="Select Member"
+                          items={[
+                            { value: "all", label: "All Member" },
+                            { value: "", label: "Not Assigned" },
+                            ...(Array.isArray(members) &&
+                              members.map((member) => {
+                                return {
+                                  value: member.user_id || member.responsible_id,
+                                  label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
+                                };
+                              })),
+                          ]}
+                          onChange={(value) => setResponsibleId(value)}
+                          hasParentSheet
+                        />
+                        <Select
+                          value={selectedLabelId}
+                          placeHolder="Select Label"
+                          items={[
+                            { value: "", label: "No Label" },
+                            ...(Array.isArray(labels?.data) &&
+                              labels?.data.map((label) => {
+                                return {
+                                  value: label.label_id,
+                                  label: label.label_name,
+                                };
+                              })),
+                          ]}
+                          onChange={(value) => setSelectedLabelId(value)}
+                          hasParentSheet
+                        />
+                        <Select
+                          value={deadlineSort}
+                          placeHolder="Sort Deadline"
+                          items={[
+                            { value: "asc", label: "Closest" },
+                            { value: "desc", label: "Latest" },
+                          ]}
+                          onChange={(value) => setDeadlineSort(value)}
+                          hasParentSheet
+                        />
+                        <Select
+                          value={selectedPriority}
+                          placeHolder="Select Priority"
+                          items={[
+                            { value: "", label: "All Priority" },
+                            { value: "Low", label: "Low" },
+                            { value: "Medium", label: "Medium" },
+                            { value: "High", label: "High" },
+                          ]}
+                          onChange={(value) => setSelectedPriority(value)}
+                          hasParentSheet
+                        />
+                      </View>
+                    ),
+                  },
+                })
+              }
+            >
+              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
+            </TouchableOpacity>
           </View>
         }
       />
-
-      {/* {filterIsOpen && (
-        <Actionsheet
-          isOpen={filterIsOpen}
-          onClose={() => {
-            toggleFilter();
-            setIsReady(false);
-          }}
-        >
-          <Actionsheet.Content>
-            {isReady ? (
-              <VStack w="95%" space={2}>
-                <FormControl.Label>Member</FormControl.Label>
-                <Select
-                  onValueChange={(value) => setResponsibleId(value)}
-                  defaultValue={responsibleId}
-                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                >
-                  <Select.Item label="All Member" value="all" />
-                  <Select.Item label="Not Assigned" value="" />
-                  {members?.length > 0 &&
-                    members.map((member, index) => {
-                      return (
-                        <Select.Item
-                          key={index}
-                          label={member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0]}
-                          value={member.user_id || member.responsible_id}
-                        />
-                      );
-                    })}
-                </Select>
-
-                <FormControl.Label>Label</FormControl.Label>
-                <Select
-                  defaultValue={selectedLabel}
-                  onValueChange={(value) => onPressLabel(value)}
-                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                >
-                  <Select.Item label="No Label" value="" />
-
-                  {labels?.data.map((label) => {
-                    return <Select.Item key={label.id} label={label.label_name} value={label.label_id} />;
-                  })}
-                </Select>
-
-                <FormControl.Label>Due Date</FormControl.Label>
-                <Select
-                  defaultValue={deadlineSort}
-                  onValueChange={(value) => setDeadlineSort(value)}
-                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                >
-                  <Select.Item label="Closest" value="asc" />
-                  <Select.Item label="Latest" value="desc" />
-                </Select>
-
-                <FormControl.Label>Priority</FormControl.Label>
-                <Select
-                  defaultValue={selectedPriority}
-                  onValueChange={(value) => setSelectedPriority(value)}
-                  dropdownIcon={<Icon as={<MaterialCommunityIcons name="chevron-down" />} size="lg" mr={2} />}
-                >
-                  <Select.Item label="All Priority" value="" />
-                  <Select.Item label="Low" value="Low" />
-                  <Select.Item label="Medium" value="Medium" />
-                  <Select.Item label="High" value="High" />
-                </Select>
-
-                <Button
-                  mt={4}
-                  onPress={() => {
-                    setDeadlineSort("asc");
-                    setResponsibleId("");
-                    setSelectedLabel("");
-                    setSelectedPriority("");
-
-                    // Reset labels
-                    setSelectedLabel("");
-                    setSelectedLabelId(null);
-                  }}
-                >
-                  Reset Filter
-                </Button>
-              </VStack>
-            ) : (
-              <Skeleton h={41} />
-            )}
-          </Actionsheet.Content>
-        </Actionsheet>
-      )} */}
     </>
   );
 };
