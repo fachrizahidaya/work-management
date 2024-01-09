@@ -5,17 +5,18 @@ import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
-import InformationScreen from "../../screens/Tribe/MyInformationScreen";
+import InformationScreen from "../../screens/Tribe/Information/MyInformationScreen";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import PayslipScreen from "../../screens/Tribe/PayslipScreen";
-import ContactScreen from "../../screens/Tribe/ContactScreen";
+import PayslipScreen from "../../screens/Tribe/Payslip/PayslipScreen";
+import ContactScreen from "../../screens/Tribe/Contact/ContactScreen";
 import PersonalLeaveScreen from "../../screens/Tribe/Leave/PersonalLeaveScreen/PersonalLeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
-import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
+import AttendanceScreen from "../../screens/Tribe/Attendance/AttendanceScreen";
 import ReimbursementScreen from "../../screens/Tribe/Reimbursement/ReimbursementScreen";
 import TribeScreenSheet from "../../components/shared/ActionSheet/TribeScreenSheet";
 import TribeAddNewSheet from "../../components/shared/ActionSheet/TribeAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
+import PerformanceScreen from "../../screens/Tribe/Performance/PerformanceScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -150,7 +151,7 @@ const TribeTab = ({ setSelectedModule }) => {
 
         <Tab.Screen name="Payslip" component={PayslipScreen} />
 
-        <Tab.Screen name="My KPI" component={EmptyScreen} />
+        <Tab.Screen name="My KPI" component={PerformanceScreen} />
 
         <Tab.Screen name="Calendar Tribe" component={CalendarScreen} />
 
