@@ -33,8 +33,6 @@ const ChatListScreen = () => {
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
 
-  const contactMenuScreenSheetRef = useRef(null);
-  const chatMenuScreenSheetRef = useRef(null);
   const searchFromRef = useRef(null);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
@@ -322,25 +320,6 @@ const ChatListScreen = () => {
               )}
             </ScrollView>
           </SafeAreaView>
-
-          {/* <ContactMenu
-            onClose={closeSelectedContactMenuHandler}
-            chat={selectedContact}
-            toggleDeleteModal={openSelectedChatHandler}
-            toggleDeleteGroupModal={openSelectedGroupChatHandler}
-            toggleClearChatMessage={openSelectedChatToClearHandler}
-            loggedInUser={userSelector?.id}
-            toggleDeleteChatMessage={toggleDeleteChatMessage}
-            toggleExitModal={toggleExitModal}
-            deleteModalIsOpen={deleteModalIsOpen}
-            exitModalIsOpen={exitModalIsOpen}
-            deleteGroupModalIsOpen={deleteGroupModalIsOpen}
-            deleteChatPersonal={deleteChatPersonal}
-            deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-            chatRoomIsLoading={chatRoomIsLoading}
-            reference={contactMenuScreenSheetRef}
-            navigation={navigation}
-          /> */}
 
           {selectedChat?.pin_personal ? (
             <RemoveConfirmationModal

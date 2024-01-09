@@ -27,6 +27,7 @@ const ChatList = ({
   position,
   userSelector,
   navigation,
+  filteredSearch,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -85,7 +86,7 @@ const ChatList = ({
         onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
         onEndReachedThreshold={0.1}
         estimatedItemSize={35}
-        data={chatList}
+        data={chatList.length ? chatList : filteredSearch}
         renderItem={({ item, index }) => (
           <>
             {chatList[index + 1] ? (

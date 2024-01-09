@@ -43,7 +43,8 @@ const ChatRoom = () => {
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
   const [chatBubblePos, setChatBubblePos] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [searchMessage, setSearchMessage] = useState(null);
+  const [searchMessage, setSearchMessage] = useState("");
+  const [filteredSearch, setFilteredSearch] = useState([]);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -181,15 +182,29 @@ const ChatRoom = () => {
           },
         });
 
-        setChatList((currentChats) => {
-          if (currentChats.length !== currentChats.length + res?.data?.data.length) {
-            return [...currentChats, ...res?.data?.data];
-          } else {
-            setHasMore(false);
-            return currentChats;
-          }
-        });
-        setOffset((prevState) => prevState + 50);
+        if (!searchMessage) {
+          setChatList((currentChats) => {
+            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+              return [...currentChats, ...res?.data?.data];
+            } else {
+              setHasMore(false);
+              return currentChats;
+            }
+          });
+          setOffset((prevState) => prevState + 50);
+          setFilteredSearch([]);
+        } else {
+          setFilteredSearch((currentChats) => {
+            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+              return [...currentChats, ...res?.data?.data];
+            } else {
+              setHasMore(false);
+              return currentChats;
+            }
+          });
+          setOffset((prevState) => prevState + 50);
+          setChatList([]);
+        }
       } catch (err) {
         console.log(err);
       } finally {
@@ -395,7 +410,7 @@ const ChatRoom = () => {
             webkitRelativePath: "",
           });
         } else {
-          Alert.alert("Max file size is 3MB");
+          Toast.show("Max file size is 3MB", ErrorToastProps);
         }
       }
     } catch (err) {
@@ -527,6 +542,10 @@ const ChatRoom = () => {
     groupChatMessageEvent();
   }, [roomId, currentUser]);
 
+  // useEffect(() => {
+  //   setFilteredSearch([]);
+  // }, [searchMessage]);
+
   useEffect(() => {
     setTimeout(() => {
       setIsReady(true);
@@ -597,6 +616,7 @@ const ChatRoom = () => {
               position={chatBubblePos}
               userSelector={userSelector}
               navigation={navigation}
+              filteredSearch={filteredSearch}
             />
 
             <ChatInput

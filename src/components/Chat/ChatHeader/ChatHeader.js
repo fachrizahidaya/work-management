@@ -145,21 +145,21 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       onPress={() => {
                         toggleSearch();
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text>Search</Text>
-                    </TouchableOpacity>
+                      <Text style={[{ fontSize: 14 }, TextProps]}>Search</Text>
+                    </TouchableOpacity> */}
                     <TouchableOpacity
                       onPress={() => {
                         onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                      <Text style={[{ fontSize: 14 }, TextProps]}>
                         {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
                       </Text>
                     </TouchableOpacity>
@@ -172,7 +172,7 @@ const ChatHeader = ({
                               toggleExitModal();
                             }}
                           >
-                            <Text style={[{ fontSize: 12 }, TextProps]}>Exit Group</Text>
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity
@@ -181,7 +181,7 @@ const ChatHeader = ({
                               toggleDeleteGroupModal();
                             }}
                           >
-                            <Text style={[{ fontSize: 12 }, TextProps]}>Delete Group</Text>
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
                           </TouchableOpacity>
                         )}
                       </>
@@ -193,7 +193,7 @@ const ChatHeader = ({
                             toggleDeleteModal();
                           }}
                         >
-                          <Text style={[{ fontSize: 12 }, TextProps]}>Delete Chat</Text>
+                          <Text style={[{ fontSize: 14 }, TextProps]}>Delete Chat</Text>
                         </TouchableOpacity>
                       </>
                     )}

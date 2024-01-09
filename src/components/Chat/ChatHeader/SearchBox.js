@@ -20,14 +20,19 @@ const SearchBox = ({
     }, 500),
     []
   );
+
   return (
     <Input
       innerRef={searchFormRef}
       startIcon="magnify"
-      endIcon={searchMessage && "close-circle-outline"}
+      endIcon={searchMessage ? "close-circle-outline" : "close"}
       onPressEndIcon={() => {
-        searchFormRef.current.clear();
-        setSearchMessage("");
+        if (searchMessage) {
+          searchFormRef.current.clear();
+          setSearchMessage("");
+        } else {
+          toggleSearch();
+        }
       }}
       onChangeText={(value) => messageSearchHandler(value)}
       placeHolder="Search..."
