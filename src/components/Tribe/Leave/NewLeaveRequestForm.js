@@ -14,7 +14,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
   };
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+    <View style={{ marginVertical: 5, paddingHorizontal: 5, gap: 20 }}>
       <View style={{ paddingHorizontal: 3, gap: 20 }}>
         <Select
           formik={formik}
@@ -80,7 +80,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
           </FormButton>
         )}
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 };
 
