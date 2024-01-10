@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
-const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
+const ChatReplyPreviewMessage = ({ message, keyword = "", type, memberName }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
@@ -15,6 +15,10 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type }) => {
   };
 
   const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
+    for (let i = 0; i < memberName.length; i++) {
+      let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+      message = message?.replace(placeholder, `@${memberName[i]}`);
+    }
     if (message) {
       if (keyword) {
         return boldMatchCharacters(message, keyword);

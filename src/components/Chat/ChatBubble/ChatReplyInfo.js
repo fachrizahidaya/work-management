@@ -5,7 +5,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, type, loggedInUser }) => {
+const ChatReplyInfo = ({ message, myMessage, type, loggedInUser, memberName, allWord }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
 
   useEffect(() => {
@@ -22,7 +22,13 @@ const ChatReplyInfo = ({ message, myMessage, type, loggedInUser }) => {
         <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
-        <ChatMessageText message={message} myMessage={myMessage} type={type} />
+        <ChatMessageText
+          message={message}
+          myMessage={myMessage}
+          type={type}
+          memberName={memberName}
+          allWord={allWord}
+        />
       </View>
       {mimeTypeInfo?.file_type === "image" && (
         <Image
@@ -47,5 +53,28 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     gap: 5,
+  },
+  defaultText: {},
+  highlightedText: {
+    textDecorationLine: "underline",
+  },
+  coloredText: {
+    color: "#72acdc",
+  },
+
+  taskContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+
+  taskTitle: {
+    fontSize: 16,
+  },
+  iconContainer: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    padding: 5,
   },
 });

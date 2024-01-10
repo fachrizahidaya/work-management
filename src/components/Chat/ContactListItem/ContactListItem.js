@@ -120,7 +120,8 @@ const ContactListItem = ({
           padding: 20,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#959595",
+          backgroundColor: "#377893",
+          width: 250,
         }}
       >
         <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
@@ -143,6 +144,7 @@ const ContactListItem = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#959595",
+          width: 250,
         }}
       >
         <MaterialIcons name="more-horiz" color="#FFFFFF" />

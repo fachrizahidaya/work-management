@@ -37,6 +37,7 @@ const ChatInput = ({
   position,
   email,
   isPinned,
+  memberName,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
 
@@ -184,7 +185,12 @@ const ChatInput = ({
 
   return (
     <View>
-      <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
+      <ChatReplyPreview
+        messageToReply={messageToReply}
+        setMessageToReply={setMessageToReply}
+        type={type}
+        memberName={memberName}
+      />
 
       <View
         style={{

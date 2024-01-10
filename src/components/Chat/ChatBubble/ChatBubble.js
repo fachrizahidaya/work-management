@@ -54,6 +54,13 @@ const ChatBubble = ({
 
   const imgTypes = ["jpg", "jpeg", "png"];
 
+  var allWords = [];
+
+  for (var i = 0; i < memberName?.length; i++) {
+    var words = memberName[i].split(/\s+/);
+    allWords = allWords.concat(words);
+  }
+
   let styledTexts = null;
   if (content?.length !== 0) {
     let words;
@@ -66,14 +73,6 @@ const ChatBubble = ({
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
-      let specificMember;
-      specificMember = memberName;
-
-      // var modifiedContent = memberName.reduce((acc, name) => {
-      //   var regex = new RegExp("@" + name, "g");
-      //   textStyle = styles.coloredText;
-      //   return acc.replace(regex, '<span class="highlight">' + "@" + name + "</span>");
-      // }, content);
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
@@ -82,17 +81,17 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (type === "group" && item.includes(`@${memberName}`)) {
-        textStyle = styles.coloredText;
-        return (
-          <Text key={index} style={textStyle}>
-            {item}
-          </Text>
-        );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (type === "group" && allWords.some((word) => item.includes(word))) {
+        textStyle = styles.coloredText;
+        return (
+          <Text key={index} style={textStyle}>
             {item}{" "}
           </Text>
         );
@@ -217,6 +216,9 @@ const ChatBubble = ({
                     myMessage={myMessage}
                     type={type}
                     loggedInUser={userSelector}
+                    memberName={memberName}
+                    content={content}
+                    allWord={allWords}
                   />
                 )}
                 {file_path && (
