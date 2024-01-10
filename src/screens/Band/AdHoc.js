@@ -1,7 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
+import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../hooks/useDisclosure";
@@ -11,10 +11,12 @@ import TaskFilter from "../../components/Band/shared/TaskFilter/TaskFilter";
 import PageHeader from "../../components/shared/PageHeader";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import { useLoading } from "../../hooks/useLoading";
 
 const AdHocScreen = () => {
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
+  const [fullResponsibleArr, setFullResponsibleArr] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("Open");
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [searchInput, setSearchInput] = useState("");
@@ -23,6 +25,7 @@ const AdHocScreen = () => {
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
+  const { isLoading: isInitialized, toggle: toggleInitialize } = useLoading();
   const createActionCheck = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
@@ -50,20 +53,29 @@ const AdHocScreen = () => {
     return { responsible_name: val.responsible_name, responsible_id: val.responsible_id };
   });
 
-  const noDuplicateResponsibleArr = responsibleArr?.reduce((acc, current) => {
-    const isDuplicate = acc.some((item) => item.responsible_id === current.responsible_id);
-
-    if (!isDuplicate && current.responsible_name !== null) {
-      acc.push(current);
-    }
-
-    return acc;
-  }, []);
-
   const onOpenCloseConfirmation = useCallback((task) => {
     toggleCloseConfirmation();
     setSelectedTask(task);
   }, []);
+
+  useEffect(() => {
+    // this operation will only be triggered everytime the array of responsible is at peak (maximum length).
+    if (!isInitialized && responsibleArr?.length > 0) {
+      const noDuplicateResponsibleArr = responsibleArr.reduce((acc, current) => {
+        const isDuplicate = acc.some((item) => item.responsible_id === current.responsible_id);
+
+        if (!isDuplicate && current.responsible_name !== null) {
+          acc.push(current);
+        }
+
+        return acc;
+      }, []);
+
+      // should only run if the state of initialized is true
+      setFullResponsibleArr(noDuplicateResponsibleArr);
+      toggleInitialize();
+    }
+  }, [tasks?.data, isInitialized]);
 
   useFocusEffect(
     useCallback(() => {
@@ -84,7 +96,7 @@ const AdHocScreen = () => {
 
             <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
               <TaskFilter
-                members={noDuplicateResponsibleArr}
+                members={fullResponsibleArr}
                 labels={labels}
                 responsibleId={responsibleId}
                 deadlineSort={deadlineSort}
