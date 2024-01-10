@@ -174,16 +174,10 @@ const AttendanceForm = ({
               value={formik.values.late_type}
               title="Late Type"
               field="late_type"
-              defaultValue={date?.lateType}
               types={lateType}
               valueChange={(value) => formik.setFieldValue("late_type", value)}
             />
-            <Reason
-              formik={formik}
-              value={formik.values.late_reason}
-              defaultValue={date?.lateReason}
-              fieldName="late_reason"
-            />
+            <Reason formik={formik} value={formik.values.late_reason} fieldName="late_reason" />
             <FormButton
               width="full"
               size="sm"
@@ -213,16 +207,10 @@ const AttendanceForm = ({
               value={formik.values.early_type}
               title="Early Type"
               field="early_type"
-              defaultValue={date?.earlyType}
               types={earlyType}
               valueChange={(value) => formik.setFieldValue("early_type", value)}
             />
-            <Reason
-              formik={formik}
-              value={formik.values.early_reason}
-              defaultValue={date?.earlyReason}
-              fieldName="early_reason"
-            />
+            <Reason formik={formik} value={formik.values.early_reason} fieldName="early_reason" />
             <FormButton
               size="sm"
               variant="solid"
@@ -243,17 +231,11 @@ const AttendanceForm = ({
               formik={formik}
               title="Unattendance Type"
               field="att_type"
-              defaultValue={date?.attendanceType}
               types={alpaType}
               value={formik.values.att_type}
               valueChange={(value) => formik.setFieldValue("att_type", value)}
             />
-            <Reason
-              formik={formik}
-              value={formik.values.att_reason}
-              defaultValue={date?.attendanceReason}
-              fieldName="att_reason"
-            />
+            <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
             <FormButton
               size="sm"
               variant="solid"
@@ -295,7 +277,6 @@ const AttendanceForm = ({
                     fieldName="late_type"
                     items={lateType}
                     placeHolder="Select Late Type"
-                    defaultValue={date?.lateType}
                     onChange={(value) => formik.setFieldValue("late_type", value)}
                   />
                 </View>
@@ -306,7 +287,6 @@ const AttendanceForm = ({
                     fieldName={"late_reason"}
                     placeHolder="Enter your reason"
                     value={formik.values.late_reason}
-                    defaultValue={date?.lateReason}
                   />
                 </View>
               </>
@@ -334,7 +314,6 @@ const AttendanceForm = ({
                     fieldName="early_type"
                     items={earlyType}
                     placeHolder="Select Early Type"
-                    defaultValue={date?.earlyType}
                     onChange={(value) => formik.setFieldValue("early_type", value)}
                   />
                 </View>
@@ -345,7 +324,6 @@ const AttendanceForm = ({
                     fieldName={"early_reason"}
                     placeHolder="Enter your reason"
                     value={formik.values.early_reason}
-                    defaultValue={date?.earlyReason}
                   />
                 </View>
               </>
@@ -390,7 +368,6 @@ const AttendanceForm = ({
                     title="Late Type"
                     items={lateType}
                     placeHolder="Select Late Type"
-                    defaultValue={date?.lateType}
                     onChange={(value) => formik.setFieldValue("late_type", value)}
                   />
                 </View>
@@ -401,7 +378,6 @@ const AttendanceForm = ({
                     fieldName="late_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.late_reason}
-                    defaultValue={date?.lateReason}
                   />
                 </View>
               </>
@@ -429,7 +405,6 @@ const AttendanceForm = ({
                     items={earlyType}
                     title="Early Type"
                     placeHolder="Select Early Type"
-                    defaultValue={date?.earlyType}
                     onChange={(value) => formik.setFieldValue("early_type", value)}
                   />
                 </View>
@@ -440,7 +415,6 @@ const AttendanceForm = ({
                     fieldName="early_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.early_reason}
-                    defaultValue={date?.earlyReason}
                   />
                 </View>
               </>
@@ -485,7 +459,6 @@ const AttendanceForm = ({
                     title="Late Type"
                     items={lateType}
                     placeHolder="Select Late Type"
-                    defaultValue={date?.lateType}
                     onChange={(value) => formik.setFieldValue("late_type", value)}
                   />
                 </View>
@@ -496,7 +469,6 @@ const AttendanceForm = ({
                     fieldName="late_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.late_reason}
-                    defaultValue={date?.lateReason}
                   />
                 </View>
               </>
@@ -524,7 +496,6 @@ const AttendanceForm = ({
                     items={earlyType}
                     title="Early Type"
                     placeHolder="Select Early Type"
-                    defaultValue={date?.earlyType}
                     onChange={(value) => formik.setFieldValue("early_type", value)}
                   />
                 </View>
@@ -535,7 +506,6 @@ const AttendanceForm = ({
                     fieldName="early_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.early_reason}
-                    defaultValue={date?.earlyReason}
                   />
                 </View>
               </>
@@ -581,7 +551,6 @@ const AttendanceForm = ({
                     title="Late Type"
                     items={lateType}
                     placeHolder="Select Late Type"
-                    defaultValue={date?.lateType}
                     onChange={(value) => formik.setFieldValue("late_type", value)}
                   />
                 </View>
@@ -592,7 +561,6 @@ const AttendanceForm = ({
                     fieldName="late_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.late_reason}
-                    defaultValue={date?.lateReason}
                   />
                 </View>
               </>
@@ -620,7 +588,6 @@ const AttendanceForm = ({
                     items={earlyType}
                     title="Early Type"
                     placeHolder="Select Early Type"
-                    defaultValue={date?.earlyType}
                     onChange={(value) => formik.setFieldValue("early_type", value)}
                   />
                 </View>
@@ -631,7 +598,6 @@ const AttendanceForm = ({
                     fieldName="early_reason"
                     placeHolder="Enter your reason"
                     value={formik.values.early_reason}
-                    defaultValue={date?.earlyReason}
                   />
                 </View>
               </>
@@ -777,7 +743,7 @@ const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }
   );
 };
 
-const Options = ({ formik, title, field, defaultValue, types, valueChange, placeholder, value }) => {
+const Options = ({ formik, title, field, types, valueChange, placeholder, value }) => {
   return (
     <View>
       <Select
@@ -788,13 +754,12 @@ const Options = ({ formik, title, field, defaultValue, types, valueChange, place
         onChange={valueChange ? valueChange : (value) => formik.setFieldValue(field, value)}
         items={types}
         placeHolder={placeholder}
-        defaultValue={defaultValue}
       />
     </View>
   );
 };
 
-const Reason = ({ formik, value, defaultValue, fieldName, onChangeText }) => {
+const Reason = ({ formik, value, fieldName, onChangeText }) => {
   return (
     <View>
       <Input
@@ -803,7 +768,6 @@ const Reason = ({ formik, value, defaultValue, fieldName, onChangeText }) => {
         fieldName={fieldName}
         placeHolder="Enter your reason"
         value={value}
-        defaultValue={defaultValue}
         onChangeText={onChangeText}
       />
     </View>
