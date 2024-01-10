@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -8,10 +8,19 @@ import PerformanceStatistic from "../../../components/Tribe/Performance/Performa
 import PerformancePoint from "../../../components/Tribe/Performance/PerformancePoint.js";
 
 const PerformanceScreen = () => {
+  const [pin, setPin] = useState({
+    latitude: 13.406,
+    longitude: 123.3753,
+  });
+  const [location, setLocation] = useState(null);
+
   const data = [
     { period: "Q1", point: 60 },
-    { period: "Q2", point: 80 },
+    { period: "Q2", point: 90 },
+    { period: "Q3", point: 50 },
+    { period: "Q4", point: 80 },
   ];
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

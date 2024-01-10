@@ -1,10 +1,8 @@
 import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 
 const PerformanceStatistic = () => {
-  const screenWidth = Dimensions.get("window").width;
-
   const chartConfig = {
     backgroundGradientFrom: "#FFFFFF",
     backgroundGradientFromOpacity: 1,
@@ -29,14 +27,16 @@ const PerformanceStatistic = () => {
   return (
     <View
       style={{
+        gap: 15,
         paddingHorizontal: 15,
+        paddingVertical: 10,
         borderRadius: 15,
         backgroundColor: "#FFFFFF",
         marginVertical: 10,
         marginHorizontal: 10,
       }}
     >
-      <Text>Performance Statistic</Text>
+      <Text style={{ fontSize: 16, fontWeight: "500" }}>Performance Statistic</Text>
       <View>
         <BarChart
           style={{
@@ -47,7 +47,7 @@ const PerformanceStatistic = () => {
           }}
           fromZero={true}
           data={data}
-          width={screenWidth}
+          width={380}
           height={300}
           chartConfig={chartConfig}
           withInnerLines={false}
