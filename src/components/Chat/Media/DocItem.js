@@ -27,6 +27,8 @@ const DocItem = ({ image, path, type, size }) => {
     return typeArr.pop();
   };
 
+  let extension = getFileExt();
+
   const getFileImage = () => {
     const type = getFileExt();
     const fileDictObj = fileDict.find((obj) => obj.type == type);
@@ -52,16 +54,16 @@ const DocItem = ({ image, path, type, size }) => {
     >
       <Image
         source={
-          getFileExt() === "doc" || getFileExt() === "docx" || getFileExt() === "document"
+          getFileExt() === "doc" || getFileExt() === "docx" || extension.includes("word")
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension.includes("spreadsheet")
             ? require(xls)
             : getFileExt() === "ppt" ||
               getFileExt() === "pptx" ||
-              getFileExt() === "powerpoint" ||
-              getFileExt() === "presentation"
+              extension.includes("powerpoint") ||
+              extension.includes("presentation")
             ? require(ppt)
             : require(txt)
         }
