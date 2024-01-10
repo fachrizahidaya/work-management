@@ -52,7 +52,6 @@ const ChatBubble = ({
     content = content?.replace(placeholder, `@${memberName[i]}`);
   }
 
-  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
 
   let styledTexts = null;
@@ -68,7 +67,13 @@ const ChatBubble = ({
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
       let specificMember;
-      specificMember = memberName?.find((member) => item?.includes(member.name));
+      specificMember = memberName;
+
+      // var modifiedContent = memberName.reduce((acc, name) => {
+      //   var regex = new RegExp("@" + name, "g");
+      //   textStyle = styles.coloredText;
+      //   return acc.replace(regex, '<span class="highlight">' + "@" + name + "</span>");
+      // }, content);
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
@@ -77,7 +82,7 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (item.includes(`@${memberName}`)) {
+      } else if (type === "group" && item.includes(`@${memberName}`)) {
         textStyle = styles.coloredText;
         return (
           <Text key={index} style={textStyle}>
