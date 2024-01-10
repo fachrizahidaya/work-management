@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
+import _ from "lodash";
 
 import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import Toast from "react-native-root-toast";
@@ -23,8 +24,15 @@ const NewLeaveRequest = ({ route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [formError, setFormError] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
+  const [inputToShow, setInputToShow] = useState("");
+
+  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [filteredType, setFilteredType] = useState([]);
 
   const { width, height } = Dimensions.get("window");
+
+  const selectLeaveTypeScreenSheetRef = useRef(null);
 
   const { employeeId } = route.params;
 
@@ -32,21 +40,49 @@ const NewLeaveRequest = ({ route }) => {
 
   const navigation = useNavigation();
 
+  const fetchLeaveTypeParameters = {
+    search: searchInput,
+  };
+
   const {
     data: leaveHistory,
     refetch: refetchLeaveHistory,
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
-  const { data: leaveType } = useFetch("/hr/leaves");
-  const leaveOptions = leaveType?.data.map((item) => ({
-    value: item.id,
-    otherValue: item.name,
-    label: item.name,
-    active: item.active,
-    days: item.days,
-    generate_type: item.generate_type,
-  }));
+  const {
+    data: leaveType,
+    isFetching: leaveTypeIsFetching,
+    refetch: refetchLeaveType,
+  } = useFetch("/hr/leaves", [searchInput], fetchLeaveTypeParameters);
+
+  if (filteredType.length > 0) {
+    var leaveOptionsFiltered = filteredType?.map((item) => ({
+      value: item.id,
+      label: item.name,
+      active: item.active,
+      days: item.days,
+      generate_type: item.generate_type,
+    }));
+  } else {
+    var leaveOptionsUnfiltered = leaveTypes?.map((item) => ({
+      value: item.id,
+      label: item.name,
+      active: item.active,
+      days: item.days,
+      generate_type: item.generate_type,
+    }));
+  }
+
+  /**
+   * Search leave type handler
+   */
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+    }, 300),
+    []
+  );
 
   /**
    * Calculate available leave quota and day-off
@@ -103,7 +139,6 @@ const NewLeaveRequest = ({ route }) => {
         begin_date: formik.values.begin_date,
         end_date: formik.values.end_date,
       });
-
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
@@ -154,6 +189,22 @@ const NewLeaveRequest = ({ route }) => {
     formik.setFieldValue("end_date", value);
     setDateChanges(true); // every time there is change of date, it will set to true
   };
+
+  useEffect(() => {
+    setFilteredType([]);
+  }, [searchInput]);
+
+  useEffect(() => {
+    if (leaveType?.data.length) {
+      if (!searchInput) {
+        setLeaveTypes((prevData) => [...prevData, ...leaveType?.data]);
+        setFilteredType([]);
+      } else {
+        setFilteredType((prevData) => [...prevData, ...leaveType?.data]);
+        setLeaveTypes([]);
+      }
+    }
+  }, [leaveType]);
 
   useEffect(() => {
     if (formik.values.leave_id && dateChanges) {
@@ -241,7 +292,12 @@ const NewLeaveRequest = ({ route }) => {
             onChangeEndDate={onChangeEndDate}
             isLoading={isLoading}
             isError={isError}
-            leaveType={leaveOptions}
+            leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
+            reference={selectLeaveTypeScreenSheetRef}
+            handleSearch={handleSearch}
+            inputToShow={inputToShow}
+            setInputToShow={setInputToShow}
+            setSearchInput={setSearchInput}
           />
         </View>
       ) : null}
