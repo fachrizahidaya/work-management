@@ -22,10 +22,13 @@ const PersonalLeaveScreen = () => {
   const [reloadApproved, setReloadApproved] = useState(false);
   const [rejectedList, setRejectedList] = useState([]);
   const [reloadRejected, setReloadRejected] = useState(false);
+  const [canceledList, setCanceledList] = useState([]);
+  const [reloadCanceled, setReloadCanceled] = useState(false);
   const [tabValue, setTabValue] = useState("pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
+  const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
@@ -36,8 +39,9 @@ const PersonalLeaveScreen = () => {
   const tabs = useMemo(() => {
     return [
       { title: "pending", value: "pending" },
-      { title: "approved", value: "approved" },
+      { title: "canceled", value: "canceled" },
       { title: "rejected", value: "rejected" },
+      { title: "approved", value: "approved" },
     ];
   }, []);
 
@@ -59,6 +63,12 @@ const PersonalLeaveScreen = () => {
     page: currentPageRejected,
     limit: 10,
     status: "Rejected",
+  };
+
+  const fetchMoreCanceledParameters = {
+    page: currentPageRejected,
+    limit: 10,
+    status: "Canceled",
   };
 
   const {
@@ -88,6 +98,17 @@ const PersonalLeaveScreen = () => {
     refetch: refetchRejectedLeaveRequest,
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
+  } = useFetch(
+    tabValue === "rejected" && "/hr/leave-requests/personal",
+    [currentPageRejected, reloadRejected],
+    fetchMoreRejectedParameters
+  );
+
+  const {
+    data: canceledLeaveRequest,
+    refetch: refetchCanceledLeaveRequest,
+    isFetching: canceledLeaveRequestIsFetching,
+    isLoading: canceledLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "rejected" && "/hr/leave-requests/personal",
     [currentPageRejected, reloadRejected],

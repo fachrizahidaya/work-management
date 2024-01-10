@@ -19,7 +19,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
         <Select
           formik={formik}
           value={formik.values.leave_id}
-          value1={selectedValue}
+          otherValue={selectedValue}
           title="Leave Type"
           placeHolder="Select Leave Type"
           fieldName="leave_id"
@@ -27,7 +27,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
           onChange={(value) => {
             formik.setFieldValue("leave_id", value);
             const selectedLeave = leaveType.find((item) => item.value === value);
-            setSelectedValue(selectedLeave ? selectedLeave.value1 : null);
+            setSelectedValue(selectedLeave ? selectedLeave.otherValue : null);
           }}
           key="leave_id"
         />
