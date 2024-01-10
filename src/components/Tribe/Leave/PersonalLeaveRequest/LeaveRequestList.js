@@ -13,20 +13,25 @@ const LeaveRequestList = ({
   pendingList,
   approvedList,
   rejectedList,
+  canceledList,
   pendingLeaveRequestIsFetching,
   approvedLeaveRequestIsFetching,
   rejectedLeaveRequestIsFetching,
+  canceledLeaveRequestIsFetching,
   pendingLeaveRequestIsLoading,
   approvedLeaveRequestIsLoading,
   rejectedLeaveRequestIsLoading,
+  canceledLeaveRequestIsLoading,
   refetchPendingLeaveRequest,
   refetchApprovedLeaveRequest,
   refetchRejectedLeaveRequest,
+  refetchCanceledLeaveRequest,
   hasBeenScrolled,
   setHasBeenScrolled,
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
+  fetchMoreCanceled,
   tabValue,
   tabs,
   onChangeTab,
@@ -34,13 +39,15 @@ const LeaveRequestList = ({
   setHasBeenScrolledPending,
   hasBeenScrolledApproved,
   setHasBeenScrolledApproved,
+  hasBeenScrolledCanceled,
+  setHasBeenScrolledCanceled,
 }) => {
   return (
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
       <View style={styles.container}>
-        {tabValue === "pending" ? (
+        {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
@@ -87,7 +94,7 @@ const LeaveRequestList = ({
               </View>
             </ScrollView>
           )
-        ) : tabValue === "approved" ? (
+        ) : tabValue === "Approved" ? (
           approvedList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
@@ -127,6 +134,53 @@ const LeaveRequestList = ({
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
+              }
+            >
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+          )
+        ) : tabValue === "Canceled" ? (
+          approvedList?.length > 0 ? (
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlashList
+                data={canceledList}
+                onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledCanceled(!hasBeenScrolledCanceled)}
+                onEndReached={hasBeenScrolledCanceled === true ? fetchMoreCanceled : null}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={70}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={canceledLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchCanceledLeaveRequest();
+                    }}
+                  />
+                }
+                ListFooterComponent={() => canceledLeaveRequestIsLoading && <ActivityIndicator />}
+                renderItem={({ item, index }) => (
+                  <LeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    onSelect={onSelect}
+                  />
+                )}
+              />
+            </View>
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={canceledLeaveRequestIsFetching} onRefresh={refetchCanceledLeaveRequest} />
               }
             >
               <View style={styles.content}>

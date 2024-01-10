@@ -16,6 +16,7 @@ const PersonalLeaveScreen = () => {
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
   const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
+  const [hasBeenScrolledCanceled, setHasBeenScrolledCanceled] = useState(false);
   const [pendingList, setPendingList] = useState([]);
   const [reloadPending, setReloadPending] = useState(false);
   const [approvedList, setApprovedList] = useState([]);
@@ -24,11 +25,13 @@ const PersonalLeaveScreen = () => {
   const [reloadRejected, setReloadRejected] = useState(false);
   const [canceledList, setCanceledList] = useState([]);
   const [reloadCanceled, setReloadCanceled] = useState(false);
-  const [tabValue, setTabValue] = useState("pending");
+  const [tabValue, setTabValue] = useState("Pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
+
+  console.log("list", pendingList);
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
@@ -38,10 +41,10 @@ const PersonalLeaveScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: "pending", value: "pending" },
-      { title: "canceled", value: "canceled" },
-      { title: "rejected", value: "rejected" },
-      { title: "approved", value: "approved" },
+      { title: "Pending", value: "Pending" },
+      { title: "Canceled", value: "Canceled" },
+      { title: "Rejected", value: "Rejected" },
+      { title: "Approved", value: "Approved" },
     ];
   }, []);
 
@@ -50,25 +53,25 @@ const PersonalLeaveScreen = () => {
   const fetchMorePendingParameters = {
     page: currentPagePending,
     limit: 100,
-    status: "Pending",
+    status: tabValue,
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
     limit: 10,
-    status: "Approved",
+    status: tabValue,
   };
 
   const fetchMoreRejectedParameters = {
     page: currentPageRejected,
     limit: 10,
-    status: "Rejected",
+    status: tabValue,
   };
 
   const fetchMoreCanceledParameters = {
     page: currentPageRejected,
     limit: 10,
-    status: "Canceled",
+    status: tabValue,
   };
 
   const {
@@ -77,7 +80,7 @@ const PersonalLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "pending" && "/hr/leave-requests/personal",
+    tabValue === "Pending" && "/hr/leave-requests/personal",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
@@ -88,7 +91,7 @@ const PersonalLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/personal",
+    tabValue === "Approved" && "/hr/leave-requests/personal",
     [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
@@ -99,7 +102,7 @@ const PersonalLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal",
+    tabValue === "Rejected" && "/hr/leave-requests/personal",
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
@@ -110,9 +113,9 @@ const PersonalLeaveScreen = () => {
     isFetching: canceledLeaveRequestIsFetching,
     isLoading: canceledLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/personal",
+    tabValue === "Canceled" && "/hr/leave-requests/personal",
     [currentPageRejected, reloadRejected],
-    fetchMoreRejectedParameters
+    fetchMoreCanceledParameters
   );
 
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
@@ -138,6 +141,13 @@ const PersonalLeaveScreen = () => {
     }
   };
 
+  const fetchMoreCanceled = () => {
+    if (currentPageCanceled < canceledLeaveRequest?.data?.last_page) {
+      setCurrentPageCanceled(currentPageCanceled + 1);
+      setReloadCanceled(!reloadCanceled);
+    }
+  };
+
   const openSelectedLeaveHandler = (leave) => {
     setSelectedData(leave);
     toggleCancelModal();
@@ -153,9 +163,11 @@ const PersonalLeaveScreen = () => {
     setPendingList([]);
     setApprovedList([]);
     setRejectedList([]);
+    setCanceledList([]);
     setCurrentPagePending(1);
     setCurrentPageApproved(1);
     setCurrentPageRejected(1);
+    setCurrentPageCanceled(1);
   }, []);
 
   useEffect(() => {
@@ -175,6 +187,12 @@ const PersonalLeaveScreen = () => {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
+
+  useEffect(() => {
+    if (canceledLeaveRequest?.data?.data?.length) {
+      setCanceledList((prevData) => [...prevData, ...canceledLeaveRequest?.data?.data]);
+    }
+  }, [canceledLeaveRequest?.data?.data?.length]);
 
   return (
     <>
@@ -202,24 +220,31 @@ const PersonalLeaveScreen = () => {
             pendingList={pendingList}
             approvedList={approvedList}
             rejectedList={rejectedList}
+            canceledList={canceledList}
             pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
             approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
             rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+            canceledLeaveRequestIsFetching={canceledLeaveRequestIsFetching}
             pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
             approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
             rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
+            canceledLeaveRequestIsLoading={canceledLeaveRequestIsLoading}
             refetchPendingLeaveRequest={refetchPendingLeaveRequest}
             refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
             refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
+            refetchCanceledLeaveRequest={refetchCanceledLeaveRequest}
             hasBeenScrolled={hasBeenScrolledRejected}
             setHasBeenScrolled={setHasBeenScrolledRejected}
             hasBeenScrolledPending={hasBeenScrolledPending}
             setHasBeenScrolledPending={setHasBeenScrolledPending}
             hasBeenScrolledApproved={hasBeenScrolledApproved}
             setHasBeenScrolledApproved={setHasBeenScrolledApproved}
+            hasBeenScrolledCanceled={hasBeenScrolledCanceled}
+            setHasBeenScrolledCanceled={setHasBeenScrolledCanceled}
             fetchMorePending={fetchMorePending}
             fetchMoreApproved={fetchMoreApproved}
             fetchMoreRejected={fetchMoreRejected}
+            fetchMoreCanceled={fetchMoreCanceled}
             tabValue={tabValue}
             setTabValue={setTabValue}
             tabs={tabs}

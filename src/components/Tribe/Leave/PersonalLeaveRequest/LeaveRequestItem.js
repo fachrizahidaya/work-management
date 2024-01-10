@@ -43,7 +43,17 @@ const LeaveRequestItem = ({ id, leave_name, reason, days, begin_date, end_date, 
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69", maxWidth: 300 }}>{reason}</Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 5, padding: 5, borderRadius: 10, backgroundColor: "#F8F8F8" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 5,
+            padding: 5,
+            borderRadius: 10,
+            backgroundColor: "#F8F8F8",
+          }}
+        >
           <MaterialCommunityIcons name="clock-outline" size={20} color="#3F434A" />
           <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>

@@ -21,16 +21,23 @@ const MyTeamLeaveScreen = () => {
   const [reloadApproved, setReloadApproved] = useState(false);
   const [rejectedList, setRejectedList] = useState([]);
   const [reloadRejected, setReloadRejected] = useState(false);
-  const [tabValue, setTabValue] = useState("waiting approval");
+  const [tabValue, setTabValue] = useState("Waiting Approval");
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
+  const [hasBeenScrolledCanceled, setHasBeenScrolledCanceled] = useState(false);
+
+  const [canceledList, setCanceledList] = useState([]);
+
+  const [reloadCanceled, setReloadCanceled] = useState(false);
+
+  const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
 
   const tabs = useMemo(() => {
     return [
-      { title: "waiting approval", value: "waiting approval" },
-      { title: "approved", value: "approved" },
-      { title: "rejected", value: "rejected" },
+      { title: "Waiting Approval", value: "Waiting Approval" },
+      { title: "Approved", value: "Approved" },
+      { title: "Rejected", value: "Rejected" },
     ];
   }, []);
 
@@ -39,19 +46,19 @@ const MyTeamLeaveScreen = () => {
   const fetchMorePendingParameters = {
     page: currentPagePending,
     limit: 100,
-    status: "Pending",
+    status: tabValue,
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
     limit: 10,
-    status: "Approved",
+    status: tabValue,
   };
 
   const fetchMoreRejectedParameters = {
     page: currentPageRejected,
     limit: 10,
-    status: "Rejected",
+    status: tabValue,
   };
 
   const {
@@ -60,7 +67,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "waiting approval" && "/hr/leave-requests/my-team",
+    tabValue === "Waiting Approval" && "/hr/leave-requests/my-team",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
@@ -71,7 +78,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/my-team",
+    tabValue === "Approved" && "/hr/leave-requests/my-team",
     [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
@@ -82,7 +89,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/my-team",
+    tabValue === "Rejected" && "/hr/leave-requests/my-team",
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
