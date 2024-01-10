@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatReplyPreviewMessage from "./ChatReplyPreviewMessage";
 
-const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
+const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const loggedInUser = useSelector((state) => state.auth);
 
@@ -41,6 +41,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type }) => {
               message={messageToReply}
               myMessage={messageToReply?.from_user_id === loggedInUser?.id}
               type={type}
+              memberName={memberName}
             />
           </View>
           {mimeTypeInfo?.file_type === "image" && (

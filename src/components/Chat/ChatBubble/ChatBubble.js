@@ -52,8 +52,14 @@ const ChatBubble = ({
     content = content?.replace(placeholder, `@${memberName[i]}`);
   }
 
-  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
   const imgTypes = ["jpg", "jpeg", "png"];
+
+  var allWords = [];
+
+  for (var i = 0; i < memberName?.length; i++) {
+    var words = memberName[i].split(/\s+/);
+    allWords = allWords.concat(words);
+  }
 
   let styledTexts = null;
   if (content?.length !== 0) {
@@ -67,8 +73,6 @@ const ChatBubble = ({
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
-      let specificMember;
-      specificMember = memberName?.find((member) => item?.includes(member.name));
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
@@ -77,17 +81,17 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (item.includes(`@${memberName}`)) {
-        textStyle = styles.coloredText;
-        return (
-          <Text key={index} style={textStyle}>
-            {item}
-          </Text>
-        );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (type === "group" && allWords.some((word) => item.includes(word))) {
+        textStyle = styles.coloredText;
+        return (
+          <Text key={index} style={textStyle}>
             {item}{" "}
           </Text>
         );
@@ -212,6 +216,9 @@ const ChatBubble = ({
                     myMessage={myMessage}
                     type={type}
                     loggedInUser={userSelector}
+                    memberName={memberName}
+                    content={content}
+                    allWord={allWords}
                   />
                 )}
                 {file_path && (

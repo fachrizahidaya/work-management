@@ -647,6 +647,7 @@ const ChatRoom = () => {
               position={position}
               email={email}
               isPinned={isPinned}
+              memberName={memberName}
             />
           </>
 
