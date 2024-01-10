@@ -50,7 +50,7 @@ const SelectWithSearch = ({
               value={inputToShow}
               fieldName={fieldNameSearch}
               startIcon="magnify"
-              endIcon="close-circle-outline"
+              endIcon={inputToShow && "close-circle-outline"}
               onPressEndIcon={() => {
                 setInputToShow("");
                 setSearchInput("");
