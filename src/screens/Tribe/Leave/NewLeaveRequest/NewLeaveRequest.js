@@ -41,7 +41,7 @@ const NewLeaveRequest = ({ route }) => {
   const { data: leaveType } = useFetch("/hr/leaves");
   const leaveOptions = leaveType?.data.map((item) => ({
     value: item.id,
-    value1: item.name,
+    otherValue: item.name,
     label: item.name,
     active: item.active,
     days: item.days,
