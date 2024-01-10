@@ -1,8 +1,6 @@
 import React, { memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
-
 import { Skeleton } from "moti/skeleton";
 import { StyleSheet, TouchableOpacity, View, Image, Text, Dimensions } from "react-native";
 
@@ -11,7 +9,6 @@ import { SkeletonCommonProps, TextProps } from "../../../shared/CustomStylings";
 
 const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }) => {
   const navigation = useNavigation();
-  const menuSelector = useSelector((state) => state.user_menu);
   const { width } = Dimensions.get("screen");
 
   return (

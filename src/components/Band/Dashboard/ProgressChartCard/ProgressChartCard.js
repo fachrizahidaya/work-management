@@ -1,10 +1,7 @@
 import React, { memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
-
 import { TouchableOpacity, View, Text } from "react-native";
-import { Divider } from "native-base";
 import { ProgressChart } from "react-native-chart-kit";
 
 import { card } from "../../../../styles/Card";
@@ -12,7 +9,6 @@ import { TextProps } from "../../../shared/CustomStylings";
 
 const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   const navigation = useNavigation();
-  const menuSelector = useSelector((state) => state.user_menu);
 
   const color = ["rgba(23, 102, 136, 0.2)", "rgba(252, 210, 65, 0.2)", "rgba(255, 150, 93, 0.2)"];
 
@@ -28,7 +24,7 @@ const ProgressChartCard = ({ data, open, onProgress, finish }) => {
   };
 
   return (
-    <TouchableOpacity style={[card.card, { flex: 1 }]}>
+    <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Tasks")}>
       <View style={{ display: "flex", flexDirection: "column" }}>
         <Text style={[{ fontSize: 20, fontWeight: 500 }, TextProps]}>This Year Tasks</Text>
         <View>
