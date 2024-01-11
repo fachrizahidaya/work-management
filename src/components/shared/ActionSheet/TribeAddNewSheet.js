@@ -1,9 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import * as Location from "expo-location";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -16,6 +17,8 @@ import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
+  const [location, setLocation] = useState();
+
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
@@ -42,20 +45,42 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
-        const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`);
-
-        refetchAttendance();
-        props.reference.current?.hide();
-        Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
+      if (!location) {
+        Alert.alert(
+          "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
+        );
       } else {
-        Toast.show("You already checked out at this time", ErrorToastProps);
+        if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
+          const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
+            longitude: location?.coords?.longitude,
+            latitude: location?.coords?.latitude,
+            check_from: "Mobile App",
+          });
+
+          refetchAttendance();
+          props.reference.current?.hide();
+          Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
+        } else {
+          Toast.show("You already checked out at this time", ErrorToastProps);
+        }
       }
     } catch (err) {
       console.log(err);
-
       Toast.show(err.response.data.message, ErrorToastProps);
     }
+  };
+
+  const getPermissions = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Allow location permission");
+      Alert.alert(
+        "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
+      );
+      return;
+    }
+    let currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation);
   };
 
   useEffect(() => {
@@ -76,6 +101,10 @@ const TribeAddNewSheet = (props) => {
     return () => {
       clearInterval(intervalId);
     };
+  }, []);
+
+  useEffect(() => {
+    getPermissions();
   }, []);
 
   return (
