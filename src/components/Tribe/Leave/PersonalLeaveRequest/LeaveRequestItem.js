@@ -31,14 +31,16 @@ const LeaveRequestItem = ({
               SheetManager.show("form-sheet", {
                 payload: {
                   children: (
-                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                    <View
+                      style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                    >
                       <TouchableOpacity
                         onPress={async () => {
                           await SheetManager.hide("form-sheet");
                           onSelect(item);
                         }}
                       >
-                        <Text style={[{ fontSize: 12 }, TextProps]}>Cancel Request</Text>
+                        <Text style={[{ fontSize: 16 }, TextProps]}>Cancel Request</Text>
                       </TouchableOpacity>
                     </View>
                   ),

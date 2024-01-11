@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 
 import FormButton from "../../shared/FormButton";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
@@ -20,8 +19,6 @@ const PayslipPasswordEdit = ({
   reference,
   setPasswordError,
 }) => {
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
-
   /**
    * Change password handler
    */
@@ -61,7 +58,7 @@ const PayslipPasswordEdit = ({
         reference.current?.hide();
       }}
     >
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}>
         <View style={{ gap: 5 }}>
           <Input
             formik={formik}
@@ -115,10 +112,3 @@ const PayslipPasswordEdit = ({
 };
 
 export default PayslipPasswordEdit;
-
-const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-  },
-});

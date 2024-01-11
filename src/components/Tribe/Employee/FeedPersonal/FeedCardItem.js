@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
+import PostAction from "./PostAction";
 
 const FeedCardItem = ({
   id,
@@ -33,6 +35,8 @@ const FeedCardItem = ({
   copyToClipboard,
   openSelectedPersonalPost,
   employeeUsername,
+  toggleAction,
+  toggleDeleteModal,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -143,7 +147,43 @@ const FeedCardItem = ({
 
               {loggedEmployeeId === employeeId && (
                 <>
-                  <Pressable onPress={() => openSelectedPersonalPost(id)}>
+                  <Pressable
+                    style={{ marginRight: 1 }}
+                    onPress={
+                      async () => {
+                        await SheetManager.show("form-sheet", {
+                          payload: {
+                            children: (
+                              <View
+                                style={{
+                                  display: "flex",
+                                  gap: 21,
+                                  paddingHorizontal: 20,
+                                  paddingVertical: 16,
+                                  marginBottom: 20,
+                                }}
+                              >
+                                {/* <PostAction  /> */}
+                                <TouchableOpacity
+                                  onPress={async () => {
+                                    await SheetManager.hide("form-sheet");
+                                    toggleDeleteModal();
+                                  }}
+                                >
+                                  <View>
+                                    <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
+                                  </View>
+                                </TouchableOpacity>
+                              </View>
+                            ),
+                          },
+                        });
+                        openSelectedPersonalPost(id);
+                      }
+
+                      // openSelectedPersonalPost(id)
+                    }
+                  >
                     <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
                   </Pressable>
                 </>

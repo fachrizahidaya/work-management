@@ -272,6 +272,8 @@ const EmployeeProfileScreen = ({ route }) => {
                   employeeUsername={employeeUsername}
                   userSelector={userSelector}
                   reference={teammmatesScreenSheetRef}
+                  toggleAction={toggleAction}
+                  toggleDeleteModal={toggleDeleteModal}
                 />
 
                 <FeedComment
@@ -300,12 +302,12 @@ const EmployeeProfileScreen = ({ route }) => {
         ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
-      <PostAction
+      {/* <PostAction
         actionIsOpen={actionIsOpen}
         toggleAction={closeSelectedPersonalPost}
         toggleDeleteModal={toggleDeleteModal}
         reference={actionsScreenSheetRef}
-      />
+      /> */}
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
         toggle={toggleDeleteModal}

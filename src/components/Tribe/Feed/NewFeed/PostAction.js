@@ -18,15 +18,12 @@ const PostAction = ({
 }) => {
   return (
     <ActionSheet ref={reference} onClose={postTypeIsClose} size="full">
-      <View style={styles.wrapper}>
-        <View style={styles.title}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}>
+        <View>
           <Text style={[{ fontSize: 12 }, TextProps]}>Choose Post Type</Text>
         </View>
 
-        <TouchableOpacity
-          onPress={publicToggleHandler}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-        >
+        <TouchableOpacity onPress={publicToggleHandler}>
           <View
             style={{
               flexDirection: "row",
@@ -46,7 +43,6 @@ const PostAction = ({
           onPress={() => {
             announcementToggleHandler();
           }}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
         >
           <View
             style={{

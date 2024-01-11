@@ -115,7 +115,7 @@ const TribeAddNewSheet = (props) => {
             key={idx}
             borderColor="#E8E9EB"
             borderBottomWidth={1}
-            style={styles.wrapper}
+            style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
             onPress={() => {
               if (item.title === "New Leave Request") {
                 navigation.navigate("New Leave Request", {
@@ -138,7 +138,7 @@ const TribeAddNewSheet = (props) => {
             </View>
           </TouchableOpacity>
         ) : (
-          <Pressable key={idx} style={{ borderColor: "#E8E9EB", borderBottomWidth: 1, ...styles.wrapper }}>
+          <Pressable key={idx} style={{ ...styles.wrapper, marginBottom: 20 }}>
             <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
           </Pressable>
         );
@@ -153,8 +153,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
   },
   flex: {
     display: "flex",

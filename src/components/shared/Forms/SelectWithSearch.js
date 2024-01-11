@@ -45,7 +45,7 @@ const SelectWithSearch = ({
             setInputToShow("");
           }}
         >
-          <View style={{ paddingHorizontal: 20, paddingVertical: 15, gap: 15 }}>
+          <View style={{ paddingHorizontal: 20, paddingVertical: 15, gap: 20, marginBottom: 20 }}>
             <Input
               value={inputToShow}
               fieldName={fieldNameSearch}
@@ -71,7 +71,7 @@ const SelectWithSearch = ({
                   }}
                   key={index}
                 >
-                  <Text style={[TextProps]}>{item.label}</Text>
+                  <Text style={[{ fontSize: 16 }, TextProps]}>{item.label}</Text>
                 </TouchableOpacity>
               );
             })}
