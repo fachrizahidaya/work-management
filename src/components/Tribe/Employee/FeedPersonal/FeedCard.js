@@ -35,7 +35,6 @@ const FeedCard = ({
   employeeUsername,
   userSelector,
   reference,
-  toggleAction,
   toggleDeleteModal,
 }) => {
   /**
@@ -166,7 +165,6 @@ const FeedCard = ({
                 copyToClipboard={copyToClipboard}
                 openSelectedPersonalPost={openSelectedPersonalPost}
                 employeeUsername={employeeUsername}
-                toggleAction={toggleAction}
                 toggleDeleteModal={toggleDeleteModal}
               />
             </View>

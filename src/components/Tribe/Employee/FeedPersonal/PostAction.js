@@ -5,13 +5,13 @@ import { TextProps } from "../../../shared/CustomStylings";
 const PostAction = ({ actionIsOpen, toggleAction, toggleDeleteModal, reference }) => {
   return (
     <>
-      {/* <ActionSheet ref={reference} onClose={toggleAction}> */}
-      <TouchableOpacity onPress={toggleDeleteModal} style={{ ...styles.wrapper }}>
-        <View>
-          <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
-        </View>
-      </TouchableOpacity>
-      {/* </ActionSheet> */}
+      <ActionSheet ref={reference} onClose={toggleAction}>
+        <TouchableOpacity onPress={toggleDeleteModal} style={{ ...styles.wrapper }}>
+          <View>
+            <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
+          </View>
+        </TouchableOpacity>
+      </ActionSheet>
     </>
   );
 };

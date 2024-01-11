@@ -14,15 +14,20 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const ClockAttendance = ({ attendance, onClock }) => {
   const translateX = useSharedValue(0);
 
+  const MIN_TRANSLATE_X = 180;
+  const parentWidth = 490;
+
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
-        translateX.value = event.translationX;
+        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
       if (event.translationX > 0) {
-        runOnJS(onClock)();
+        if (translateX.value > MIN_TRANSLATE_X) {
+          runOnJS(onClock)();
+        }
       }
       translateX.value = withTiming(0);
     },
