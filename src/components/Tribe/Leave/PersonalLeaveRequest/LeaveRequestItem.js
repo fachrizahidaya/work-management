@@ -76,8 +76,10 @@ const LeaveRequestItem = ({
         {status === "Pending" ? (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
-              width: 150,
+              width: 120,
               textAlign: "right",
             }}
             numberOfLines={2}
@@ -87,8 +89,10 @@ const LeaveRequestItem = ({
         ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
-              width: 100,
+              width: 80,
               textAlign: "right",
             }}
             numberOfLines={2}
@@ -98,6 +102,8 @@ const LeaveRequestItem = ({
         ) : (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
             }}
           >
