@@ -1,8 +1,11 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
+import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Pressable } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
@@ -10,6 +13,7 @@ import useCheckAccess from "../../../../hooks/useCheckAccess";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
+import { SheetManager } from "react-native-actions-sheet";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -30,8 +34,7 @@ const PersonalLeaveScreen = () => {
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
-
-  console.log("list", pendingList);
+  const [filterYear, setFilterYear] = useState(dayjs().format("YYYY"));
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
@@ -69,7 +72,7 @@ const PersonalLeaveScreen = () => {
   };
 
   const fetchMoreCanceledParameters = {
-    page: currentPageRejected,
+    page: currentPageCanceled,
     limit: 10,
     status: tabValue,
   };
@@ -114,7 +117,7 @@ const PersonalLeaveScreen = () => {
     isLoading: canceledLeaveRequestIsLoading,
   } = useFetch(
     tabValue === "Canceled" && "/hr/leave-requests/personal",
-    [currentPageRejected, reloadRejected],
+    [currentPageCanceled, reloadCanceled],
     fetchMoreCanceledParameters
   );
 
@@ -211,6 +214,41 @@ const PersonalLeaveScreen = () => {
             />
           )}
         </View>
+
+        {/* <View
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+          }}
+        >
+          <Pressable
+            style={{ padding: 5, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}
+            onPress={() =>
+              SheetManager.show("form-sheet", {
+                payload: {
+                  children: (
+                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                      <TouchableOpacity onPress={() => console.log("year")}>
+                        <Text style={{ fontWeight: 500 }}>2024</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => console.log("year")}>
+                        <Text style={{ fontWeight: 500 }}>2023</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ),
+                },
+              })
+            }
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <Text>{filterYear}</Text>
+              <MaterialCommunityIcons name="chevron-down" />
+            </View>
+          </Pressable>
+        </View> */}
 
         <>
           {/* Content here */}

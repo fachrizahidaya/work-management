@@ -25,13 +25,6 @@ const MyTeamLeaveScreen = () => {
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
-  const [hasBeenScrolledCanceled, setHasBeenScrolledCanceled] = useState(false);
-
-  const [canceledList, setCanceledList] = useState([]);
-
-  const [reloadCanceled, setReloadCanceled] = useState(false);
-
-  const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
 
   const tabs = useMemo(() => {
     return [

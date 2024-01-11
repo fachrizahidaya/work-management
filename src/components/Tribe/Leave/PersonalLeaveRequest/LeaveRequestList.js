@@ -78,6 +78,7 @@ const LeaveRequestList = ({
                     begin_date={item?.begin_date}
                     end_date={item?.end_date}
                     status={item?.status}
+                    approval_by={item?.approval_by}
                     onSelect={onSelect}
                   />
                 )}
@@ -126,6 +127,7 @@ const LeaveRequestList = ({
                     end_date={item?.end_date}
                     status={item?.status}
                     onSelect={onSelect}
+                    approval_by={item?.supervisor_name}
                   />
                 )}
               />
@@ -142,7 +144,7 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : tabValue === "Canceled" ? (
-          approvedList?.length > 0 ? (
+          canceledList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
                 data={canceledList}
@@ -220,6 +222,7 @@ const LeaveRequestList = ({
                   end_date={item?.end_date}
                   status={item?.status}
                   onSelect={onSelect}
+                  approval_by={item?.supervisor_name}
                 />
               )}
             />
