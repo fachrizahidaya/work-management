@@ -100,11 +100,6 @@ const ActiveTaskCard = () => {
                       onPressItem={onPressTaskItem}
                     />
                   ))}
-                  {tasks.data.data.length > 4 && (
-                    <Button backgroundColor="white" variant="dashed" onPress={toggleMore} title="More">
-                      <Text style={{ color: "#176688" }}>More</Text>
-                    </Button>
-                  )}
                 </>
               ) : (
                 <View
@@ -125,7 +120,7 @@ const ActiveTaskCard = () => {
                 </View>
               )
             ) : (
-              <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
+              <Skeleton width="100%" height={20} radius="round" {...SkeletonCommonProps} />
             )}
           </ScrollView>
         </View>
