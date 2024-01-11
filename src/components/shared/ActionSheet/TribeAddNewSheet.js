@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import ActionSheet from "react-native-actions-sheet";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -21,7 +21,6 @@ const TribeAddNewSheet = (props) => {
 
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
-  const { data: personalLeave, refetch: refetchPersonalLeave } = useFetch("/hr/leave-requests/personal");
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -47,7 +46,7 @@ const TribeAddNewSheet = (props) => {
         const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`);
 
         refetchAttendance();
-
+        props.reference.current?.hide();
         Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
       } else {
         Toast.show("You already checked out at this time", ErrorToastProps);
@@ -82,7 +81,7 @@ const TribeAddNewSheet = (props) => {
   return (
     <ActionSheet ref={props.reference}>
       {items.map((item, idx) => {
-        return (
+        return item.title !== "Clock in" ? (
           <TouchableOpacity
             key={idx}
             borderColor="#E8E9EB"
@@ -95,30 +94,24 @@ const TribeAddNewSheet = (props) => {
                 });
               } else if (item.title === "New Reimbursement") {
                 navigation.navigate("New Reimbursement");
-              } else if (item.title === "Clock in") {
-                attendanceCheckHandler();
               }
+
               props.reference.current?.hide();
             }}
           >
-            {item.title !== "Clock in" ? (
-              <View style={styles.flex}>
-                <View style={styles.item}>
-                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
-                </View>
-                <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                  {item.title}
-                </Text>
+            <View style={styles.flex}>
+              <View style={styles.item}>
+                <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
               </View>
-            ) : (
-              <ClockAttendance
-                item={item}
-                attendance={attendance?.data}
-                currentTime={currentTime}
-                attendanceCheckHandler={attendanceCheckHandler}
-              />
-            )}
+              <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                {item.title}
+              </Text>
+            </View>
           </TouchableOpacity>
+        ) : (
+          <Pressable key={idx} style={{ borderColor: "#E8E9EB", borderBottomWidth: 1, ...styles.wrapper }}>
+            <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
+          </Pressable>
         );
       })}
     </ActionSheet>

@@ -24,7 +24,7 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const TribeTab = ({ setSelectedModule }) => {
+const TribeTab = () => {
   const tribeScreenSheetRef = useRef(null);
   const tribeAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
