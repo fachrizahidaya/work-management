@@ -1,35 +1,51 @@
 import { useState } from "react";
-import { TouchableWithoutFeedback, Keyboard, View, Text, ActivityIndicator } from "react-native";
 
-import Select from "../../shared/Forms/Select";
+import { View, Text, ActivityIndicator } from "react-native";
+
 import Input from "../../shared/Forms/Input";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
 import { TextProps } from "../../shared/CustomStylings";
+import SelectWithSearch from "../../shared/Forms/SelectWithSearch";
 
-const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEndDate, isLoading, isError }) => {
+const NewLeaveRequestForm = ({
+  leaveType,
+  formik,
+  onChangeStartDate,
+  onChangeEndDate,
+  isLoading,
+  isError,
+  reference,
+  toggle,
+  handleSearch,
+  inputToShow,
+  setInputToShow,
+  setSearchInput,
+}) => {
   const [selectedValue, setSelectedValue] = useState(null);
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+    <View style={{ marginVertical: 5, paddingHorizontal: 5, gap: 20 }}>
       <View style={{ paddingHorizontal: 3, gap: 20 }}>
-        <Select
+        <SelectWithSearch
+          reference={reference}
+          placeHolder="Select Leave Type"
+          title="Leave Type"
+          items={leaveType}
           formik={formik}
           value={formik.values.leave_id}
-          value1={selectedValue}
-          title="Leave Type"
-          placeHolder="Select Leave Type"
           fieldName="leave_id"
-          items={leaveType}
           onChange={(value) => {
             formik.setFieldValue("leave_id", value);
             const selectedLeave = leaveType.find((item) => item.value === value);
-            setSelectedValue(selectedLeave ? selectedLeave.value1 : null);
+            setSelectedValue(selectedLeave ? selectedLeave.value : null);
           }}
           key="leave_id"
+          inputToShow={inputToShow}
+          setInputToShow={setInputToShow}
+          setSearchInput={setSearchInput}
+          fieldNameSearch="search"
+          handleSearch={handleSearch}
         />
 
         <Input
@@ -80,7 +96,7 @@ const NewLeaveRequestForm = ({ leaveType, formik, onChangeStartDate, onChangeEnd
           </FormButton>
         )}
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 };
 

@@ -79,7 +79,7 @@ const MyTeamLeaveRequestList = ({
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       <View style={styles.container}>
-        {tabValue === "waiting approval" ? (
+        {tabValue === "Waiting Approval" ? (
           pendingLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList
@@ -130,7 +130,7 @@ const MyTeamLeaveRequestList = ({
               </View>
             </ScrollView>
           )
-        ) : tabValue === "approved" ? (
+        ) : tabValue === "Approved" ? (
           approvedLeaveRequests.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
               <FlashList

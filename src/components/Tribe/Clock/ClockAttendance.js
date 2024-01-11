@@ -1,29 +1,132 @@
 import { StyleSheet, View, Text } from "react-native";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  useSharedValue,
+  withTiming,
+  runOnJS,
+  useDerivedValue,
+} from "react-native-reanimated";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ClockAttendance = ({ attendance, item, currentTime, attendanceCheckHandler }) => {
-  return (
-    <View style={{ ...styles.container, backgroundColor: !attendance?.time_in ? "#daecfc" : "#feedaf" }}>
-      <View style={{ paddingHorizontal: 1 }}>
-        <MaterialCommunityIcons name={item.icons} size={20} color={!attendance?.time_in ? "#2984c3" : "#fdc500"} />
-      </View>
-      {!attendance?.time_in ? (
-        <Text style={{ fontSize: 14, fontWeight: "400", color: "#2984c3", marginHorizontal: 22 }}>Clock in</Text>
-      ) : (
-        <Text style={{ fontSize: 14, fontWeight: "400", color: "#fdc500", marginHorizontal: 22 }}>Clock out</Text>
-      )}
+const ClockAttendance = ({ attendance, onClock }) => {
+  const translateX = useSharedValue(0);
 
-      <Text
+  const panGesture = useAnimatedGestureHandler({
+    onActive: (event) => {
+      if (event.translationX > 0) {
+        translateX.value = event.translationX;
+      }
+    },
+    onEnd: (event) => {
+      if (event.translationX > 0) {
+        runOnJS(onClock)();
+      }
+      translateX.value = withTiming(0);
+    },
+  });
+
+  const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
+
+  const rTaskContainerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: limitedTranslateX.value,
+        },
+      ],
+    };
+  });
+
+  const textOpacity = useDerivedValue(() => {
+    const threshold = 50;
+    const fadeOutRange = 100;
+    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
+  });
+
+  const textContainerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    };
+  });
+
+  return (
+    <View style={{ gap: 20 }}>
+      <View
         style={{
-          fontSize: 14,
-          fontWeight: "400",
-          color: !attendance?.time_in ? "#2984c3" : "#fdc500",
-          marginLeft: 170,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-evenly",
+          paddingHorizontal: 1,
         }}
       >
-        {currentTime}
-      </Text>
+        <View
+          style={{
+            gap: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 10,
+            backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
+          <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
+            {attendance?.time_in}
+          </Text>
+        </View>
+        <View
+          style={{
+            gap: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 10,
+            backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-out</Text>
+          <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
+            {attendance?.time_out ? attendance?.time_out : "-"}
+          </Text>
+        </View>
+      </View>
+
+      <View
+        style={{
+          backgroundColor: "#E8E9EB",
+          borderRadius: 30,
+          paddingHorizontal: 3,
+          position: "relative",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <PanGestureHandler onGestureEvent={panGesture}>
+          <Animated.View
+            style={[rTaskContainerStyle, { zIndex: 3, backgroundColor: "#FFFFFF", borderRadius: 30, padding: 6 }]}
+          >
+            <MaterialCommunityIcons name="chevron-right" size={40} color="#3F434A" />
+          </Animated.View>
+        </PanGestureHandler>
+
+        <Animated.View
+          style={[
+            textContainerStyle,
+            {
+              padding: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 65,
+              zIndex: 0,
+            },
+          ]}
+        >
+          <Text style={{ opacity: 0.3 }}>Slide to {!attendance?.time_in ? "Clock-in" : "Clock-out"}</Text>
+        </Animated.View>
+      </View>
     </View>
   );
 };

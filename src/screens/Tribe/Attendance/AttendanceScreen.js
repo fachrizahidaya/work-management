@@ -7,18 +7,18 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
 
-import { useFetch } from "../../hooks/useFetch";
-import { useDisclosure } from "../../hooks/useDisclosure";
-import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
-import axiosInstance from "../../config/api";
-import PageHeader from "../../components/shared/PageHeader";
-import ConfirmationModal from "../../components/shared/ConfirmationModal";
-import useCheckAccess from "../../hooks/useCheckAccess";
-import AttendanceCalendar from "../../components/Tribe/Attendance/AttendanceCalendar";
-import AttendanceForm from "../../components/Tribe/Attendance/AttendanceForm";
-import AddAttendanceAttachment from "../../components/Tribe/Attendance/AddAttendanceAttachment";
-import AttendanceAttachment from "../../components/Tribe/Attendance/AttendanceAttachment";
-import AttendanceColor from "../../components/Tribe/Attendance/AttendanceColor";
+import { useFetch } from "../../../hooks/useFetch";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import axiosInstance from "../../../config/api";
+import PageHeader from "../../../components/shared/PageHeader";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import AttendanceCalendar from "../../../components/Tribe/Attendance/AttendanceCalendar";
+import AttendanceForm from "../../../components/Tribe/Attendance/AttendanceForm";
+import AddAttendanceAttachment from "../../../components/Tribe/Attendance/AddAttendanceAttachment";
+import AttendanceAttachment from "../../../components/Tribe/Attendance/AttendanceAttachment";
+import AttendanceColor from "../../../components/Tribe/Attendance/AttendanceColor";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -204,7 +204,7 @@ const AttendanceScreen = () => {
             webkitRelativePath: "",
           });
         } else {
-          Alert.alert("Max file size is 3MB");
+          Toast.show("Max file size is 3MB", ErrorToastProps);
         }
       }
     } catch (err) {

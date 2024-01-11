@@ -80,6 +80,21 @@ const TribeScreenSheet = (props) => {
         </View>
       </TouchableOpacity>
 
+      {/* <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("My KPI");
+          props.reference.current?.hide();
+        }}
+        style={styles.wrapper}
+      >
+        <View style={styles.flex}>
+          <View style={styles.item}>
+            <MaterialCommunityIcons size={20} name="signal-cellular-3" color="#3F434A" />
+          </View>
+          <Text style={[{ fontSize: 14 }, TextProps]}>My Key Performance Indicator</Text>
+        </View>
+      </TouchableOpacity> */}
+
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Calendar Tribe");
