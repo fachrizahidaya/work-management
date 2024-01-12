@@ -51,25 +51,6 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
 
   return (
     <>
-      {/* <Actionsheet isOpen={optionIsOpen} onClose={onClose}>
-        <Actionsheet.Content>
-          <Actionsheet.Item
-            onPress={() => {
-              setMessageToReply(chat);
-              onClose();
-            }}
-          >
-            Reply
-          </Actionsheet.Item>
-          <Actionsheet.Item
-            onPress={() => {
-              toggleDeleteModal();
-            }}
-          >
-            Delete
-          </Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet> */}
       <Modal
         isVisible={optionIsOpen}
         onBackdropPress={onClose}

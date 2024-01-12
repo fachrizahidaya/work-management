@@ -233,14 +233,16 @@ const ChatInput = ({
                             marginBottom: 20,
                           }}
                         >
-                          {attachmentOptions.map((option, index) => {
-                            return (
-                              <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                                <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
-                                <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-                              </TouchableOpacity>
-                            );
-                          })}
+                          <View style={{ gap: 5 }}>
+                            {attachmentOptions.map((option, index) => {
+                              return (
+                                <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                                  <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
+                                  <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
                           <TouchableOpacity
                             style={{ alignItems: "center", justifyContent: "center" }}
                             onPress={() => SheetManager.hide("form-sheet")}
@@ -323,5 +325,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

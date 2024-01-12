@@ -68,7 +68,6 @@ const ChatRoom = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -586,7 +585,6 @@ const ChatRoom = () => {
               toggleExitModal={toggleExitModal}
               toggleDeleteGroupModal={toggleDeleteGroupModal}
               toggleDeleteModal={toggleDeleteModal}
-              toggleClearChatMessage={toggleClearChatMessage}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
               selectedGroupMembers={selectedGroupMembers}
               deleteModalIsOpen={deleteModalIsOpen}

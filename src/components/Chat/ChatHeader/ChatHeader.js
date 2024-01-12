@@ -21,7 +21,6 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
-  toggleClearChatMessage,
   deleteModalIsOpen,
   exitModalIsOpen,
   deleteGroupModalIsOpen,
@@ -101,7 +100,6 @@ const ChatHeader = ({
                 deleteChatMessageIsLoading: deleteChatMessageIsLoading,
                 chatRoomIsLoading: chatRoomIsLoading,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
-                toggleClearChatMessage: toggleClearChatMessage,
               })
             }
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
