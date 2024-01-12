@@ -196,9 +196,18 @@ const EditGroupProfile = () => {
           </View>
         </View>
         {imageAttachment || formik.values.name !== name ? (
-          <FormButton fontColor="white" onPress={formik.handleSubmit} children="Save" />
+          <FormButton
+            fontColor="white"
+            onPress={formik.handleSubmit}
+            children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
+          />
         ) : (
-          <FormButton fontColor="white" opacity={0.5} onPress={null} children="Save" />
+          <FormButton
+            fontColor="white"
+            opacity={0.5}
+            onPress={null}
+            children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
+          />
         )}
       </View>
     </SafeAreaView>

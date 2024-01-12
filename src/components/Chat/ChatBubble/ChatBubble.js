@@ -41,7 +41,6 @@ const ChatBubble = ({
   onSwipe,
   isOptimistic,
   memberName,
-  position,
   userSelector,
   navigation,
 }) => {

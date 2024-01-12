@@ -123,7 +123,6 @@ const ChatList = ({
               onSwipe={onSwipeToReply}
               isOptimistic={item?.isOptimistic}
               memberName={memberName}
-              position={position}
               userSelector={userSelector}
               navigation={navigation}
             />
