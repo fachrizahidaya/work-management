@@ -35,10 +35,8 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
-  const teammmatesScreenSheetRef = useRef(null);
   const commentsScreenSheetRef = useRef(null);
 
-  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
@@ -241,9 +239,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   personalPostIsFetching={personalPostIsFetching}
                   refetchPersonalPost={refetchPersonalPost}
                   employee={employee}
-                  toggleTeammates={toggleTeammates}
                   teammates={teammates}
-                  teammatesIsOpen={teammatesIsOpen}
                   hasBeenScrolled={hasBeenScrolled}
                   setHasBeenScrolled={setHasBeenScrolled}
                   onCommentToggle={commentsOpenHandler}
@@ -254,7 +250,6 @@ const EmployeeProfileScreen = ({ route }) => {
                   openSelectedPersonalPost={openSelectedPersonalPost}
                   employeeUsername={employeeUsername}
                   userSelector={userSelector}
-                  reference={teammmatesScreenSheetRef}
                   toggleDeleteModal={toggleDeleteModal}
                 />
 

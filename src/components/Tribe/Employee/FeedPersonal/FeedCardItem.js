@@ -160,7 +160,6 @@ const FeedCardItem = ({
                                 marginBottom: 20,
                               }}
                             >
-                              {/* <PostAction  /> */}
                               <TouchableOpacity
                                 onPress={async () => {
                                   await SheetManager.hide("form-sheet");

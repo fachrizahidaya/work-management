@@ -10,7 +10,6 @@ import FeedCardItem from "./FeedCardItem";
 import EmployeeContact from "../EmployeeContact";
 import EmployeeProfile from "../EmployeeProfile";
 import EmployeeSelfProfile from "../EmployeeSelfProfile";
-import EmployeeTeammates from "../EmployeeTeammates";
 import { ErrorToastProps } from "../../../shared/CustomStylings";
 
 const FeedCard = ({
@@ -21,9 +20,7 @@ const FeedCard = ({
   personalPostIsFetching,
   refetchPersonalPost,
   employee,
-  toggleTeammates,
   teammates,
-  teammatesIsOpen,
   hasBeenScrolled,
   setHasBeenScrolled,
   onCommentToggle,
@@ -34,7 +31,6 @@ const FeedCard = ({
   openSelectedPersonalPost,
   employeeUsername,
   userSelector,
-  reference,
   toggleDeleteModal,
 }) => {
   /**
@@ -109,23 +105,11 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile
-                    employee={employee}
-                    toggleTeammates={toggleTeammates}
-                    teammates={teammates}
-                    reference={reference}
-                  />
+                  <EmployeeProfile employee={employee} teammates={teammates} />
                 </>
               ) : (
-                <EmployeeSelfProfile
-                  employee={employee}
-                  toggleTeammates={toggleTeammates}
-                  teammates={teammates}
-                  reference={reference}
-                />
+                <EmployeeSelfProfile employee={employee} teammates={teammates} />
               )}
-
-              <EmployeeTeammates teammatesIsOpen={teammatesIsOpen} teammates={teammates} reference={reference} />
             </View>
           </View>
         }

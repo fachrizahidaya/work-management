@@ -55,34 +55,39 @@ const FeedComment = ({
 
   return (
     <ActionSheet ref={reference} onClose={handleClose}>
-      <View style={{ flexDirection: "column", justifyContent: "center" }}>
-        <View style={styles.wrapper}>
-          <View style={styles.header}>
-            <View style={{ alignItems: "center", marginBottom: 5 }}>
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
-            </View>
-          </View>
-          <ScrollView style={{ paddingHorizontal: 5 }}>
-            <View style={styles.content}>
-              <FeedCommentList
-                comments={comments}
-                latestExpandedReply={latestExpandedReply}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
-                onReply={onReply}
-                commentEndReachedHandler={onEndReached}
-                commentsRefetchHandler={commentRefetchHandler}
-                commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
-                refetchComment={refetchComment}
-                handleLinkPress={handleLinkPress}
-                handleEmailPress={handleEmailPress}
-                copyToClipboard={copyToClipboard}
-                employeeUsername={employeeUsername}
-              />
-            </View>
-          </ScrollView>
+      <View style={styles.header}>
+        <View style={{ alignItems: "center", marginBottom: 5 }}>
+          <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
         </View>
+      </View>
+      <View
+        style={{
+          gap: 21,
+          paddingHorizontal: 20,
+          paddingVertical: 16,
+          flexDirection: "column",
+          justifyContent: "center",
+          marginBottom: 20,
+        }}
+      >
+        <ScrollView>
+          <FeedCommentList
+            comments={comments}
+            latestExpandedReply={latestExpandedReply}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            onReply={onReply}
+            commentEndReachedHandler={onEndReached}
+            commentsRefetchHandler={commentRefetchHandler}
+            commentIsFetching={commentIsFetching}
+            commentIsLoading={commentIsLoading}
+            refetchComment={refetchComment}
+            handleLinkPress={handleLinkPress}
+            handleEmailPress={handleEmailPress}
+            copyToClipboard={copyToClipboard}
+            employeeUsername={employeeUsername}
+          />
+        </ScrollView>
 
         <FeedCommentForm
           postId={postId}
@@ -106,12 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#DBDBDB",
-  },
-  content: {},
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
+    marginTop: 15,
   },
 });

@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 10,
-    paddingBottom: 10,
     gap: 3,
   },
 });
