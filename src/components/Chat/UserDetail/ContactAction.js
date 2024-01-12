@@ -37,7 +37,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
           style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
           onPress={toggleDeleteGroupModal}
         >
-          <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={10} color="#3F434A" />
+          <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={15} color="#3F434A" />
           <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
         </Pressable>
       )}

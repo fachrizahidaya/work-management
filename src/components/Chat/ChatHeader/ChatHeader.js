@@ -87,7 +87,6 @@ const ChatHeader = ({
                 name: name,
                 image: image,
                 position: position,
-                email: email,
                 type: type,
                 roomId: roomId,
                 loggedInUser: loggedInUser,
@@ -144,7 +143,9 @@ const ChatHeader = ({
             SheetManager.show("form-sheet", {
               payload: {
                 children: (
-                  <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  <View
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                  >
                     {/* <TouchableOpacity
                       onPress={() => {
                         toggleSearch();

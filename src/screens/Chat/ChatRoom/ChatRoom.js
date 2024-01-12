@@ -462,7 +462,7 @@ const ChatRoom = () => {
       setSelectedGroupMembers(res?.data?.data);
     } catch (err) {
       console.log(err);
-      Toast.show(error.response.data.message, ErrorToastProps);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 

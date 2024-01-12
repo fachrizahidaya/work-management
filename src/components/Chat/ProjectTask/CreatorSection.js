@@ -11,6 +11,7 @@ const CreatorSection = ({ name, image }) => {
         padding: 5,
         gap: 5,
         borderRadius: 10,
+        backgroundColor: "#FFFFFF",
       }}
     >
       <View style={{ flexDirection: "row", gap: 5 }}>

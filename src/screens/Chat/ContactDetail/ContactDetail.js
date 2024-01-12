@@ -46,7 +46,6 @@ const ContactDetail = () => {
     name,
     image,
     position,
-    email,
     type,
     loggedInUser,
     active_member,
@@ -119,10 +118,11 @@ const ContactDetail = () => {
         group_id: group_id,
         member: new_members,
       });
+      setSelectedUsers([]);
       fetchSelectedGroupMembers();
+      refetchUserList();
       toggleAddMember();
       toggleMemberList();
-      setSelectedUsers([]);
       Toast.show("Member added", SuccessToastProps);
     } catch (err) {
       toggleAddMember();
@@ -170,35 +170,16 @@ const ContactDetail = () => {
   };
 
   /**
-   * Handle group update event
-   *
-   * @param {*} group_id
-   * @param {*} data
-   */
-  const groupUpdateHandler = async (group_id, data, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.patch(`/chat/group/${group_id}`, data);
-      setSubmitting(false);
-      setStatus("success");
-      navigation.navigate("Chat List");
-      Toast.show("Group Profile updated", SuccessToastProps);
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-      setStatus("error");
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
    * Handle filter from member registered for add new member to group
    * @param {*} users
    * @returns
    */
   const usersWithoutMembers = (users) => {
-    if (selectedGroupMembers) {
+    if (selectedGroupMembers && selectedUsers) {
+      const allSelectedMembers = [...selectedGroupMembers, ...selectedUsers];
+
       return users?.filter((user) => {
-        return !selectedGroupMembers.some((groupMember) => {
+        return !allSelectedMembers.some((groupMember) => {
           return groupMember?.user_id === user?.id;
         });
       });
@@ -342,15 +323,7 @@ const ContactDetail = () => {
                 ? "Are you sure want to delete this group?"
                 : null
             }
-            onPress={() =>
-              type === "personal"
-                ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
-                : type === "group" && active_member === 1
-                ? groupExitHandler(roomId, toggleChatRoom)
-                : type === "group" && active_member === 0
-                ? groupDeleteHandler(roomId, toggleChatRoom)
-                : null
-            }
+            onPress={() => (type === "personal" ? deleteChatPersonal(roomId, toggleDeleteChatMessage) : null)}
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
           <RemoveConfirmationModal

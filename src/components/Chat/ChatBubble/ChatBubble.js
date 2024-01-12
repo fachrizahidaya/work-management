@@ -41,7 +41,6 @@ const ChatBubble = ({
   onSwipe,
   isOptimistic,
   memberName,
-  position,
   userSelector,
   navigation,
 }) => {
@@ -130,7 +129,11 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
-  const MAX_TRANSLATEX = 100;
+  if (myMessage) {
+    var MIN_TRANSLATEX = 50;
+  } else {
+    var MIN_TRANSLATEX = 100;
+  }
 
   const translateX = useSharedValue(0);
 
@@ -142,7 +145,9 @@ const ChatBubble = ({
     },
     onEnd: (event) => {
       if (event.translationX > 0) {
-        runOnJS(onSwipe)(chat);
+        if (translateX.value > MIN_TRANSLATEX) {
+          runOnJS(onSwipe)(chat);
+        }
       }
       translateX.value = withTiming(0);
     },
@@ -330,7 +335,9 @@ const styles = StyleSheet.create({
   coloredText: {
     color: "#72acdc",
   },
-
+  mentionText: {
+    fontWeight: "600",
+  },
   taskContainer: {
     width: "100%",
     alignItems: "center",

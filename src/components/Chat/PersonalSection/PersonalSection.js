@@ -27,7 +27,9 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeCo
             SheetManager.show("form-sheet", {
               payload: {
                 children: (
-                  <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  <View
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                  >
                     {menuOptions.map((option, index) => {
                       return (
                         <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
