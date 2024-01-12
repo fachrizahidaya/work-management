@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
@@ -13,7 +15,8 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import { ErrorToastProps } from "../../../components/shared/CustomStylings";
+import EditPost from "../../../components/Tribe/Employee/FeedPersonal/EditPost";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -32,12 +35,15 @@ const EmployeeProfileScreen = ({ route }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
 
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
 
@@ -73,6 +79,8 @@ const EmployeeProfileScreen = ({ route }) => {
     isLoading: personalPostIsLoading,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reloadPost, currentOffsetPost], postFetchParameters);
 
+  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
+
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComment,
@@ -94,6 +102,15 @@ const EmployeeProfileScreen = ({ route }) => {
     if (posts.length !== posts.length + personalPost?.data.length) {
       setCurrentOffsetPost(currentOffsetPost + 10);
     }
+  };
+
+  /**
+   * Fetch from first offset
+   * After create a new post or comment, it will return to the first offset
+   */
+  const postRefetchHandler = () => {
+    setCurrentOffsetPost(0);
+    setReloadPost(!reloadPost);
   };
 
   /**
@@ -185,6 +202,65 @@ const EmployeeProfileScreen = ({ route }) => {
     setIsFullScreen(!isFullScreen);
   }, []);
 
+  /**
+   * Edit a post handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const postEditHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.post(`/hr/posts/${selectedPost}`, form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      setSubmitting(false);
+      setStatus("success");
+      postRefetchHandler();
+      setIsLoading(false);
+      toggleEditModal();
+      Toast.show("Edited successfully!", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      setIsLoading(false);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
+   * Pick an image Handler
+   */
+  const pickImageHandler = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // Handling for name
+    var filename = result.assets[0].uri.substring(
+      result.assets[0].uri.lastIndexOf("/") + 1,
+      result.assets[0].uri.length
+    );
+
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
+
+    if (result) {
+      setImage({
+        name: filename,
+        size: fileInfo.size,
+        type: `${result.assets[0].type}/jpg`,
+        webkitRelativePath: "",
+        uri: result.assets[0].uri,
+      });
+    }
+  };
+
   useEffect(() => {
     if (personalPost?.data && personalPostIsFetching === false) {
       if (currentOffsetPost === 0) {
@@ -251,6 +327,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   employeeUsername={employeeUsername}
                   userSelector={userSelector}
                   toggleDeleteModal={toggleDeleteModal}
+                  toggleEditModal={toggleEditModal}
                 />
 
                 <FeedComment
@@ -279,7 +356,18 @@ const EmployeeProfileScreen = ({ route }) => {
         ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
-
+      <EditPost
+        isVisible={editModalIsOpen}
+        onBackdrop={toggleEditModal}
+        employees={employees?.data}
+        content={singlePost?.data}
+        image={image}
+        setImage={setImage}
+        postEditHandler={postEditHandler}
+        pickImageHandler={pickImageHandler}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+      />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
         toggle={toggleDeleteModal}

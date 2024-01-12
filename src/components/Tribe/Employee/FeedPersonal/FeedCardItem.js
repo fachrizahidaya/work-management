@@ -35,6 +35,7 @@ const FeedCardItem = ({
   openSelectedPersonalPost,
   employeeUsername,
   toggleDeleteModal,
+  toggleEditModal,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -160,6 +161,16 @@ const FeedCardItem = ({
                                 marginBottom: 20,
                               }}
                             >
+                              <TouchableOpacity
+                                onPress={async () => {
+                                  await SheetManager.hide("form-sheet");
+                                  toggleEditModal();
+                                }}
+                              >
+                                <View>
+                                  <Text style={[{ fontSize: 16 }, TextProps]}>Edit Post</Text>
+                                </View>
+                              </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={async () => {
                                   await SheetManager.hide("form-sheet");
