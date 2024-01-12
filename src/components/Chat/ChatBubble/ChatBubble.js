@@ -89,7 +89,7 @@ const ChatBubble = ({
           </Text>
         );
       } else if (type === "group" && allWords.some((word) => item.includes(word))) {
-        textStyle = styles.mentionText;
+        textStyle = styles.coloredText;
         return (
           <Text key={index} style={textStyle}>
             {item}{" "}
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     color: "#72acdc",
   },
   mentionText: {
-    fontWeight: "500",
+    fontWeight: "600",
   },
   taskContainer: {
     width: "100%",

@@ -87,7 +87,6 @@ const ChatHeader = ({
                 name: name,
                 image: image,
                 position: position,
-                email: email,
                 type: type,
                 roomId: roomId,
                 loggedInUser: loggedInUser,

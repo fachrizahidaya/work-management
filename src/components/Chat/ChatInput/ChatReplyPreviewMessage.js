@@ -7,7 +7,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
 const ChatReplyPreviewMessage = ({ message, keyword = "", type, memberName }) => {
+  console.log("m", message);
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
+  console.log("i", mimeTypeInfo);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
@@ -42,7 +44,12 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type, memberName }) =>
           </Text>
         </View>
       );
-    } else if (attachment_type === "document") {
+    } else if (
+      attachment_type === "document" ||
+      attachment_type?.includes("spreadsheet") ||
+      attachment_type?.includes("presentation") ||
+      attachment_type?.includes("word")
+    ) {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
@@ -99,7 +106,13 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", type, memberName }) =>
   }, [message]);
 
   return (
-    <>{message?.delete_for_everyone ? <Text>Message has been deleted</Text> : renderMessage(mimeTypeInfo?.file_type)}</>
+    <>
+      {message?.delete_for_everyone ? (
+        <Text>Message has been deleted</Text>
+      ) : (
+        renderMessage(mimeTypeInfo?.file_type === "not supported" ? mimeTypeInfo?.file_ext : mimeTypeInfo?.file_type)
+      )}
+    </>
   );
 };
 
