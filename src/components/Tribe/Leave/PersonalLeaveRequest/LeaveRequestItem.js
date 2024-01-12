@@ -31,14 +31,16 @@ const LeaveRequestItem = ({
               SheetManager.show("form-sheet", {
                 payload: {
                   children: (
-                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                    <View
+                      style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                    >
                       <TouchableOpacity
                         onPress={async () => {
                           await SheetManager.hide("form-sheet");
                           onSelect(item);
                         }}
                       >
-                        <Text style={[{ fontSize: 12 }, TextProps]}>Cancel Request</Text>
+                        <Text style={[{ fontSize: 16 }, TextProps]}>Cancel Request</Text>
                       </TouchableOpacity>
                     </View>
                   ),
@@ -76,8 +78,10 @@ const LeaveRequestItem = ({
         {status === "Pending" ? (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
-              width: 150,
+              width: 120,
               textAlign: "right",
             }}
             numberOfLines={2}
@@ -87,8 +91,10 @@ const LeaveRequestItem = ({
         ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
-              width: 100,
+              width: 80,
               textAlign: "right",
             }}
             numberOfLines={2}
@@ -98,6 +104,8 @@ const LeaveRequestItem = ({
         ) : (
           <Text
             style={{
+              fontSize: 12,
+              fontWeight: "400",
               color: "#377893",
             }}
           >

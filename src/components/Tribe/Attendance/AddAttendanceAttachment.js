@@ -113,12 +113,17 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           </View>
 
           {!formik.values.attachment ? (
-            <FormButton opacity={0.5} disabled={true} children="Submit" fontColor="white" />
+            <FormButton
+              opacity={0.5}
+              disabled={true}
+              children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
+              fontColor="white"
+            />
           ) : (
             <FormButton
               isSubmitting={formik.isSubmitting}
               onPress={formik.handleSubmit}
-              children="Submit"
+              children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
               fontColor="white"
             />
           )}
@@ -143,5 +148,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+    marginBottom: 20,
   },
 });

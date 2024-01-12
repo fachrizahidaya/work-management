@@ -14,6 +14,7 @@ import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
 import { SheetManager } from "react-native-actions-sheet";
+import Select from "../../../../components/shared/Forms/Select";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -205,6 +206,41 @@ const PersonalLeaveScreen = () => {
             <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
           </View>
 
+          {/* <Pressable
+            style={{ padding: 5, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}
+            onPress={() =>
+              SheetManager.show("form-sheet", {
+                payload: {
+                  children: (
+                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                      <Select
+                        value={filterYear}
+                        placeHolder={filterYear ? filterYear : "Select Year"}
+                        items={[
+                          { value: 2024, label: 2024 },
+                          { value: 2023, label: 2023 },
+                          // ...(Array.isArray(members) &&
+                          // members.map((member) => {
+                          //   return {
+                          //     value: member.user_id || member.responsible_id,
+                          //     label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
+                          //   };
+                          // })),
+                        ]}
+                        onChange={(value) => setFilterYear(value)}
+                        hasParentSheet
+                      />
+                    </View>
+                  ),
+                },
+              })
+            }
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
+            </View>
+          </Pressable> */}
+
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
             <Button
               height={35}
@@ -214,41 +250,6 @@ const PersonalLeaveScreen = () => {
             />
           )}
         </View>
-
-        {/* <View
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-          }}
-        >
-          <Pressable
-            style={{ padding: 5, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}
-            onPress={() =>
-              SheetManager.show("form-sheet", {
-                payload: {
-                  children: (
-                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                      <TouchableOpacity onPress={() => console.log("year")}>
-                        <Text style={{ fontWeight: 500 }}>2024</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => console.log("year")}>
-                        <Text style={{ fontWeight: 500 }}>2023</Text>
-                      </TouchableOpacity>
-                    </View>
-                  ),
-                },
-              })
-            }
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <Text>{filterYear}</Text>
-              <MaterialCommunityIcons name="chevron-down" />
-            </View>
-          </Pressable>
-        </View> */}
 
         <>
           {/* Content here */}

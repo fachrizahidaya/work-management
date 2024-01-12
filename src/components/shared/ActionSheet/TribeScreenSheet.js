@@ -35,7 +35,7 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("Dashboard");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
@@ -53,7 +53,7 @@ const TribeScreenSheet = (props) => {
               navigation.navigate(item.name);
               props.reference.current?.hide();
             }}
-            style={styles.wrapper}
+            style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
           >
             <View style={styles.flex}>
               <View style={styles.item}>
@@ -70,7 +70,7 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("My Information");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
@@ -100,7 +100,7 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("Calendar Tribe");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, marginBottom: 20 }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
@@ -119,8 +119,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
   },
   flex: {
     display: "flex",

@@ -13,7 +13,6 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import PostAction from "../../../components/Tribe/Employee/FeedPersonal/PostAction";
 import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const EmployeeProfileScreen = ({ route }) => {
@@ -38,10 +37,8 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const teammmatesScreenSheetRef = useRef(null);
   const commentsScreenSheetRef = useRef(null);
-  const actionsScreenSheetRef = useRef(null);
 
   const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
@@ -102,14 +99,6 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Reset current offset after create a new feed
-   */
-  const postRefetchHandler = () => {
-    setCurrentOffsetPost(0);
-    setReloadPost(!reloadPost);
-  };
-
-  /**
    * Fetch more Comments handler
    * After end of scroll reached, it will added other earlier comments
    */
@@ -157,14 +146,8 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   const openSelectedPersonalPost = useCallback((post) => {
-    actionsScreenSheetRef.current?.show();
     setSelectedPost(post);
   }, []);
-
-  const closeSelectedPersonalPost = () => {
-    actionsScreenSheetRef.current?.hide();
-    setSelectedPost(null);
-  };
 
   /**
    * Submit a comment handler
@@ -272,6 +255,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   employeeUsername={employeeUsername}
                   userSelector={userSelector}
                   reference={teammmatesScreenSheetRef}
+                  toggleDeleteModal={toggleDeleteModal}
                 />
 
                 <FeedComment
@@ -300,12 +284,7 @@ const EmployeeProfileScreen = ({ route }) => {
         ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
-      <PostAction
-        actionIsOpen={actionIsOpen}
-        toggleAction={closeSelectedPersonalPost}
-        toggleDeleteModal={toggleDeleteModal}
-        reference={actionsScreenSheetRef}
-      />
+
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
         toggle={toggleDeleteModal}
@@ -313,7 +292,6 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
-          actionsScreenSheetRef.current?.hide();
           refetchPersonalPost();
         }}
         description="Are you sure to delete this post?"

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Text, StyleSheet, View } from "react-native";
+import { Text, View } from "react-native";
 
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
@@ -43,7 +43,7 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, on
         reference.current?.hide();
       }}
     >
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}>
         <Input
           formik={formik}
           title="Password"
@@ -64,12 +64,3 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, on
 };
 
 export default PayslipDownload;
-
-const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
-  },
-});
