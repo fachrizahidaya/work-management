@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName, employees }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const employeeData = employees.map(({ id, username }) => ({ id, name: username }));
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
@@ -73,7 +76,7 @@ const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, logg
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container }}>
       <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
 
       <MentionInput
@@ -117,6 +120,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 10,
+    paddingBottom: 20,
     gap: 3,
   },
 });

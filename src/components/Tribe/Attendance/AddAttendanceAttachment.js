@@ -99,7 +99,11 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           <View style={{ gap: 5 }}>
             <Text style={[{ fontSize: 12 }, TextProps]}>Attachment</Text>
             <Pressable onPress={onSelectFile} style={styles.attachment}>
-              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
+              <Text
+                style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {!fileAttachment ? "Upload file..." : fileAttachment?.name}
               </Text>
               <MaterialCommunityIcons
@@ -148,6 +152,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginBottom: 20,
+    marginBottom: 40,
   },
 });

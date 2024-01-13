@@ -1,11 +1,12 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text, Platform } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from "react-native-gesture-handler";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedComment = ({
   postId,
@@ -26,6 +27,8 @@ const FeedComment = ({
   reference,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
@@ -67,7 +70,7 @@ const FeedComment = ({
           paddingVertical: 16,
           flexDirection: "column",
           justifyContent: "center",
-          marginBottom: 20,
+          marginBottom: 40,
         }}
       >
         <ScrollView>

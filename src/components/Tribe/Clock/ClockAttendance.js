@@ -15,7 +15,7 @@ const ClockAttendance = ({ attendance, onClock }) => {
   const translateX = useSharedValue(0);
 
   const MIN_TRANSLATE_X = 180;
-  const parentWidth = 460;
+  const parentWidth = 470;
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
@@ -118,7 +118,7 @@ const ClockAttendance = ({ attendance, onClock }) => {
           <Animated.View
             style={[rTaskContainerStyle, { zIndex: 3, backgroundColor: "#FFFFFF", borderRadius: 50, padding: 6 }]}
           >
-            <MaterialCommunityIcons name="chevron-right" size={70} color="#3F434A" />
+            <MaterialCommunityIcons name="chevron-right" size={60} color="#3F434A" />
           </Animated.View>
         </PanGestureHandler>
 

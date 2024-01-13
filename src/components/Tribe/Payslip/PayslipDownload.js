@@ -43,7 +43,7 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, on
         reference.current?.hide();
       }}
     >
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}>
         <Input
           formik={formik}
           title="Password"

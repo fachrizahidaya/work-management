@@ -58,7 +58,7 @@ const PayslipPasswordEdit = ({
         reference.current?.hide();
       }}
     >
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}>
         <View style={{ gap: 5 }}>
           <Input
             formik={formik}
