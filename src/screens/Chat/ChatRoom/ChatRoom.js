@@ -45,6 +45,7 @@ const ChatRoom = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
   const [filteredSearch, setFilteredSearch] = useState([]);
+  console.log("list", chatList);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -296,6 +297,7 @@ const ChatRoom = () => {
    * @param {*} chatMessageObj
    */
   const deleteChatFromChatMessages = (chatMessageObj) => {
+    console.log("here", chatMessageObj);
     setChatList((prevState) => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
       if (chatMessageObj.type === "Delete For Me") {
