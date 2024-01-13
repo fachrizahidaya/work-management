@@ -45,7 +45,6 @@ const ChatRoom = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
   const [filteredSearch, setFilteredSearch] = useState([]);
-  console.log("list", chatList);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
