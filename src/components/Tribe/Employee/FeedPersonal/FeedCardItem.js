@@ -158,7 +158,7 @@ const FeedCardItem = ({
                                 gap: 21,
                                 paddingHorizontal: 20,
                                 paddingVertical: 16,
-                                marginBottom: 20,
+                                marginBottom: 40,
                               }}
                             >
                               <TouchableOpacity
