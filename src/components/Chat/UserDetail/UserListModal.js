@@ -80,12 +80,10 @@ const UserListModal = ({
                 userType={item?.user_type}
                 image={item?.image}
                 multiSelect={true}
-                type="group"
                 onPressAddHandler={onPressAddHandler}
                 onPressRemoveHandler={onPressRemoveHandler}
                 userSelector={userSelector}
                 selectedUsers={selectedUsers}
-                setSelectedUsers={setSelectedUsers}
               />
             )}
           />

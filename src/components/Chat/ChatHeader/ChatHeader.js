@@ -208,12 +208,7 @@ const ChatHeader = ({
 
       {searchVisible && (
         <SearchBox
-          inputToShow={inputToShow}
-          searchInput={searchInput}
           toggleSearch={toggleSearch}
-          clearSearch={clearSearch}
-          setInputToShow={setInputToShow}
-          setSearchInput={setSearchInput}
           searchMessage={searchMessage}
           setSearchMessage={setSearchMessage}
           searchFormRef={searchFormRef}

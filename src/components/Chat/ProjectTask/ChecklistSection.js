@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
-const ChecklistSection = ({ title, status, id }) => {
+const ChecklistSection = ({ title, status }) => {
   return (
     <View style={{ paddingVertical: 5, gap: 5 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>

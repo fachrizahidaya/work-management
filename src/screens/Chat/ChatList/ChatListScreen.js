@@ -143,7 +143,6 @@ const ChatListScreen = () => {
       payload: {
         children: (
           <ContactMenu
-            onClose={closeSelectedContactMenuHandler}
             chat={contact}
             toggleDeleteModal={openSelectedChatHandler}
             toggleDeleteGroupModal={openSelectedGroupChatHandler}
@@ -276,21 +275,7 @@ const ChatListScreen = () => {
                 onSwipeControl={swipeMore}
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
-                closeSelectedContactMenuHandler={closeSelectedContactMenuHandler}
-                selectedContact={selectedContact}
-                openSelectedChatHandler={openSelectedChatHandler}
-                openSelectedGroupChatHandler={openSelectedGroupChatHandler}
-                openSelectedChatToClearHandler={openSelectedChatToClearHandler}
-                toggleDeleteChatMessage={toggleDeleteChatMessage}
-                toggleExitModal={toggleExitModal}
-                deleteModalIsOpen={deleteModalIsOpen}
-                exitModalIsOpen={exitModalIsOpen}
-                deleteGroupModalIsOpen={deleteGroupModalIsOpen}
-                deleteChatPersonal={deleteChatPersonal}
-                deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-                chatRoomIsLoading={chatRoomIsLoading}
                 userSelector={userSelector}
-                setSelectedContact={setSelectedContact}
               />
 
               <PersonalSection
@@ -300,21 +285,7 @@ const ChatListScreen = () => {
                 onSwipeControl={swipeMore}
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
-                closeSelectedContactMenuHandler={closeSelectedContactMenuHandler}
-                selectedContact={selectedContact}
-                openSelectedChatHandler={openSelectedChatHandler}
-                openSelectedGroupChatHandler={openSelectedGroupChatHandler}
-                openSelectedChatToClearHandler={openSelectedChatToClearHandler}
-                toggleDeleteChatMessage={toggleDeleteChatMessage}
-                toggleExitModal={toggleExitModal}
-                deleteModalIsOpen={deleteModalIsOpen}
-                exitModalIsOpen={exitModalIsOpen}
-                deleteGroupModalIsOpen={deleteGroupModalIsOpen}
-                deleteChatPersonal={deleteChatPersonal}
-                deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-                chatRoomIsLoading={chatRoomIsLoading}
                 userSelector={userSelector}
-                setSelectedContact={setSelectedContact}
               />
 
               {searchResult?.message?.length > 0 && (

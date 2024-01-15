@@ -7,7 +7,6 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 
 const ContactMenu = ({
-  onClose,
   chat,
   toggleDeleteModal,
   toggleDeleteGroupModal,

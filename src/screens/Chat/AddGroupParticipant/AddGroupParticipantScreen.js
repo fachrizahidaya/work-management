@@ -173,7 +173,6 @@ const AddGroupParticipantScreen = () => {
                   active_member={1}
                   onPressAddHandler={addSelectedUserToArray}
                   onPressRemoveHandler={removeSelectedUserFromArray}
-                  selectedGroupMembers={selectedUsers}
                   navigation={navigation}
                   userSelector={userSelector}
                 />

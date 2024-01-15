@@ -621,7 +621,6 @@ const ChatRoom = () => {
               onSwipeToReply={swipeToReply}
               placement={placement}
               memberName={memberName}
-              position={chatBubblePos}
               userSelector={userSelector}
               navigation={navigation}
               filteredSearch={filteredSearch}
@@ -641,7 +640,6 @@ const ChatRoom = () => {
               messageToReply={messageToReply}
               setMessageToReply={setMessageToReply}
               onSendMessage={mutate}
-              toggleMenu={openAddAttachmentHandler}
               groupMember={selectedGroupMembers}
               navigation={navigation}
               selectFile={selectFile}

@@ -40,7 +40,6 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName 
             <ChatReplyPreviewMessage
               message={messageToReply}
               myMessage={messageToReply?.from_user_id === loggedInUser?.id}
-              type={type}
               memberName={memberName}
             />
           </View>

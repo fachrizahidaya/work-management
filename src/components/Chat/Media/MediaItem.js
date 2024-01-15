@@ -2,7 +2,7 @@ import { TouchableOpacity, Image, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const MediaItem = ({ image, path, type, toggleFullScreen }) => {
+const MediaItem = ({ path, toggleFullScreen }) => {
   return (
     <TouchableOpacity onPress={() => toggleFullScreen(path)}>
       <Image

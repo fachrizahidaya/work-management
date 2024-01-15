@@ -18,12 +18,7 @@ const MediaList = ({ media, docs, tabValue, toggleFullScreen }) => {
             numColumns={5}
             renderItem={({ item, index }) => (
               <View style={{}}>
-                <MediaItem
-                  key={index}
-                  image={item?.file_name}
-                  path={item?.file_path}
-                  toggleFullScreen={toggleFullScreen}
-                />
+                <MediaItem key={index} path={item?.file_path} toggleFullScreen={toggleFullScreen} />
               </View>
             )}
           />

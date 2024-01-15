@@ -27,7 +27,6 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
-  toggleMenu,
   groupMember,
   selectFile,
   pickImageHandler,
