@@ -111,47 +111,61 @@ const ContactListItem = ({
 
   const renderLeftView = (progress, dragX) => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
-        }}
+      <View
         style={{
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#377893",
           width: 250,
         }}
       >
-        <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
-        <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
+          }}
+          style={{
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#377893",
+            marginRight: 150,
+          }}
+        >
+          <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
+          <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
+        </Pressable>
+      </View>
     );
   };
 
   const renderRightView = (progress, dragX) => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onSwipe(chat);
-        }}
+      <View
         style={{
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#959595",
           width: 250,
         }}
       >
-        <MaterialIcons name="more-horiz" color="#FFFFFF" />
-        <Text style={{ color: "#FFFFFF" }}>More</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onSwipe(chat);
+          }}
+          style={{
+            marginLeft: 150,
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#959595",
+          }}
+        >
+          <MaterialIcons name="more-horiz" color="#FFFFFF" />
+          <Text style={{ color: "#FFFFFF" }}>More</Text>
+        </Pressable>
+      </View>
     );
   };
 
