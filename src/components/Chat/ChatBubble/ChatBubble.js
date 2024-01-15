@@ -87,7 +87,7 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (type === "group" && allWords.some((word) => item.includes(word))) {
+      } else if (allWords?.find((word) => item?.includes(word))) {
         textStyle = styles.coloredText;
         return (
           <Text key={index} style={textStyle}>
