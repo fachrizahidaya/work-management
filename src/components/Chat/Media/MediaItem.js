@@ -12,7 +12,7 @@ const MediaItem = ({ image, path, type, toggleFullScreen }) => {
           width: 60,
           height: 60,
           borderRadius: 5,
-          resizeMode: "contain",
+          resizeMode: "cover",
         }}
         resizeMethod="auto"
       />

@@ -33,10 +33,16 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
           style={styles.image}
         />
         <View style={styles.actionGroup}>
-          <TouchableOpacity onPress={() => attachmentDownloadHandler(file_path)}>
+          <TouchableOpacity
+            style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+            onPress={() => attachmentDownloadHandler(file_path)}
+          >
             <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsFullScreen(false)}>
+          <TouchableOpacity
+            style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+            onPress={() => setIsFullScreen(false)}
+          >
             <MaterialCommunityIcons name="close" size={30} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
@@ -55,7 +61,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 400,
-    height: 300,
+    height: 600,
     resizeMode: "cover",
   },
   actionGroup: {
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     position: "absolute",
     right: 0,
-    top: 0,
+    top: 10,
     gap: 5,
   },
 });
