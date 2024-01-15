@@ -35,6 +35,8 @@ const ContactListItem = ({
   onSwipe,
   onPin,
   navigation,
+  latest,
+  userSelector,
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const swipeableRef = useRef(null);
@@ -216,57 +218,69 @@ const ContactListItem = ({
                   </View>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
-                  {!isDeleted ? (
-                    <>
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={{ flexDirection: "row" }}>
-                          {type === "group" && chat?.latest_message ? (
-                            <Text style={[{ fontSize: 12 }, TextProps]}>{chat?.latest_message?.user?.name}: </Text>
-                          ) : null}
-                          {message && (
-                            <Text style={[{ fontSize: 12 }, TextProps]}>
-                              {message.length > 20 ? message.slice(0, 20) + "..." : message}
-                            </Text>
-                          )}
-                          {message === null && (project || task || fileName) && (
-                            <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                              <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
-                              <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                    {type === "group" && chat?.latest_message ? (
+                      <Text style={[{ fontSize: 12 }, TextProps]}>{chat?.latest_message?.user?.name}: </Text>
+                    ) : null}
+                    {!isDeleted ? (
+                      <>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ flexDirection: "row" }}>
+                            {message && (
+                              <Text style={[{ fontSize: 12 }, TextProps]}>
+                                {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                              </Text>
+                            )}
+                            {message === null && (project || task || fileName) && (
+                              <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                                <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
+                                <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
+                              </View>
+                            )}
+                          </View>
+                          {!!isRead && (
+                            <View
+                              style={{
+                                height: 25,
+                                width: 25,
+                                backgroundColor: "#FD7972",
+                                borderRadius: 10,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text style={{ fontSize: 12, textAlign: "center", color: "#FFFFFF" }}>
+                                {isRead > 20 ? "20+" : isRead}
+                              </Text>
                             </View>
                           )}
                         </View>
-                        {!!isRead && (
-                          <View
-                            style={{
-                              height: 25,
-                              width: 25,
-                              backgroundColor: "#FD7972",
-                              borderRadius: 10,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Text style={{ fontSize: 12, textAlign: "center", color: "#FFFFFF" }}>
-                              {isRead > 20 ? "20+" : isRead}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                    </>
-                  ) : (
-                    <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
-                      Message has been deleted
-                    </Text>
-                  )}
+                      </>
+                    ) : isDeleted && userSelector.id === latest?.user?.id ? (
+                      <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                        You have deleted this message
+                      </Text>
+                    ) : isDeleted && userSelector.id !== latest?.user?.id ? (
+                      <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                        Message has been deleted
+                      </Text>
+                    ) : null}
+                  </View>
                   {isPinned?.pin_chat ? (
                     <MaterialCommunityIcons
                       name="pin"

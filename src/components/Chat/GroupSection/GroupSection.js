@@ -3,7 +3,15 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const GroupSection = ({ groupChats, searchKeyword, searchResult, onSwipeControl, onPinControl, navigation }) => {
+const GroupSection = ({
+  groupChats,
+  searchKeyword,
+  searchResult,
+  onSwipeControl,
+  onPinControl,
+  navigation,
+  userSelector,
+}) => {
   return !searchKeyword ? (
     <>
       <View style={styles.header}>
@@ -24,6 +32,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, onSwipeControl,
             image={group.image}
             position={null}
             email={null}
+            latest={group.latest_message}
             message={group.latest_message?.message}
             fileName={group.latest_message?.file_name}
             project={group.latest_message?.project_id}
@@ -38,6 +47,7 @@ const GroupSection = ({ groupChats, searchKeyword, searchResult, onSwipeControl,
             onSwipe={onSwipeControl}
             onPin={onPinControl}
             navigation={navigation}
+            userSelector={userSelector}
           />
         ))}
     </>
