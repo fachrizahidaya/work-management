@@ -86,7 +86,12 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 12 }, TextProps]}>Start Date</Text>
-              <CustomDateTimePicker width={180} defaultValue={formik.values.begin_date} onChange={onChangeStartDate} />
+              <CustomDateTimePicker
+                choosePreviousDateInMonth={true}
+                width={180}
+                defaultValue={formik.values.begin_date}
+                onChange={onChangeStartDate}
+              />
               <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
