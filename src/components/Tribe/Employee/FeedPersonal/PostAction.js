@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const PostAction = ({ actionIsOpen, toggleAction, toggleDeleteModal, reference }) => {
+const PostAction = ({ toggleAction, toggleDeleteModal, reference }) => {
   return (
     <>
       <ActionSheet ref={reference} onClose={toggleAction}>

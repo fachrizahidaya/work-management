@@ -1,11 +1,12 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text, Platform } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from "react-native-gesture-handler";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
+import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedComment = ({
   postId,
@@ -26,6 +27,8 @@ const FeedComment = ({
   reference,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
 
   const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
@@ -55,42 +58,47 @@ const FeedComment = ({
 
   return (
     <ActionSheet ref={reference} onClose={handleClose}>
-      <View style={{ flexDirection: "column", justifyContent: "center" }}>
-        <View style={styles.wrapper}>
-          <View style={styles.header}>
-            <View style={{ alignItems: "center", marginBottom: 5 }}>
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
-            </View>
-          </View>
-          <ScrollView style={{ paddingHorizontal: 5 }}>
-            <View style={styles.content}>
-              <FeedCommentList
-                comments={comments}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
-                onReply={onReply}
-                commentEndReachedHandler={onEndReached}
-                commentsRefetchHandler={commentRefetchHandler}
-                commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
-                refetchComment={refetchComment}
-                handleLinkPress={handleLinkPress}
-                handleEmailPress={handleEmailPress}
-                copyToClipboard={copyToClipboard}
-                employeeUsername={employeeUsername}
-              />
-            </View>
-          </ScrollView>
-
-          <FeedCommentForm
-            postId={postId}
-            loggedEmployeeImage={loggedEmployeeImage}
-            loggedEmployeeName={loggedEmployeeName}
-            parentId={parentId}
-            onSubmit={onSubmit}
-            employees={employees}
-          />
+      <View style={styles.header}>
+        <View style={{ alignItems: "center", marginBottom: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
         </View>
+      </View>
+      <View
+        style={{
+          gap: 21,
+          paddingHorizontal: 20,
+          paddingVertical: 16,
+          flexDirection: "column",
+          justifyContent: "center",
+          marginBottom: 40,
+        }}
+      >
+        <ScrollView>
+          <FeedCommentList
+            comments={comments}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            onReply={onReply}
+            commentEndReachedHandler={onEndReached}
+            commentsRefetchHandler={commentRefetchHandler}
+            commentIsFetching={commentIsFetching}
+            commentIsLoading={commentIsLoading}
+            refetchComment={refetchComment}
+            handleLinkPress={handleLinkPress}
+            handleEmailPress={handleEmailPress}
+            copyToClipboard={copyToClipboard}
+            employeeUsername={employeeUsername}
+          />
+        </ScrollView>
+
+        <FeedCommentForm
+          postId={postId}
+          loggedEmployeeImage={loggedEmployeeImage}
+          loggedEmployeeName={loggedEmployeeName}
+          parentId={parentId}
+          onSubmit={onSubmit}
+          employees={employees}
+        />
       </View>
     </ActionSheet>
   );
@@ -105,12 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#DBDBDB",
-  },
-  content: {},
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
+    marginTop: 15,
   },
 });

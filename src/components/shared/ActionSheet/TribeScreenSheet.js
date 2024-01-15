@@ -80,7 +80,7 @@ const TribeScreenSheet = (props) => {
         </View>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity
+      <TouchableOpacity
         onPress={() => {
           navigation.navigate("My KPI");
           props.reference.current?.hide();
@@ -93,14 +93,14 @@ const TribeScreenSheet = (props) => {
           </View>
           <Text style={[{ fontSize: 14 }, TextProps]}>My Key Performance Indicator</Text>
         </View>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Calendar Tribe");
           props.reference.current?.hide();
         }}
-        style={{ ...styles.wrapper, marginBottom: 20 }}
+        style={{ ...styles.wrapper, marginBottom: 40 }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>

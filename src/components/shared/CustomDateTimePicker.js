@@ -30,6 +30,7 @@ const CustomDateTimePicker = ({
   iconColor,
   textLabel,
   fontSize,
+  choosePreviousDateInMonth = false,
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -81,6 +82,9 @@ const CustomDateTimePicker = ({
     return `${year}-${month}-${day}`;
   };
 
+  const currentMonthStart = dayjs().startOf("month");
+  const minimumMonth = choosePreviousDateInMonth ? currentMonthStart.toDate() : currentMonthStart.toDate();
+
   // Set default value if provided
   useEffect(() => {
     if (defaultValue) {
@@ -131,7 +135,7 @@ const CustomDateTimePicker = ({
           display="spinner"
           onChange={onChangeDate}
           style={styles.datePicker}
-          minimumDate={new Date(dayjs().format("YYYY-MM-DD"))}
+          minimumDate={choosePreviousDateInMonth ? minimumMonth : new Date(dayjs().format("YYYY-MM-DD"))}
           maximumDate={maximumDate && new Date(maximumDate)}
         />
       )}

@@ -28,8 +28,8 @@ const NewFeedScreen = ({ route }) => {
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
   const [isReady, setIsReady] = useState(false);
+  const [dateShown, setDateShown] = useState(false);
 
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const postActionScreenSheetRef = useRef(null);
@@ -40,20 +40,12 @@ const NewFeedScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
-  const inputRef = useRef(null);
-
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
-  const {
-    loggedEmployeeImage,
-    loggedEmployeeName,
-    loggedEmployeeDivision,
-    postRefetchHandler,
-    scrollNewMessage,
-    setScrollNewMessage,
-  } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, scrollNewMessage, setScrollNewMessage } =
+    route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
@@ -94,7 +86,6 @@ const NewFeedScreen = ({ route }) => {
   /**
    * Date for announcement handler
    */
-  const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
     setDateShown(true);
     setIsAnnouncementSelected(true);
@@ -151,7 +142,6 @@ const NewFeedScreen = ({ route }) => {
     formik.setFieldValue("end_date", "");
     setDateShown(false);
     setIsAnnouncementSelected(false);
-    togglePostType();
   };
 
   const mentionSelectHandler = (updatedContent) => {
@@ -266,21 +256,10 @@ const NewFeedScreen = ({ route }) => {
               image={image}
               setImage={setImage}
               pickImageHandler={pickImageHandler}
-              postTypeIsOpen={postTypeIsOpen}
-              postTypeIsClose={postTypeIsClose}
-              publicToggleHandler={publicToggleHandler}
-              announcementToggleHandler={announcementToggleHandler}
-              isAnnouncementSelected={isAnnouncementSelected}
-              dateShown={dateShown}
-              endDateAnnouncementHandler={endDateAnnouncementHandler}
-              loggedEmployeeDivision={loggedEmployeeDivision}
               employees={employees?.data}
-              mentionSelectHandler={mentionSelectHandler}
-              inputRef={inputRef}
             />
             <PostAction
               publicToggleHandler={publicToggleHandler}
-              postTypeIsClose={postTypeIsClose}
               announcementToggleHandler={announcementToggleHandler}
               isAnnouncementSelected={isAnnouncementSelected}
               dateShown={dateShown}

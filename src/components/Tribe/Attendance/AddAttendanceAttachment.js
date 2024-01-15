@@ -86,7 +86,12 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 12 }, TextProps]}>Start Date</Text>
-              <CustomDateTimePicker width={180} defaultValue={formik.values.begin_date} onChange={onChangeStartDate} />
+              <CustomDateTimePicker
+                choosePreviousDateInMonth={true}
+                width={180}
+                defaultValue={formik.values.begin_date}
+                onChange={onChangeStartDate}
+              />
               <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
@@ -99,7 +104,11 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           <View style={{ gap: 5 }}>
             <Text style={[{ fontSize: 12 }, TextProps]}>Attachment</Text>
             <Pressable onPress={onSelectFile} style={styles.attachment}>
-              <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
+              <Text
+                style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {!fileAttachment ? "Upload file..." : fileAttachment?.name}
               </Text>
               <MaterialCommunityIcons
@@ -148,6 +157,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginBottom: 20,
+    marginBottom: 40,
   },
 });
