@@ -37,7 +37,7 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, navigatio
 
       <View>
         <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
-          {title.length > 50 ? title.slice(0, 30) + "..." : title}
+          {title.length > 40 ? title.slice(0, 30) + "..." : title}
         </Text>
         <Text style={{ fontSize: 10, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>#{number_id}</Text>
       </View>

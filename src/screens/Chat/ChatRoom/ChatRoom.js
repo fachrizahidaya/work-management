@@ -68,7 +68,6 @@ const ChatRoom = () => {
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
@@ -299,10 +298,16 @@ const ChatRoom = () => {
   const deleteChatFromChatMessages = (chatMessageObj) => {
     setChatList((prevState) => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
+      //   prevState.splice(index, 1);
+      //   prevState[index].delete_for_everyone = 1;
       if (chatMessageObj.type === "Delete For Me") {
+        // const updatedState = prevState.slice(0, index).concat(prevState.slice(index + 1));
+        // return updatedState;
         prevState.splice(index, 1);
       } else if (chatMessageObj.type === "Delete For Everyone") {
-        prevState[index].delete_for_everyone = 1;
+        const updatedState = [...prevState];
+        updatedState[index] = { ...updatedState[index], delete_for_everyone: 1 };
+        return updatedState;
       }
       return [...prevState];
     });
@@ -586,7 +591,6 @@ const ChatRoom = () => {
               toggleExitModal={toggleExitModal}
               toggleDeleteGroupModal={toggleDeleteGroupModal}
               toggleDeleteModal={toggleDeleteModal}
-              toggleClearChatMessage={toggleClearChatMessage}
               toggleDeleteChatMessage={toggleDeleteChatMessage}
               selectedGroupMembers={selectedGroupMembers}
               deleteModalIsOpen={deleteModalIsOpen}

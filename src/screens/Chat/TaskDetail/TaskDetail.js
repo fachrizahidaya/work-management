@@ -56,7 +56,7 @@ const TaskDetail = () => {
             </Pressable>
             <View>
               <Text style={[{ fontSize: 14 }, TextProps]}>
-                {task?.data?.title.length > 50 ? task?.data?.title.slice(0, 30) + "..." : task?.data?.title}
+                {task?.data?.title.length > 20 ? task?.data?.title.slice(0, 30) + "..." : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(task?.data?.deadline).format("DD MMMM YYYY")}

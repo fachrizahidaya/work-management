@@ -87,7 +87,7 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (type === "group" && allWords.some((word) => item.includes(word))) {
+      } else if (allWords?.find((word) => item?.includes(word))) {
         textStyle = styles.coloredText;
         return (
           <Text key={index} style={textStyle}>
@@ -284,11 +284,11 @@ const ChatBubble = ({
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1" }}>
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}>
                   You have deleted this message
                 </Text>
               ) : !myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A" }}>
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}>
                   This message has been deleted
                 </Text>
               ) : null}

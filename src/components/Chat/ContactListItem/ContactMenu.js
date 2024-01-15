@@ -92,7 +92,7 @@ const ContactMenu = ({
   ];
 
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View style={{ marginBottom: 40 }}>
       <View style={{ ...styles.wrapper, flexDirection: "row", justifyContent: "space-between" }}>
         <View
           style={{

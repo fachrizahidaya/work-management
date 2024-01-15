@@ -21,7 +21,6 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
-  toggleClearChatMessage,
   deleteModalIsOpen,
   exitModalIsOpen,
   deleteGroupModalIsOpen,
@@ -101,7 +100,6 @@ const ChatHeader = ({
                 deleteChatMessageIsLoading: deleteChatMessageIsLoading,
                 chatRoomIsLoading: chatRoomIsLoading,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
-                toggleClearChatMessage: toggleClearChatMessage,
               })
             }
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
@@ -144,7 +142,7 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View
-                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}
                   >
                     {/* <TouchableOpacity
                       onPress={() => {

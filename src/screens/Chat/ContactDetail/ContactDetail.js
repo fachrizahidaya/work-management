@@ -60,15 +60,16 @@ const ContactDetail = () => {
     deleteChatMessageIsLoading,
     chatRoomIsLoading,
     toggleDeleteChatMessage,
-    toggleClearChatMessage,
   } = route.params;
 
   const { isOpen: memberListIsopen, toggle: toggleMemberList } = useDisclosure(false);
   const { isOpen: memberListActionIsopen, toggle: toggleMemberListAction } = useDisclosure(false);
   const { isOpen: removeMemberActionIsopen, toggle: toggleRemoveMemberAction } = useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
 
   const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } = useLoading(false);
   const { isLoading: addMemberIsLoading, toggle: toggleAddMember } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
 
   const fetchUserParameters = {
     page: currentPage,
@@ -105,6 +106,20 @@ const ContactDetail = () => {
     isFetching: documentIsFetching,
     refetch: refetchDocument,
   } = useFetch(`/chat/${type}/${roomId}/docs`);
+
+  const clearChatMessageHandler = async (id, type, itemName) => {
+    try {
+      toggleClearMessage();
+      await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
+      toggleClearMessage();
+      toggleClearChatMessage();
+      Toast.show("Chat cleared", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+      toggleClearMessage();
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
 
   /**
    * Handle group member add event
@@ -334,6 +349,16 @@ const ContactDetail = () => {
               groupMemberDeleteHandler(memberId);
             }}
             isLoading={removeMemberIsLoading}
+          />
+          <RemoveConfirmationModal
+            isOpen={clearChatMessageIsOpen}
+            toggle={toggleClearChatMessage}
+            description="Are you sure want to clear chat?"
+            isLoading={clearMessageIsLoading}
+            onPress={() => {
+              clearChatMessageHandler(roomId, type, toggleClearMessage);
+              navigation.navigate("Chat List");
+            }}
           />
           <UserListModal
             roomId={roomId}

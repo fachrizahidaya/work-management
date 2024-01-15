@@ -4,7 +4,15 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
-const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeControl, onPinControl, navigation }) => {
+const PersonalSection = ({
+  personalChats,
+  searchKeyword,
+  searchResult,
+  onSwipeControl,
+  onPinControl,
+  navigation,
+  userSelector,
+}) => {
   const menuOptions = [
     {
       id: 1,
@@ -28,7 +36,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeCo
               payload: {
                 children: (
                   <View
-                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}
                   >
                     {menuOptions.map((option, index) => {
                       return (
@@ -67,6 +75,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeCo
               position={personal.user?.user_type}
               email={personal.user?.email}
               message={personal.latest_message?.message}
+              latest={personal.latest_message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}
               task={personal.latest_message?.task_id}
@@ -79,6 +88,7 @@ const PersonalSection = ({ personalChats, searchKeyword, searchResult, onSwipeCo
               onSwipe={onSwipeControl}
               onPin={onPinControl}
               navigation={navigation}
+              userSelector={userSelector}
             />
           );
         })}
