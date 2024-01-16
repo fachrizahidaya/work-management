@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-import { useFormik } from "formik";
-import _ from "lodash";
-
-import { SafeAreaView, StyleSheet, View, Pressable, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -16,8 +13,8 @@ import PageHeader from "../../components/shared/PageHeader";
 import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
+import ProjectFilter from "../../components/Band/Project/ProjectFilter/ProjectFilter";
 
 const ProjectList = () => {
   const navigation = useNavigation();
@@ -25,9 +22,11 @@ const ProjectList = () => {
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+  const [deadlineSort, setDeadlineSort] = useState("asc");
   const createActionCheck = useCheckAccess("create", "Projects");
 
-  const dependencies = [status, currentPage, searchInput];
+  const dependencies = [status, currentPage, searchInput, selectedPriority, deadlineSort];
 
   const params = {
     page: currentPage,
@@ -35,22 +34,10 @@ const ProjectList = () => {
     status: status !== "Archived" ? status : "",
     archive: status !== "Archived" ? 0 : 1,
     limit: 10,
+    priority: selectedPriority,
+    sort_deadline: deadlineSort,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
-
-  const formik = useFormik({
-    initialValues: {
-      search: "",
-    },
-  });
-
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-      setCurrentPage(1);
-    }, 500),
-    []
-  );
 
   const renderSkeletons = () => {
     const skeletons = [];
@@ -103,33 +90,14 @@ const ProjectList = () => {
             borderRadius: 10,
           }}
         >
-          <View style={{ paddingTop: 4, paddingHorizontal: 16 }}>
-            <Input
-              value={formik.values.search}
-              onChangeText={(value) => {
-                handleSearch(value);
-                formik.setFieldValue("search", value);
-              }}
-              placeHolder="Search project..."
-              endAdornment={
-                formik.values.search && (
-                  <Pressable
-                    onPress={() => {
-                      handleSearch("");
-                      formik.resetForm();
-                    }}
-                  >
-                    <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
-                  </Pressable>
-                )
-              }
-              startAdornment={
-                <Pressable>
-                  <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
-                </Pressable>
-              }
-            />
-          </View>
+          <ProjectFilter
+            setCurrentPage={setCurrentPage}
+            setSearchInput={setSearchInput}
+            setDeadlineSort={setDeadlineSort}
+            setSelectedPriority={setSelectedPriority}
+            deadlineSort={deadlineSort}
+            selectedPriority={selectedPriority}
+          />
 
           <View style={{ paddingHorizontal: 16, paddingBottom: 1 }}>
             <Select
