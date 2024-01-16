@@ -12,7 +12,7 @@ import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
 
-const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference }) => {
+const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month }) => {
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -87,20 +87,22 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
               <CustomDateTimePicker
-                choosePreviousDateInMonth={true}
+                limitStartDate={true}
+                forAttendanceAttachment={true}
                 width={180}
                 defaultValue={formik.values.begin_date}
                 onChange={onChangeStartDate}
+                month={month}
               />
               <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
               <CustomDateTimePicker
-                limitEndDate={true}
                 width={180}
                 defaultValue={formik.values.end_date}
                 onChange={onChangeEndDate}
+                month={month}
               />
               <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
             </View>

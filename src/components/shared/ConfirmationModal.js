@@ -45,7 +45,6 @@ const ConfirmationModal = ({
       }
       toggle();
       toggleIsDeleting();
-
       Toast.show(successMessage, SuccessToastProps);
 
       // If hasSuccessFunc passed then run the available onSuccess function
@@ -55,14 +54,13 @@ const ConfirmationModal = ({
     } catch (error) {
       console.log(error);
       toggleIsDeleting();
-
       Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
   return (
     <Modal
       isVisible={isOpen}
-      onBackdropPress={!isDeleting && toggle}
+      onBackdropPress={() => !isDeleting && toggle()}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
