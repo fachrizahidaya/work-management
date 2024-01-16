@@ -25,6 +25,7 @@ const TribeScreenSheet = (props) => {
     "Payroll Groups",
     "Payroll Components",
     "Upload Payslip",
+    "Dashboard",
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
@@ -57,7 +58,11 @@ const TribeScreenSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name={item.mobile_icon} color="#3F434A" />
+                <MaterialCommunityIcons
+                  size={20}
+                  name={item.mobile_icon ? item.mobile_icon : item.icon}
+                  color="#3F434A"
+                />
               </View>
               <Text style={[{ fontSize: 14 }, TextProps]}>{item.name}</Text>
             </View>
