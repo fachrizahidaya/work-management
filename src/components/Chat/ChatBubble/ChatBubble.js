@@ -284,13 +284,33 @@ const ChatBubble = ({
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}>
-                  You have deleted this message
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={10}
+                    style={{ transform: [{ rotate: "90deg" }] }}
+                    color="#3F434A"
+                  />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
+                  >
+                    You deleted this message
+                  </Text>
+                </View>
               ) : !myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}>
-                  This message has been deleted
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={10}
+                    style={{ transform: [{ rotate: "90deg" }] }}
+                    color="#3F434A"
+                  />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
+                  >
+                    This message was deleted
+                  </Text>
+                </View>
               ) : null}
 
               <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>

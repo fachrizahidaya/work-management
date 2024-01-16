@@ -299,7 +299,7 @@ const ContactListItem = ({
                           color="#3F434A"
                         />
                         <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
-                          You have deleted this message
+                          You deleted this message
                         </Text>
                       </View>
                     ) : isDeleted && userSelector.id !== latest?.user?.id ? (
