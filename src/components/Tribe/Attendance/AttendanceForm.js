@@ -649,7 +649,7 @@ const AttendanceForm = ({
           <View style={{ width: "95%", gap: 3 }}>
             <View style={{ width: "100%", gap: 5 }}>
               <View>
-                <Text style={[{ fontSize: 12 }, TextProps]}>Please Clock-in</Text>
+                <Text style={[{ fontSize: 14 }, TextProps]}>Please Clock-in</Text>
               </View>
             </View>
           </View>

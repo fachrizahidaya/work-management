@@ -254,16 +254,17 @@ const AttendanceScreen = () => {
           let backgroundColor = "";
           let textColor = "";
 
-          if ((event?.dayType === "Work Day" && event?.attendanceType === "Leave") || event?.dayType === "Weekend") {
+          if (
+            (event?.dayType === "Work Day" && event?.attendanceType === "Leave") ||
+            event?.dayType === "Weekend" ||
+            event?.dayType === "Holiday"
+          ) {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
             (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
             (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" &&
-              event?.attendanceType === "Alpa" &&
-              event?.date !== CURRENT_DATE &&
-              !event?.attendanceReason)
+            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && event?.date !== CURRENT_DATE)
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;
@@ -281,7 +282,7 @@ const AttendanceScreen = () => {
             (event?.late && event?.lateReason && event?.earlyType && !event?.earlyReason && !event?.earlyStatus) ||
             (event?.early && event?.earlyReason && event?.lateType && !event?.lateReason && !event?.lateStatus) ||
             (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa") ||
+            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && event?.attendanceReason) ||
             (event?.attendanceType === "Other" &&
               event?.attendanceReason &&
               !event?.confirmation &&
@@ -307,6 +308,11 @@ const AttendanceScreen = () => {
               event?.dayType === "Work Day" &&
               event?.attendanceType === "Attend" &&
               event?.timeIn &&
+              !event?.timeOut) ||
+            (!event?.confirmation &&
+              event?.dayType === "Work Day" &&
+              event?.attendanceType === "Alpa" &&
+              !event?.timeIn &&
               !event?.timeOut)
           ) {
             backgroundColor = allGood.color;

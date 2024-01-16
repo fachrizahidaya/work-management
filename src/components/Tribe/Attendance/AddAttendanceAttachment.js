@@ -85,24 +85,29 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 12 }, TextProps]}>Start Date</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
               <CustomDateTimePicker
                 choosePreviousDateInMonth={true}
                 width={180}
                 defaultValue={formik.values.begin_date}
                 onChange={onChangeStartDate}
               />
-              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.begin_date}</Text>
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
-              <Text>End Date</Text>
-              <CustomDateTimePicker width={180} defaultValue={formik.values.end_date} onChange={onChangeEndDate} />
-              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.end_date}</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
+              <CustomDateTimePicker
+                limitEndDate={true}
+                width={180}
+                defaultValue={formik.values.end_date}
+                onChange={onChangeEndDate}
+              />
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
             </View>
           </View>
 
           <View style={{ gap: 5 }}>
-            <Text style={[{ fontSize: 12 }, TextProps]}>Attachment</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
             <Pressable onPress={onSelectFile} style={styles.attachment}>
               <Text
                 style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
@@ -118,7 +123,7 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 color="#3F434A"
               />
             </Pressable>
-            <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.attachment}</Text>
+            <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
           </View>
 
           {!formik.values.attachment ? (
