@@ -264,7 +264,7 @@ const ContactListItem = ({
                                 {message.length > 20 ? message.slice(0, 20) + "..." : message}
                               </Text>
                             )}
-                            {message === null && (project || task || fileName) && (
+                            {!message && (project || task || fileName) && (
                               <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
                                 <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
                                 <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
