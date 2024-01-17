@@ -11,6 +11,7 @@ const Select = ({ placeHolder, items = [], value, onChange, title, formik, field
 
   const onPressValue = (value) => {
     onChange(value);
+    selectSheetRef.current?.hide();
   };
 
   const valueToPrint = items.find((item) => item.value === value);

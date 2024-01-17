@@ -1,14 +1,11 @@
 import React, { memo, useCallback, useRef, useState } from "react";
 
 import _ from "lodash";
-import { SheetManager } from "react-native-actions-sheet";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Input from "../../../shared/Forms/Input";
-import Select from "../../../shared/Forms/Select";
-import Button from "../../../shared/Forms/Button";
 import TaskFilterSheet from "../../../shared/ActionSheet/TaskFilterSheet";
 
 const TaskFilter = ({
@@ -33,13 +30,6 @@ const TaskFilter = ({
     }, 300),
     []
   );
-
-  const resetAllFilter = () => {
-    setResponsibleId("all");
-    setSelectedLabelId(null);
-    setDeadlineSort("asc");
-    setSelectedPriority("");
-  };
 
   return (
     <>

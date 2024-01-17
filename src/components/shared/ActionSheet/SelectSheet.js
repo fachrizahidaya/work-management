@@ -5,8 +5,8 @@ import { TextProps } from "../CustomStylings";
 const SelectSheet = ({ reference, children, onChange }) => {
   return (
     <ActionSheet ref={reference}>
-      <ScrollView style={{ maxHeight: 400 }}>
-        <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40, display: "flex", gap: 20 }}>
+      <ScrollView style={{ maxHeight: 400, marginBottom: 40 }}>
+        <View style={{ paddingHorizontal: 20, paddingTop: 16, display: "flex", gap: 20 }}>
           {children?.length > 0 &&
             children.map((item, idx) => {
               return (
