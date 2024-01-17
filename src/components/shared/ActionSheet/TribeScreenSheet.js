@@ -90,7 +90,7 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("My KPI");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
