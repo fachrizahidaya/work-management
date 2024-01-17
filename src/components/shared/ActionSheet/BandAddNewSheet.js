@@ -32,33 +32,35 @@ const BandAddNewSheet = (props) => {
   ];
   return (
     <ActionSheet ref={props.reference}>
-      {items.map((item, idx) => {
-        return (
-          <TouchableOpacity
-            key={idx}
-            borderColor="#E8E9EB"
-            borderBottomWidth={1}
-            style={styles.wrapper}
-            onPress={() => {
-              navigation.navigate(item.screen, {
-                projectData: null,
-                taskData: null,
-                noteData: null,
-              });
-              props.reference.current?.hide();
-            }}
-          >
-            <View style={styles.flex}>
-              <View style={styles.item}>
-                <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+      <View style={styles.container}>
+        {items.map((item, idx) => {
+          return (
+            <TouchableOpacity
+              key={idx}
+              borderColor="#E8E9EB"
+              borderBottomWidth={1}
+              style={styles.wrapper}
+              onPress={() => {
+                navigation.navigate(item.screen, {
+                  projectData: null,
+                  taskData: null,
+                  noteData: null,
+                });
+                props.reference.current?.hide();
+              }}
+            >
+              <View style={styles.flex}>
+                <View style={styles.item}>
+                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                </View>
+                <Text key={item.title} style={TextProps}>
+                  {item.title}
+                </Text>
               </View>
-              <Text key={item.title} style={TextProps}>
-                {item.title}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </ActionSheet>
   );
 };
@@ -66,6 +68,9 @@ const BandAddNewSheet = (props) => {
 export default BandAddNewSheet;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 40,
+  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
