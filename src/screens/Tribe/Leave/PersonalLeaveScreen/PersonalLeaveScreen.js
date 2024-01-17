@@ -36,6 +36,7 @@ const PersonalLeaveScreen = () => {
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageCanceled, setCurrentPageCanceled] = useState(1);
   const [filterYear, setFilterYear] = useState(dayjs().format("YYYY"));
+  const [filterType, setFilterType] = useState("personal");
 
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
@@ -212,22 +213,33 @@ const PersonalLeaveScreen = () => {
               SheetManager.show("form-sheet", {
                 payload: {
                   children: (
-                    <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                    <View
+                      style={{
+                        display: "flex",
+                        gap: 21,
+                        paddingHorizontal: 20,
+                        paddingVertical: 16,
+                        paddingBottom: 40,
+                      }}
+                    >
                       <Select
                         value={filterYear}
                         placeHolder={filterYear ? filterYear : "Select Year"}
                         items={[
                           { value: 2024, label: 2024 },
                           { value: 2023, label: 2023 },
-                          // ...(Array.isArray(members) &&
-                          // members.map((member) => {
-                          //   return {
-                          //     value: member.user_id || member.responsible_id,
-                          //     label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
-                          //   };
-                          // })),
                         ]}
                         onChange={(value) => setFilterYear(value)}
+                        hasParentSheet
+                      />
+                      <Select
+                        value={filterType}
+                        placeHolder={filterType ? filterType : "Select Type"}
+                        items={[
+                          { value: "personal", label: "Personal" },
+                          { value: "team", label: "Team" },
+                        ]}
+                        onChange={(value) => setFilterType(value)}
                         hasParentSheet
                       />
                     </View>
