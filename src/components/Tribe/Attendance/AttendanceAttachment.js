@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
+import { View, Text, Pressable, FlatList, StyleSheet, Linking } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -17,7 +17,7 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
         )}
       </View>
 
-      <View style={{ height: 250, gap: 5 }}>
+      <View style={{ height: 260, gap: 5 }}>
         {attachment?.data.length > 0 ? (
           <FlashList
             data={attachment?.data}
@@ -27,15 +27,21 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
             refreshControl={<RefreshControl refreshing={attachmentIsFetching} onRefresh={() => refetchAttachment()} />}
             renderItem={({ item, index }) => (
               <View key={index} style={styles.card}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                  <MaterialCommunityIcons name="file-outline" size={20} />
+                <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                  <MaterialCommunityIcons
+                    onPress={() =>
+                      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${item?.file_path}`, "_blank")
+                    }
+                    name="file-outline"
+                    size={20}
+                  />
                   <View style={{ gap: 3 }}>
                     <Text style={[{ fontSize: 14 }, TextProps]}>{item?.title}</Text>
                     <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                       {dayjs(item?.begin_date).format("DD MMM YYYY")} - {dayjs(item?.end_date).format("DD MMM YYYY")}
                     </Text>
                   </View>
-                </View>
+                </Pressable>
 
                 <MaterialCommunityIcons name="trash-can-outline" size={20} onPress={() => setAttachmentId(item?.id)} />
               </View>
@@ -66,6 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginVertical: 5,
   },
   addIcon: {
     borderWidth: 1,

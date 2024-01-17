@@ -67,7 +67,7 @@ const FeedComment = ({
           paddingVertical: 16,
           flexDirection: "column",
           justifyContent: "center",
-          marginBottom: 40,
+          paddingBottom: 40,
         }}
       >
         <ScrollView>

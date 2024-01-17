@@ -21,14 +21,14 @@ const MyTeamLeaveScreen = () => {
   const [reloadApproved, setReloadApproved] = useState(false);
   const [rejectedList, setRejectedList] = useState([]);
   const [reloadRejected, setReloadRejected] = useState(false);
-  const [tabValue, setTabValue] = useState("Waiting Approval");
+  const [tabValue, setTabValue] = useState("Pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const tabs = useMemo(() => {
     return [
-      { title: "Waiting Approval", value: "Waiting Approval" },
+      { title: "Waiting Approval", value: "Pending" },
       { title: "Approved", value: "Approved" },
       { title: "Rejected", value: "Rejected" },
     ];
@@ -60,7 +60,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "Waiting Approval" && "/hr/leave-requests/my-team",
+    tabValue === "Pending" && "/hr/leave-requests/my-team",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );

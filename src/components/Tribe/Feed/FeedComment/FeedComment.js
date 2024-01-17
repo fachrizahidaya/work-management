@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, Text, Platform } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -70,7 +70,7 @@ const FeedComment = ({
           paddingVertical: 16,
           flexDirection: "column",
           justifyContent: "center",
-          marginBottom: 40,
+          paddingBottom: 40,
         }}
       >
         <ScrollView>

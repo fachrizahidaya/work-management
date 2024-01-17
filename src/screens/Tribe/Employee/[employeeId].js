@@ -51,6 +51,10 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
 
+  const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
+
+  const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
+
   const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
   const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
@@ -367,6 +371,7 @@ const EmployeeProfileScreen = ({ route }) => {
         pickImageHandler={pickImageHandler}
         isLoading={isLoading}
         setIsLoading={setIsLoading}
+        checkAccess={checkAccess}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}

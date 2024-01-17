@@ -67,6 +67,7 @@ const Input = ({
               width: width || "100%",
               textAlignVertical: "top",
               color: !editable ? "#cbcbcb" : "#3F434A",
+              opacity: !editable ? 0.5 : null,
             },
           ]}
           defaultValue={defaultValue}

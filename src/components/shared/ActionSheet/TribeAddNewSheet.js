@@ -138,7 +138,7 @@ const TribeAddNewSheet = (props) => {
             </View>
           </TouchableOpacity>
         ) : (
-          <Pressable key={idx} style={{ ...styles.wrapper, marginBottom: 40 }}>
+          <Pressable key={idx} style={{ ...styles.wrapper, paddingBottom: 40 }}>
             <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
           </Pressable>
         );

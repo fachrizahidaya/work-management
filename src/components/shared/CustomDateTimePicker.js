@@ -30,7 +30,7 @@ const CustomDateTimePicker = ({
   iconColor,
   textLabel,
   fontSize,
-  choosePreviousDateInMonth = false,
+  unlimitStartDate,
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -82,8 +82,11 @@ const CustomDateTimePicker = ({
     return `${year}-${month}-${day}`;
   };
 
-  const currentMonthStart = dayjs().startOf("month");
-  const minimumMonth = choosePreviousDateInMonth ? currentMonthStart.toDate() : currentMonthStart.toDate();
+  /**
+   * Handler for Attendance Attachment datepicker
+   */
+  const currentMonthStart = dayjs("2020-01-01");
+  const unlimitMinimumDate = currentMonthStart.startOf("month").toDate();
 
   // Set default value if provided
   useEffect(() => {
@@ -122,6 +125,7 @@ const CustomDateTimePicker = ({
                 height={height}
                 width={width}
                 onTouchStart={() => inputRef.current.blur()}
+                editable={disabled ? false : true}
               />
             </View>
           )}
@@ -135,7 +139,7 @@ const CustomDateTimePicker = ({
           display="spinner"
           onChange={onChangeDate}
           style={styles.datePicker}
-          minimumDate={choosePreviousDateInMonth ? minimumMonth : new Date(dayjs().format("YYYY-MM-DD"))}
+          minimumDate={unlimitStartDate ? unlimitMinimumDate : new Date(dayjs().format("YYYY-MM-DD"))}
           maximumDate={maximumDate && new Date(maximumDate)}
         />
       )}

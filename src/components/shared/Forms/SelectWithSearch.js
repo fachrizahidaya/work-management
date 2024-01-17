@@ -22,6 +22,7 @@ const SelectWithSearch = ({
   setInputToShow,
   setSearchInput,
   handleSearch,
+  height, // adjust height
 }) => {
   const onPressValue = (value) => {
     onChange(value);
@@ -44,6 +45,7 @@ const SelectWithSearch = ({
             setSearchInput("");
             setInputToShow("");
           }}
+          containerStyle={{ height: height }}
         >
           <View style={{ paddingHorizontal: 20, paddingVertical: 15, gap: 20, marginBottom: 20 }}>
             <Input

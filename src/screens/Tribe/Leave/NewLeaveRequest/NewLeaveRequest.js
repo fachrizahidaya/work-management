@@ -273,6 +273,8 @@ const NewLeaveRequest = ({ route }) => {
               <View style={{ alignItems: "center", gap: 5 }}>
                 <ActivityIndicator />
               </View>
+            ) : !availableLeaves ? (
+              <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
             ) : (
               availableLeaves?.map((item, index) => {
                 return (

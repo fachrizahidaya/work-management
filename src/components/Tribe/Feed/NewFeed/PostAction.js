@@ -17,7 +17,7 @@ const PostAction = ({
 }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}>
+      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
         <View>
           <Text style={[{ fontSize: 12 }, TextProps]}>Choose Post Type</Text>
         </View>

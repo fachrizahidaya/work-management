@@ -12,7 +12,7 @@ import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
 
-const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference }) => {
+const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month }) => {
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -85,31 +85,38 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 12 }, TextProps]}>Start Date</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
               <CustomDateTimePicker
-                choosePreviousDateInMonth={true}
+                limitStartDate={true}
+                forAttendanceAttachment={true}
                 width={180}
                 defaultValue={formik.values.begin_date}
                 onChange={onChangeStartDate}
+                month={month}
               />
-              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.begin_date}</Text>
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
             </View>
             <View style={{ gap: 5 }}>
-              <Text>End Date</Text>
-              <CustomDateTimePicker width={180} defaultValue={formik.values.end_date} onChange={onChangeEndDate} />
-              <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.end_date}</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
+              <CustomDateTimePicker
+                width={180}
+                defaultValue={formik.values.end_date}
+                onChange={onChangeEndDate}
+                month={month}
+              />
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
             </View>
           </View>
 
           <View style={{ gap: 5 }}>
-            <Text style={[{ fontSize: 12 }, TextProps]}>Attachment</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
             <Pressable onPress={onSelectFile} style={styles.attachment}>
               <Text
                 style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {!fileAttachment ? "Upload file..." : fileAttachment?.name}
+                {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
               </Text>
               <MaterialCommunityIcons
                 name="attachment"
@@ -118,7 +125,7 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 color="#3F434A"
               />
             </Pressable>
-            <Text style={{ fontSize: 12, color: "red" }}>{formik.errors.attachment}</Text>
+            <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
           </View>
 
           {!formik.values.attachment ? (
@@ -157,6 +164,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginBottom: 40,
+    paddingBottom: 40,
   },
 });
