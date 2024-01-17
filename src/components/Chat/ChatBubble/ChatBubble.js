@@ -285,7 +285,7 @@ const ChatBubble = ({
                 </Text>
               ) : myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" />
+                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
                   >
