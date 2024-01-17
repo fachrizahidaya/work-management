@@ -285,12 +285,7 @@ const ChatBubble = ({
                 </Text>
               ) : myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={10}
-                    style={{ transform: [{ rotate: "90deg" }] }}
-                    color="#3F434A"
-                  />
+                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
                   >
@@ -299,12 +294,7 @@ const ChatBubble = ({
                 </View>
               ) : !myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={10}
-                    style={{ transform: [{ rotate: "90deg" }] }}
-                    color="#3F434A"
-                  />
+                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
                   >
