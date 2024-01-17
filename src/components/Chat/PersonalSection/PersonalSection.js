@@ -1,7 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
-
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { SheetManager } from "react-native-actions-sheet";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
@@ -11,19 +10,61 @@ const PersonalSection = ({
   searchResult,
   onSwipeControl,
   onPinControl,
-
-  reference,
+  navigation,
+  userSelector,
 }) => {
-  const navigation = useNavigation();
+  const menuOptions = [
+    {
+      id: 1,
+      name: "New Chat",
+      onPress: () => {
+        navigation.navigate("New Chat");
+        SheetManager.hide("form-sheet");
+      },
+    },
+  ];
 
   return !searchKeyword ? (
     <>
       <View style={styles.header}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => reference.current?.show()}>
-          <MaterialIcons name="add" color="black" size={15} />
-        </TouchableOpacity>
+        <Pressable
+          style={{ ...styles.addButton, marginRight: 1 }}
+          onPress={() =>
+            SheetManager.show("form-sheet", {
+              payload: {
+                children: (
+                  <View
+                    style={{
+                      display: "flex",
+                      gap: 21,
+                      paddingHorizontal: 20,
+                      paddingVertical: 16,
+                      paddingBottom: 40,
+                    }}
+                  >
+                    {menuOptions.map((option, index) => {
+                      return (
+                        <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                          <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                    <TouchableOpacity
+                      style={{ alignItems: "center", justifyContent: "center" }}
+                      onPress={() => SheetManager.hide("form-sheet")}
+                    >
+                      <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                ),
+              },
+            })
+          }
+        >
+          <MaterialIcons name="add" size={15} color="#3F434A" />
+        </Pressable>
       </View>
 
       {personalChats.length > 0 &&
@@ -40,6 +81,7 @@ const PersonalSection = ({
               position={personal.user?.user_type}
               email={personal.user?.email}
               message={personal.latest_message?.message}
+              latest={personal.latest_message}
               fileName={personal.latest_message?.file_name}
               project={personal.latest_message?.project_id}
               task={personal.latest_message?.task_id}
@@ -51,6 +93,8 @@ const PersonalSection = ({
               active_member={0}
               onSwipe={onSwipeControl}
               onPin={onPinControl}
+              navigation={navigation}
+              userSelector={userSelector}
             />
           );
         })}
@@ -84,6 +128,7 @@ const PersonalSection = ({
               isRead={personal.unread}
               timestamp={personal.latest_message?.created_at}
               searchKeyword={searchKeyword}
+              navigation={navigation}
             />
           ))}
         </>
@@ -107,5 +152,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 6,
     borderRadius: 8,
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

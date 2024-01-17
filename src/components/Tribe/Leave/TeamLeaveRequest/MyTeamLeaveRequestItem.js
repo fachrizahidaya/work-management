@@ -6,6 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const MyTeamLeaveRequestItem = ({
   id,
@@ -45,8 +46,8 @@ const MyTeamLeaveRequestItem = ({
         </View>
 
         <View style={{ flexDirection: "row", gap: 5, padding: 5, borderRadius: 10, backgroundColor: "#F8F8F8" }}>
-          <MaterialCommunityIcons name="clock-outline" size={20} color="#186688" />
-          <Text>{days > 1 ? `${days} days` : `${days} day`}</Text>
+          <MaterialCommunityIcons name="clock-outline" size={20} color="#3F434A" />
+          <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -55,7 +56,7 @@ const MyTeamLeaveRequestItem = ({
           {days < 2 ? "day" : "days"}
         </Text>
         {status === "Pending" ? (
-          <View style={{ flexDirection: "row", gap: 5 }} gap={1}>
+          <View style={{ flexDirection: "row", gap: 5 }}>
             <FormButton
               onPress={() => responseHandler("Rejected", item)}
               isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
@@ -63,8 +64,9 @@ const MyTeamLeaveRequestItem = ({
               backgroundColor="#FF6262"
               fontColor="white"
               padding={5}
+              height={35}
             >
-              <Text>Decline</Text>
+              <Text style={[{ fontSize: 12, color: "#FFFFFF" }]}>Decline</Text>
             </FormButton>
             <FormButton
               onPress={() => responseHandler("Approved", item)}
@@ -73,12 +75,15 @@ const MyTeamLeaveRequestItem = ({
               backgroundColor="#377893"
               fontColor="white"
               padding={5}
+              height={35}
             >
-              <Text>Approve</Text>
+              <Text style={[{ fontSize: 12, color: "#FFFFFF" }]}>Approve</Text>
             </FormButton>
           </View>
         ) : (
-          <Text style={{ color: "#FF6262" }}>{item?.status}</Text>
+          <Text style={{ color: status === "Pending" ? "#F0C290" : status === "Approved" ? "#377893" : "#FF6262" }}>
+            {item?.status}
+          </Text>
         )}
       </View>
     </View>

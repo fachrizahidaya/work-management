@@ -24,7 +24,9 @@ const ChatList = ({
   setBandAttachment,
   onSwipeToReply,
   memberName,
-  position,
+  userSelector,
+  navigation,
+  filteredSearch,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -83,7 +85,7 @@ const ChatList = ({
         onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
         onEndReachedThreshold={0.1}
         estimatedItemSize={35}
-        data={chatList}
+        data={chatList.length ? chatList : filteredSearch}
         renderItem={({ item, index }) => (
           <>
             {chatList[index + 1] ? (
@@ -120,7 +122,8 @@ const ChatList = ({
               onSwipe={onSwipeToReply}
               isOptimistic={item?.isOptimistic}
               memberName={memberName}
-              position={position}
+              userSelector={userSelector}
+              navigation={navigation}
             />
           </>
         )}

@@ -7,6 +7,7 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const StatusSection = ({ projectData, onChange }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -48,14 +49,14 @@ const StatusSection = ({ projectData, onChange }) => {
                         <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
                           <View
                             style={{
-                              height: 20,
-                              width: 20,
+                              height: 15,
+                              width: 15,
                               backgroundColor:
                                 status === "Open" ? "#FFD240" : status === "On Progress" ? "#20cce2" : "#49c86c",
                               borderRadius: 4,
                             }}
                           />
-                          <Text style={{ fontSize: 16 }}>{status}</Text>
+                          <Text style={TextProps}>{status}</Text>
                         </View>
                       </TouchableOpacity>
                     );
@@ -92,11 +93,11 @@ const StatusSection = ({ projectData, onChange }) => {
               }}
             />
 
-            <Text style={{ fontWeight: 500 }}>{value}</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>{value}</Text>
           </View>
 
           {projectData?.owner_id === userSelector.id && (
-            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
+            <MaterialCommunityIcons name={isOpen ? "chevron-up" : "chevron-down"} size={20} color="#3F434A" />
           )}
         </View>
       </Pressable>

@@ -8,6 +8,7 @@ import Modal from "react-native-modal";
 
 import UserListItemModal from "./UserListItemModal";
 import Input from "../../shared/Forms/Input";
+import { TextProps } from "../../shared/CustomStylings";
 
 const UserListModal = ({
   roomId,
@@ -47,10 +48,7 @@ const UserListModal = ({
       deviceWidth={deviceWidth}
     >
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        {/* <Modal.Content> */}
-        {/* <Modal.CloseButton /> */}
-        <Text>Choose User</Text>
-        {/* <Modal.Body> */}
+        <Text style={[{ fontSize: 12 }, TextProps]}>Choose User</Text>
         <Input
           value={inputToShow}
           placeHolder="Search here..."
@@ -82,12 +80,10 @@ const UserListModal = ({
                 userType={item?.user_type}
                 image={item?.image}
                 multiSelect={true}
-                type="group"
                 onPressAddHandler={onPressAddHandler}
                 onPressRemoveHandler={onPressRemoveHandler}
                 userSelector={userSelector}
                 selectedUsers={selectedUsers}
-                setSelectedUsers={setSelectedUsers}
               />
             )}
           />
@@ -115,8 +111,6 @@ const UserListModal = ({
           )}
         </Pressable>
       </View>
-      {/* </Modal.Body> */}
-      {/* </Modal.Content> */}
     </Modal>
   );
 };

@@ -2,7 +2,7 @@ import { View } from "react-native";
 
 import Input from "../../shared/Forms/Input";
 
-const SearchBox = ({ handleSearch, inputToShow, setInputToShow, searchInput, setSearchInput }) => {
+const SearchBox = ({ handleSearch, inputToShow, setInputToShow, setSearchInput }) => {
   return (
     <View style={{ backgroundColor: "#FFFFFF", padding: 10 }}>
       <Input

@@ -1,16 +1,18 @@
 import React, { memo } from "react";
 import * as DocumentPicker from "expo-document-picker";
 
+import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
+
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AttachmentList from "./AttachmentList/AttachmentList";
 import { useFetch } from "../../../../../hooks/useFetch";
 import axiosInstance from "../../../../../config/api";
-import { ErrorToast, SuccessToast } from "../../../../shared/ToastDialog";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const AttachmentSection = ({ taskId, disabled }) => {
   const { data: attachments, refetch: refetchAttachments } = useFetch(taskId && `/pm/tasks/${taskId}/attachment`);
@@ -28,11 +30,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${attachment}`);
     } catch (error) {
       console.log(error);
-      toast.show({
-        render: () => {
-          return <ErrorToast message={error.response.data.message} />;
-        },
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -47,18 +45,10 @@ const AttachmentSection = ({ taskId, disabled }) => {
       // Refetch project's attachments
       refetchAttachments();
 
-      // Display toast if success
-      Toast.show({
-        type: "success",
-        text1: "Attachment uploaded",
-      });
+      Toast.show("Attachment uploaded", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      // Display toast if error
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -108,6 +98,7 @@ const AttachmentSection = ({ taskId, disabled }) => {
       } else {
         await axiosInstance.delete(`/pm/tasks/attachment/${attachmentId}`);
       }
+      SheetManager.hide("form-sheet");
       // Refetch attachments after deletion
       refetchAttachments();
 
@@ -117,50 +108,41 @@ const AttachmentSection = ({ taskId, disabled }) => {
         refetchComments();
       }
 
-      Toast.show({
-        type: "success",
-        text1: "Attachment deleted",
-      });
+      Toast.show("Attachment deleted", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
   return (
     <View style={{ display: "flex", gap: 10 }}>
       <View style={{ display: "flex", gap: 10 }}>
-        <Text style={{ fontWeight: 500 }}>ATTACHMENTS</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>ATTACHMENTS</Text>
 
         {attachments?.data?.length > 0 && (
-          <ScrollView style={{ maxHeight: 200 }}>
-            <View style={{ flex: 1, minHeight: 2 }}>
-              <FlashList
-                data={attachments.data}
-                keyExtractor={(item) => item.id}
-                estimatedItemSize={67}
-                renderItem={({ item }) => (
-                  <AttachmentList
-                    id={item?.id}
-                    title={item.file_name}
-                    size={item.file_size}
-                    time={item.uploaded_at}
-                    type={item.mime_type}
-                    from={item.attachment_from}
-                    deleteFileHandler={deleteFileHandler}
-                    downloadFileHandler={downloadAttachment}
-                    path={item.file_path}
-                    disabled={disabled}
-                  />
-                )}
-              />
-            </View>
-          </ScrollView>
+          <View style={{ flex: 1 }}>
+            <FlashList
+              data={attachments.data}
+              keyExtractor={(item) => item.id}
+              estimatedItemSize={221}
+              horizontal
+              renderItem={({ item }) => (
+                <AttachmentList
+                  id={item?.id}
+                  title={item.file_name}
+                  size={item.file_size}
+                  time={item.uploaded_at}
+                  type={item.mime_type}
+                  from={item.attachment_from}
+                  deleteFileHandler={deleteFileHandler}
+                  downloadFileHandler={downloadAttachment}
+                  path={item.file_path}
+                  disabled={disabled}
+                />
+              )}
+            />
+          </View>
         )}
-
-        <Toast />
       </View>
 
       <TouchableOpacity onPress={selectFile}>

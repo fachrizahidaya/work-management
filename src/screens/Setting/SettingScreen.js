@@ -12,7 +12,7 @@ import PageHeader from "../../components/shared/PageHeader";
 import { useFetch } from "../../hooks/useFetch";
 import AvatarPlaceholder from "../../components/shared/AvatarPlaceholder";
 import FormButton from "../../components/shared/FormButton";
-import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
+import { SkeletonCommonProps, TextProps } from "../../components/shared/CustomStylings";
 
 const SettingScreen = () => {
   const navigation = useNavigation();
@@ -87,13 +87,11 @@ const SettingScreen = () => {
                   <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
                     <AvatarPlaceholder name={userSelector.name} image={userSelector.image} size="md" isThumb={false} />
                     <View>
-                      <Text style={{ fontSize: 20, fontWeight: 700 }}>
+                      <Text style={[{ fontSize: 20, fontWeight: 700 }, TextProps]}>
                         {userSelector.name.length > 30 ? userSelector.name.split(" ")[0] : userSelector.name}
                       </Text>
                       {myProfile?.data && (
-                        <Text style={{ fontWeight: 500 }}>
-                          {myProfile.data.position_name || "You have no position"}
-                        </Text>
+                        <Text style={TextProps}>{myProfile.data.position_name || "You have no position"}</Text>
                       )}
                     </View>
                   </View>
@@ -130,9 +128,7 @@ const SettingScreen = () => {
                     <Skeleton height={30} width={100} radius="round" {...SkeletonCommonProps} />
                   ))}
 
-                {myProfile?.data && (
-                  <Text style={{ fontWeight: 500 }}>{myProfile.data.division_name || "You have no team"}</Text>
-                )}
+                {myProfile?.data && <Text style={TextProps}>{myProfile.data.division_name || "You have no team"}</Text>}
               </View>
               <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
             </TouchableOpacity>
@@ -150,7 +146,7 @@ const SettingScreen = () => {
                     <View style={{ backgroundColor: item.color, padding: 1, borderRadius: 4 }}>
                       <MaterialCommunityIcons name={item.icons} color="white" size={20} />
                     </View>
-                    <Text style={{ fontWeight: 500 }}>{item.title}</Text>
+                    <Text style={TextProps}>{item.title}</Text>
                   </View>
                   <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
                 </TouchableOpacity>
@@ -163,9 +159,9 @@ const SettingScreen = () => {
               <View style={{ backgroundColor: "#8B63E7", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="link-variant" color="white" size={20} />
               </View>
-              <View style={{ display: "flex", flexDirection: "row", gap: 1 }}>
+              <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
                 <Text style={{ fontWeight: "bold", color: "#176688" }}>KSS</Text>
-                <Text style={{ fontWeight: 500 }}>integrations</Text>
+                <Text style={TextProps}>integrations</Text>
               </View>
             </View>
             <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
@@ -176,7 +172,7 @@ const SettingScreen = () => {
               <View style={{ backgroundColor: "#B5B5B5", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="view-grid-outline" color="white" size={20} />
               </View>
-              <Text style={{ fontWeight: 500 }}>Personal dashboard</Text>
+              <Text style={TextProps}>Personal dashboard</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
           </TouchableOpacity>
@@ -189,7 +185,7 @@ const SettingScreen = () => {
                     <View style={{ backgroundColor: item.color, padding: 1, borderRadius: 4 }}>
                       <MaterialCommunityIcons name={item.icons} size={20} color="white" />
                     </View>
-                    <Text style={{ fontWeight: 500 }}>{item.title}</Text>
+                    <Text style={TextProps}>{item.title}</Text>
                   </View>
                   {item.title === "Server status" ? (
                     <Text style={{ color: "green", marginRight: 4 }}>Online</Text>
@@ -202,7 +198,7 @@ const SettingScreen = () => {
           </View>
 
           <FormButton onPress={() => navigation.navigate("Log Out")} fontColor="red" backgroundColor="#FAFAFA">
-            Log Out
+            <Text style={{ color: "red" }}>Log Out</Text>
           </FormButton>
         </View>
       </ScrollView>

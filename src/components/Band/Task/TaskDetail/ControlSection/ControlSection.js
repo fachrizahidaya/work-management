@@ -6,6 +6,7 @@ import { SheetManager } from "react-native-actions-sheet";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import Button from "../../../../shared/Forms/Button";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -29,7 +30,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                       }}
                       disabled={isLoading}
                     >
-                      <Text style={{ opacity: 500 }}>Open</Text>
+                      <Text style={TextProps}>Open</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={async () => {
@@ -38,7 +39,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                       }}
                       disabled={isLoading}
                     >
-                      <Text style={{ opacity: 500 }}>On Progress</Text>
+                      <Text style={TextProps}>On Progress</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={async () => {
@@ -47,7 +48,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                       }}
                       disabled={isLoading}
                     >
-                      <Text style={{ opacity: 500 }}>Finish</Text>
+                      <Text style={TextProps}>Finish</Text>
                     </TouchableOpacity>
                   </View>
                 ),
@@ -56,7 +57,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
           }
         >
           <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
-            {isLoading ? <ActivityIndicator /> : <Text style={{ fontWeight: 500, color: "white" }}>{taskStatus}</Text>}
+            {isLoading ? <ActivityIndicator /> : <Text style={{ color: "white" }}>{taskStatus}</Text>}
           </View>
         </Button>
       </View>

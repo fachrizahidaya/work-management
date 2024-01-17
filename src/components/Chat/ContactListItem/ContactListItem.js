@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useRef, useState } from "react";
 
 import { Swipeable } from "react-native-gesture-handler";
 import RenderHtml from "react-native-render-html";
@@ -10,6 +9,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
+import { TextProps } from "../../shared/CustomStylings";
+import axiosInstance from "../../../config/api";
 
 const ContactListItem = ({
   chat,
@@ -33,13 +34,25 @@ const ContactListItem = ({
   isPinned,
   onSwipe,
   onPin,
+  navigation,
+  latest,
+  userSelector,
 }) => {
-  const navigation = useNavigation();
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const swipeableRef = useRef(null);
+
+  const memberName = selectedGroupMembers.map((item) => {
+    return item?.user?.name;
+  });
+
+  for (let i = 0; i < memberName.length; i++) {
+    let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+    message = message?.replace(placeholder, `@${memberName[i]}`);
+  }
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
-    return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
+    return sentence?.replace(regex, `<strong style="color: #176688;">$&</strong>`);
   };
 
   const renderName = () => {
@@ -96,49 +109,81 @@ const ContactListItem = ({
     return text;
   };
 
-  const renderLeftView = (progress, dragX) => {
+  const renderLeftView = () => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
-        }}
+      <View
         style={{
-          padding: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#959595",
+          backgroundColor: "#377893",
+          width: 250,
         }}
       >
-        <MaterialIcons name="push-pin" color="white" style={{ transform: [{ rotate: "45deg" }] }} />
-        <Text style={{ color: "#FFFFFF" }}>Pin</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
+          }}
+          style={{
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#377893",
+            marginRight: 150,
+          }}
+        >
+          <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
+          <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
+        </Pressable>
+      </View>
     );
   };
 
-  const renderRightView = (progress, dragX) => {
+  const renderRightView = () => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onSwipe(chat);
-        }}
+      <View
         style={{
-          padding: 10,
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#959595",
+          width: 250,
         }}
       >
-        <MaterialIcons name="more-horiz" color="#FFFFFF" />
-        <Text style={{ color: "#FFFFFF" }}>More</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onSwipe(chat);
+          }}
+          style={{
+            marginLeft: 150,
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#959595",
+          }}
+        >
+          <MaterialIcons name="more-horiz" color="#FFFFFF" />
+          <Text style={{ color: "#FFFFFF" }}>More</Text>
+        </Pressable>
+      </View>
     );
   };
+
+  /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${id}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSelectedGroupMembers();
+  }, [id]);
 
   return (
     <View>
@@ -172,7 +217,7 @@ const ContactListItem = ({
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                   {!searchKeyword ? (
-                    <Text>{name}</Text>
+                    <Text style={[{ fontSize: 12, fontWeight: "500" }]}>{name}</Text>
                   ) : (
                     <RenderHtml
                       contentWidth={400}
@@ -187,53 +232,97 @@ const ContactListItem = ({
                   </View>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
-                  {!isDeleted ? (
-                    <>
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={{ flexDirection: "row" }}>
-                          {type === "group" && chat?.latest_message ? (
-                            <Text>{chat?.latest_message?.user?.name}: </Text>
-                          ) : null}
-                          {message && <Text>{message.length > 20 ? message.slice(0, 20) + "..." : message}</Text>}
-                          {message === null && (project || task || fileName) && (
-                            <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                              <MaterialCommunityIcons name={generateIcon()} size={20} />
-                              <Text>{generateAttachmentText()}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                    {type === "group" && chat?.latest_message ? (
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {userSelector?.name === chat?.latest_message?.user?.name
+                          ? "You"
+                          : chat?.latest_message?.user?.name}
+                        :{" "}
+                      </Text>
+                    ) : null}
+                    {!isDeleted ? (
+                      <>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ flexDirection: "row" }}>
+                            {message && (
+                              <Text style={[{ fontSize: 12 }, TextProps]}>
+                                {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                              </Text>
+                            )}
+                            {!message && (project || task || fileName) && (
+                              <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                                <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
+                                <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
+                              </View>
+                            )}
+                          </View>
+                          {!!isRead && (
+                            <View
+                              style={{
+                                height: 25,
+                                width: 25,
+                                backgroundColor: "#FD7972",
+                                borderRadius: 10,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text style={{ fontSize: 12, textAlign: "center", color: "#FFFFFF" }}>
+                                {isRead > 20 ? "20+" : isRead}
+                              </Text>
                             </View>
                           )}
                         </View>
-                        {!!isRead && (
-                          <View
-                            style={{
-                              height: 25,
-                              width: 25,
-                              backgroundColor: "#FD7972",
-                              borderRadius: 10,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Text style={{ fontSize: 12, textAlign: "center", color: "#FFFFFF" }}>
-                              {isRead > 20 ? "20+" : isRead}
-                            </Text>
-                          </View>
-                        )}
+                      </>
+                    ) : isDeleted && userSelector.id === latest?.user?.id ? (
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        <MaterialCommunityIcons
+                          name="block-helper"
+                          size={10}
+                          style={{ transform: [{ rotate: "90deg" }] }}
+                          color="#3F434A"
+                        />
+                        <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                          You deleted this message
+                        </Text>
                       </View>
-                    </>
-                  ) : (
-                    <Text style={{ fontStyle: "italic", opacity: 0.5 }}>Message has been deleted</Text>
-                  )}
+                    ) : isDeleted && userSelector.id !== latest?.user?.id ? (
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        <MaterialCommunityIcons
+                          name="block-helper"
+                          size={10}
+                          style={{ transform: [{ rotate: "90deg" }] }}
+                          color="#3F434A"
+                        />
+                        <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                          This message was deleted
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
                   {isPinned?.pin_chat ? (
-                    <MaterialCommunityIcons name="pin" size={20} style={{ transform: [{ rotate: "45deg" }] }} />
+                    <MaterialCommunityIcons
+                      name="pin"
+                      size={20}
+                      style={{ transform: [{ rotate: "45deg" }] }}
+                      color="#3F434A"
+                    />
                   ) : null}
                 </View>
               </View>

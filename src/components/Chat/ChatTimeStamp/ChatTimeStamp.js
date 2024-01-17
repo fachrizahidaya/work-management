@@ -6,6 +6,8 @@ dayjs.extend(isBetween);
 
 import { Text } from "react-native";
 
+import { TextProps } from "../../shared/CustomStylings";
+
 const ChatTimeStamp = ({ time, timestamp, useDay }) => {
   const [currentTimestamp, setCurrentTimestamp] = useState(null);
   const currentDay = dayjs();
@@ -33,7 +35,7 @@ const ChatTimeStamp = ({ time, timestamp, useDay }) => {
     }
   };
 
-  return currentTimestamp && <Text style={{ fontSize: 12 }}>{formatTimestamp()}</Text>;
+  return currentTimestamp && <Text style={[{ fontSize: 12 }, TextProps]}>{formatTimestamp()}</Text>;
 };
 
 export default ChatTimeStamp;

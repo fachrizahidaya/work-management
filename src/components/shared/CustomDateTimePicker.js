@@ -7,6 +7,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Input from "./Forms/Input";
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 /**
  * @param {number} width - The width of the component.
@@ -29,6 +30,7 @@ const CustomDateTimePicker = ({
   iconColor,
   textLabel,
   fontSize,
+  unlimitStartDate,
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -80,6 +82,12 @@ const CustomDateTimePicker = ({
     return `${year}-${month}-${day}`;
   };
 
+  /**
+   * Handler for Attendance Attachment datepicker
+   */
+  const currentMonthStart = dayjs("2020-01-01");
+  const unlimitMinimumDate = currentMonthStart.startOf("month").toDate();
+
   // Set default value if provided
   useEffect(() => {
     if (defaultValue) {
@@ -95,7 +103,7 @@ const CustomDateTimePicker = ({
         <>
           {withIcon ? (
             <Pressable disabled={disabled} onPress={toggleDatePicker}>
-              <MaterialCommunityIcons as={iconType} name={iconName} size={30} color={iconColor} />
+              <MaterialCommunityIcons as={iconType} name={iconName} size={30} color={iconColor || "#3F434A"} />
             </Pressable>
           ) : withText ? (
             <Pressable onPress={toggleDatePicker} disabled={disabled}>
@@ -117,6 +125,7 @@ const CustomDateTimePicker = ({
                 height={height}
                 width={width}
                 onTouchStart={() => inputRef.current.blur()}
+                editable={disabled ? false : true}
               />
             </View>
           )}
@@ -130,7 +139,7 @@ const CustomDateTimePicker = ({
           display="spinner"
           onChange={onChangeDate}
           style={styles.datePicker}
-          minimumDate={new Date(dayjs().format("YYYY-MM-DD"))}
+          minimumDate={unlimitStartDate ? unlimitMinimumDate : new Date(dayjs().format("YYYY-MM-DD"))}
           maximumDate={maximumDate && new Date(maximumDate)}
         />
       )}
@@ -139,11 +148,11 @@ const CustomDateTimePicker = ({
       {calendarIsOpen && Platform.OS === "ios" && (
         <View style={{ display: "flex", flexDirection: "row", gap: 5, alignSelf: "center" }}>
           <Button onPress={toggleDatePicker} variant="outline" styles={{ paddingHorizontal: 8 }}>
-            <Text style={{ fontWeight: 500 }}>Cancel</Text>
+            <Text style={TextProps}>Cancel</Text>
           </Button>
 
           <Button onPress={confirmIOSDate} styles={{ paddingHorizontal: 8 }}>
-            <Text style={{ fontWeight: 500, color: "white" }}>Confirm</Text>
+            <Text style={{ color: "white" }}>Confirm</Text>
           </Button>
         </View>
       )}

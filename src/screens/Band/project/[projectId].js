@@ -6,13 +6,13 @@ import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Tabs from "../../../components/shared/Tabs";
@@ -29,6 +29,7 @@ import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import Description from "../../../components/Band/Project/ProjectDetail/Description";
 import Button from "../../../components/shared/Forms/Button";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
 
 const ProjectDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -67,10 +68,7 @@ const ProjectDetailScreen = ({ route }) => {
       refetchMember();
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -84,16 +82,10 @@ const ProjectDetailScreen = ({ route }) => {
         id: projectId,
       });
       refetch();
-      Toast.show({
-        type: "success",
-        text1: `Project ${status}ed`,
-      });
+      Toast.show(`Project ${status}ed`, SuccessToastProps);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -157,7 +149,7 @@ const ProjectDetailScreen = ({ route }) => {
                                 toggleUserModal();
                               }}
                             >
-                              <Text style={{ fontWeight: 500 }}>Change Ownership</Text>
+                              <Text style={TextProps}>Change Ownership</Text>
                             </TouchableOpacity>
 
                             {editCheckAccess && (
@@ -170,7 +162,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   SheetManager.hide("form-sheet");
                                 }}
                               >
-                                <Text style={{ fontWeight: 500 }}>Edit</Text>
+                                <Text style={TextProps}>Edit</Text>
                               </TouchableOpacity>
                             )}
 
@@ -181,7 +173,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   toggle();
                                 }}
                               >
-                                <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
+                                <Text style={{ color: "red" }}>Delete</Text>
                               </TouchableOpacity>
                             )}
                           </View>
@@ -190,7 +182,7 @@ const ProjectDetailScreen = ({ route }) => {
                     })
                   }
                 >
-                  <MaterialCommunityIcons name="dots-vertical" size={20} />
+                  <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
                 </Pressable>
               )}
             </View>
@@ -205,8 +197,8 @@ const ProjectDetailScreen = ({ route }) => {
                 onPress={() => navigation.navigate("Project Task", { projectId: projectId, view: "Task List" })}
               >
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <MaterialCommunityIcons name="format-list-bulleted" size={20} />
-                  <Text>Task List</Text>
+                  <MaterialCommunityIcons name="format-list-bulleted" size={20} color="#3F434A" />
+                  <Text style={TextProps}>Task List</Text>
                 </View>
               </Button>
             </View>
@@ -234,7 +226,7 @@ const ProjectDetailScreen = ({ route }) => {
                     data={activities?.data}
                     keyExtractor={(item) => item.id}
                     onEndReachedThreshold={0.1}
-                    estimatedItemSize={51}
+                    estimatedItemSize={191}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => {
@@ -259,18 +251,16 @@ const ProjectDetailScreen = ({ route }) => {
 
                           <View>
                             <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "center" }}>
-                              <Text style={{ fontWeight: 500 }}>{item?.user_name.split(" ")[0]}</Text>
-                              <Text style={{ fontWeight: 500, color: "#8A9099" }}>
-                                {dayjs(item?.created_at).fromNow()}
-                              </Text>
+                              <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.user_name.split(" ")[0]}</Text>
+                              <Text style={TextProps}>{dayjs(item?.created_at).fromNow()}</Text>
                             </View>
 
                             <View>
-                              <Text style={{ fontWeight: 400 }}>{item?.description}</Text>
+                              <Text style={TextProps}>{item?.description}</Text>
 
-                              <Text style={{ fontWeight: 400, width: 300 }} numberOfLines={2}>
+                              <Text style={[{ width: 300 }, TextProps]} numberOfLines={2}>
                                 {item.object_title}
-                                <Text style={{ fontWeight: 500, color: "#377893" }}> #{item.reference_no}</Text>
+                                <Text style={{ color: "#377893" }}> #{item.reference_no}</Text>
                               </Text>
                             </View>
                           </View>
@@ -283,8 +273,6 @@ const ProjectDetailScreen = ({ route }) => {
             )}
           </View>
         </KeyboardAwareScrollView>
-
-        <Toast position="bottom" />
       </View>
 
       {/* Add member modal */}

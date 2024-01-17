@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
@@ -12,7 +13,7 @@ const PaymentScreen = () => {
       <View style={{ display: "flex", marginVertical: 15, paddingHorizontal: 16, gap: 24 }}>
         <PageHeader title="Payments" onPress={() => navigation.goBack()} />
 
-        <Text style={{ fontWeight: 500 }}>redirect to website</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>Redirect to website</Text>
       </View>
     </SafeAreaView>
   );

@@ -1,17 +1,14 @@
 import React, { memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
-
 import { Skeleton } from "moti/skeleton";
 import { StyleSheet, TouchableOpacity, View, Image, Text, Dimensions } from "react-native";
 
 import { card } from "../../../../styles/Card";
-import { SkeletonCommonProps } from "../../../shared/CustomStylings";
+import { SkeletonCommonProps, TextProps } from "../../../shared/CustomStylings";
 
 const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }) => {
   const navigation = useNavigation();
-  const menuSelector = useSelector((state) => state.user_menu);
   const { width } = Dimensions.get("screen");
 
   return (
@@ -24,8 +21,8 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
               alt="project chart"
               style={styles.image}
             />
-            <Text style={{ color: "gray" }}>On going projects</Text>
-            <Text style={{ fontWeight: 500, fontSize: 20 }}>{projects}</Text>
+            <Text style={TextProps}>On going projects</Text>
+            <Text style={[{ fontWeight: 500, fontSize: 20 }, TextProps]}>{projects}</Text>
           </View>
         </TouchableOpacity>
       ) : (
@@ -36,8 +33,8 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
         <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Tasks")}>
           <View style={styles.imageWrapper}>
             <Image source={require("../../../../assets/icons/task_chart.png")} alt="task chart" style={styles.image} />
-            <Text style={{ color: "gray" }}>Total tasks</Text>
-            <Text style={{ fontWeight: 500, fontSize: 20 }}>{tasks}</Text>
+            <Text style={TextProps}>Total tasks</Text>
+            <Text style={[{ fontWeight: 500, fontSize: 20 }, TextProps]}>{tasks}</Text>
           </View>
         </TouchableOpacity>
       ) : (

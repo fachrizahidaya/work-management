@@ -5,6 +5,7 @@ import ActionSheet from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
+import { TextProps } from "../CustomStylings";
 
 const TribeScreenSheet = (props) => {
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ const TribeScreenSheet = (props) => {
     "Payroll Groups",
     "Payroll Components",
     "Upload Payslip",
+    "Dashboard",
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
@@ -34,13 +36,13 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("Dashboard");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="rss" />
+            <MaterialCommunityIcons size={20} name="rss" color="#3F434A" />
           </View>
-          <Text style={styles.text}>Dashboard</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Dashboard</Text>
         </View>
       </TouchableOpacity>
 
@@ -52,13 +54,17 @@ const TribeScreenSheet = (props) => {
               navigation.navigate(item.name);
               props.reference.current?.hide();
             }}
-            style={styles.wrapper}
+            style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name={item.mobile_icon} />
+                <MaterialCommunityIcons
+                  size={20}
+                  name={item.mobile_icon ? item.mobile_icon : item.icon}
+                  color="#3F434A"
+                />
               </View>
-              <Text style={styles.text}>{item.name}</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         );
@@ -69,28 +75,43 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("My Information");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="account-outline" />
+            <MaterialCommunityIcons size={20} name="account-outline" color="#3F434A" />
           </View>
-          <Text style={styles.text}>My Information</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
         </View>
       </TouchableOpacity>
+
+      {/* <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("My KPI");
+          props.reference.current?.hide();
+        }}
+        style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+      >
+        <View style={styles.flex}>
+          <View style={styles.item}>
+            <MaterialCommunityIcons size={20} name="signal-cellular-3" color="#3F434A" />
+          </View>
+          <Text style={[{ fontSize: 14 }, TextProps]}>My Key Performance Indicator</Text>
+        </View>
+      </TouchableOpacity> */}
 
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Calendar Tribe");
           props.reference.current?.hide();
         }}
-        style={styles.wrapper}
+        style={{ ...styles.wrapper, paddingBottom: 40 }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="calendar-clock" />
+            <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
           </View>
-          <Text style={styles.text}>Calendar</Text>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
         </View>
       </TouchableOpacity>
     </ActionSheet>
@@ -103,8 +124,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#E8E9EB",
   },
   flex: {
     display: "flex",

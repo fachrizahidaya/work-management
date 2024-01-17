@@ -15,15 +15,15 @@ import messaging from "@react-native-firebase/messaging";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
-import Toast from "react-native-toast-message";
 
 import axiosInstance from "../config/api";
-import { ErrorToast } from "../components/shared/ToastDialog";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
+import { ErrorToastProps, TextProps } from "../components/shared/CustomStylings";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -121,11 +121,7 @@ const LoginScreen = () => {
         console.log(error);
         formik.setSubmitting(false);
 
-        Toast.show({
-          type: "error",
-          text1: error.response.data.message,
-          position: "bottom",
-        });
+        Toast.show(error.response.data.message, ErrorToastProps);
       });
   };
 
@@ -143,11 +139,7 @@ const LoginScreen = () => {
   //   } catch (error) {
   //     console.log(error);
   //     toggleLoading();
-  //     toast.show({
-  //       render: () => {
-  //         return <ErrorToast message={error.response.data.message} />;
-  //       },
-  //     });
+  //     Toast.show(error.response.data.message, ErrorToastProps);
   //   }
   // };
 
@@ -195,7 +187,7 @@ const LoginScreen = () => {
               source={require("../assets/icons/kss_logo.png")}
               alt="KSS_LOGO"
             />
-            <Text style={{ fontSize: 20, fontWeight: 500 }}>Login</Text>
+            <Text style={[{ fontSize: 20, fontWeight: 500 }, TextProps]}>Login</Text>
           </View>
 
           <View style={{ position: "relative", borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
@@ -213,7 +205,7 @@ const LoginScreen = () => {
               }}
             />
             <FormButton disabled={isLoading} backgroundColor="white" fontSize={12} fontColor="#595F69">
-              {isLoading ? "Checking google account..." : "Login with Google"}
+              <Text style={TextProps}>{isLoading ? "Checking google account..." : "Login with Google"}</Text>
             </FormButton>
 
             {/* <Button
@@ -271,7 +263,7 @@ const LoginScreen = () => {
           />
 
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
-            Log In
+            <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
 
           <View
@@ -284,11 +276,9 @@ const LoginScreen = () => {
         <View style={{ width: "100%" }} />
 
         <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
-          <Text style={{ fontWeight: 500 }}>Don't have an account?</Text>
-          <Text style={{ fontWeight: 500, color: "#176688" }}>Sign Up</Text>
+          <Text style={TextProps}>Don't have an account?</Text>
+          <Text style={{ color: "#176688" }}>Sign Up</Text>
         </View>
-
-        <Toast />
       </View>
 
       {/* <View>

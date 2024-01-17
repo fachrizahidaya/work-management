@@ -1,14 +1,12 @@
-import { useNavigation } from "@react-navigation/native";
-
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import ActionSheet from "react-native-actions-sheet";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ContactMenu = ({
-  onClose,
   chat,
   toggleDeleteModal,
   toggleDeleteGroupModal,
@@ -22,22 +20,23 @@ const ContactMenu = ({
   deleteChatPersonal,
   deleteChatMessageIsLoading,
   chatRoomIsLoading,
-  reference,
+  navigation,
 }) => {
-  const navigation = useNavigation();
   const menuOptions = [
     // {
+    // id: 1,
     //   icon: "volume-off",
     //   name: "Mute Notifications",
     //   color: "#176688",
     //   onPress: null
     // },
     {
+      id: 2,
       icon: "information-outline",
       name: "Contact Info",
       color: "#176688",
-      onPress: () => {
-        onClose();
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
         navigation.navigate("User Detail", {
           navigation: navigation,
           name: chat?.pin_group ? chat?.name : chat?.user?.name,
@@ -63,39 +62,42 @@ const ContactMenu = ({
       },
     },
     {
+      id: 3,
       icon: "close-circle-outline",
       name: "Clear Chat",
       color: "#176688",
-      onPress: () => {
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
         toggleClearChatMessage(chat);
-        onClose();
       },
     },
     // {
+    // id: 4,
     //   icon: "minus-circle-outline",
     //   name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
     //   color: "#EB0E29",
     //   onPress: null,
     // },
     {
+      id: 5,
       icon: "trash-can-outline",
       name: `Delete ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
       color: "#EB0E29",
-      onPress: () => {
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
         chat?.pin_group ? toggleDeleteGroupModal(chat) : toggleDeleteModal(chat);
-        onClose();
       },
     },
   ];
 
   return (
-    <ActionSheet ref={reference} onClose={onClose}>
+    <View style={{ paddingBottom: 40 }}>
       <View style={{ ...styles.wrapper, flexDirection: "row", justifyContent: "space-between" }}>
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            gap: 5,
+            gap: 10,
           }}
         >
           <AvatarPlaceholder
@@ -107,53 +109,38 @@ const ContactMenu = ({
         </View>
       </View>
 
-      <View style={{ ...styles.wrapper, gap: 20 }}>
+      <View style={{ ...styles.wrapper, gap: 5 }}>
         {menuOptions.splice(0, 2).map((option, index) => {
           return (
-            <>
-              <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
-                <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+              <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
+              <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+            </TouchableOpacity>
           );
         })}
       </View>
 
-      <View style={{ ...styles.wrapper, gap: 5, marginTop: 5 }}>
+      <View style={{ ...styles.wrapper, gap: 5, marginTop: 3, marginBottom: 15 }}>
         {menuOptions.splice(0, 1).map((option, index) => {
           return (
-            <>
-              <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
-                <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
+              <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+            </TouchableOpacity>
           );
         })}
         {!chat?.active_member
           ? menuOptions.map((option, index) => {
               return (
-                <>
-                  <View key={index} style={styles.container}>
-                    <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
-                    <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
-                  </View>
-                </>
+                <View key={index} style={styles.container}>
+                  <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
+                  <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+                </View>
               );
             })
           : null}
       </View>
-
-      {/* <Actionsheet.Item onPress={onClose} mt={1} backgroundColor="#F5F5F5">
-          <Flex width={350} justifyContent="center" alignItems="center">
-            <Text fontSize={16} fontWeight={400} color="#176688">
-              Cancel
-            </Text>
-          </Flex>
-        </Actionsheet.Item> */}
-      {/* </Actionsheet.Content> */}
-    </ActionSheet>
+    </View>
   );
 };
 
@@ -164,9 +151,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 10,
   },
 });

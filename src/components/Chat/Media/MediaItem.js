@@ -1,26 +1,21 @@
-import { Flex, Icon, Image, Text } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Image, Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const MediaItem = ({ image, path, type, name }) => {
+const MediaItem = ({ path, toggleFullScreen }) => {
   return (
-    <TouchableOpacity>
-      {type === "application/pdf" ? (
-        <Flex flexDir="row" alignItems="center" gap={2}>
-          <Icon as={<MaterialCommunityIcons name="delete-outline" />} size="md" color="red.600" />
-          <Text color="red.500">{image}</Text>
-        </Flex>
-      ) : (
-        <Image
-          width={60}
-          height={60}
-          borderRadius={5}
-          source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${path}` }}
-          alt="Chat Image"
-          resizeMode="contain"
-          resizeMethod="auto"
-        />
-      )}
+    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => toggleFullScreen(path)}>
+      <Image
+        source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${path}` }}
+        alt="Chat Image"
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: 5,
+          resizeMode: "cover",
+        }}
+        resizeMethod="auto"
+      />
     </TouchableOpacity>
   );
 };

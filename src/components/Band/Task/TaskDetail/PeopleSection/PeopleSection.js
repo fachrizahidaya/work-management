@@ -2,10 +2,10 @@ import React, { memo, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AvatarPlaceholder from "../../../../shared/AvatarPlaceholder";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
@@ -13,6 +13,7 @@ import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../../config/api";
 import AddMemberModal from "../../../shared/AddMemberModal/AddMemberModal";
 import { useFetch } from "../../../../../hooks/useFetch";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const PeopleSection = ({
   observers,
@@ -64,18 +65,10 @@ const PeopleSection = ({
       refetchResponsible();
       refetchTask();
       SheetManager.hide("form-sheet");
-
-      Toast.show({
-        type: "success",
-        text1: "Task assigned",
-      });
+      Toast.show("Task assigned", SuccessToastProps);
     } catch (error) {
       console.log(error);
-
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -93,21 +86,13 @@ const PeopleSection = ({
       }
       refetchObservers();
       setIsLoading(false);
-
-      Toast.show({
-        type: "success",
-        text1: "New observer added",
-      });
+      Toast.show("New observer added", SuccessToastProps);
       toggleObserverModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
       toggleObserverModal();
-
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -117,7 +102,7 @@ const PeopleSection = ({
         {/* Responsible and creator */}
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>ASSIGNED TO</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>ASSIGNED TO</Text>
             {responsibleArr?.length > 0 ? (
               responsibleArr.map((responsible) => {
                 return (
@@ -133,13 +118,13 @@ const PeopleSection = ({
                                   members.data.map((member) => {
                                     return (
                                       <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
-                                        <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                        <Text style={TextProps}>{member.member_name}</Text>
                                       </TouchableOpacity>
                                     );
                                   })
                                 ) : (
                                   <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
-                                    <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                                    <Text style={TextProps}>{userSelector.name}</Text>
                                   </TouchableOpacity>
                                 )}
                               </View>
@@ -168,13 +153,13 @@ const PeopleSection = ({
                             members.data.map((member) => {
                               return (
                                 <TouchableOpacity key={member.id} onPress={() => takeTask(member.user_id)}>
-                                  <Text style={{ fontWeight: 500 }}>{member.member_name}</Text>
+                                  <Text style={TextProps}>{member.member_name}</Text>
                                 </TouchableOpacity>
                               );
                             })
                           ) : (
                             <TouchableOpacity onPress={() => takeTask(userSelector.id)}>
-                              <Text style={{ fontWeight: 500 }}>{userSelector.name}</Text>
+                              <Text style={TextProps}>{userSelector.name}</Text>
                             </TouchableOpacity>
                           )}
                         </View>
@@ -191,13 +176,13 @@ const PeopleSection = ({
                   borderRadius: 10,
                 }}
               >
-                <MaterialCommunityIcons name="plus" size={20} />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </TouchableOpacity>
             )}
           </View>
 
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>CREATED BY</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>CREATED BY</Text>
 
             {ownerId && (
               <AvatarPlaceholder name={ownerName} image={ownerImage} email={ownerEmail} size="sm" isPressable={true} />
@@ -208,7 +193,7 @@ const PeopleSection = ({
         {/* Observers */}
         {(!disabled || (disabled && observers?.length > 0)) && (
           <View style={{ flex: 1, display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>OBSERVER</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>OBSERVER</Text>
             <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
               {observers?.length > 0 ? (
                 <>
@@ -236,7 +221,7 @@ const PeopleSection = ({
                           borderRadius: 10,
                         }}
                       >
-                        <MaterialCommunityIcons name="plus" size={20} />
+                        <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -253,15 +238,13 @@ const PeopleSection = ({
                       borderRadius: 10,
                     }}
                   >
-                    <MaterialCommunityIcons name="plus" size={20} />
+                    <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                   </TouchableOpacity>
                 )
               )}
             </View>
           </View>
         )}
-
-        <Toast position="bottom" />
       </View>
 
       <AddMemberModal

@@ -2,14 +2,15 @@ import { memo } from "react";
 
 import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
+import { FlashList } from "@shopify/flash-list";
 
 import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
 import EmployeeContact from "../EmployeeContact";
 import EmployeeProfile from "../EmployeeProfile";
 import EmployeeSelfProfile from "../EmployeeSelfProfile";
-import EmployeeTeammates from "../EmployeeTeammates";
+import { ErrorToastProps } from "../../../shared/CustomStylings";
 
 const FeedCard = ({
   posts,
@@ -19,9 +20,7 @@ const FeedCard = ({
   personalPostIsFetching,
   refetchPersonalPost,
   employee,
-  toggleTeammates,
   teammates,
-  teammatesIsOpen,
   hasBeenScrolled,
   setHasBeenScrolled,
   onCommentToggle,
@@ -32,7 +31,8 @@ const FeedCard = ({
   openSelectedPersonalPost,
   employeeUsername,
   userSelector,
-  reference,
+  toggleDeleteModal,
+  toggleEditModal,
 }) => {
   /**
    * Like a Post handler
@@ -42,15 +42,11 @@ const FeedCard = ({
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      // refetchPersonalPost();
+      refetchPersonalPost();
       console.log("Process success");
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -110,23 +106,11 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile
-                    employee={employee}
-                    toggleTeammates={toggleTeammates}
-                    teammates={teammates}
-                    reference={reference}
-                  />
+                  <EmployeeProfile employee={employee} teammates={teammates} />
                 </>
               ) : (
-                <EmployeeSelfProfile
-                  employee={employee}
-                  toggleTeammates={toggleTeammates}
-                  teammates={teammates}
-                  reference={reference}
-                />
+                <EmployeeSelfProfile employee={employee} teammates={teammates} />
               )}
-
-              <EmployeeTeammates teammatesIsOpen={teammatesIsOpen} teammates={teammates} reference={reference} />
             </View>
           </View>
         }
@@ -166,12 +150,13 @@ const FeedCard = ({
                 copyToClipboard={copyToClipboard}
                 openSelectedPersonalPost={openSelectedPersonalPost}
                 employeeUsername={employeeUsername}
+                toggleDeleteModal={toggleDeleteModal}
+                toggleEditModal={toggleEditModal}
               />
             </View>
           );
         }}
       />
-      <Toast />
     </View>
   );
 };

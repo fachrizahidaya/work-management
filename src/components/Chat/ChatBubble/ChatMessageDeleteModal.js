@@ -26,9 +26,9 @@ const ChatMessageDeleteModal = ({
       deviceWidth={deviceWidth}
       backdropColor="#272A2B"
     >
-      <View style={{ backgroundColor: "#FFFFFF", padding: 15, borderRadius: 10 }}>
+      <View style={{ backgroundColor: "#FFFFFF", padding: 15, borderRadius: 10, gap: 10 }}>
         <View>
-          <Text>Delete message?</Text>
+          <Text style={[{ fontSize: 14, fontWeight: "500" }]}>Delete message?</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 5 }}>
           <Button padding={10} variant="outline" onPress={toggleDeleteModalChat}>
@@ -58,8 +58,7 @@ const ChatMessageDeleteModal = ({
               }}
             >
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#377893" }}>
-                {/* {isLoading ? <ActivityIndicator /> : "Delete for Everyone"} */}
-                Delete for Everyone
+                {isLoading ? <ActivityIndicator /> : "Delete for Everyone"}
               </Text>
             </Button>
           )}

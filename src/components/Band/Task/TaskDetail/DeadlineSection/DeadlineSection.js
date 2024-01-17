@@ -2,13 +2,14 @@ import React, { memo } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Text, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import CustomDateTimePicker from "../../../../shared/CustomDateTimePicker";
 import axiosInstance from "../../../../../config/api";
 import { useLoading } from "../../../../../hooks/useLoading";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../../shared/CustomStylings";
 
 const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
   const { isLoading, start, stop } = useLoading(false);
@@ -22,17 +23,11 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
       start();
       await axiosInstance.patch(`/pm/tasks/${taskId}`, newDeadline);
       stop();
-      Toast.show({
-        type: "success",
-        text1: "New deadline saved",
-      });
+      Toast.show("New deadline saved", SuccessToastProps);
     } catch (error) {
       console.log(error);
       stop();
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -57,15 +52,13 @@ const DeadlineSection = ({ deadline, projectDeadline, disabled, taskId }) => {
 
   return (
     <View style={{ display: "flex", gap: 10 }}>
-      <Text style={{ fontWeight: 500 }}>DUE DATE</Text>
+      <Text style={[{ fontWeight: 500 }, TextProps]}>DUE DATE</Text>
       <CustomDateTimePicker
         defaultValue={deadline}
         disabled={disabled || isLoading}
         onChange={onChangeDeadline}
         maximumDate={maxDate}
       />
-
-      <Toast position="bottom" />
     </View>
   );
 };

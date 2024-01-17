@@ -11,6 +11,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import MemberListItem from "./MemberListItem";
 import FormButton from "../../../shared/FormButton";
 import Input from "../../../shared/Forms/Input";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, header }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,7 +102,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
         style={{ borderWidth: 1, display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}
       >
         <View>
-          <Text style={{ fontWeight: "bold" }}>{header}</Text>
+          <Text style={[{ fontWeight: "bold" }, TextProps]}>{header}</Text>
         </View>
         <View>
           <Input
@@ -120,7 +121,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
                     setInputToShow("");
                   }}
                 >
-                  <MaterialCommunityIcons name="close" size={20} />
+                  <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
                 </Pressable>
               )
             }
@@ -151,7 +152,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
         </View>
 
         {multiSelect && (
-          <View style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "flex-end" }}>
+          <View style={{ display: "flex", flexDirection: "row", gap: 4, justifyContent: "flex-end" }}>
             <FormButton
               onPress={onClose}
               disabled={loadingIndicator}
@@ -162,7 +163,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
                 paddingHorizontal: 8,
               }}
             >
-              <Text style={{ color: "black", fontWeight: 500 }}>Cancel</Text>
+              <Text style={TextProps}>Cancel</Text>
             </FormButton>
 
             <FormButton
@@ -172,7 +173,7 @@ const AddMemberModal = ({ isOpen, onClose, onPressHandler, multiSelect = true, h
                 paddingHorizontal: 8,
               }}
             >
-              <Text style={{ color: "white", fontWeight: 500 }}>Submit</Text>
+              <Text style={{ color: "white" }}>Submit</Text>
             </FormButton>
           </View>
         )}

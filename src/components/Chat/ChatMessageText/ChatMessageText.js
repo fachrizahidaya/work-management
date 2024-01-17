@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
-const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
+const ChatMessageText = ({ message, myMessage, keyword = "", type, memberName, allWord }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
@@ -15,6 +15,59 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
   };
 
   const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
+    for (let i = 0; i < memberName.length; i++) {
+      let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+      message = message?.replace(placeholder, `@${memberName[i]}`);
+    }
+    let styledTexts = null;
+    if (message?.length !== 0) {
+      let words;
+
+      if (typeof message === "number" || typeof message === "bigint") {
+        words = message.toString().split(" ");
+      } else {
+        words = message?.split(" ");
+      }
+
+      styledTexts = words?.map((item, index) => {
+        let textStyle = styles.defaultText;
+
+        if (item.includes("https")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (item.includes("08") || item.includes("62")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (type === "group" && allWord.some((word) => item.includes(word))) {
+          textStyle = styles.coloredText;
+          return (
+            <Text key={index} style={textStyle}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (item.includes("@gmail.com")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+              {item}{" "}
+            </Text>
+          );
+        }
+        return (
+          <Text key={index} style={textStyle}>
+            {item}{" "}
+          </Text>
+        );
+      });
+    }
     if (message) {
       if (keyword) {
         return boldMatchCharacters(message, keyword);
@@ -28,10 +81,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     if (attachment_type === "image") {
       return (
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
             <MaterialCommunityIcons
               name="image"
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
             />
 
             {renderDangerouslyInnerHTMLContent(message?.message, "Image")}
@@ -41,10 +94,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     } else if (attachment_type === "document") {
       return (
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
             <MaterialCommunityIcons
               name="file-outline"
-              color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
             />
 
             {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
@@ -55,10 +108,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       if (message?.project_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
               <MaterialCommunityIcons
                 name="lightning-bolt"
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
               />
 
               {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
@@ -68,10 +121,10 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
       } else if (message?.task_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
               <MaterialCommunityIcons
                 name="checkbox-marked-circle-outline"
-                color={!myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#FFFFFF"}
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
               />
 
               {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
@@ -84,7 +137,7 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
             style={{
               fontSize: 12,
               fontWeight: "400",
-              color: !myMessage ? "#000000" : type === "group" && !myMessage ? "#000000" : "#9E9E9E",
+              color: !myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF",
             }}
           >
             {renderDangerouslyInnerHTMLContent(message?.message)}
@@ -104,7 +157,7 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
     <>
       {message?.delete_for_everyone ? (
         <Text
-          style={{ fontSize: 12, fontWeight: "400", fontStyle: "italic", color: !myMessage ? "#000000" : "#FFFFFF" }}
+          style={{ fontSize: 12, fontWeight: "400", fontStyle: "italic", color: !myMessage ? "#3F434A" : "#FFFFFF" }}
         >
           Message has been deleted
         </Text>
@@ -116,3 +169,13 @@ const ChatMessageText = ({ message, myMessage, keyword = "", type }) => {
 };
 
 export default ChatMessageText;
+
+const styles = StyleSheet.create({
+  defaultText: {},
+  highlightedText: {
+    textDecorationLine: "underline",
+  },
+  coloredText: {
+    color: "#72acdc",
+  },
+});

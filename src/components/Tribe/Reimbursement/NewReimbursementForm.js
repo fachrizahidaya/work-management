@@ -1,65 +1,77 @@
-import { Flex, FormControl, Icon, Input, Select, Text, TextArea } from "native-base";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import FormButton from "../../shared/FormButton";
+import Input from "../../shared/Forms/Input";
+import { TextProps } from "../../shared/CustomStylings";
 
-const NewReimbursementForm = ({ formik }) => {
+const NewReimbursementForm = ({ formik, onSelectFile, fileAttachment }) => {
   return (
-    <Flex my={3} gap={11} px={1}>
-      <FormControl
-      // isInvalid={formik.errors.title}
-      >
-        <FormControl.Label>Reimbursement Title</FormControl.Label>
+    <View style={{ marginTop: 20, marginVertical: 5, paddingHorizontal: 5, gap: 20 }}>
+      <View style={{ paddingHorizontal: 3, gap: 20 }}>
         <Input
           value={formik.values.title}
           onChangeText={(value) => formik.setFieldValue("title", value)}
-          placeholder="Input Title"
+          placeHolder="Input Title"
+          title="Reimbursement Title"
         />
-        {/* <FormControl.ErrorMessage>{formik.errors.title}</FormControl.ErrorMessage> */}
-      </FormControl>
-      <FormControl
-      // isInvalid={formik.errors.description}
-      >
-        <FormControl.Label>Description</FormControl.Label>
-        <TextArea
+      </View>
+      <View style={{ paddingHorizontal: 3, gap: 20 }}>
+        <Input
           value={formik.values.description}
           h={100}
           onChangeText={(value) => formik.setFieldValue("description", value)}
-          placeholder="Input Description"
+          placeHolder="Input Description"
+          title="Description"
         />
-        {/* <FormControl.ErrorMessage>{formik.errors.description}</FormControl.ErrorMessage> */}
-      </FormControl>
-      <FormControl
-      // isInvalid={formik.errors.total}
-      >
-        <FormControl.Label>Total</FormControl.Label>
+      </View>
+      <View style={{ paddingHorizontal: 3, gap: 20 }}>
         <Input
           type="text"
           value={formik.values.total}
           onChangeText={(value) => formik.setFieldValue("total", value)}
-          placeholder="Input Total"
+          placeHolder="Input Total"
+          title="Total"
         />
-        {/* <FormControl.ErrorMessage>{formik.errors.total}</FormControl.ErrorMessage> */}
-      </FormControl>
+      </View>
 
-      <FormControl isInvalid={formik.errors.date}>
-        <FormControl.Label>Date</FormControl.Label>
+      <View style={{ gap: 10 }}>
+        <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
         <CustomDateTimePicker
           defaultValue={formik.values.date}
           // onChange={onChangeEndDate}
           // disabled={!formik.values.leave_id || !selectedGenerateType}
         />
-        {/* <FormControl.ErrorMessage>{formik.errors.date}</FormControl.ErrorMessage> */}
-      </FormControl>
+        {/* <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text> */}
+      </View>
+
+      <View style={{ alignItems: "center", justifyContent: "center", gap: 5, padding: 50 }}>
+        <Pressable style={styles.addIcon} onPress={onSelectFile}>
+          <MaterialCommunityIcons name="plus" size={60} />
+        </Pressable>
+        <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
+      </View>
 
       <FormButton
       // isSubmitting={formik.isSubmitting}
       //  onPress={formik.handleSubmit}
       >
-        <Text color="#FFFFFF">Submit</Text>
+        <Text style={{ color: "#FFFFFF" }}>Submit</Text>
       </FormButton>
-    </Flex>
+    </View>
   );
 };
 
 export default NewReimbursementForm;
+
+const styles = StyleSheet.create({
+  addIcon: {
+    borderWidth: 1,
+    borderRadius: 15,
+    borderColor: "#E8E9EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

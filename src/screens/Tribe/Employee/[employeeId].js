@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -13,7 +15,8 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import PostAction from "../../../components/Tribe/Employee/FeedPersonal/PostAction";
+import EditPost from "../../../components/Tribe/Employee/FeedPersonal/EditPost";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -32,22 +35,25 @@ const EmployeeProfileScreen = ({ route }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
-  const teammmatesScreenSheetRef = useRef(null);
   const commentsScreenSheetRef = useRef(null);
-  const actionsScreenSheetRef = useRef(null);
 
-  const { isOpen: teammatesIsOpen, toggle: toggleTeammates } = useDisclosure(false);
-  const { isOpen: actionIsOpen, toggle: toggleAction } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
 
   const navigation = useNavigation();
 
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
+
+  const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
+
+  const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
 
   const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
@@ -77,6 +83,8 @@ const EmployeeProfileScreen = ({ route }) => {
     isLoading: personalPostIsLoading,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reloadPost, currentOffsetPost], postFetchParameters);
 
+  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
+
   // Parameters for fetch comments
   const commentsFetchParameters = {
     offset: currentOffsetComment,
@@ -96,12 +104,13 @@ const EmployeeProfileScreen = ({ route }) => {
    */
   const postEndReachedHandler = () => {
     if (posts.length !== posts.length + personalPost?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 5);
+      setCurrentOffsetPost(currentOffsetPost + 10);
     }
   };
 
   /**
-   * Reset current offset after create a new feed
+   * Fetch from first offset
+   * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
     setCurrentOffsetPost(0);
@@ -156,14 +165,8 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   const openSelectedPersonalPost = useCallback((post) => {
-    actionsScreenSheetRef.current?.show();
     setSelectedPost(post);
   }, []);
-
-  const closeSelectedPersonalPost = () => {
-    actionsScreenSheetRef.current?.hide();
-    setSelectedPost(null);
-  };
 
   /**
    * Submit a comment handler
@@ -181,11 +184,7 @@ const EmployeeProfileScreen = ({ route }) => {
       setStatus("success");
     } catch (err) {
       console.log(err);
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
       setSubmitting(false);
       setStatus("error");
     }
@@ -206,6 +205,65 @@ const EmployeeProfileScreen = ({ route }) => {
     setSelectedPost(post);
     setIsFullScreen(!isFullScreen);
   }, []);
+
+  /**
+   * Edit a post handler
+   * @param {*} form
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const postEditHandler = async (form, setSubmitting, setStatus) => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.post(`/hr/posts/${selectedPost}`, form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      setSubmitting(false);
+      setStatus("success");
+      postRefetchHandler();
+      setIsLoading(false);
+      toggleEditModal();
+      Toast.show("Edited successfully!", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      setIsLoading(false);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
+   * Pick an image Handler
+   */
+  const pickImageHandler = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // Handling for name
+    var filename = result.assets[0].uri.substring(
+      result.assets[0].uri.lastIndexOf("/") + 1,
+      result.assets[0].uri.length
+    );
+
+    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
+
+    if (result) {
+      setImage({
+        name: filename,
+        size: fileInfo.size,
+        type: `${result.assets[0].type}/jpg`,
+        webkitRelativePath: "",
+        uri: result.assets[0].uri,
+      });
+    }
+  };
 
   useEffect(() => {
     if (personalPost?.data && personalPostIsFetching === false) {
@@ -261,9 +319,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   personalPostIsFetching={personalPostIsFetching}
                   refetchPersonalPost={refetchPersonalPost}
                   employee={employee}
-                  toggleTeammates={toggleTeammates}
                   teammates={teammates}
-                  teammatesIsOpen={teammatesIsOpen}
                   hasBeenScrolled={hasBeenScrolled}
                   setHasBeenScrolled={setHasBeenScrolled}
                   onCommentToggle={commentsOpenHandler}
@@ -274,7 +330,8 @@ const EmployeeProfileScreen = ({ route }) => {
                   openSelectedPersonalPost={openSelectedPersonalPost}
                   employeeUsername={employeeUsername}
                   userSelector={userSelector}
-                  reference={teammmatesScreenSheetRef}
+                  toggleDeleteModal={toggleDeleteModal}
+                  toggleEditModal={toggleEditModal}
                 />
 
                 <FeedComment
@@ -298,17 +355,23 @@ const EmployeeProfileScreen = ({ route }) => {
                   reference={commentsScreenSheetRef}
                 />
               </View>
-              <Toast />
             </>
           </>
         ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
-      <PostAction
-        actionIsOpen={actionIsOpen}
-        toggleAction={closeSelectedPersonalPost}
-        toggleDeleteModal={toggleDeleteModal}
-        reference={actionsScreenSheetRef}
+      <EditPost
+        isVisible={editModalIsOpen}
+        onBackdrop={toggleEditModal}
+        employees={employees?.data}
+        content={singlePost?.data}
+        image={image}
+        setImage={setImage}
+        postEditHandler={postEditHandler}
+        pickImageHandler={pickImageHandler}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        checkAccess={checkAccess}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -317,7 +380,6 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
-          actionsScreenSheetRef.current?.hide();
           refetchPersonalPost();
         }}
         description="Are you sure to delete this post?"

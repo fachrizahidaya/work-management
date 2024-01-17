@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Input from "../../shared/Forms/Input";
 import ChatReplyPreview from "./ChatReplyPreview";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatInput = ({
   userId,
@@ -25,10 +27,63 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
-  toggleMenu,
   groupMember,
+  selectFile,
+  pickImageHandler,
+  navigation,
+  name,
+  image,
+  position,
+  email,
+  isPinned,
+  memberName,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
+
+  const attachmentOptions = [
+    {
+      icon: "file-document-outline",
+      name: "Document",
+      color: "#1E4AB9",
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
+        selectFile();
+      },
+    },
+    {
+      icon: "image-multiple-outline",
+      name: "Photo",
+      color: "#39B326",
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
+        pickImageHandler();
+      },
+    },
+    {
+      icon: "circle-slice-2",
+      name: "Project/Task",
+      color: "#EB0E29",
+      onPress: () => {
+        navigation.navigate("Project Screen", {
+          bandAttachment: bandAttachment,
+          setBandAttachment: setBandAttachment,
+          bandAttachmentType: bandAttachmentType,
+          setBandAttachmentType: setBandAttachmentType,
+          userId: userId,
+          name: name,
+          roomId: roomId,
+          image: image,
+          position: position,
+          email: email,
+          type: type,
+          active_member: active_member,
+          isPinned: isPinned,
+        });
+        SheetManager.hide("form-sheet");
+      },
+    },
+  ];
+
   const memberData = groupMember.map((item) => ({
     id: item?.user?.id,
     name: item?.user?.name,
@@ -87,7 +142,7 @@ const ChatInput = ({
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text>{item.name}</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />
@@ -129,7 +184,12 @@ const ChatInput = ({
 
   return (
     <View>
-      <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} type={type} />
+      <ChatReplyPreview
+        messageToReply={messageToReply}
+        setMessageToReply={setMessageToReply}
+        type={type}
+        memberName={memberName}
+      />
 
       <View
         style={{
@@ -152,12 +212,48 @@ const ChatInput = ({
           }}
         >
           {type === "group" && !active_member ? (
-            <Text style={{ fontSize: 12, fontWeight: "500", textAlign: "center" }}>
+            <Text style={[{ fontSize: 12, textAlign: "center", padding: 10 }, TextProps]}>
               You can't send message to this group because you're no longer a participant
             </Text>
           ) : (
             <>
-              <Pressable onPress={toggleMenu}>
+              <Pressable
+                style={{ marginRight: 1 }}
+                onPress={() =>
+                  SheetManager.show("form-sheet", {
+                    payload: {
+                      children: (
+                        <View
+                          style={{
+                            display: "flex",
+                            gap: 21,
+                            paddingHorizontal: 20,
+                            paddingVertical: 16,
+                            paddingBottom: 40,
+                          }}
+                        >
+                          <View style={{ gap: 5 }}>
+                            {attachmentOptions.map((option, index) => {
+                              return (
+                                <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                                  <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
+                                  <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
+                          <TouchableOpacity
+                            style={{ alignItems: "center", justifyContent: "center" }}
+                            onPress={() => SheetManager.hide("form-sheet")}
+                          >
+                            <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ),
+                    },
+                  })
+                }
+              >
                 <MaterialCommunityIcons
                   name="plus"
                   size={20}
@@ -185,7 +281,7 @@ const ChatInput = ({
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
-                      height: 40,
+                      height: 45,
                       // borderWidth: 1,
                       // borderColor: "#CBCBCB",
                       // borderRadius: 10
@@ -222,3 +318,15 @@ const ChatInput = ({
 };
 
 export default ChatInput;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+});

@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -21,14 +21,15 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const NewFeedScreen = ({ route }) => {
   const [image, setImage] = useState(null);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
   const [isReady, setIsReady] = useState(false);
+  const [dateShown, setDateShown] = useState(false);
 
-  const { isOpen: postTypeIsOpen, close: postTypeIsClose, toggle: togglePostType } = useDisclosure(false);
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const postActionScreenSheetRef = useRef(null);
@@ -39,20 +40,12 @@ const NewFeedScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
-  const inputRef = useRef(null);
-
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
-  const {
-    loggedEmployeeImage,
-    loggedEmployeeName,
-    loggedEmployeeDivision,
-    postRefetchHandler,
-    scrollNewMessage,
-    setScrollNewMessage,
-  } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, scrollNewMessage, setScrollNewMessage } =
+    route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
@@ -73,20 +66,12 @@ const NewFeedScreen = ({ route }) => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show({
-        type: "success",
-        text1: "Posted successfully!",
-        position: "bottom",
-      });
+      Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -101,7 +86,6 @@ const NewFeedScreen = ({ route }) => {
   /**
    * Date for announcement handler
    */
-  const [dateShown, setDateShown] = useState(false);
   const announcementToggleHandler = () => {
     setDateShown(true);
     setIsAnnouncementSelected(true);
@@ -158,7 +142,6 @@ const NewFeedScreen = ({ route }) => {
     formik.setFieldValue("end_date", "");
     setDateShown(false);
     setIsAnnouncementSelected(false);
-    togglePostType();
   };
 
   const mentionSelectHandler = (updatedContent) => {
@@ -250,8 +233,8 @@ const NewFeedScreen = ({ route }) => {
                   variant="outline"
                   children={
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                      <Text style={{ fontSize: 10 }}>{formik.values.type}</Text>
-                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" /> : null}
+                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
                     </View>
                   }
                 />
@@ -259,8 +242,8 @@ const NewFeedScreen = ({ route }) => {
                   ""
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <MaterialCommunityIcons name="clock-time-three-outline" />
-                    <Text style={{ fontSize: 12 }}>
+                    <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
+                    <Text style={[{ fontSize: 12 }, TextProps]}>
                       {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                     </Text>
                   </View>
@@ -273,21 +256,10 @@ const NewFeedScreen = ({ route }) => {
               image={image}
               setImage={setImage}
               pickImageHandler={pickImageHandler}
-              postTypeIsOpen={postTypeIsOpen}
-              postTypeIsClose={postTypeIsClose}
-              publicToggleHandler={publicToggleHandler}
-              announcementToggleHandler={announcementToggleHandler}
-              isAnnouncementSelected={isAnnouncementSelected}
-              dateShown={dateShown}
-              endDateAnnouncementHandler={endDateAnnouncementHandler}
-              loggedEmployeeDivision={loggedEmployeeDivision}
               employees={employees?.data}
-              mentionSelectHandler={mentionSelectHandler}
-              inputRef={inputRef}
             />
             <PostAction
               publicToggleHandler={publicToggleHandler}
-              postTypeIsClose={postTypeIsClose}
               announcementToggleHandler={announcementToggleHandler}
               isAnnouncementSelected={isAnnouncementSelected}
               dateShown={dateShown}
@@ -300,7 +272,6 @@ const NewFeedScreen = ({ route }) => {
           <></> // handle if screen not ready
         )}
       </TouchableWithoutFeedback>
-      <Toast />
     </>
   );
 };

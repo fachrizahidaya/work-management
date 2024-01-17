@@ -3,9 +3,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, TouchableWithoutFeedback, View, Text } from "react-native";
-import Toast from "react-native-toast-message";
 
 import CustomDateTimePicker from "../../components/shared/CustomDateTimePicker";
 import axiosInstance from "../../config/api";
@@ -13,6 +13,7 @@ import FormButton from "../../components/shared/FormButton";
 import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../components/shared/CustomStylings";
 
 const ProjectForm = ({ route }) => {
   const { width, height } = Dimensions.get("window");
@@ -54,20 +55,12 @@ const ProjectForm = ({ route }) => {
       // Refetch all project (with current selected status)
       setSubmitting(false);
       setStatus("success");
-      Toast.show({
-        type: "success",
-        text1: "Project saved!",
-        position: "bottom",
-      });
+      Toast.show("Project saved", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -132,7 +125,7 @@ const ProjectForm = ({ route }) => {
             />
 
             <View>
-              <Text style={{ marginBottom: 9, fontWeight: 500 }}>End Date</Text>
+              <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
               <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
               {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
             </View>
@@ -156,8 +149,6 @@ const ProjectForm = ({ route }) => {
             </FormButton>
           </View>
         </View>
-
-        <Toast />
       </View>
     </TouchableWithoutFeedback>
   );

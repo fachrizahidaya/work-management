@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 import Header from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
-import SettingTab from "./Tabs/SettingTab";
 import TribeTab from "./Tabs/TribeTab";
 
 // Independent Screens
@@ -37,18 +36,19 @@ import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 
 // Nest Screens
-import ChatRoom from "../screens/Chat/ChatRoom";
-import ChatListScreen from "../screens/Chat/ChatListScreen";
-import AddGroupParticipantScreen from "../screens/Chat/AddGroupParticipantScreen";
-import GroupFormScreen from "../screens/Chat/GroupFormScreen";
-import AddPersonalChatScreen from "../screens/Chat/AddPersonalChatScreen";
-import UserDetail from "../screens/Chat/UserDetail";
-import EditGroupProfile from "../screens/Chat/EditGroupProfile";
+import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
+import ChatListScreen from "../screens/Chat/ChatList/ChatListScreen";
+import AddGroupParticipantScreen from "../screens/Chat/AddGroupParticipant/AddGroupParticipantScreen";
+import GroupFormScreen from "../screens/Chat/AddGroupParticipant/GroupFormScreen";
+import AddPersonalChatScreen from "../screens/Chat/AddPersonalChat/AddPersonalChatScreen";
+import ContactDetail from "../screens/Chat/ContactDetail/ContactDetail";
+import EditGroupProfile from "../screens/Chat/EditGroupProfile/EditGroupProfile";
 import MediaScreen from "../screens/Chat/MediaScreen";
 import NoteForm from "../screens/Band/NoteForm";
-import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTaskScreen";
-import ProjectDetail from "../screens/Chat/ProjectDetail";
-import TaskDetail from "../screens/Chat/TaskDetail";
+import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
+import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
+import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import PerformanceHistoryDetail from "../screens/Tribe/Performance/PerformanceHistoryDetail";
 
 const Stack = createStackNavigator();
 
@@ -90,13 +90,14 @@ const HomeStack = () => {
             return <BandTab />;
           } else if (moduleSelector.module_name === "TRIBE") {
             return <TribeTab />;
-          } else if (moduleSelector.module_name === "SETTING") {
-            return <SettingTab />;
-            // } else if (moduleSelector.module_name === "PIPE") {
-            //   return <PipeTab  />;
-            // } else if (moduleSelector.module_name === "COIN") {
-            //   return <CoinTab  />;
-          } else {
+          }
+          // else if (moduleSelector.module_name === "SETTING") {
+          //   return <SettingTab />;
+          // } else if (moduleSelector.module_name === "PIPE") {
+          //   return <PipeTab  />;
+          // } else if (moduleSelector.module_name === "COIN") {
+          //   return <CoinTab  />;
+          else {
             // Render a default component or handle unknown cases
             return <BandTab />;
           }
@@ -126,7 +127,7 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Chat" component={AddPersonalChatScreen} options={{ headerShown: false }} />
 
-      <Stack.Screen name="User Detail" component={UserDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="User Detail" component={ContactDetail} options={{ headerShown: false }} />
 
       <Stack.Screen name="Edit Group" component={EditGroupProfile} options={{ headerShown: false }} />
 
@@ -161,6 +162,12 @@ const HomeStack = () => {
       <Stack.Screen name="Team Leave Request" component={MyTeamLeaveScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Performance Detail"
+        component={PerformanceHistoryDetail}
+        options={{ header: () => <Header /> }}
+      />
 
       {/* Setting Screens */}
       <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />

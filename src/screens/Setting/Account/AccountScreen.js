@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Options from "../../../components/Setting/Account/Options";
 import Button from "../../../components/shared/Forms/Button";
+import { TextProps } from "../../../components/shared/CustomStylings";
 
 const AccountScreen = ({ route }) => {
   const { profile } = route.params;
@@ -39,11 +40,11 @@ const AccountScreen = ({ route }) => {
           }}
         >
           <Pressable onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="chevron-left" size={20} />
+            <MaterialCommunityIcons name="chevron-left" size={20} color="#3F434A" />
           </Pressable>
-          <Text style={{ fontSize: 16, fontWeight: 500 }}>My</Text>
+          <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>My</Text>
           <Text style={{ fontSize: 16, fontWeight: 500, color: "#176688" }}>KSS</Text>
-          <Text style={{ fontSize: 16, fontWeight: 500 }}>Account</Text>
+          <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>Account</Text>
         </View>
       </View>
 
@@ -64,8 +65,8 @@ const AccountScreen = ({ route }) => {
             image={userSelector?.image}
             isThumb={false}
           />
-          <Text style={{ fontSize: 20, fontWeight: 700 }}>{userSelector?.name}</Text>
-          <Text style={{ fontSize: 12, fontWeight: 400 }}>{profile?.data?.email}</Text>
+          <Text style={[{ fontSize: 20, fontWeight: 700 }, TextProps]}>{userSelector?.name}</Text>
+          <Text style={[TextProps]}>{profile?.data?.email}</Text>
         </View>
         <View
           style={{
@@ -108,7 +109,7 @@ const AccountScreen = ({ route }) => {
                 }}
               >
                 <Text style={{ fontWeight: "bold", color: "#176688" }}>KSS</Text>
-                <Text style={{ fontWeight: 400 }}>Drive | </Text>
+                <Text style={[{ fontWeight: 400 }, TextProps]}>Drive | </Text>
                 <Text style={{ fontWeight: 400, color: "#176688" }}>2 TB</Text>
               </View>
             </View>
@@ -121,12 +122,12 @@ const AccountScreen = ({ route }) => {
               }}
             >
               <Text style={{ fontWeight: 400, color: "#176688" }}>Upgrade</Text>
-              <MaterialCommunityIcons name="chevron-right" size={20} />
+              <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
             </View>
           </Pressable>
 
           <Button onPress={() => navigation.navigate("Log Out")} backgroundColor="#FAFAFA">
-            <Text style={{ color: "#FF6262", fontWeight: "bold" }}>Log out</Text>
+            <Text style={{ color: "red" }}>Log out</Text>
           </Button>
         </View>
       </ScrollView>

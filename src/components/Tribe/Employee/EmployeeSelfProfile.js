@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
 
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
+import { TextProps } from "../../shared/CustomStylings";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 
-const EmployeeSelfProfile = ({ employee, teammates, reference }) => {
+const EmployeeSelfProfile = ({ employee, teammates }) => {
   return (
     <>
       <View style={styles.avatar}>
@@ -45,8 +47,48 @@ const EmployeeSelfProfile = ({ employee, teammates, reference }) => {
             </View>
           </View>
           <View style={styles.information}>
-            <Text>{teammates?.data.length}</Text>
-            <TouchableOpacity onPress={() => reference.current?.show()}>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{teammates?.data.length}</Text>
+            <TouchableOpacity
+              onPress={() =>
+                SheetManager.show("form-sheet", {
+                  payload: {
+                    children: (
+                      <View
+                        style={{
+                          display: "flex",
+                          gap: 21,
+                          paddingHorizontal: 20,
+                          paddingVertical: 16,
+                          paddingBottom: 40,
+                        }}
+                      >
+                        {teammates?.data.map((item, index) => {
+                          return (
+                            <View key={index} style={styles.contentTeammmates}>
+                              <AvatarPlaceholder
+                                image={item?.image}
+                                name={item?.name}
+                                size="md"
+                                borderRadius="full"
+                                isThumb={false}
+                              />
+                              <View>
+                                <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
+                                  {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
+                                </Text>
+                                <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>
+                                  {item?.position_name}
+                                </Text>
+                              </View>
+                            </View>
+                          );
+                        })}
+                      </View>
+                    ),
+                  },
+                })
+              }
+            >
               <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>Teammates</Text>
             </TouchableOpacity>
           </View>
@@ -73,5 +115,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
     alignItems: "center",
+  },
+  contentTeammmates: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 });

@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 import { View, Text, Image, StyleSheet } from "react-native";
 
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, type }) => {
+const ChatReplyInfo = ({ message, myMessage, type, loggedInUser, memberName, allWord }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
-  const loggedInUser = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (message) {
@@ -21,10 +19,16 @@ const ChatReplyInfo = ({ message, myMessage, type }) => {
   return (
     <View style={{ ...styles.container, backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }}>
       <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : null }}>
-        <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#000000" : "#FFFFFF" }}>
+        <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
           {message?.from_user_id === loggedInUser.id ? "You" : message?.user?.name}
         </Text>
-        <ChatMessageText message={message} myMessage={myMessage} type={type} />
+        <ChatMessageText
+          message={message}
+          myMessage={myMessage}
+          type={type}
+          memberName={memberName}
+          allWord={allWord}
+        />
       </View>
       {mimeTypeInfo?.file_type === "image" && (
         <Image
@@ -49,5 +53,28 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     gap: 5,
+  },
+  defaultText: {},
+  highlightedText: {
+    textDecorationLine: "underline",
+  },
+  coloredText: {
+    color: "#72acdc",
+  },
+
+  taskContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+
+  taskTitle: {
+    fontSize: 16,
+  },
+  iconContainer: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    padding: 5,
   },
 });

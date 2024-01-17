@@ -2,6 +2,7 @@ import { View, Text, Pressable, Dimensions, Platform } from "react-native";
 import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggleDeleteModal, placement }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -50,25 +51,6 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
 
   return (
     <>
-      {/* <Actionsheet isOpen={optionIsOpen} onClose={onClose}>
-        <Actionsheet.Content>
-          <Actionsheet.Item
-            onPress={() => {
-              setMessageToReply(chat);
-              onClose();
-            }}
-          >
-            Reply
-          </Actionsheet.Item>
-          <Actionsheet.Item
-            onPress={() => {
-              toggleDeleteModal();
-            }}
-          >
-            Delete
-          </Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet> */}
       <Modal
         isVisible={optionIsOpen}
         onBackdropPress={onClose}
@@ -91,7 +73,7 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
                     borderBottomColor: "#F6F6F6",
                   }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                  <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                   <MaterialCommunityIcons name={option.icon} size={25} color={option.color} />
                 </Pressable>
               );

@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const FeedCommentReplyItem = ({
   authorName,
@@ -74,6 +75,7 @@ const FeedCommentReplyItem = ({
       );
     }
   });
+
   return (
     <View style={{ marginHorizontal: 40, marginVertical: 10 }}>
       <View style={{ flexDirection: "row", gap: 10 }}>
@@ -84,7 +86,7 @@ const FeedCommentReplyItem = ({
           <Text style={{ fontSize: 12, fontWeight: "500" }}>
             {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
           </Text>
-          <Text style={{ fontSize: 12, fontWeight: "400" }}>{styledTexts}</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
           <Pressable
             onPress={() => {
               onReply(parentId);

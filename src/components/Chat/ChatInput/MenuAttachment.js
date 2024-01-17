@@ -4,8 +4,6 @@ import ActionSheet from "react-native-actions-sheet";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const MenuAttachment = ({
-  isOpen,
-  onClose,
   selectFile,
   pickImageHandler,
   navigation,
@@ -30,7 +28,7 @@ const MenuAttachment = ({
       name: "Document",
       color: "#1E4AB9",
       onPress: () => {
-        onClose();
+        reference.current?.hide();
         selectFile();
       },
     },
@@ -39,7 +37,7 @@ const MenuAttachment = ({
       name: "Photo",
       color: "#39B326",
       onPress: () => {
-        onClose();
+        reference.current?.hide();
         pickImageHandler();
       },
     },
@@ -48,7 +46,6 @@ const MenuAttachment = ({
       name: "Project/Task",
       color: "#EB0E29",
       onPress: () => {
-        // selectBandHandler("project");
         navigation.navigate("Project Screen", {
           bandAttachment: bandAttachment,
           setBandAttachment: setBandAttachment,
@@ -64,7 +61,7 @@ const MenuAttachment = ({
           active_member: active_member,
           isPinned: isPinned,
         });
-        onClose();
+        reference.current?.hide();
       },
     },
   ];
@@ -89,7 +86,10 @@ const MenuAttachment = ({
         );
       })}
 
-      <TouchableOpacity onPress={onClose} style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}>
+      <TouchableOpacity
+        onPress={() => reference.current?.hide()}
+        style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}
+      >
         <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
       </TouchableOpacity>
     </ActionSheet>
@@ -102,5 +102,14 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

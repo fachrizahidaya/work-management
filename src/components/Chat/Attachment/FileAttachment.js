@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const FileAttachment = ({ file, setFile }) => {
   const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
@@ -29,7 +30,11 @@ const FileAttachment = ({ file, setFile }) => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ width: 300, overflow: "hidden" }} numberOfLines={1} ellipsizeMode="tail">
+        <Text
+          style={[{ fontSize: 12, width: 300, overflow: "hidden" }, TextProps]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {file.name}
         </Text>
         <Pressable onPress={() => setFile(null)}>
@@ -41,7 +46,10 @@ const FileAttachment = ({ file, setFile }) => {
           name={
             formatMimeType(file.type) === "pdf"
               ? "file-pdf-box"
-              : formatMimeType(file.type) === "pptx" || formatMimeType(file.type) === "ppt"
+              : formatMimeType(file.type) === "pptx" ||
+                formatMimeType(file.type) === "ppt" ||
+                formatMimeType(file.type) === "powerpoint" ||
+                formatMimeType(file.type) === "presentation"
               ? "file-powerpoint-box"
               : formatMimeType(file.type) === "docx" ||
                 formatMimeType(file.type) === "doc" ||
@@ -56,8 +64,8 @@ const FileAttachment = ({ file, setFile }) => {
           size={250}
           color="#595f69"
         />
-        <Text>No Preview Available</Text>
-        <Text>{formatBytes(file.size)}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>No Preview Available</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{formatBytes(file.size)}</Text>
       </View>
     </View>
   );

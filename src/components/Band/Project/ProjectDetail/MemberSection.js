@@ -1,18 +1,19 @@
 import React, { memo, useState } from "react";
 
 import { SheetManager } from "react-native-actions-sheet";
+import Toast from "react-native-root-toast";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-toast-message";
 
 import AddMemberModal from "../../shared/AddMemberModal/AddMemberModal";
 import axiosInstance from "../../../../config/api";
 import ConfirmationModal from "../../../shared/ConfirmationModal";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../shared/CustomStylings";
 
 const MemberSection = ({ projectId, projectData, members, refetchMember, isAllowed }) => {
   const { isOpen: deleteMemberModalIsOpen, toggle } = useDisclosure(false);
@@ -44,18 +45,13 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
       }
       setIsLoading(false);
       refetchMember();
-      Toast.show({
-        type: "success",
-        text1: "New member added",
-      });
+      Toast.show("New member added", SuccessToastProps);
+
       toggleMemberModal();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
       toggleMemberModal();
     }
   };
@@ -63,7 +59,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
   return (
     <View style={{ display: "flex", gap: 18 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontSize: 16, fontWeight: 500 }}>MEMBERS</Text>
+        <Text style={[{ fontSize: 16, fontWeight: 500 }, TextProps]}>MEMBERS</Text>
 
         {isAllowed && (
           <TouchableOpacity
@@ -76,28 +72,27 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
               borderRadius: 10,
             }}
           >
-            <MaterialCommunityIcons name="plus" size={20} />
+            <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
       </View>
 
-      {memberModalIsOpen && (
-        <AddMemberModal
-          header="New Member"
-          isOpen={memberModalIsOpen}
-          onClose={closeMemberModal}
-          onPressHandler={addMember}
-        />
-      )}
+      <AddMemberModal
+        header="New Member"
+        isOpen={memberModalIsOpen}
+        onClose={closeMemberModal}
+        onPressHandler={addMember}
+      />
 
-      <ScrollView style={{ maxHeight: 200 }}>
-        <View style={{ flex: 1, minHeight: 2 }}>
+      {members?.data?.length > 0 && (
+        <View style={{ flex: 1 }}>
           <FlashList
             extraData={projectData?.owner_name}
             data={members?.data}
             keyExtractor={(item) => item?.id}
             onEndReachedThreshold={0.2}
-            estimatedItemSize={34}
+            estimatedItemSize={204}
+            horizontal
             renderItem={({ item }) => (
               <View
                 style={{
@@ -107,13 +102,15 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                   justifyContent: "space-between",
                   paddingRight: 3,
                   marginBottom: 14,
+                  marginRight: 10,
+                  gap: 20,
                 }}
               >
                 <View style={{ gap: 14, display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <AvatarPlaceholder size="sm" name={item.member_name} image={item.member_image} />
 
                   <View>
-                    <Text style={{ fontWeight: 500 }}>{item?.member_name}</Text>
+                    <Text style={[{ fontWeight: 500 }, TextProps]}>{item?.member_name}</Text>
                     <Text style={{ fontWeight: 500, color: "#8A9099" }}>{item?.member_email}</Text>
                   </View>
                 </View>
@@ -136,7 +133,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                                   >
                                     <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
 
-                                    <Text style={{ fontWeight: 500, color: "red" }}>Remove Member</Text>
+                                    <Text style={{ color: "red" }}>Remove Member</Text>
                                   </TouchableOpacity>
                                 </View>
                               ),
@@ -144,7 +141,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                           })
                         }
                       >
-                        <MaterialCommunityIcons name="dots-vertical" size={20} />
+                        <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
                       </Pressable>
                     )}
                   </>
@@ -153,7 +150,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
             )}
           />
         </View>
-      </ScrollView>
+      )}
 
       <ConfirmationModal
         isOpen={deleteMemberModalIsOpen}
@@ -165,8 +162,6 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
         hasSuccessFunc={true}
         onSuccess={refetchMember}
       />
-
-      <Toast position="bottom" />
     </View>
   );
 };

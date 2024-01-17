@@ -5,17 +5,18 @@ import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
-import InformationScreen from "../../screens/Tribe/MyInformationScreen";
+import InformationScreen from "../../screens/Tribe/Information/MyInformationScreen";
 import SettingScreen from "../../screens/Setting/SettingScreen";
-import PayslipScreen from "../../screens/Tribe/PayslipScreen";
-import ContactScreen from "../../screens/Tribe/ContactScreen";
+import PayslipScreen from "../../screens/Tribe/Payslip/PayslipScreen";
+import ContactScreen from "../../screens/Tribe/Contact/ContactScreen";
 import PersonalLeaveScreen from "../../screens/Tribe/Leave/PersonalLeaveScreen/PersonalLeaveScreen";
 import CalendarScreen from "../../screens/Band/Calendar";
-import AttendanceScreen from "../../screens/Tribe/AttendanceScreen";
+import AttendanceScreen from "../../screens/Tribe/Attendance/AttendanceScreen";
 import ReimbursementScreen from "../../screens/Tribe/Reimbursement/ReimbursementScreen";
 import TribeScreenSheet from "../../components/shared/ActionSheet/TribeScreenSheet";
 import TribeAddNewSheet from "../../components/shared/ActionSheet/TribeAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
+import PerformanceScreen from "../../screens/Tribe/Performance/PerformanceScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +24,7 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const TribeTab = ({ setSelectedModule }) => {
+const TribeTab = () => {
   const tribeScreenSheetRef = useRef(null);
   const tribeAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
@@ -64,7 +65,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="menu" size={20} color="#000000" />
+                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -101,7 +102,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="plus" size={20} color="#000000" />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -117,7 +118,7 @@ const TribeTab = ({ setSelectedModule }) => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="cog-outline" size={20} color="#000000" />
+                <MaterialCommunityIcons name="cog-outline" size={20} color="#3F434A" />
               </View>
             ),
           }}
@@ -150,7 +151,7 @@ const TribeTab = ({ setSelectedModule }) => {
 
         <Tab.Screen name="Payslip" component={PayslipScreen} />
 
-        <Tab.Screen name="My KPI" component={EmptyScreen} />
+        <Tab.Screen name="My KPI" component={PerformanceScreen} />
 
         <Tab.Screen name="Calendar Tribe" component={CalendarScreen} />
 
@@ -160,18 +161,8 @@ const TribeTab = ({ setSelectedModule }) => {
       {/* Sheets */}
       <TribeScreenSheet reference={tribeScreenSheetRef} />
 
-      {/* Sliders */}
-
-      {/* {<AddNewTribeSlider toggle={toggleAddSlider} isOpen={addSliderIsOpen} />} */}
       <TribeAddNewSheet reference={tribeAddNewSheetRef} />
 
-      {/* {
-        <ModuleSelectSlider
-          toggle={toggleModuleSlider}
-          isOpen={moduleSliderIsOpen}
-          setSelectedModule={setSelectedModule}
-        />
-      } */}
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );

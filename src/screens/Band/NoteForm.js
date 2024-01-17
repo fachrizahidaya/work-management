@@ -3,15 +3,16 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import axiosInstance from "../../config/api";
 import FormButton from "../../components/shared/FormButton";
 import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import useCheckAccess from "../../hooks/useCheckAccess";
+import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const NoteForm = ({ route }) => {
   const { noteData } = route.params;
@@ -29,20 +30,12 @@ const NoteForm = ({ route }) => {
 
       setSubmitting(false);
       setStatus("success");
-      Toast.show({
-        type: "success",
-        text1: "Note saved!",
-        position: "bottom",
-      });
+      Toast.show("New note saved", SuccessToastProps);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -101,13 +94,11 @@ const NoteForm = ({ route }) => {
 
             {editCheckAccess && (
               <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                <Text style={{ color: "white", fontWeight: 500 }}>{noteData ? "Save" : "Create"}</Text>
+                <Text style={{ color: "white" }}>{noteData ? "Save" : "Create"}</Text>
               </FormButton>
             )}
           </View>
         </View>
-
-        <Toast />
       </View>
     </TouchableWithoutFeedback>
   );

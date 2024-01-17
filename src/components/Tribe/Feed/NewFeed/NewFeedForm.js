@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-import { Spinner } from "native-base";
-import { StyleSheet, View, Pressable, Image } from "react-native";
+import { StyleSheet, View, Pressable, Image, ActivityIndicator } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -32,7 +31,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
             <MaterialCommunityIcons
               name="attachment"
               size={25}
-              color="#377893"
+              color="#3F434A"
               style={{ transform: [{ rotate: "-35deg" }] }}
             />
           </Pressable>
@@ -51,7 +50,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
           disabled={formik.values.content === "" ? true : false}
         >
           {isLoading ? (
-            <Spinner color="#FFFFFF" />
+            <ActivityIndicator />
           ) : (
             <MaterialCommunityIcons
               name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}

@@ -54,7 +54,7 @@ const BandTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="menu" size={20} />
+                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -70,7 +70,7 @@ const BandTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="plus" size={20} />
+                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
               </View>
             ),
             tabBarButton: (props) => (
@@ -86,7 +86,7 @@ const BandTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="cog-outline" size={20} />
+                <MaterialCommunityIcons name="cog-outline" size={20} color="#3F434A" />
               </View>
             ),
           }}
@@ -119,10 +119,8 @@ const BandTab = () => {
       {/* Sheets */}
       <BandScreenSheet reference={bandScreenSheetRef} />
 
-      {/* <AddNewBandSlider isOpen={addSliderIsOpen} toggle={toggleAddSlider} /> */}
       <BandAddNewSheet reference={bandAddNewSheetRef} />
 
-      {/* <ModuleSelectSlider isOpen={moduleSliderIsOpen} toggle={toggleModuleSlider} /> */}
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );

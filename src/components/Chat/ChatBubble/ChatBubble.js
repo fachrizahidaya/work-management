@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useSelector } from "react-redux";
 
 import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -42,21 +41,30 @@ const ChatBubble = ({
   onSwipe,
   isOptimistic,
   memberName,
-  position,
+  userSelector,
+  navigation,
 }) => {
-  const userSelector = useSelector((state) => state.auth);
   const myMessage = userSelector?.id === fromUserId;
 
-  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
+  for (let i = 0; i < memberName.length; i++) {
+    let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+    content = content?.replace(placeholder, `@${memberName[i]}`);
+  }
+
   const imgTypes = ["jpg", "jpeg", "png"];
+
+  var allWords = [];
+
+  for (var i = 0; i < memberName?.length; i++) {
+    var words = memberName[i].split(/\s+/);
+    allWords = allWords.concat(words);
+  }
 
   let styledTexts = null;
   if (content?.length !== 0) {
     let words;
 
-    if (memberName?.some((member) => content?.includes(member.name))) {
-      words = [content];
-    } else if (typeof content === "number" || typeof content === "bigint") {
+    if (typeof content === "number" || typeof content === "bigint") {
       words = content.toString().split(" ");
     } else {
       words = content?.split(" ");
@@ -64,8 +72,6 @@ const ChatBubble = ({
 
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
-      let specificMember;
-      specificMember = memberName?.find((member) => item?.includes(member.name));
 
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
@@ -74,18 +80,17 @@ const ChatBubble = ({
             {item}{" "}
           </Text>
         );
-      } else if (specificMember) {
-        item = specificMember.name;
-        textStyle = styles.coloredText;
-        return (
-          <Text key={index} style={textStyle}>
-            @{item}{" "}
-          </Text>
-        );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
           <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+            {item}{" "}
+          </Text>
+        );
+      } else if (allWords?.find((word) => item?.includes(word))) {
+        textStyle = styles.coloredText;
+        return (
+          <Text key={index} style={textStyle}>
             {item}{" "}
           </Text>
         );
@@ -124,7 +129,11 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
-  const MAX_TRANSLATEX = 100;
+  if (myMessage) {
+    var MIN_TRANSLATEX = 50;
+  } else {
+    var MIN_TRANSLATEX = 100;
+  }
 
   const translateX = useSharedValue(0);
 
@@ -136,7 +145,9 @@ const ChatBubble = ({
     },
     onEnd: (event) => {
       if (event.translationX > 0) {
-        runOnJS(onSwipe)(chat);
+        if (translateX.value > MIN_TRANSLATEX) {
+          runOnJS(onSwipe)(chat);
+        }
       }
       translateX.value = withTiming(0);
     },
@@ -182,8 +193,7 @@ const ChatBubble = ({
               justifyContent: "center",
               maxWidth: 300,
               borderRadius: 10,
-              paddingVertical: 5,
-              paddingHorizontal: 5,
+              padding: 8,
               backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
               gap: 5,
             }}
@@ -205,19 +215,32 @@ const ChatBubble = ({
             {!isDeleted ? (
               <>
                 {reply_to && (
-                  <ChatReplyInfo message={reply_to} chatBubbleView={true} myMessage={myMessage} type={type} />
+                  <ChatReplyInfo
+                    message={reply_to}
+                    chatBubbleView={true}
+                    myMessage={myMessage}
+                    type={type}
+                    loggedInUser={userSelector}
+                    memberName={memberName}
+                    content={content}
+                    allWord={allWords}
+                  />
                 )}
                 {file_path && (
                   <>
                     {imgTypes.includes(formatMimeType(file_type)) && (
                       <>
-                        <TouchableOpacity onPress={() => file_path && toggleFullScreen(file_path)}>
+                        <TouchableOpacity
+                          style={{ borderRadius: 5 }}
+                          onPress={() => file_path && toggleFullScreen(file_path)}
+                        >
                           <Image
                             style={{
+                              flex: 1,
                               width: 260,
                               height: 200,
-                              borderRadius: 5,
                               resizeMode: "contain",
+                              backgroundColor: "gray",
                             }}
                             source={{
                               uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
@@ -247,6 +270,7 @@ const ChatBubble = ({
                     number_id={band_attachment_no}
                     type={band_attachment_type}
                     myMessage={myMessage}
+                    navigation={navigation}
                   />
                 )}
               </>
@@ -260,13 +284,33 @@ const ChatBubble = ({
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1" }}>
-                  You have deleted this message
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={10}
+                    style={{ transform: [{ rotate: "90deg" }] }}
+                    color="#3F434A"
+                  />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
+                  >
+                    You deleted this message
+                  </Text>
+                </View>
               ) : !myMessage && isDeleted ? (
-                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#000000" }}>
-                  This message has been deleted
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={10}
+                    style={{ transform: [{ rotate: "90deg" }] }}
+                    color="#3F434A"
+                  />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
+                  >
+                    This message was deleted
+                  </Text>
+                </View>
               ) : null}
 
               <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>
@@ -311,7 +355,9 @@ const styles = StyleSheet.create({
   coloredText: {
     color: "#72acdc",
   },
-
+  mentionText: {
+    fontWeight: "600",
+  },
   taskContainer: {
     width: "100%",
     alignItems: "center",

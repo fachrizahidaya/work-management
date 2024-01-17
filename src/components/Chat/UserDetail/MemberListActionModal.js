@@ -1,6 +1,8 @@
 import { Dimensions, Platform, Text, View } from "react-native";
-import Button from "../../shared/Forms/Button";
 import Modal from "react-native-modal";
+
+import Button from "../../shared/Forms/Button";
+import { TextProps } from "../../shared/CustomStylings";
 
 const MemberListActionModal = ({
   memberListActionIsopen,
@@ -24,12 +26,8 @@ const MemberListActionModal = ({
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
-      {/* <Modal.Content>
-        <Modal.CloseButton /> */}
-      {/* <Modal.Header>{memberName}</Modal.Header> */}
-      {/* <Modal.Body display="flex" gap={2}> */}
       <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
-        <Text>{memberName}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{memberName}</Text>
         {memberAdminStatus ? (
           <Button
             onPress={() => {
@@ -38,7 +36,7 @@ const MemberListActionModal = ({
             }}
             variant="outline"
           >
-            <Text>Dismiss as Admin</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>Dismiss as Admin</Text>
           </Button>
         ) : (
           <Button
@@ -48,7 +46,7 @@ const MemberListActionModal = ({
             }}
             variant="outline"
           >
-            <Text>Make Group Admin</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>Make Group Admin</Text>
           </Button>
         )}
         <Button
@@ -58,11 +56,9 @@ const MemberListActionModal = ({
           }}
           variant="outline"
         >
-          <Text>Remove from Group</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Remove from Group</Text>
         </Button>
       </View>
-      {/* </Modal.Body> */}
-      {/* </Modal.Content> */}
     </Modal>
   );
 };

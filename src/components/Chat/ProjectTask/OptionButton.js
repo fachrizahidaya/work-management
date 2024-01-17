@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, setProjects, setTasks }) => {
   const changeBandType = () => {
@@ -44,7 +45,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, s
           }}
           onPress={changeBandType}
         >
-          <Text>Project</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Project</Text>
         </Pressable>
         <Pressable
           style={{
@@ -54,7 +55,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, s
           }}
           onPress={changeBandType}
         >
-          <Text>Ad Hoc</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>Ad Hoc</Text>
         </Pressable>
       </View>
     </View>

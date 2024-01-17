@@ -2,6 +2,7 @@ import React from "react";
 
 import { Dimensions, Image, Platform, Text, View } from "react-native";
 import Modal from "react-native-modal";
+import { TextProps } from "./CustomStylings";
 
 const UserPreviewModal = ({ isOpen, onClose, name, image, email, stringToColor, userInitialGenerator }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -34,12 +35,12 @@ const UserPreviewModal = ({ isOpen, onClose, name, image, email, stringToColor, 
                 justifyContent: "center",
               }}
             >
-              <Text style={{ fontWeight: 500, fontSize: 20, color: "white" }}>{userInitialGenerator()}</Text>
+              <Text style={{ fontSize: 20, color: "white" }}>{userInitialGenerator()}</Text>
             </View>
           )}
           <View style={{ display: "flex", alignItems: "center" }}>
-            <Text style={{ textAlign: "center", fontSize: 20, fontWeight: 500 }}>{name || "Something went wrong"}</Text>
-            <Text style={{ fontWeight: 400 }}>{email || "Something went wrong"}</Text>
+            <Text style={[{ textAlign: "center", fontSize: 20 }, TextProps]}>{name || "Something went wrong"}</Text>
+            <Text style={TextProps}>{email || "Something went wrong"}</Text>
           </View>
         </View>
       </View>

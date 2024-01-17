@@ -1,11 +1,30 @@
-import { Flex, Text } from "native-base";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import ReimbursementList from "../../../components/Tribe/Reimbursement/ReimbursementList";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const ReimbursementScreen = () => {
+  const [tabValue, setTabValue] = useState("pending");
+
+  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
+
+  const tabs = useMemo(() => {
+    return [
+      { title: "pending", value: "pending" },
+      { title: "approved", value: "approved" },
+      { title: "rejected", value: "rejected" },
+    ];
+  }, []);
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+  }, []);
+
   const reimbursements = [
     {
       title: "Grab",
@@ -18,12 +37,34 @@ const ReimbursementScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Flex flexDir="row" alignItems="center" justifyContent="space-between" bgColor="#FFFFFF" py={14} px={15}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          padding: 10,
+        }}
+      >
         <PageHeader title="My Reimbursement" backButton={false} />
-      </Flex>
+      </View>
       <ScrollView>
-        <ReimbursementList data={reimbursements} />
+        <ReimbursementList data={reimbursements} tabs={tabs} tabValue={tabValue} onChangeTab={onChangeTab} />
       </ScrollView>
+      <ConfirmationModal
+        isOpen={cancelModalIsOpen}
+        toggle={toggleCancelModal}
+        // apiUrl={``}
+        hasSuccessFunc={true}
+        header="Cancel Leave Request"
+        // onSuccess={() => {
+
+        // }}
+        description="Are you sure to cancel this request?"
+        successMessage="Request canceled"
+        isDelete={false}
+        isPatch={true}
+      />
     </SafeAreaView>
   );
 };

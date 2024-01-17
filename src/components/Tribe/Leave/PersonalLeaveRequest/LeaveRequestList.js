@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 import Tabs from "../../../shared/Tabs";
 import LeaveRequestItem from "./LeaveRequestItem";
@@ -12,17 +13,25 @@ const LeaveRequestList = ({
   pendingList,
   approvedList,
   rejectedList,
+  canceledList,
   pendingLeaveRequestIsFetching,
   approvedLeaveRequestIsFetching,
   rejectedLeaveRequestIsFetching,
+  canceledLeaveRequestIsFetching,
+  pendingLeaveRequestIsLoading,
+  approvedLeaveRequestIsLoading,
+  rejectedLeaveRequestIsLoading,
+  canceledLeaveRequestIsLoading,
   refetchPendingLeaveRequest,
   refetchApprovedLeaveRequest,
   refetchRejectedLeaveRequest,
+  refetchCanceledLeaveRequest,
   hasBeenScrolled,
   setHasBeenScrolled,
   fetchMorePending,
   fetchMoreApproved,
   fetchMoreRejected,
+  fetchMoreCanceled,
   tabValue,
   tabs,
   onChangeTab,
@@ -30,17 +39,18 @@ const LeaveRequestList = ({
   setHasBeenScrolledPending,
   hasBeenScrolledApproved,
   setHasBeenScrolledApproved,
-  refetchLeaveRequest,
+  hasBeenScrolledCanceled,
+  setHasBeenScrolledCanceled,
 }) => {
   return (
     <>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
 
       <View style={styles.container}>
-        {tabValue === "pending" ? (
+        {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlatList
+              <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
@@ -56,7 +66,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() => pendingLeaveRequestIsFetching && <ActivityIndicator />}
+                ListFooterComponent={() => pendingLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -68,6 +78,7 @@ const LeaveRequestList = ({
                     begin_date={item?.begin_date}
                     end_date={item?.end_date}
                     status={item?.status}
+                    approval_by={item?.approval_by}
                     onSelect={onSelect}
                   />
                 )}
@@ -84,10 +95,10 @@ const LeaveRequestList = ({
               </View>
             </ScrollView>
           )
-        ) : tabValue === "approved" ? (
+        ) : tabValue === "Approved" ? (
           approvedList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 5 }}>
-              <FlatList
+              <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
                 onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
@@ -103,7 +114,55 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() => approvedLeaveRequestIsFetching && <ActivityIndicator />}
+                ListFooterComponent={() => approvedLeaveRequestIsLoading && <ActivityIndicator />}
+                renderItem={({ item, index }) => (
+                  <LeaveRequestItem
+                    item={item}
+                    key={index}
+                    id={item?.id}
+                    leave_name={item?.leave_name}
+                    reason={item?.reason}
+                    days={item?.days}
+                    begin_date={item?.begin_date}
+                    end_date={item?.end_date}
+                    status={item?.status}
+                    onSelect={onSelect}
+                    approval_by={item?.supervisor_name}
+                  />
+                )}
+              />
+            </View>
+          ) : (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
+              }
+            >
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+          )
+        ) : tabValue === "Canceled" ? (
+          canceledList?.length > 0 ? (
+            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+              <FlashList
+                data={canceledList}
+                onEndReachedThreshold={0.1}
+                onScrollBeginDrag={() => setHasBeenScrolledCanceled(!hasBeenScrolledCanceled)}
+                onEndReached={hasBeenScrolledCanceled === true ? fetchMoreCanceled : null}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={70}
+                refreshing={true}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={canceledLeaveRequestIsFetching}
+                    onRefresh={() => {
+                      refetchCanceledLeaveRequest();
+                    }}
+                  />
+                }
+                ListFooterComponent={() => canceledLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -123,7 +182,7 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
+                <RefreshControl refreshing={canceledLeaveRequestIsFetching} onRefresh={refetchCanceledLeaveRequest} />
               }
             >
               <View style={styles.content}>
@@ -133,7 +192,7 @@ const LeaveRequestList = ({
           )
         ) : rejectedList?.length > 0 ? (
           <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <FlatList
+            <FlashList
               removeClippedSubviews={true}
               data={rejectedList}
               onEndReachedThreshold={0.1}
@@ -142,7 +201,7 @@ const LeaveRequestList = ({
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() => rejectedLeaveRequestIsFetching && <ActivityIndicator />}
+              ListFooterComponent={() => rejectedLeaveRequestIsLoading && <ActivityIndicator />}
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}
@@ -163,6 +222,7 @@ const LeaveRequestList = ({
                   end_date={item?.end_date}
                   status={item?.status}
                   onSelect={onSelect}
+                  approval_by={item?.supervisor_name}
                 />
               )}
             />

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { View, Pressable, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../../../../shared/CustomStylings";
 
 const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsibleId, openCloseTaskConfirmation }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -18,7 +19,7 @@ const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsib
         alignItems: "center",
       }}
     >
-      <View style={{ display: "flex", flexDirection: "row", gap: 3, alignItems: "center", flex: 1 }}>
+      <View style={{ display: "flex", flexDirection: "row", gap: 3, flex: 1 }}>
         {status === "Closed" || status === "Finish" ? (
           <Pressable
             onPress={() => {
@@ -27,17 +28,23 @@ const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsib
               }
             }}
           >
-            <MaterialCommunityIcons name={status === "Closed" ? "check-circle-outline" : "circle-outline"} size={20} />
+            <MaterialCommunityIcons
+              name={status === "Closed" ? "check-circle-outline" : "circle-outline"}
+              size={20}
+              color="#3F434A"
+            />
           </Pressable>
         ) : null}
 
         <Text
-          style={{
-            fontWeight: 500,
-            width: 190,
-            fontSize: 16,
-            textDecorationLine: status === "Closed" ? "line-through" : "none",
-          }}
+          style={[
+            {
+              width: 190,
+              fontSize: 16,
+              textDecorationLine: status === "Closed" ? "line-through" : "none",
+            },
+            TextProps,
+          ]}
           numberOfLines={2}
         >
           {title}
@@ -46,8 +53,8 @@ const StatusAndDeadlineSection = ({ no, task, title, deadline, status, responsib
       </View>
 
       <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name="calendar-blank" />
-        <Text style={{ fontWeight: 500, fontSize: 16 }}>{dayjs(deadline).format("MMM DD")}</Text>
+        <MaterialCommunityIcons name="calendar-blank" color="#3F434A" size={16} />
+        <Text style={[{ fontSize: 16 }, TextProps]}>{dayjs(deadline).format("MMM DD")}</Text>
       </View>
     </View>
   );

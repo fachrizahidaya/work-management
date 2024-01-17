@@ -7,6 +7,7 @@ import { Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "r
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import useCheckAccess from "../../../../hooks/useCheckAccess";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, openEditForm }) => {
   const deleteCheckAccess = useCheckAccess("delete", "Notes");
@@ -27,9 +28,9 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
           }}
         >
           <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <MaterialCommunityIcons name="calendar-month" size={20} />
+            <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
 
-            <Text style={{ fontWeight: 500 }}>{dayjs(date).format("DD MMMM, YYYY")}</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>{dayjs(date).format("DD MMMM, YYYY")}</Text>
           </View>
 
           <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
@@ -43,6 +44,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
                   transform: [{ rotate: "45deg" }],
                 }}
                 size={20}
+                color="#3F434A"
               />
             </Pressable>
 
@@ -71,7 +73,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
                   })
                 }
               >
-                <MaterialCommunityIcons name="dots-vertical" size={20} />
+                <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" />
               </Pressable>
             )}
           </View>
@@ -92,7 +94,7 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
           </View>
         )}
 
-        <Text style={{ fontWeight: 500 }}>{title}</Text>
+        <Text style={[{ fontWeight: 500 }, TextProps]}>{title}</Text>
       </View>
     </Pressable>
   );

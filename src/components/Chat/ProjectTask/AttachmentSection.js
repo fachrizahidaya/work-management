@@ -1,4 +1,5 @@
 import { View, Text, Image } from "react-native";
+import { TextProps } from "../../shared/CustomStylings";
 
 const AttachmentSection = () => {
   return (
@@ -13,7 +14,7 @@ const AttachmentSection = () => {
         }}
       />
       <View>
-        <Text>No Data</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
       </View>
     </View>
   );

@@ -16,6 +16,7 @@ const FormButton = ({
   style,
   borderRadius,
   padding,
+  height,
 }) => {
   const [isLoading, setIsLoading] = useState(isSubmitting ? isSubmitting : false);
 
@@ -38,7 +39,7 @@ const FormButton = ({
           backgroundColor: backgroundColor ? backgroundColor : disabled || isLoading ? "gray" : "#176688",
           opacity: opacity || 1,
           borderRadius: borderRadius || 10,
-          height: 42,
+          height: height ? height : 42,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -58,11 +59,7 @@ const FormButton = ({
         }
       }}
     >
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <Text style={{ fontSize: fontSize || 14, fontWeight: 500, color: fontColor || "black" }}>{children}</Text>
-      )}
+      {isLoading ? <ActivityIndicator /> : children}
     </TouchableOpacity>
   );
 };

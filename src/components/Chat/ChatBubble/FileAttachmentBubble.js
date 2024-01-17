@@ -28,6 +28,8 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     return typeArr.pop();
   };
 
+  let extension = getFileExt();
+
   const getFileImage = () => {
     const type = getFileExt();
     const fileDictObj = fileDict.find((obj) => obj.type == type);
@@ -46,7 +48,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     getFileImage();
   }, [file_type]);
 
-  return (
+  return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
       onPress={() => attachmentDownloadHandler(file_path)}
       style={{
@@ -61,13 +63,16 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     >
       <Image
         source={
-          getFileExt() === "doc" || getFileExt() === "docx" || getFileExt() === "document"
+          getFileExt() === "doc" || getFileExt() === "docx" || extension.includes("word")
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx" || getFileExt() === "spreadsheet"
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension.includes("spreadsheet")
             ? require(xls)
-            : getFileExt() === "ppt" || getFileExt() === "pptx"
+            : getFileExt() === "ppt" ||
+              getFileExt() === "pptx" ||
+              extension.includes("powerpoint") ||
+              extension.includes("presentation")
             ? require(ppt)
             : require(txt)
         }
@@ -85,7 +90,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
           style={{
             fontSize: 12,
             fontWeight: "400",
-            color: !myMessage ? "#000000" : "#FFFFFF",
+            color: !myMessage ? "#3F434A" : "#FFFFFF",
             width: 160,
             overflow: "hidden",
           }}
@@ -99,7 +104,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
             fontSize: 10,
             fontWeight: "400",
             width: 150,
-            color: !myMessage ? "#000000" : "#FFFFFF",
+            color: !myMessage ? "#3F434A" : "#FFFFFF",
             overflow: "hidden",
           }}
           numberOfLines={2}
@@ -111,7 +116,7 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
 
       <MaterialCommunityIcons
         name="download"
-        color={!myMessage ? "#000000" : "#FFFFFF"}
+        color={!myMessage ? "#3F434A" : "#FFFFFF"}
         size={20}
         onPress={() => attachmentDownloadHandler(file_path)}
       />

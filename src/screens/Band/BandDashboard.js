@@ -8,7 +8,7 @@ import ProgressChartCard from "../../components/Band/Dashboard/ProgressChartCard
 import ProjectAndTaskCard from "../../components/Band/Dashboard/ProjectAndTaskCard/ProjectAndTaskCard";
 import ActiveTaskCard from "../../components/Band/Dashboard/ActiveTaskCard/ActiveTaskCard";
 import { useFetch } from "../../hooks/useFetch";
-import { SkeletonCommonProps } from "../../components/shared/CustomStylings";
+import { SkeletonCommonProps, TextProps } from "../../components/shared/CustomStylings";
 
 const BandDashboard = () => {
   const {
@@ -60,10 +60,10 @@ const BandDashboard = () => {
       <View style={styles.flexWrapper}>
         <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
           <Text style={{ fontSize: 16, fontWeight: 700, color: "#176688" }}>Work</Text>
-          <Text style={{ fontSize: 16 }}>Overview</Text>
+          <Text style={[{ fontSize: 16 }, TextProps]}>Overview</Text>
         </View>
 
-        <Text style={{ fontWeight: 700, fontSize: 14 }}>PT Kolabora Group Indonesia</Text>
+        <Text style={[{ fontWeight: 700 }, TextProps]}>PT Kolabora Group Indonesia</Text>
       </View>
 
       <ScrollView

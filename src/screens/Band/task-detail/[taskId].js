@@ -2,11 +2,11 @@ import React, { memo, useCallback, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
+import Toast from "react-native-root-toast";
 
 import RenderHtml from "react-native-render-html";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import { useFetch } from "../../../hooks/useFetch";
 import ChecklistSection from "../../../components/Band/Task/TaskDetail/ChecklistSection/ChecklistSection";
@@ -22,6 +22,7 @@ import MenuSection from "../../../components/Band/Task/TaskDetail/MenuSection/Me
 import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
+import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -60,16 +61,10 @@ const TaskDetailScreen = ({ route }) => {
       }
       refetchResponsible();
       refetchSelectedTask();
-      Toast.show({
-        type: "success",
-        text1: "Task assigned",
-      });
+      Toast.show("Task assigned", SuccessToastProps);
     } catch (error) {
       console.log(error);
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
@@ -86,28 +81,35 @@ const TaskDetailScreen = ({ route }) => {
       toggleLoading();
       refetchSelectedTask();
 
-      Toast.show({
-        type: "success",
-        text1: `Task ${status}ed`,
-      });
+      Toast.show(`Task ${status}ed`, SuccessToastProps);
     } catch (error) {
       console.log(error);
       toggleLoading();
 
-      Toast.show({
-        type: "error",
-        text1: error.response.data.message,
-      });
+      Toast.show(error.response.data.message, ErrorToastProps);
     }
   };
 
   const baseStyles = useMemo(
     () => ({
-      color: "#000",
-      fontWeight: 500,
+      color: "#3F434A",
     }),
     []
   );
+
+  const { routes } = navigation.getState();
+
+  const onPressBackButton = () => {
+    const previousScreenIndex = routes.length - 2;
+    const screenToRedirect = routes.length - 3;
+    if (routes[previousScreenIndex].name === "Task Form") {
+      // If previous screen is task form, redirect to the screen before task form
+      navigation.navigate(`${routes[screenToRedirect].name}`);
+    } else {
+      // If previous screen is not task form, go back to previous screen
+      navigation.goBack();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -131,7 +133,7 @@ const TaskDetailScreen = ({ route }) => {
               <PageHeader
                 title={selectedTask?.data?.title}
                 subTitle={selectedTask?.data?.task_no}
-                onPress={() => navigation.goBack()}
+                onPress={onPressBackButton}
                 width={width - 100}
               />
 
@@ -185,7 +187,7 @@ const TaskDetailScreen = ({ route }) => {
 
           {/* Description */}
           <View style={{ display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>DESCRIPTION</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>DESCRIPTION</Text>
 
             <RenderHtml
               contentWidth={width}
@@ -204,13 +206,11 @@ const TaskDetailScreen = ({ route }) => {
 
           {/* Comments */}
           <View style={{ display: "flex", gap: 10 }}>
-            <Text style={{ fontWeight: 500 }}>COMMENTS</Text>
+            <Text style={[{ fontWeight: 500 }, TextProps]}>COMMENTS</Text>
             <CommentInput taskId={taskId} data={selectedTask?.data} />
           </View>
         </View>
       </KeyboardAwareScrollView>
-
-      <Toast position="bottom" />
     </SafeAreaView>
   );
 };

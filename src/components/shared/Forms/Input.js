@@ -2,6 +2,7 @@ import React from "react";
 
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../CustomStylings";
 
 const Input = ({
   formik,
@@ -29,12 +30,12 @@ const Input = ({
 }) => {
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={{ marginBottom: 9, fontWeight: 500 }}>{title}</Text>}
+      {title && <Text style={[{ marginBottom: 9 }, TextProps]}>{title}</Text>}
 
       <View style={styles.inputWrapper}>
         {startIcon && (
           <TouchableOpacity style={styles.startIcon} onPress={onPressEndIcon}>
-            <MaterialCommunityIcons name={startIcon} size={20} />
+            <MaterialCommunityIcons name={startIcon} size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
 
@@ -65,7 +66,8 @@ const Input = ({
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",
               textAlignVertical: "top",
-              color: !editable ? "#cbcbcb" : "black",
+              color: !editable ? "#cbcbcb" : "#3F434A",
+              opacity: !editable ? 0.5 : null,
             },
           ]}
           defaultValue={defaultValue}
@@ -75,7 +77,7 @@ const Input = ({
 
         {endIcon && (
           <TouchableOpacity style={styles.endIcon} onPress={onPressEndIcon}>
-            <MaterialCommunityIcons name={endIcon} size={20} />
+            <MaterialCommunityIcons name={endIcon} size={20} color="#3F434A" />
           </TouchableOpacity>
         )}
 

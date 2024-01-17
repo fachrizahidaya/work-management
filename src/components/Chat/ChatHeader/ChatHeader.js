@@ -1,20 +1,19 @@
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import MenuHeader from "./MenuHeader";
 import SearchBox from "./SearchBox";
+import { TextProps } from "../../shared/CustomStylings";
 
 const ChatHeader = ({
   name,
   image,
   position,
   email,
-  fileAttachment,
   type,
   active_member,
   toggleExitModal,
@@ -22,7 +21,6 @@ const ChatHeader = ({
   selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
-  toggleClearChatMessage,
   deleteModalIsOpen,
   exitModalIsOpen,
   deleteGroupModalIsOpen,
@@ -34,13 +32,14 @@ const ChatHeader = ({
   toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
-  reference,
+  navigation,
+  searchMessage,
+  setSearchMessage,
+  searchFormRef,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
-  const navigation = useNavigation();
 
   const membersName = selectedGroupMembers.map((item) => {
     const name = !item?.user
@@ -84,11 +83,9 @@ const ChatHeader = ({
           <Pressable
             onPress={() =>
               navigation.navigate("User Detail", {
-                navigation: navigation,
                 name: name,
                 image: image,
                 position: position,
-                email: email,
                 type: type,
                 roomId: roomId,
                 loggedInUser: loggedInUser,
@@ -103,27 +100,28 @@ const ChatHeader = ({
                 deleteChatMessageIsLoading: deleteChatMessageIsLoading,
                 chatRoomIsLoading: chatRoomIsLoading,
                 toggleDeleteChatMessage: toggleDeleteChatMessage,
-                toggleClearChatMessage: toggleClearChatMessage,
               })
             }
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            <AvatarPlaceholder name={name} image={image} size="md" />
+            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
             <View>
-              <Text style={{ fontSize: 16 }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>{email}</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>{email}</Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>
                     <Text
-                      style={{
-                        fontSize: 10,
-                        fontWeight: "400",
-                        width: 200,
-                        overflow: "hidden",
-                      }}
+                      style={[
+                        {
+                          fontSize: 10,
+                          width: 250,
+                          overflow: "hidden",
+                        },
+                        TextProps,
+                      ]}
                       numberOfLines={1}
                       ellipsizeMode="tail"
                     >
@@ -135,34 +133,84 @@ const ChatHeader = ({
             </View>
           </Pressable>
         </View>
-        <Pressable onPress={() => reference.current?.show()}>
-          <MaterialIcons name="more-horiz" size={20} color="#000000" />
-        </Pressable>
 
-        <MenuHeader
-          fileAttachment={fileAttachment}
-          toggleDeleteGroupModal={toggleDeleteGroupModal}
-          toggleDeleteModal={toggleDeleteModal}
-          toggleExitModal={toggleExitModal}
-          toggleSearch={toggleSearch}
-          toggleClearChatMessage={toggleClearChatMessage}
-          type={type}
-          active_member={active_member}
-          onUpdatePinHandler={onUpdatePinHandler}
-          roomId={roomId}
-          isPinned={isPinned}
-          reference={reference}
-        />
+        <Pressable
+          style={{ marginRight: 1 }}
+          onPress={() =>
+            SheetManager.show("form-sheet", {
+              payload: {
+                children: (
+                  <View
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}
+                  >
+                    {/* <TouchableOpacity
+                      onPress={() => {
+                        toggleSearch();
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text style={[{ fontSize: 14 }, TextProps]}>Search</Text>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text style={[{ fontSize: 14 }, TextProps]}>
+                        {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
+                      </Text>
+                    </TouchableOpacity>
+                    {type === "group" ? (
+                      <>
+                        {active_member === 1 ? (
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              toggleExitModal();
+                            }}
+                          >
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              toggleDeleteGroupModal();
+                            }}
+                          >
+                            <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            await SheetManager.hide("form-sheet");
+                            toggleDeleteModal();
+                          }}
+                        >
+                          <Text style={[{ fontSize: 14 }, TextProps]}>Delete Chat</Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                ),
+              },
+            })
+          }
+        >
+          <MaterialIcons name="more-horiz" size={20} color="#3F434A" />
+        </Pressable>
       </View>
 
       {searchVisible && (
         <SearchBox
-          inputToShow={inputToShow}
-          searchInput={searchInput}
           toggleSearch={toggleSearch}
-          clearSearch={clearSearch}
-          setInputToShow={setInputToShow}
-          setSearchInput={setSearchInput}
+          searchMessage={searchMessage}
+          setSearchMessage={setSearchMessage}
+          searchFormRef={searchFormRef}
         />
       )}
     </>

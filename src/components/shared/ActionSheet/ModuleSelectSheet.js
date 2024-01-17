@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ActionSheet from "react-native-actions-sheet";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { setModule } from "../../../redux/reducer/module";
+import { TextProps } from "../CustomStylings";
 
 /**
  * @function ModuleSelectSheet
@@ -17,37 +18,39 @@ const ModuleSelectSheet = (props) => {
 
   return (
     <ActionSheet ref={props.reference}>
-      {userSelector?.user_module &&
-        userSelector.user_module
-          .filter((item) => item.module_name === "BAND" || item.module_name === "TRIBE")
-          .map((item, idx) => {
-            return (
-              <TouchableOpacity
-                key={idx}
-                style={styles.wrapper}
-                onPress={() => {
-                  dispatch(setModule(item.module_name));
-                  props.reference.current?.hide();
-                }}
-              >
-                <View style={styles.flex}>
-                  <Image
-                    source={{
-                      uri: `${item.module_image}ICON.png`,
-                    }}
-                    alt={item.module_name}
-                    style={styles.image}
-                  />
+      <View style={styles.container}>
+        {userSelector?.user_module &&
+          userSelector.user_module
+            .filter((item) => item.module_name === "BAND" || item.module_name === "TRIBE")
+            .map((item, idx) => {
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={styles.wrapper}
+                  onPress={() => {
+                    dispatch(setModule(item.module_name));
+                    props.reference.current?.hide();
+                  }}
+                >
                   <View style={styles.flex}>
-                    <Text style={styles.text}>
-                      {item.module_name.charAt(0).toUpperCase() + item.module_name.slice(1).toLowerCase()}
-                    </Text>
-                    <Text style={styles.text}> | {item.module_label}</Text>
+                    <Image
+                      source={{
+                        uri: `${item.module_image}ICON.png`,
+                      }}
+                      alt={item.module_name}
+                      style={styles.image}
+                    />
+                    <View style={styles.flex}>
+                      <Text style={TextProps}>
+                        {item.module_name.charAt(0).toUpperCase() + item.module_name.slice(1).toLowerCase()}
+                      </Text>
+                      <Text style={TextProps}> | {item.module_label}</Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                </TouchableOpacity>
+              );
+            })}
+      </View>
     </ActionSheet>
   );
 };
@@ -55,6 +58,9 @@ const ModuleSelectSheet = (props) => {
 export default ModuleSelectSheet;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 40,
+  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
@@ -80,9 +86,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });

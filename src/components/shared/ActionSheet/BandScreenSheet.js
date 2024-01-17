@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import ActionSheet from "react-native-actions-sheet";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../CustomStylings";
 
 const BandScreenSheet = (props) => {
   const navigation = useNavigation();
@@ -11,39 +12,41 @@ const BandScreenSheet = (props) => {
 
   return (
     <ActionSheet ref={props.reference}>
-      {menuSelector.user_menu.menu?.map((item, idx) => {
-        return (
-          <TouchableOpacity
-            key={idx}
-            onPress={() => {
-              navigation.navigate(item.name);
-              props.reference.current?.hide();
-            }}
-            style={styles.wrapper}
-          >
-            <View style={styles.flex}>
-              <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name={item.mobile_icon} />
+      <View style={styles.container}>
+        {menuSelector.user_menu.menu?.map((item, idx) => {
+          return (
+            <TouchableOpacity
+              key={idx}
+              onPress={() => {
+                navigation.navigate(item.name);
+                props.reference.current?.hide();
+              }}
+              style={styles.wrapper}
+            >
+              <View style={styles.flex}>
+                <View style={styles.item}>
+                  <MaterialCommunityIcons size={20} name={item.mobile_icon} color="#3F434A" />
+                </View>
+                <Text style={TextProps}>{item.name}</Text>
               </View>
-              <Text style={styles.text}>{item.name}</Text>
+            </TouchableOpacity>
+          );
+        })}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Calendar Band");
+            props.reference.current?.hide();
+          }}
+          style={styles.wrapper}
+        >
+          <View style={styles.flex}>
+            <View style={styles.item}>
+              <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
             </View>
-          </TouchableOpacity>
-        );
-      })}
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Calendar Band");
-          props.reference.current?.hide();
-        }}
-        style={styles.wrapper}
-      >
-        <View style={styles.flex}>
-          <View style={styles.item}>
-            <MaterialCommunityIcons size={20} name="calendar-clock" />
+            <Text style={TextProps}>Calendar</Text>
           </View>
-          <Text style={styles.text}>Calendar</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </ActionSheet>
   );
 };
@@ -51,6 +54,9 @@ const BandScreenSheet = (props) => {
 export default BandScreenSheet;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 40,
+  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
@@ -70,9 +76,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });

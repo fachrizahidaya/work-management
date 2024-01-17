@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
@@ -20,16 +21,16 @@ const MyTeamLeaveScreen = () => {
   const [reloadApproved, setReloadApproved] = useState(false);
   const [rejectedList, setRejectedList] = useState([]);
   const [reloadRejected, setReloadRejected] = useState(false);
-  const [tabValue, setTabValue] = useState("waiting approval");
+  const [tabValue, setTabValue] = useState("Pending");
   const [currentPagePending, setCurrentPagePending] = useState(1);
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const tabs = useMemo(() => {
     return [
-      { title: "waiting approval", value: "waiting approval" },
-      { title: "approved", value: "approved" },
-      { title: "rejected", value: "rejected" },
+      { title: "Waiting Approval", value: "Pending" },
+      { title: "Approved", value: "Approved" },
+      { title: "Rejected", value: "Rejected" },
     ];
   }, []);
 
@@ -37,20 +38,20 @@ const MyTeamLeaveScreen = () => {
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
-    limit: 10,
-    status: "Pending",
+    limit: 100,
+    status: tabValue,
   };
 
   const fetchMoreApprovedParameters = {
     page: currentPageApproved,
     limit: 10,
-    status: "Approved",
+    status: tabValue,
   };
 
   const fetchMoreRejectedParameters = {
     page: currentPageRejected,
     limit: 10,
-    status: "Rejected",
+    status: tabValue,
   };
 
   const {
@@ -59,7 +60,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: pendingLeaveRequestIsFetching,
     isLoading: pendingLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "waiting approval" && "/hr/leave-requests/waiting-approval",
+    tabValue === "Pending" && "/hr/leave-requests/my-team",
     [currentPagePending, reloadPending],
     fetchMorePendingParameters
   );
@@ -70,7 +71,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: approvedLeaveRequestIsFetching,
     isLoading: approvedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "approved" && "/hr/leave-requests/waiting-approval",
+    tabValue === "Approved" && "/hr/leave-requests/my-team",
     [currentPageApproved, reloadApproved],
     fetchMoreApprovedParameters
   );
@@ -81,7 +82,7 @@ const MyTeamLeaveScreen = () => {
     isFetching: rejectedLeaveRequestIsFetching,
     isLoading: rejectedLeaveRequestIsLoading,
   } = useFetch(
-    tabValue === "rejected" && "/hr/leave-requests/waiting-approval",
+    tabValue === "Rejected" && "/hr/leave-requests/my-team",
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
@@ -89,18 +90,21 @@ const MyTeamLeaveScreen = () => {
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
+      setReloadPending(!reloadPending);
     }
   };
 
   const fetchMoreApproved = () => {
     if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
       setCurrentPageApproved(currentPageApproved + 1);
+      setReloadApproved(!reloadApproved);
     }
   };
 
   const fetchMoreRejected = () => {
     if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
       setCurrentPageRejected(currentPageRejected + 1);
+      setReloadRejected(!reloadRejected);
     }
   };
 
@@ -116,20 +120,12 @@ const MyTeamLeaveScreen = () => {
       setSubmitting(false);
       setStatus("success");
       refetchPendingLeaveRequest();
-      Toast.show({
-        type: "success",
-        text1: data.status === "Approved" ? "Request Approved" : "Request Rejected",
-        position: "bottom",
-      });
+      Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show({
-        type: "error",
-        text1: err.response.data.message,
-        position: "bottom",
-      });
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -150,19 +146,19 @@ const MyTeamLeaveScreen = () => {
   });
 
   useEffect(() => {
-    if (pendingLeaveRequest?.data?.data?.length) {
-      setPendingList((prevState) => [...prevState, ...pendingLeaveRequest?.data?.data]);
+    if (pendingLeaveRequest?.data?.data.length >= 0) {
+      setPendingList(() => [...pendingLeaveRequest?.data?.data]);
     }
-  }, [pendingLeaveRequest?.data?.data?.length]);
+  }, [pendingLeaveRequest?.data?.data.length]);
 
   useEffect(() => {
-    if (approvedLeaveRequest?.data?.data.length) {
+    if (approvedLeaveRequest?.data?.data?.length) {
       setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
-    if (rejectedLeaveRequest?.data?.data.length) {
+    if (rejectedLeaveRequest?.data?.data?.length) {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
