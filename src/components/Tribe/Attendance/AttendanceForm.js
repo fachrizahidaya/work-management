@@ -251,373 +251,77 @@ const AttendanceForm = ({
 
         {/* If not yet submit report for Late and Early */}
         {hasLateAndEarlyWithoutReason && (
-          <View style={{ width: "100%", gap: 5 }}>
-            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-            {tabValue === "late" ? (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeIn} ({date?.late})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.late_type}
-                    title="Late Type"
-                    fieldName="late_type"
-                    items={lateType}
-                    placeHolder="Select Late Type"
-                    onChange={(value) => formik.setFieldValue("late_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName={"late_reason"}
-                    placeHolder="Enter your reason"
-                    value={formik.values.late_reason}
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeOut} ({date?.early})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.early_type}
-                    title="Early Type"
-                    fieldName="early_type"
-                    items={earlyType}
-                    placeHolder="Select Early Type"
-                    onChange={(value) => formik.setFieldValue("early_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName={"early_reason"}
-                    placeHolder="Enter your reason"
-                    value={formik.values.early_reason}
-                  />
-                </View>
-              </>
-            )}
-            <FormButton
-              size="sm"
-              variant="solid"
-              fontSize={12}
-              fontColor="white"
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            >
-              <Text style={{ color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          </View>
+          <LateAndEarlyTime
+            tabs={tabs}
+            tabValue={tabValue}
+            onChangeTab={onChangeTab}
+            onDuty={date?.onDuty}
+            timeIn={date?.timeIn}
+            late={date?.late}
+            lateTypes={lateType}
+            offDuty={date?.offDuty}
+            early={date?.early}
+            earlyTypes={earlyType}
+            timeOut={date?.timeOut}
+            formik={formik}
+          />
         )}
 
         {hasSubmittedLateNotEarly && (
-          <View style={{ width: "100%", gap: 5 }}>
-            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-            {tabValue === "late" ? (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeIn} ({date?.late})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.late_type}
-                    fieldName="late_type"
-                    title="Late Type"
-                    items={lateType}
-                    placeHolder="Select Late Type"
-                    onChange={(value) => formik.setFieldValue("late_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="late_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.late_reason}
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeOut} ({date?.early})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.early_type}
-                    fieldName="early_type"
-                    items={earlyType}
-                    title="Early Type"
-                    placeHolder="Select Early Type"
-                    onChange={(value) => formik.setFieldValue("early_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="early_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.early_reason}
-                  />
-                </View>
-              </>
-            )}
-            <FormButton
-              size="sm"
-              variant="solid"
-              fontSize={12}
-              fontColor="white"
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            >
-              <Text style={{ color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          </View>
+          <LateAndEarlyTime
+            tabs={tabs}
+            tabValue={tabValue}
+            onChangeTab={onChangeTab}
+            onDuty={date?.onDuty}
+            timeIn={date?.timeIn}
+            late={date?.late}
+            lateTypes={lateType}
+            offDuty={date?.offDuty}
+            early={date?.early}
+            earlyTypes={earlyType}
+            timeOut={date?.timeOut}
+            formik={formik}
+          />
         )}
 
         {hasSubmittedEarlyNotLate && (
-          <View style={{ width: "100%", gap: 5 }}>
-            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-            {tabValue === "late" ? (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeIn} ({date?.late})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.late_type}
-                    fieldName="late_type"
-                    title="Late Type"
-                    items={lateType}
-                    placeHolder="Select Late Type"
-                    onChange={(value) => formik.setFieldValue("late_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="late_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.late_reason}
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeOut} ({date?.early})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.early_type}
-                    fieldName="early_type"
-                    items={earlyType}
-                    title="Early Type"
-                    placeHolder="Select Early Type"
-                    onChange={(value) => formik.setFieldValue("early_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="early_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.early_reason}
-                  />
-                </View>
-              </>
-            )}
-            <FormButton
-              size="sm"
-              variant="solid"
-              fontSize={12}
-              fontColor="white"
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            >
-              <Text style={{ color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          </View>
+          <LateAndEarlyTime
+            tabs={tabs}
+            tabValue={tabValue}
+            onChangeTab={onChangeTab}
+            onDuty={date?.onDuty}
+            timeIn={date?.timeIn}
+            late={date?.late}
+            lateTypes={lateType}
+            offDuty={date?.offDuty}
+            early={date?.early}
+            earlyTypes={earlyType}
+            timeOut={date?.timeOut}
+            formik={formik}
+          />
         )}
 
         {/* If report submitted Late and Early */}
         {hasSubmittedBothReports && (
-          <View style={{ width: "100%", gap: 5 }}>
-            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-            {tabValue === "late" ? (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.onDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeIn} ({date?.late})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.late_type}
-                    fieldName="late_type"
-                    title="Late Type"
-                    items={lateType}
-                    placeHolder="Select Late Type"
-                    onChange={(value) => formik.setFieldValue("late_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="late_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.late_reason}
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={styles.clock}>
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.offDuty}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <View>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {date?.timeOut} ({date?.early})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Select
-                    formik={formik}
-                    value={formik.values.early_type}
-                    fieldName="early_type"
-                    items={earlyType}
-                    title="Early Type"
-                    placeHolder="Select Early Type"
-                    onChange={(value) => formik.setFieldValue("early_type", value)}
-                  />
-                </View>
-                <View>
-                  <Input
-                    formik={formik}
-                    title="Reason"
-                    fieldName="early_reason"
-                    placeHolder="Enter your reason"
-                    value={formik.values.early_reason}
-                  />
-                </View>
-              </>
-            )}
-            <FormButton
-              size="sm"
-              variant="solid"
-              fontSize={12}
-              fontColor="white"
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            >
-              <Text style={{ color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          </View>
+          <LateAndEarlyTime
+            tabs={tabs}
+            tabValue={tabValue}
+            onChangeTab={onChangeTab}
+            onDuty={date?.onDuty}
+            timeIn={date?.timeIn}
+            late={date?.late}
+            lateTypes={lateType}
+            offDuty={date?.offDuty}
+            early={date?.early}
+            earlyTypes={earlyType}
+            timeOut={date?.timeOut}
+            formik={formik}
+          />
         )}
 
         {/* If Alpa */}
         {notAttend && (
-          <View style={{ width: "100%", gap: 5 }}>
+          <View style={{ width: "100%", gap: 15 }}>
             <Options
               placeholder="Select Alpa Type"
               formik={formik}
@@ -647,7 +351,7 @@ const AttendanceForm = ({
         {/* If did not clock-in */}
         {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
           <View style={{ width: "95%", gap: 3 }}>
-            <View style={{ width: "100%", gap: 5 }}>
+            <View style={{ width: "100%", gap: 15 }}>
               <View>
                 <Text style={[{ fontSize: 14 }, TextProps]}>Please Clock-in</Text>
               </View>
@@ -661,68 +365,18 @@ const AttendanceForm = ({
 
 export default AttendanceForm;
 
-const LateOrEarlyTime = ({
-  formik,
-  arrayList,
-  titleTime,
-  time,
-  title,
-  inputValue,
-  inputOnChangeText,
-  selectOnValueChange,
-  titleDuty,
-  timeDuty,
-  timeLateOrEarly,
-  placeholder,
-  fieldOption,
-}) => {
-  return (
-    <View style={{ width: "100%", gap: 5 }}>
-      <Clock
-        titleDuty={titleDuty}
-        timeDuty={timeDuty}
-        titleClock={titleTime}
-        timeInOrTimeOut={time}
-        lateOrEarly={timeLateOrEarly}
-      />
-      <Options
-        formik={formik}
-        title={title}
-        value={inputValue}
-        valueChange={selectOnValueChange}
-        types={arrayList}
-        placeholder={placeholder}
-        field={fieldOption}
-      />
-      <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
-      <FormButton
-        size="sm"
-        variant="solid"
-        fontSize={12}
-        fontColor="white"
-        isSubmitting={formik.isSubmitting}
-        onPress={formik.handleSubmit}
-      >
-        <Text style={{ color: "#FFFFFF" }}>Save</Text>
-      </FormButton>
-    </View>
-  );
-};
-
-const LeaveOrPermit = ({ type, reason }) => {
-  return (
-    <View style={{ width: "100%", gap: 5 }}>
-      <View>
-        <Text style={[{ fontSize: 12 }, TextProps]}>Attendance Type</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{type}</Text>
-      </View>
-      <View>
-        <Text style={[{ fontSize: 12 }, TextProps]}>Reason</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{reason}</Text>
-      </View>
-    </View>
-  );
-};
+const styles = StyleSheet.create({
+  clock: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+});
 
 const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }) => {
   return (
@@ -774,15 +428,171 @@ const Reason = ({ formik, value, fieldName, onChangeText }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  clock: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    paddingBottom: 40,
-  },
-});
+const LateOrEarlyTime = ({
+  formik,
+  arrayList,
+  titleTime,
+  time,
+  title,
+  inputValue,
+  inputOnChangeText,
+  selectOnValueChange,
+  titleDuty,
+  timeDuty,
+  timeLateOrEarly,
+  placeholder,
+  fieldOption,
+}) => {
+  return (
+    <View style={{ width: "100%", gap: 15 }}>
+      <Clock
+        titleDuty={titleDuty}
+        timeDuty={timeDuty}
+        titleClock={titleTime}
+        timeInOrTimeOut={time}
+        lateOrEarly={timeLateOrEarly}
+      />
+      <Options
+        formik={formik}
+        title={title}
+        value={inputValue}
+        valueChange={selectOnValueChange}
+        types={arrayList}
+        placeholder={placeholder}
+        field={fieldOption}
+      />
+      <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
+      <FormButton
+        size="sm"
+        variant="solid"
+        fontSize={12}
+        fontColor="white"
+        isSubmitting={formik.isSubmitting}
+        onPress={formik.handleSubmit}
+      >
+        <Text style={{ color: "#FFFFFF" }}>Save</Text>
+      </FormButton>
+    </View>
+  );
+};
+
+const LateAndEarlyTime = ({
+  tabs,
+  tabValue,
+  onChangeTab,
+  onDuty,
+  timeIn,
+  late,
+  formik,
+  lateTypes,
+  offDuty,
+  timeOut,
+  early,
+  earlyTypes,
+}) => {
+  return (
+    <View style={{ width: "100%", gap: 15 }}>
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
+      {tabValue === "late" ? (
+        <>
+          <View style={styles.clock}>
+            <View>
+              <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{onDuty}</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <View>
+                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>
+                  {timeIn} ({late})
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Select
+              formik={formik}
+              value={formik.values.late_type}
+              fieldName="late_type"
+              title="Late Type"
+              items={lateTypes}
+              placeHolder="Select Late Type"
+              onChange={(value) => formik.setFieldValue("late_type", value)}
+            />
+          </View>
+          <View>
+            <Input
+              formik={formik}
+              title="Reason"
+              fieldName="late_reason"
+              placeHolder="Enter your reason"
+              value={formik.values.late_reason}
+            />
+          </View>
+        </>
+      ) : (
+        <>
+          <View style={styles.clock}>
+            <View>
+              <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
+              <Text style={[{ fontSize: 12 }, TextProps]}>{offDuty}</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <View>
+                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>
+                  {timeOut} ({early})
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Select
+              formik={formik}
+              value={formik.values.early_type}
+              fieldName="early_type"
+              items={earlyTypes}
+              title="Early Type"
+              placeHolder="Select Early Type"
+              onChange={(value) => formik.setFieldValue("early_type", value)}
+            />
+          </View>
+          <View>
+            <Input
+              formik={formik}
+              title="Reason"
+              fieldName="early_reason"
+              placeHolder="Enter your reason"
+              value={formik.values.early_reason}
+            />
+          </View>
+        </>
+      )}
+      <FormButton
+        size="sm"
+        variant="solid"
+        fontSize={12}
+        fontColor="white"
+        isSubmitting={formik.isSubmitting}
+        onPress={formik.handleSubmit}
+      >
+        <Text style={{ color: "#FFFFFF" }}>Save</Text>
+      </FormButton>
+    </View>
+  );
+};
+
+const LeaveOrPermit = ({ type, reason }) => {
+  return (
+    <View style={{ width: "100%", gap: 15 }}>
+      <View>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Attendance Type</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{type}</Text>
+      </View>
+      <View>
+        <Text style={[{ fontSize: 12 }, TextProps]}>Reason</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{reason}</Text>
+      </View>
+    </View>
+  );
+};
