@@ -14,21 +14,6 @@ const MediaList = ({ media, docs, tabValue, toggleFullScreen }) => {
       {tabValue === "photos" ? (
         media.length > 0 ? (
           <>
-            {/* <View style={{ marginTop: 10, width, height }}>
-              <ScrollView pagingEnabled horizontal showsHorizontalScrollIndicator={false} style={{ width, height }}>
-                {media.map((item, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item?.file_path}` }}
-                    style={{
-                      width,
-                      height,
-                      resizeMode: "contain",
-                    }}
-                  />
-                ))}
-              </ScrollView>
-            </View> */}
             <FlashList
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
