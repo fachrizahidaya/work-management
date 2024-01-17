@@ -19,6 +19,7 @@ import ProjectFilter from "../../components/Band/Project/ProjectFilter/ProjectFi
 const ProjectList = () => {
   const navigation = useNavigation();
   const firstTimeRef = useRef(true);
+  const [ownerName, setOwnerName] = useState("");
   const [status, setStatus] = useState("On Progress");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
@@ -26,7 +27,7 @@ const ProjectList = () => {
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const createActionCheck = useCheckAccess("create", "Projects");
 
-  const dependencies = [status, currentPage, searchInput, selectedPriority, deadlineSort];
+  const dependencies = [status, currentPage, searchInput, selectedPriority, deadlineSort, ownerName];
 
   const params = {
     page: currentPage,
@@ -36,6 +37,7 @@ const ProjectList = () => {
     limit: 10,
     priority: selectedPriority,
     sort_deadline: deadlineSort,
+    owner_name: ownerName,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
 
@@ -49,7 +51,7 @@ const ProjectList = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [status, searchInput]);
+  }, [status, searchInput, selectedPriority, deadlineSort, ownerName]);
 
   useFocusEffect(
     useCallback(() => {
@@ -91,10 +93,11 @@ const ProjectList = () => {
           }}
         >
           <ProjectFilter
-            setCurrentPage={setCurrentPage}
             setSearchInput={setSearchInput}
             setDeadlineSort={setDeadlineSort}
             setSelectedPriority={setSelectedPriority}
+            setOwnerName={setOwnerName}
+            ownerName={ownerName}
             deadlineSort={deadlineSort}
             selectedPriority={selectedPriority}
           />

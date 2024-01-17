@@ -1,13 +1,15 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 
 import _ from "lodash";
 import { SheetManager } from "react-native-actions-sheet";
 
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Input from "../../../shared/Forms/Input";
 import Select from "../../../shared/Forms/Select";
+import Button from "../../../shared/Forms/Button";
+import TaskFilterSheet from "../../../shared/ActionSheet/TaskFilterSheet";
 
 const TaskFilter = ({
   members,
@@ -22,6 +24,7 @@ const TaskFilter = ({
   setSelectedPriority,
   setSearchInput,
 }) => {
+  const filterSheetRef = useRef(null);
   const [shownInput, setShownInput] = useState("");
 
   const handleChangeInput = useCallback(
@@ -30,6 +33,13 @@ const TaskFilter = ({
     }, 300),
     []
   );
+
+  const resetAllFilter = () => {
+    setResponsibleId("all");
+    setSelectedLabelId(null);
+    setDeadlineSort("asc");
+    setSelectedPriority("");
+  };
 
   return (
     <>
@@ -53,77 +63,25 @@ const TaskFilter = ({
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity
-              onPress={() =>
-                SheetManager.show("form-sheet", {
-                  payload: {
-                    children: (
-                      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                        <Select
-                          value={responsibleId}
-                          placeHolder="Select Member"
-                          items={[
-                            { value: "all", label: "All Member" },
-                            { value: "", label: "Not Assigned" },
-                            ...(Array.isArray(members) &&
-                              members.map((member) => {
-                                return {
-                                  value: member.user_id || member.responsible_id,
-                                  label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
-                                };
-                              })),
-                          ]}
-                          onChange={(value) => setResponsibleId(value)}
-                          hasParentSheet
-                        />
-                        <Select
-                          value={selectedLabelId}
-                          placeHolder="Select Label"
-                          items={[
-                            { value: "", label: "No Label" },
-                            ...(Array.isArray(labels?.data) &&
-                              labels?.data.map((label) => {
-                                return {
-                                  value: label.label_id,
-                                  label: label.label_name,
-                                };
-                              })),
-                          ]}
-                          onChange={(value) => setSelectedLabelId(value)}
-                          hasParentSheet
-                        />
-                        <Select
-                          value={deadlineSort}
-                          placeHolder="Sort Deadline"
-                          items={[
-                            { value: "asc", label: "Closest" },
-                            { value: "desc", label: "Latest" },
-                          ]}
-                          onChange={(value) => setDeadlineSort(value)}
-                          hasParentSheet
-                        />
-                        <Select
-                          value={selectedPriority}
-                          placeHolder="Select Priority"
-                          items={[
-                            { value: "", label: "All Priority" },
-                            { value: "Low", label: "Low" },
-                            { value: "Medium", label: "Medium" },
-                            { value: "High", label: "High" },
-                          ]}
-                          onChange={(value) => setSelectedPriority(value)}
-                          hasParentSheet
-                        />
-                      </View>
-                    ),
-                  },
-                })
-              }
-            >
+            <TouchableOpacity onPress={() => filterSheetRef.current?.show()}>
               <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
             </TouchableOpacity>
           </View>
         }
+      />
+
+      <TaskFilterSheet
+        reference={filterSheetRef}
+        deadlineSort={deadlineSort}
+        labels={labels}
+        members={members}
+        responsibleId={responsibleId}
+        selectedLabelId={selectedLabelId}
+        selectedPriority={selectedPriority}
+        setDeadlineSort={setDeadlineSort}
+        setResponsibleId={setResponsibleId}
+        setSelectedLabelId={setSelectedLabelId}
+        setSelectedPriority={setSelectedPriority}
       />
     </>
   );
