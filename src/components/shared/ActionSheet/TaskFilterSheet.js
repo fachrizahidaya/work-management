@@ -53,13 +53,12 @@ const TaskFilterSheet = ({
           placeHolder="Select Label"
           items={[
             { value: "", label: "No Label" },
-            ...(Array.isArray(labels?.data) &&
-              labels?.data.map((label) => {
-                return {
+            ...(Array.isArray(labels?.data)
+              ? labels.data.map((label) => ({
                   value: label.label_id,
                   label: label.label_name,
-                };
-              })),
+                }))
+              : []),
           ]}
           onChange={(value) => setSelectedLabelId(value)}
         />
