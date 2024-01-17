@@ -117,8 +117,7 @@ const ChatHeader = ({
                       style={[
                         {
                           fontSize: 10,
-
-                          width: 200,
+                          width: 250,
                           overflow: "hidden",
                         },
                         TextProps,
@@ -142,7 +141,7 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View
-                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 40 }}
+                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}
                   >
                     {/* <TouchableOpacity
                       onPress={() => {
