@@ -1,9 +1,12 @@
-import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions, Platform } from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions, Platform, ScrollView } from "react-native";
 import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
+const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media, images }) => {
+  console.log(images);
+  const { width } = Dimensions.get("screen");
+  const height = (width / 100) * 60;
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -26,27 +29,66 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path }) => {
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
-      <View style={styles.imageBox}>
-        <Image
-          source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
-          alt="Feed Image"
-          style={styles.image}
-        />
-        <View style={styles.actionGroup}>
-          <TouchableOpacity
-            style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-            onPress={() => attachmentDownloadHandler(file_path)}
-          >
-            <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-            onPress={() => setIsFullScreen(false)}
-          >
-            <MaterialCommunityIcons name="close" size={30} color="#FFFFFF" />
-          </TouchableOpacity>
+      {media ? (
+        <View
+          style={{
+            width,
+            height,
+            position: "relative",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ScrollView pagingEnabled horizontal showsHorizontalScrollIndicator={false} style={{ width, height }}>
+            {images.map((item, index) => (
+              <View>
+                <Image
+                  key={index}
+                  source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item}` }}
+                  alt="Feed Image"
+                  style={{ width, height, resizeMode: "contain" }}
+                />
+                <View style={styles.actionGroup}>
+                  <TouchableOpacity
+                    style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+                    onPress={() => attachmentDownloadHandler(item)}
+                  >
+                    <MaterialCommunityIcons name="download" size={15} color="#FFFFFF" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+                    onPress={() => setIsFullScreen(false)}
+                  >
+                    <MaterialCommunityIcons name="close" size={15} color="#FFFFFF" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
-      </View>
+      ) : (
+        <View style={styles.imageBox}>
+          <Image
+            source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${file_path}` }}
+            alt="Feed Image"
+            style={styles.image}
+          />
+          <View style={styles.actionGroup}>
+            <TouchableOpacity
+              style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+              onPress={() => attachmentDownloadHandler(file_path)}
+            >
+              <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
+              onPress={() => setIsFullScreen(false)}
+            >
+              <MaterialCommunityIcons name="close" size={30} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </Modal>
   );
 };

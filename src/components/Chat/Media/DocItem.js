@@ -77,7 +77,7 @@ const DocItem = ({ image, path, type, size }) => {
       />
       <View>
         <Text
-          style={[{ fontSize: 14, overflow: "hidden", width: 200 }, TextProps]}
+          style={[{ fontSize: 14, overflow: "hidden", width: 300 }, TextProps]}
           numberOfLines={2}
           ellipsizeMode="tail"
         >
@@ -85,7 +85,7 @@ const DocItem = ({ image, path, type, size }) => {
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Text
-            style={[{ fontSize: 10, opacity: 0.5, overflow: "hidden", width: 100 }, TextProps]}
+            style={[{ fontSize: 10, opacity: 0.5, overflow: "hidden", width: 25 }, TextProps]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
