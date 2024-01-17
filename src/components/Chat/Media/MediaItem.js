@@ -1,4 +1,4 @@
-import { TouchableOpacity, Image, Text, View } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

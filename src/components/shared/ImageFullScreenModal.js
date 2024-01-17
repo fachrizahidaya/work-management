@@ -4,7 +4,6 @@ import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media, images }) => {
-  console.log(images);
   const { width } = Dimensions.get("screen");
   const height = (width / 100) * 60;
   const deviceWidth = Dimensions.get("window").width;
@@ -25,7 +24,7 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
     <Modal
       isVisible={isFullScreen}
       onBackdropPress={() => setIsFullScreen(false)}
-      backdropColor="#272A2B"
+      backdropColor={media ? "black" : "#272A2B"}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
@@ -36,7 +35,8 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
             height,
             position: "relative",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            marginLeft: -20, // handler margin left
           }}
         >
           <ScrollView pagingEnabled horizontal showsHorizontalScrollIndicator={false} style={{ width, height }}>
@@ -46,25 +46,44 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
                   key={index}
                   source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item}` }}
                   alt="Feed Image"
-                  style={{ width, height, resizeMode: "contain" }}
+                  style={{ ...styles.image, width, height, resizeMode: "contain" }}
                 />
-                <View style={styles.actionGroup}>
+                <View style={styles.actionGroupMedia}>
                   <TouchableOpacity
                     style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
                     onPress={() => attachmentDownloadHandler(item)}
                   >
-                    <MaterialCommunityIcons name="download" size={15} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="download" size={20} color="#FFFFFF" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
                     onPress={() => setIsFullScreen(false)}
                   >
-                    <MaterialCommunityIcons name="close" size={15} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
                   </TouchableOpacity>
                 </View>
               </View>
             ))}
           </ScrollView>
+
+          {/* <ScrollView
+            pagingEnabled
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 10 }}
+            style={{ width, height: 40 }}
+          >
+            {images.map((item, index) => (
+              <View>
+                <Image
+                  key={index}
+                  source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item}` }}
+                  alt="Feed Image"
+                  style={{ width: 80, height: 80, resizeMode: "contain" }}
+                />
+              </View>
+            ))}
+          </ScrollView> */}
         </View>
       ) : (
         <View style={styles.imageBox}>
@@ -113,6 +132,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 10,
+    gap: 5,
+  },
+  actionGroupMedia: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    position: "absolute",
+    right: 10,
+    top: 15,
     gap: 5,
   },
 });
