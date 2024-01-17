@@ -116,7 +116,7 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {!fileAttachment ? "Upload file..." : fileAttachment?.name}
+                {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
               </Text>
               <MaterialCommunityIcons
                 name="attachment"
