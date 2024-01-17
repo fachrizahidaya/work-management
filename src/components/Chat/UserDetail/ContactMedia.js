@@ -19,7 +19,7 @@ const ContactMedia = ({ qty, navigation, media, docs }) => {
       }}
     >
       <Pressable style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialIcons name="image" size={10} color="#377893" />
+        <MaterialIcons name="image" size={20} color="#377893" />
         <Text style={[{ fontSize: 14 }, TextProps]}>Media & Docs</Text>
       </Pressable>
       <TouchableOpacity

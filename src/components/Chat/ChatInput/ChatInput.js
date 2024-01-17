@@ -27,7 +27,6 @@ const ChatInput = ({
   messageToReply,
   setMessageToReply,
   active_member,
-  toggleMenu,
   groupMember,
   selectFile,
   pickImageHandler,
@@ -230,7 +229,7 @@ const ChatInput = ({
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
-                            marginBottom: 40,
+                            paddingBottom: 40,
                           }}
                         >
                           <View style={{ gap: 5 }}>

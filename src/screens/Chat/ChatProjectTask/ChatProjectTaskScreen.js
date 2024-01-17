@@ -173,7 +173,6 @@ const ChatProjectTaskScreen = () => {
             handleSearch={handleSearch}
             inputToShow={inputToShow}
             setInputToShow={setInputToShow}
-            searchInput={searchInput}
             setSearchInput={setSearchInput}
           />
           <ChatProjectList

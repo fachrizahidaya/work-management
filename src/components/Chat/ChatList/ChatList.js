@@ -24,7 +24,6 @@ const ChatList = ({
   setBandAttachment,
   onSwipeToReply,
   memberName,
-  position,
   userSelector,
   navigation,
   filteredSearch,

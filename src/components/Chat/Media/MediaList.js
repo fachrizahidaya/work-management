@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, Image, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MediaItem from "./MediaItem";
@@ -6,27 +6,40 @@ import DocItem from "./DocItem";
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 
 const MediaList = ({ media, docs, tabValue, toggleFullScreen }) => {
+  const { width } = Dimensions.get("window");
+  const height = (width * 100) / 63;
+
   return (
     <View style={styles.container}>
       {tabValue === "photos" ? (
         media.length > 0 ? (
-          <FlashList
-            keyExtractor={(item, index) => index}
-            onEndReachedThreshold={0.1}
-            estimatedItemSize={200}
-            data={media}
-            numColumns={5}
-            renderItem={({ item, index }) => (
-              <View style={{}}>
-                <MediaItem
-                  key={index}
-                  image={item?.file_name}
-                  path={item?.file_path}
-                  toggleFullScreen={toggleFullScreen}
-                />
-              </View>
-            )}
-          />
+          <>
+            {/* <View style={{ marginTop: 10, width, height }}>
+              <ScrollView pagingEnabled horizontal showsHorizontalScrollIndicator={false} style={{ width, height }}>
+                {media.map((item, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item?.file_path}` }}
+                    style={{
+                      width,
+                      height,
+                      resizeMode: "contain",
+                    }}
+                  />
+                ))}
+              </ScrollView>
+            </View> */}
+            <FlashList
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={200}
+              data={media}
+              numColumns={5}
+              renderItem={({ item, index }) => (
+                <MediaItem key={index} path={item?.file_path} toggleFullScreen={toggleFullScreen} />
+              )}
+            />
+          </>
         ) : (
           <ScrollView>
             <EmptyPlaceholder height={250} width={250} text="No Data" />

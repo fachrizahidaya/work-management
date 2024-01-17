@@ -11,12 +11,10 @@ const UserListItemModal = ({
   userType,
   image,
   multiSelect,
-  type,
   onPressAddHandler,
   onPressRemoveHandler,
   userSelector,
   selectedUsers,
-  setSelectedUsers,
 }) => {
   return (
     userSelector.id !== id && (

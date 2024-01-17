@@ -20,6 +20,10 @@ const MediaScreen = () => {
 
   const { media, docs } = route.params;
 
+  const imageArray = media.map((item) => {
+    return item?.file_path;
+  });
+
   const toggleFullScreen = (image) => {
     setSelectedImage(image);
     setIsFullScreen(!isFullScreen);
@@ -79,7 +83,7 @@ const MediaScreen = () => {
               }}
               onPress={changeBandType}
             >
-              <Text style={[{ fontSize: 12 }, TextProps]}>Media</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Media</Text>
             </Pressable>
             <Pressable
               style={{
@@ -89,13 +93,19 @@ const MediaScreen = () => {
               }}
               onPress={changeBandType}
             >
-              <Text style={[{ fontSize: 12 }, TextProps]}>Docs</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Docs</Text>
             </Pressable>
           </View>
         </View>
       </View>
       <MediaList media={media} docs={docs} tabValue={tabValue} toggleFullScreen={toggleFullScreen} />
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedImage} />
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedImage}
+        images={imageArray}
+        media={true}
+      />
     </SafeAreaView>
   );
 };

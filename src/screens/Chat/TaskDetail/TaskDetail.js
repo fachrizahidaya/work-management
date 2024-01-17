@@ -134,7 +134,7 @@ const TaskDetail = () => {
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
               renderItem={({ item, index }) => (
-                <ChecklistSection key={index} title={item?.title} id={item?.id} status={item?.status} />
+                <ChecklistSection key={index} title={item?.title} status={item?.status} />
               )}
             />
           )}

@@ -109,49 +109,63 @@ const ContactListItem = ({
     return text;
   };
 
-  const renderLeftView = (progress, dragX) => {
+  const renderLeftView = () => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
-        }}
+      <View
         style={{
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#377893",
           width: 250,
         }}
       >
-        <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
-        <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
+          }}
+          style={{
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#377893",
+            marginRight: 150,
+          }}
+        >
+          <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
+          <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
+        </Pressable>
+      </View>
     );
   };
 
-  const renderRightView = (progress, dragX) => {
+  const renderRightView = () => {
     return (
-      <Pressable
-        onPress={() => {
-          if (swipeableRef.current) {
-            swipeableRef.current.close();
-          }
-          onSwipe(chat);
-        }}
+      <View
         style={{
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#959595",
           width: 250,
         }}
       >
-        <MaterialIcons name="more-horiz" color="#FFFFFF" />
-        <Text style={{ color: "#FFFFFF" }}>More</Text>
-      </Pressable>
+        <Pressable
+          onPress={() => {
+            if (swipeableRef.current) {
+              swipeableRef.current.close();
+            }
+            onSwipe(chat);
+          }}
+          style={{
+            marginLeft: 150,
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#959595",
+          }}
+        >
+          <MaterialIcons name="more-horiz" color="#FFFFFF" />
+          <Text style={{ color: "#FFFFFF" }}>More</Text>
+        </Pressable>
+      </View>
     );
   };
 
@@ -227,7 +241,12 @@ const ContactListItem = ({
                 >
                   <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
                     {type === "group" && chat?.latest_message ? (
-                      <Text style={[{ fontSize: 12 }, TextProps]}>{chat?.latest_message?.user?.name}: </Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {userSelector?.name === chat?.latest_message?.user?.name
+                          ? "You"
+                          : chat?.latest_message?.user?.name}
+                        :{" "}
+                      </Text>
                     ) : null}
                     {!isDeleted ? (
                       <>
@@ -245,7 +264,7 @@ const ContactListItem = ({
                                 {message.length > 20 ? message.slice(0, 20) + "..." : message}
                               </Text>
                             )}
-                            {message === null && (project || task || fileName) && (
+                            {!message && (project || task || fileName) && (
                               <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
                                 <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
                                 <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
@@ -272,13 +291,29 @@ const ContactListItem = ({
                         </View>
                       </>
                     ) : isDeleted && userSelector.id === latest?.user?.id ? (
-                      <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
-                        You have deleted this message
-                      </Text>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        <MaterialCommunityIcons
+                          name="block-helper"
+                          size={10}
+                          style={{ transform: [{ rotate: "90deg" }] }}
+                          color="#3F434A"
+                        />
+                        <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                          You deleted this message
+                        </Text>
+                      </View>
                     ) : isDeleted && userSelector.id !== latest?.user?.id ? (
-                      <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
-                        Message has been deleted
-                      </Text>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        <MaterialCommunityIcons
+                          name="block-helper"
+                          size={10}
+                          style={{ transform: [{ rotate: "90deg" }] }}
+                          color="#3F434A"
+                        />
+                        <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                          This message was deleted
+                        </Text>
+                      </View>
                     ) : null}
                   </View>
                   {isPinned?.pin_chat ? (
