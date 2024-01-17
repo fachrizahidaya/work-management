@@ -105,7 +105,7 @@ const TribeScreenSheet = (props) => {
           navigation.navigate("Calendar Tribe");
           props.reference.current?.hide();
         }}
-        style={{ ...styles.wrapper, marginBottom: 40 }}
+        style={{ ...styles.wrapper, paddingBottom: 40 }}
       >
         <View style={styles.flex}>
           <View style={styles.item}>

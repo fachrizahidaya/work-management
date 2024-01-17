@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginBottom: 20,
+    paddingBottom: 40,
   },
 });
