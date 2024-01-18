@@ -44,9 +44,9 @@ const LeaveRequestItem = ({
                           await SheetManager.hide("form-sheet");
                           onSelect(item);
                         }}
-                        style={styles.container}
+                        style={{ ...styles.container, justifyContent: "center" }}
                       >
-                        <Text style={[{ fontSize: 14 }, TextProps]}>Cancel Request</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: "400", color: "#D64B4B" }]}>Cancel Request</Text>
                       </TouchableOpacity>
                     </View>
                   ),
