@@ -72,7 +72,7 @@ const ContactMenu = ({
       },
     },
     // {
-    // id: 4,
+    //   id: 4,
     //   icon: "minus-circle-outline",
     //   name: `Block ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
     //   color: "#EB0E29",
@@ -91,8 +91,8 @@ const ContactMenu = ({
   ];
 
   return (
-    <View style={{ paddingBottom: 40 }}>
-      <View style={{ ...styles.wrapper, flexDirection: "row", justifyContent: "space-between" }}>
+    <View style={styles.wrapper}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View
           style={{
             flexDirection: "row",
@@ -109,10 +109,19 @@ const ContactMenu = ({
         </View>
       </View>
 
-      <View style={{ ...styles.wrapper, gap: 5 }}>
+      <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
         {menuOptions.splice(0, 2).map((option, index) => {
           return (
-            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+            <TouchableOpacity
+              key={index}
+              onPress={option.onPress}
+              style={{
+                ...styles.container,
+                justifyContent: "space-between",
+                borderBottomWidth: 1,
+                borderBottomColor: "#FFFFFF",
+              }}
+            >
               <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
               <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
             </TouchableOpacity>
@@ -120,10 +129,19 @@ const ContactMenu = ({
         })}
       </View>
 
-      <View style={{ ...styles.wrapper, gap: 5, marginTop: 3, marginBottom: 15 }}>
+      <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10, marginTop: 3 }}>
         {menuOptions.splice(0, 1).map((option, index) => {
           return (
-            <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+            <TouchableOpacity
+              key={index}
+              onPress={option.onPress}
+              style={{
+                ...styles.container,
+                justifyContent: "space-between",
+                borderBottomWidth: 1,
+                borderBottomColor: "#FFFFFF",
+              }}
+            >
               <Text style={{ fontSize: 16, fontWeight: "700", color: "#E53935" }}>{option.name}</Text>
               <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
             </TouchableOpacity>
@@ -158,6 +176,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 16,
+    gap: 21,
   },
 });

@@ -229,13 +229,21 @@ const ChatInput = ({
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
-                            paddingBottom: 40,
                           }}
                         >
-                          <View style={{ gap: 5 }}>
+                          <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
                             {attachmentOptions.map((option, index) => {
                               return (
-                                <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                                <TouchableOpacity
+                                  key={index}
+                                  onPress={option.onPress}
+                                  style={{
+                                    ...styles.container,
+                                    justifyContent: "space-between",
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: "#FFFFFF",
+                                  }}
+                                >
                                   <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                                   <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
                                 </TouchableOpacity>
@@ -243,7 +251,7 @@ const ChatInput = ({
                             })}
                           </View>
                           <TouchableOpacity
-                            style={{ alignItems: "center", justifyContent: "center" }}
+                            style={{ justifyContent: "center", ...styles.container }}
                             onPress={() => SheetManager.hide("form-sheet")}
                           >
                             <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
@@ -292,6 +300,7 @@ const ChatInput = ({
                     placeHolder="Type a message..."
                     value={formik.values.message}
                     onChangeText={(value) => formik.setFieldValue("message", value)}
+                    borderColor="transparent"
                   />
                 )}
               </View>
@@ -323,7 +332,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: "#F5F5F5",
     height: 50,
     padding: 10,
