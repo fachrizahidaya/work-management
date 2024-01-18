@@ -131,8 +131,10 @@ const ChatBubble = ({
 
   if (myMessage) {
     var MIN_TRANSLATEX = 50;
+    var parentWidth = 150;
   } else {
-    var MIN_TRANSLATEX = 100;
+    var MIN_TRANSLATEX = 60;
+    var parentWidth = 200;
   }
 
   const translateX = useSharedValue(0);
@@ -140,7 +142,7 @@ const ChatBubble = ({
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
-        translateX.value = event.translationX;
+        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATEX);
       }
     },
     onEnd: (event) => {
@@ -185,7 +187,7 @@ const ChatBubble = ({
             <Box ml={8}></Box>
           ) : null} */}
 
-      <PanGestureHandler onGestureEvent={panGesture}>
+      <PanGestureHandler onGestureEvent={!isDeleted && panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             style={{

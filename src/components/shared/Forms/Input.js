@@ -63,7 +63,7 @@ const Input = ({
             styles.input,
             style,
             {
-              borderColor: borderColor ? borderColor : null,
+              borderColor: borderColor ? borderColor : "#E8E9EB",
               paddingLeft: startAdornment || startIcon ? 35 : 10,
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",

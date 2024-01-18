@@ -4,8 +4,10 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
 import { useFetch } from "../../../hooks/useFetch";
@@ -262,11 +264,19 @@ const ChatListScreen = () => {
         <>
           <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <GlobalSearchInput
-                globalKeyword={globalKeyword}
-                setGlobalKeyword={setGlobalKeyword}
-                searchFormRef={searchFromRef}
-              />
+              <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 8 }}>
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={20}
+                  onPress={() => navigation.goBack()}
+                  color="#3F434A"
+                />
+                <GlobalSearchInput
+                  globalKeyword={globalKeyword}
+                  setGlobalKeyword={setGlobalKeyword}
+                  searchFormRef={searchFromRef}
+                />
+              </View>
 
               <GroupSection
                 groupChats={groupChats}

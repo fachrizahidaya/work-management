@@ -114,7 +114,7 @@ const ContactListItem = ({
       <View
         style={{
           backgroundColor: "#377893",
-          width: 250,
+          width: 400,
         }}
       >
         <Pressable
@@ -129,7 +129,7 @@ const ContactListItem = ({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#377893",
-            marginRight: 150,
+            width: 100,
           }}
         >
           <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
@@ -187,12 +187,7 @@ const ContactListItem = ({
 
   return (
     <View>
-      <Swipeable
-        ref={swipeableRef}
-        renderLeftActions={renderLeftView}
-        renderRightActions={renderRightView}
-        rightThreshold={-100}
-      >
+      <Swipeable ref={swipeableRef} renderLeftActions={renderLeftView} renderRightActions={renderRightView}>
         <TouchableOpacity
           style={{ backgroundColor: "#FFFFFF" }}
           activeOpacity={1}
