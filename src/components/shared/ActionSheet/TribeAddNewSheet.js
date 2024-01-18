@@ -109,40 +109,42 @@ const TribeAddNewSheet = (props) => {
 
   return (
     <ActionSheet ref={props.reference}>
-      {items.map((item, idx) => {
-        return item.title !== "Clock in" ? (
-          <TouchableOpacity
-            key={idx}
-            borderColor="#E8E9EB"
-            borderBottomWidth={1}
-            style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-            onPress={() => {
-              if (item.title === "New Leave Request") {
-                navigation.navigate("New Leave Request", {
-                  employeeId: profile?.data?.id,
-                });
-              } else if (item.title === "New Reimbursement") {
-                navigation.navigate("New Reimbursement");
-              }
+      <View style={styles.container}>
+        {items.map((item, idx) => {
+          return item.title !== "Clock in" ? (
+            <TouchableOpacity
+              key={idx}
+              borderColor="#E8E9EB"
+              borderBottomWidth={1}
+              style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+              onPress={() => {
+                if (item.title === "New Leave Request") {
+                  navigation.navigate("New Leave Request", {
+                    employeeId: profile?.data?.id,
+                  });
+                } else if (item.title === "New Reimbursement") {
+                  navigation.navigate("New Reimbursement");
+                }
 
-              props.reference.current?.hide();
-            }}
-          >
-            <View style={styles.flex}>
-              <View style={styles.item}>
-                <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                props.reference.current?.hide();
+              }}
+            >
+              <View style={styles.flex}>
+                <View style={styles.item}>
+                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                </View>
+                <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                  {item.title}
+                </Text>
               </View>
-              <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                {item.title}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <Pressable key={idx} style={{ ...styles.wrapper, paddingBottom: 40 }}>
-            <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
-          </Pressable>
-        );
-      })}
+            </TouchableOpacity>
+          ) : (
+            <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
+              <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
+            </Pressable>
+          );
+        })}
+      </View>
     </ActionSheet>
   );
 };
@@ -150,6 +152,9 @@ const TribeAddNewSheet = (props) => {
 export default TribeAddNewSheet;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 40,
+  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,

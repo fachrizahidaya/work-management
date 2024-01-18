@@ -31,6 +31,7 @@ const CustomDateTimePicker = ({
   textLabel,
   fontSize,
   unlimitStartDate,
+  title,
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -126,6 +127,7 @@ const CustomDateTimePicker = ({
                 width={width}
                 onTouchStart={() => inputRef.current.blur()}
                 editable={disabled ? false : true}
+                title={title}
               />
             </View>
           )}

@@ -64,7 +64,6 @@ const FeedComment = ({
         style={{
           gap: 21,
           paddingHorizontal: 20,
-          paddingVertical: 16,
           flexDirection: "column",
           justifyContent: "center",
           paddingBottom: 40,
