@@ -58,7 +58,7 @@ const TribeAddNewSheet = (props) => {
           });
 
           refetchAttendance();
-          props.reference.current?.hide();
+
           Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           Toast.show("You already checked out at this time", ErrorToastProps);
