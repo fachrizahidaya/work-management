@@ -374,7 +374,6 @@ const ChatRoom = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [3, 4],
       quality: 1,
     });
 

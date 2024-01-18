@@ -239,8 +239,8 @@ const ChatBubble = ({
                           <Image
                             style={{
                               flex: 1,
-                              width: 260,
-                              height: 200,
+                              width: 250,
+                              height: 350,
                               resizeMode: "contain",
                               backgroundColor: "gray",
                             }}
