@@ -107,8 +107,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
-    width: 300,
-    height: 250,
-    borderRadius: 10,
+    flex: 1,
+    width: 350,
+    height: 500,
+    resizeMode: "contain",
+    backgroundColor: "gray",
   },
 });

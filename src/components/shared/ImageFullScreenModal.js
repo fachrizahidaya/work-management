@@ -102,9 +102,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: {
-    width: 400,
+    width: "100%",
     height: 600,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   actionGroup: {
     flexDirection: "row",
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     position: "absolute",
     right: 0,
-    top: 10,
+    top: -50,
     gap: 5,
   },
 });
