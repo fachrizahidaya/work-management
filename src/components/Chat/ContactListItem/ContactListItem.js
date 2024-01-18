@@ -144,7 +144,7 @@ const ContactListItem = ({
       <View
         style={{
           backgroundColor: "#959595",
-          width: 250,
+          width: 400,
         }}
       >
         <Pressable
@@ -155,7 +155,7 @@ const ContactListItem = ({
             onSwipe(chat);
           }}
           style={{
-            marginLeft: 150,
+            marginLeft: 300,
             padding: 20,
             alignItems: "center",
             justifyContent: "center",
