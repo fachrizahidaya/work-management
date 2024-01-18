@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -32,15 +32,21 @@ const LeaveRequestItem = ({
                 payload: {
                   children: (
                     <View
-                      style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, marginBottom: 20 }}
+                      style={{
+                        display: "flex",
+                        gap: 21,
+                        paddingHorizontal: 20,
+                        paddingVertical: 16,
+                      }}
                     >
                       <TouchableOpacity
                         onPress={async () => {
                           await SheetManager.hide("form-sheet");
                           onSelect(item);
                         }}
+                        style={styles.container}
                       >
-                        <Text style={[{ fontSize: 16 }, TextProps]}>Cancel Request</Text>
+                        <Text style={[{ fontSize: 14 }, TextProps]}>Cancel Request</Text>
                       </TouchableOpacity>
                     </View>
                   ),
@@ -118,3 +124,15 @@ const LeaveRequestItem = ({
 };
 
 export default LeaveRequestItem;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+});

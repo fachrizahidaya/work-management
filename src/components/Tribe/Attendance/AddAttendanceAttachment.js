@@ -72,20 +72,17 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
       }}
     >
       <View style={styles.wrapper}>
-        <View style={{ width: "100%", gap: 3 }}>
-          <View>
-            <Input
-              formik={formik}
-              title="Title"
-              fieldName="title"
-              placeHolder="Input title"
-              value={formik.values.title}
-            />
-          </View>
+        <View style={{ width: "100%", gap: 10 }}>
+          <Input
+            formik={formik}
+            title="Title"
+            fieldName="title"
+            placeHolder="Input title"
+            value={formik.values.title}
+          />
 
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
               <CustomDateTimePicker
                 limitStartDate={true}
                 forAttendanceAttachment={true}
@@ -93,18 +90,23 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 defaultValue={formik.values.begin_date}
                 onChange={onChangeStartDate}
                 month={month}
+                title="Start Date"
               />
-              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
+              {!formik.errors.begin_date ? null : (
+                <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
+              )}
             </View>
             <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
               <CustomDateTimePicker
                 width={180}
                 defaultValue={formik.values.end_date}
                 onChange={onChangeEndDate}
                 month={month}
+                title="End Date"
               />
-              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
+              {!formik.errors.end_date ? null : (
+                <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
+              )}
             </View>
           </View>
 
@@ -125,7 +127,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 color="#3F434A"
               />
             </Pressable>
-            <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+            {!formik.errors.attachment ? null : (
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+            )}
           </View>
 
           {!formik.values.attachment ? (

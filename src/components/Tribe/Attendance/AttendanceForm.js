@@ -101,20 +101,18 @@ const AttendanceForm = ({
       <View style={styles.wrapper}>
         {/* If employee ontime for Clock in and Clock out */}
         {hasClockInAndOut && (
-          <View style={{ width: "95%", gap: 3 }}>
-            <View style={{ width: "100%", gap: 5 }}>
-              <View style={styles.clock}>
-                <View>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeIn}</Text>
-                </View>
-                {!date?.timeOut ? null : (
-                  <View>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeOut}</Text>
-                  </View>
-                )}
+          <View style={{ width: "100%", gap: 10 }}>
+            <View style={styles.clock}>
+              <View>
+                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeIn}</Text>
               </View>
+              {!date?.timeOut ? null : (
+                <View>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeOut}</Text>
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -161,7 +159,7 @@ const AttendanceForm = ({
 
         {/* If report submitted for Late */}
         {hasSubmittedLateReport && (
-          <View style={{ width: "100%", gap: 5 }}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Clock
               titleDuty="On Duty"
               timeDuty={date?.onDuty}
@@ -194,7 +192,7 @@ const AttendanceForm = ({
 
         {/* If report submitted for Early */}
         {hasSubmittedEarlyReport && (
-          <View style={{ width: "100%", gap: 5 }}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Clock
               titleDuty="Off Duty"
               timeDuty={date?.offDuty}
@@ -226,7 +224,7 @@ const AttendanceForm = ({
 
         {/* If report submitted for Alpa */}
         {hasSubmittedReportAlpa && (
-          <View style={{ width: "100%", gap: 5 }}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Options
               formik={formik}
               title="Unattendance Type"
@@ -321,7 +319,7 @@ const AttendanceForm = ({
 
         {/* If Alpa */}
         {notAttend && (
-          <View style={{ width: "100%", gap: 15 }}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Options
               placeholder="Select Alpa Type"
               formik={formik}
@@ -350,11 +348,9 @@ const AttendanceForm = ({
 
         {/* If did not clock-in */}
         {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
-          <View style={{ width: "95%", gap: 3 }}>
-            <View style={{ width: "100%", gap: 15 }}>
-              <View>
-                <Text style={[{ fontSize: 14 }, TextProps]}>Please Clock-in</Text>
-              </View>
+          <View style={{ width: "100%", gap: 10 }}>
+            <View>
+              <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
             </View>
           </View>
         )}
@@ -444,7 +440,7 @@ const LateOrEarlyTime = ({
   fieldOption,
 }) => {
   return (
-    <View style={{ width: "100%", gap: 15 }}>
+    <View style={{ width: "100%", gap: 10 }}>
       <Clock
         titleDuty={titleDuty}
         timeDuty={timeDuty}
@@ -491,7 +487,7 @@ const LateAndEarlyTime = ({
   earlyTypes,
 }) => {
   return (
-    <View style={{ width: "100%", gap: 15 }}>
+    <View style={{ width: "100%", gap: 10 }}>
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
       {tabValue === "late" ? (
         <>
@@ -584,7 +580,7 @@ const LateAndEarlyTime = ({
 
 const LeaveOrPermit = ({ type, reason }) => {
   return (
-    <View style={{ width: "100%", gap: 15 }}>
+    <View style={{ width: "100%", gap: 10 }}>
       <View>
         <Text style={[{ fontSize: 12 }, TextProps]}>Attendance Type</Text>
         <Text style={[{ fontSize: 12 }, TextProps]}>{type}</Text>
