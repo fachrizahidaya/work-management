@@ -158,7 +158,6 @@ const FeedCardItem = ({
                                 gap: 21,
                                 paddingHorizontal: 20,
                                 paddingVertical: 16,
-                                paddingBottom: 40,
                               }}
                             >
                               <TouchableOpacity
@@ -167,9 +166,7 @@ const FeedCardItem = ({
                                   toggleEditModal();
                                 }}
                               >
-                                <View>
-                                  <Text style={[{ fontSize: 16 }, TextProps]}>Edit Post</Text>
-                                </View>
+                                <Text style={[TextProps]}>Edit Post</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={async () => {
@@ -177,9 +174,7 @@ const FeedCardItem = ({
                                   toggleDeleteModal();
                                 }}
                               >
-                                <View>
-                                  <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
-                                </View>
+                                <Text style={[{ fontSize: 14 }, TextProps]}>Delete Post</Text>
                               </TouchableOpacity>
                             </View>
                           ),

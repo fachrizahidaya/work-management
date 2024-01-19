@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -155,7 +155,6 @@ const NewFeedScreen = ({ route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
     });
 
@@ -195,79 +194,79 @@ const NewFeedScreen = ({ route }) => {
     <>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         {isReady ? (
-          <View style={styles.container}>
-            <PageHeader
-              title="New Post"
-              onPress={
-                formik.values.content || image !== null
-                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-                  : () => {
-                      !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
-                      formik.resetForm();
-                      setImage(null);
+          <ScrollView>
+            <View style={styles.container}>
+              <PageHeader
+                title="New Post"
+                onPress={
+                  formik.values.content || image !== null
+                    ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                    : () => {
+                        !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                        formik.resetForm();
+                        setImage(null);
+                      }
+                }
+              />
+              <ReturnConfirmationModal
+                isOpen={returnModalIsOpen}
+                toggle={toggleReturnModal}
+                onPress={() => {
+                  toggleReturnModal();
+                  navigation.goBack();
+                  setImage(null);
+                }}
+                description="Are you sure want to exit? It will be deleted."
+              />
+              <View style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? null : "center" }}>
+                <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
+                <View style={{ gap: 5 }}>
+                  <Button
+                    disabled={checkAccess ? false : true}
+                    padding={8}
+                    height={32}
+                    backgroundColor="#FFFFFF"
+                    onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
+                    borderRadius={15}
+                    variant="outline"
+                    children={
+                      <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                        {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
+                      </View>
                     }
-              }
-            />
-
-            <ReturnConfirmationModal
-              isOpen={returnModalIsOpen}
-              toggle={toggleReturnModal}
-              onPress={() => {
-                toggleReturnModal();
-                navigation.goBack();
-                setImage(null);
-              }}
-              description="Are you sure want to exit? It will be deleted."
-            />
-
-            <View style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? null : "center" }}>
-              <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
-              <View style={{ gap: 5 }}>
-                <Button
-                  disabled={checkAccess ? false : true}
-                  padding={8}
-                  height={32}
-                  backgroundColor="#FFFFFF"
-                  onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
-                  borderRadius={15}
-                  variant="outline"
-                  children={
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
-                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
+                  />
+                  {formik.values.type === "Public" ? (
+                    ""
+                  ) : (
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                      <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                      </Text>
                     </View>
-                  }
-                />
-                {formik.values.type === "Public" ? (
-                  ""
-                ) : (
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
-                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                      {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
-                    </Text>
-                  </View>
-                )}
+                  )}
+                </View>
               </View>
-            </View>
 
-            <NewFeedForm
-              formik={formik}
-              image={image}
-              setImage={setImage}
-              pickImageHandler={pickImageHandler}
-              employees={employees?.data}
-            />
-            <PostAction
-              publicToggleHandler={publicToggleHandler}
-              announcementToggleHandler={announcementToggleHandler}
-              isAnnouncementSelected={isAnnouncementSelected}
-              dateShown={dateShown}
-              endDateAnnouncementHandler={endDateAnnouncementHandler}
-              formik={formik}
-              reference={postActionScreenSheetRef}
-            />
-          </View>
+              <NewFeedForm
+                formik={formik}
+                image={image}
+                setImage={setImage}
+                pickImageHandler={pickImageHandler}
+                employees={employees?.data}
+              />
+              <PostAction
+                publicToggleHandler={publicToggleHandler}
+                announcementToggleHandler={announcementToggleHandler}
+                isAnnouncementSelected={isAnnouncementSelected}
+                dateShown={dateShown}
+                endDateAnnouncementHandler={endDateAnnouncementHandler}
+                formik={formik}
+                reference={postActionScreenSheetRef}
+              />
+            </View>
+          </ScrollView>
         ) : (
           <></> // handle if screen not ready
         )}
@@ -286,7 +285,6 @@ const styles = StyleSheet.create({
   },
   inputHeader: {
     flexDirection: "row",
-
     gap: 5,
     marginHorizontal: 2,
     marginTop: 22,

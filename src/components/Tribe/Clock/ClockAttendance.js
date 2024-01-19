@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -12,21 +13,27 @@ import Animated, {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ClockAttendance = ({ attendance, onClock }) => {
+  const [clockedIn, setClockedIn] = useState(false);
   const translateX = useSharedValue(0);
 
   const MIN_TRANSLATE_X = 180;
-  const parentWidth = 470;
+  if (Platform.OS === "ios") {
+    var parentWidth = 450;
+  } else {
+    var parentWidth = 470;
+  }
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
-      if (event.translationX > 0) {
+      if (event.translationX > 0 && !clockedIn) {
         translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
-      if (event.translationX > 0) {
+      if (event.translationX > 0 && !clockedIn) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
+          runOnJS(setClockedIn)(true);
         }
       }
       translateX.value = withTiming(0);
@@ -57,6 +64,13 @@ const ClockAttendance = ({ attendance, onClock }) => {
     };
   });
 
+  useEffect(() => {
+    const resetSuccess = setTimeout(() => {
+      setClockedIn(false);
+    }, 2000);
+    return () => clearTimeout(resetSuccess);
+  }, [clockedIn]);
+
   return (
     <View style={{ gap: 20 }}>
       <View
@@ -73,10 +87,10 @@ const ClockAttendance = ({ attendance, onClock }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            padding: 10,
+            padding: 20,
             backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
-            borderRadius: 5,
-            width: "48%",
+            borderRadius: 10,
+            width: "40%",
           }}
         >
           <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
@@ -90,10 +104,10 @@ const ClockAttendance = ({ attendance, onClock }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            padding: 10,
+            padding: 20,
             backgroundColor: attendance?.early ? "#feedaf" : "#daecfc",
-            borderRadius: 5,
-            width: "48%",
+            borderRadius: 10,
+            width: "40%",
           }}
         >
           <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
@@ -105,10 +119,10 @@ const ClockAttendance = ({ attendance, onClock }) => {
 
       <View
         style={{
-          backgroundColor: "#E8E9EB",
+          backgroundColor: clockedIn ? "#186688" : "#87878721",
           borderRadius: 60,
-          paddingVertical: 5,
-          paddingHorizontal: 5,
+          paddingVertical: 15,
+          paddingHorizontal: 10,
           position: "relative",
           flexDirection: "row",
           alignItems: "center",
@@ -116,9 +130,12 @@ const ClockAttendance = ({ attendance, onClock }) => {
       >
         <PanGestureHandler onGestureEvent={panGesture}>
           <Animated.View
-            style={[rTaskContainerStyle, { zIndex: 3, backgroundColor: "#FFFFFF", borderRadius: 50, padding: 6 }]}
+            style={[
+              rTaskContainerStyle,
+              { zIndex: 3, backgroundColor: clockedIn ? "#FFFFFF" : "#186688", borderRadius: 50, padding: 6 },
+            ]}
           >
-            <MaterialCommunityIcons name="chevron-right" size={60} color="#3F434A" />
+            <MaterialCommunityIcons name="chevron-right" size={50} color={clockedIn ? "#186688" : "#FFFFFF"} />
           </Animated.View>
         </PanGestureHandler>
 
@@ -134,7 +151,11 @@ const ClockAttendance = ({ attendance, onClock }) => {
             },
           ]}
         >
-          <Text style={{ fontSize: 16, opacity: 0.3 }}>Slide to {!attendance?.time_in ? "Clock-in" : "Clock-out"}</Text>
+          <Text style={{ fontSize: 16, fontWeight: "500", color: clockedIn ? "#FFFFFF" : "#186688" }}>
+            {clockedIn
+              ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
+              : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
+          </Text>
         </Animated.View>
       </View>
     </View>
@@ -142,12 +163,3 @@ const ClockAttendance = ({ attendance, onClock }) => {
 };
 
 export default ClockAttendance;
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 5,
-    borderRadius: 5,
-  },
-});

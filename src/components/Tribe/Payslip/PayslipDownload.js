@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Text, View } from "react-native";
+import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
@@ -43,22 +43,24 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, on
         reference.current?.hide();
       }}
     >
-      <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
-        <Input
-          formik={formik}
-          title="Password"
-          fieldName="password"
-          value={formik.values.password}
-          placeHolder="Enter your KSS password"
-          secureTextEntry={hidePassword}
-          endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
-          onPressEndIcon={() => setHidePassword(!hidePassword)}
-        />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
+          <Input
+            formik={formik}
+            title="Password"
+            fieldName="password"
+            value={formik.values.password}
+            placeHolder="Enter your KSS password"
+            secureTextEntry={hidePassword}
+            endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
+            onPressEndIcon={() => setHidePassword(!hidePassword)}
+          />
 
-        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-          <Text style={{ color: "#FFFFFF" }}>Download</Text>
-        </FormButton>
-      </View>
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <Text style={{ color: "#FFFFFF" }}>Download</Text>
+          </FormButton>
+        </View>
+      </TouchableWithoutFeedback>
     </ActionSheet>
   );
 };

@@ -116,8 +116,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
-    paddingBottom: 20,
     gap: 3,
   },
 });

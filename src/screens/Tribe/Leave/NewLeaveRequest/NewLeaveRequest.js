@@ -5,7 +5,15 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -243,67 +251,69 @@ const NewLeaveRequest = ({ route }) => {
   }, []);
 
   return (
-    <View>
-      {isReady ? (
-        <View style={{ ...styles.container, width: width, height: height }}>
-          <PageHeader
-            title="New Leave Request"
-            onPress={
-              formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-                ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-                : () => {
-                    !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
-                    navigation.goBack();
-                  }
-            }
-          />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View>
+        {isReady ? (
+          <View style={{ ...styles.container, width: width, height: height }}>
+            <PageHeader
+              title="New Leave Request"
+              onPress={
+                formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
+                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                  : () => {
+                      !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                      navigation.goBack();
+                    }
+              }
+            />
 
-          <ReturnConfirmationModal
-            isOpen={returnModalIsOpen}
-            toggle={toggleReturnModal}
-            onPress={() => {
-              toggleReturnModal();
-              navigation.navigate("Dashboard");
-            }}
-            description="Are you sure want to exit? It will be deleted"
-          />
+            <ReturnConfirmationModal
+              isOpen={returnModalIsOpen}
+              toggle={toggleReturnModal}
+              onPress={() => {
+                toggleReturnModal();
+                navigation.navigate("Dashboard");
+              }}
+              description="Are you sure want to exit? It will be deleted"
+            />
 
-          <View style={styles.history}>
-            {leaveHistoryIsFetching ? (
-              <View style={{ alignItems: "center", gap: 5 }}>
-                <ActivityIndicator />
-              </View>
-            ) : !availableLeaves ? (
-              <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
-            ) : (
-              availableLeaves?.map((item, index) => {
-                return (
-                  <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
-                    <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
-                    <Text style={styles.name}>{item.leave_name}</Text>
-                  </View>
-                );
-              })
-            )}
+            <View style={styles.history}>
+              {leaveHistoryIsFetching ? (
+                <View style={{ alignItems: "center", gap: 5 }}>
+                  <ActivityIndicator />
+                </View>
+              ) : !availableLeaves ? (
+                <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
+              ) : (
+                availableLeaves?.map((item, index) => {
+                  return (
+                    <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
+                      <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
+                      <Text style={styles.name}>{item.leave_name}</Text>
+                    </View>
+                  );
+                })
+              )}
+            </View>
+
+            <NewLeaveRequestForm
+              onSubmit={leaveRequestAddHandler}
+              formik={formik}
+              onChangeStartDate={onChangeStartDate}
+              onChangeEndDate={onChangeEndDate}
+              isLoading={isLoading}
+              isError={isError}
+              leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
+              reference={selectLeaveTypeScreenSheetRef}
+              handleSearch={handleSearch}
+              inputToShow={inputToShow}
+              setInputToShow={setInputToShow}
+              setSearchInput={setSearchInput}
+            />
           </View>
-
-          <NewLeaveRequestForm
-            onSubmit={leaveRequestAddHandler}
-            formik={formik}
-            onChangeStartDate={onChangeStartDate}
-            onChangeEndDate={onChangeEndDate}
-            isLoading={isLoading}
-            isError={isError}
-            leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
-            reference={selectLeaveTypeScreenSheetRef}
-            handleSearch={handleSearch}
-            inputToShow={inputToShow}
-            setInputToShow={setInputToShow}
-            setSearchInput={setSearchInput}
-          />
-        </View>
-      ) : null}
-    </View>
+        ) : null}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

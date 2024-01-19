@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -71,9 +71,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
         reference.current?.hide();
       }}
     >
-      <View style={styles.wrapper}>
-        <View style={{ width: "100%", gap: 3 }}>
-          <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.wrapper}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Input
               formik={formik}
               title="Title"
@@ -81,70 +81,76 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               placeHolder="Input title"
               value={formik.values.title}
             />
-          </View>
 
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
-              <CustomDateTimePicker
-                limitStartDate={true}
-                forAttendanceAttachment={true}
-                width={180}
-                defaultValue={formik.values.begin_date}
-                onChange={onChangeStartDate}
-                month={month}
-              />
-              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <View style={{ gap: 5 }}>
+                <CustomDateTimePicker
+                  limitStartDate={true}
+                  forAttendanceAttachment={true}
+                  width={180}
+                  defaultValue={formik.values.begin_date}
+                  onChange={onChangeStartDate}
+                  month={month}
+                  title="Start Date"
+                />
+                {!formik.errors.begin_date ? null : (
+                  <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
+                )}
+              </View>
+              <View style={{ gap: 5 }}>
+                <CustomDateTimePicker
+                  width={180}
+                  defaultValue={formik.values.end_date}
+                  onChange={onChangeEndDate}
+                  month={month}
+                  title="End Date"
+                />
+                {!formik.errors.end_date ? null : (
+                  <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
+                )}
+              </View>
             </View>
+
             <View style={{ gap: 5 }}>
-              <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
-              <CustomDateTimePicker
-                width={180}
-                defaultValue={formik.values.end_date}
-                onChange={onChangeEndDate}
-                month={month}
-              />
-              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
+              <Pressable onPress={onSelectFile} style={styles.attachment}>
+                <Text
+                  style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
+                </Text>
+                <MaterialCommunityIcons
+                  name="attachment"
+                  size={20}
+                  style={{ transform: [{ rotate: "-35deg" }] }}
+                  color="#3F434A"
+                />
+              </Pressable>
+              {!formik.errors.attachment ? null : (
+                <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+              )}
             </View>
-          </View>
 
-          <View style={{ gap: 5 }}>
-            <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
-            <Pressable onPress={onSelectFile} style={styles.attachment}>
-              <Text
-                style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
-              </Text>
-              <MaterialCommunityIcons
-                name="attachment"
-                size={20}
-                style={{ transform: [{ rotate: "-35deg" }] }}
-                color="#3F434A"
+            {!formik.values.attachment ? (
+              <FormButton
+                opacity={0.5}
+                disabled={true}
+                children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
+                fontColor="white"
               />
-            </Pressable>
-            <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+            ) : (
+              <FormButton
+                isSubmitting={formik.isSubmitting}
+                onPress={formik.handleSubmit}
+                children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
+                fontColor="white"
+              />
+            )}
           </View>
-
-          {!formik.values.attachment ? (
-            <FormButton
-              opacity={0.5}
-              disabled={true}
-              children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
-              fontColor="white"
-            />
-          ) : (
-            <FormButton
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-              children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
-              fontColor="white"
-            />
-          )}
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </ActionSheet>
   );
 };
