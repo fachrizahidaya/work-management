@@ -14,6 +14,7 @@ const MediaScreen = () => {
   const [documents, setDocuments] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [index, setIndex] = useState(null);
 
   const navigation = useNavigation();
   const route = useRoute();

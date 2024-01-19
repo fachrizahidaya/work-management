@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { SafeAreaView, View, Pressable, Text, Image } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../shared/AvatarPlaceholder";
@@ -98,9 +99,9 @@ const Header = () => {
         }}
       >
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
-          {routeName[1]?.name === "Chat List" && (
+          {/* {routeName[1]?.name === "Chat List" && (
             <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} color="#3F434A" />
-          )}
+          )} */}
           <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
 
           <View>

@@ -131,8 +131,10 @@ const ChatBubble = ({
 
   if (myMessage) {
     var MIN_TRANSLATEX = 50;
+    var parentWidth = 150;
   } else {
-    var MIN_TRANSLATEX = 100;
+    var MIN_TRANSLATEX = 60;
+    var parentWidth = 200;
   }
 
   const translateX = useSharedValue(0);
@@ -140,7 +142,7 @@ const ChatBubble = ({
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
-        translateX.value = event.translationX;
+        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATEX);
       }
     },
     onEnd: (event) => {
@@ -185,7 +187,7 @@ const ChatBubble = ({
             <Box ml={8}></Box>
           ) : null} */}
 
-      <PanGestureHandler onGestureEvent={panGesture}>
+      <PanGestureHandler onGestureEvent={!isDeleted && panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             style={{
@@ -237,8 +239,8 @@ const ChatBubble = ({
                           <Image
                             style={{
                               flex: 1,
-                              width: 260,
-                              height: 200,
+                              width: 250,
+                              height: 350,
                               resizeMode: "contain",
                               backgroundColor: "gray",
                             }}
@@ -285,12 +287,7 @@ const ChatBubble = ({
                 </Text>
               ) : myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={10}
-                    style={{ transform: [{ rotate: "90deg" }] }}
-                    color="#3F434A"
-                  />
+                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
                   >
@@ -299,12 +296,7 @@ const ChatBubble = ({
                 </View>
               ) : !myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={10}
-                    style={{ transform: [{ rotate: "90deg" }] }}
-                    color="#3F434A"
-                  />
+                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
                   >

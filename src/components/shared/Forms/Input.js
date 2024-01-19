@@ -27,6 +27,7 @@ const Input = ({
   width,
   onTouchStart,
   keyboardType,
+  borderColor,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -62,6 +63,7 @@ const Input = ({
             styles.input,
             style,
             {
+              borderColor: borderColor ? borderColor : "#E8E9EB",
               paddingLeft: startAdornment || startIcon ? 35 : 10,
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",
