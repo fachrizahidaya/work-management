@@ -146,7 +146,7 @@ const ClockAttendance = ({ attendance, onClock }) => {
         >
           <Text style={{ fontSize: 16, fontWeight: "500", color: clockedIn ? "#FFFFFF" : "#186688" }}>
             {clockedIn
-              ? `${!attendance?.time_in ? "Clock-in" : "Clock-out"} success!`
+              ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
               : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
           </Text>
         </Animated.View>
