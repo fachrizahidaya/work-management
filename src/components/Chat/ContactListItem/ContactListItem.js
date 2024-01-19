@@ -41,7 +41,6 @@ const ContactListItem = ({
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [activeView, setActiveView] = useState(null);
   const swipeableRef = useRef(null);
-  console.log("a", activeView);
 
   const memberName = selectedGroupMembers.map((item) => {
     return item?.user?.name;
