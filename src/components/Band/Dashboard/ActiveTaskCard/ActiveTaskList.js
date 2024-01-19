@@ -54,7 +54,7 @@ const ActiveTaskList = ({ id, task, title, responsible, image, status, priority,
             />
           </Pressable>
           <Text
-            style={[{ textDecorationLine: status === "Closed" ? "line-through" : "none", width: 180 }, TextProps]}
+            style={[{ textDecorationLine: status === "Closed" ? "line-through" : "none", width: 120 }, TextProps]}
             numberOfLines={1}
           >
             {title}
