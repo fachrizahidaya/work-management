@@ -166,7 +166,7 @@ const FeedCardItem = ({
                                   toggleEditModal();
                                 }}
                               >
-                                <Text style={[{ fontSize: 14 }, TextProps]}>Edit Post</Text>
+                                <Text style={[TextProps]}>Edit Post</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={async () => {
