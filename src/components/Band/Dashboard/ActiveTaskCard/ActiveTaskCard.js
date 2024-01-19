@@ -21,7 +21,6 @@ const ActiveTaskCard = () => {
   const { isOpen: openMore, toggle: toggleMore, close: closeMore } = useDisclosure(false);
 
   const { data: tasks, isLoading, refetch } = useFetch(`/pm/tasks/${status}`, [status], { limit: 10 });
-  const { data: allTasks, isLoading: allTasksLoading } = useFetch(openMore && `/pm/tasks/${status}`);
 
   const onPressTaskItem = (id) => {
     navigation.navigate("Task Detail", { taskId: id });
@@ -143,40 +142,6 @@ const ActiveTaskCard = () => {
         hasSuccessFunc
         onSuccess={refetch}
       />
-
-      {/* More tasks modal */}
-      {/* {openMore && (
-        <Modal isOpen={openMore} onClose={toggleMore} size="xl">
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>
-              <Text bold>This {status} tasks</Text>
-            </Modal.Header>
-            <Modal.Body>
-              {!allTasksLoading ? (
-                allTasks?.data?.length > 0 &&
-                allTasks.data.map((task) => {
-                  return (
-                    <ActiveTaskList
-                      id={task.id}
-                      key={task.id}
-                      task={task}
-                      title={task.title}
-                      responsible={task.responsible_name}
-                      status={task.status}
-                      priority={task.priority}
-                      onPress={openCloseModal}
-                      onPressItem={onPressTaskItem}
-                    />
-                  );
-                })
-              ) : (
-                <Skeleton h={41} />
-              )}
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
-      )} */}
     </>
   );
 };

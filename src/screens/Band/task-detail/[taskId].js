@@ -39,9 +39,9 @@ const TaskDetailScreen = ({ route }) => {
   const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
-  const onOpenTaskForm = useCallback(() => {
+  const onOpenTaskForm = () => {
     navigation.navigate("Task Form", { taskData: selectedTask?.data, refetch: refetchSelectedTask });
-  }, []);
+  };
 
   /**
    * Handles take task as responsible
