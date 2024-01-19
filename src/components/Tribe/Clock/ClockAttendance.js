@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -25,12 +25,12 @@ const ClockAttendance = ({ attendance, onClock }) => {
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
-      if (event.translationX > 0) {
+      if (event.translationX > 0 && !clockedIn) {
         translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
-      if (event.translationX > 0) {
+      if (event.translationX > 0 && !clockedIn) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
           runOnJS(setClockedIn)(true);
@@ -63,6 +63,13 @@ const ClockAttendance = ({ attendance, onClock }) => {
       opacity: textOpacity.value,
     };
   });
+
+  useEffect(() => {
+    const resetSuccess = setTimeout(() => {
+      setClockedIn(false);
+    }, 2000);
+    return () => clearTimeout(resetSuccess);
+  }, [clockedIn]);
 
   return (
     <View style={{ gap: 20 }}>
