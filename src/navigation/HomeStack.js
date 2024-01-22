@@ -26,7 +26,7 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
-import PerformanceListScreen from "../components/Tribe/Performance/OngoingPerformance/PerformanceListScreen";
+import PerformanceListScreen from "../screens/Tribe/Performance/PerformanceListScreen";
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
