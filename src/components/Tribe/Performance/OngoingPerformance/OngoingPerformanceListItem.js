@@ -1,33 +1,39 @@
 import React from "react";
+import dayjs from "dayjs";
+
 import { Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingPerformanceListItem = ({ type, period, start_date, end_date }) => {
+const OngoingPerformanceListItem = ({ start_date, end_date }) => {
   return (
     <View
       style={{
         ...card.card,
-        borderWidth: 1,
-        shadowOffset: 1,
-        borderColor: "#E8E9EB",
         marginVertical: 5,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        elevation: 1,
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 10,
       }}
     >
+      <Text
+        style={[{ paddingVertical: 5, paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15 }, TextProps]}
+      >
+        Pending
+      </Text>
       <View>
-        <Text style={{ fontSize: 14, fontWeight: "500", opacity: 0.5 }}>
-          Quarter {period} • {type}
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{start_date} </Text>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{end_date}</Text>
-        </View>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
+        <Text style={[TextProps]}>Front End Developer</Text>
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={20} />
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
+        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(start_date).format("DD MMM YYYY")} to</Text>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(end_date).format("DD MMM YYYY")}</Text>
+      </View>
     </View>
   );
 };

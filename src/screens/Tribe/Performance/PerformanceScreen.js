@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
+import { useNavigation } from "@react-navigation/native";
 
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
@@ -8,12 +9,29 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Select from "../../../components/shared/Forms/Select.js";
-import OngoingPerformanceList from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceList.js";
+import PerformanceListScreen from "../../../components/Tribe/Performance/OngoingPerformance/PerformanceListScreen.js";
 import HistoryPerformanceList from "../../../components/Tribe/Performance/HistoryPerformance/HistoryPerformanceList.js";
+import { card } from "../../../styles/Card.js";
+import { TextProps } from "../../../components/shared/CustomStylings.js";
 
 const PerformanceScreen = () => {
   const [filterYear, setFilterYear] = useState(dayjs().format("YYYY"));
   const [performanceType, setPerformanceType] = useState(null);
+
+  const navigation = useNavigation();
+
+  const tabs = useMemo(() => {
+    return [
+      { title: "Ongoing", value: "Ongoing" },
+      { title: "Archived", value: "Archived" },
+    ];
+  }, []);
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setOngoingList([]);
+    setArchivedList([]);
+  }, []);
 
   const ongoingData = [
     {
@@ -108,122 +126,60 @@ const PerformanceScreen = () => {
       <View style={styles.header}>
         <PageHeader width={200} title="My Performance" backButton={false} />
       </View>
+
       <View
         style={{
-          gap: 15,
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-          borderRadius: 10,
-          backgroundColor: "#FFFFFF",
-          marginVertical: 10,
-          marginHorizontal: 10,
+          flex: 1,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>Ongoing</Text>
-          <Pressable
-            style={{ padding: 5, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}
-            onPress={() =>
-              SheetManager.show("form-sheet", {
-                payload: {
-                  children: (
-                    <View
-                      style={{
-                        display: "flex",
-                        gap: 21,
-                        paddingHorizontal: 20,
-                        paddingVertical: 16,
-                        paddingBottom: 40,
-                      }}
-                    >
-                      <Select
-                        value={performanceType}
-                        placeHolder={performanceType ? performanceType : "Select Type"}
-                        items={[
-                          { value: null, label: "All" },
-                          { value: "kpi", label: "KPI" },
-                          { value: "appraisal", label: "Appraisal" },
-                          // ...(Array.isArray(members) &&
-                          // members.map((member) => {
-                          //   return {
-                          //     value: member.user_id || member.responsible_id,
-                          //     label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
-                          //   };
-                          // })),
-                        ]}
-                        onChange={(value) => setPerformanceType(value)}
-                        hasParentSheet
-                      />
-                    </View>
-                  ),
-                },
-              })
-            }
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
-            </View>
-          </Pressable>
+        <Pressable
+          style={{
+            ...card.card,
+            marginVertical: 5,
+            elevation: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            width: 100,
+          }}
+          onPress={() => navigation.navigate("KPI Screen")}
+        >
+          <Text style={[{}, TextProps]}>KPI</Text>
+          <MaterialCommunityIcons name="file-check-outline" size={30} />
+        </Pressable>
+        <View
+          style={{
+            ...card.card,
+            marginVertical: 5,
+            elevation: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            width: 100,
+          }}
+        >
+          <Text style={[{}, TextProps]}>Appraisal</Text>
+          <MaterialCommunityIcons name="file-chart-outline" size={30} />
         </View>
-        <OngoingPerformanceList data={ongoingData} />
-      </View>
-      <View
-        style={{
-          gap: 15,
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-          borderRadius: 10,
-          backgroundColor: "#FFFFFF",
-          marginVertical: 10,
-          marginHorizontal: 10,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>History</Text>
-          <Pressable
-            style={{ padding: 5, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}
-            onPress={() =>
-              SheetManager.show("form-sheet", {
-                payload: {
-                  children: (
-                    <View
-                      style={{
-                        display: "flex",
-                        gap: 21,
-                        paddingHorizontal: 20,
-                        paddingVertical: 16,
-                        paddingBottom: 40,
-                      }}
-                    >
-                      <Select
-                        value={filterYear}
-                        placeHolder={filterYear ? filterYear : "Select Year"}
-                        items={[
-                          { value: 2024, label: 2024 },
-                          { value: 2023, label: 2023 },
-                          // ...(Array.isArray(members) &&
-                          // members.map((member) => {
-                          //   return {
-                          //     value: member.user_id || member.responsible_id,
-                          //     label: member?.member_name?.split(" ")[0] || member.responsible_name.split(" ")[0],
-                          //   };
-                          // })),
-                        ]}
-                        onChange={(value) => setFilterYear(value)}
-                        hasParentSheet
-                      />
-                    </View>
-                  ),
-                },
-              })
-            }
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
-            </View>
-          </Pressable>
+        <View
+          style={{
+            ...card.card,
+            marginVertical: 5,
+            elevation: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            width: 100,
+          }}
+        >
+          <Text style={[{}, TextProps]}>Review</Text>
+          <MaterialCommunityIcons name="file-account-outline" size={30} />
         </View>
-        <HistoryPerformanceList data={historyData} />
       </View>
     </SafeAreaView>
   );
@@ -234,7 +190,7 @@ export default PerformanceScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f1f1f1",
     position: "relative",
   },
   header: {

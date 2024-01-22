@@ -26,6 +26,7 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
+import PerformanceListScreen from "../components/Tribe/Performance/OngoingPerformance/PerformanceListScreen";
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
@@ -48,7 +49,6 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import PerformanceHistoryDetail from "../screens/Tribe/Performance/PerformanceHistoryDetail";
 
 const Stack = createStackNavigator();
 
@@ -163,11 +163,7 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen
-        name="Performance Detail"
-        component={PerformanceHistoryDetail}
-        options={{ header: () => <Header /> }}
-      />
+      <Stack.Screen name="KPI Screen" component={PerformanceListScreen} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
       <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
