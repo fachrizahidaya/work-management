@@ -14,6 +14,7 @@ import CalendarScreen from "../../screens/Band/Calendar";
 import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
 import BandAddNewSheet from "../../components/shared/ActionSheet/BandAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
+import GlobalSearch from "../../screens/Band/GlobalSearch";
 
 const Tab = createBottomTabNavigator();
 
@@ -54,15 +55,32 @@ const BandTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
+                <MaterialCommunityIcons name="home-outline" size={20} color="#3F434A" />
               </View>
             ),
-            tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => bandScreenSheetRef.current?.show()}>
-                {props.children}
-              </TouchableOpacity>
-            ),
           }}
+        />
+        <Tab.Screen
+          name="Search"
+          component={EmptyScreen}
+          options={{
+            tabBarIcon: ({ size, color }) => (
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
+              </View>
+            ),
+            // tabBarButton: (props) => (
+            //   <TouchableOpacity {...props} onPress={() => bandAddNewSheetRef.current?.show()}>
+            //     {props.children}
+            //   </TouchableOpacity>
+            // ),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.navigate("Global Search");
+            },
+          })}
         />
         <Tab.Screen
           name="Add"
@@ -81,13 +99,18 @@ const BandTab = () => {
           }}
         />
         <Tab.Screen
-          name="Setting Band"
-          component={SettingScreen}
+          name="Screen List"
+          component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="cog-outline" size={20} color="#3F434A" />
+                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
               </View>
+            ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} onPress={() => bandScreenSheetRef.current?.show()}>
+                {props.children}
+              </TouchableOpacity>
             ),
           }}
         />
