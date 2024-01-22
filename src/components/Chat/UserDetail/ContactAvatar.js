@@ -15,7 +15,6 @@ const ContactAvatar = ({ navigation, roomId, type, name, image, position, curren
             style={styles.editPicture}
             onPress={() =>
               navigation.navigate("Edit Group", {
-                type: type,
                 name: name,
                 image: image,
                 roomId: roomId,

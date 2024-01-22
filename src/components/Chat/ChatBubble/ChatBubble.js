@@ -46,12 +46,15 @@ const ChatBubble = ({
 }) => {
   const myMessage = userSelector?.id === fromUserId;
 
+  const imgTypes = ["jpg", "jpeg", "png"];
+
+  /**
+   * Handle showing mention chat
+   */
   for (let i = 0; i < memberName.length; i++) {
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     content = content?.replace(placeholder, `@${memberName[i]}`);
   }
-
-  const imgTypes = ["jpg", "jpeg", "png"];
 
   var allWords = [];
 
@@ -129,6 +132,9 @@ const ChatBubble = ({
     return typeArr.pop();
   };
 
+  /**
+   * Handle for minimum offset slide to reply and maximum lane
+   */
   if (myMessage) {
     var MIN_TRANSLATEX = 50;
     var parentWidth = 150;
@@ -139,6 +145,9 @@ const ChatBubble = ({
 
   const translateX = useSharedValue(0);
 
+  /**
+   * Handle slide animation chatBubble
+   */
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
@@ -155,6 +164,9 @@ const ChatBubble = ({
     },
   });
 
+  /**
+   * Handle translate for chatBubble
+   */
   const rTaskContainerStyle = useAnimatedStyle(() => {
     const limitedTranslateX = Math.max(translateX.value, 0);
     return {

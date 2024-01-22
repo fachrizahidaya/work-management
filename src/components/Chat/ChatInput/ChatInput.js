@@ -134,7 +134,7 @@ const ChatInput = ({
     const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 200 }}>
+      <View style={{ height: 100 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
