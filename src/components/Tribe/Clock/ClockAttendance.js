@@ -8,12 +8,15 @@ import Animated, {
   withTiming,
   runOnJS,
   useDerivedValue,
+  interpolateColor,
 } from "react-native-reanimated";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ClockAttendance = ({ attendance, onClock }) => {
   const [clockedIn, setClockedIn] = useState(false);
+  const [change, setChange] = useState(false);
+  const [success, setSuccess] = useState(false);
   const translateX = useSharedValue(0);
 
   const MIN_TRANSLATE_X = 180;
@@ -25,15 +28,16 @@ const ClockAttendance = ({ attendance, onClock }) => {
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
-      if (event.translationX > 0 && !clockedIn) {
+      if (event.translationX > 0) {
         translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
-      if (event.translationX > 0 && !clockedIn) {
+      if (event.translationX > 0) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
           runOnJS(setClockedIn)(true);
+          runOnJS(setSuccess)(true);
         }
       }
       translateX.value = withTiming(0);
@@ -42,13 +46,39 @@ const ClockAttendance = ({ attendance, onClock }) => {
 
   const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
 
+  const rContainerStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      ["#87878721", "#186688"]
+    );
+
+    return {
+      transform: [],
+      backgroundColor: success ? "#186688" : backgroundColor,
+    };
+  });
+
   const rTaskContainerStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      ["#186688", "#FFFFFF"]
+    );
+    const iconTintColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      ["#186688", "#FFFFFF"]
+    );
+
     return {
       transform: [
         {
           translateX: limitedTranslateX.value,
         },
       ],
+      backgroundColor: success ? "#FFFFFF" : backgroundColor,
+      tintColor: iconTintColor,
     };
   });
 
@@ -59,17 +89,25 @@ const ClockAttendance = ({ attendance, onClock }) => {
   });
 
   const textContainerStyle = useAnimatedStyle(() => {
+    const textColor = success ? "#FFFFFF" : "#186688";
+    const backgroundColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      [textColor, success ? "#FFFFFF" : "#186688"]
+    );
+
     return {
       opacity: textOpacity.value,
+      color: textColor,
     };
   });
 
   useEffect(() => {
     const resetSuccess = setTimeout(() => {
-      setClockedIn(false);
-    }, 2000);
+      setSuccess(false);
+    }, 3000);
     return () => clearTimeout(resetSuccess);
-  }, [clockedIn]);
+  }, [success]);
 
   return (
     <View style={{ gap: 20 }}>
@@ -117,25 +155,33 @@ const ClockAttendance = ({ attendance, onClock }) => {
         </View>
       </View>
 
-      <View
-        style={{
-          backgroundColor: clockedIn ? "#186688" : "#87878721",
-          borderRadius: 60,
-          paddingVertical: 15,
-          paddingHorizontal: 10,
-          position: "relative",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
+      <Animated.View
+        style={[
+          {
+            backgroundColor: success ? "#186688" : "#87878721",
+            borderRadius: 60,
+            paddingVertical: 15,
+            paddingHorizontal: 10,
+            position: "relative",
+            flexDirection: "row",
+            alignItems: "center",
+          },
+          rContainerStyle,
+        ]}
       >
         <PanGestureHandler onGestureEvent={panGesture}>
           <Animated.View
             style={[
               rTaskContainerStyle,
-              { zIndex: 3, backgroundColor: clockedIn ? "#FFFFFF" : "#186688", borderRadius: 50, padding: 6 },
+              {
+                zIndex: 3,
+                backgroundColor: success ? "#FFFFFF" : "#186688",
+                borderRadius: 50,
+                padding: 6,
+              },
             ]}
           >
-            <MaterialCommunityIcons name="chevron-right" size={50} color={clockedIn ? "#186688" : "#FFFFFF"} />
+            <MaterialCommunityIcons name="chevron-right" size={50} color={success ? "#186688" : "#FFFFFF"} />
           </Animated.View>
         </PanGestureHandler>
 
@@ -151,13 +197,13 @@ const ClockAttendance = ({ attendance, onClock }) => {
             },
           ]}
         >
-          <Text style={{ fontSize: 16, fontWeight: "500", color: clockedIn ? "#FFFFFF" : "#186688" }}>
-            {clockedIn
+          <Text style={{ fontSize: 16, fontWeight: "500", color: success ? "#FFFFFF" : "#186688" }}>
+            {success
               ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
               : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
           </Text>
         </Animated.View>
-      </View>
+      </Animated.View>
     </View>
   );
 };

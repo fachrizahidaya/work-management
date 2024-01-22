@@ -45,6 +45,7 @@ const SelectWithSearch = ({
             setSearchInput("");
             setInputToShow("");
           }}
+          containerStyle={{ height: 550 }}
         >
           <View style={{ paddingHorizontal: 20, paddingVertical: 16, gap: 21, paddingBottom: 40 }}>
             <Input
