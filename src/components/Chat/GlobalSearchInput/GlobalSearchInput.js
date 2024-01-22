@@ -15,7 +15,7 @@ const GlobalSearchInput = ({ setGlobalKeyword, globalKeyword, searchFormRef }) =
   );
 
   return (
-    <View style={{ flex: 1, paddingVertical: 10, paddingHorizontal: 5 }}>
+    <View style={{ flex: 1, padding: 10 }}>
       <Input
         innerRef={searchFormRef}
         placeHolder="Search..."

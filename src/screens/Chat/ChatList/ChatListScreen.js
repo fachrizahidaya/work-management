@@ -22,6 +22,7 @@ import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSe
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import PageHeader from "../../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
   const [personalChats, setPersonalChats] = useState([]);
@@ -264,19 +265,15 @@ const ChatListScreen = () => {
         <>
           <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 8 }}>
-                <MaterialCommunityIcons
-                  name="chevron-left"
-                  size={20}
-                  onPress={() => navigation.goBack()}
-                  color="#3F434A"
-                />
-                <GlobalSearchInput
-                  globalKeyword={globalKeyword}
-                  setGlobalKeyword={setGlobalKeyword}
-                  searchFormRef={searchFromRef}
-                />
+              <View style={{ padding: 10 }}>
+                <PageHeader title="Chats" onPress={() => navigation.goBack()} />
               </View>
+
+              <GlobalSearchInput
+                globalKeyword={globalKeyword}
+                setGlobalKeyword={setGlobalKeyword}
+                searchFormRef={searchFromRef}
+              />
 
               <GroupSection
                 groupChats={groupChats}
