@@ -68,7 +68,7 @@ const ClockAttendance = ({ attendance, onClock }) => {
     const iconTintColor = interpolateColor(
       limitedTranslateX.value,
       [0, parentWidth - MIN_TRANSLATE_X],
-      ["#186688", "#FFFFFF"]
+      ["#186688", success ? "#FFFFFF" : "#186688"]
     );
 
     return {
