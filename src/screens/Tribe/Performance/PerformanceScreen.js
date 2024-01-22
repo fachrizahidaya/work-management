@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Select from "../../../components/shared/Forms/Select.js";
-import PerformanceListScreen from "../../../components/Tribe/Performance/OngoingPerformance/PerformanceListScreen.js";
+import PerformanceListScreen from "../../Tribe/Performance/PerformanceListScreen.js";
 import HistoryPerformanceList from "../../../components/Tribe/Performance/HistoryPerformance/HistoryPerformanceList.js";
 import { card } from "../../../styles/Card.js";
 import { TextProps } from "../../../components/shared/CustomStylings.js";
