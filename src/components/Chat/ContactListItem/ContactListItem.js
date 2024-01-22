@@ -42,10 +42,16 @@ const ContactListItem = ({
   const [activeView, setActiveView] = useState(null);
   const swipeableRef = useRef(null);
 
+  /**
+   * Handle for mention name in group member
+   */
   const memberName = selectedGroupMembers.map((item) => {
     return item?.user?.name;
   });
 
+  /**
+   * Handle showing mention chat
+   */
   for (let i = 0; i < memberName.length; i++) {
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     message = message?.replace(placeholder, `@${memberName[i]}`);
@@ -110,6 +116,10 @@ const ContactListItem = ({
     return text;
   };
 
+  /**
+   * left view after swipe handler
+   * @returns
+   */
   const renderLeftView = () => {
     return (
       <Pressable
@@ -133,6 +143,10 @@ const ContactListItem = ({
     );
   };
 
+  /**
+   * left view after swipe handler
+   * @returns
+   */
   const renderRightView = () => {
     return (
       <Pressable
@@ -156,6 +170,10 @@ const ContactListItem = ({
     );
   };
 
+  /**
+   * backgroundColor view handler when swipe
+   * @returns
+   */
   const getBackgroundColor = () => {
     if (activeView === "left") {
       return "#377893";

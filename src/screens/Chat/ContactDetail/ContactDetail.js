@@ -107,6 +107,12 @@ const ContactDetail = () => {
     refetch: refetchDocument,
   } = useFetch(`/chat/${type}/${roomId}/docs`);
 
+  /**
+   * Handle clear chat
+   * @param {*} id
+   * @param {*} type
+   * @param {*} itemName
+   */
   const clearChatMessageHandler = async (id, type, itemName) => {
     try {
       toggleClearMessage();
@@ -217,6 +223,10 @@ const ContactDetail = () => {
     []
   );
 
+  /**
+   * Handle select new member to the group
+   * @param {*} user
+   */
   const addSelectedUserToArray = (user) => {
     setSelectedUsers((prevState) => {
       if (!prevState?.find((val) => val.id === user.id)) {

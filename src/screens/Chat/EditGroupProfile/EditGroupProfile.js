@@ -34,7 +34,7 @@ const EditGroupProfile = () => {
 
   const route = useRoute();
 
-  const { type, name, image, roomId } = route.params;
+  const { name, image, roomId } = route.params;
 
   const editGroupNameHandler = () => {
     setEditName(!editName);

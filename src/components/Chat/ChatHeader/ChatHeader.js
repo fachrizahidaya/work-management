@@ -38,9 +38,10 @@ const ChatHeader = ({
   searchFormRef,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [inputToShow, setInputToShow] = useState("");
 
+  /**
+   * Handle for member name in chatHeader
+   */
   const membersName = selectedGroupMembers.map((item) => {
     const name = !item?.user
       ? loggedInUser === item?.id
@@ -55,11 +56,6 @@ const ChatHeader = ({
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
-  };
-
-  const clearSearch = () => {
-    setInputToShow("");
-    setSearchInput("");
   };
 
   return (
@@ -117,7 +113,7 @@ const ChatHeader = ({
                       style={[
                         {
                           fontSize: 10,
-                          width: 250,
+                          width: 200,
                           overflow: "hidden",
                         },
                         TextProps,
