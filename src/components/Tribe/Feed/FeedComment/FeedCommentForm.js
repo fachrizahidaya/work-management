@@ -7,12 +7,9 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
 
 const FeedCommentForm = ({
-  postId,
   loggedEmployeeImage,
   parentId,
-  onSubmit,
   loggedEmployeeName,
-  employees,
   renderSuggestions,
   handleChange,
   formik,
