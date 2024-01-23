@@ -194,7 +194,7 @@ const NewFeedScreen = ({ route }) => {
     <>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         {isReady ? (
-          <ScrollView>
+          <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
             <View style={styles.container}>
               <PageHeader
                 title="New Post"

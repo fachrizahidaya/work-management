@@ -1,71 +1,22 @@
 import { useEffect, useState } from "react";
-import { useFormik } from "formik";
-import * as yup from "yup";
 
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
-import { FlashList } from "@shopify/flash-list";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
 
-const FeedCommentForm = ({ postId, loggedEmployeeImage, parentId, onSubmit, loggedEmployeeName, employees }) => {
-  const [suggestions, setSuggestions] = useState([]);
-
-  const employeeData = employees.map(({ id, username }) => ({ id, name: username }));
-
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
-    if (keyword == null || keyword === "@@" || keyword === "@#") {
-      return null;
-    }
-    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
-
-    return (
-      <View style={{ height: 200 }}>
-        <FlashList
-          data={data}
-          onEndReachedThreshold={0.1}
-          keyExtractor={(item, index) => index}
-          estimatedItemSize={200}
-          renderItem={({ item, index }) => (
-            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
-            </Pressable>
-          )}
-        />
-      </View>
-    );
-  };
-
-  const handleChange = (value) => {
-    formik.handleChange("comments")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
-  };
-
-  /**
-   * Create a new post handler
-   */
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      post_id: postId || "",
-      comments: "",
-      parent_id: parentId || "",
-    },
-    // validationSchema: yup.object().shape({
-    //   comments: yup.string().required("Comments is required"),
-    // }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
-      const modifiedContent = values.comments.replace(mentionRegex, "@$1");
-      values.comments = modifiedContent;
-      onSubmit(values, setSubmitting, setStatus);
-    },
-  });
-
+const FeedCommentForm = ({
+  postId,
+  loggedEmployeeImage,
+  parentId,
+  onSubmit,
+  loggedEmployeeName,
+  employees,
+  renderSuggestions,
+  handleChange,
+  formik,
+}) => {
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       formik.resetForm();
@@ -114,7 +65,7 @@ export default FeedCommentForm;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
     gap: 3,
   },

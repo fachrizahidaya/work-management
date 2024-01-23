@@ -81,66 +81,68 @@ const ContactScreen = () => {
   }, [employeeData]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
+    <>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.header}>
+            <View style={{ flexDirection: "row", gap: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.search} backgroundColor="#FFFFFF">
-          <Input
-            value={inputToShow}
-            fieldName="search"
-            startIcon="magnify"
-            endIcon={inputToShow && "close-circle-outline"}
-            onPressEndIcon={() => {
-              setInputToShow("");
-              setSearchInput("");
-            }}
-            onChangeText={(value) => {
-              handleSearch(value);
-              setInputToShow(value);
-            }}
-            placeHolder="Search contact"
-            height={40}
-          />
-        </View>
+          <View style={styles.search} backgroundColor="#FFFFFF">
+            <Input
+              value={inputToShow}
+              fieldName="search"
+              startIcon="magnify"
+              endIcon={inputToShow && "close-circle-outline"}
+              onPressEndIcon={() => {
+                setInputToShow("");
+                setSearchInput("");
+              }}
+              onChangeText={(value) => {
+                handleSearch(value);
+                setInputToShow(value);
+              }}
+              placeHolder="Search contact"
+              height={40}
+            />
+          </View>
 
-        {/* Content here */}
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
-          <FlashList
-            data={contacts.length ? contacts : filteredDataArray}
-            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            keyExtractor={(item, index) => index}
-            onEndReachedThreshold={0.1}
-            estimatedItemSize={60}
-            onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-            ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
-            renderItem={({ item, index }) => (
-              <ContactList
-                key={index}
-                id={item?.id}
-                name={item?.name}
-                position={item?.position_name}
-                image={item?.image}
-                phone={item?.phone_number}
-                email={item?.email}
-                user={item?.user}
-                user_id={item?.user?.id}
-                room_id={item?.chat_personal_id}
-                user_name={item?.user?.name}
-                user_type={item?.user?.user_type}
-                user_image={item?.user?.image}
-                loggedEmployeeId={userSelector?.user_role_id}
-                navigation={navigation}
-              />
-            )}
-          />
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+          {/* Content here */}
+          <View style={{ flex: 1, paddingHorizontal: 10 }}>
+            <FlashList
+              data={contacts.length ? contacts : filteredDataArray}
+              onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+              keyExtractor={(item, index) => index}
+              onEndReachedThreshold={0.1}
+              estimatedItemSize={60}
+              onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
+              ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
+              renderItem={({ item, index }) => (
+                <ContactList
+                  key={index}
+                  id={item?.id}
+                  name={item?.name}
+                  position={item?.position_name}
+                  image={item?.image}
+                  phone={item?.phone_number}
+                  email={item?.email}
+                  user={item?.user}
+                  user_id={item?.user?.id}
+                  room_id={item?.chat_personal_id}
+                  user_name={item?.user?.name}
+                  user_type={item?.user?.user_type}
+                  user_image={item?.user?.image}
+                  loggedEmployeeId={userSelector?.user_role_id}
+                  navigation={navigation}
+                />
+              )}
+            />
+          </View>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </>
   );
 };
 
