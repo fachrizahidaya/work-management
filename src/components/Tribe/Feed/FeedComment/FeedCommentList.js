@@ -23,7 +23,7 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <View style={{ height: 300 }}>
+      <View style={{ height: 250 }}>
         <FlashList
           data={comments}
           keyExtractor={(item, index) => item.id}

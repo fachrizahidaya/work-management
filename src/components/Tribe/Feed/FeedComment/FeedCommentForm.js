@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
@@ -43,7 +43,13 @@ const FeedCommentForm = ({
         ]}
         multiline
         placeholder="Type here..."
-        style={{ padding: 5, borderRadius: 10, width: 320, borderWidth: 1, borderColor: "#DBDBDB", height: 40 }}
+        style={{
+          padding: 5,
+          borderRadius: 10,
+          width: Platform.OS === "ios" ? 280 : 320,
+          borderWidth: 1,
+          borderColor: "#DBDBDB",
+        }}
       />
 
       <FormButton
