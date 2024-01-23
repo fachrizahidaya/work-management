@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
-import { FlashList } from "@shopify/flash-list";
-import KPIDetailItem from "../../../components/Tribe/Performance/KPIDetailItem";
+import OngoingAppraisalListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
 
-const KPIScreen = () => {
+const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
@@ -65,9 +67,10 @@ const KPIScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="KPI" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Appraisal" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
           <FlashList
@@ -76,7 +79,7 @@ const KPIScreen = () => {
             onEndReachedThreshold={0.1}
             keyExtractor={(item, index) => index}
             renderItem={({ item, index }) => (
-              <KPIDetailItem
+              <OngoingAppraisalListItem
                 key={index}
                 start_date={item?.startDate}
                 end_date={item?.endDate}
@@ -90,7 +93,7 @@ const KPIScreen = () => {
   );
 };
 
-export default KPIScreen;
+export default AppraisalListScreen;
 
 const styles = StyleSheet.create({
   container: {

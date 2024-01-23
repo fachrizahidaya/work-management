@@ -27,6 +27,9 @@ import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequ
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 import PerformanceListScreen from "../screens/Tribe/Performance/PerformanceListScreen";
+import AppraisalListScreen from "../screens/Tribe/Performance/AppraisalListScreen";
+import KPIScreen from "../screens/Tribe/Performance/KPIScreen";
+import AppraisalScreen from "../screens/Tribe/Performance/AppraisalScreen";
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
@@ -164,6 +167,12 @@ const HomeStack = () => {
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="KPI Screen" component={PerformanceListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
       <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />

@@ -8,7 +8,7 @@ import OngoingPerformanceListItem from "../../../components/Tribe/Performance/On
 import Tabs from "../../../components/shared/Tabs";
 import PageHeader from "../../../components/shared/PageHeader";
 
-const PerformanceListScreen = ({}) => {
+const PerformanceListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
@@ -72,14 +72,19 @@ const PerformanceListScreen = ({}) => {
 
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 5 }}>
+        <View style={{ flex: 1, paddingHorizontal: 15 }}>
           <FlashList
             data={ongoingData}
             estimatedItemSize={50}
             onEndReachedThreshold={0.1}
             keyExtractor={(item, index) => index}
             renderItem={({ item, index }) => (
-              <OngoingPerformanceListItem key={index} start_date={item?.startDate} end_date={item?.endDate} />
+              <OngoingPerformanceListItem
+                key={index}
+                start_date={item?.startDate}
+                end_date={item?.endDate}
+                navigation={navigation}
+              />
             )}
           />
         </View>
