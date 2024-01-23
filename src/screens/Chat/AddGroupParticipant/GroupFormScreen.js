@@ -16,6 +16,7 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
@@ -111,6 +112,11 @@ const GroupFormScreen = ({ route }) => {
 
     // Handling for file information
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+
+    if (fileInfo.size >= 1000000) {
+      Alert.alert("File size too large");
+      return;
+    }
 
     if (result) {
       setImage({
