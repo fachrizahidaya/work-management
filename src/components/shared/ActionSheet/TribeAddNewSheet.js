@@ -71,16 +71,20 @@ const TribeAddNewSheet = (props) => {
   };
 
   const getPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Allow location permission");
+    try {
+      const { granted } = await Location.getForegroundPermissionsAsync();
+      if (granted === false) {
+        await Location.requestForegroundPermissionsAsync();
+        console.log("Allow location permission");
+      }
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    } catch (err) {
+      console.log(err.message);
       Alert.alert(
         "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
       );
-      return;
     }
-    let currentLocation = await Location.getCurrentPositionAsync({});
-    setLocation(currentLocation);
   };
 
   useEffect(() => {
@@ -105,7 +109,7 @@ const TribeAddNewSheet = (props) => {
 
   useEffect(() => {
     getPermissions();
-  }, []);
+  }, [location]);
 
   return (
     <ActionSheet ref={props.reference}>
@@ -140,7 +144,7 @@ const TribeAddNewSheet = (props) => {
             </TouchableOpacity>
           ) : (
             <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
-              <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
+              <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
             </Pressable>
           );
         })}
