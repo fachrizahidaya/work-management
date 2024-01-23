@@ -152,7 +152,7 @@ const GroupFormScreen = ({ route }) => {
               );
             })}
         </View>
-        <View style={{ alignItems: "center", gap: 20 }}>
+        <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20 }}>
           <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
               <Image
@@ -169,7 +169,6 @@ const GroupFormScreen = ({ route }) => {
           </TouchableOpacity>
 
           <Input
-            width={380}
             placeHolder="Group name"
             value={formik.values.name}
             onChangeText={(value) => formik.setFieldValue("name", value)}
