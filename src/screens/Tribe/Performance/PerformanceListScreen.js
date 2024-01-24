@@ -34,33 +34,11 @@ const PerformanceListScreen = () => {
       year: 2024,
       period: 3,
       type: "KPI",
+      status: "Pending",
       startDate: "2024-07-01",
       endDate: "2024-09-30",
-      position: [
-        {
-          id: 1,
-          position_name: "Front-End Developer",
-        },
-        { id: 2, position_name: "Mobile Developer" },
-        { id: 3, position_name: "Back-End Developer" },
-      ],
+      position: { position_name: "Mobile Developer" },
       division: "Tech",
-    },
-    {
-      id: 2,
-      year: 2024,
-      period: 3,
-      type: "Appraisal",
-      startDate: "2024-07-01",
-      endDate: "2024-09-30",
-      division: [
-        {
-          id: 1,
-          division_name: "Tech",
-        },
-        { id: 2, division_name: "Finance" },
-        { id: 3, division_name: "Sales" },
-      ],
     },
   ];
 
@@ -83,6 +61,8 @@ const PerformanceListScreen = () => {
                 key={index}
                 start_date={item?.startDate}
                 end_date={item?.endDate}
+                status={item?.status}
+                position={item?.position.position_name}
                 navigation={navigation}
               />
             )}
