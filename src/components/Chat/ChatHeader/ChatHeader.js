@@ -136,7 +136,15 @@ const ChatHeader = ({
             SheetManager.show("form-sheet", {
               payload: {
                 children: (
-                  <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                  <View
+                    style={{
+                      display: "flex",
+                      gap: 21,
+                      paddingHorizontal: 20,
+                      paddingVertical: 16,
+                      paddingBottom: -20,
+                    }}
+                  >
                     {/* <TouchableOpacity
                       onPress={() => {
                         toggleSearch();
