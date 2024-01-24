@@ -110,7 +110,7 @@ const ContactScreen = () => {
           </View>
 
           {/* Content here */}
-          <View style={{ flex: 1, paddingHorizontal: 10 }}>
+          <View style={{ flex: 1, paddingHorizontal: 10, backgroundColor: "#f8f8f8" }}>
             <FlashList
               data={contacts.length ? contacts : filteredDataArray}
               onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
