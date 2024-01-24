@@ -351,7 +351,7 @@ const AttendanceForm = ({
           {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
             <View style={{ width: "100%", gap: 10 }}>
               <View>
-                <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
+                <Text style={[TextProps]}>Clock-in required</Text>
               </View>
             </View>
           )}
