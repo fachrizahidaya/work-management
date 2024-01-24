@@ -144,7 +144,12 @@ const AttendanceScreen = () => {
       const dateData = items[selectedDate];
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
-          if (item?.date && item?.confirmation === 0 && item?.dayType === "Work Day") {
+          if (
+            item?.date &&
+            item?.confirmation === 0 &&
+            item?.dayType === "Work Day" &&
+            item?.attendanceType !== "Attend"
+          ) {
             setDate(item);
             attendanceScreenSheetRef.current?.show();
           }
