@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../styles/Card";
 import { TextProps } from "../../shared/CustomStylings";
 
-const KPIDetailItem = ({ question, actual, target, navigation, reference }) => {
+const KPIDetailItem = ({ question, actual, target, reference }) => {
   return (
     <Pressable
       style={{

@@ -32,19 +32,33 @@ const KPIScreen = () => {
         title: "Manpower Fulfillment as per MPP Approval & Request",
         actual: 0,
         target: 100,
+        threshold: 10,
+        weight: 0.3,
       },
       {
         title: "Feedback Rating For The Townhall Event has been held",
         actual: 0,
         target: 100,
+        threshold: 10,
+        weight: 0.3,
       },
       {
         title: "Employee Workshop (3 times in a year)",
         actual: 0,
         target: 100,
+        threshold: 10,
+        weight: 0.4,
       },
     ],
   };
+
+  const exampleQuestion = questionData.questions.slice(0, 1).map((item, index) => ({
+    title: item.title,
+    actual: item.actual,
+    target: item.target,
+    threshold: item.threshold,
+    weight: item.weight,
+  }));
 
   return (
     <>
@@ -77,7 +91,7 @@ const KPIScreen = () => {
           </View>
         </View>
       </SafeAreaView>
-      <PerformanceForm reference={formScreenSheetRef} />
+      <PerformanceForm reference={formScreenSheetRef} data={exampleQuestion} />
     </>
   );
 };

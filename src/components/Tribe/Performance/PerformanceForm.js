@@ -7,7 +7,7 @@ import ActionSheet from "react-native-actions-sheet";
 import Input from "../../shared/Forms/Input";
 import FormButton from "../../shared/FormButton";
 
-const PerformanceForm = ({ reference }) => {
+const PerformanceForm = ({ reference, data }) => {
   const formik = useFormik({});
   return (
     <ActionSheet ref={reference} onClose={false}>
@@ -21,7 +21,7 @@ const PerformanceForm = ({ reference }) => {
           </View>
           <Input
             formik={formik}
-            title="Password"
+            title="Actual Achievement"
             fieldName="password"
             // value={formik.values.password}
             placeHolder="Enter your KSS password"
