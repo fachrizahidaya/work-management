@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import * as Location from "expo-location";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -16,8 +16,9 @@ import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
   const [location, setLocation] = useState();
+  const [status, setStatus] = useState(null);
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -70,10 +71,12 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
+  /**
+   * Handle get location based on permission
+   */
   const getLocationPermissions = async () => {
     try {
-      const { granted } = await Location.getForegroundPermissionsAsync();
-      if (granted === false) {
+      if (status === false) {
         await Location.requestForegroundPermissionsAsync();
         console.log("Allow location permission");
       }
@@ -96,20 +99,33 @@ const TribeAddNewSheet = (props) => {
   }, [isLoading]);
 
   /**
-   * Clock Handler
+   * Handle change for the location permission status
    */
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(dayjs().format("HH:mm"));
-    }, 1000);
-    return () => {
-      clearInterval(intervalId);
+    const runThis = async () => {
+      try {
+        const { granted } = await Location.getForegroundPermissionsAsync();
+        setStatus(granted);
+      } catch (err) {
+        console.log(err);
+      }
     };
+
+    const handleAppStateChange = (nextAppState) => {
+      setAppState(nextAppState);
+      if (nextAppState === "active") {
+        // App has come to the foreground
+        runThis();
+      }
+    };
+
+    AppState.addEventListener("change", handleAppStateChange);
+    runThis(); // Initial run when the component mounts
   }, []);
 
   useEffect(() => {
     getLocationPermissions();
-  }, [location]);
+  }, [status]);
 
   return (
     <ActionSheet ref={props.reference}>
