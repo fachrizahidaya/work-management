@@ -24,13 +24,18 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
     var parentWidth = 470;
   }
 
+  /**
+   * Handle animation for slide button
+   */
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
+      // while slide the button
       if (event.translationX > 0) {
         translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
+      // when finished the slide
       if (event.translationX > 0) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
@@ -42,20 +47,30 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
   });
 
   const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
+  const textOpacity = useDerivedValue(() => {
+    const threshold = 50;
+    const fadeOutRange = 100;
+    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
+  });
 
+  /**
+   * Handle animation for background
+   */
   const rContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
       [0, parentWidth - MIN_TRANSLATE_X],
       ["#87878721", "#186688"]
     );
-
     return {
       transform: [],
       backgroundColor: success ? "#186688" : backgroundColor,
     };
   });
 
+  /**
+   * Handle animation for button
+   */
   const rTaskContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
@@ -67,7 +82,6 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
       [0, parentWidth - MIN_TRANSLATE_X],
       ["#186688", success ? "#FFFFFF" : "#186688"]
     );
-
     return {
       transform: [
         {
@@ -79,15 +93,11 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
     };
   });
 
-  const textOpacity = useDerivedValue(() => {
-    const threshold = 50;
-    const fadeOutRange = 100;
-    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
-  });
-
+  /**
+   * Handle animation for text color
+   */
   const textContainerStyle = useAnimatedStyle(() => {
     const textColor = success ? "#FFFFFF" : "#186688";
-
     return {
       opacity: textOpacity.value,
       color: textColor,

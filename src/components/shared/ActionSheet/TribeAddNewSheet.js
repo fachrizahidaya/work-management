@@ -70,7 +70,7 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
-  const getPermissions = async () => {
+  const getLocationPermissions = async () => {
     try {
       const { granted } = await Location.getForegroundPermissionsAsync();
       if (granted === false) {
@@ -108,13 +108,13 @@ const TribeAddNewSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    getPermissions();
+    getLocationPermissions();
   }, [location]);
 
   return (
     <ActionSheet ref={props.reference}>
       <View style={styles.container}>
-        {items.map((item, idx) => {
+        {items.slice(0, 2).map((item, idx) => {
           return item.title !== "Clock in" ? (
             <TouchableOpacity
               key={idx}
@@ -143,9 +143,14 @@ const TribeAddNewSheet = (props) => {
               </View>
             </TouchableOpacity>
           ) : (
-            <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
-              <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
-            </Pressable>
+            attendance?.data &&
+              attendance?.data?.day_type === "Work Day" &&
+              attendance?.date?.att_type !== "Leave" &&
+              attendance?.data?.att_type !== "Holiday" && (
+                <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
+                  <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
+                </Pressable>
+              )
           );
         })}
       </View>
