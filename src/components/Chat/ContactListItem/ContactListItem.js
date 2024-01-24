@@ -311,7 +311,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ transform: [{ rotate: "90deg" }] }}
+                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -323,7 +323,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ transform: [{ rotate: "90deg" }] }}
+                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
