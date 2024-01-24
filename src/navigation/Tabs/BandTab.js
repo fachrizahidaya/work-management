@@ -25,12 +25,6 @@ const BandTab = () => {
   const bandAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
 
-  /**
-   * Toggles the specified slider to open or close
-   * If one slider is open then the reset of sliders are closed
-   * @param {string} stateToToggle - The state key to toggle.
-   */
-
   return (
     <>
       <Tab.Navigator
@@ -67,11 +61,6 @@ const BandTab = () => {
                 <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
               </View>
             ),
-            // tabBarButton: (props) => (
-            //   <TouchableOpacity {...props} onPress={() => bandAddNewSheetRef.current?.show()}>
-            //     {props.children}
-            //   </TouchableOpacity>
-            // ),
           }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
