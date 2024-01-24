@@ -6,7 +6,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import BandDashboard from "../../screens/Band/BandDashboard";
 import ProjectList from "../../screens/Band/ProjectList";
-import SettingScreen from "../../screens/Setting/SettingScreen";
 import AdHocScreen from "../../screens/Band/AdHoc";
 import MyTeamScreen from "../../screens/Band/MyTeam";
 import NotesScreen from "../../screens/Band/Notes";
@@ -14,7 +13,6 @@ import CalendarScreen from "../../screens/Band/Calendar";
 import BandScreenSheet from "../../components/shared/ActionSheet/BandScreenSheet";
 import BandAddNewSheet from "../../components/shared/ActionSheet/BandAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
-import GlobalSearch from "../../screens/Band/GlobalSearch";
 
 const Tab = createBottomTabNavigator();
 
