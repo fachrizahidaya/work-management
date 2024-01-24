@@ -277,7 +277,7 @@ const ContactListItem = ({
                               <View style={{ flexDirection: "row" }}>
                                 {message && (
                                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                                    {message.length > 40 ? message.slice(0, 40) + "..." : message}
+                                    {message.length > 20 ? message.slice(0, 20) + "..." : message}
                                   </Text>
                                 )}
                                 {!message && (project || task || fileName) && (
@@ -311,7 +311,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
+                              style={{ transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -323,7 +323,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
+                              style={{ transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
