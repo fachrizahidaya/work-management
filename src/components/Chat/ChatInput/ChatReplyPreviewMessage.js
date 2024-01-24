@@ -89,7 +89,11 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
         );
       } else {
         return (
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>
+          <Text
+            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
         );

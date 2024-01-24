@@ -277,7 +277,7 @@ const ContactListItem = ({
                               <View style={{ flexDirection: "row" }}>
                                 {message && (
                                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                                    {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                                    {message.length > 40 ? message.slice(0, 40) + "..." : message}
                                   </Text>
                                 )}
                                 {!message && (project || task || fileName) && (
