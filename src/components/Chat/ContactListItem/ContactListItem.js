@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-
 import { Swipeable } from "react-native-gesture-handler";
 import RenderHtml from "react-native-render-html";
 import { StyleSheet, TouchableOpacity, View, Text, Pressable, Animated } from "react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
 import { TextProps } from "../../shared/CustomStylings";
 import axiosInstance from "../../../config/api";
-
 const ContactListItem = ({
   chat,
   type,
@@ -41,14 +37,12 @@ const ContactListItem = ({
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [activeView, setActiveView] = useState(null);
   const swipeableRef = useRef(null);
-
   /**
    * Handle for mention name in group member
    */
   const memberName = selectedGroupMembers.map((item) => {
     return item?.user?.name;
   });
-
   /**
    * Handle showing mention chat
    */
@@ -56,16 +50,13 @@ const ContactListItem = ({
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     message = message?.replace(placeholder, `@${memberName[i]}`);
   }
-
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
     return sentence?.replace(regex, `<strong style="color: #176688;">$&</strong>`);
   };
-
   const renderName = () => {
     return boldMatchCharacters(name, searchKeyword);
   };
-
   const generateIcon = () => {
     let iconName = "";
     if (fileName) {
@@ -87,10 +78,8 @@ const ContactListItem = ({
     if (task) {
       iconName = "checkbox-marked-circle-outline";
     }
-
     return iconName;
   };
-
   const generateAttachmentText = () => {
     let text = "";
     if (fileName) {
@@ -112,10 +101,8 @@ const ContactListItem = ({
     if (task) {
       text = "Task";
     }
-
     return text;
   };
-
   /**
    * left view after swipe handler
    * @returns
@@ -142,7 +129,6 @@ const ContactListItem = ({
       </Pressable>
     );
   };
-
   /**
    * left view after swipe handler
    * @returns
@@ -169,7 +155,6 @@ const ContactListItem = ({
       </Pressable>
     );
   };
-
   /**
    * backgroundColor view handler when swipe
    * @returns
@@ -181,7 +166,6 @@ const ContactListItem = ({
       return "#959595";
     }
   };
-
   /**
    * Fetch members of selected group
    */
@@ -193,11 +177,9 @@ const ContactListItem = ({
       console.log(err);
     }
   };
-
   useEffect(() => {
     fetchSelectedGroupMembers();
   }, [id]);
-
   return (
     <View>
       <Animated.View style={{ backgroundColor: getBackgroundColor() }}>
@@ -229,7 +211,6 @@ const ContactListItem = ({
               <View style={styles.contactBox}>
                 <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
                   <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
-
                   <View style={{ flex: 1 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                       {!searchKeyword ? (
@@ -242,12 +223,10 @@ const ContactListItem = ({
                           }}
                         />
                       )}
-
                       <View style={{ flexDirection: "row" }}>
                         <ChatTimeStamp time={time} timestamp={timestamp} />
                       </View>
                     </View>
-
                     <View
                       style={{
                         flexDirection: "row",
@@ -277,7 +256,7 @@ const ContactListItem = ({
                               <View style={{ flexDirection: "row" }}>
                                 {message && (
                                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                                    {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                                    {message.length > 40 ? message.slice(0, 40) + "..." : message}
                                   </Text>
                                 )}
                                 {!message && (project || task || fileName) && (
@@ -311,7 +290,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ transform: [{ rotate: "90deg" }] }}
+                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -323,7 +302,7 @@ const ContactListItem = ({
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ transform: [{ rotate: "90deg" }] }}
+                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                               color="#3F434A"
                             />
                             <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -351,9 +330,7 @@ const ContactListItem = ({
     </View>
   );
 };
-
 export default ContactListItem;
-
 const styles = StyleSheet.create({
   contactBox: {
     flexDirection: "row",
