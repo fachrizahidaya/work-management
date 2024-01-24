@@ -13,6 +13,7 @@ const FeedCommentForm = ({
   renderSuggestions,
   handleChange,
   formik,
+  suggestion,
 }) => {
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -21,7 +22,7 @@ const FeedCommentForm = ({
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <View style={{ ...styles.container }}>
+    <View style={{ ...styles.container, alignItems: suggestion.length > 0 ? "center" : "flex-end" }}>
       <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
 
       <MentionInput
@@ -67,8 +68,9 @@ export default FeedCommentForm;
 
 const styles = StyleSheet.create({
   container: {
+    display: "flex",
     flexDirection: "row",
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     justifyContent: "center",
     gap: 3,
   },

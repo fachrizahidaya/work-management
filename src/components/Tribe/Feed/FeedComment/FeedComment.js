@@ -152,6 +152,7 @@ const FeedComment = ({
           renderSuggestions={renderSuggestions}
           handleChange={handleChange}
           formik={formik}
+          suggestion={suggestions}
         />
       </View>
     </ActionSheet>
