@@ -14,6 +14,7 @@ import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
+
 const ChatBubble = ({
   chat,
   name,
@@ -49,11 +50,14 @@ const ChatBubble = ({
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     content = content?.replace(placeholder, `@${memberName[i]}`);
   }
+
   var allWords = [];
+
   for (var i = 0; i < memberName?.length; i++) {
     var words = memberName[i].split(/\s+/);
     allWords = allWords.concat(words);
   }
+
   let styledTexts = null;
   if (content?.length !== 0) {
     let words;
@@ -100,6 +104,7 @@ const ChatBubble = ({
       );
     });
   }
+
   const handleLinkPress = (url) => {
     Linking.openURL(url);
   };
@@ -116,6 +121,7 @@ const ChatBubble = ({
     const typeArr = type.split("/");
     return typeArr.pop();
   };
+
   /**
    * Handle for minimum offset slide to reply and maximum lane
    */
@@ -127,6 +133,7 @@ const ChatBubble = ({
     var parentWidth = 200;
   }
   const translateX = useSharedValue(0);
+
   /**
    * Handle slide animation chatBubble
    */
@@ -145,6 +152,7 @@ const ChatBubble = ({
       translateX.value = withTiming(0);
     },
   });
+
   /**
    * Handle translate for chatBubble
    */
@@ -158,6 +166,7 @@ const ChatBubble = ({
       ],
     };
   });
+
   return (
     <View
       style={{
@@ -232,7 +241,7 @@ const ChatBubble = ({
                               flex: 1,
                               width: 280,
                               height: 350,
-                              resizeMode: "contain",
+                              resizeMode: "cover",
                               backgroundColor: "gray",
                             }}
                             source={{

@@ -13,7 +13,7 @@ const ImageAttachment = ({ image, setImage }) => {
       <View style={{ alignSelf: "center" }}>
         <Image
           source={{ uri: image.uri }}
-          style={{ flex: 1, width: 350, height: 500, backgroundColor: "gray", resizeMode: "contain" }}
+          style={{ flex: 1, width: 350, height: 500, backgroundColor: "white", resizeMode: "contain" }}
           alt="image selected"
         />
       </View>

@@ -13,6 +13,7 @@ import { TextProps } from "../../shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 const ContactListItem = ({
   chat,
@@ -160,7 +161,9 @@ const ContactListItem = ({
               size={20}
               style={{ transform: [{ scale }] }}
             />
-            <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
+            <AnimatedText style={{ color: "#FFFFFF", transform: [{ scale }] }}>
+              {isPinned?.pin_chat ? "Unpin" : "Pin"}
+            </AnimatedText>
           </View>
         </RectButton>
       </>
@@ -199,7 +202,7 @@ const ContactListItem = ({
               size={20}
               style={{ transform: [{ scale }] }}
             />
-            <Text style={{ color: "#ffffff" }}>More</Text>
+            <AnimatedText style={{ color: "#ffffff", transform: [{ scale }] }}>More</AnimatedText>
           </View>
         </RectButton>
       </>
