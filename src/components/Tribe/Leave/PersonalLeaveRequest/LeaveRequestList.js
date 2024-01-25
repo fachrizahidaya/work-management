@@ -44,12 +44,11 @@ const LeaveRequestList = ({
 }) => {
   return (
     <>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-
       <View style={styles.container}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
@@ -97,7 +96,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Approved" ? (
           approvedList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
@@ -145,7 +144,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Canceled" ? (
           canceledList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={canceledList}
                 onEndReachedThreshold={0.1}
@@ -191,7 +190,7 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedList?.length > 0 ? (
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+          <View style={{ flex: 1, marginTop: 12 }}>
             <FlashList
               removeClippedSubviews={true}
               data={rejectedList}
@@ -247,10 +246,10 @@ export default memo(LeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#ffffff",
     flex: 1,
     flexDirection: "column",
-    paddingHorizontal: 5,
+    paddingHorizontal: 14,
   },
   content: {
     marginTop: 20,

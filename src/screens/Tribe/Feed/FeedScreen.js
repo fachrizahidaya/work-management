@@ -241,7 +241,7 @@ const FeedScreen = () => {
           <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
         </Pressable>
 
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+        <View style={{ display: "flex", flex: 1, paddingHorizontal: 14 }}>
           {/* Content here */}
 
           <FeedCard
@@ -264,26 +264,25 @@ const FeedScreen = () => {
             employeeUsername={employeeUsername}
             navigation={navigation}
           />
-
-          <FeedComment
-            postId={postId}
-            loggedEmployeeName={userSelector?.name}
-            loggedEmployeeImage={profile?.data?.image}
-            comments={comments}
-            commentIsFetching={commentIsFetching}
-            commentIsLoading={commentIsLoading}
-            refetchComment={refetchComment}
-            handleClose={commentsCloseHandler}
-            onEndReached={commentEndReachedHandler}
-            commentRefetchHandler={commentRefetchHandler}
-            parentId={commentParentId}
-            onSubmit={commentSubmitHandler}
-            onReply={replyHandler}
-            employeeUsername={employeeUsername}
-            employees={employees?.data}
-            reference={commentScreenSheetRef}
-          />
         </View>
+        <FeedComment
+          postId={postId}
+          loggedEmployeeName={userSelector?.name}
+          loggedEmployeeImage={profile?.data?.image}
+          comments={comments}
+          commentIsFetching={commentIsFetching}
+          commentIsLoading={commentIsLoading}
+          refetchComment={refetchComment}
+          handleClose={commentsCloseHandler}
+          onEndReached={commentEndReachedHandler}
+          commentRefetchHandler={commentRefetchHandler}
+          parentId={commentParentId}
+          onSubmit={commentSubmitHandler}
+          onReply={replyHandler}
+          employeeUsername={employeeUsername}
+          employees={employees?.data}
+          reference={commentScreenSheetRef}
+        />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -317,7 +316,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
 });

@@ -23,7 +23,26 @@ const MyTeamLeaveRequestItem = ({
   status,
 }) => {
   return (
-    <View key={id} style={{ ...card.card, flexDirection: "column", marginVertical: 5, gap: 10 }}>
+    <View
+      key={id}
+      style={{
+        backgroundColor: "#ffffff",
+        paddingVertical: 18,
+        paddingHorizontal: 16,
+        borderRadius: 15,
+        flexDirection: "column",
+        marginVertical: 5,
+        gap: 10,
+        elevation: 4,
+        shadowColor: "rgba(0, 0, 0, 1)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        marginTop: 4,
+        marginBottom: 4,
+        marginHorizontal: 2,
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flex: 1, flexDirection: "row", gap: 5 }}>
           <AvatarPlaceholder

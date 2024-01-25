@@ -83,7 +83,7 @@ const ContactScreen = () => {
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ ...styles.container }}>
           <View style={styles.header}>
             <View style={{ flexDirection: "row", gap: 1 }}>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
@@ -110,7 +110,7 @@ const ContactScreen = () => {
           </View>
 
           {/* Content here */}
-          <View style={{ flex: 1, paddingHorizontal: 10, backgroundColor: "#f8f8f8" }}>
+          <View style={{ flex: 1, paddingHorizontal: 14 }}>
             <FlashList
               data={contacts.length ? contacts : filteredDataArray}
               onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
   search: {
     paddingVertical: 15,
