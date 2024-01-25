@@ -17,17 +17,17 @@ const BandAddNewSheet = (props) => {
     {
       icons: "view-grid-outline",
       title: `New Project ${createProjectAccess ? "" : "(No access)"}`,
-      screen: "Project Form",
+      screen: createProjectAccess ? "Project Form" : "Dashboard",
     },
     {
       icons: "plus",
-      title: `New Task | ad hoc ${createTaskAccess ? "" : "(No access"}`,
-      screen: "Task Form",
+      title: `New Task | ad hoc ${createTaskAccess ? "" : "(No access)"}`,
+      screen: createTaskAccess ? "Task Form" : "Dashboard",
     },
     {
       icons: "pencil-outline",
       title: `New Notes ${createNoteAccess ? "" : "(No access)"}`,
-      screen: "Note Form",
+      screen: createNoteAccess ? "Note Form" : "Dashboard",
     },
   ];
   return (

@@ -18,7 +18,11 @@ const BandScreenSheet = (props) => {
             <TouchableOpacity
               key={idx}
               onPress={() => {
-                navigation.navigate(item.name);
+                if (item.name === "My Team") {
+                  navigation.navigate(item.name, { passedTeam: null });
+                } else {
+                  navigation.navigate(item.name);
+                }
                 props.reference.current?.hide();
               }}
               style={styles.wrapper}
