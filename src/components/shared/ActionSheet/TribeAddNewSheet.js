@@ -60,14 +60,14 @@ const TribeAddNewSheet = (props) => {
 
           refetchAttendance();
 
-          Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
+          // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
-          Toast.show("You already checked out at this time", ErrorToastProps);
+          // Toast.show("You already checked out at this time", ErrorToastProps);
         }
       }
     } catch (err) {
       console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
+      // Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -84,9 +84,9 @@ const TribeAddNewSheet = (props) => {
       setLocation(currentLocation);
     } catch (err) {
       console.log(err.message);
-      Alert.alert(
-        "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-      );
+      // Alert.alert(
+      //   "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
+      // );
     }
   };
 

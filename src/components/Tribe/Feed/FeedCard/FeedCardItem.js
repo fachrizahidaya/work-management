@@ -235,9 +235,9 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: "100%",
-    height: 500,
-    backgroundColor: "gray",
-    resizeMode: "contain",
+    height: 350,
+    backgroundColor: "white",
+    resizeMode: "cover",
   },
   dockAction: {
     alignItems: "center",
