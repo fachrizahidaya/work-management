@@ -21,6 +21,7 @@ const Header = () => {
   const [routeName, setRouteName] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
+
   const {
     isOpen: notificationCardIsOpen,
     open: openNotificationCard,
@@ -119,7 +120,12 @@ const Header = () => {
             </Text>
 
             {myProfile?.data && (
-              <Text style={[{ fontSize: 16 }, TextProps]}>
+              // adjust for the position font properties
+              <Text
+                style={[{ fontSize: 14, overflow: "hidden", width: 150 }, TextProps]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {myProfile.data.position_name || "You have no position"}
               </Text>
             )}
@@ -134,55 +140,59 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          <View style={{ position: "relative" }}>
-            <Pressable
-              onPress={() =>
-                navigation.navigate("Notification", {
-                  module: moduleSelector.module_name,
-                  refetch: refetchNotifications,
-                })
-              }
-            >
-              <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
-            </Pressable>
-
-            {unreadNotificationList?.length > 0 && (
-              <View
-                style={{
-                  height: 22,
-                  width: 22,
-                  position: "absolute",
-                  top: -12,
-                  right: -8,
-                  backgroundColor: "#FD7972",
-                  borderRadius: 50,
-                  zIndex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+          {routeName[1]?.name !== "Chat List" ? (
+            <View style={{ position: "relative" }}>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("Notification", {
+                    module: moduleSelector.module_name,
+                    refetch: refetchNotifications,
+                  })
+                }
               >
-                <Text
+                <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
+              </Pressable>
+
+              {unreadNotificationList?.length > 0 && (
+                <View
                   style={{
+                    height: 22,
+                    width: 22,
+                    position: "absolute",
+                    top: -12,
+                    right: -8,
+                    backgroundColor: "#FD7972",
+                    borderRadius: 50,
+                    zIndex: 1,
                     display: "flex",
-                    fontSize: 12,
-                    textAlign: "center",
-                    color: "white",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
-                </Text>
-              </View>
-            )}
-          </View>
+                  <Text
+                    style={{
+                      display: "flex",
+                      fontSize: 12,
+                      textAlign: "center",
+                      color: "white",
+                    }}
+                  >
+                    {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
+                  </Text>
+                </View>
+              )}
+            </View>
+          ) : null}
 
           <Pressable
             onPress={() =>
               routeName[0]?.state?.routeNames[2] == "Setting Tribe"
-                ? navigation.navigate("Dashboard")
-                : routeName[0]?.state?.routeNames[2] == "Setting Band"
-                ? navigation.navigate("Dashboard")
-                : navigation.navigate("Chat List")
+                ? null
+                : // navigation.navigate("Dashboard")
+                routeName[0]?.state?.routeNames[2] == "Setting Band"
+                ? null
+                : // navigation.navigate("Dashboard")
+                  navigation.navigate("Chat List")
             }
             style={{ position: "relative" }}
           >
@@ -216,23 +226,7 @@ const Header = () => {
                 </View>
               )}
 
-            {routeName[0]?.state?.routeNames[2]?.includes("Tribe") ? (
-              <>
-                <Image
-                  source={require("../../assets/icons/tribe_logo.png")}
-                  alt="Tribe"
-                  style={{ height: 30, width: 30 }}
-                />
-              </>
-            ) : routeName[0]?.state?.routeNames[2]?.includes("Band") ? (
-              <>
-                <Image
-                  source={require("../../assets/icons/band_logo.png")}
-                  alt="Band"
-                  style={{ height: 30, width: 30 }}
-                />
-              </>
-            ) : (
+            {routeName[1]?.name === "Chat List" ? null : (
               <Image
                 source={require("../../assets/icons/nest_logo.png")}
                 alt="Nest"

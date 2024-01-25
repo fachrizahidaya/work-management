@@ -141,7 +141,12 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton style={{ ...styles.leftAction, flex: shrink ? 0.1 : 1 }}>
+        <RectButton
+          style={{
+            ...styles.leftAction,
+            // flex: shrink ? 0.1 : 1
+          }}
+        >
           <View style={{ alignItems: "center" }}>
             <AnimatedIcon
               onPress={() => {
@@ -175,7 +180,12 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton style={{ ...styles.rightAction, flex: shrink ? 0.1 : 1 }}>
+        <RectButton
+          style={{
+            ...styles.rightAction,
+            // flex: shrink ? 0.1 : 1
+          }}
+        >
           <View style={{ alignItems: "center" }}>
             <AnimatedIcon
               onPress={() => {
@@ -208,16 +218,16 @@ const ContactListItem = ({
         ref={swipeableRef}
         renderLeftActions={renderLeftView}
         renderRightActions={renderRightView}
-        onSwipeableOpen={(direction = "left") => {
-          if (direction === "left") {
-            setShrink(true);
-            swipeableRef.current.openLeft();
-          } else {
-            setShrink(true);
-            swipeableRef.current.openRight();
-          }
-        }}
-        onSwipeableClose={() => setShrink(false)}
+        // onSwipeableOpen={(direction = "left") => {
+        //   if (direction === "left") {
+        //     setShrink(true);
+        //     swipeableRef.current.openLeft();
+        //   } else {
+        //     setShrink(true);
+        //     swipeableRef.current.openRight();
+        //   }
+        // }}
+        // onSwipeableClose={() => setShrink(false)}
       >
         <TouchableOpacity
           style={{ backgroundColor: "#FFFFFF" }}
@@ -367,7 +377,7 @@ const styles = StyleSheet.create({
     borderColor: "#E8E9EB",
   },
   leftAction: {
-    // flex: 0.1,
+    flex: 1,
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -375,7 +385,7 @@ const styles = StyleSheet.create({
     flexDirection: I18nManager.isRTL ? "row" : "row-reverse",
   },
   rightAction: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: "#959595",
     alignItems: "center",
     justifyContent: "flex-end",
