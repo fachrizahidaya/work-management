@@ -252,6 +252,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     marginVertical: 5,
+    marginVertical: 14,
+    marginBottom: 4,
   },
   cardHeader: {
     flexDirection: "row",

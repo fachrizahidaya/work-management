@@ -213,7 +213,8 @@ export default FeedCardItem;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    marginVertical: 8,
+    marginVertical: 14,
+    marginBottom: 4,
   },
   defaultText: {
     color: "#000000",

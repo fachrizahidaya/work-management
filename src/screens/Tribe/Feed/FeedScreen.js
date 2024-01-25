@@ -241,7 +241,13 @@ const FeedScreen = () => {
           <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
         </Pressable>
 
-        <View style={{ display: "flex", flex: 1, paddingHorizontal: 14 }}>
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            // paddingHorizontal: 14
+          }}
+        >
           {/* Content here */}
 
           <FeedCard
