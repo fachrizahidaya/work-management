@@ -140,31 +140,33 @@ const PayslipScreen = () => {
         </View>
 
         {payslip?.data?.data.length > 0 ? (
-          <FlashList
-            data={payslips}
-            keyExtractor={(item, index) => index}
-            onScrollBeginDrag={() => setHasBeenScrolled(true)}
-            onEndReachedThreshold={0.1}
-            onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
-            estimatedItemSize={50}
-            refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-            ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
-            renderItem={({ item, index }) => (
-              <PayslipList
-                key={index}
-                id={item?.id}
-                month={item?.pay_month}
-                year={item?.pay_year}
-                downloadPayslipCheckAccess={downloadPayslipCheckAccess}
-                onDownloadPayslip={payslipDownloadHandler}
-                downloadDialogIsOpen={downloadDialogIsOpen}
-                toggleDownloadDialog={toggleDownloadDialog}
-                openSelectedPayslip={openSelectedPayslip}
-                closeSelectedPayslip={closeSelectedPayslip}
-                reference={payslipDownloadScreenSheetRef}
-              />
-            )}
-          />
+          <View style={{ paddingHorizontal: 14, flex: 1 }}>
+            <FlashList
+              data={payslips}
+              keyExtractor={(item, index) => index}
+              onScrollBeginDrag={() => setHasBeenScrolled(true)}
+              onEndReachedThreshold={0.1}
+              onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
+              estimatedItemSize={50}
+              refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
+              ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
+              renderItem={({ item, index }) => (
+                <PayslipList
+                  key={index}
+                  id={item?.id}
+                  month={item?.pay_month}
+                  year={item?.pay_year}
+                  downloadPayslipCheckAccess={downloadPayslipCheckAccess}
+                  onDownloadPayslip={payslipDownloadHandler}
+                  downloadDialogIsOpen={downloadDialogIsOpen}
+                  toggleDownloadDialog={toggleDownloadDialog}
+                  openSelectedPayslip={openSelectedPayslip}
+                  closeSelectedPayslip={closeSelectedPayslip}
+                  reference={payslipDownloadScreenSheetRef}
+                />
+              )}
+            />
+          </View>
         ) : (
           <>
             <View style={styles.imageContainer}>
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#ffffff",
     position: "relative",
   },
   header: {
@@ -207,8 +209,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
   },
   imageContainer: {
     marginTop: 20,

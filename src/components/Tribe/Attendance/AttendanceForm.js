@@ -101,7 +101,7 @@ const AttendanceForm = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.wrapper}>
           {/* If employee ontime for Clock in and Clock out */}
-          {hasClockInAndOut && (
+          {/* {hasClockInAndOut && (
             <View style={{ width: "100%", gap: 10 }}>
               <View style={styles.clock}>
                 <View>
@@ -116,7 +116,7 @@ const AttendanceForm = ({
                 )}
               </View>
             </View>
-          )}
+          )} */}
 
           {/* If employee Clock in late, require Late Report */}
           {hasLateWithoutReason && (
@@ -351,7 +351,7 @@ const AttendanceForm = ({
           {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
             <View style={{ width: "100%", gap: 10 }}>
               <View>
-                <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
+                <Text style={[TextProps]}>Clock-in required</Text>
               </View>
             </View>
           )}

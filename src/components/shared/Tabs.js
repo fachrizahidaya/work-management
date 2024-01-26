@@ -32,7 +32,9 @@ const Tabs = ({ tabs = [], value, onChange, justify }) => {
                   paddingBottom: 12,
                 }}
               >
-                <Text style={[{ textTransform: "uppercase" }, TextProps]}>{tab.title}</Text>
+                <Text style={[{ fontSize: tabs.length > 3 ? 12 : null, textTransform: "uppercase" }, TextProps]}>
+                  {tab.title}
+                </Text>
               </View>
             </Pressable>
           );

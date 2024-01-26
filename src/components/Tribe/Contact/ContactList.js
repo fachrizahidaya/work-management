@@ -24,27 +24,27 @@ const ContactList = ({
   navigation,
 }) => {
   return (
-    <View style={{ ...card.card, flexDirection: "column", marginVertical: 5 }}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Employee Profile", {
+          employeeId: id,
+          returnPage: "Contact",
+          loggedEmployeeId: loggedEmployeeId,
+        })
+      }
+      style={{ ...card.card, flexDirection: "column", marginVertical: 5 }}
+    >
       <View style={styles.content}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: id,
-              returnPage: "Contact",
-              loggedEmployeeId: loggedEmployeeId,
-            })
-          }
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <AvatarPlaceholder image={image} name={name} size="sm" isThumb={false} />
-            <View>
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#3F434A" }}>
-                {name.length > 30 ? name.split(" ")[0] : name}
-              </Text>
-              <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{position}</Text>
-            </View>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <AvatarPlaceholder image={image} name={name} size="sm" isThumb={false} />
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: "500", color: "#3F434A" }}>
+              {name.length > 30 ? name.split(" ")[0] : name}
+            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{position}</Text>
           </View>
-        </TouchableOpacity>
+        </View>
+
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <WhatsappButton phone={phone} size={20} />
           <EmailButton email={email} size={20} />
@@ -61,7 +61,7 @@ const ContactList = ({
           )}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

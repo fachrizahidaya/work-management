@@ -158,6 +158,7 @@ const FeedCardItem = ({
                                 gap: 21,
                                 paddingHorizontal: 20,
                                 paddingVertical: 16,
+                                paddingBottom: -20,
                               }}
                             >
                               <TouchableOpacity
@@ -251,6 +252,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     marginVertical: 5,
+    marginVertical: 14,
+    marginBottom: 4,
   },
   cardHeader: {
     flexDirection: "row",
@@ -276,8 +279,8 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: "100%",
-    height: 250,
-    backgroundColor: "gray",
-    resizeMode: "contain",
+    height: 350,
+    backgroundColor: "white",
+    resizeMode: "cover",
   },
 });

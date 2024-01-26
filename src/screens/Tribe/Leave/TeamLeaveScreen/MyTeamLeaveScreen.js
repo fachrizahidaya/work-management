@@ -26,14 +26,6 @@ const MyTeamLeaveScreen = () => {
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
-  const tabs = useMemo(() => {
-    return [
-      { title: "Waiting Approval", value: "Pending" },
-      { title: "Approved", value: "Approved" },
-      { title: "Rejected", value: "Rejected" },
-    ];
-  }, []);
-
   const navigation = useNavigation();
 
   const fetchMorePendingParameters = {
@@ -86,6 +78,26 @@ const MyTeamLeaveScreen = () => {
     [currentPageRejected, reloadRejected],
     fetchMoreRejectedParameters
   );
+
+  const { data: teamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
+
+  const pending = teamLeaveRequest?.data?.filter((item) => {
+    return item.status === "Pending";
+  });
+  const approved = teamLeaveRequest?.data?.filter((item) => {
+    return item.status === "Approved";
+  });
+  const rejected = teamLeaveRequest?.data?.filter((item) => {
+    return item.status === "Rejected";
+  });
+
+  const tabs = useMemo(() => {
+    return [
+      { title: `Waiting Approval (${pending?.length || 0})`, value: "Pending" },
+      { title: `Approved (${approved?.length || 0})`, value: "Approved" },
+      { title: `Rejected (${rejected?.length || 0})`, value: "Rejected" },
+    ];
+  }, []);
 
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
@@ -169,7 +181,7 @@ const MyTeamLeaveScreen = () => {
         {isReady ? (
           <>
             <View style={styles.header}>
-              <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
+              <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
             <MyTeamLeaveRequestList
@@ -219,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
   },
 });

@@ -59,6 +59,7 @@ const EmployeeSelfProfile = ({ employee, teammates }) => {
                           gap: 21,
                           paddingHorizontal: 20,
                           paddingVertical: 16,
+                          paddingBottom: -20,
                         }}
                       >
                         {teammates?.data.map((item, index) => {

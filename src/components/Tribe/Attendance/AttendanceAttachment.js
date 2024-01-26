@@ -9,7 +9,7 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
-    <View style={{ flex: 1, gap: 5, marginVertical: 15, paddingHorizontal: 15 }}>
+    <View style={{ flex: 1, gap: 5, marginVertical: 15, paddingHorizontal: 14 }}>
       <View style={styles.header}>
         <Text style={{ fontSize: 14, fontWeight: "500" }}>Attachment(s)</Text>
         {attachment?.data.length > 0 && (

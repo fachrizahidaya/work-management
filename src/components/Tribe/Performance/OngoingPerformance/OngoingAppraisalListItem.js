@@ -2,13 +2,12 @@ import React from "react";
 import dayjs from "dayjs";
 
 import { Pressable, Text, View } from "react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingPerformanceListItem = ({ start_date, end_date, status, position, navigation }) => {
+const OngoingAppraisalListItem = ({ start_date, end_date, navigation }) => {
   return (
     <Pressable
       style={{
@@ -19,16 +18,16 @@ const OngoingPerformanceListItem = ({ start_date, end_date, status, position, na
         alignItems: "flex-start",
         gap: 10,
       }}
-      onPress={() => navigation.navigate("KPI Detail")}
+      onPress={() => navigation.navigate("Appraisal Detail")}
     >
       <Text
         style={[{ paddingVertical: 5, paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15 }, TextProps]}
       >
-        {status}
+        Pending
       </Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-        <Text style={[TextProps]}>{position}</Text>
+        <Text style={[TextProps]}>Front End Developer</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
@@ -39,4 +38,4 @@ const OngoingPerformanceListItem = ({ start_date, end_date, status, position, na
   );
 };
 
-export default OngoingPerformanceListItem;
+export default OngoingAppraisalListItem;

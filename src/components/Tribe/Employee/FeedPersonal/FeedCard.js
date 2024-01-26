@@ -77,7 +77,7 @@ const FeedCard = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <FlatList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
@@ -124,7 +124,7 @@ const FeedCard = ({
             );
           }
           return (
-            <View style={{ paddingHorizontal: 10 }}>
+            <View style={{ paddingHorizontal: 14 }}>
               <FeedCardItem
                 key={index}
                 id={item?.id}
@@ -164,9 +164,7 @@ const FeedCard = ({
 export default memo(FeedCard);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {},
   information: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",

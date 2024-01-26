@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import * as Location from "expo-location";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -16,8 +16,9 @@ import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
   const [location, setLocation] = useState();
+  const [status, setStatus] = useState(null);
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -59,28 +60,34 @@ const TribeAddNewSheet = (props) => {
 
           refetchAttendance();
 
-          Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
+          // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
-          Toast.show("You already checked out at this time", ErrorToastProps);
+          // Toast.show("You already checked out at this time", ErrorToastProps);
         }
       }
     } catch (err) {
       console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
+      // Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
-  const getPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Allow location permission");
-      Alert.alert(
-        "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-      );
-      return;
+  /**
+   * Handle get location based on permission
+   */
+  const getLocationPermissions = async () => {
+    try {
+      if (status === false) {
+        await Location.requestForegroundPermissionsAsync();
+        console.log("Allow location permission");
+      }
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    } catch (err) {
+      console.log(err.message);
+      // Alert.alert(
+      //   "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
+      // );
     }
-    let currentLocation = await Location.getCurrentPositionAsync({});
-    setLocation(currentLocation);
   };
 
   useEffect(() => {
@@ -92,25 +99,38 @@ const TribeAddNewSheet = (props) => {
   }, [isLoading]);
 
   /**
-   * Clock Handler
+   * Handle change for the location permission status
    */
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(dayjs().format("HH:mm"));
-    }, 1000);
-    return () => {
-      clearInterval(intervalId);
+    const runThis = async () => {
+      try {
+        const { granted } = await Location.getForegroundPermissionsAsync();
+        setStatus(granted);
+      } catch (err) {
+        console.log(err);
+      }
     };
+
+    const handleAppStateChange = (nextAppState) => {
+      setAppState(nextAppState);
+      if (nextAppState === "active") {
+        // App has come to the foreground
+        runThis();
+      }
+    };
+
+    AppState.addEventListener("change", handleAppStateChange);
+    runThis(); // Initial run when the component mounts
   }, []);
 
   useEffect(() => {
-    getPermissions();
-  }, []);
+    getLocationPermissions();
+  }, [status]);
 
   return (
     <ActionSheet ref={props.reference}>
       <View style={styles.container}>
-        {items.map((item, idx) => {
+        {items.slice(0, 2).map((item, idx) => {
           return item.title !== "Clock in" ? (
             <TouchableOpacity
               key={idx}
@@ -139,9 +159,14 @@ const TribeAddNewSheet = (props) => {
               </View>
             </TouchableOpacity>
           ) : (
-            <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
-              <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
-            </Pressable>
+            attendance?.data &&
+              attendance?.data?.day_type === "Work Day" &&
+              attendance?.date?.att_type !== "Leave" &&
+              attendance?.data?.att_type !== "Holiday" && (
+                <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
+                  <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
+                </Pressable>
+              )
           );
         })}
       </View>

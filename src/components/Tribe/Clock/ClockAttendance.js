@@ -13,9 +13,7 @@ import Animated, {
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ClockAttendance = ({ attendance, onClock }) => {
-  const [clockedIn, setClockedIn] = useState(false);
-  const [change, setChange] = useState(false);
+const ClockAttendance = ({ attendance, onClock, location }) => {
   const [success, setSuccess] = useState(false);
   const translateX = useSharedValue(0);
 
@@ -26,17 +24,21 @@ const ClockAttendance = ({ attendance, onClock }) => {
     var parentWidth = 470;
   }
 
+  /**
+   * Handle animation for slide button
+   */
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
+      // while slide the button
       if (event.translationX > 0) {
         translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
+      // when finished the slide
       if (event.translationX > 0) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
-          runOnJS(setClockedIn)(true);
           runOnJS(setSuccess)(true);
         }
       }
@@ -45,20 +47,30 @@ const ClockAttendance = ({ attendance, onClock }) => {
   });
 
   const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
+  const textOpacity = useDerivedValue(() => {
+    const threshold = 50;
+    const fadeOutRange = 100;
+    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
+  });
 
+  /**
+   * Handle animation for background
+   */
   const rContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
       [0, parentWidth - MIN_TRANSLATE_X],
       ["#87878721", "#186688"]
     );
-
     return {
       transform: [],
       backgroundColor: success ? "#186688" : backgroundColor,
     };
   });
 
+  /**
+   * Handle animation for button
+   */
   const rTaskContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
@@ -68,9 +80,8 @@ const ClockAttendance = ({ attendance, onClock }) => {
     const iconTintColor = interpolateColor(
       limitedTranslateX.value,
       [0, parentWidth - MIN_TRANSLATE_X],
-      ["#186688", "#FFFFFF"]
+      ["#186688", success ? "#FFFFFF" : "#186688"]
     );
-
     return {
       transform: [
         {
@@ -82,20 +93,11 @@ const ClockAttendance = ({ attendance, onClock }) => {
     };
   });
 
-  const textOpacity = useDerivedValue(() => {
-    const threshold = 50;
-    const fadeOutRange = 100;
-    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
-  });
-
+  /**
+   * Handle animation for text color
+   */
   const textContainerStyle = useAnimatedStyle(() => {
     const textColor = success ? "#FFFFFF" : "#186688";
-    const backgroundColor = interpolateColor(
-      limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
-      [textColor, success ? "#FFFFFF" : "#186688"]
-    );
-
     return {
       opacity: textOpacity.value,
       color: textColor,
@@ -105,7 +107,7 @@ const ClockAttendance = ({ attendance, onClock }) => {
   useEffect(() => {
     const resetSuccess = setTimeout(() => {
       setSuccess(false);
-    }, 3000);
+    }, 1000);
     return () => clearTimeout(resetSuccess);
   }, [success]);
 
@@ -198,8 +200,10 @@ const ClockAttendance = ({ attendance, onClock }) => {
           ]}
         >
           <Text style={{ fontSize: 16, fontWeight: "500", color: success ? "#FFFFFF" : "#186688" }}>
-            {success
+            {success && location
               ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
+              : success && !location
+              ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
               : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
           </Text>
         </Animated.View>
