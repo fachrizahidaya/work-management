@@ -19,6 +19,7 @@ import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import ProjectForm from "../screens/Band/ProjectForm";
 import TaskForm from "../screens/Band/TaskForm";
+import GlobalSearch from "../screens/Band/GlobalSearch";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
@@ -154,6 +155,10 @@ const HomeStack = () => {
       <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
+
+      <Stack.Group screenOptions={{ presentation: "modal" }}>
+        <Stack.Screen name="Global Search" component={GlobalSearch} options={{ headerShown: false }} />
+      </Stack.Group>
 
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
