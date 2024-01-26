@@ -26,6 +26,28 @@ const TribeAddNewSheet = (props) => {
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
 
+  const showAlert = () => {
+    Alert.alert(
+      "Permission needed",
+      "In order to clock-in or clock-out, you must give permission to access the location. You can grant this permission in the Settings app.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("canceled"),
+          style: "cancel",
+        },
+        {
+          text: "Go to Settings",
+          onPress: () => Alert.alert("Open Setting"),
+          style: "default",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
   const items = [
     createLeaveRequestCheckAccess && {
       icons: "clipboard-clock-outline",
@@ -47,9 +69,7 @@ const TribeAddNewSheet = (props) => {
   const attendanceCheckHandler = async () => {
     try {
       if (!location) {
-        Alert.alert(
-          "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-        );
+        showAlert();
       } else {
         if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
@@ -84,9 +104,6 @@ const TribeAddNewSheet = (props) => {
       setLocation(currentLocation);
     } catch (err) {
       console.log(err.message);
-      // Alert.alert(
-      //   "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-      // );
     }
   };
 
