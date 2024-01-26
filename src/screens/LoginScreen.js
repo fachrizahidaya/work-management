@@ -266,19 +266,19 @@ const LoginScreen = () => {
             <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
 
-          <View
+          {/* <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#176688", fontWeight: 400 }}>Forgot Password?</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={{ width: "100%" }} />
 
-        <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
+        {/* <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
           <Text style={TextProps}>Don't have an account?</Text>
           <Text style={{ color: "#176688" }}>Sign Up</Text>
-        </View>
+        </View> */}
       </View>
 
       {/* <View>
