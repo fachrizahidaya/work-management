@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard, Alert } from "react-native";
 import Toast from "react-native-root-toast";
 
 import axiosInstance from "../../../config/api";
@@ -408,7 +408,7 @@ const ChatRoom = () => {
             webkitRelativePath: "",
           });
         } else {
-          Toast.show("Max file size is 3MB", ErrorToastProps);
+          Alert.alert("Max file size is 3MB");
         }
       }
     } catch (err) {

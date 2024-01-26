@@ -16,6 +16,7 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
@@ -112,6 +113,11 @@ const GroupFormScreen = ({ route }) => {
     // Handling for file information
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
 
+    if (fileInfo.size >= 1000000) {
+      Alert.alert("File size too large");
+      return;
+    }
+
     if (result) {
       setImage({
         name: filename,
@@ -152,7 +158,7 @@ const GroupFormScreen = ({ route }) => {
               );
             })}
         </View>
-        <View style={{ alignItems: "center", gap: 20 }}>
+        <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20 }}>
           <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
               <Image
@@ -169,7 +175,6 @@ const GroupFormScreen = ({ route }) => {
           </TouchableOpacity>
 
           <Input
-            width={380}
             placeHolder="Group name"
             value={formik.values.name}
             onChangeText={(value) => formik.setFieldValue("name", value)}

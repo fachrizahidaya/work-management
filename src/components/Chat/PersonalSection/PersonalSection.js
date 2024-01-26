@@ -41,6 +41,7 @@ const PersonalSection = ({
                       gap: 21,
                       paddingHorizontal: 20,
                       paddingVertical: 16,
+                      paddingBottom: -20,
                     }}
                   >
                     <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>

@@ -39,6 +39,7 @@ const ChatInput = ({
   memberName,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
+  const [height, setHeight] = useState(40);
 
   const attachmentOptions = [
     {
@@ -229,6 +230,7 @@ const ChatInput = ({
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
+                            paddingBottom: -20,
                           }}
                         >
                           <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
@@ -301,6 +303,11 @@ const ChatInput = ({
                     value={formik.values.message}
                     onChangeText={(value) => formik.setFieldValue("message", value)}
                     borderColor="transparent"
+                    alignVertical={null}
+                    multiline={true}
+                    sizeChange={true}
+                    height={40}
+                    setHeight={setHeight}
                   />
                 )}
               </View>

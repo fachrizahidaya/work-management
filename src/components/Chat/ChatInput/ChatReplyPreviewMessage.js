@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
-
 import { View, Text } from "react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
-
 const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
-
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
     return sentence.replace(regex, `<strong class='text-primary'>$&</strong>`);
   };
-
   const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
     for (let i = 0; i < memberName.length; i++) {
       let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
@@ -27,7 +21,6 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
     }
     return alt_message;
   };
-
   const renderMessage = (attachment_type) => {
     if (attachment_type === "image") {
       return (
@@ -89,20 +82,22 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
         );
       } else {
         return (
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#3F434A" }}>
+          <Text
+            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {renderDangerouslyInnerHTMLContent(message?.message)}
           </Text>
         );
       }
     }
   };
-
   useEffect(() => {
     if (message) {
       setMimeTypeInfo(MimeTypeInfo(message.mime_type));
     }
   }, [message]);
-
   return (
     <>
       {message?.delete_for_everyone ? (
@@ -113,5 +108,4 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
     </>
   );
 };
-
 export default ChatReplyPreviewMessage;

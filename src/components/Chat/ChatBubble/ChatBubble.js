@@ -1,5 +1,4 @@
 import { memo } from "react";
-
 import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -10,9 +9,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 const LIST_ITEM_HEIGHT = 70;
-
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
@@ -45,9 +42,7 @@ const ChatBubble = ({
   navigation,
 }) => {
   const myMessage = userSelector?.id === fromUserId;
-
   const imgTypes = ["jpg", "jpeg", "png"];
-
   /**
    * Handle showing mention chat
    */
@@ -66,16 +61,13 @@ const ChatBubble = ({
   let styledTexts = null;
   if (content?.length !== 0) {
     let words;
-
     if (typeof content === "number" || typeof content === "bigint") {
       words = content.toString().split(" ");
     } else {
       words = content?.split(" ");
     }
-
     styledTexts = words?.map((item, index) => {
       let textStyle = styles.defaultText;
-
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
@@ -116,7 +108,6 @@ const ChatBubble = ({
   const handleLinkPress = (url) => {
     Linking.openURL(url);
   };
-
   const handleEmailPress = (email) => {
     try {
       const emailUrl = `mailto:${email}`;
@@ -125,7 +116,6 @@ const ChatBubble = ({
       console.log(err);
     }
   };
-
   const formatMimeType = (type = "") => {
     if (!type) return "Undefined";
     const typeArr = type.split("/");
@@ -142,7 +132,6 @@ const ChatBubble = ({
     var MIN_TRANSLATEX = 60;
     var parentWidth = 200;
   }
-
   const translateX = useSharedValue(0);
 
   /**
@@ -198,7 +187,6 @@ const ChatBubble = ({
           ) : type === "group" && !myMessage ? (
             <Box ml={8}></Box>
           ) : null} */}
-
       <PanGestureHandler onGestureEvent={!isDeleted && panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
@@ -251,9 +239,9 @@ const ChatBubble = ({
                           <Image
                             style={{
                               flex: 1,
-                              width: 250,
+                              width: 280,
                               height: 350,
-                              resizeMode: "contain",
+                              resizeMode: "cover",
                               backgroundColor: "gray",
                             }}
                             source={{
@@ -289,7 +277,6 @@ const ChatBubble = ({
                 )}
               </>
             ) : null}
-
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
               {!isDeleted ? (
                 <Text
@@ -299,7 +286,7 @@ const ChatBubble = ({
                 </Text>
               ) : myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" />
+                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" style={{ opacity: 0.5 }} />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
                   >
@@ -308,7 +295,7 @@ const ChatBubble = ({
                 </View>
               ) : !myMessage && isDeleted ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" />
+                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" style={{ opacity: 0.5 }} />
                   <Text
                     style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
                   >
@@ -316,7 +303,6 @@ const ChatBubble = ({
                   </Text>
                 </View>
               ) : null}
-
               <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>
                 {time}
               </Text>
@@ -324,7 +310,6 @@ const ChatBubble = ({
           </Pressable>
         </Animated.View>
       </PanGestureHandler>
-
       {/* {!isGrouped && (
           <Box
             position="absolute"
@@ -348,9 +333,7 @@ const ChatBubble = ({
     </View>
   );
 };
-
 export default memo(ChatBubble);
-
 const styles = StyleSheet.create({
   defaultText: {},
   highlightedText: {

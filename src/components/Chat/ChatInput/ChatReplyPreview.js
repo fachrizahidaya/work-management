@@ -50,7 +50,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName 
               style={{
                 width: 50,
                 height: 50,
-                resizeMode: "contain",
+                resizeMode: "cover",
               }}
             />
           )}
