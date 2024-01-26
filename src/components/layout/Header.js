@@ -103,7 +103,9 @@ const Header = () => {
           {/* {routeName[1]?.name === "Chat List" && (
             <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} color="#3F434A" />
           )} */}
-          <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
+          <Pressable onPress={() => navigation.navigate("Setting Screen")}>
+            <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
+          </Pressable>
 
           <View>
             <Text

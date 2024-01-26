@@ -4,7 +4,6 @@ import { SheetManager } from "react-native-actions-sheet";
 import Toast from "react-native-root-toast";
 
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -101,7 +100,7 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                   alignItems: "center",
                   justifyContent: "space-between",
                   paddingRight: 3,
-                  marginBottom: 14,
+                  paddingBottom: 10,
                   marginRight: 10,
                   gap: 20,
                 }}
