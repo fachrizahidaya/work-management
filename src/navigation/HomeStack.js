@@ -19,7 +19,6 @@ import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import ProjectForm from "../screens/Band/ProjectForm";
 import TaskForm from "../screens/Band/TaskForm";
-import GlobalSearch from "../screens/Band/GlobalSearch";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
@@ -27,6 +26,10 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
+import PerformanceListScreen from "../screens/Tribe/Performance/PerformanceListScreen";
+import AppraisalListScreen from "../screens/Tribe/Performance/AppraisalListScreen";
+import KPIScreen from "../screens/Tribe/Performance/KPIScreen";
+import AppraisalScreen from "../screens/Tribe/Performance/AppraisalScreen";
 
 // Settings Screens
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
@@ -35,7 +38,6 @@ import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
-import SettingScreen from "../screens/Setting/SettingScreen";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -50,7 +52,6 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import PerformanceHistoryDetail from "../screens/Tribe/Performance/PerformanceHistoryDetail";
 
 const Stack = createStackNavigator();
 
@@ -107,106 +108,84 @@ const HomeStack = () => {
       </Stack.Screen>
 
       {/* Independent Screens */}
-      <Stack.Group>
-        <Stack.Screen name="Notification" component={NotificationScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
-      </Stack.Group>
+      <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
 
       {/* Nest Screens */}
-      <Stack.Group>
-        <Stack.Screen
-          name="Chat List"
-          component={ChatListScreen}
-          options={{
-            gestureEnabled: true,
-            header: () => <Header />,
-          }}
-        />
+      <Stack.Screen
+        name="Chat List"
+        component={ChatListScreen}
+        options={{
+          gestureEnabled: true,
+          header: () => <Header />,
+        }}
+      />
 
-        <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
+      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Group Participant" component={AddGroupParticipantScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Participant" component={AddGroupParticipantScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Group Form" component={GroupFormScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Form" component={GroupFormScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="New Chat" component={AddPersonalChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="New Chat" component={AddPersonalChatScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="User Detail" component={ContactDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="User Detail" component={ContactDetail} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Edit Group" component={EditGroupProfile} options={{ headerShown: false }} />
+      <Stack.Screen name="Edit Group" component={EditGroupProfile} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Media" component={MediaScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Media" component={MediaScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Project Screen" component={ChatProjectTaskScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Project Screen" component={ChatProjectTaskScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
-      </Stack.Group>
+      <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
 
       {/* Band Screens */}
-      <Stack.Group>
-        <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
-      </Stack.Group>
-
-      <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Global Search" component={GlobalSearch} options={{ headerShown: false }} />
-      </Stack.Group>
+      <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
 
       {/* Tribe Screens */}
-      <Stack.Group>
-        <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen
-          name="Employee Profile"
-          component={EmployeeProfileScreen}
-          options={{ header: () => <Header /> }}
-        />
+      <Stack.Screen name="Employee Profile" component={EmployeeProfileScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Team Leave Request" component={MyTeamLeaveScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Team Leave Request" component={MyTeamLeaveScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen
-          name="Performance Detail"
-          component={PerformanceHistoryDetail}
-          options={{ header: () => <Header /> }}
-        />
-      </Stack.Group>
+      <Stack.Screen name="KPI Screen" component={PerformanceListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
-      <Stack.Group>
-        <Stack.Screen name="Setting Screen" component={SettingScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Company Screen" component={CompanyScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Company Screen" component={CompanyScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Subscription Screen" component={SubscriptionScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen
-          name="Subscription Screen"
-          component={SubscriptionScreen}
-          options={{ header: () => <Header /> }}
-        />
+      <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
 
-        <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
-
-        <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
-      </Stack.Group>
+      <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
