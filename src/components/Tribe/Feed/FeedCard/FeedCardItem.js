@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     marginVertical: 14,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   defaultText: {
     color: "#000000",
