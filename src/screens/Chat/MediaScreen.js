@@ -104,8 +104,8 @@ const MediaScreen = () => {
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
         file_path={selectedImage}
-        images={imageArray}
-        media={true}
+        // images={imageArray}
+        // media={true}
       />
     </SafeAreaView>
   );
