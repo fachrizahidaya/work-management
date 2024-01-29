@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../shared/CustomStylings";
 
-const KPIDetailList = ({ dayjs, question }) => {
+const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, name }) => {
   return (
     <View
       style={{
@@ -26,16 +26,17 @@ const KPIDetailList = ({ dayjs, question }) => {
               TextProps,
             ]}
           >
-            {question.status}
+            {status || "Pending"}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(question.startDate).format("DD MMM YYYY")} to</Text>
-            <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(question.endDate).format("DD MMM YYYY")}</Text>
+            <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(begin_date).format("DD MMM YYYY")} to</Text>
+            <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(end_date).format("DD MMM YYYY")}</Text>
           </View>
         </View>
         <View>
+          <Text style={[TextProps]}>{name}</Text>
           <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-          <Text style={[TextProps]}>{question.position?.position_name}</Text>
+          <Text style={[TextProps]}>{position}</Text>
         </View>
       </View>
     </View>

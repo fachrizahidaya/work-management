@@ -7,6 +7,7 @@ import { FlashList } from "@shopify/flash-list";
 import OngoingPerformanceListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
 import Tabs from "../../../components/shared/Tabs";
 import PageHeader from "../../../components/shared/PageHeader";
+import { useFetch } from "../../../hooks/useFetch";
 
 const PerformanceListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -14,6 +15,8 @@ const PerformanceListScreen = () => {
   const [archivedList, setArchivedList] = useState([]);
 
   const navigation = useNavigation();
+
+  const { data: kpiList } = useFetch("/hr/performance-kpi");
 
   const tabs = useMemo(() => {
     return [
@@ -28,20 +31,6 @@ const PerformanceListScreen = () => {
     setArchivedList([]);
   }, []);
 
-  const ongoingData = [
-    {
-      id: 1,
-      year: 2024,
-      period: 3,
-      type: "KPI",
-      status: "Pending",
-      startDate: "2024-07-01",
-      endDate: "2024-09-30",
-      position: { position_name: "Mobile Developer" },
-      division: "Tech",
-    },
-  ];
-
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
@@ -50,19 +39,18 @@ const PerformanceListScreen = () => {
 
       <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 15 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
           <FlashList
-            data={ongoingData}
+            data={kpiList?.data}
             estimatedItemSize={50}
             onEndReachedThreshold={0.1}
             keyExtractor={(item, index) => index}
             renderItem={({ item, index }) => (
               <OngoingPerformanceListItem
                 key={index}
-                start_date={item?.startDate}
-                end_date={item?.endDate}
-                status={item?.status}
-                position={item?.position.position_name}
+                id={item?.id}
+                start_date={item?.created_at}
+                position={item?.target_level}
                 navigation={navigation}
               />
             )}
@@ -86,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
 });
