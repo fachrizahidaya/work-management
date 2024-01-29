@@ -25,6 +25,7 @@
         "foregroundImage": "./assets/adaptive-icon-adr.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_BACKGROUND_LOCATION", "ACCESS_COARSE_LOCATION"],
       "package": "com.kolabora.kssmobileapp",
       "versionCode": 10
     },

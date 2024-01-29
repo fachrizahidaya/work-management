@@ -2,9 +2,11 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
+import IntentLauncherParams, { startActivityAsync, ActivityAction } from "expo-intent-launcher";
+import Constants from "expo-constants";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -19,12 +21,21 @@ const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState();
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
+  const [locationOn, setLocationOn] = useState(null);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
+
+  const openSetting = () => {
+    if (Platform.OS == "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      startActivityAsync(ActivityAction.LOCATION_SOURCE_SETTINGS);
+    }
+  };
 
   const showAlert = () => {
     Alert.alert(
@@ -33,12 +44,11 @@ const TribeAddNewSheet = (props) => {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("canceled"),
           style: "cancel",
         },
         {
           text: "Go to Settings",
-          onPress: () => Alert.alert("Open Setting"),
+          onPress: () => openSetting(),
           style: "default",
         },
       ],
@@ -68,8 +78,10 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (!location) {
+      if (locationOn == false) {
         showAlert();
+      } else if (status == false) {
+        await Location.requestForegroundPermissionsAsync();
       } else {
         if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
@@ -96,10 +108,16 @@ const TribeAddNewSheet = (props) => {
    */
   const getLocationPermissions = async () => {
     try {
-      if (status === false) {
-        await Location.requestForegroundPermissionsAsync();
-        console.log("Allow location permission");
+      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
+        showAlert();
+        return;
       }
+
+      if (locationOn == true && status == false) {
+        await Location.requestForegroundPermissionsAsync();
+        return;
+      }
+
       const currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
     } catch (err) {
@@ -121,7 +139,11 @@ const TribeAddNewSheet = (props) => {
   useEffect(() => {
     const runThis = async () => {
       try {
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        setLocationOn(isLocationEnabled);
+
         const { granted } = await Location.getForegroundPermissionsAsync();
+
         setStatus(granted);
       } catch (err) {
         console.log(err);
@@ -142,7 +164,7 @@ const TribeAddNewSheet = (props) => {
 
   useEffect(() => {
     getLocationPermissions();
-  }, [status]);
+  }, [status, locationOn]);
 
   return (
     <ActionSheet ref={props.reference}>
