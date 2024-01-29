@@ -19,7 +19,6 @@ const AppraisalScreen = () => {
   const { id } = route.params;
 
   const { data: appraisalList } = useFetch(`/hr/performance-appraisal/${id}`);
-  console.log(appraisalList);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
