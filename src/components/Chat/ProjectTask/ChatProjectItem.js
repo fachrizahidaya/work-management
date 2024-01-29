@@ -28,7 +28,7 @@ const ChatProjectItem = ({
   setBandAttachmentType,
 }) => {
   return (
-    <View style={{ marginVertical: 5 }}>
+    <View style={{ marginVertical: 8, marginBottom: 2 }}>
       <Pressable
         onPress={() => {
           setSelected(project);

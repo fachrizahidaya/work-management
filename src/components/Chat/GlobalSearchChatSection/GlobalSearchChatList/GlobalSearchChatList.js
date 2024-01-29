@@ -42,11 +42,11 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
         }
       }}
     >
-      <View style={{ padding: 10, borderColor: "#E8E9EB", borderBottomWidth: 1 }}>
+      <View style={{ paddingVertical: 14, paddingHorizontal: 16, borderColor: "#E8E9EB", borderBottomWidth: 1 }}>
         {group ? (
           <>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 16, fontWeight: "600" }}>{group.name}</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>{group.name}</Text>
 
               <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
             </View>
@@ -69,7 +69,7 @@ const GlobalSearchChatList = ({ chat, searchKeyword, group }) => {
           <>
             <View>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <Text style={{ fontSize: 16, fontWeight: "600" }}>{chat?.user?.name}</Text>
+                <Text style={{ fontSize: 14, fontWeight: "600" }}>{chat?.user?.name}</Text>
 
                 <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
               </View>

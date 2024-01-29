@@ -50,7 +50,15 @@ const ProjectDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable
@@ -62,7 +70,7 @@ const ProjectDetail = () => {
             <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
             <View>
               <Text
-                style={[{ fontSize: 14, width: 200, overflow: "hidden" }, TextProps]}
+                style={[{ fontSize: 14, fontWeight: "500", width: 200, overflow: "hidden" }, TextProps]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -80,11 +88,11 @@ const ProjectDetail = () => {
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 15 }}>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 16 }}>
         <Description description={project?.data?.description} navigation={navigation} />
       </View>
       <View
-        style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", marginVertical: 10, marginHorizontal: 15 }}
+        style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", marginVertical: 10, marginHorizontal: 16 }}
       >
         <DateSection
           start={dayjs(project?.data?.created_at).format("MMM DD, YYYY")}
@@ -103,7 +111,7 @@ const ProjectDetail = () => {
           gap: 5,
           borderRadius: 10,
           marginVertical: 10,
-          marginHorizontal: 15,
+          marginHorizontal: 16,
         }}
       >
         <View style={{ flex: 0.5, borderRadius: 10, padding: 10, backgroundColor: "#FFFFFF" }}>
@@ -128,7 +136,7 @@ const ProjectDetail = () => {
           borderRadius: 10,
           gap: 5,
           marginVertical: 10,
-          marginHorizontal: 15,
+          marginHorizontal: 16,
         }}
       >
         {projectTask?.data.length > 0 ? (
@@ -209,7 +217,15 @@ const ProjectDetail = () => {
           </Pressable>
         )}
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
         <Pressable
           style={{
             flex: 1,

@@ -173,7 +173,7 @@ const ChatBubble = ({
         flexDirection: !myMessage ? "row" : "row-reverse",
         alignItems: "flex-end",
         gap: 5,
-        paddingHorizontal: 5,
+        paddingHorizontal: 16,
         marginBottom: isGrouped ? 3 : 5,
       }}
     >

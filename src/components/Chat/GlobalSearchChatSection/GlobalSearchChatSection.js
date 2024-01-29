@@ -5,7 +5,7 @@ import GlobalSearchChatList from "./GlobalSearchChatList/GlobalSearchChatList";
 const GlobalSearchChatSection = ({ searchResult, globalKeyword }) => {
   return (
     <>
-      <View style={{ padding: 10 }}>
+      <View style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>MESSAGES</Text>
       </View>
 
