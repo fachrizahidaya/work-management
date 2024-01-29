@@ -322,14 +322,15 @@ export default NewLeaveRequest;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 15,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
   },
   history: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
-    marginVertical: 20,
+    gap: 17,
+    marginTop: 22,
   },
   name: {
     width: 100,

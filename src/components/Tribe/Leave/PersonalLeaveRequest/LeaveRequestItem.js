@@ -5,7 +5,6 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const LeaveRequestItem = ({
@@ -31,7 +30,7 @@ const LeaveRequestItem = ({
         flexDirection: "column",
         marginVertical: 5,
         gap: 10,
-        elevation: 4,
+        elevation: 3,
         shadowColor: "rgba(0, 0, 0, 1)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -80,7 +79,7 @@ const LeaveRequestItem = ({
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69", maxWidth: 300 }}>{reason}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69", maxWidth: 250 }}>{reason}</Text>
         </View>
         <View
           style={{
@@ -97,9 +96,9 @@ const LeaveRequestItem = ({
           <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-          {dayjs(begin_date).format("DD.MM.YYYY")} - {dayjs(end_date).format("DD.MM.YYYY")}
+          {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")}
         </Text>
         {status === "Pending" ? (
           <Text
@@ -111,6 +110,7 @@ const LeaveRequestItem = ({
               textAlign: "right",
             }}
             numberOfLines={2}
+            ellipsizeMode="tail"
           >
             Waiting approval by {approval_by}
           </Text>

@@ -129,12 +129,12 @@ const FeedCardItem = ({
     <View style={styles.container}>
       <View gap={20} style={card.card}>
         <View style={styles.cardHeader}>
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size={10} isThumb={false} />
+          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
 
           <View style={{ flex: 1, gap: 5 }}>
             <View style={styles.dockName}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Text style={[{ fontSize: 15 }, TextProps]}>
+                <Text style={[{ fontSize: 14 }, TextProps]}>
                   {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
                 </Text>
                 {type === "Announcement" ? (
@@ -145,55 +145,53 @@ const FeedCardItem = ({
               </View>
 
               {loggedEmployeeId === employeeId && (
-                <>
-                  <Pressable
-                    style={{ marginRight: 1 }}
-                    onPress={async () => {
-                      await SheetManager.show("form-sheet", {
-                        payload: {
-                          children: (
-                            <View
-                              style={{
-                                display: "flex",
-                                gap: 21,
-                                paddingHorizontal: 20,
-                                paddingVertical: 16,
-                                paddingBottom: -20,
+                <Pressable
+                  style={{ marginRight: 1 }}
+                  onPress={async () => {
+                    await SheetManager.show("form-sheet", {
+                      payload: {
+                        children: (
+                          <View
+                            style={{
+                              display: "flex",
+                              gap: 21,
+                              paddingHorizontal: 20,
+                              paddingVertical: 16,
+                              paddingBottom: -20,
+                            }}
+                          >
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                toggleEditModal();
                               }}
                             >
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  toggleEditModal();
-                                }}
-                              >
-                                <Text style={[TextProps]}>Edit Post</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  toggleDeleteModal();
-                                }}
-                              >
-                                <Text style={[{ fontSize: 14 }, TextProps]}>Delete Post</Text>
-                              </TouchableOpacity>
-                            </View>
-                          ),
-                        },
-                      });
-                      openSelectedPersonalPost(id);
-                    }}
-                  >
-                    <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
-                  </Pressable>
-                </>
+                              <Text style={[TextProps]}>Edit Post</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                toggleDeleteModal();
+                              }}
+                            >
+                              <Text style={[{ fontSize: 14 }, TextProps]}>Delete Post</Text>
+                            </TouchableOpacity>
+                          </View>
+                        ),
+                      },
+                    });
+                    openSelectedPersonalPost(id);
+                  }}
+                >
+                  <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
+                </Pressable>
               )}
             </View>
             <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
         </View>
 
-        <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
 
         {attachment ? (
           <>
@@ -218,7 +216,7 @@ const FeedCardItem = ({
             >
               <MaterialCommunityIcons name="comment-text-outline" size={20} color="#8A9099" />
             </Pressable>
-            <Text style={[{ fontSize: 15 }, TextProps]}>{totalComment}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -232,7 +230,7 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={[{ fontSize: 15 }, TextProps]}>{totalLike}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
           </View>
         </View>
       </View>

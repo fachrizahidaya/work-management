@@ -2,8 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
-import IntentLauncherParams, { startActivityAsync, ActivityAction } from "expo-intent-launcher";
-import Constants from "expo-constants";
+import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
 import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
@@ -29,6 +28,24 @@ const TribeAddNewSheet = (props) => {
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
 
+  const items = [
+    createLeaveRequestCheckAccess && {
+      icons: "clipboard-clock-outline",
+      title: `New Leave Request`,
+    },
+    // {
+    //   icons: "clipboard-minus-outline",
+    //   title: "New Reimbursement",
+    // },
+    {
+      icons: "clock-outline",
+      title: `Clock in`,
+    },
+  ];
+
+  /**
+   * Open settings for location
+   */
   const openSetting = () => {
     if (Platform.OS == "ios") {
       Linking.openURL("app-settings:");
@@ -37,6 +54,9 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
+  /**
+   * Handle modal for turn on location
+   */
   const showAlert = () => {
     Alert.alert(
       "Permission needed",
@@ -57,21 +77,6 @@ const TribeAddNewSheet = (props) => {
       }
     );
   };
-
-  const items = [
-    createLeaveRequestCheckAccess && {
-      icons: "clipboard-clock-outline",
-      title: `New Leave Request`,
-    },
-    // {
-    //   icons: "clipboard-minus-outline",
-    //   title: "New Reimbursement",
-    // },
-    {
-      icons: "clock-outline",
-      title: `Clock in`,
-    },
-  ];
 
   /**
    * Attendance check-in and check-out handler
@@ -106,7 +111,7 @@ const TribeAddNewSheet = (props) => {
   /**
    * Handle get location based on permission
    */
-  const getLocationPermissions = async () => {
+  const getLocation = async () => {
     try {
       if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
         showAlert();
@@ -163,7 +168,7 @@ const TribeAddNewSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    getLocationPermissions();
+    getLocation();
   }, [status, locationOn]);
 
   return (

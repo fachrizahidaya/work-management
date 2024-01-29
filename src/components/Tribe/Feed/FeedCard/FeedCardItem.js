@@ -142,7 +142,7 @@ const FeedCardItem = ({
           <View style={{ flex: 1, gap: 5 }}>
             <TouchableOpacity style={styles.dockName}>
               <Text
-                style={[{ fontSize: 15 }, TextProps]}
+                style={[{ fontSize: 14 }, TextProps]}
                 onPress={() =>
                   navigation.navigate("Employee Profile", {
                     employeeId: employeeId,
@@ -163,7 +163,7 @@ const FeedCardItem = ({
           </View>
         </View>
 
-        <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
 
         {attachment ? (
           <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
@@ -186,7 +186,7 @@ const FeedCardItem = ({
             >
               <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
             </Pressable>
-            <Text style={[{ fontSize: 15 }, TextProps]}>{totalComment}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -200,7 +200,7 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={[{ fontSize: 15 }, TextProps]}>{totalLike}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
           </View>
         </View>
       </View>

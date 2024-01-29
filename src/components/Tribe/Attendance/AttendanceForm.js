@@ -101,7 +101,7 @@ const AttendanceForm = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.wrapper}>
           {/* If employee ontime for Clock in and Clock out */}
-          {/* {hasClockInAndOut && (
+          {hasClockInAndOut && (
             <View style={{ width: "100%", gap: 10 }}>
               <View style={styles.clock}>
                 <View>
@@ -116,7 +116,7 @@ const AttendanceForm = ({
                 )}
               </View>
             </View>
-          )} */}
+          )}
 
           {/* If employee Clock in late, require Late Report */}
           {hasLateWithoutReason && (
@@ -490,7 +490,7 @@ const LateAndEarlyTime = ({
 }) => {
   return (
     <View style={{ width: "100%", gap: 10 }}>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       {tabValue === "late" ? (
         <>
           <View style={styles.clock}>
