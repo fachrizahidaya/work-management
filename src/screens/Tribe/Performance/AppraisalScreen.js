@@ -49,12 +49,9 @@ const AppraisalScreen = () => {
               renderItem={({ item, index }) => (
                 <KPIDetailItem
                   description={item?.description}
-                  question={item?.measurement}
                   target={item?.target}
                   navigation={navigation}
                   reference={formScreenSheetRef}
-                  threshold={item?.threshold}
-                  weight={item?.weight}
                   type="appraisal"
                 />
               )}

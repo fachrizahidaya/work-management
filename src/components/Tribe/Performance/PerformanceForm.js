@@ -1,24 +1,23 @@
 import React from "react";
 import { useFormik } from "formik";
 
-import { Keyboard, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 import Input from "../../shared/Forms/Input";
-import FormButton from "../../shared/FormButton";
-import { SheetManager } from "react-native-actions-sheet";
+import ActionSheet from "react-native-actions-sheet";
 
-const PerformanceForm = ({ reference, data, threshold, weight, measurement, description }) => {
+const PerformanceForm = ({ reference, threshold, weight, measurement, description, actual, onClose }) => {
   const formik = useFormik({});
 
   return (
-    <>
+    <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: -20 }}>
+        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={async () => {
-                await SheetManager.hide("form-sheet");
+                reference.current?.hide();
               }}
             >
               <Text>Done</Text>
@@ -33,27 +32,26 @@ const PerformanceForm = ({ reference, data, threshold, weight, measurement, desc
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Measurement</Text>
             <Text>{measurement}</Text>
           </View>
+
           <View style={{ gap: 3 }}>
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Weight</Text>
-            <Text>{weight}</Text>
+            <Text>{weight} %</Text>
           </View>
           <Input
-            formik={formik}
+            // formik={formik}
             title="Actual Achievement"
-            fieldName="password"
+            // fieldName="actual_achievement"
+            defaultValue={actual}
             // value={formik.values.password}
             placeHolder="Input Number Only"
             // secureTextEntry={hidePassword}
             // endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
             // onPressEndIcon={() => setHidePassword(!hidePassword)}
+            keyboardType="numeric"
           />
-
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text style={{ color: "#FFFFFF" }}>Download</Text>
-          </FormButton>
         </View>
       </TouchableWithoutFeedback>
-    </>
+    </ActionSheet>
   );
 };
 

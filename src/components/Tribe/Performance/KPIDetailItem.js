@@ -8,9 +8,7 @@ import { TextProps } from "../../shared/CustomStylings";
 import { SheetManager } from "react-native-actions-sheet";
 import PerformanceForm from "./PerformanceForm";
 
-const KPIDetailItem = ({ question, target, reference, actual, description, threshold, weight, type }) => {
-  const thisRef = useRef(null);
-
+const KPIDetailItem = ({ target, actual, description, type, onSelect, item }) => {
   return (
     <Pressable
       style={{
@@ -21,15 +19,9 @@ const KPIDetailItem = ({ question, target, reference, actual, description, thres
         alignItems: "flex-start",
         gap: 10,
       }}
-      onPress={() =>
-        SheetManager.show("form-sheet", {
-          payload: {
-            children: (
-              <PerformanceForm threshold={threshold} weight={weight} measurement={question} description={description} />
-            ),
-          },
-        })
-      }
+      onPress={() => {
+        onSelect(item);
+      }}
     >
       <Text style={[TextProps]}>{description}</Text>
       {type == "kpi" ? (

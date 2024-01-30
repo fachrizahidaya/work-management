@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -10,6 +10,23 @@ import { card } from "../../../styles/Card.js";
 import { TextProps } from "../../../components/shared/CustomStylings.js";
 
 const PerformanceScreen = () => {
+  const menu = [
+    {
+      name: "KPI",
+      icon: "file-check-outline",
+      navigation: "KPI Screen",
+    },
+    {
+      name: "Appraisal",
+      icon: "file-chart-outline",
+      navigation: "Appraisal Screen",
+    },
+    {
+      name: "Review",
+      icon: "file-account-outline",
+      navigation: "",
+    },
+  ];
   const navigation = useNavigation();
 
   return (
@@ -21,56 +38,37 @@ const PerformanceScreen = () => {
       <View
         style={{
           flex: 1,
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
           justifyContent: "center",
-          gap: 10,
         }}
       >
-        <Pressable
-          style={{
-            ...card.card,
-            marginVertical: 5,
-            elevation: 1,
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 10,
-            width: 100,
-          }}
-          onPress={() => navigation.navigate("KPI Screen")}
-        >
-          <Text style={[{}, TextProps]}>KPI</Text>
-          <MaterialCommunityIcons name="file-check-outline" size={30} />
-        </Pressable>
-        <Pressable
-          style={{
-            ...card.card,
-            marginVertical: 5,
-            elevation: 1,
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 10,
-            width: 100,
-          }}
-          onPress={() => navigation.navigate("Appraisal Screen")}
-        >
-          <Text style={[{}, TextProps]}>Appraisal</Text>
-          <MaterialCommunityIcons name="file-chart-outline" size={30} />
-        </Pressable>
         <View
           style={{
-            ...card.card,
-            marginVertical: 5,
-            elevation: 1,
-            flexDirection: "column",
+            flexDirection: "row",
+            flexWrap: "wrap",
             alignItems: "center",
+            justifyContent: "center",
             gap: 10,
-            width: 100,
           }}
         >
-          <Text style={[{}, TextProps]}>Review</Text>
-          <MaterialCommunityIcons name="file-account-outline" size={30} />
+          {menu.map((item, index) => {
+            return (
+              <Pressable
+                style={{
+                  ...card.card,
+                  elevation: 1,
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 10,
+                  width: 100,
+                }}
+                onPress={() => navigation.navigate(item.navigation)}
+                key={index}
+              >
+                <MaterialCommunityIcons name={item.icon} size={30} />
+                <Text style={[{}, TextProps]}>{item.name}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
     </SafeAreaView>
@@ -90,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
 });

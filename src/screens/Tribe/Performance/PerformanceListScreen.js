@@ -1,13 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import OngoingPerformanceListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
 import Tabs from "../../../components/shared/Tabs";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
+import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
 
 const PerformanceListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -16,7 +17,7 @@ const PerformanceListScreen = () => {
 
   const navigation = useNavigation();
 
-  const { data: kpiList } = useFetch("/hr/performance-kpi");
+  const { data: kpiList } = useFetch("/hr/employee-kpi/ongoing");
 
   const tabs = useMemo(() => {
     return [
@@ -27,8 +28,6 @@ const PerformanceListScreen = () => {
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
-    setOngoingList([]);
-    setArchivedList([]);
   }, []);
 
   return (
@@ -37,24 +36,35 @@ const PerformanceListScreen = () => {
         <PageHeader width={200} title="KPI" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          <FlashList
-            data={kpiList?.data}
-            estimatedItemSize={50}
-            onEndReachedThreshold={0.1}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item, index }) => (
-              <OngoingPerformanceListItem
-                key={index}
-                id={item?.id}
-                start_date={item?.created_at}
-                position={item?.target_level}
-                navigation={navigation}
-              />
-            )}
-          />
+          {tabValue === "Ongoing" ? (
+            <FlashList
+              data={kpiList?.data}
+              estimatedItemSize={50}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item, index }) => (
+                <OngoingPerformanceListItem
+                  key={index}
+                  id={item?.id}
+                  start_date={item?.review?.begin_date}
+                  end_date={item?.review?.end_date}
+                  position={item?.target_level}
+                  navigation={navigation}
+                  name={item?.review?.description}
+                  type="kpi"
+                />
+              )}
+            />
+          ) : (
+            <ScrollView>
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -76,5 +86,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
