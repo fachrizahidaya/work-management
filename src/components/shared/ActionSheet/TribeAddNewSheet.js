@@ -57,10 +57,10 @@ const TribeAddNewSheet = (props) => {
   /**
    * Handle modal for turn on location
    */
-  const showAlert = () => {
+  const showAlertToActivateLocation = () => {
     Alert.alert(
-      "Permission needed",
-      "In order to clock-in or clock-out, you must give permission to access the location. You can grant this permission in the Settings app.",
+      "Activate location",
+      "In order to clock-in or clock-out, you must turn the location on.",
       [
         {
           text: "Cancel",
@@ -78,15 +78,31 @@ const TribeAddNewSheet = (props) => {
     );
   };
 
+  const showAlertToAllowPermission = () => {
+    Alert.alert(
+      "Permission needed",
+      "In order to clock-in or clock-out, you must give permission to access the location. You can grant this permission in the Settings app.",
+      [
+        {
+          text: "OK",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
   /**
    * Attendance check-in and check-out handler
    */
   const attendanceCheckHandler = async () => {
     try {
       if (locationOn == false) {
-        showAlert();
+        showAlertToActivateLocation();
       } else if (status == false) {
         await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
       } else {
         if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
@@ -114,12 +130,13 @@ const TribeAddNewSheet = (props) => {
   const getLocation = async () => {
     try {
       if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
-        showAlert();
+        showAlertToActivateLocation();
         return;
       }
 
       if (locationOn == true && status == false) {
         await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
         return;
       }
 
