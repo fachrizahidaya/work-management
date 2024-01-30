@@ -265,7 +265,7 @@ const ChatListScreen = () => {
         <>
           <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{ padding: 10 }}>
+              <View style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
                 <PageHeader title="Chats" onPress={() => navigation.goBack()} />
               </View>
 

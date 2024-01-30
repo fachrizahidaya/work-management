@@ -24,80 +24,78 @@ const NewLeaveRequestForm = ({
   const [selectedValue, setSelectedValue] = useState(null);
 
   return (
-    <View style={{ marginVertical: 5, paddingHorizontal: 5, gap: 20 }}>
-      <View style={{ paddingHorizontal: 3, gap: 20 }}>
-        <SelectWithSearch
-          reference={reference}
-          placeHolder="Select Leave Type"
-          title="Leave Type"
-          items={leaveType}
-          formik={formik}
-          value={formik.values.leave_id}
-          fieldName="leave_id"
-          onChange={(value) => {
-            formik.setFieldValue("leave_id", value);
-            const selectedLeave = leaveType.find((item) => item.value === value);
-            setSelectedValue(selectedLeave ? selectedLeave.value : null);
-          }}
-          key="leave_id"
-          inputToShow={inputToShow}
-          setInputToShow={setInputToShow}
-          setSearchInput={setSearchInput}
-          fieldNameSearch="search"
-          handleSearch={handleSearch}
-          height={580}
+    <View style={{ gap: 20 }}>
+      <SelectWithSearch
+        reference={reference}
+        placeHolder="Select Leave Type"
+        title="Leave Type"
+        items={leaveType}
+        formik={formik}
+        value={formik.values.leave_id}
+        fieldName="leave_id"
+        onChange={(value) => {
+          formik.setFieldValue("leave_id", value);
+          const selectedLeave = leaveType.find((item) => item.value === value);
+          setSelectedValue(selectedLeave ? selectedLeave.value : null);
+        }}
+        key="leave_id"
+        inputToShow={inputToShow}
+        setInputToShow={setInputToShow}
+        setSearchInput={setSearchInput}
+        fieldNameSearch="search"
+        handleSearch={handleSearch}
+        height={580}
+      />
+
+      <Input
+        multiline
+        formik={formik}
+        title="Purpose of Leaving"
+        fieldName="reason"
+        placeHolder="Input Reason"
+        value={formik.values.reason}
+        editable={!formik.values.leave_id ? false : true}
+      />
+
+      <View style={{ gap: 10 }}>
+        <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
+        <CustomDateTimePicker
+          defaultValue={formik.values.begin_date}
+          onChange={onChangeStartDate}
+          disabled={!formik.values.leave_id ? true : false}
+          unlimitStartDate={true}
         />
-
-        <Input
-          multiline
-          formik={formik}
-          title="Purpose of Leaving"
-          fieldName="reason"
-          placeHolder="Input Reason"
-          value={formik.values.reason}
-          editable={!formik.values.leave_id ? false : true}
+        <Text style={{ color: "#FF6262" }}>{formik.errors.begin_date}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
+        <CustomDateTimePicker
+          defaultValue={formik.values.end_date}
+          onChange={onChangeEndDate}
+          disabled={!formik.values.leave_id ? true : false}
         />
-
-        <View style={{ gap: 10 }}>
-          <Text style={[{ fontSize: 14 }, TextProps]}>Start Date</Text>
-          <CustomDateTimePicker
-            defaultValue={formik.values.begin_date}
-            onChange={onChangeStartDate}
-            disabled={!formik.values.leave_id ? true : false}
-            unlimitStartDate={true}
-          />
-          <Text style={{ color: "#FF6262" }}>{formik.errors.begin_date}</Text>
-          <Text style={[{ fontSize: 14 }, TextProps]}>End Date</Text>
-          <CustomDateTimePicker
-            defaultValue={formik.values.end_date}
-            onChange={onChangeEndDate}
-            disabled={!formik.values.leave_id ? true : false}
-          />
-          <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text>
-        </View>
-
-        {isLoading && (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <ActivityIndicator />
-            <Text style={[{ fontSize: 10 }, TextProps]}>Checking availability...</Text>
-          </View>
-        )}
-
-        {formik.values.leave_id &&
-        formik.values.reason &&
-        formik.values.begin_date &&
-        formik.values.end_date &&
-        !isLoading &&
-        !isError ? (
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
-          </FormButton>
-        ) : (
-          <FormButton opacity={0.5}>
-            <Text style={{ color: "#FFFFFF" }}>Submit</Text>
-          </FormButton>
-        )}
+        <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text>
       </View>
+
+      {isLoading && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <ActivityIndicator />
+          <Text style={[{ fontSize: 10 }, TextProps]}>Checking availability...</Text>
+        </View>
+      )}
+
+      {formik.values.leave_id &&
+      formik.values.reason &&
+      formik.values.begin_date &&
+      formik.values.end_date &&
+      !isLoading &&
+      !isError ? (
+        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+          <Text style={{ color: "#FFFFFF" }}>Submit</Text>
+        </FormButton>
+      ) : (
+        <FormButton opacity={0.5}>
+          <Text style={{ color: "#FFFFFF" }}>Submit</Text>
+        </FormButton>
+      )}
     </View>
   );
 };

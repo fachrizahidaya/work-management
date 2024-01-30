@@ -25,7 +25,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName 
       <View
         style={{
           paddingVertical: 5,
-          paddingHorizontal: 10,
+          paddingHorizontal: 16,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",

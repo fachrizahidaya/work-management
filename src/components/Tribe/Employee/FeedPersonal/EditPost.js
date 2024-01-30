@@ -51,10 +51,14 @@ const EditPost = ({
       ? Dimensions.get("window").height
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
+  const initialContent = content?.content || "";
+  const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+  const modifiedInitialContent = initialContent.replace(mentionRegex, "@$1");
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      content: content?.content || "",
+      content: modifiedInitialContent,
       type: content?.type || selectedOption,
       end_date: content?.end_date || "",
       file_name: content?.file_name || "",
@@ -318,6 +322,6 @@ const styles = StyleSheet.create({
     width: 280,
     height: 500,
     resizeMode: "contain",
-    backgroundColor: "gray",
+    backgroundColor: "white",
   },
 });

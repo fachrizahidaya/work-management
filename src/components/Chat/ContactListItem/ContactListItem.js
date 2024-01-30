@@ -255,7 +255,7 @@ const ContactListItem = ({
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                   {!searchKeyword ? (
-                    <Text style={[{ fontSize: 12, fontWeight: "500" }]}>{name}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }]}>{name}</Text>
                   ) : (
                     <RenderHtml
                       contentWidth={400}
@@ -375,7 +375,8 @@ const styles = StyleSheet.create({
   contactBox: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderColor: "#E8E9EB",
   },

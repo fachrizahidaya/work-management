@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { card } from "../../../../styles/Card";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FormButton from "../../../shared/FormButton";
 import { TextProps } from "../../../shared/CustomStylings";
@@ -33,7 +32,7 @@ const MyTeamLeaveRequestItem = ({
         flexDirection: "column",
         marginVertical: 5,
         gap: 10,
-        elevation: 4,
+        elevation: 3,
         shadowColor: "rgba(0, 0, 0, 1)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -54,14 +53,14 @@ const MyTeamLeaveRequestItem = ({
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>{leave_name} | </Text>
-            <Text style={{ fontSize: 15, fontWeight: "500", color: "#377893" }}>{employee_name}</Text>
+            <Text style={{ fontSize: 14, fontWeight: "500", color: "#377893" }}>{employee_name}</Text>
           </View>
         </View>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>{item?.reason}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69", maxWidth: 250 }}>{item?.reason}</Text>
         </View>
 
         <View style={{ flexDirection: "row", gap: 5, padding: 5, borderRadius: 10, backgroundColor: "#F8F8F8" }}>
@@ -71,7 +70,7 @@ const MyTeamLeaveRequestItem = ({
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-          {dayjs(begin_date).format("DD.MM.YYYY")} - {dayjs(end_date).format("DD.MM.YYYY")} • {days}{" "}
+          {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
           {days < 2 ? "day" : "days"}
         </Text>
         {status === "Pending" ? (

@@ -131,11 +131,21 @@ const GroupFormScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable style={{ flex: 1, display: "flex", gap: 10, paddingHorizontal: 20 }} onPress={Keyboard.dismiss}>
-        <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
+      <View style={{ flex: 1, gap: 5 }}>
+        <Pressable style={{ display: "flex", paddingVertical: 14, paddingHorizontal: 16 }} onPress={Keyboard.dismiss}>
+          <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-        <Text style={[{ fontSize: 12 }, TextProps]}>Participants: {userArray?.length}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
+          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Participants: {userArray?.length}</Text>
+        </Pressable>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 5,
+            alignItems: "center",
+            paddingHorizontal: 16,
+          }}
+        >
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
@@ -158,7 +168,15 @@ const GroupFormScreen = ({ route }) => {
               );
             })}
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20 }}>
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20,
+            paddingHorizontal: 16,
+          }}
+        >
           <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
               <Image
@@ -180,7 +198,6 @@ const GroupFormScreen = ({ route }) => {
             onChangeText={(value) => formik.setFieldValue("name", value)}
           />
           {formik.errors.name && <Text style={{ fontSize: 12, color: "#F44336" }}>{formik.errors.name}</Text>}
-
           <Pressable
             style={{
               backgroundColor: formik.isSubmitting ? "#757575" : "#176688",
@@ -200,7 +217,7 @@ const GroupFormScreen = ({ route }) => {
             )}
           </Pressable>
         </View>
-      </Pressable>
+      </View>
     </SafeAreaView>
   );
 };

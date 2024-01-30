@@ -98,7 +98,13 @@ const AvatarPlaceholder = ({ image, name, email, size = "sm", borderRadius, isTh
                   borderRadius: 50,
                 }}
               >
-                <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
+                <Text
+                  style={{
+                    fontSize: size === "xs" ? 12 : size == "sm" ? 14 : size === "md" ? 16 : size == "xl" ? 20 : 18,
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
                   {name ? userInitialGenerator() : "KSS"}
                 </Text>
               </View>
@@ -118,7 +124,13 @@ const AvatarPlaceholder = ({ image, name, email, size = "sm", borderRadius, isTh
                 },
               ]}
             >
-              <Text style={{ fontSize: 12, color: "white", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  fontSize: size === "xs" ? 12 : size == "sm" ? 14 : size === "md" ? 16 : size == "xl" ? 20 : 18,
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
                 {name ? userInitialGenerator() : "KSS"}
               </Text>
             </View>

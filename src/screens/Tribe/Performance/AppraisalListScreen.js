@@ -7,6 +7,7 @@ import { FlashList } from "@shopify/flash-list";
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
 import OngoingAppraisalListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
+import { useFetch } from "../../../hooks/useFetch";
 
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -14,6 +15,8 @@ const AppraisalListScreen = () => {
   const [archivedList, setArchivedList] = useState([]);
 
   const navigation = useNavigation();
+
+  const { data: appraisalList } = useFetch("/hr/performance-appraisal");
 
   const tabs = useMemo(() => {
     return [
@@ -28,42 +31,6 @@ const AppraisalListScreen = () => {
     setArchivedList([]);
   }, []);
 
-  const ongoingData = [
-    {
-      id: 1,
-      year: 2024,
-      period: 3,
-      type: "KPI",
-      startDate: "2024-07-01",
-      endDate: "2024-09-30",
-      position: [
-        {
-          id: 1,
-          position_name: "Front-End Developer",
-        },
-        { id: 2, position_name: "Mobile Developer" },
-        { id: 3, position_name: "Back-End Developer" },
-      ],
-      division: "Tech",
-    },
-    {
-      id: 2,
-      year: 2024,
-      period: 3,
-      type: "Appraisal",
-      startDate: "2024-07-01",
-      endDate: "2024-09-30",
-      division: [
-        {
-          id: 1,
-          division_name: "Tech",
-        },
-        { id: 2, division_name: "Finance" },
-        { id: 3, division_name: "Sales" },
-      ],
-    },
-  ];
-
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
@@ -74,15 +41,16 @@ const AppraisalListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
           <FlashList
-            data={ongoingData}
+            data={appraisalList?.data}
             estimatedItemSize={50}
             onEndReachedThreshold={0.1}
             keyExtractor={(item, index) => index}
             renderItem={({ item, index }) => (
               <OngoingAppraisalListItem
                 key={index}
-                start_date={item?.startDate}
-                end_date={item?.endDate}
+                id={item?.id}
+                start_date={item?.created_at}
+                position={item?.target_level}
                 navigation={navigation}
               />
             )}
@@ -106,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
 });

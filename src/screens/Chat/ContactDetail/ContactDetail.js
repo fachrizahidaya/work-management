@@ -285,14 +285,17 @@ const ContactDetail = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFFFFF",
-              padding: 20,
+              paddingVertical: 14,
+              paddingHorizontal: 16,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <Pressable onPress={() => navigation.goBack()}>
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
-              <Text style={{ fontWeight: "500" }}>{type === "personal" ? "Contact Info" : "Group Info"}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {type === "personal" ? "Contact Info" : "Group Info"}
+              </Text>
             </View>
           </View>
           <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>
@@ -317,12 +320,12 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
-            {/* <ContactMedia
+            <ContactMedia
               qty={media?.data?.length + document?.data?.length}
               media={media?.data}
               docs={document?.data}
               navigation={navigation}
-            /> */}
+            />
             {/* <ContactPersonalized /> */}
             <ContactAction
               type={type}

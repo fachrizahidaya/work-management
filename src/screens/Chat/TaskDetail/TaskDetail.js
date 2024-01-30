@@ -45,7 +45,15 @@ const TaskDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable
@@ -55,7 +63,7 @@ const TaskDetail = () => {
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
             <View>
-              <Text style={[{ fontSize: 14 }, TextProps]}>
+              <Text style={[{ fontSize: 14, fontWeight: "500" }, TextProps]}>
                 {task?.data?.title.length > 20 ? task?.data?.title.slice(0, 30) + "..." : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
@@ -73,7 +81,7 @@ const TaskDetail = () => {
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 15 }}>
+      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 16 }}>
         <Description description={task?.data?.description} navigation={navigation} />
       </View>
       <View
@@ -82,7 +90,7 @@ const TaskDetail = () => {
           flexDirection: "row",
           borderRadius: 10,
           marginVertical: 10,
-          marginHorizontal: 15,
+          marginHorizontal: 16,
           gap: 5,
           backgroundColor: "#FAFAFA",
         }}
@@ -150,7 +158,7 @@ const TaskDetail = () => {
           backgroundColor: "#FFFFFF",
           padding: 5,
           marginVertical: 10,
-          marginHorizontal: 15,
+          marginHorizontal: 16,
           gap: 5,
           borderRadius: 10,
         }}
@@ -170,7 +178,15 @@ const TaskDetail = () => {
           </View>
         </View>
       </Pressable>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 15 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+        }}
+      >
         <Pressable
           style={{
             flex: 1,

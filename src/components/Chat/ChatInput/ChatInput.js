@@ -198,7 +198,8 @@ const ChatInput = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#FFFFFF",
-          padding: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 16,
         }}
       >
         <View

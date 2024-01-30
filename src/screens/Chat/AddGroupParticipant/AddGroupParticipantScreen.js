@@ -101,14 +101,14 @@ const AddGroupParticipantScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, gap: 5 }}>
-        <View style={{ justifyContent: "space-between", paddingHorizontal: 20 }}>
+        <View style={{ justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 14 }}>
           <View>
             <PageHeader title="Add Group Participant" onPress={() => navigation.goBack()} />
-            <Text style={[{ fontSize: 12, marginLeft: 10 }, TextProps]}>Add participants</Text>
+            <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Add participants</Text>
           </View>
         </View>
 
-        <View style={{ flex: 1, gap: 15, paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, gap: 15, paddingHorizontal: 16 }}>
           <Input
             fieldName="search"
             value={inputToShow}

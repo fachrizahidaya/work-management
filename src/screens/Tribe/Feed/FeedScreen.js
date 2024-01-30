@@ -245,7 +245,6 @@ const FeedScreen = () => {
           style={{
             display: "flex",
             flex: 1,
-            // paddingHorizontal: 14
           }}
         >
           {/* Content here */}

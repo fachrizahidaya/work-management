@@ -2,9 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
+import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -19,6 +20,7 @@ const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState();
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
+  const [locationOn, setLocationOn] = useState(null);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -42,14 +44,65 @@ const TribeAddNewSheet = (props) => {
   ];
 
   /**
+   * Open settings for location
+   */
+  const openSetting = () => {
+    if (Platform.OS == "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      startActivityAsync(ActivityAction.LOCATION_SOURCE_SETTINGS);
+    }
+  };
+
+  /**
+   * Handle modal for turn on location
+   */
+  const showAlertToActivateLocation = () => {
+    Alert.alert(
+      "Activate location",
+      "In order to clock-in or clock-out, you must turn the location on.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Go to Settings",
+          onPress: () => openSetting(),
+          style: "default",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
+  const showAlertToAllowPermission = () => {
+    Alert.alert(
+      "Permission needed",
+      "In order to clock-in or clock-out, you must give permission to access the location. You can grant this permission in the Settings app.",
+      [
+        {
+          text: "OK",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
+  /**
    * Attendance check-in and check-out handler
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (!location) {
-        Alert.alert(
-          "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-        );
+      if (locationOn == false) {
+        showAlertToActivateLocation();
+      } else if (status == false) {
+        await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
       } else {
         if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
@@ -74,19 +127,23 @@ const TribeAddNewSheet = (props) => {
   /**
    * Handle get location based on permission
    */
-  const getLocationPermissions = async () => {
+  const getLocation = async () => {
     try {
-      if (status === false) {
-        await Location.requestForegroundPermissionsAsync();
-        console.log("Allow location permission");
+      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
+        showAlertToActivateLocation();
+        return;
       }
+
+      if (locationOn == true && status == false) {
+        await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
+        return;
+      }
+
       const currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
     } catch (err) {
       console.log(err.message);
-      // Alert.alert(
-      //   "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-      // );
     }
   };
 
@@ -104,7 +161,11 @@ const TribeAddNewSheet = (props) => {
   useEffect(() => {
     const runThis = async () => {
       try {
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        setLocationOn(isLocationEnabled);
+
         const { granted } = await Location.getForegroundPermissionsAsync();
+
         setStatus(granted);
       } catch (err) {
         console.log(err);
@@ -124,8 +185,8 @@ const TribeAddNewSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    getLocationPermissions();
-  }, [status]);
+    getLocation();
+  }, [status, locationOn]);
 
   return (
     <ActionSheet ref={props.reference}>

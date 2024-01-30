@@ -66,7 +66,8 @@ const ChatHeader = ({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
-          padding: 20,
+          paddingVertical: 14,
+          paddingHorizontal: 16,
           borderBottomWidth: 1,
           borderColor: "#E8E9EB",
         }}
@@ -105,7 +106,7 @@ const ChatHeader = ({
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text style={[{ fontSize: 12 }, TextProps]}>{email}</Text>
+                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{email}</Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>

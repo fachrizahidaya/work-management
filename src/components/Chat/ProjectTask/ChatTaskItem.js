@@ -26,7 +26,7 @@ const ChatTaskItem = ({
   item,
 }) => {
   return (
-    <View style={{ marginVertical: 5 }}>
+    <View style={{ marginVertical: 8, marginBottom: 2 }}>
       <Pressable
         onPress={() => {
           navigation.navigate("Task Detail Screen", {

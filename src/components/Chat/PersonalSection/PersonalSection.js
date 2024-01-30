@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
   addButton: {
     backgroundColor: "#f1f2f3",

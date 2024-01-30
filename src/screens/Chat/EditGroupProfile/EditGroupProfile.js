@@ -135,31 +135,30 @@ const EditGroupProfile = () => {
             flexDirection: "row",
             justifyContent: "space-between",
             backgroundColor: "#FFFFFF",
-            padding: 20,
+            paddingVertical: 14,
+            paddingHorizontal: 16,
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
-            <Text style={{ fontWeight: "500" }}>Edit Profile</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Edit Profile</Text>
           </View>
         </View>
         <View
           style={{
             flex: 1,
             backgroundColor: "#FFFFFF",
-            paddingHorizontal: 20,
-            paddingVertical: 10,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
             gap: 10,
           }}
         >
           <View
             style={{
-              flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-              paddingHorizontal: 5,
               gap: 10,
             }}
           >
@@ -194,7 +193,6 @@ const EditGroupProfile = () => {
 
             {editName ? (
               <Input
-                width={220}
                 numberOfLines={2}
                 value={formik.values.name}
                 onChangeText={(value) => formik.setFieldValue("name", value)}
@@ -206,12 +204,12 @@ const EditGroupProfile = () => {
                 }}
               />
             ) : (
-              <>
-                <Text style={{ fontSize: 16, fontWeight: "500", width: 150 }} numberOfLines={2}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "500" }} numberOfLines={2}>
                   {name}
                 </Text>
                 <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
-              </>
+              </View>
             )}
           </View>
           {imageAttachment || formik.values.name !== name ? (

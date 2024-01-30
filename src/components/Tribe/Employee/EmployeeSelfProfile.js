@@ -105,10 +105,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     position: "relative",
     bottom: 45,
+    paddingHorizontal: 8,
   },
   content: {
     paddingBottom: 10,
-    paddingHorizontal: 5,
+    paddingHorizontal: 8,
     gap: 5,
   },
   information: {
