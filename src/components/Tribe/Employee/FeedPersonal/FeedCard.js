@@ -33,6 +33,7 @@ const FeedCard = ({
   userSelector,
   toggleDeleteModal,
   toggleEditModal,
+  reference,
 }) => {
   /**
    * Like a Post handler
@@ -106,10 +107,10 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile employee={employee} teammates={teammates} />
+                  <EmployeeProfile employee={employee} teammates={teammates} reference={reference} />
                 </>
               ) : (
-                <EmployeeSelfProfile employee={employee} teammates={teammates} />
+                <EmployeeSelfProfile employee={employee} teammates={teammates} reference={reference} />
               )}
             </View>
           </View>

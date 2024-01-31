@@ -34,7 +34,6 @@ const NewLeaveRequest = ({ route }) => {
   const [formError, setFormError] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [filteredType, setFilteredType] = useState([]);
 
