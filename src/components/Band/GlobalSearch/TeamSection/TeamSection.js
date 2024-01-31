@@ -1,14 +1,26 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import RenderHTML from "react-native-render-html";
 
-const TeamSection = ({ teams }) => {
+const TeamSection = ({ teams, keyword }) => {
   const navigation = useNavigation();
+  const { width } = Dimensions.get("screen");
+
+  const boldMatchCharacters = (sentence = "", characters = "") => {
+    const regex = new RegExp(characters, "gi");
+    return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
+  };
+
+  const renderItem = (team) => {
+    return boldMatchCharacters(team, keyword);
+  };
+
   return (
     <View style={styles.wrapper}>
-      <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
+      <Text style={{ fontWeight: "500", color: "#176688" }}>TEAMS</Text>
 
       {teams.map((team) => (
         <Pressable
@@ -17,9 +29,17 @@ const TeamSection = ({ teams }) => {
           onPress={() => navigation.navigate("My Team", { passedTeam: team })}
         >
           <View style={styles.icon}>
-            <MaterialCommunityIcons name="account-group" size={20} color={"#8A9099"} />
+            <MaterialCommunityIcons name="account-group" size={20} color={"#176688"} />
           </View>
-          <Text>{team.name}</Text>
+
+          <View style={{ flex: 1 }}>
+            <RenderHTML
+              contentWidth={width}
+              source={{
+                html: renderItem(team.name),
+              }}
+            />
+          </View>
         </Pressable>
       ))}
     </View>
