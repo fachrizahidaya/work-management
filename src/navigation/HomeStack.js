@@ -33,6 +33,7 @@ import KPIScreen from "../screens/Tribe/Performance/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/AppraisalScreen";
 
 // Settings Screens
+import SettingScreen from "../screens/Setting/SettingScreen";
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
 import AccountScreen from "../screens/Setting/Account/AccountScreen";
 import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
@@ -180,6 +181,8 @@ const HomeStack = () => {
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
       {/* Setting Screens */}
+      <Stack.Screen name="Setting Screen" component={SettingScreen} options={{ header: () => <Header /> }} />
+
       <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
