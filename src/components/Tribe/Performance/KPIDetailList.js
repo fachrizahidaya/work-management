@@ -6,8 +6,8 @@ const KPIDetailList = ({ dayjs, status, begin_date, end_date, position }) => {
   return (
     <View
       style={{
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingVertical: 14,
+        paddingHorizontal: 16,
         borderWidth: 1,
         borderColor: "#E2E2E2",
       }}

@@ -1,14 +1,11 @@
-import React from "react";
-import { useFormik } from "formik";
+import React, { useState } from "react";
 
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
-const PerformanceForm = ({ reference, threshold, weight, measurement, description, actual, onClose }) => {
-  const formik = useFormik({});
-
+const PerformanceForm = ({ reference, threshold, weight, measurement, description, actual, onClose, formik }) => {
   return (
     <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -17,6 +14,7 @@ const PerformanceForm = ({ reference, threshold, weight, measurement, descriptio
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={async () => {
+                formik.handleSubmit();
                 reference.current?.hide();
               }}
             >
@@ -38,15 +36,11 @@ const PerformanceForm = ({ reference, threshold, weight, measurement, descriptio
             <Text>{weight} %</Text>
           </View>
           <Input
-            // formik={formik}
+            formik={formik}
             title="Actual Achievement"
-            // fieldName="actual_achievement"
-            defaultValue={actual}
-            // value={formik.values.password}
+            fieldName="actual_achievement"
+            value={formik.values?.actual_achievement}
             placeHolder="Input Number Only"
-            // secureTextEntry={hidePassword}
-            // endIcon={hidePassword ? "eye-outline" : "eye-off-outline"}
-            // onPressEndIcon={() => setHidePassword(!hidePassword)}
             keyboardType="numeric"
           />
         </View>

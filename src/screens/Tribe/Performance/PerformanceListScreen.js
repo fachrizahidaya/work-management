@@ -21,8 +21,8 @@ const PerformanceListScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: "Ongoing", value: "Ongoing" },
-      { title: "Archived", value: "Archived" },
+      { title: `Ongoing (${kpiList?.data.length || 0})`, value: "Ongoing" },
+      { title: `Archived (${0})`, value: "Archived" },
     ];
   }, []);
 
@@ -36,7 +36,9 @@ const PerformanceListScreen = () => {
         <PageHeader width={200} title="KPI" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
+      <View style={{ paddingHorizontal: 16 }}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Ongoing" ? (

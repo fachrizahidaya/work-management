@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -12,13 +13,19 @@ import { useFetch } from "../../../hooks/useFetch";
 import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import PerformanceForm from "../../../components/Tribe/Performance/PerformanceForm";
+import axiosInstance from "../../../config/api";
 
 const KPIScreen = () => {
   const [question, setQuestion] = useState(null);
+  const [value, setValue] = useState(null);
 
   const navigation = useNavigation();
   const formScreenSheetRef = useRef(null);
   const route = useRoute();
+
+  const actualString = actual?.toString();
+
+  const temporaryArray = [];
 
   const { id } = route.params;
 
@@ -40,7 +47,31 @@ const KPIScreen = () => {
     formScreenSheetRef.current?.hide();
   };
 
-  const objectKPI = kpiList?.data?.performance_kpi?.value[1];
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      actual_achievement: actualString || "",
+    },
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setStatus("processing");
+      const formData = new FormData();
+      for (let key in values) {
+        if (key === "actual_achievement") {
+          const num = Number(values.actual_achievement);
+          formData.append(key, num);
+        }
+      }
+      formData.append("_method", "PATCH");
+    },
+  });
+
+  const submitKPIactual = async (form, setSubmitting, setStatus) => {
+    try {
+      const res = await axiosInstance.patch();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -59,83 +90,37 @@ const KPIScreen = () => {
         />
 
         <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 15 }}>
-            {
-              kpiList?.data?.kpi_value &&
-                kpiList?.data?.kpi_value.length > 0 &&
-                kpiList?.data?.kpi_value.map((item, index) => {
-                  return (
-                    <KPIDetailItem
-                      key={index}
-                      item={item}
-                      description={item?.performance_kpi_value?.description}
-                      target={item?.performance_kpi_value?.target}
-                      navigation={navigation}
-                      type="kpi"
-                      onSelect={selectedQuestionHandler}
-                    />
-                  );
-                })
-              // <FlashList
-              //   data={kpiList?.data?.kpi_value}
-              //   estimatedItemSize={50}
-              //   onEndReachedThreshold={0.1}
-              //   keyExtractor={(item, index) => index}
-              //   renderItem={({ item, index }) => (
-              //     <KPIDetailItem
-              //       item={item}
-              //       description={item?.performance_kpi_value?.description}
-              //       target={item?.performance_kpi_value?.target}
-              //       navigation={navigation}
-              //       type="kpi"
-              //       onSelect={selectedQuestionHandler}
-              //     />
-              //   )}
-              // />
-            }
-            {
-              kpiList?.data?.performance_kpi?.value &&
-                kpiList?.data?.performance_kpi?.value.length > 0 &&
-                kpiList?.data?.performance_kpi?.value.map((item, index) => {
-                  return (
-                    <KPIDetailItem
-                      key={index}
-                      item={item}
-                      description={item?.description}
-                      target={item?.target}
-                      navigation={navigation}
-                      type="kpi"
-                      onSelect={selectedQuestionHandler}
-                    />
-                  );
-                })
-              // <FlashList
-              //   data={kpiList?.data?.performance_kpi?.value}
-              //   estimatedItemSize={50}
-              //   onEndReachedThreshold={0.1}
-              //   keyExtractor={(item, index) => index}
-              //   renderItem={({ item, index }) => (
-              //     <KPIDetailItem
-              //       item={item}
-              //       description={item?.description}
-              //       target={item?.target}
-              //       navigation={navigation}
-              //       type="kpi"
-              //       onSelect={selectedQuestionHandler}
-              //     />
-              //   )}
-              // />
-            }
-            {/* {kpiList?.data?.performance_kpi?.value.length >= 2 ? null : (
-              <KPIDetailItem
-                target={objectKPI?.target}
-                actual={objectKPI?.actual}
-                description={objectKPI?.description}
-                type="kpi"
-                onSelect={selectedQuestionHandler}
-                item={objectKPI}
-              />
-            )} */}
+          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+            {kpiList?.data?.kpi_value &&
+              kpiList?.data?.kpi_value.length > 0 &&
+              kpiList?.data?.kpi_value.map((item, index) => {
+                return (
+                  <KPIDetailItem
+                    key={index}
+                    item={item}
+                    description={item?.performance_kpi_value?.description}
+                    target={item?.performance_kpi_value?.target}
+                    navigation={navigation}
+                    type="kpi"
+                    onSelect={selectedQuestionHandler}
+                  />
+                );
+              })}
+            {kpiList?.data?.performance_kpi?.value &&
+              kpiList?.data?.performance_kpi?.value.length > 0 &&
+              kpiList?.data?.performance_kpi?.value.map((item, index) => {
+                return (
+                  <KPIDetailItem
+                    key={index}
+                    item={item}
+                    description={item?.description}
+                    target={item?.target}
+                    navigation={navigation}
+                    type="kpi"
+                    onSelect={selectedQuestionHandler}
+                  />
+                );
+              })}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -146,6 +131,7 @@ const KPIScreen = () => {
         onPress={() => navigation.goBack()}
       />
       <PerformanceForm
+        formik={formik}
         reference={formScreenSheetRef}
         threshold={
           question?.performance_kpi_value?.threshold || question?.performance_kpi_value?.threshold == 0
