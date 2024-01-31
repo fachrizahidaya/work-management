@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -59,43 +59,73 @@ const KPIScreen = () => {
         />
 
         <View style={styles.container}>
-          <View style={{ flex: 1, paddingHorizontal: 15 }}>
-            {kpiList?.data?.kpi_value ? (
-              <FlashList
-                data={kpiList?.data?.kpi_value}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item, index }) => (
-                  <KPIDetailItem
-                    item={item}
-                    description={item?.performance_kpi_value?.description}
-                    target={item?.performance_kpi_value?.target}
-                    navigation={navigation}
-                    type="kpi"
-                    onSelect={selectedQuestionHandler}
-                  />
-                )}
-              />
-            ) : null}
-            {kpiList?.data?.performance_kpi?.value ? (
-              <FlashList
-                data={kpiList?.data?.performance_kpi?.value}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item, index }) => (
-                  <KPIDetailItem
-                    item={item}
-                    description={item?.description}
-                    target={item?.target}
-                    navigation={navigation}
-                    type="kpi"
-                    onSelect={selectedQuestionHandler}
-                  />
-                )}
-              />
-            ) : null}
+          <ScrollView style={{ flex: 1, paddingHorizontal: 15 }}>
+            {
+              kpiList?.data?.kpi_value &&
+                kpiList?.data?.kpi_value.length > 0 &&
+                kpiList?.data?.kpi_value.map((item, index) => {
+                  return (
+                    <KPIDetailItem
+                      key={index}
+                      item={item}
+                      description={item?.performance_kpi_value?.description}
+                      target={item?.performance_kpi_value?.target}
+                      navigation={navigation}
+                      type="kpi"
+                      onSelect={selectedQuestionHandler}
+                    />
+                  );
+                })
+              // <FlashList
+              //   data={kpiList?.data?.kpi_value}
+              //   estimatedItemSize={50}
+              //   onEndReachedThreshold={0.1}
+              //   keyExtractor={(item, index) => index}
+              //   renderItem={({ item, index }) => (
+              //     <KPIDetailItem
+              //       item={item}
+              //       description={item?.performance_kpi_value?.description}
+              //       target={item?.performance_kpi_value?.target}
+              //       navigation={navigation}
+              //       type="kpi"
+              //       onSelect={selectedQuestionHandler}
+              //     />
+              //   )}
+              // />
+            }
+            {
+              kpiList?.data?.performance_kpi?.value &&
+                kpiList?.data?.performance_kpi?.value.length > 0 &&
+                kpiList?.data?.performance_kpi?.value.map((item, index) => {
+                  return (
+                    <KPIDetailItem
+                      key={index}
+                      item={item}
+                      description={item?.description}
+                      target={item?.target}
+                      navigation={navigation}
+                      type="kpi"
+                      onSelect={selectedQuestionHandler}
+                    />
+                  );
+                })
+              // <FlashList
+              //   data={kpiList?.data?.performance_kpi?.value}
+              //   estimatedItemSize={50}
+              //   onEndReachedThreshold={0.1}
+              //   keyExtractor={(item, index) => index}
+              //   renderItem={({ item, index }) => (
+              //     <KPIDetailItem
+              //       item={item}
+              //       description={item?.description}
+              //       target={item?.target}
+              //       navigation={navigation}
+              //       type="kpi"
+              //       onSelect={selectedQuestionHandler}
+              //     />
+              //   )}
+              // />
+            }
             {/* {kpiList?.data?.performance_kpi?.value.length >= 2 ? null : (
               <KPIDetailItem
                 target={objectKPI?.target}
@@ -106,7 +136,7 @@ const KPIScreen = () => {
                 item={objectKPI}
               />
             )} */}
-          </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
       <ReturnConfirmationModal
@@ -120,22 +150,22 @@ const KPIScreen = () => {
         threshold={
           question?.performance_kpi_value?.threshold || question?.performance_kpi_value?.threshold == 0
             ? question?.performance_kpi_value?.threshold
-            : question?.threshold || objectKPI?.threshold
+            : question?.threshold
         }
         weight={
           question?.performance_kpi_value?.weight || question?.performance_kpi_value?.weight == 0
             ? question?.performance_kpi_value?.weight
-            : question?.weight || objectKPI?.weight
+            : question?.weight
         }
         measurement={
           question?.performance_kpi_value?.measurement || question?.performance_kpi_value?.measurement == 0
             ? question?.performance_kpi_value?.measurement
-            : question?.measurement || objectKPI?.measurement
+            : question?.measurement
         }
         description={
           question?.performance_kpi_value?.description
             ? question?.performance_kpi_value?.description
-            : question?.description || objectKPI?.description
+            : question?.description
         }
         actual={
           question?.actual_achievement || question?.actual_achievement == 0
