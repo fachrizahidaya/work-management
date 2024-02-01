@@ -5,7 +5,7 @@ import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
-const PerformanceForm = ({ reference, threshold, weight, measurement, description, actual, onClose, formik }) => {
+const PerformanceForm = ({ reference, threshold, weight, measurement, description, formik }) => {
   return (
     <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -13,7 +13,7 @@ const PerformanceForm = ({ reference, threshold, weight, measurement, descriptio
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
-              onPress={async () => {
+              onPress={() => {
                 formik.handleSubmit();
                 reference.current?.hide();
               }}
@@ -39,9 +39,10 @@ const PerformanceForm = ({ reference, threshold, weight, measurement, descriptio
             formik={formik}
             title="Actual Achievement"
             fieldName="actual_achievement"
-            value={formik.values?.actual_achievement}
+            value={formik.values.actual_achievement}
             placeHolder="Input Number Only"
             keyboardType="numeric"
+            onChangeText={(value) => formik.setFieldValue("actual_achievement", value)}
           />
         </View>
       </TouchableWithoutFeedback>

@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import KPIDetailItem from "../../../components/Tribe/Performance/KPIDetailItem";
@@ -14,18 +13,15 @@ import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmati
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import PerformanceForm from "../../../components/Tribe/Performance/PerformanceForm";
 import axiosInstance from "../../../config/api";
+import { useLoading } from "../../../hooks/useLoading";
 
 const KPIScreen = () => {
   const [question, setQuestion] = useState(null);
-  const [value, setValue] = useState(null);
+  const [kpi_value, setKPI_Value] = useState([]);
 
   const navigation = useNavigation();
   const formScreenSheetRef = useRef(null);
   const route = useRoute();
-
-  const actualString = actual?.toString();
-
-  const temporaryArray = [];
 
   const { id } = route.params;
 
@@ -36,6 +32,18 @@ const KPIScreen = () => {
   const { data: kpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
+
+  if (!question?.actual_achievement) {
+    var actualString = null;
+  } else {
+    var actualString = question?.actual_achievement.toString();
+  }
+
+  const submitArray = (value) => {
+    kpi_value.push(value);
+  };
 
   const selectedQuestionHandler = (value) => {
     setQuestion(value);
@@ -50,26 +58,26 @@ const KPIScreen = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
+      id: "",
+      performance_kpi_value_id: question?.id || "",
       actual_achievement: actualString || "",
     },
-    onSubmit: (values, { setSubmitting, setStatus }) => {
-      setStatus("processing");
-      const formData = new FormData();
-      for (let key in values) {
-        if (key === "actual_achievement") {
-          const num = Number(values.actual_achievement);
-          formData.append(key, num);
-        }
+    onSubmit: (values) => {
+      if (values.actual_achievement) {
+        values.actual_achievement = Number(values.actual_achievement);
       }
-      formData.append("_method", "PATCH");
+      submitArray(values);
     },
   });
 
-  const submitKPIactual = async (form, setSubmitting, setStatus) => {
+  const submitKPIactual = async (kpi_value) => {
     try {
-      const res = await axiosInstance.patch();
+      toggleSubmit();
+      await axiosInstance.patch(`/hr/employee-kpi/${kpiId}`, kpi_value);
+      toggleSubmit();
     } catch (err) {
       console.log(err);
+      toggleSubmit();
     }
   };
 
@@ -78,7 +86,12 @@ const KPIScreen = () => {
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => toggleReturnModal()} />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              submitKPIactual(kpi_value);
+              navigation.goBack();
+            }}
+          >
             <Text>Done</Text>
           </TouchableOpacity>
         </View>
@@ -91,9 +104,9 @@ const KPIScreen = () => {
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {kpiList?.data?.kpi_value &&
-              kpiList?.data?.kpi_value.length > 0 &&
-              kpiList?.data?.kpi_value.map((item, index) => {
+            {kpiList?.data?.employee_kpi_value &&
+              kpiList?.data?.employee_kpi_value.length > 0 &&
+              kpiList?.data?.employee_kpi_value.map((item, index) => {
                 return (
                   <KPIDetailItem
                     key={index}
@@ -153,12 +166,6 @@ const KPIScreen = () => {
             ? question?.performance_kpi_value?.description
             : question?.description
         }
-        actual={
-          question?.actual_achievement || question?.actual_achievement == 0
-            ? question?.actual_achievement
-            : question?.actual_achievement
-        }
-        onClose={closeSelectedQuestionHandler}
       />
     </>
   );
