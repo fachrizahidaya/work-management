@@ -8,7 +8,6 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const FeedSection = ({ feed }) => {
-  console.log("f", feed);
   const navigation = useNavigation();
 
   return (
