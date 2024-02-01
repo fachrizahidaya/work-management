@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { StyleSheet, View, Pressable, Text, Platform } from "react-native";
-import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
+import { StyleSheet, View, Platform } from "react-native";
+import { MentionInput } from "react-native-controlled-mentions";
 
-import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import FormButton from "../../../shared/FormButton";
 
 const FeedCommentForm = ({
@@ -23,8 +24,6 @@ const FeedCommentForm = ({
 
   return (
     <View style={{ ...styles.container, alignItems: suggestion.length > 0 ? "center" : "flex-end" }}>
-      <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="sm" isThumb={false} />
-
       <MentionInput
         value={formik.values.comments}
         onChange={handleChange}
@@ -40,17 +39,18 @@ const FeedCommentForm = ({
           },
         ]}
         multiline
-        placeholder="Type here..."
+        placeholder={parentId ? "Add a reply..." : "Add a comment..."}
         style={{
           padding: 5,
           borderRadius: 10,
-          width: Platform.OS === "ios" ? 280 : 320,
+          width: Platform.OS === "ios" ? 280 : 350,
           borderWidth: 1,
           borderColor: "#DBDBDB",
         }}
       />
 
       <FormButton
+        backgroundColor="white"
         onPress={formik.handleSubmit}
         isSubmitting={formik.isSubmitting}
         opacity={formik.values.comments === "" ? 0.5 : 1}
@@ -58,7 +58,7 @@ const FeedCommentForm = ({
         height={40}
         disabled={formik.values.comments === "" ? true : false}
       >
-        <Text style={{ color: "#FFFFFF" }}>{parentId ? "Reply" : "Post"}</Text>
+        <MaterialIcons name="send" size={25} color="#8A9099" />
       </FormButton>
     </View>
   );
@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    // alignItems: "flex-end",
-    justifyContent: "center",
+    alignItems: "center",
     gap: 3,
   },
 });

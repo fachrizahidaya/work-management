@@ -43,6 +43,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [inputToShow, setInputToShow] = useState("");
   const [filteredType, setFilteredType] = useState([]);
   const [teammatesData, setTeammatesData] = useState([]);
+  const [imagePreview, setImagePreview] = useState("");
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
@@ -160,6 +161,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const commentsCloseHandler = () => {
     commentsScreenSheetRef.current?.hide();
     setPostId(null);
+    setCommentParentId(null);
+    setLatestExpandedReply(null);
   };
 
   /**
@@ -178,6 +181,12 @@ const EmployeeProfileScreen = ({ route }) => {
   const openSelectedPersonalPost = useCallback((post) => {
     setSelectedPost(post);
   }, []);
+
+  const closeSelectedPersonalPost = () => {
+    setSelectedPost(null);
+    setImagePreview(null);
+    toggleEditModal();
+  };
 
   /**
    * Submit a comment handler
@@ -399,7 +408,7 @@ const EmployeeProfileScreen = ({ route }) => {
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <EditPost
         isVisible={editModalIsOpen}
-        onBackdrop={toggleEditModal}
+        onBackdrop={closeSelectedPersonalPost}
         employees={employees?.data}
         content={singlePost?.data}
         image={image}
@@ -409,6 +418,8 @@ const EmployeeProfileScreen = ({ route }) => {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
         checkAccess={checkAccess}
+        imagePreview={imagePreview}
+        setImagePreview={setImagePreview}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}

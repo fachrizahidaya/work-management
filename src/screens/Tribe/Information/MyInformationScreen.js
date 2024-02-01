@@ -41,6 +41,7 @@ const MyInformationScreen = () => {
             ) : (
               <>
                 <EmployeeLeaveDashboard
+                  id={profile?.data?.id}
                   name={profile?.data?.name}
                   availableLeave={profile?.data?.leave_quota}
                   pendingApproval={profile?.data?.pending_leave_request}

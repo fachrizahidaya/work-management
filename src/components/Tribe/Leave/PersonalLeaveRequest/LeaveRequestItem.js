@@ -79,8 +79,13 @@ const LeaveRequestItem = ({
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69", maxWidth: 250 }}>{reason}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
         </View>
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" }}>
+        {/* <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
+          {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")}
+        </Text> */}
         <View
           style={{
             flexDirection: "row",
@@ -92,52 +97,51 @@ const LeaveRequestItem = ({
             backgroundColor: "#F8F8F8",
           }}
         >
-          <MaterialCommunityIcons name="clock-outline" size={20} color="#3F434A" />
+          <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
+          <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
+            {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} •
+          </Text>
           <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-          {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")}
-        </Text>
-        {status === "Pending" ? (
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#377893",
-              width: 120,
-              textAlign: "right",
-            }}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            Waiting approval by {approval_by}
-          </Text>
-        ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#377893",
-              width: 80,
-              textAlign: "right",
-            }}
-            numberOfLines={2}
-          >
-            {status} by {approval_by}
-          </Text>
-        ) : (
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#377893",
-            }}
-          >
-            {status}
-          </Text>
-        )}
+        {
+          status === "Pending" ? (
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#377893",
+                width: 120,
+                textAlign: "right",
+              }}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              Waiting approval by {approval_by}
+            </Text>
+          ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#377893",
+                width: 80,
+                textAlign: "right",
+              }}
+              numberOfLines={2}
+            >
+              {status} by {approval_by}
+            </Text>
+          ) : null
+          // <Text
+          //   style={{
+          //     fontSize: 12,
+          //     fontWeight: "400",
+          //     color: "#377893",
+          //   }}
+          // >
+          //   {status}
+          // </Text>
+        }
       </View>
     </View>
   );

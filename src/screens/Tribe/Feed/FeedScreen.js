@@ -136,6 +136,8 @@ const FeedScreen = () => {
   const commentsCloseHandler = () => {
     commentScreenSheetRef.current?.hide();
     setPostId(null);
+    setCommentParentId(null);
+    setLatestExpandedReply(null);
   };
 
   /**

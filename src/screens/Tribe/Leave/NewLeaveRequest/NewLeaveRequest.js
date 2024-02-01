@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
@@ -24,7 +24,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
-const NewLeaveRequest = ({ route }) => {
+const NewLeaveRequest = () => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -40,6 +40,8 @@ const NewLeaveRequest = ({ route }) => {
   const { width, height } = Dimensions.get("window");
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
+
+  const route = useRoute();
 
   const { employeeId } = route.params;
 

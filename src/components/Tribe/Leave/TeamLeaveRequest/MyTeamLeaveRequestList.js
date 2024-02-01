@@ -95,6 +95,7 @@ const MyTeamLeaveRequestList = ({
                     refreshing={pendingLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchPendingLeaveRequest();
+                      refetchTeamLeaveRequest();
                     }}
                   />
                 }
@@ -122,7 +123,13 @@ const MyTeamLeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
+                <RefreshControl
+                  refreshing={pendingLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchPendingLeaveRequest();
+                    refetchTeamLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -146,6 +153,7 @@ const MyTeamLeaveRequestList = ({
                     refreshing={approvedLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchApprovedLeaveRequest();
+                      refetchTeamLeaveRequest();
                     }}
                   />
                 }
@@ -170,7 +178,13 @@ const MyTeamLeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+                <RefreshControl
+                  refreshing={approvedLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchTeamLeaveRequest();
+                    refetchTeamLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -193,6 +207,7 @@ const MyTeamLeaveRequestList = ({
                   refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
                     refetchRejectedLeaveRequest();
+                    refetchTeamLeaveRequest();
                   }}
                 />
               }
@@ -217,7 +232,13 @@ const MyTeamLeaveRequestList = ({
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
+              <RefreshControl
+                refreshing={rejectedLeaveRequestIsFetching}
+                onRefresh={() => {
+                  refetchRejectedLeaveRequest();
+                  refetchTeamLeaveRequest();
+                }}
+              />
             }
           >
             <View style={styles.content}>

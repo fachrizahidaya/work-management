@@ -7,6 +7,8 @@ import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 import { TextProps } from "./CustomStylings";
 
 const CalendarWithSlider = ({ items }) => {
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
@@ -26,7 +28,6 @@ const CalendarWithSlider = ({ items }) => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const handleDayPress = (day) => {
     setSelectedDate(day.dateString);
   };
