@@ -83,7 +83,7 @@ const TribeTab = () => {
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               e.preventDefault();
-              navigation.navigate("Global Search");
+              navigation.navigate("Global Search Tribe");
             },
           })}
         />

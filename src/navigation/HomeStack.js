@@ -54,6 +54,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 
 const Stack = createStackNavigator();
 
@@ -179,6 +180,10 @@ const HomeStack = () => {
       <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Group screenOptions={{ presentation: "modal" }}>
+        <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />
+      </Stack.Group>
 
       {/* Setting Screens */}
       <Stack.Screen name="Setting Screen" component={SettingScreen} options={{ header: () => <Header /> }} />
