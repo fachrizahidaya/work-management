@@ -200,7 +200,7 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
           </View>
         </View>
       </View>
@@ -234,9 +234,9 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   image: {
-    flex: 1,
+    // flex: 1,
     width: "100%",
-    height: 350,
+    height: 250,
     backgroundColor: "white",
     resizeMode: "cover",
   },
