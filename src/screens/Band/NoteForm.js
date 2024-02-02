@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
@@ -6,6 +6,7 @@ import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 import axiosInstance from "../../config/api";
 import FormButton from "../../components/shared/FormButton";
@@ -13,9 +14,11 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
+import { ScrollView } from "react-native-gesture-handler";
 
 const NoteForm = ({ route }) => {
   const { noteData } = route.params;
+  const richText = useRef();
   const { width, height } = Dimensions.get("window");
   const editCheckAccess = useCheckAccess("update", "Notes");
   const navigation = useNavigation();
@@ -55,6 +58,11 @@ const NoteForm = ({ route }) => {
     },
   });
 
+  // To change empty p tag to br tag
+  const preprocessContent = (content) => {
+    return content.replace(/<p><\/p>/g, "<br/>");
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       navigation.goBack();
@@ -63,41 +71,59 @@ const NoteForm = ({ route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={{ position: "absolute", zIndex: 3 }}>
-        <View
-          style={{ width: width, height: height, paddingVertical: 13, paddingHorizontal: 16, backgroundColor: "white" }}
-        >
-          <PageHeader
-            title="New Note"
-            onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
+      <View
+        style={{
+          width: width,
+          height: height,
+          paddingVertical: 13,
+          paddingHorizontal: 16,
+          backgroundColor: "white",
+          flex: 1,
+        }}
+      >
+        <PageHeader
+          title="New Note"
+          onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
+        />
+
+        <View style={{ display: "flex", gap: 17, marginTop: 22, flex: 1, paddingBottom: 40 }}>
+          <Input
+            formik={formik}
+            title="Title"
+            fieldName="title"
+            value={formik.values.title}
+            placeHolder="Input note title..."
           />
 
-          <View style={{ display: "flex", gap: 17, marginTop: 22 }}>
-            <Input
-              formik={formik}
-              title="Title"
-              fieldName="title"
-              value={formik.values.title}
-              placeHolder="Input note title..."
-            />
+          <RichToolbar
+            editor={richText}
+            actions={[
+              actions.setBold,
+              actions.setItalic,
+              actions.insertBulletsList,
+              actions.insertOrderedList,
+              actions.setStrikethrough,
+              actions.setUnderline,
+            ]}
+            iconTint="#000"
+            selectedIconTint="#176688"
+          />
 
-            <Input
-              formik={formik}
-              title="Content"
-              fieldName="content"
-              value={`${formik.values.content}`}
-              placeHolder="Input note content..."
-              multiline
-              numberOfLines={10}
-              height={300}
+          <ScrollView>
+            <RichEditor
+              ref={richText}
+              onChange={(descriptionText) => {
+                formik.setFieldValue("content", descriptionText);
+              }}
+              initialContentHTML={preprocessContent(formik.values.content)}
             />
+          </ScrollView>
 
-            {editCheckAccess && (
-              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-                <Text style={{ color: "white" }}>{noteData ? "Save" : "Create"}</Text>
-              </FormButton>
-            )}
-          </View>
+          {editCheckAccess && (
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              <Text style={{ color: "white" }}>{noteData ? "Save" : "Create"}</Text>
+            </FormButton>
+          )}
         </View>
       </View>
     </TouchableWithoutFeedback>
