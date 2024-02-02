@@ -282,16 +282,20 @@ const ChatInput = ({
                       {
                         pattern:
                           /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                        textStyle: { color: "blue" },
                       },
                       {
                         trigger: "@",
                         renderSuggestions: renderSuggestions,
+                        textStyle: {
+                          fontWeight: "400",
+                          color: "#377893",
+                        },
                       },
                     ]}
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
+                      alignItems: "center",
                       // height: 45,
                       // borderWidth: 1,
                       // borderColor: "#CBCBCB",

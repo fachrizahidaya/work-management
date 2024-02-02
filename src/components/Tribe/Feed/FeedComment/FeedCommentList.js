@@ -23,7 +23,7 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <View style={{ height: 500 }}>
+      <View style={{ height: 320 }}>
         {comments.length > 0 ? (
           <FlashList
             data={comments}

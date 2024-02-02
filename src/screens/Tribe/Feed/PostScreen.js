@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, Image } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, Image, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,6 +14,7 @@ import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment"
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCardItem from "../../../components/Tribe/Feed/FeedCard/FeedCardItem";
 import PageHeader from "../../../components/shared/PageHeader";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -41,7 +42,7 @@ const PostScreen = () => {
 
   const { id } = route.params;
 
-  const { data: postData } = useFetch(`/hr/posts/${id}`);
+  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -109,12 +110,13 @@ const PostScreen = () => {
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    setForceRerender(!forceRerender);
+    refetchPostData();
   };
 
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
+      refetchPostData();
       commentRefetchHandler();
       commentAddHandler(postId);
       setCommentParentId(null);
@@ -205,7 +207,9 @@ const PostScreen = () => {
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            <>
+            <ScrollView
+              refreshControl={<RefreshControl refreshing={postDataIsFetching} onRefresh={() => refetchPostData()} />}
+            >
               <View style={styles.header}>
                 <PageHeader
                   title="Post"
@@ -260,7 +264,7 @@ const PostScreen = () => {
                 employees={employees?.data}
                 reference={commentScreenSheetRef}
               />
-            </>
+            </ScrollView>
           </>
         ) : (
           <></>
