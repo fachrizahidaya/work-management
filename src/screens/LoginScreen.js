@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
+import Constants from "expo-constants";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -33,6 +34,7 @@ const LoginScreen = () => {
   const { width, height } = Dimensions.get("window");
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const appVersion = Constants.expoConfig.version;
 
   // This is firebase configurations for iOS
   // const [request, response, promptAsync] = Google.useAuthRequest({
@@ -279,6 +281,7 @@ const LoginScreen = () => {
           <Text style={TextProps}>Don't have an account?</Text>
           <Text style={{ color: "#176688" }}>Sign Up</Text>
         </View> */}
+        <Text style={[TextProps, { textAlign: "center", opacity: 0.5 }]}>version {appVersion}</Text>
       </View>
 
       {/* <View>
