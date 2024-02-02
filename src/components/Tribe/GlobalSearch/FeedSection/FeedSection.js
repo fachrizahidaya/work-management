@@ -74,7 +74,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
             <Pressable
               style={styles.item}
               key={item?.id}
-              onPress={() => navigation.navigate("Employee Profile", { employeeId: item?.author_id })}
+              onPress={() => navigation.navigate("Post Screen", { id: item?.id })}
             >
               <View style={styles.cardHeader}>
                 <AvatarPlaceholder image={item?.employee_image} name={item?.employee_name} size="lg" isThumb={false} />

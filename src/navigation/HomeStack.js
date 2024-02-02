@@ -55,6 +55,7 @@ import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTa
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
+import PostScreen from "../screens/Tribe/Feed/PostScreen";
 
 const Stack = createStackNavigator();
 
@@ -166,6 +167,8 @@ const HomeStack = () => {
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Employee Profile" component={EmployeeProfileScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Post Screen" component={PostScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
 
