@@ -127,11 +127,11 @@ const FeedSection = ({ feed, employeeUsername }) => {
                 <View style={styles.iconAction}>
                   {item?.total_like ? (
                     <Pressable>
-                      <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
+                      <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
                     </Pressable>
                   ) : (
                     <Pressable>
-                      <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
+                      <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
                     </Pressable>
                   )}
 
