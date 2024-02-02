@@ -14,10 +14,14 @@ const CalendarScreen = () => {
   const formattedTaskDeadlines = {};
   const formattedHolidays = {};
 
+  const formattedDotColorProjects = {};
+  const formattedDotColorTasks = {};
+  const formattedDotColorHolidays = {};
+
   projectDeadlines?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
-    const value = { description: item.description, id: item.id, module: item.module };
+    const value = { description: item.description, id: item.id, module: item.module, dotColor: "black" };
 
     if (!formattedProjectDeadlines[key]) {
       formattedProjectDeadlines[key] = [value];
@@ -26,10 +30,17 @@ const CalendarScreen = () => {
     }
   });
 
+  projectDeadlines?.data.forEach((item) => {
+    const date = item.date.split("-").reverse().join("-"); // Convert date format
+    const value = { marked: true, dotColor: "#daecfc" };
+
+    formattedDotColorProjects[date] = value;
+  });
+
   taskDeadlines?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
-    const value = { description: item.description, id: item.id, module: item.module };
+    const value = { description: item.description, id: item.id, module: item.module, dotColor: "black" };
 
     if (!formattedTaskDeadlines[key]) {
       formattedTaskDeadlines[key] = [value];
@@ -38,9 +49,16 @@ const CalendarScreen = () => {
     }
   });
 
+  taskDeadlines?.data.forEach((item) => {
+    const date = item.date.split("-").reverse().join("-"); // Convert date format
+    const value = { marked: true, dotColor: "#daecfc" };
+
+    formattedDotColorTasks[date] = value;
+  });
+
   holidays?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { description: item.description };
+    const value = { description: item.description, dotColor: "#3bc14a" };
 
     if (!formattedHolidays[date]) {
       formattedHolidays[date] = [value];
@@ -49,11 +67,20 @@ const CalendarScreen = () => {
     }
   });
 
+  holidays?.data.forEach((item) => {
+    const date = item.date.split("-").reverse().join("-"); // Convert date format
+    const value = { marked: true, dotColor: "#3bc14a" };
+
+    formattedDotColorHolidays[date] = value;
+  });
+
   const finalResult = { ...formattedHolidays, ...formattedProjectDeadlines, ...formattedTaskDeadlines };
+
+  const colorDots = { ...formattedDotColorProjects, ...formattedDotColorTasks, ...formattedDotColorHolidays };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CalendarWithSlider items={finalResult} />
+      <CalendarWithSlider items={finalResult} colorDots={colorDots} />
     </SafeAreaView>
   );
 };

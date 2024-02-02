@@ -6,12 +6,13 @@ import { Agenda } from "react-native-calendars";
 import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 import { TextProps } from "./CustomStylings";
 
-const CalendarWithSlider = ({ items }) => {
+const CalendarWithSlider = ({ items, colorDots }) => {
   const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
 
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
+    const dotColor = reservation.dotColor || "black";
     return (
       <TouchableOpacity
         style={styles.item}
@@ -24,6 +25,7 @@ const CalendarWithSlider = ({ items }) => {
         }}
       >
         <Text style={TextProps}>{reservation.description}</Text>
+        <View style={{ backgroundColor: dotColor, width: 10, height: 10, borderRadius: 5, marginTop: 5 }} />
       </TouchableOpacity>
     );
   };
@@ -36,6 +38,8 @@ const CalendarWithSlider = ({ items }) => {
     <>
       <Text style={[styles.monthLabel, TextProps]}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
       <Agenda
+        markingType="custom"
+        markedDates={colorDots}
         items={items}
         showClosingKnob={true}
         selected={today}
