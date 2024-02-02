@@ -46,6 +46,7 @@ const GlobalSearch = () => {
             marginVertical: 13,
             justifyContent: "center",
             gap: 20,
+            paddingBottom: 20,
           }}
         >
           <Input
@@ -79,7 +80,7 @@ const GlobalSearch = () => {
             {!isFetching ? (
               <>
                 {data?.project?.length > 0 || data?.task?.length || data?.team?.length ? (
-                  <GlobalSearchItems data={data} />
+                  <GlobalSearchItems data={data} keyword={searchInput} />
                 ) : (
                   <Text style={styles.text}>No result</Text>
                 )}

@@ -19,8 +19,20 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
         }
       }}
     >
-      <View style={{ display: "flex", flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 25 }}>
-        <Text style={[{ width: 42, fontWeight: !isRead ? "bold" : 400 }, TextProps]}>{time.split(" ")[1]}</Text>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 12,
+          alignItems: "center",
+          marginBottom: 25,
+          backgroundColor: !isRead ? (modul === "Task" ? "#FF965D33" : "#49C96D33") : "white",
+          borderRadius: 8,
+          paddingVertical: 2,
+          paddingHorizontal: 4,
+        }}
+      >
+        <Text style={[{ width: 42 }, TextProps]}>{time.split(" ")[1]}</Text>
 
         <View
           style={{
@@ -32,12 +44,12 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
         />
 
         <View style={{ flex: 1, display: "flex" }}>
-          <Text style={[{ fontWeight: !isRead ? "bold" : 400 }, TextProps]}>{name}</Text>
+          <Text style={[{}, TextProps]}>{name}</Text>
           <View>
             <RenderHtml
               contentWidth={width}
               source={{
-                html: !isRead ? `<span style="fontWeight: bold; color: #3F434A;">${content}<span>` : content,
+                html: content,
               }}
             />
           </View>

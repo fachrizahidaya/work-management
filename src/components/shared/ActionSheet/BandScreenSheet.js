@@ -10,10 +10,16 @@ const BandScreenSheet = (props) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
 
+  const screensToRender = () => {
+    return menuSelector.user_menu.menu?.filter((screen) => {
+      return screen.name !== "Dashboard";
+    });
+  };
+
   return (
     <ActionSheet ref={props.reference}>
       <View style={styles.container}>
-        {menuSelector.user_menu.menu?.map((item, idx) => {
+        {screensToRender()?.map((item, idx) => {
           return (
             <TouchableOpacity
               key={idx}
