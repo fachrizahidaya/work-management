@@ -320,12 +320,12 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
-            <ContactMedia
+            {/* <ContactMedia
               qty={media?.data?.length + document?.data?.length}
               media={media?.data}
               docs={document?.data}
               navigation={navigation}
-            />
+            /> */}
             {/* <ContactPersonalized /> */}
             <ContactAction
               type={type}

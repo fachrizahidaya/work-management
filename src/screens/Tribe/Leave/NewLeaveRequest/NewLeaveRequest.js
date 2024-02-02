@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
 } from "react-native";
 import Toast from "react-native-root-toast";
 
@@ -24,7 +25,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
-const NewLeaveRequest = ({ route }) => {
+const NewLeaveRequest = () => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -34,13 +35,14 @@ const NewLeaveRequest = ({ route }) => {
   const [formError, setFormError] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [filteredType, setFilteredType] = useState([]);
 
   const { width, height } = Dimensions.get("window");
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
+
+  const route = useRoute();
 
   const { employeeId } = route.params;
 
@@ -252,7 +254,7 @@ const NewLeaveRequest = ({ route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
+      <ScrollView>
         {isReady ? (
           <View style={{ ...styles.container, width: width, height: height }}>
             <PageHeader
@@ -312,7 +314,7 @@ const NewLeaveRequest = ({ route }) => {
             />
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };

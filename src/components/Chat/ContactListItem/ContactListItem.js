@@ -142,10 +142,10 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton
+        <View
           style={{
             ...styles.leftAction,
-            // flex: shrink ? 0.1 : 1
+            flex: shrink ? 0.1 : 1,
           }}
         >
           <View style={{ alignItems: "center" }}>
@@ -165,7 +165,7 @@ const ContactListItem = ({
               {isPinned?.pin_chat ? "Unpin" : "Pin"}
             </AnimatedText>
           </View>
-        </RectButton>
+        </View>
       </>
     );
   };
@@ -183,10 +183,10 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton
+        <View
           style={{
             ...styles.rightAction,
-            // flex: shrink ? 0.1 : 1
+            flex: shrink ? 0.1 : 1,
           }}
         >
           <View style={{ alignItems: "center" }}>
@@ -204,7 +204,7 @@ const ContactListItem = ({
             />
             <AnimatedText style={{ color: "#ffffff", transform: [{ scale }] }}>More</AnimatedText>
           </View>
-        </RectButton>
+        </View>
       </>
     );
   };
@@ -221,16 +221,16 @@ const ContactListItem = ({
         ref={swipeableRef}
         renderLeftActions={renderLeftView}
         renderRightActions={renderRightView}
-        // onSwipeableOpen={(direction = "left") => {
-        //   if (direction === "left") {
-        //     setShrink(true);
-        //     swipeableRef.current.openLeft();
-        //   } else {
-        //     setShrink(true);
-        //     swipeableRef.current.openRight();
-        //   }
-        // }}
-        // onSwipeableClose={() => setShrink(false)}
+        onSwipeableOpen={(direction = "left") => {
+          if (direction === "left") {
+            setShrink(true);
+            swipeableRef.current.openLeft();
+          } else {
+            setShrink(true);
+            swipeableRef.current.openRight();
+          }
+        }}
+        onSwipeableClose={() => setShrink(false)}
       >
         <TouchableOpacity
           style={{ backgroundColor: "#FFFFFF" }}
@@ -371,6 +371,7 @@ const ContactListItem = ({
 };
 
 export default ContactListItem;
+
 const styles = StyleSheet.create({
   contactBox: {
     flexDirection: "row",

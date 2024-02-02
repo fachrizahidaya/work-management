@@ -20,7 +20,7 @@ const EmployeeInformation = ({ id, name, position, email, phone, image, navigati
               })
             }
           >
-            <AvatarPlaceholder image={image} name={name} size="lg" borderRadius="full" isThumb={false} />
+            <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
           </TouchableOpacity>
           <View>
             <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>

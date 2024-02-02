@@ -41,6 +41,7 @@ const LeaveRequestList = ({
   setHasBeenScrolledApproved,
   hasBeenScrolledCanceled,
   setHasBeenScrolledCanceled,
+  refetchPersonalLeaveRequest,
 }) => {
   return (
     <>
@@ -62,6 +63,7 @@ const LeaveRequestList = ({
                     refreshing={pendingLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchPendingLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -86,7 +88,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
+                <RefreshControl
+                  refreshing={pendingLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchPendingLeaveRequest;
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -110,6 +118,7 @@ const LeaveRequestList = ({
                     refreshing={approvedLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchApprovedLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -134,7 +143,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
+                <RefreshControl
+                  refreshing={approvedLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchApprovedLeaveRequest();
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -158,6 +173,7 @@ const LeaveRequestList = ({
                     refreshing={canceledLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchCanceledLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -181,7 +197,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={canceledLeaveRequestIsFetching} onRefresh={refetchCanceledLeaveRequest} />
+                <RefreshControl
+                  refreshing={canceledLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchCanceledLeaveRequest();
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -206,6 +228,7 @@ const LeaveRequestList = ({
                   refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
                     refetchRejectedLeaveRequest();
+                    refetchPersonalLeaveRequest();
                   }}
                 />
               }
@@ -229,7 +252,13 @@ const LeaveRequestList = ({
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
+              <RefreshControl
+                refreshing={rejectedLeaveRequestIsFetching}
+                onRefresh={() => {
+                  refetchRejectedLeaveRequest;
+                  refetchPersonalLeaveRequest();
+                }}
+              />
             }
           >
             <View style={styles.content}>

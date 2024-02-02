@@ -6,6 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
+import { useRoute } from "@react-navigation/native";
 
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
@@ -23,7 +24,7 @@ import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
-const NewFeedScreen = ({ route }) => {
+const NewFeedScreen = () => {
   const [image, setImage] = useState(null);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
@@ -43,6 +44,8 @@ const NewFeedScreen = ({ route }) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+
+  const route = useRoute();
 
   const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, scrollNewMessage, setScrollNewMessage } =
     route.params;
@@ -218,8 +221,10 @@ const NewFeedScreen = ({ route }) => {
                 }}
                 description="Are you sure want to exit? It will be deleted."
               />
-              <View style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? null : "center" }}>
-                <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="md" isThumb={false} />
+              <View
+                style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? "center" : "center" }}
+              >
+                <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="lg" isThumb={false} />
                 <View style={{ gap: 5 }}>
                   <Button
                     disabled={checkAccess ? false : true}

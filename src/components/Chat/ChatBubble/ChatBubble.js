@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
   defaultText: {},
   highlightedText: {
     textDecorationLine: "underline",
+    color: "#72acdc",
   },
   coloredText: {
     color: "#72acdc",

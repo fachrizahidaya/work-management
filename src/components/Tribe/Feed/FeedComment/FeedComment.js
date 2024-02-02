@@ -114,7 +114,12 @@ const FeedComment = ({
   };
 
   return (
-    <ActionSheet ref={reference} onClose={handleClose}>
+    <ActionSheet
+      ref={reference}
+      onClose={() => {
+        handleClose();
+      }}
+    >
       <View style={styles.header}>
         <View style={{ alignItems: "center", marginBottom: 10 }}>
           <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>

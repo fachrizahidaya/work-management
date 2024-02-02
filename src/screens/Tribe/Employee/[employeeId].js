@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import _ from "lodash";
 
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
@@ -17,6 +18,7 @@ import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
 import EditPost from "../../../components/Tribe/Employee/FeedPersonal/EditPost";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -37,10 +39,16 @@ const EmployeeProfileScreen = ({ route }) => {
   const [isReady, setIsReady] = useState(false);
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [inputToShow, setInputToShow] = useState("");
+  const [filteredType, setFilteredType] = useState([]);
+  const [teammatesData, setTeammatesData] = useState([]);
+  const [imagePreview, setImagePreview] = useState("");
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
+  const teammatesScreenSheetRef = useRef(null);
 
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
@@ -55,9 +63,13 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
 
+  const fetchTeammatesParameters = {
+    search: searchInput,
+  };
+
   const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
-  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`);
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -149,6 +161,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const commentsCloseHandler = () => {
     commentsScreenSheetRef.current?.hide();
     setPostId(null);
+    setCommentParentId(null);
+    setLatestExpandedReply(null);
   };
 
   /**
@@ -167,6 +181,12 @@ const EmployeeProfileScreen = ({ route }) => {
   const openSelectedPersonalPost = useCallback((post) => {
     setSelectedPost(post);
   }, []);
+
+  const closeSelectedPersonalPost = () => {
+    setSelectedPost(null);
+    setImagePreview(null);
+    toggleEditModal();
+  };
 
   /**
    * Submit a comment handler
@@ -236,6 +256,16 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
+   * Search teammates handler
+   */
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+    }, 300),
+    []
+  );
+
+  /**
    * Pick an image Handler
    */
   const pickImageHandler = async () => {
@@ -263,6 +293,22 @@ const EmployeeProfileScreen = ({ route }) => {
       });
     }
   };
+
+  useEffect(() => {
+    setFilteredType([]);
+  }, [searchInput]);
+
+  useEffect(() => {
+    if (teammates?.data.length) {
+      if (!searchInput) {
+        setTeammatesData((prevData) => [...prevData, ...teammates?.data]);
+        setFilteredType([]);
+      } else {
+        setFilteredType((prevData) => [...prevData, ...teammates?.data]);
+        setTeammatesData([]);
+      }
+    }
+  }, [teammates]);
 
   useEffect(() => {
     if (personalPost?.data && personalPostIsFetching === false) {
@@ -331,6 +377,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   userSelector={userSelector}
                   toggleDeleteModal={toggleDeleteModal}
                   toggleEditModal={toggleEditModal}
+                  reference={teammatesScreenSheetRef}
                 />
 
                 <FeedComment
@@ -361,7 +408,7 @@ const EmployeeProfileScreen = ({ route }) => {
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <EditPost
         isVisible={editModalIsOpen}
-        onBackdrop={toggleEditModal}
+        onBackdrop={closeSelectedPersonalPost}
         employees={employees?.data}
         content={singlePost?.data}
         image={image}
@@ -371,6 +418,8 @@ const EmployeeProfileScreen = ({ route }) => {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
         checkAccess={checkAccess}
+        imagePreview={imagePreview}
+        setImagePreview={setImagePreview}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -385,6 +434,14 @@ const EmployeeProfileScreen = ({ route }) => {
         successMessage="Post deleted"
         isDelete={true}
         isPatch={false}
+      />
+      <EmployeeTeammates
+        teammates={filteredType.length > 0 ? filteredType : teammatesData}
+        reference={teammatesScreenSheetRef}
+        handleSearch={handleSearch}
+        inputToShow={inputToShow}
+        setInputToShow={setInputToShow}
+        setSearchInput={setSearchInput}
       />
     </>
   );

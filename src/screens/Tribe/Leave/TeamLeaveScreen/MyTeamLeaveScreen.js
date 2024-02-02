@@ -79,25 +79,28 @@ const MyTeamLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const { data: teamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
+  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
 
-  const pending = teamLeaveRequest?.data?.filter((item) => {
-    return item.status === "Pending";
-  });
-  const approved = teamLeaveRequest?.data?.filter((item) => {
-    return item.status === "Approved";
-  });
-  const rejected = teamLeaveRequest?.data?.filter((item) => {
-    return item.status === "Rejected";
-  });
+  const pending =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Pending";
+    }) || [];
+  const approved =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Approved";
+    }) || [];
+  const rejected =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Rejected";
+    }) || [];
 
   const tabs = useMemo(() => {
     return [
-      { title: `Waiting Approval (${pending?.length || 0})`, value: "Pending" },
-      { title: `Approved (${approved?.length || 0})`, value: "Approved" },
-      { title: `Rejected (${rejected?.length || 0})`, value: "Rejected" },
+      { title: `Waiting Approval (${pending?.length})`, value: "Pending" },
+      { title: `Approved (${approved?.length})`, value: "Approved" },
+      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
     ];
-  }, []);
+  }, [teamLeaveRequest, pending, approved, rejected]);
 
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
@@ -132,6 +135,7 @@ const MyTeamLeaveScreen = () => {
       setSubmitting(false);
       setStatus("success");
       refetchPendingLeaveRequest();
+      refetchTeamLeaveRequest();
       Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -210,6 +214,7 @@ const MyTeamLeaveScreen = () => {
               tabValue={tabValue}
               tabs={tabs}
               onChangeTab={onChangeTab}
+              refetchTeamLeaveRequest={refetchTeamLeaveRequest}
             />
           </>
         ) : null}

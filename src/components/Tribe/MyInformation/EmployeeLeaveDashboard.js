@@ -1,8 +1,11 @@
-import { StyleSheet, View, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) => {
+const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved, id }) => {
+  const navigation = useNavigation();
+
   const items = [
     {
       id: 1,
@@ -11,6 +14,10 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
       qty: availableLeave,
       backgroundColor: "#E8E9EB",
       iconColor: "#377893",
+      onPress: () =>
+        navigation.navigate("New Leave Request", {
+          employeeId: id,
+        }),
     },
     {
       id: 2,
@@ -19,6 +26,7 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
       qty: pendingApproval,
       backgroundColor: "#FAF6E8",
       iconColor: "#FFD240",
+      onPress: () => navigation.navigate("Leave Requests"),
     },
     {
       id: 3,
@@ -27,6 +35,7 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
       qty: approved,
       backgroundColor: "#E9F5EC",
       iconColor: "#49C96D",
+      onPress: () => navigation.navigate("Leave Requests"),
     },
   ];
 
@@ -34,7 +43,7 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
     <View style={styles.icon}>
       {items.map((item) => {
         return (
-          <View key={item.id} style={styles.content}>
+          <Pressable onPress={item.onPress} key={item.id} style={styles.content}>
             <View style={{ ...styles.card, backgroundColor: item.backgroundColor }}>
               <MaterialCommunityIcons name={item.icon} size={30} color={item.iconColor} />
             </View>
@@ -45,7 +54,7 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved }) =
             >
               {item.name}
             </Text>
-          </View>
+          </Pressable>
         );
       })}
     </View>

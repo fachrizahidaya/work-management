@@ -37,8 +37,9 @@ const EditPost = ({
   isLoading,
   setIsLoading,
   checkAccess,
+  imagePreview,
+  setImagePreview,
 }) => {
-  const [imagePreview, setImagePreview] = useState("");
   const [dateShown, setDateShown] = useState(false);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Public");
@@ -141,8 +142,8 @@ const EditPost = ({
         isVisible={isVisible}
         onBackdropPress={() => {
           onBackdrop();
-          setImagePreview(content?.file_path);
-          formik.setFieldValue("content", content?.content);
+          // setImagePreview(content?.file_path);
+          // formik.setFieldValue("content", content?.content);
         }}
         deviceHeight={deviceHeight}
         deviceWidth={deviceWidth}
@@ -161,7 +162,7 @@ const EditPost = ({
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems: formik.values.type === "Public" ? null : "center",
+                  alignItems: formik.values.type === "Public" ? "center" : "center",
                   gap: 5,
                   marginBottom: 10,
                 }}
