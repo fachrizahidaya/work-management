@@ -142,7 +142,7 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton
+        <View
           style={{
             ...styles.leftAction,
             flex: shrink ? 0.1 : 1,
@@ -165,7 +165,7 @@ const ContactListItem = ({
               {isPinned?.pin_chat ? "Unpin" : "Pin"}
             </AnimatedText>
           </View>
-        </RectButton>
+        </View>
       </>
     );
   };
@@ -183,7 +183,7 @@ const ContactListItem = ({
 
     return (
       <>
-        <RectButton
+        <View
           style={{
             ...styles.rightAction,
             flex: shrink ? 0.1 : 1,
@@ -204,7 +204,7 @@ const ContactListItem = ({
             />
             <AnimatedText style={{ color: "#ffffff", transform: [{ scale }] }}>More</AnimatedText>
           </View>
-        </RectButton>
+        </View>
       </>
     );
   };
@@ -371,6 +371,7 @@ const ContactListItem = ({
 };
 
 export default ContactListItem;
+
 const styles = StyleSheet.create({
   contactBox: {
     flexDirection: "row",
