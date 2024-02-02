@@ -214,7 +214,7 @@ const FeedCardItem = ({
                 onCommentToggle(id);
               }}
             >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#8A9099" />
+              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
             </Pressable>
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
           </View>
@@ -226,7 +226,7 @@ const FeedCardItem = ({
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#8A9099" />
+                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
               </Pressable>
             )}
 
