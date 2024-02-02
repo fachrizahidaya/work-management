@@ -107,6 +107,12 @@ const ContactDetail = () => {
     refetch: refetchDocument,
   } = useFetch(`/chat/${type}/${roomId}/docs`);
 
+  /**
+   * Handle clear chat
+   * @param {*} id
+   * @param {*} type
+   * @param {*} itemName
+   */
   const clearChatMessageHandler = async (id, type, itemName) => {
     try {
       toggleClearMessage();
@@ -217,6 +223,10 @@ const ContactDetail = () => {
     []
   );
 
+  /**
+   * Handle select new member to the group
+   * @param {*} user
+   */
   const addSelectedUserToArray = (user) => {
     setSelectedUsers((prevState) => {
       if (!prevState?.find((val) => val.id === user.id)) {
@@ -275,14 +285,17 @@ const ContactDetail = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFFFFF",
-              padding: 20,
+              paddingVertical: 14,
+              paddingHorizontal: 16,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <Pressable onPress={() => navigation.goBack()}>
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
-              <Text style={{ fontWeight: "500" }}>{type === "personal" ? "Contact Info" : "Group Info"}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {type === "personal" ? "Contact Info" : "Group Info"}
+              </Text>
             </View>
           </View>
           <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>

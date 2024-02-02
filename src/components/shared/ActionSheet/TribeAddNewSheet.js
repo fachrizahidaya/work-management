@@ -2,9 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
+import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
 
@@ -16,8 +17,10 @@ import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm"));
   const [location, setLocation] = useState();
+  const [status, setStatus] = useState(null);
+  const [appState, setAppState] = useState(AppState.currentState);
+  const [locationOn, setLocationOn] = useState(null);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -41,14 +44,65 @@ const TribeAddNewSheet = (props) => {
   ];
 
   /**
+   * Open settings for location
+   */
+  const openSetting = () => {
+    if (Platform.OS == "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      startActivityAsync(ActivityAction.LOCATION_SOURCE_SETTINGS);
+    }
+  };
+
+  /**
+   * Handle modal for turn on location
+   */
+  const showAlertToActivateLocation = () => {
+    Alert.alert(
+      "Activate location",
+      "In order to clock-in or clock-out, you must turn the location on.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Go to Settings",
+          onPress: () => openSetting(),
+          style: "default",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
+  const showAlertToAllowPermission = () => {
+    Alert.alert(
+      "Permission needed",
+      "In order to clock-in or clock-out, you must give permission to access the location. You can grant this permission in the Settings app.",
+      [
+        {
+          text: "OK",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
+  /**
    * Attendance check-in and check-out handler
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (!location) {
-        Alert.alert(
-          "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-        );
+      if (locationOn == false) {
+        showAlertToActivateLocation();
+      } else if (status == false) {
+        await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
       } else {
         if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
@@ -58,29 +112,39 @@ const TribeAddNewSheet = (props) => {
           });
 
           refetchAttendance();
-          props.reference.current?.hide();
-          Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
+
+          // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
-          Toast.show("You already checked out at this time", ErrorToastProps);
+          // Toast.show("You already checked out at this time", ErrorToastProps);
         }
       }
     } catch (err) {
       console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
+      // Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
-  const getPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Allow location permission");
-      Alert.alert(
-        "Allow location permission.\nGo to Settigs > Apps & permissions > App manager > Nest > Location > Allow location"
-      );
-      return;
+  /**
+   * Handle get location based on permission
+   */
+  const getLocation = async () => {
+    try {
+      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
+        showAlertToActivateLocation();
+        return;
+      }
+
+      if (locationOn == true && status == false) {
+        await Location.requestForegroundPermissionsAsync();
+        showAlertToAllowPermission();
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    } catch (err) {
+      console.log(err.message);
     }
-    let currentLocation = await Location.getCurrentPositionAsync({});
-    setLocation(currentLocation);
   };
 
   useEffect(() => {
@@ -92,57 +156,81 @@ const TribeAddNewSheet = (props) => {
   }, [isLoading]);
 
   /**
-   * Clock Handler
+   * Handle change for the location permission status
    */
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(dayjs().format("HH:mm"));
-    }, 1000);
-    return () => {
-      clearInterval(intervalId);
+    const runThis = async () => {
+      try {
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        setLocationOn(isLocationEnabled);
+
+        const { granted } = await Location.getForegroundPermissionsAsync();
+
+        setStatus(granted);
+      } catch (err) {
+        console.log(err);
+      }
     };
+
+    const handleAppStateChange = (nextAppState) => {
+      setAppState(nextAppState);
+      if (nextAppState === "active") {
+        // App has come to the foreground
+        runThis();
+      }
+    };
+
+    AppState.addEventListener("change", handleAppStateChange);
+    runThis(); // Initial run when the component mounts
   }, []);
 
   useEffect(() => {
-    getPermissions();
-  }, []);
+    getLocation();
+  }, [status, locationOn]);
 
   return (
     <ActionSheet ref={props.reference}>
-      {items.map((item, idx) => {
-        return item.title !== "Clock in" ? (
-          <TouchableOpacity
-            key={idx}
-            borderColor="#E8E9EB"
-            borderBottomWidth={1}
-            style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-            onPress={() => {
-              if (item.title === "New Leave Request") {
-                navigation.navigate("New Leave Request", {
-                  employeeId: profile?.data?.id,
-                });
-              } else if (item.title === "New Reimbursement") {
-                navigation.navigate("New Reimbursement");
-              }
+      <View style={styles.container}>
+        {items.slice(0, 2).map((item, idx) => {
+          return item.title !== "Clock in" ? (
+            <TouchableOpacity
+              key={idx}
+              borderColor="#E8E9EB"
+              borderBottomWidth={1}
+              style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+              onPress={() => {
+                if (item.title === "New Leave Request") {
+                  navigation.navigate("New Leave Request", {
+                    employeeId: profile?.data?.id,
+                  });
+                } else if (item.title === "New Reimbursement") {
+                  navigation.navigate("New Reimbursement");
+                }
 
-              props.reference.current?.hide();
-            }}
-          >
-            <View style={styles.flex}>
-              <View style={styles.item}>
-                <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                props.reference.current?.hide();
+              }}
+            >
+              <View style={styles.flex}>
+                <View style={styles.item}>
+                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                </View>
+                <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                  {item.title}
+                </Text>
               </View>
-              <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                {item.title}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <Pressable key={idx} style={{ ...styles.wrapper, paddingBottom: 40 }}>
-            <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} />
-          </Pressable>
-        );
-      })}
+            </TouchableOpacity>
+          ) : (
+            attendance?.data &&
+              attendance?.data?.day_type === "Work Day" &&
+              attendance?.date?.att_type !== "Leave" &&
+              attendance?.data?.att_type !== "Holiday" && (
+                <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
+                  <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
+                </Pressable>
+              )
+          );
+        })}
+      </View>
     </ActionSheet>
   );
 };
@@ -150,6 +238,9 @@ const TribeAddNewSheet = (props) => {
 export default TribeAddNewSheet;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 40,
+  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,

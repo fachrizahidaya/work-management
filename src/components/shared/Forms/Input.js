@@ -24,9 +24,13 @@ const Input = ({
   editable = true,
   innerRef,
   height,
+  setHeight,
   width,
   onTouchStart,
   keyboardType,
+  borderColor,
+  alignVertical,
+  sizeChange = false,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -47,6 +51,7 @@ const Input = ({
           editable={editable}
           selectTextOnFocus={editable}
           multiline={multiline}
+          textAlignVertical={alignVertical ? alignVertical : null}
           numberOfLines={numberOfLines}
           placeholder={placeHolder}
           onTouchStart={onTouchStart}
@@ -57,11 +62,19 @@ const Input = ({
               formik?.setFieldValue(fieldName, value);
             }
           }}
+          onContentSizeChange={
+            sizeChange
+              ? ({ nativeEvent: { contentSize: height } }) => {
+                  setHeight(height);
+                }
+              : null
+          }
           autoCapitalize="none"
           style={[
             styles.input,
             style,
             {
+              borderColor: borderColor ? borderColor : "#E8E9EB",
               paddingLeft: startAdornment || startIcon ? 35 : 10,
               height: height ? height : multiline ? 100 : 40,
               width: width || "100%",

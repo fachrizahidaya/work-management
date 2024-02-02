@@ -34,13 +34,7 @@ const SupervisorInformation = ({
               })
             }
           >
-            <AvatarPlaceholder
-              image={supervisorImage}
-              name={supervisorName}
-              size="lg"
-              borderRadius={10}
-              isThumb={false}
-            />
+            <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" isThumb={false} />
           </TouchableOpacity>
           <View>
             <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>

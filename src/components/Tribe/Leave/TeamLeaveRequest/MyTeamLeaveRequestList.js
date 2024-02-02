@@ -77,11 +77,11 @@ const MyTeamLeaveRequestList = ({
 
   return (
     <>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       <View style={styles.container}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === "Pending" ? (
           pendingLeaveRequests.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
@@ -95,6 +95,7 @@ const MyTeamLeaveRequestList = ({
                     refreshing={pendingLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchPendingLeaveRequest();
+                      refetchTeamLeaveRequest();
                     }}
                   />
                 }
@@ -122,7 +123,13 @@ const MyTeamLeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
+                <RefreshControl
+                  refreshing={pendingLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchPendingLeaveRequest();
+                    refetchTeamLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -132,7 +139,7 @@ const MyTeamLeaveRequestList = ({
           )
         ) : tabValue === "Approved" ? (
           approvedLeaveRequests.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={approvedLeaveRequests}
                 onEndReachedThreshold={0.1}
@@ -146,6 +153,7 @@ const MyTeamLeaveRequestList = ({
                     refreshing={approvedLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchApprovedLeaveRequest();
+                      refetchTeamLeaveRequest();
                     }}
                   />
                 }
@@ -170,7 +178,13 @@ const MyTeamLeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchTeamLeaveRequest} />
+                <RefreshControl
+                  refreshing={approvedLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchTeamLeaveRequest();
+                    refetchTeamLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -179,7 +193,7 @@ const MyTeamLeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedLeaveRequests.length > 0 ? (
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+          <View style={{ flex: 1, marginTop: 12 }}>
             <FlashList
               data={rejectedLeaveRequests}
               onEndReachedThreshold={0.1}
@@ -193,6 +207,7 @@ const MyTeamLeaveRequestList = ({
                   refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
                     refetchRejectedLeaveRequest();
+                    refetchTeamLeaveRequest();
                   }}
                 />
               }
@@ -217,7 +232,13 @@ const MyTeamLeaveRequestList = ({
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
+              <RefreshControl
+                refreshing={rejectedLeaveRequestIsFetching}
+                onRefresh={() => {
+                  refetchRejectedLeaveRequest();
+                  refetchTeamLeaveRequest();
+                }}
+              />
             }
           >
             <View style={styles.content}>
@@ -234,10 +255,10 @@ export default memo(MyTeamLeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#ffffff",
     flex: 1,
     flexDirection: "column",
-    paddingHorizontal: 5,
+    paddingHorizontal: 14,
   },
   content: {
     marginTop: 20,

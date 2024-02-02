@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-
-import { Swipeable } from "react-native-gesture-handler";
 import RenderHtml from "react-native-render-html";
-import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 
+import { RectButton, Swipeable } from "react-native-gesture-handler";
+import { useAnimatedReaction } from "react-native-reanimated";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable, Animated, I18nManager } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -11,6 +11,9 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import ChatTimeStamp from "../ChatTimeStamp/ChatTimeStamp";
 import { TextProps } from "../../shared/CustomStylings";
 import axiosInstance from "../../../config/api";
+
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 const ContactListItem = ({
   chat,
@@ -39,12 +42,31 @@ const ContactListItem = ({
   userSelector,
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [shrink, setShrink] = useState(false);
   const swipeableRef = useRef(null);
 
+  /**
+   * Fetch members of selected group
+   */
+  const fetchSelectedGroupMembers = async () => {
+    try {
+      const res = await axiosInstance.get(`/chat/group/${id}/member`);
+      setSelectedGroupMembers(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Handle for mention name in group member
+   */
   const memberName = selectedGroupMembers.map((item) => {
     return item?.user?.name;
   });
 
+  /**
+   * Handle showing mention chat
+   */
   for (let i = 0; i < memberName.length; i++) {
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     message = message?.replace(placeholder, `@${memberName[i]}`);
@@ -80,7 +102,6 @@ const ContactListItem = ({
     if (task) {
       iconName = "checkbox-marked-circle-outline";
     }
-
     return iconName;
   };
 
@@ -105,80 +126,87 @@ const ContactListItem = ({
     if (task) {
       text = "Task";
     }
-
     return text;
   };
 
-  const renderLeftView = () => {
-    return (
-      <View
-        style={{
-          backgroundColor: "#377893",
-          width: 250,
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            if (swipeableRef.current) {
-              swipeableRef.current.close();
-            }
-            onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
-          }}
-          style={{
-            padding: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#377893",
-            marginRight: 150,
-          }}
-        >
-          <MaterialIcons name="push-pin" color="#FFFFFF" style={{ transform: [{ rotate: "45deg" }] }} />
-          <Text style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</Text>
-        </Pressable>
-      </View>
-    );
-  };
+  /**
+   * left view after swipe handler
+   * @returns
+   */
+  const renderLeftView = (progress, dragX) => {
+    const scale = dragX.interpolate({
+      inputRange: [0, 80],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    });
 
-  const renderRightView = () => {
     return (
-      <View
-        style={{
-          backgroundColor: "#959595",
-          width: 250,
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            if (swipeableRef.current) {
-              swipeableRef.current.close();
-            }
-            onSwipe(chat);
-          }}
+      <>
+        <View
           style={{
-            marginLeft: 150,
-            padding: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#959595",
+            ...styles.leftAction,
+            flex: shrink ? 0.1 : 1,
           }}
         >
-          <MaterialIcons name="more-horiz" color="#FFFFFF" />
-          <Text style={{ color: "#FFFFFF" }}>More</Text>
-        </Pressable>
-      </View>
+          <View style={{ alignItems: "center" }}>
+            <AnimatedIcon
+              onPress={() => {
+                if (swipeableRef.current) {
+                  swipeableRef.current.close();
+                }
+                onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
+              }}
+              name="pin"
+              color="#ffffff"
+              size={20}
+              style={{ transform: [{ scale }] }}
+            />
+            <AnimatedText style={{ color: "#FFFFFF", transform: [{ scale }] }}>
+              {isPinned?.pin_chat ? "Unpin" : "Pin"}
+            </AnimatedText>
+          </View>
+        </View>
+      </>
     );
   };
 
   /**
-   * Fetch members of selected group
+   * right view after swipe handler
+   * @returns
    */
-  const fetchSelectedGroupMembers = async () => {
-    try {
-      const res = await axiosInstance.get(`/chat/group/${id}/member`);
-      setSelectedGroupMembers(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
+  const renderRightView = (progress, dragX) => {
+    const scale = dragX.interpolate({
+      inputRange: [-80, 0],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <>
+        <View
+          style={{
+            ...styles.rightAction,
+            flex: shrink ? 0.1 : 1,
+          }}
+        >
+          <View style={{ alignItems: "center" }}>
+            <AnimatedIcon
+              onPress={() => {
+                if (swipeableRef.current) {
+                  swipeableRef.current.close();
+                }
+                onSwipe(chat);
+              }}
+              name="dots-horizontal"
+              color="#ffffff"
+              size={20}
+              style={{ transform: [{ scale }] }}
+            />
+            <AnimatedText style={{ color: "#ffffff", transform: [{ scale }] }}>More</AnimatedText>
+          </View>
+        </View>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -186,12 +214,23 @@ const ContactListItem = ({
   }, [id]);
 
   return (
-    <View>
+    <>
       <Swipeable
+        leftThreshold={40}
+        rightThreshold={20}
         ref={swipeableRef}
         renderLeftActions={renderLeftView}
         renderRightActions={renderRightView}
-        rightThreshold={-100}
+        onSwipeableOpen={(direction = "left") => {
+          if (direction === "left") {
+            setShrink(true);
+            swipeableRef.current.openLeft();
+          } else {
+            setShrink(true);
+            swipeableRef.current.openRight();
+          }
+        }}
+        onSwipeableClose={() => setShrink(false)}
       >
         <TouchableOpacity
           style={{ backgroundColor: "#FFFFFF" }}
@@ -213,11 +252,10 @@ const ContactListItem = ({
           <View style={styles.contactBox}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
               <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
-
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                   {!searchKeyword ? (
-                    <Text style={[{ fontSize: 12, fontWeight: "500" }]}>{name}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }]}>{name}</Text>
                   ) : (
                     <RenderHtml
                       contentWidth={400}
@@ -226,12 +264,10 @@ const ContactListItem = ({
                       }}
                     />
                   )}
-
                   <View style={{ flexDirection: "row" }}>
                     <ChatTimeStamp time={time} timestamp={timestamp} />
                   </View>
                 </View>
-
                 <View
                   style={{
                     flexDirection: "row",
@@ -261,7 +297,7 @@ const ContactListItem = ({
                           <View style={{ flexDirection: "row" }}>
                             {message && (
                               <Text style={[{ fontSize: 12 }, TextProps]}>
-                                {message.length > 20 ? message.slice(0, 20) + "..." : message}
+                                {message.length > 40 ? message.slice(0, 40) + "..." : message}
                               </Text>
                             )}
                             {!message && (project || task || fileName) && (
@@ -295,7 +331,7 @@ const ContactListItem = ({
                         <MaterialCommunityIcons
                           name="block-helper"
                           size={10}
-                          style={{ transform: [{ rotate: "90deg" }] }}
+                          style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                           color="#3F434A"
                         />
                         <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -307,7 +343,7 @@ const ContactListItem = ({
                         <MaterialCommunityIcons
                           name="block-helper"
                           size={10}
-                          style={{ transform: [{ rotate: "90deg" }] }}
+                          style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
                           color="#3F434A"
                         />
                         <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
@@ -330,7 +366,7 @@ const ContactListItem = ({
           </View>
         </TouchableOpacity>
       </Swipeable>
-    </View>
+    </>
   );
 };
 
@@ -340,8 +376,25 @@ const styles = StyleSheet.create({
   contactBox: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderColor: "#E8E9EB",
+  },
+  leftAction: {
+    flex: 1,
+    backgroundColor: "#377893",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 20,
+    flexDirection: I18nManager.isRTL ? "row" : "row-reverse",
+  },
+  rightAction: {
+    flex: 1,
+    backgroundColor: "#959595",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 20,
+    flexDirection: !I18nManager.isRTL ? "row" : "row-reverse",
   },
 });

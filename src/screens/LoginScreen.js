@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
+import Constants from "expo-constants";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -33,6 +34,7 @@ const LoginScreen = () => {
   const { width, height } = Dimensions.get("window");
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
+  const appVersion = Constants.expoConfig.version;
 
   // This is firebase configurations for iOS
   // const [request, response, promptAsync] = Google.useAuthRequest({
@@ -190,7 +192,7 @@ const LoginScreen = () => {
             <Text style={[{ fontSize: 20, fontWeight: 500 }, TextProps]}>Login</Text>
           </View>
 
-          <View style={{ position: "relative", borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
+          {/* <View style={{ position: "relative", borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
             <Image
               source={require("../assets/icons/google.png")}
               alt="KSS_LOGO"
@@ -208,7 +210,7 @@ const LoginScreen = () => {
               <Text style={TextProps}>{isLoading ? "Checking google account..." : "Login with Google"}</Text>
             </FormButton>
 
-            {/* <Button
+            <Button
               disabled={isLoading}
               variant="ghost"
               borderWidth={1}
@@ -229,11 +231,11 @@ const LoginScreen = () => {
               <Text fontSize={12} color="#595F69">
                 {isLoading ? "Checking google account..." : "Login with Google"}
               </Text>
-            </Button> */}
-          </View>
+            </Button>
+          </View> */}
         </View>
 
-        <View
+        {/* <View
           style={{
             position: "relative",
             width: "100%",
@@ -247,7 +249,7 @@ const LoginScreen = () => {
           <View style={{ paddingHorizontal: 16, position: "absolute", top: -8, backgroundColor: "white" }}>
             <Text style={{ color: "#8A9099", fontWeight: 400 }}>OR LOGIN WITH EMAIL</Text>
           </View>
-        </View>
+        </View> */}
 
         <View style={{ display: "flex", gap: 10, width: "100%" }}>
           <Input fieldName="email" title="Email" formik={formik} placeHolder="Insert your email..." />
@@ -266,19 +268,20 @@ const LoginScreen = () => {
             <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
 
-          <View
+          {/* <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#176688", fontWeight: 400 }}>Forgot Password?</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={{ width: "100%" }} />
 
-        <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
+        {/* <View style={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, justifyContent: "center" }}>
           <Text style={TextProps}>Don't have an account?</Text>
           <Text style={{ color: "#176688" }}>Sign Up</Text>
-        </View>
+        </View> */}
+        <Text style={[TextProps, { textAlign: "center", opacity: 0.5 }]}>version {appVersion}</Text>
       </View>
 
       {/* <View>

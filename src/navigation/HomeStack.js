@@ -19,6 +19,7 @@ import ProjectTaskScreen from "../screens/Band/project/project-task";
 import TaskDetailScreen from "../screens/Band/task-detail/[taskId]";
 import ProjectForm from "../screens/Band/ProjectForm";
 import TaskForm from "../screens/Band/TaskForm";
+import GlobalSearch from "../screens/Band/GlobalSearch";
 
 // Tribe Screens
 import NewFeedScreen from "../screens/Tribe/Feed/NewFeedScreen/NewFeedScreen";
@@ -26,8 +27,13 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
+import PerformanceListScreen from "../screens/Tribe/Performance/PerformanceListScreen";
+import AppraisalListScreen from "../screens/Tribe/Performance/AppraisalListScreen";
+import KPIScreen from "../screens/Tribe/Performance/KPIScreen";
+import AppraisalScreen from "../screens/Tribe/Performance/AppraisalScreen";
 
 // Settings Screens
+import SettingScreen from "../screens/Setting/SettingScreen";
 import MyProfileScreen from "../screens/Setting/Account/MyProfileScreen";
 import AccountScreen from "../screens/Setting/Account/AccountScreen";
 import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
@@ -48,7 +54,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import PerformanceHistoryDetail from "../screens/Tribe/Performance/PerformanceHistoryDetail";
+import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 
 const Stack = createStackNavigator();
 
@@ -152,6 +158,10 @@ const HomeStack = () => {
 
       <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
 
+      <Stack.Group screenOptions={{ presentation: "modal" }}>
+        <Stack.Screen name="Global Search" component={GlobalSearch} options={{ headerShown: false }} />
+      </Stack.Group>
+
       {/* Tribe Screens */}
       <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
 
@@ -163,13 +173,21 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen
-        name="Performance Detail"
-        component={PerformanceHistoryDetail}
-        options={{ header: () => <Header /> }}
-      />
+      <Stack.Screen name="KPI Screen" component={PerformanceListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Group screenOptions={{ presentation: "modal" }}>
+        <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />
+      </Stack.Group>
 
       {/* Setting Screens */}
+      <Stack.Screen name="Setting Screen" component={SettingScreen} options={{ header: () => <Header /> }} />
+
       <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />

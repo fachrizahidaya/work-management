@@ -38,9 +38,10 @@ const ChatHeader = ({
   searchFormRef,
 }) => {
   const [searchVisible, setSearchVisible] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [inputToShow, setInputToShow] = useState("");
 
+  /**
+   * Handle for member name in chatHeader
+   */
   const membersName = selectedGroupMembers.map((item) => {
     const name = !item?.user
       ? loggedInUser === item?.id
@@ -57,11 +58,6 @@ const ChatHeader = ({
     setSearchVisible(!searchVisible);
   };
 
-  const clearSearch = () => {
-    setInputToShow("");
-    setSearchInput("");
-  };
-
   return (
     <>
       <View
@@ -70,7 +66,8 @@ const ChatHeader = ({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "#FFFFFF",
-          padding: 20,
+          paddingVertical: 14,
+          paddingHorizontal: 16,
           borderBottomWidth: 1,
           borderColor: "#E8E9EB",
         }}
@@ -109,7 +106,7 @@ const ChatHeader = ({
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text style={[{ fontSize: 12 }, TextProps]}>{email}</Text>
+                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{email}</Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>
@@ -117,7 +114,7 @@ const ChatHeader = ({
                       style={[
                         {
                           fontSize: 10,
-                          width: 250,
+                          width: 200,
                           overflow: "hidden",
                         },
                         TextProps,
@@ -141,7 +138,13 @@ const ChatHeader = ({
               payload: {
                 children: (
                   <View
-                    style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}
+                    style={{
+                      display: "flex",
+                      gap: 21,
+                      paddingHorizontal: 20,
+                      paddingVertical: 16,
+                      paddingBottom: -20,
+                    }}
                   >
                     {/* <TouchableOpacity
                       onPress={() => {

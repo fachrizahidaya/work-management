@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
@@ -20,6 +20,7 @@ import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSe
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import PageHeader from "../../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
   const [personalChats, setPersonalChats] = useState([]);
@@ -129,10 +130,6 @@ const ChatListScreen = () => {
     toggleDeleteGroupModal();
   };
 
-  const closeSelectedContactMenuHandler = () => {
-    setSelectedContact(null);
-  };
-
   /**
    * Swipe Contact List Item handler
    * @param {*} contact
@@ -199,6 +196,12 @@ const ChatListScreen = () => {
     }
   };
 
+  /**
+   * Handle clear chat
+   * @param {*} id
+   * @param {*} type
+   * @param {*} itemName
+   */
   const clearChatMessageHandler = async (id, type, itemName) => {
     try {
       toggleClearMessage();
@@ -262,6 +265,10 @@ const ChatListScreen = () => {
         <>
           <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
+                <PageHeader title="Chats" onPress={() => navigation.goBack()} />
+              </View>
+
               <GlobalSearchInput
                 globalKeyword={globalKeyword}
                 setGlobalKeyword={setGlobalKeyword}

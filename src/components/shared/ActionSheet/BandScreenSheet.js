@@ -10,15 +10,25 @@ const BandScreenSheet = (props) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
 
+  const screensToRender = () => {
+    return menuSelector.user_menu.menu?.filter((screen) => {
+      return screen.name !== "Dashboard";
+    });
+  };
+
   return (
     <ActionSheet ref={props.reference}>
       <View style={styles.container}>
-        {menuSelector.user_menu.menu?.map((item, idx) => {
+        {screensToRender()?.map((item, idx) => {
           return (
             <TouchableOpacity
               key={idx}
               onPress={() => {
-                navigation.navigate(item.name);
+                if (item.name === "My Team") {
+                  navigation.navigate(item.name, { passedTeam: null });
+                } else {
+                  navigation.navigate(item.name);
+                }
                 props.reference.current?.hide();
               }}
               style={styles.wrapper}

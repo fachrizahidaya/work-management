@@ -5,7 +5,17 @@ import * as FileSystem from "expo-file-system";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, View, Text, Pressable, Image } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+} from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -25,7 +35,7 @@ const EditGroupProfile = () => {
 
   const route = useRoute();
 
-  const { type, name, image, roomId } = route.params;
+  const { name, image, roomId } = route.params;
 
   const editGroupNameHandler = () => {
     setEditName(!editName);
@@ -74,7 +84,7 @@ const EditGroupProfile = () => {
 
     if (fileInfo.size >= 1000000) {
       // toast.show({ description: "Image size is too large" });
-      Toast.show("Image size is too large", ErrorToastProps);
+      Alert.alert("Image size is too large");
       return;
     }
 
@@ -118,27 +128,41 @@ const EditGroupProfile = () => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FFFFFF", padding: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
-            <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
-          </Pressable>
-          <Text style={{ fontWeight: "500" }}>Edit Profile</Text>
-        </View>
-      </View>
-      <View style={{ flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 20, paddingVertical: 10, gap: 10 }}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
         <View
           style={{
             flexDirection: "row",
-            alignItems: "center",
             justifyContent: "space-between",
-            paddingHorizontal: 5,
+            backgroundColor: "#FFFFFF",
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
+              <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
+            </Pressable>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Edit Profile</Text>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#FFFFFF",
+            paddingHorizontal: 16,
+            paddingVertical: 14,
             gap: 10,
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               {!imageAttachment ? (
                 <AvatarPlaceholder size="xl" name={name} image={!imageAttachment ? image : imageAttachment.uri} />
               ) : (
@@ -148,10 +172,10 @@ const EditGroupProfile = () => {
                   }}
                   alt="profile picture"
                   style={{
-                    width: 120,
-                    height: 120,
+                    width: 80,
+                    height: 80,
                     resizeMode: "contain",
-                    borderRadius: 20,
+                    borderRadius: 40,
                   }}
                 />
               )}
@@ -166,51 +190,45 @@ const EditGroupProfile = () => {
                 />
               </Pressable>
             </View>
-          </View>
 
-          <View style={{ alignItems: "center" }}>
             {editName ? (
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Input
-                  width={220}
-                  numberOfLines={2}
-                  value={formik.values.name}
-                  onChangeText={(value) => formik.setFieldValue("name", value)}
-                  defaultValue={name}
-                  endIcon="close"
-                  onPressEndIcon={() => {
-                    editGroupNameHandler();
-                    formik.setFieldValue("name", name);
-                  }}
-                />
-              </View>
+              <Input
+                numberOfLines={2}
+                value={formik.values.name}
+                onChangeText={(value) => formik.setFieldValue("name", value)}
+                defaultValue={name}
+                endIcon="close"
+                onPressEndIcon={() => {
+                  editGroupNameHandler();
+                  formik.setFieldValue("name", name);
+                }}
+              />
             ) : (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                <Text style={{ fontSize: 16, fontWeight: "500", width: 150 }} numberOfLines={2}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "500" }} numberOfLines={2}>
                   {name}
                 </Text>
-
                 <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
               </View>
             )}
           </View>
+          {imageAttachment || formik.values.name !== name ? (
+            <FormButton
+              fontColor="white"
+              onPress={formik.handleSubmit}
+              children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
+            />
+          ) : (
+            <FormButton
+              fontColor="white"
+              opacity={0.5}
+              onPress={null}
+              children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
+            />
+          )}
         </View>
-        {imageAttachment || formik.values.name !== name ? (
-          <FormButton
-            fontColor="white"
-            onPress={formik.handleSubmit}
-            children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
-          />
-        ) : (
-          <FormButton
-            fontColor="white"
-            opacity={0.5}
-            onPress={null}
-            children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
-          />
-        )}
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

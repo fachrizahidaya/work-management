@@ -33,6 +33,7 @@ const FeedCard = ({
   userSelector,
   toggleDeleteModal,
   toggleEditModal,
+  reference,
 }) => {
   /**
    * Like a Post handler
@@ -77,7 +78,7 @@ const FeedCard = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <FlatList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
@@ -106,10 +107,10 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile employee={employee} teammates={teammates} />
+                  <EmployeeProfile employee={employee} teammates={teammates} reference={reference} />
                 </>
               ) : (
-                <EmployeeSelfProfile employee={employee} teammates={teammates} />
+                <EmployeeSelfProfile employee={employee} teammates={teammates} reference={reference} />
               )}
             </View>
           </View>
@@ -124,7 +125,7 @@ const FeedCard = ({
             );
           }
           return (
-            <View style={{ paddingHorizontal: 10 }}>
+            <View style={{ paddingHorizontal: 14 }}>
               <FeedCardItem
                 key={index}
                 id={item?.id}
@@ -164,9 +165,7 @@ const FeedCard = ({
 export default memo(FeedCard);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {},
   information: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",

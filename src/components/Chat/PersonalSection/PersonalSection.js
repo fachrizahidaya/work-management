@@ -41,18 +41,29 @@ const PersonalSection = ({
                       gap: 21,
                       paddingHorizontal: 20,
                       paddingVertical: 16,
-                      paddingBottom: 40,
+                      paddingBottom: -20,
                     }}
                   >
-                    {menuOptions.map((option, index) => {
-                      return (
-                        <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-                          <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
-                        </TouchableOpacity>
-                      );
-                    })}
+                    <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                      {menuOptions.map((option, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={option.onPress}
+                            style={{
+                              ...styles.container,
+                              justifyContent: "space-between",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "#FFFFFF",
+                            }}
+                          >
+                            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
                     <TouchableOpacity
-                      style={{ alignItems: "center", justifyContent: "center" }}
+                      style={{ justifyContent: "center", ...styles.container }}
                       onPress={() => SheetManager.hide("form-sheet")}
                     >
                       <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
@@ -144,7 +155,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
   addButton: {
     backgroundColor: "#f1f2f3",
@@ -156,7 +168,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: "#F5F5F5",
     height: 50,
     padding: 10,

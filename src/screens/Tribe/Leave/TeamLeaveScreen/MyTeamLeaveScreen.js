@@ -26,14 +26,6 @@ const MyTeamLeaveScreen = () => {
   const [currentPageApproved, setCurrentPageApproved] = useState(1);
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
-  const tabs = useMemo(() => {
-    return [
-      { title: "Waiting Approval", value: "Pending" },
-      { title: "Approved", value: "Approved" },
-      { title: "Rejected", value: "Rejected" },
-    ];
-  }, []);
-
   const navigation = useNavigation();
 
   const fetchMorePendingParameters = {
@@ -87,6 +79,29 @@ const MyTeamLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
+  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
+
+  const pending =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Pending";
+    }) || [];
+  const approved =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Approved";
+    }) || [];
+  const rejected =
+    teamLeaveRequest?.data?.filter((item) => {
+      return item.status === "Rejected";
+    }) || [];
+
+  const tabs = useMemo(() => {
+    return [
+      { title: `Waiting Approval (${pending?.length})`, value: "Pending" },
+      { title: `Approved (${approved?.length})`, value: "Approved" },
+      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
+    ];
+  }, [teamLeaveRequest, pending, approved, rejected]);
+
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
@@ -120,6 +135,7 @@ const MyTeamLeaveScreen = () => {
       setSubmitting(false);
       setStatus("success");
       refetchPendingLeaveRequest();
+      refetchTeamLeaveRequest();
       Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -169,7 +185,7 @@ const MyTeamLeaveScreen = () => {
         {isReady ? (
           <>
             <View style={styles.header}>
-              <PageHeader width={200} title="My Team Leave Request" onPress={() => navigation.goBack()} />
+              <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
             <MyTeamLeaveRequestList
@@ -198,6 +214,7 @@ const MyTeamLeaveScreen = () => {
               tabValue={tabValue}
               tabs={tabs}
               onChangeTab={onChangeTab}
+              refetchTeamLeaveRequest={refetchTeamLeaveRequest}
             />
           </>
         ) : null}
@@ -219,7 +236,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
   },
 });

@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard, Alert } from "react-native";
 import Toast from "react-native-root-toast";
 
 import axiosInstance from "../../../config/api";
@@ -41,7 +41,6 @@ const ChatRoom = () => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [placement, setPlacement] = useState(undefined);
   const [selectedChatToDelete, setSelectedChatToDelete] = useState(null);
-  const [chatBubblePos, setChatBubblePos] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
   const [filteredSearch, setFilteredSearch] = useState([]);
@@ -74,6 +73,9 @@ const ChatRoom = () => {
   const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
   const { isLoading: chatIsLoading, stop: stopLoadingChat, start: startLoadingChat } = useLoading(false);
 
+  /**
+   * Handle for mention name in group member
+   */
   const memberName = selectedGroupMembers.map((item) => {
     return item?.user?.name;
   });
@@ -83,7 +85,6 @@ const ChatRoom = () => {
    * @param {*} chat
    */
   const openChatBubbleHandler = (chat, placement) => {
-    setChatBubblePos(true);
     setSelectedChatBubble(chat);
     setPlacement(placement);
     toggleOption();
@@ -93,17 +94,8 @@ const ChatRoom = () => {
    * Close chat options handler
    */
   const closeChatBubbleHandler = () => {
-    setChatBubblePos(false);
     setSelectedChatBubble(null);
     toggleOption();
-  };
-
-  /**
-   * Handle for attachment ActionSheet
-   */
-  const openAddAttachmentHandler = () => {
-    menuAttachmentScreenSheetRef.current?.show();
-    Keyboard.dismiss();
   };
 
   /**
@@ -374,7 +366,6 @@ const ChatRoom = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [3, 4],
       quality: 1,
     });
 
@@ -417,7 +408,7 @@ const ChatRoom = () => {
             webkitRelativePath: "",
           });
         } else {
-          Toast.show("Max file size is 3MB", ErrorToastProps);
+          Alert.alert("Max file size is 3MB");
         }
       }
     } catch (err) {
@@ -550,10 +541,6 @@ const ChatRoom = () => {
     personalChatMessageEvent();
     groupChatMessageEvent();
   }, [roomId, currentUser]);
-
-  // useEffect(() => {
-  //   setFilteredSearch([]);
-  // }, [searchMessage]);
 
   useEffect(() => {
     setTimeout(() => {

@@ -1,11 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import * as yup from "yup";
 import _ from "lodash";
 
-import { Dimensions, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -16,7 +25,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
-const NewLeaveRequest = ({ route }) => {
+const NewLeaveRequest = () => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedGenerateType, setSelectedGenerateType] = useState(null);
@@ -26,13 +35,14 @@ const NewLeaveRequest = ({ route }) => {
   const [formError, setFormError] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
-
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [filteredType, setFilteredType] = useState([]);
 
   const { width, height } = Dimensions.get("window");
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
+
+  const route = useRoute();
 
   const { employeeId } = route.params;
 
@@ -243,67 +253,69 @@ const NewLeaveRequest = ({ route }) => {
   }, []);
 
   return (
-    <View>
-      {isReady ? (
-        <View style={{ ...styles.container, width: width, height: height }}>
-          <PageHeader
-            title="New Leave Request"
-            onPress={
-              formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-                ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
-                : () => {
-                    !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
-                    navigation.goBack();
-                  }
-            }
-          />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView>
+        {isReady ? (
+          <View style={{ ...styles.container, width: width, height: height }}>
+            <PageHeader
+              title="New Leave Request"
+              onPress={
+                formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
+                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                  : () => {
+                      !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                      navigation.goBack();
+                    }
+              }
+            />
 
-          <ReturnConfirmationModal
-            isOpen={returnModalIsOpen}
-            toggle={toggleReturnModal}
-            onPress={() => {
-              toggleReturnModal();
-              navigation.navigate("Dashboard");
-            }}
-            description="Are you sure want to exit? It will be deleted"
-          />
+            <ReturnConfirmationModal
+              isOpen={returnModalIsOpen}
+              toggle={toggleReturnModal}
+              onPress={() => {
+                toggleReturnModal();
+                navigation.navigate("Dashboard");
+              }}
+              description="Are you sure want to exit? It will be deleted"
+            />
 
-          <View style={styles.history}>
-            {leaveHistoryIsFetching ? (
-              <View style={{ alignItems: "center", gap: 5 }}>
-                <ActivityIndicator />
-              </View>
-            ) : !availableLeaves ? (
-              <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
-            ) : (
-              availableLeaves?.map((item, index) => {
-                return (
-                  <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
-                    <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
-                    <Text style={styles.name}>{item.leave_name}</Text>
-                  </View>
-                );
-              })
-            )}
+            <View style={styles.history}>
+              {leaveHistoryIsFetching ? (
+                <View style={{ alignItems: "center", gap: 5 }}>
+                  <ActivityIndicator />
+                </View>
+              ) : !availableLeaves ? (
+                <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
+              ) : (
+                availableLeaves?.map((item, index) => {
+                  return (
+                    <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
+                      <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
+                      <Text style={styles.name}>{item.leave_name}</Text>
+                    </View>
+                  );
+                })
+              )}
+            </View>
+
+            <NewLeaveRequestForm
+              onSubmit={leaveRequestAddHandler}
+              formik={formik}
+              onChangeStartDate={onChangeStartDate}
+              onChangeEndDate={onChangeEndDate}
+              isLoading={isLoading}
+              isError={isError}
+              leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
+              reference={selectLeaveTypeScreenSheetRef}
+              handleSearch={handleSearch}
+              inputToShow={inputToShow}
+              setInputToShow={setInputToShow}
+              setSearchInput={setSearchInput}
+            />
           </View>
-
-          <NewLeaveRequestForm
-            onSubmit={leaveRequestAddHandler}
-            formik={formik}
-            onChangeStartDate={onChangeStartDate}
-            onChangeEndDate={onChangeEndDate}
-            isLoading={isLoading}
-            isError={isError}
-            leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
-            reference={selectLeaveTypeScreenSheetRef}
-            handleSearch={handleSearch}
-            inputToShow={inputToShow}
-            setInputToShow={setInputToShow}
-            setSearchInput={setSearchInput}
-          />
-        </View>
-      ) : null}
-    </View>
+        ) : null}
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -312,14 +324,15 @@ export default NewLeaveRequest;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 15,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
   },
   history: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
-    marginVertical: 20,
+    gap: 17,
+    marginTop: 22,
   },
   name: {
     width: 100,

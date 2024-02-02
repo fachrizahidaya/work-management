@@ -28,8 +28,9 @@ import {
   TextProps,
 } from "../../components/shared/CustomStylings";
 
-const MyTeamScreen = () => {
+const MyTeamScreen = ({ route }) => {
   const navigation = useNavigation();
+  const { passedTeam } = route.params;
   const userSelector = useSelector((state) => state.auth);
   const [selectedTeamId, setSelectedTeamId] = useState(0);
   const [team, setTeam] = useState({});
@@ -110,6 +111,14 @@ const MyTeamScreen = () => {
       setTeam(teams?.data[0]);
     }
   }, [teamIsLoading]);
+
+  // if user accessed the my team screen from global search
+  useEffect(() => {
+    if (passedTeam) {
+      setSelectedTeamId(passedTeam.id);
+      setTeam(passedTeam);
+    }
+  }, [passedTeam]);
 
   return (
     <SafeAreaView style={styles.container}>

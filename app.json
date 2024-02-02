@@ -2,7 +2,7 @@
   "expo": {
     "name": "Nest",
     "slug": "kss-mobile-app",
-    "version": "1.0.8",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./assets/nest-icon.png",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.kolabora.kssmobileapp",
-      "buildNumber": "8"
+      "buildNumber": "11"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -25,8 +25,9 @@
         "foregroundImage": "./assets/adaptive-icon-adr.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_BACKGROUND_LOCATION", "ACCESS_COARSE_LOCATION"],
       "package": "com.kolabora.kssmobileapp",
-      "versionCode": 8
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -7,7 +7,14 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const ContactAvatar = ({ navigation, roomId, type, name, image, position, currentUserIsAdmin }) => {
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF", paddingBottom: 5 }}>
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#FFFFFF",
+        paddingBottom: 5,
+      }}
+    >
       <View style={{ gap: 10 }}>
         <AvatarPlaceholder size="xl" name={name} image={image} isThumb={false} />
         {type === "group" && currentUserIsAdmin ? (
@@ -15,7 +22,6 @@ const ContactAvatar = ({ navigation, roomId, type, name, image, position, curren
             style={styles.editPicture}
             onPress={() =>
               navigation.navigate("Edit Group", {
-                type: type,
                 name: name,
                 image: image,
                 roomId: roomId,

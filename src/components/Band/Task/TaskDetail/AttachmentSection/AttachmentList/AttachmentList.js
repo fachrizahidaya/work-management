@@ -40,6 +40,7 @@ const AttachmentList = ({
         alignItems: "center",
         gap: 20,
         marginRight: 10,
+        paddingBottom: 10,
       }}
     >
       <View style={{ display: "flex", flexDirection: "row", gap: 5, alignItems: "center" }}>

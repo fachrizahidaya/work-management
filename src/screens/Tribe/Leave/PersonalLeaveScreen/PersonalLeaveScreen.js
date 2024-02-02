@@ -44,15 +44,6 @@ const PersonalLeaveScreen = () => {
 
   const navigation = useNavigation();
 
-  const tabs = useMemo(() => {
-    return [
-      { title: "Pending", value: "Pending" },
-      { title: "Canceled", value: "Canceled" },
-      { title: "Rejected", value: "Rejected" },
-      { title: "Approved", value: "Approved" },
-    ];
-  }, []);
-
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
@@ -123,7 +114,35 @@ const PersonalLeaveScreen = () => {
     fetchMoreCanceledParameters
   );
 
+  const { data: personalLeaveRequest, refetch: refetchPersonalLeaveRequest } = useFetch("/hr/leave-requests/personal");
+
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
+
+  const pending =
+    personalLeaveRequest?.data?.filter((item) => {
+      return item?.status === "Pending";
+    }) || [];
+  const approved =
+    personalLeaveRequest?.data?.filter((item) => {
+      return item?.status === "Approved";
+    }) || [];
+  const rejected =
+    personalLeaveRequest?.data?.filter((item) => {
+      return item?.status === "Rejected";
+    }) || [];
+  const canceled =
+    personalLeaveRequest?.data?.filter((item) => {
+      return item?.status === "Canceled";
+    }) || [];
+
+  const tabs = useMemo(() => {
+    return [
+      { title: `Pending (${pending?.length})`, value: "Pending" },
+      { title: `Canceled (${canceled?.length})`, value: "Canceled" },
+      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
+      { title: `Approved (${approved?.length})`, value: "Approved" },
+    ];
+  }, [personalLeaveRequest, pending, canceled, rejected, approved]);
 
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
@@ -300,6 +319,7 @@ const PersonalLeaveScreen = () => {
             setTabValue={setTabValue}
             tabs={tabs}
             onChangeTab={onChangeTab}
+            refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
           />
         </>
       </SafeAreaView>
@@ -312,6 +332,7 @@ const PersonalLeaveScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           refetchPendingLeaveRequest();
+          refetchPersonalLeaveRequest();
           cancleScreenSheetRef.current?.hide();
         }}
         description="Are you sure to cancel this request?"
@@ -336,7 +357,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
   },
 });

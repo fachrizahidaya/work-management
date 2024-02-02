@@ -2,8 +2,8 @@ import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { View, Text, Image } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { Skeleton } from "moti/skeleton";
+import { FlashList } from "@shopify/flash-list";
 
 import ActiveTaskList from "./ActiveTaskList";
 import { card } from "../../../../styles/Card";
@@ -18,14 +18,11 @@ const ActiveTaskCard = () => {
   const [status, setStatus] = useState("week");
   const [selectedTask, setSelectedTask] = useState(null);
   const { isOpen, toggle } = useDisclosure(false);
-  const { isOpen: openMore, toggle: toggleMore, close: closeMore } = useDisclosure(false);
 
   const { data: tasks, isLoading, refetch } = useFetch(`/pm/tasks/${status}`, [status], { limit: 10 });
-  const { data: allTasks, isLoading: allTasksLoading } = useFetch(openMore && `/pm/tasks/${status}`);
 
   const onPressTaskItem = (id) => {
     navigation.navigate("Task Detail", { taskId: id });
-    closeMore();
   };
 
   const openCloseModal = useCallback((task) => {
@@ -82,52 +79,51 @@ const ActiveTaskCard = () => {
             </Button>
           </View>
 
-          <ScrollView horizontal style={{ paddingVertical: 10, paddingHorizontal: 4 }}>
-            {!isLoading ? (
-              tasks?.data?.data?.length > 0 ? (
-                <>
-                  {tasks.data.data.map((task) => (
+          {!isLoading ? (
+            tasks?.data?.data?.length > 0 ? (
+              <>
+                <FlashList
+                  data={tasks?.data?.data}
+                  keyExtractor={(item) => item.id}
+                  onEndReachedThreshold={0.1}
+                  estimatedItemSize={200}
+                  horizontal
+                  renderItem={({ item }) => (
                     <ActiveTaskList
-                      key={task.id}
-                      id={task.id}
-                      task={task}
-                      title={task.title}
-                      responsible={task.responsible_name}
-                      image={task.responsible_image}
-                      status={task.status}
-                      priority={task.priority}
+                      key={item.id}
+                      id={item.id}
+                      task={item}
+                      title={item.title}
+                      responsible={item.responsible_name}
+                      image={item.responsible_image}
+                      status={item.status}
+                      priority={item.priority}
                       onPress={openCloseModal}
                       onPressItem={onPressTaskItem}
                     />
-                  ))}
-                  {tasks.data.data.length > 4 && (
-                    <Button backgroundColor="white" variant="dashed" onPress={toggleMore} title="More">
-                      <Text style={{ color: "#176688" }}>More</Text>
-                    </Button>
                   )}
-                </>
-              ) : (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    source={require("../../../../assets/vectors/items.jpg")}
-                    alt="empty"
-                    style={{ height: 200, width: 200, resizeMode: "contain" }}
-                  />
-                  <Text style={TextProps}>You have no tasks.</Text>
-                </View>
-              )
+                />
+              </>
             ) : (
-              <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
-            )}
-          </ScrollView>
+              // Image here
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../assets/vectors/items.jpg")}
+                  alt="empty"
+                  style={{ height: 200, width: 200, resizeMode: "contain" }}
+                />
+                <Text style={TextProps}>You have no tasks.</Text>
+              </View>
+            )
+          ) : (
+            <Skeleton width={120} height={20} radius="round" {...SkeletonCommonProps} />
+          )}
         </View>
       </View>
 
@@ -143,40 +139,6 @@ const ActiveTaskCard = () => {
         hasSuccessFunc
         onSuccess={refetch}
       />
-
-      {/* More tasks modal */}
-      {/* {openMore && (
-        <Modal isOpen={openMore} onClose={toggleMore} size="xl">
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>
-              <Text bold>This {status} tasks</Text>
-            </Modal.Header>
-            <Modal.Body>
-              {!allTasksLoading ? (
-                allTasks?.data?.length > 0 &&
-                allTasks.data.map((task) => {
-                  return (
-                    <ActiveTaskList
-                      id={task.id}
-                      key={task.id}
-                      task={task}
-                      title={task.title}
-                      responsible={task.responsible_name}
-                      status={task.status}
-                      priority={task.priority}
-                      onPress={openCloseModal}
-                      onPressItem={onPressTaskItem}
-                    />
-                  );
-                })
-              ) : (
-                <Skeleton h={41} />
-              )}
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
-      )} */}
     </>
   );
 };

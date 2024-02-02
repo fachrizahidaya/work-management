@@ -16,6 +16,7 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
@@ -112,6 +113,11 @@ const GroupFormScreen = ({ route }) => {
     // Handling for file information
     const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
 
+    if (fileInfo.size >= 1000000) {
+      Alert.alert("File size too large");
+      return;
+    }
+
     if (result) {
       setImage({
         name: filename,
@@ -125,11 +131,21 @@ const GroupFormScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable style={{ flex: 1, display: "flex", gap: 10, paddingHorizontal: 20 }} onPress={Keyboard.dismiss}>
-        <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
+      <View style={{ flex: 1, gap: 5 }}>
+        <Pressable style={{ display: "flex", paddingVertical: 14, paddingHorizontal: 16 }} onPress={Keyboard.dismiss}>
+          <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-        <Text style={[{ fontSize: 12 }, TextProps]}>Participants: {userArray?.length}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
+          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Participants: {userArray?.length}</Text>
+        </Pressable>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 5,
+            alignItems: "center",
+            paddingHorizontal: 16,
+          }}
+        >
           {userArray?.length > 0 &&
             userArray.map((user) => {
               return (
@@ -152,7 +168,15 @@ const GroupFormScreen = ({ route }) => {
               );
             })}
         </View>
-        <View style={{ alignItems: "center", gap: 20 }}>
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20,
+            paddingHorizontal: 16,
+          }}
+        >
           <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
               <Image
@@ -169,13 +193,11 @@ const GroupFormScreen = ({ route }) => {
           </TouchableOpacity>
 
           <Input
-            width={380}
             placeHolder="Group name"
             value={formik.values.name}
             onChangeText={(value) => formik.setFieldValue("name", value)}
           />
           {formik.errors.name && <Text style={{ fontSize: 12, color: "#F44336" }}>{formik.errors.name}</Text>}
-
           <Pressable
             style={{
               backgroundColor: formik.isSubmitting ? "#757575" : "#176688",
@@ -195,7 +217,7 @@ const GroupFormScreen = ({ route }) => {
             )}
           </Pressable>
         </View>
-      </Pressable>
+      </View>
     </SafeAreaView>
   );
 };

@@ -76,7 +76,7 @@ const ChatList = ({
   );
 
   return (
-    <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA", paddingHorizontal: 10 }}>
+    <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA" }}>
       <FlashList
         inverted
         ListFooterComponent={() => isLoading && <ActivityIndicator />}

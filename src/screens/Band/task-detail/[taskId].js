@@ -23,6 +23,7 @@ import { hyperlinkConverter } from "../../../helpers/hyperlinkConverter";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
 import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
+import useCheckAccess from "../../../hooks/useCheckAccess";
 
 const TaskDetailScreen = ({ route }) => {
   const { width } = Dimensions.get("screen");
@@ -31,7 +32,7 @@ const TaskDetailScreen = ({ route }) => {
   const { taskId } = route.params;
   const loggedUser = userSelector.id;
   const { isLoading: statusIsLoading, toggle: toggleLoading } = useLoading(false);
-
+  const editTaskAccess = useCheckAccess("update", "Tasks");
   const { data: selectedTask, refetch: refetchSelectedTask } = useFetch(taskId && `/pm/tasks/${taskId}`);
   const { data: observers, refetch: refetchObservers } = useFetch(taskId && `/pm/tasks/${taskId}/observer`);
   const { data: responsible, refetch: refetchResponsible } = useFetch(taskId && `/pm/tasks/${taskId}/responsible`);
@@ -39,9 +40,9 @@ const TaskDetailScreen = ({ route }) => {
   const taskUserRights = [selectedTask?.data?.project_owner_id, selectedTask?.data?.responsible_id];
   const inputIsDisabled = !taskUserRights.includes(loggedUser);
 
-  const onOpenTaskForm = useCallback(() => {
+  const onOpenTaskForm = () => {
     navigation.navigate("Task Form", { taskData: selectedTask?.data, refetch: refetchSelectedTask });
-  }, []);
+  };
 
   /**
    * Handles take task as responsible
@@ -178,7 +179,7 @@ const TaskDetailScreen = ({ route }) => {
             <DeadlineSection
               deadline={selectedTask?.data?.deadline}
               projectDeadline={selectedTask?.data?.project_deadline}
-              disabled={inputIsDisabled}
+              disabled={inputIsDisabled || !editTaskAccess}
               taskId={taskId}
             />
 

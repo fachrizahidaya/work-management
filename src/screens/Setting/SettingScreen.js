@@ -29,34 +29,34 @@ const SettingScreen = () => {
       color: "#FF965D",
       screen: "Change Password",
     },
-    {
-      icons: "alert-octagon-outline",
-      title: "Privacy and security",
-      color: "#FF6262",
-    },
-    {
-      icons: "bell-outline",
-      title: "Notifications",
-      color: "#5B5D6E",
-    },
+    // {
+    //   icons: "alert-octagon-outline",
+    //   title: "Privacy and security",
+    //   color: "#FF6262",
+    // },
+    // {
+    //   icons: "bell-outline",
+    //   title: "Notifications",
+    //   color: "#5B5D6E",
+    // },
   ];
 
   const second = [
-    {
-      icons: "folder-move-outline",
-      title: "Data usage and media quality",
-      color: "#5E74EA",
-    },
-    {
-      icons: "swap-vertical",
-      title: "Server status",
-      color: "#69E86E",
-    },
-    {
-      icons: "cellphone",
-      title: "iOS guide",
-      color: "#000000",
-    },
+    // {
+    //   icons: "folder-move-outline",
+    //   title: "Data usage and media quality",
+    //   color: "#5E74EA",
+    // },
+    // {
+    //   icons: "swap-vertical",
+    //   title: "Server status",
+    //   color: "#69E86E",
+    // },
+    // {
+    //   icons: "cellphone",
+    //   title: "iOS guide",
+    //   color: "#000000",
+    // },
   ];
 
   return (
@@ -154,7 +154,7 @@ const SettingScreen = () => {
             })}
           </View>
 
-          <TouchableOpacity style={styles.item}>
+          {/* <TouchableOpacity style={styles.item}>
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
               <View style={{ backgroundColor: "#8B63E7", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="link-variant" color="white" size={20} />
@@ -165,9 +165,9 @@ const SettingScreen = () => {
               </View>
             </View>
             <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity style={styles.item}>
+          {/* <TouchableOpacity style={styles.item}>
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
               <View style={{ backgroundColor: "#B5B5B5", padding: 1, borderRadius: 4 }}>
                 <MaterialCommunityIcons name="view-grid-outline" color="white" size={20} />
@@ -175,7 +175,7 @@ const SettingScreen = () => {
               <Text style={TextProps}>Personal dashboard</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={{ backgroundColor: "#FAFAFA", borderRadius: 9, opacity: 0.5 }}>
             {second.map((item) => {

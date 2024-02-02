@@ -65,37 +65,28 @@ const TribeTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
+                <MaterialCommunityIcons name="home-outline" size={20} color="#3F434A" />
               </View>
-            ),
-            tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => tribeScreenSheetRef.current?.show()}>
-                {props.children}
-              </TouchableOpacity>
             ),
           }}
         />
-        {/* <Tab.Screen
+        <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Box bg="#FBFBFB" borderRadius="full" padding={2}>
-                <Icon as={<MaterialCommunityIcons name="magnify" />} size={size} color="#000000" />
-              </Box>
-            ),
-            tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => {
-                  // handleStateToggle("searchIsOpen");
-                }}
-              >
-                {props.children}
-              </TouchableOpacity>
+              <View style={styles.menuIcon}>
+                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
+              </View>
             ),
           }}
-        /> */}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.navigate("Global Search Tribe");
+            },
+          })}
+        />
         <Tab.Screen
           name="Add"
           component={EmptyScreen}
@@ -113,16 +104,22 @@ const TribeTab = () => {
           }}
         />
         <Tab.Screen
-          name="Setting Tribe"
-          component={SettingScreen}
+          name="Screen List"
+          component={EmptyScreen}
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="cog-outline" size={20} color="#3F434A" />
+                <MaterialCommunityIcons name="menu" size={20} color="#3F434A" />
               </View>
+            ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} onPress={() => tribeScreenSheetRef.current?.show()}>
+                {props.children}
+              </TouchableOpacity>
             ),
           }}
         />
+
         <Tab.Screen
           name="Module Selection"
           component={EmptyScreen}

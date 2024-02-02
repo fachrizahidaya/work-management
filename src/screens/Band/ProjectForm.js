@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
@@ -6,6 +6,7 @@ import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, TouchableWithoutFeedback, View, Text } from "react-native";
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 import CustomDateTimePicker from "../../components/shared/CustomDateTimePicker";
 import axiosInstance from "../../config/api";
@@ -14,8 +15,10 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 import { ErrorToastProps, SuccessToastProps, TextProps } from "../../components/shared/CustomStylings";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ProjectForm = ({ route }) => {
+  const richText = useRef();
   const { width, height } = Dimensions.get("window");
   const { projectData, refetchSelectedProject, teamMembers } = route.params;
   const navigation = useNavigation();
@@ -89,6 +92,11 @@ const ProjectForm = ({ route }) => {
     formik.setFieldValue("deadline", value);
   };
 
+  // To change empty p tag to br tag
+  const preprocessContent = (content) => {
+    return content.replace(/<p><\/p>/g, "<br/>");
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       navigation.navigate("Project Detail", { projectId: projectId });
@@ -97,59 +105,79 @@ const ProjectForm = ({ route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={{ position: "absolute", zIndex: 3 }}>
-        <View
-          style={{ width: width, height: height, paddingVertical: 13, paddingHorizontal: 16, backgroundColor: "white" }}
-        >
-          <PageHeader
-            title="New Project"
-            onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
+      <ScrollView
+        style={{
+          width: width,
+          height: height,
+          paddingVertical: 13,
+          paddingHorizontal: 16,
+          backgroundColor: "white",
+          paddingBottom: 40,
+        }}
+      >
+        <PageHeader
+          title="New Project"
+          onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
+        />
+
+        <View style={{ display: "flex", gap: 17, marginTop: 22 }}>
+          <Input
+            formik={formik}
+            title="Project Name"
+            fieldName="title"
+            value={formik.values.title}
+            placeHolder="Input project title..."
           />
 
-          <View style={{ display: "flex", gap: 17, marginTop: 22 }}>
-            <Input
-              formik={formik}
-              title="Project Name"
-              fieldName="title"
-              value={formik.values.title}
-              placeHolder="Input project title..."
+          <RichToolbar
+            editor={richText}
+            actions={[
+              actions.setBold,
+              actions.setItalic,
+              actions.insertBulletsList,
+              actions.insertOrderedList,
+              actions.setStrikethrough,
+              actions.setUnderline,
+            ]}
+            iconTint="#000"
+            selectedIconTint="#176688"
+          />
+
+          <ScrollView style={{ height: 200, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
+            <RichEditor
+              ref={richText}
+              onChange={(descriptionText) => {
+                formik.setFieldValue("description", descriptionText);
+              }}
+              initialContentHTML={preprocessContent(formik.values.description)}
             />
+          </ScrollView>
 
-            <Input
-              formik={formik}
-              title="Description"
-              fieldName="description"
-              value={formik.values.description}
-              placeHolder="Input project description..."
-              multiline
-            />
-
-            <View>
-              <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
-              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
-              {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
-            </View>
-
-            <Select
-              value={formik.values.priority}
-              placeHolder="Select Priority"
-              formik={formik}
-              title="Priority"
-              fieldName="priority"
-              onChange={(value) => formik.setFieldValue("priority", value)}
-              items={[
-                { label: "Low", value: "Low" },
-                { label: "Medium", value: "Medium" },
-                { label: "High", value: "High" },
-              ]}
-            />
-
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-              <Text style={{ color: "white" }}>{projectData ? "Save" : "Create"}</Text>
-            </FormButton>
+          <View>
+            <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
+            <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
+            {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
           </View>
+
+          <Select
+            value={formik.values.priority}
+            placeHolder="Select Priority"
+            formik={formik}
+            title="Priority"
+            fieldName="priority"
+            onChange={(value) => formik.setFieldValue("priority", value)}
+            items={[
+              { label: "Low", value: "Low" },
+              { label: "Medium", value: "Medium" },
+              { label: "High", value: "High" },
+            ]}
+          />
+
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+            <Text style={{ color: "white" }}>{projectData ? "Save" : "Create"}</Text>
+          </FormButton>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };

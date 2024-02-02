@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, ScrollView } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { TextProps } from "../../../shared/CustomStylings";
@@ -17,7 +17,7 @@ const NewFeedInput = ({ employees, formik }) => {
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 200 }}>
+      <ScrollView nestedScrollEnabled={true} style={{ height: 200 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -29,7 +29,7 @@ const NewFeedInput = ({ employees, formik }) => {
             </Pressable>
           )}
         />
-      </View>
+      </ScrollView>
     );
   };
 

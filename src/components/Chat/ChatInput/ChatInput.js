@@ -39,6 +39,7 @@ const ChatInput = ({
   memberName,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
+  const [height, setHeight] = useState(40);
 
   const attachmentOptions = [
     {
@@ -134,7 +135,7 @@ const ChatInput = ({
     const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 200 }}>
+      <View style={{ height: 100 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -197,7 +198,8 @@ const ChatInput = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#FFFFFF",
-          padding: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 16,
         }}
       >
         <View
@@ -229,13 +231,22 @@ const ChatInput = ({
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
-                            paddingBottom: 40,
+                            paddingBottom: -20,
                           }}
                         >
-                          <View style={{ gap: 5 }}>
+                          <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
                             {attachmentOptions.map((option, index) => {
                               return (
-                                <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
+                                <TouchableOpacity
+                                  key={index}
+                                  onPress={option.onPress}
+                                  style={{
+                                    ...styles.container,
+                                    justifyContent: "space-between",
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: "#FFFFFF",
+                                  }}
+                                >
                                   <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                                   <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
                                 </TouchableOpacity>
@@ -243,7 +254,7 @@ const ChatInput = ({
                             })}
                           </View>
                           <TouchableOpacity
-                            style={{ alignItems: "center", justifyContent: "center" }}
+                            style={{ justifyContent: "center", ...styles.container }}
                             onPress={() => SheetManager.hide("form-sheet")}
                           >
                             <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
@@ -281,7 +292,7 @@ const ChatInput = ({
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
-                      height: 45,
+                      // height: 45,
                       // borderWidth: 1,
                       // borderColor: "#CBCBCB",
                       // borderRadius: 10
@@ -292,6 +303,12 @@ const ChatInput = ({
                     placeHolder="Type a message..."
                     value={formik.values.message}
                     onChangeText={(value) => formik.setFieldValue("message", value)}
+                    borderColor="transparent"
+                    alignVertical={null}
+                    multiline={true}
+                    sizeChange={true}
+                    height={40}
+                    setHeight={setHeight}
                   />
                 )}
               </View>
@@ -323,7 +340,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: "#F5F5F5",
     height: 50,
     padding: 10,

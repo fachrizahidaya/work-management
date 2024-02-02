@@ -41,15 +41,15 @@ const LeaveRequestList = ({
   setHasBeenScrolledApproved,
   hasBeenScrolledCanceled,
   setHasBeenScrolledCanceled,
+  refetchPersonalLeaveRequest,
 }) => {
   return (
     <>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
-
       <View style={styles.container}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
@@ -63,6 +63,7 @@ const LeaveRequestList = ({
                     refreshing={pendingLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchPendingLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -87,7 +88,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={pendingLeaveRequestIsFetching} onRefresh={refetchPendingLeaveRequest} />
+                <RefreshControl
+                  refreshing={pendingLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchPendingLeaveRequest;
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -97,7 +104,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Approved" ? (
           approvedList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
@@ -111,6 +118,7 @@ const LeaveRequestList = ({
                     refreshing={approvedLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchApprovedLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -135,7 +143,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={approvedLeaveRequestIsFetching} onRefresh={refetchApprovedLeaveRequest} />
+                <RefreshControl
+                  refreshing={approvedLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchApprovedLeaveRequest();
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -145,7 +159,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Canceled" ? (
           canceledList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <View style={{ flex: 1, marginTop: 12 }}>
               <FlashList
                 data={canceledList}
                 onEndReachedThreshold={0.1}
@@ -159,6 +173,7 @@ const LeaveRequestList = ({
                     refreshing={canceledLeaveRequestIsFetching}
                     onRefresh={() => {
                       refetchCanceledLeaveRequest();
+                      refetchPersonalLeaveRequest();
                     }}
                   />
                 }
@@ -182,7 +197,13 @@ const LeaveRequestList = ({
           ) : (
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={canceledLeaveRequestIsFetching} onRefresh={refetchCanceledLeaveRequest} />
+                <RefreshControl
+                  refreshing={canceledLeaveRequestIsFetching}
+                  onRefresh={() => {
+                    refetchCanceledLeaveRequest();
+                    refetchPersonalLeaveRequest();
+                  }}
+                />
               }
             >
               <View style={styles.content}>
@@ -191,7 +212,7 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedList?.length > 0 ? (
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+          <View style={{ flex: 1, marginTop: 12 }}>
             <FlashList
               removeClippedSubviews={true}
               data={rejectedList}
@@ -207,6 +228,7 @@ const LeaveRequestList = ({
                   refreshing={rejectedLeaveRequestIsFetching}
                   onRefresh={() => {
                     refetchRejectedLeaveRequest();
+                    refetchPersonalLeaveRequest();
                   }}
                 />
               }
@@ -230,7 +252,13 @@ const LeaveRequestList = ({
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={rejectedLeaveRequestIsFetching} onRefresh={refetchRejectedLeaveRequest} />
+              <RefreshControl
+                refreshing={rejectedLeaveRequestIsFetching}
+                onRefresh={() => {
+                  refetchRejectedLeaveRequest;
+                  refetchPersonalLeaveRequest();
+                }}
+              />
             }
           >
             <View style={styles.content}>
@@ -247,10 +275,10 @@ export default memo(LeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#ffffff",
     flex: 1,
     flexDirection: "column",
-    paddingHorizontal: 5,
+    paddingHorizontal: 14,
   },
   content: {
     marginTop: 20,

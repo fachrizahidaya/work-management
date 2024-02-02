@@ -34,7 +34,7 @@ const ChatReplyInfo = ({ message, myMessage, type, loggedInUser, memberName, all
         <Image
           source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${message?.file_path}` }}
           alt="Attachment Preview"
-          style={{ width: 9, height: 10, resizeMode: "contain" }}
+          style={{ width: 50, height: 50, resizeMode: "cover" }}
         />
       )}
     </View>
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     borderLeftColor: "#37b4ea",
     borderLeftWidth: 5,

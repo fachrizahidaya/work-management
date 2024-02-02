@@ -80,7 +80,7 @@ const FeedCommentReplyItem = ({
     <View style={{ marginHorizontal: 40, marginVertical: 10 }}>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <View>
-          <AvatarPlaceholder image={authorImage} name={authorName} size="sm" isThumb={false} />
+          <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
         </View>
         <View style={{ flex: 1, gap: 5 }}>
           <Text style={{ fontSize: 12, fontWeight: "500" }}>

@@ -136,6 +136,8 @@ const FeedScreen = () => {
   const commentsCloseHandler = () => {
     commentScreenSheetRef.current?.hide();
     setPostId(null);
+    setCommentParentId(null);
+    setLatestExpandedReply(null);
   };
 
   /**
@@ -221,7 +223,7 @@ const FeedScreen = () => {
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
-          <Text style={{ fontSize: 12, fontWeight: "700" }}>{userSelector?.company}</Text>
+          <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
         </View>
 
         <Pressable
@@ -241,7 +243,12 @@ const FeedScreen = () => {
           <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
         </Pressable>
 
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+          }}
+        >
           {/* Content here */}
 
           <FeedCard
@@ -264,26 +271,25 @@ const FeedScreen = () => {
             employeeUsername={employeeUsername}
             navigation={navigation}
           />
-
-          <FeedComment
-            postId={postId}
-            loggedEmployeeName={userSelector?.name}
-            loggedEmployeeImage={profile?.data?.image}
-            comments={comments}
-            commentIsFetching={commentIsFetching}
-            commentIsLoading={commentIsLoading}
-            refetchComment={refetchComment}
-            handleClose={commentsCloseHandler}
-            onEndReached={commentEndReachedHandler}
-            commentRefetchHandler={commentRefetchHandler}
-            parentId={commentParentId}
-            onSubmit={commentSubmitHandler}
-            onReply={replyHandler}
-            employeeUsername={employeeUsername}
-            employees={employees?.data}
-            reference={commentScreenSheetRef}
-          />
         </View>
+        <FeedComment
+          postId={postId}
+          loggedEmployeeName={userSelector?.name}
+          loggedEmployeeImage={profile?.data?.image}
+          comments={comments}
+          commentIsFetching={commentIsFetching}
+          commentIsLoading={commentIsLoading}
+          refetchComment={refetchComment}
+          handleClose={commentsCloseHandler}
+          onEndReached={commentEndReachedHandler}
+          commentRefetchHandler={commentRefetchHandler}
+          parentId={commentParentId}
+          onSubmit={commentSubmitHandler}
+          onReply={replyHandler}
+          employeeUsername={employeeUsername}
+          employees={employees?.data}
+          reference={commentScreenSheetRef}
+        />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
@@ -317,7 +323,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
 });
