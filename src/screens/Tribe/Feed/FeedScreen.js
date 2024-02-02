@@ -223,7 +223,7 @@ const FeedScreen = () => {
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
-          <Text style={{ fontSize: 12, fontWeight: "700" }}>{userSelector?.company}</Text>
+          <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
         </View>
 
         <Pressable
