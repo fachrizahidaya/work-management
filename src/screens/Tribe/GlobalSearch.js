@@ -18,6 +18,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Input from "../../components/shared/Forms/Input";
 import { useFetch } from "../../hooks/useFetch";
 import GlobalSearchItems from "../../components/Tribe/GlobalSearch/GlobalSearchItems/GlobalSearchItems";
+import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
 
 const GlobalSearchTribe = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -26,6 +27,15 @@ const GlobalSearchTribe = () => {
   const { data, isFetching } = useFetch(searchInput && "/hr/global-search", [searchInput], {
     search: searchInput,
     sort: "desc",
+  });
+
+  const { data: employees } = useFetch("/hr/employees");
+  const employeeUsername = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
   });
 
   const handleSearch = useCallback(
@@ -78,7 +88,7 @@ const GlobalSearchTribe = () => {
             {!isFetching ? (
               <>
                 {data?.employee?.length > 0 || data?.post?.length ? (
-                  <GlobalSearchItems data={data} />
+                  <GlobalSearchItems data={data} employeeUsername={employeeUsername} />
                 ) : (
                   <Text style={styles.text}>No result</Text>
                 )}

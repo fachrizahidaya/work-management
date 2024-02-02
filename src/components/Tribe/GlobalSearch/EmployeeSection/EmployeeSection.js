@@ -5,12 +5,11 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const EmployeeSection = ({ employee }) => {
-  console.log("e", employee);
   const navigation = useNavigation();
 
   return (
     <View style={styles.wrapper}>
-      <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
+      <Text style={{ fontWeight: "500", opacity: 0.5 }}>EMPLOYEES</Text>
 
       {employee.map((item) => (
         <Pressable

@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
 } from "react-native";
 import Toast from "react-native-root-toast";
 
@@ -253,7 +254,7 @@ const NewLeaveRequest = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
+      <ScrollView>
         {isReady ? (
           <View style={{ ...styles.container, width: width, height: height }}>
             <PageHeader
@@ -313,7 +314,7 @@ const NewLeaveRequest = () => {
             />
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
