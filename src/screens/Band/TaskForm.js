@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useFormik } from "formik";
@@ -7,6 +7,7 @@ import Toast from "react-native-root-toast";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions, View, Text } from "react-native";
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 import CustomDateTimePicker from "../../components/shared/CustomDateTimePicker";
 import axiosInstance from "../../config/api";
@@ -17,6 +18,7 @@ import Select from "../../components/shared/Forms/Select";
 import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
 
 const TaskForm = ({ route }) => {
+  const richText = useRef();
   const { taskData, projectId, selectedStatus, refetch } = route.params;
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
@@ -84,6 +86,11 @@ const TaskForm = ({ route }) => {
     formik.setFieldValue("deadline", value);
   };
 
+  // To change empty p tag to br tag
+  const preprocessContent = (content) => {
+    return content.replace(/<p><\/p>/g, "<br/>");
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       if (taskData) {
@@ -112,14 +119,40 @@ const TaskForm = ({ route }) => {
               placeHolder="Input task title..."
             />
 
-            <Input
+            {/* <Input
               formik={formik}
               title="Description"
               fieldName="description"
               value={formik.values.description}
               placeHolder="Input task description..."
               multiline
+            /> */}
+
+            <RichToolbar
+              editor={richText}
+              actions={[
+                actions.setBold,
+                actions.setItalic,
+                actions.insertBulletsList,
+                actions.insertOrderedList,
+                actions.setStrikethrough,
+                actions.setUnderline,
+              ]}
+              iconTint="#000"
+              selectedIconTint="#176688"
             />
+
+            <ScrollView
+              style={{ height: 200, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB", paddingBottom: 40 }}
+            >
+              <RichEditor
+                ref={richText}
+                onChange={(descriptionText) => {
+                  formik.setFieldValue("description", descriptionText);
+                }}
+                initialContentHTML={preprocessContent(formik.values.description)}
+              />
+            </ScrollView>
 
             <View>
               <Text style={{ marginBottom: 9 }}>End Date</Text>
@@ -138,22 +171,6 @@ const TaskForm = ({ route }) => {
                 { label: "Low", value: "Low" },
                 { label: "Medium", value: "Medium" },
                 { label: "High", value: "High" },
-              ]}
-            />
-
-            <Select
-              value={formik.values.score}
-              placeHolder="Select Score"
-              formik={formik}
-              title="Score"
-              fieldName="score"
-              onChange={(value) => formik.setFieldValue("score", value)}
-              items={[
-                { label: "1", value: 1 },
-                { label: "2", value: 2 },
-                { label: "3", value: 3 },
-                { label: "4", value: 4 },
-                { label: "5", value: 5 },
               ]}
             />
 

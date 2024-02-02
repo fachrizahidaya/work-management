@@ -109,7 +109,7 @@ const NoteForm = ({ route }) => {
             selectedIconTint="#176688"
           />
 
-          <ScrollView>
+          <ScrollView style={{ borderWidth: 1, borderColor: "#E8E9EB", borderRadius: 10 }}>
             <RichEditor
               ref={richText}
               onChange={(descriptionText) => {
