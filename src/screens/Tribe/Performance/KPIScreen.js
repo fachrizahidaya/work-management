@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import KPIDetailItem from "../../../components/Tribe/Performance/KPIDetailItem";
@@ -14,10 +15,12 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import PerformanceForm from "../../../components/Tribe/Performance/PerformanceForm";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const KPIScreen = () => {
   const [question, setQuestion] = useState(null);
-  const [kpi_value, setKPI_Value] = useState([]);
+  const [kpiValues, setKpiValues] = useState([]);
+  const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
 
   const navigation = useNavigation();
   const formScreenSheetRef = useRef(null);
@@ -35,51 +38,87 @@ const KPIScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  if (!question?.actual_achievement) {
-    var actualString = null;
-  } else {
-    var actualString = question?.actual_achievement.toString();
-  }
-
-  const submitArray = (value) => {
-    kpi_value.push(value);
-  };
-
   const selectedQuestionHandler = (value) => {
-    setQuestion(value);
+    // setQuestion(value);
     formScreenSheetRef.current?.show();
   };
 
   const closeSelectedQuestionHandler = () => {
-    setQuestion(null);
+    // setQuestion(null);
     formScreenSheetRef.current?.hide();
   };
 
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      id: "",
-      performance_kpi_value_id: question?.id || "",
-      actual_achievement: actualString || "",
-    },
-    onSubmit: (values) => {
-      if (values.actual_achievement) {
-        values.actual_achievement = Number(values.actual_achievement);
-      }
-      submitArray(values);
-    },
-  });
+  const getEmployeeKpiValue = (employee_kpi_value) => {
+    let employeeKpiValArr = [];
+    if (Array.isArray(employee_kpi_value)) {
+      employee_kpi_value.forEach((val) => {
+        employeeKpiValArr = [
+          ...employeeKpiValArr,
+          {
+            ...val?.performance_kpi_value,
+            id: val?.id,
+            performance_kpi_value: val?.performance_kpi_value_id,
+            actual_achievement: val?.actual_achievement,
+          },
+        ];
+      });
+    }
+    return [...employeeKpiValArr];
+  };
 
-  const submitKPIactual = async (kpi_value) => {
+  const employeeKpiValueUpdateHandler = (data) => {
+    setEmployeeKpiValue((prevState) => {
+      let currentData = [...prevState];
+      const index = currentData.findIndex(
+        (employee_kpi_val) => employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
+      );
+      if (index > -1) {
+        currentData[index].actual_achievement = data?.actual_achievement;
+      } else {
+        currentData = [...currentData, data];
+      }
+      return [...currentData];
+    });
+  };
+
+  const sumUpKpiValue = () => {
+    setKpiValues(() => {
+      const performanceKpiValue = kpiList?.data?.performance_kpi?.value;
+      const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
+      return [...employeeKpiValue, ...performanceKpiValue];
+    });
+  };
+
+  const submitHandler = async () => {
     try {
       toggleSubmit();
-      await axiosInstance.patch(`/hr/employee-kpi/${kpiId}`, kpi_value);
+      const res = await axiosInstance.patch(`/hr/employee-kpi/${kpiList?.data?.id}`, {
+        kpi_value: employeeKpiValue,
+      });
       toggleSubmit();
+      Toast.show("Data saved!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleSubmit();
+      Toast.show(err.response.data.message, ErrorToastProps);
+    } finally {
+      toggleSubmit();
     }
   };
+
+  useEffect(() => {
+    if (kpiList?.data) {
+      sumUpKpiValue();
+      setEmployeeKpiValue(() => {
+        const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
+        return [...employeeKpiValue];
+      });
+    }
+  }, [kpiList?.data]);
+
+  useEffect(() => {
+    console.log("here", employeeKpiValue);
+  }, [employeeKpiValue]);
 
   return (
     <>
@@ -88,7 +127,7 @@ const KPIScreen = () => {
           <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => toggleReturnModal()} />
           <TouchableOpacity
             onPress={() => {
-              submitKPIactual(kpi_value);
+              submitHandler();
               navigation.goBack();
             }}
           >
@@ -97,40 +136,32 @@ const KPIScreen = () => {
         </View>
         <KPIDetailList
           dayjs={dayjs}
-          begin_date={kpiSelected?.data?.begin_date}
-          end_date={kpiSelected?.data?.end_date}
+          begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
+          end_date={kpiList?.data?.performance_kpi?.review?.end_date}
           position={kpiList?.data?.performance_kpi?.target_level}
+          target={kpiList?.data?.performance_kpi?.target_name}
+          targetLevel={kpiList?.data?.performance_kpi?.target_level}
         />
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {kpiList?.data?.employee_kpi_value &&
-              kpiList?.data?.employee_kpi_value.length > 0 &&
-              kpiList?.data?.employee_kpi_value.map((item, index) => {
+            {kpiValues &&
+              kpiValues.length > 0 &&
+              kpiValues.map((item, index) => {
                 return (
                   <KPIDetailItem
-                    key={index}
-                    item={item}
-                    description={item?.performance_kpi_value?.description}
-                    target={item?.performance_kpi_value?.target}
-                    navigation={navigation}
-                    type="kpi"
-                    onSelect={selectedQuestionHandler}
-                  />
-                );
-              })}
-            {kpiList?.data?.performance_kpi?.value &&
-              kpiList?.data?.performance_kpi?.value.length > 0 &&
-              kpiList?.data?.performance_kpi?.value.map((item, index) => {
-                return (
-                  <KPIDetailItem
+                    id={item?.employee_kpi_value || item?.id}
                     key={index}
                     item={item}
                     description={item?.description}
                     target={item?.target}
                     navigation={navigation}
                     type="kpi"
-                    onSelect={selectedQuestionHandler}
+                    weight={item?.weight}
+                    threshold={item?.threshold}
+                    measurement={item?.measurement}
+                    actual={item?.actual_achievement}
+                    onChange={employeeKpiValueUpdateHandler}
                   />
                 );
               })}
@@ -143,9 +174,12 @@ const KPIScreen = () => {
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
       />
-      <PerformanceForm
+      {/* <PerformanceForm
         formik={formik}
         reference={formScreenSheetRef}
+        onChange={employeeKpiValueUpdateHandler}
+        kpiValues={kpiValues}
+        formikChangeHandler={formikChangeHandler}
         threshold={
           question?.performance_kpi_value?.threshold || question?.performance_kpi_value?.threshold == 0
             ? question?.performance_kpi_value?.threshold
@@ -166,7 +200,7 @@ const KPIScreen = () => {
             ? question?.performance_kpi_value?.description
             : question?.description
         }
-      />
+      /> */}
     </>
   );
 };
