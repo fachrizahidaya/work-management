@@ -23,22 +23,22 @@ const Options = ({ profile }) => {
           profile: profile,
         }),
     },
-    {
-      id: 3,
-      name: "Subscriptions",
-      navigate: () =>
-        navigation.navigate("Subscription Screen", {
-          profile: profile,
-        }),
-    },
-    {
-      id: 4,
-      name: "Payments",
-      navigate: () =>
-        navigation.navigate("Payment Screen", {
-          profile: profile,
-        }),
-    },
+    // {
+    //   id: 3,
+    //   name: "Subscriptions",
+    //   navigate: () =>
+    //     navigation.navigate("Subscription Screen", {
+    //       profile: profile,
+    //     }),
+    // },
+    // {
+    //   id: 4,
+    //   name: "Payments",
+    //   navigate: () =>
+    //     navigation.navigate("Payment Screen", {
+    //       profile: profile,
+    //     }),
+    // },
   ];
 
   return (
