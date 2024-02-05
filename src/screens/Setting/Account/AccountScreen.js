@@ -79,7 +79,7 @@ const AccountScreen = ({ route }) => {
         >
           <Options profile={profile} />
 
-          <Pressable
+          {/* <Pressable
             style={{
               display: "flex",
               flexDirection: "row",
@@ -124,7 +124,7 @@ const AccountScreen = ({ route }) => {
               <Text style={{ fontWeight: 400, color: "#176688" }}>Upgrade</Text>
               <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
             </View>
-          </Pressable>
+          </Pressable> */}
 
           <Button onPress={() => navigation.navigate("Log Out")} backgroundColor="#FAFAFA">
             <Text style={{ color: "red" }}>Log out</Text>
