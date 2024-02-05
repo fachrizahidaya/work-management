@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
@@ -16,6 +16,7 @@ import { TextProps } from "../shared/CustomStylings";
 
 const Header = () => {
   const navigation = useNavigation();
+  const routes = useRoute();
   const userSelector = useSelector((state) => state.auth);
   const moduleSelector = useSelector((state) => state.module);
   const [routeName, setRouteName] = useState([]);
@@ -145,12 +146,16 @@ const Header = () => {
           {routeName[1]?.name !== "Chat List" ? (
             <View style={{ position: "relative" }}>
               <Pressable
-                onPress={() =>
-                  navigation.navigate("Notification", {
-                    module: moduleSelector.module_name,
-                    refetch: refetchNotifications,
-                  })
-                }
+                onPress={() => {
+                  if (routes.name == "Notification") {
+                    navigation.goBack();
+                  } else {
+                    navigation.navigate("Notification", {
+                      module: moduleSelector.module_name,
+                      refetch: refetchNotifications,
+                    });
+                  }
+                }}
               >
                 <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
               </Pressable>

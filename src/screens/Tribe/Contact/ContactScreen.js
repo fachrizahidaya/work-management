@@ -136,6 +136,7 @@ const ContactScreen = () => {
                   user_image={item?.user?.image}
                   loggedEmployeeId={userSelector?.user_role_id}
                   navigation={navigation}
+                  leave_status={item?.is_leave_today}
                 />
               )}
             />
