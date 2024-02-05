@@ -22,6 +22,7 @@ const ContactList = ({
   user_image,
   room_id,
   navigation,
+  leave_status,
 }) => {
   return (
     <TouchableOpacity
@@ -38,9 +39,35 @@ const ContactList = ({
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
           <View>
-            <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
-              {name.length > 30 ? name.split(" ")[0] : name}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  color: "#3F434A",
+                  width: 110,
+                  overflow: "hidden",
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {name}
+              </Text>
+              {leave_status ? (
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "400",
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: 10,
+                    padding: 3,
+                  }}
+                >
+                  On Leave
+                </Text>
+              ) : null}
+            </View>
+
             <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{position}</Text>
           </View>
         </View>
