@@ -57,6 +57,7 @@ const PerformanceListScreen = () => {
                   navigation={navigation}
                   name={item?.review?.description}
                   type="kpi"
+                  target={item?.target_name}
                 />
               )}
             />

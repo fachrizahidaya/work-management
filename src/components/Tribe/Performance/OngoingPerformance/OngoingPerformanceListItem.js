@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingPerformanceListItem = ({ id, start_date, end_date, position, navigation, status, name, type }) => {
+const OngoingPerformanceListItem = ({ id, start_date, end_date, position, navigation, status, name, type, target }) => {
   return (
     <Pressable
       style={{
@@ -33,7 +33,7 @@ const OngoingPerformanceListItem = ({ id, start_date, end_date, position, naviga
       <Text style={[TextProps]}>{name}</Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-        <Text style={[TextProps]}>{position}</Text>
+        <Text style={[TextProps]}>{target}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />

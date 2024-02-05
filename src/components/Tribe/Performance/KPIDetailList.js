@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../shared/CustomStylings";
 
-const KPIDetailList = ({ dayjs, status, begin_date, end_date, position }) => {
+const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel }) => {
   return (
     <View
       style={{
@@ -37,7 +37,7 @@ const KPIDetailList = ({ dayjs, status, begin_date, end_date, position }) => {
         </View>
         <View>
           <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-          <Text style={[TextProps]}>{position}</Text>
+          <Text style={[TextProps]}>{target}</Text>
         </View>
       </View>
     </View>
