@@ -25,8 +25,6 @@ const AppraisalScreen = () => {
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
 
-  console.log("a", appraisal);
-
   const route = useRoute();
   const formScreenSheetRef = useRef(null);
 
