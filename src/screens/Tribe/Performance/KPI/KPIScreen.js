@@ -131,7 +131,6 @@ const KPIScreen = () => {
                     id={item?.performance_kpi_value_id || item?.id}
                     description={item?.description}
                     target={item?.target}
-                    type="kpi"
                     weight={item?.weight}
                     threshold={item?.threshold}
                     measurement={item?.measurement}
