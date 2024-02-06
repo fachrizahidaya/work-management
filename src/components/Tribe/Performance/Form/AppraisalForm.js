@@ -6,19 +6,12 @@ import Select from "../../../shared/Forms/Select";
 const AppraisalForm = ({
   reference,
   handleClose,
-  selected,
-  setSelected,
   description,
   choice_a,
   choice_b,
   choice_c,
   choice_d,
   choice_e,
-  score_a,
-  score_b,
-  score_c,
-  score_d,
-  score_e,
   formik,
 }) => {
   return (
@@ -29,6 +22,7 @@ const AppraisalForm = ({
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={() => {
+                formik.handleSubmit();
                 handleClose();
               }}
             >
@@ -37,16 +31,18 @@ const AppraisalForm = ({
           </View>
           <Text>{description}</Text>
           <Select
-            value={selected}
+            value={formik.values.choice}
             placeHolder="Select your answer"
             items={[
-              { value: score_a, label: choice_a },
-              { value: score_b, label: choice_b },
-              { value: score_c, label: choice_c },
-              { value: score_d, label: choice_d },
-              { value: score_e, label: choice_e },
+              { value: "a", label: choice_a },
+              { value: "b", label: choice_b },
+              { value: "c", label: choice_c },
+              { value: "d", label: choice_d },
+              { value: "e", label: choice_e },
             ]}
-            onChange={(value) => setSelected(value)}
+            onChange={(value) => {
+              formik.setFieldValue("choice", value);
+            }}
           />
         </View>
       </TouchableWithoutFeedback>

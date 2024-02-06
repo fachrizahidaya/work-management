@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
@@ -34,7 +34,7 @@ const AppraisalScreen = () => {
 
   const appraisalId = appraisalSelected?.data?.id;
 
-  const { data: appraisalList } = useFetch(`/hr/employee-appraisal/${appraisalId}`);
+  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(`/hr/employee-appraisal/${appraisalId}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -46,6 +46,7 @@ const AppraisalScreen = () => {
   };
 
   const closeSelectedAppraisal = (data) => {
+    // formik.handleSubmit();
     setAppraisal(null);
     formScreenSheetRef.current?.hide();
   };
@@ -98,7 +99,7 @@ const AppraisalScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-appraisal/${appraisalList?.data?.id}`, {
         appraisal_value: employeeAppraisalValue,
       });
-      toggleSubmit();
+      refetchAppraisalList();
       Toast.show("Data saved!", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -116,7 +117,7 @@ const AppraisalScreen = () => {
     },
     onSubmit: (values) => {
       if (formik.isValid) {
-        onChange(values);
+        employeeAppraisalValueUpdateHandler(values);
       }
     },
     enableReinitialize: true,
@@ -124,7 +125,7 @@ const AppraisalScreen = () => {
 
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
-      formik.handleChange(e);
+      formik.handleChange("choice", e);
     }
     setFormValue(formik.values);
   };
@@ -145,17 +146,13 @@ const AppraisalScreen = () => {
     }
   }, [appraisalList?.data]);
 
-  useEffect(() => {
-    console.log("here", employeeAppraisalValue);
-  }, [employeeAppraisalValue]);
-
   return (
     <>
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => toggleReturnModal()} />
           <TouchableOpacity onPress={() => submitHandler()}>
-            <Text>Done</Text>
+            {submitIsLoading ? <ActivityIndicator /> : <Text>Done</Text>}
           </TouchableOpacity>
         </View>
         <AppraisalDetailList
@@ -178,11 +175,6 @@ const AppraisalScreen = () => {
                     key={index}
                     id={item?.performance_appraisal_value_id || item?.id}
                     description={item?.description}
-                    target={item?.target}
-                    type="appraisal"
-                    weight={item?.weight}
-                    threshold={item?.threshold}
-                    measurement={item?.measurement}
                     item={item}
                     choice={item?.choice}
                     onChange={employeeAppraisalValueUpdateHandler}
@@ -191,13 +183,6 @@ const AppraisalScreen = () => {
                     choice_c={item?.choice_c}
                     choice_d={item?.choice_d}
                     choice_e={item?.choice_e}
-                    score_a={item?.score_a}
-                    score_b={item?.score_a}
-                    score_c={item?.score_a}
-                    score_d={item?.score_a}
-                    score_e={item?.score_a}
-                    selected={selectedOption}
-                    setSelected={setSelectedOption}
                     handleOpen={openSelectedAppraisal}
                   />
                 );
@@ -212,8 +197,6 @@ const AppraisalScreen = () => {
       />
       <AppraisalForm
         reference={formScreenSheetRef}
-        selected={selectedOption}
-        setSelected={setSelectedOption}
         handleClose={closeSelectedAppraisal}
         description={appraisal?.description}
         choice_a={appraisal?.choice_a}
@@ -221,11 +204,6 @@ const AppraisalScreen = () => {
         choice_c={appraisal?.choice_c}
         choice_d={appraisal?.choice_d}
         choice_e={appraisal?.choice_e}
-        score_a={appraisal?.score_a}
-        score_b={appraisal?.score_b}
-        score_c={appraisal?.score_c}
-        score_d={appraisal?.score_d}
-        score_e={appraisal?.score_e}
         formik={formik}
       />
     </>

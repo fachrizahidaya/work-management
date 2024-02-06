@@ -11,7 +11,7 @@ import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 import Input from "../../../shared/Forms/Input";
 
-const KPIDetailItem = ({ id, target, achievement, description, type, weight, threshold, measurement, onChange }) => {
+const KPIDetailItem = ({ id, target, achievement, description, weight, threshold, measurement, onChange }) => {
   const [formValue, setFormValue] = useState(null);
 
   if (!achievement) {
