@@ -27,10 +27,12 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
-import PerformanceListScreen from "../screens/Tribe/Performance/KPI/PerformanceListScreen";
+import KPIListScreen from "../screens/Tribe/Performance/KPI/KPIListScreen";
 import AppraisalListScreen from "../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
+import ReviewListScreen from "../screens/Tribe/Performance/Review/ReviewListScreen";
+import ReviewScreen from "../screens/Tribe/Performance/Review/ReviewScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
 
@@ -176,13 +178,17 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="KPI Screen" component={PerformanceListScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="KPI Screen" component={KPIListScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Review Screen" component={ReviewListScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Review Detail" component={ReviewScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

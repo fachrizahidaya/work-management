@@ -24,7 +24,7 @@ const PerformanceScreen = () => {
     {
       name: "Review",
       icon: "file-account-outline",
-      navigation: "",
+      navigation: "Review Screen",
     },
   ];
   const navigation = useNavigation();

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useFormik } from "formik";
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -12,19 +11,15 @@ import KPIDetailList from "../../../../components/Tribe/Performance/KPIList/KPID
 import { useFetch } from "../../../../hooks/useFetch";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import PerformanceForm from "../../../../components/Tribe/Performance/Form/PerformanceForm";
 import axiosInstance from "../../../../config/api";
 import { useLoading } from "../../../../hooks/useLoading";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const KPIScreen = () => {
-  const [question, setQuestion] = useState(null);
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
-  console.log("k", kpiValues);
 
   const navigation = useNavigation();
-  const formScreenSheetRef = useRef(null);
   const route = useRoute();
 
   const { id } = route.params;
@@ -33,21 +28,11 @@ const KPIScreen = () => {
 
   const kpiId = kpiSelected?.data?.id;
 
-  const { data: kpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
+  const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
-
-  const selectedQuestionHandler = (value) => {
-    // setQuestion(value);
-    formScreenSheetRef.current?.show();
-  };
-
-  const closeSelectedQuestionHandler = () => {
-    // setQuestion(null);
-    formScreenSheetRef.current?.hide();
-  };
 
   const getEmployeeKpiValue = (employee_kpi_value) => {
     let employeeKpiValArr = [];
@@ -58,7 +43,7 @@ const KPIScreen = () => {
           {
             ...val?.performance_kpi_value,
             id: val?.id,
-            performance_kpi_value: val?.performance_kpi_value_id,
+            performance_kpi_value_id: val?.performance_kpi_value_id,
             actual_achievement: val?.actual_achievement,
           },
         ];
@@ -96,7 +81,7 @@ const KPIScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-kpi/${kpiList?.data?.id}`, {
         kpi_value: employeeKpiValue,
       });
-      toggleSubmit();
+      refetchKpiList();
       Toast.show("Data saved!", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -117,22 +102,13 @@ const KPIScreen = () => {
     }
   }, [kpiList?.data]);
 
-  useEffect(() => {
-    console.log("here", employeeKpiValue);
-  }, [employeeKpiValue]);
-
   return (
     <>
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => toggleReturnModal()} />
-          <TouchableOpacity
-            onPress={() => {
-              submitHandler();
-              navigation.goBack();
-            }}
-          >
-            <Text>Done</Text>
+          <TouchableOpacity onPress={() => submitHandler()}>
+            {submitIsLoading ? <ActivityIndicator /> : <Text>Done</Text>}
           </TouchableOpacity>
         </View>
         <KPIDetailList
@@ -152,18 +128,14 @@ const KPIScreen = () => {
                 return (
                   <KPIDetailItem
                     key={index}
-                    id={
-                      item?.employee_kpi_value_id
-                      // ? item?.employee_kpi_value_id
-                      // : item?.id
-                    }
+                    id={item?.performance_kpi_value_id || item?.id}
                     description={item?.description}
                     target={item?.target}
                     type="kpi"
                     weight={item?.weight}
                     threshold={item?.threshold}
                     measurement={item?.measurement}
-                    actual={item?.actual_achievement === null ? 0 : item?.actual_achievement}
+                    achievement={item?.actual_achievement}
                     onChange={employeeKpiValueUpdateHandler}
                   />
                 );
@@ -177,33 +149,6 @@ const KPIScreen = () => {
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
       />
-      {/* <PerformanceForm
-        formik={formik}
-        reference={formScreenSheetRef}
-        onChange={employeeKpiValueUpdateHandler}
-        kpiValues={kpiValues}
-        formikChangeHandler={formikChangeHandler}
-        threshold={
-          question?.performance_kpi_value?.threshold || question?.performance_kpi_value?.threshold == 0
-            ? question?.performance_kpi_value?.threshold
-            : question?.threshold
-        }
-        weight={
-          question?.performance_kpi_value?.weight || question?.performance_kpi_value?.weight == 0
-            ? question?.performance_kpi_value?.weight
-            : question?.weight
-        }
-        measurement={
-          question?.performance_kpi_value?.measurement || question?.performance_kpi_value?.measurement == 0
-            ? question?.performance_kpi_value?.measurement
-            : question?.measurement
-        }
-        description={
-          question?.performance_kpi_value?.description
-            ? question?.performance_kpi_value?.description
-            : question?.description
-        }
-      /> */}
     </>
   );
 };

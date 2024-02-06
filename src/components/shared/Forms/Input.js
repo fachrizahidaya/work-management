@@ -31,6 +31,7 @@ const Input = ({
   borderColor,
   alignVertical,
   sizeChange = false,
+  onChange,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -62,6 +63,7 @@ const Input = ({
               formik?.setFieldValue(fieldName, value);
             }
           }}
+          onChange={onChange}
           onContentSizeChange={
             sizeChange
               ? ({ nativeEvent: { contentSize: height } }) => {

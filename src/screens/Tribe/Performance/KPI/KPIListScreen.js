@@ -11,7 +11,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const PerformanceListScreen = () => {
+const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
@@ -79,7 +79,7 @@ const PerformanceListScreen = () => {
   );
 };
 
-export default PerformanceListScreen;
+export default KPIListScreen;
 
 const styles = StyleSheet.create({
   container: {

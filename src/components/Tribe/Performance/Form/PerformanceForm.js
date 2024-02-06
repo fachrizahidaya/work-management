@@ -53,8 +53,6 @@ const PerformanceForm = ({
             placeHolder="Input Number Only"
             keyboardType="numeric"
             onChangeText={(value) => formik.setFieldValue("actual_achievement", value)}
-
-            // onChange={(value) => formik.setFieldValue("actual_achievement", value ? value : 0)}
           />
         </View>
       </TouchableWithoutFeedback>
