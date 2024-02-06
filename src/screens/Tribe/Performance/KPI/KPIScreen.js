@@ -6,21 +6,22 @@ import { useFormik } from "formik";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
-import PageHeader from "../../../components/shared/PageHeader";
-import KPIDetailItem from "../../../components/Tribe/Performance/KPIDetailItem";
-import KPIDetailList from "../../../components/Tribe/Performance/KPIDetailList";
-import { useFetch } from "../../../hooks/useFetch";
-import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
-import { useDisclosure } from "../../../hooks/useDisclosure";
-import PerformanceForm from "../../../components/Tribe/Performance/PerformanceForm";
-import axiosInstance from "../../../config/api";
-import { useLoading } from "../../../hooks/useLoading";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import PageHeader from "../../../../components/shared/PageHeader";
+import KPIDetailItem from "../../../../components/Tribe/Performance/KPIList/KPIDetailItem";
+import KPIDetailList from "../../../../components/Tribe/Performance/KPIList/KPIDetailList";
+import { useFetch } from "../../../../hooks/useFetch";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import { useDisclosure } from "../../../../hooks/useDisclosure";
+import PerformanceForm from "../../../../components/Tribe/Performance/Form/PerformanceForm";
+import axiosInstance from "../../../../config/api";
+import { useLoading } from "../../../../hooks/useLoading";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const KPIScreen = () => {
   const [question, setQuestion] = useState(null);
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
+  console.log("k", kpiValues);
 
   const navigation = useNavigation();
   const formScreenSheetRef = useRef(null);
@@ -150,17 +151,19 @@ const KPIScreen = () => {
               kpiValues.map((item, index) => {
                 return (
                   <KPIDetailItem
-                    id={item?.employee_kpi_value || item?.id}
                     key={index}
-                    item={item}
+                    id={
+                      item?.employee_kpi_value_id
+                      // ? item?.employee_kpi_value_id
+                      // : item?.id
+                    }
                     description={item?.description}
                     target={item?.target}
-                    navigation={navigation}
                     type="kpi"
                     weight={item?.weight}
                     threshold={item?.threshold}
                     measurement={item?.measurement}
-                    actual={item?.actual_achievement}
+                    actual={item?.actual_achievement === null ? 0 : item?.actual_achievement}
                     onChange={employeeKpiValueUpdateHandler}
                   />
                 );

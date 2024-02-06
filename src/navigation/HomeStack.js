@@ -27,10 +27,12 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
-import PerformanceListScreen from "../screens/Tribe/Performance/PerformanceListScreen";
-import AppraisalListScreen from "../screens/Tribe/Performance/AppraisalListScreen";
-import KPIScreen from "../screens/Tribe/Performance/KPIScreen";
-import AppraisalScreen from "../screens/Tribe/Performance/AppraisalScreen";
+import PerformanceListScreen from "../screens/Tribe/Performance/KPI/PerformanceListScreen";
+import AppraisalListScreen from "../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
+import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
+import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
+import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
+import PostScreen from "../screens/Tribe/Feed/PostScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -54,8 +56,6 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
-import PostScreen from "../screens/Tribe/Feed/PostScreen";
 
 const Stack = createStackNavigator();
 
