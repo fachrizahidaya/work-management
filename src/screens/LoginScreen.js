@@ -97,7 +97,11 @@ const LoginScreen = () => {
         const userToken = userData.access_token.replace(/"/g, "");
 
         // Get firebase messaging token for push notification
-        const fbtoken = await messaging().getToken();
+        const isAllowed = await messaging().hasPermission();
+        let fbtoken = "";
+        if (isAllowed === messaging.AuthorizationStatus.AUTHORIZED) {
+          fbtoken = await messaging().getToken();
+        }
 
         await axios
           .post(
