@@ -15,15 +15,20 @@ import axiosInstance from "../../../../config/api";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import AppraisalDetailList from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailList";
 import AppraisalDetailItem from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailItem";
+import AppraisalForm from "../../../../components/Tribe/Performance/Form/AppraisalForm";
+import { useFormik } from "formik";
 
 const AppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
-  console.log("a", appraisalValues);
+  const [selectedOption, setSelectedOption] = useState(false);
+  const [appraisal, setAppraisal] = useState(null);
+  const [formValue, setFormValue] = useState(null);
 
-  const navigation = useNavigation();
-  const formScreenSheetRef = useRef(null);
+  console.log("a", appraisal);
+
   const route = useRoute();
+  const formScreenSheetRef = useRef(null);
 
   const { id } = route.params;
 
@@ -37,6 +42,16 @@ const AppraisalScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
+  const openSelectedAppraisal = (data) => {
+    setAppraisal(data);
+    formScreenSheetRef.current?.show();
+  };
+
+  const closeSelectedAppraisal = (data) => {
+    setAppraisal(null);
+    formScreenSheetRef.current?.hide();
+  };
+
   const getEmployeeAppraisalValue = (employee_appraisal_value) => {
     let employeeAppraisalValArr = [];
     if (Array.isArray(employee_appraisal_value)) {
@@ -46,7 +61,7 @@ const AppraisalScreen = () => {
           {
             ...val?.performance_appraisal_value,
             id: val?.id,
-            performance_appraisal_value: val?.performance_appraisal_value_id,
+            performance_appraisal_value_id: val?.performance_appraisal_value_id,
             choice: val?.choice,
           },
         ];
@@ -96,6 +111,32 @@ const AppraisalScreen = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
+      choice: appraisal?.choice || "",
+    },
+    onSubmit: (values) => {
+      if (formik.isValid) {
+        onChange(values);
+      }
+    },
+    enableReinitialize: true,
+  });
+
+  const formikChangeHandler = (e, submitWithoutChange = false) => {
+    if (!submitWithoutChange) {
+      formik.handleChange(e);
+    }
+    setFormValue(formik.values);
+  };
+
+  useEffect(() => {
+    if (formValue) {
+      formik.handleSubmit();
+    }
+  }, [formValue]);
+
   useEffect(() => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
@@ -115,7 +156,7 @@ const AppraisalScreen = () => {
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => toggleReturnModal()} />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => submitHandler()}>
             <Text>Done</Text>
           </TouchableOpacity>
         </View>
@@ -130,20 +171,21 @@ const AppraisalScreen = () => {
         />
 
         <View style={styles.container}>
-          <View style={{ flex: 1, paddingHorizontal: 15 }}>
+          <View style={{ flex: 1, paddingHorizontal: 16 }}>
             {appraisalValues &&
               appraisalValues.length > 0 &&
               appraisalValues.map((item, index) => {
                 return (
                   <AppraisalDetailItem
                     key={index}
-                    id={item?.employee_appraisal_value || item?.id}
+                    id={item?.performance_appraisal_value_id || item?.id}
                     description={item?.description}
                     target={item?.target}
                     type="appraisal"
                     weight={item?.weight}
                     threshold={item?.threshold}
                     measurement={item?.measurement}
+                    item={item}
                     choice={item?.choice}
                     onChange={employeeAppraisalValueUpdateHandler}
                     choice_a={item?.choice_a}
@@ -156,6 +198,9 @@ const AppraisalScreen = () => {
                     score_c={item?.score_a}
                     score_d={item?.score_a}
                     score_e={item?.score_a}
+                    selected={selectedOption}
+                    setSelected={setSelectedOption}
+                    handleOpen={openSelectedAppraisal}
                   />
                 );
               })}
@@ -166,6 +211,24 @@ const AppraisalScreen = () => {
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
+      />
+      <AppraisalForm
+        reference={formScreenSheetRef}
+        selected={selectedOption}
+        setSelected={setSelectedOption}
+        handleClose={closeSelectedAppraisal}
+        description={appraisal?.description}
+        choice_a={appraisal?.choice_a}
+        choice_b={appraisal?.choice_b}
+        choice_c={appraisal?.choice_c}
+        choice_d={appraisal?.choice_d}
+        choice_e={appraisal?.choice_e}
+        score_a={appraisal?.score_a}
+        score_b={appraisal?.score_b}
+        score_c={appraisal?.score_c}
+        score_d={appraisal?.score_d}
+        score_e={appraisal?.score_e}
+        formik={formik}
       />
     </>
   );

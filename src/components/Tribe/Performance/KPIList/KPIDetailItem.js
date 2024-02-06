@@ -11,31 +11,32 @@ import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 import Input from "../../../shared/Forms/Input";
 
-const KPIDetailItem = ({ id, target, actual, description, type, weight, threshold, measurement, onChange }) => {
+const KPIDetailItem = ({ id, target, achievement, description, type, weight, threshold, measurement, onChange }) => {
   const [formValue, setFormValue] = useState(null);
 
-  const inputRef = useRef(null);
-
-  if (!actual) {
+  if (!achievement) {
     var actualString = null;
   } else {
-    var actualString = actual.toString();
+    var actualString = achievement.toString();
   }
 
   const formik = useFormik({
     initialValues: {
       performance_kpi_value_id: id,
-      actual_achievement: actual || 0,
-      // actualString,
+      actual_achievement:
+        // achievement || 0,
+        actualString || 0,
     },
-
+    validationSchema: yup.object().shape({
+      actual_achievement: yup.number().required("Value is required").min(0, "Value should not be negative"),
+    }),
     onSubmit: (values) => {
       if (formik.isValid) {
-        // if (values.actual_achievement) {
-        //   values.actual_achievement = Number(values.actual_achievement);
-        // } else {
-        //   values.actual_achievement = null;
-        // }
+        if (values.actual_achievement) {
+          values.actual_achievement = Number(values.actual_achievement);
+        } else {
+          values.actual_achievement = null;
+        }
         onChange(values);
       }
     },
@@ -67,7 +68,6 @@ const KPIDetailItem = ({ id, target, actual, description, type, weight, threshol
         gap: 10,
       }}
       onPress={() => {
-        // onSelect(item);
         SheetManager.show("form-sheet", {
           payload: {
             children: (
@@ -101,15 +101,14 @@ const KPIDetailItem = ({ id, target, actual, description, type, weight, threshol
                     <Text>{weight}%</Text>
                   </View>
                   <Input
-                    // innerRef={inputRef}
                     formik={formik}
                     title="Actual Achievement"
                     fieldName="actual_achievement"
-                    value={formik.values.actual_achievement}
+                    // value={formik.values.actual_achievement}
+                    defaultValue={formik.values.actual_achievement}
                     placeHolder="Input Number Only"
-                    // keyboardType="numeric"
-                    onChangeText={(value) => formik.setFieldValue("actual_achievement", value)}
-                    // onChange={formikChangeHandler}
+                    keyboardType="numeric"
+                    onChange={formikChangeHandler}
                   />
                 </View>
               </TouchableWithoutFeedback>
@@ -123,7 +122,7 @@ const KPIDetailItem = ({ id, target, actual, description, type, weight, threshol
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name={"chart-bar"} size={15} style={{ opacity: 0.5 }} />
 
-        <Text style={[TextProps]}>{actual || 0} of</Text>
+        <Text style={[TextProps]}>{achievement || 0} of</Text>
         <Text style={[TextProps]}>{target}</Text>
       </View>
     </Pressable>
