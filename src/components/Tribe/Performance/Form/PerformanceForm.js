@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
-import Input from "../../shared/Forms/Input";
+import Input from "../../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
 const PerformanceForm = ({
