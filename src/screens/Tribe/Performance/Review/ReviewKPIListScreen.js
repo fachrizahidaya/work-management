@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from "dayjs";
 
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -7,27 +8,27 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import OngoingReviewListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewListItem";
+import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewKPIListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import { useFetch } from "../../../../hooks/useFetch";
 
-const ReviewListScreen = () => {
-  const [tabValue, setTabValue] = useState(null);
+const ReviewKPIListScreen = () => {
+  const [tabValue, setTabValue] = useState("Waiting Review");
   const navigation = useNavigation();
 
   const {
     data: reviewList,
     refetch: refetchReviewList,
     isFetching: reviewListIsFetching,
-  } = useFetch("/hr/employee-reviw/kpi");
+  } = useFetch("/hr/employee-review/kpi");
 
   const tabs = useMemo(() => {
     return [
-      { title: `Waiting Review (${0})`, value: "Ongoing" },
+      { title: `Waiting Review (${reviewList?.data.length || 0})`, value: "Waiting Review" },
       { title: `Personal (${0})`, value: "Personal" },
       { title: `My Team (${0})`, value: "My Team" },
     ];
-  }, []);
+  }, [reviewList]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -44,23 +45,24 @@ const ReviewListScreen = () => {
       </View>
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          {/* {tabValue === "Ongoing" ? (
+          {tabValue === "Waiting Review" ? (
             <FlashList
-              data={kpiList?.data}
+              data={reviewList?.data}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
               renderItem={({ item, index }) => (
-                <OngoingReviewListItem
+                <OngoingReviewKPIListItem
                   key={index}
                   id={item?.id}
-                  start_date={item?.review?.begin_date}
-                  end_date={item?.review?.end_date}
+                  start_date={item?.begin_date}
+                  end_date={item?.end_date}
                   position={item?.target_level}
                   navigation={navigation}
-                  name={item?.review?.description}
+                  name={item?.employee?.name}
                   type="kpi"
-                  target={item?.target_name}
+                  target={item?.performance_kpi?.target_name}
+                  dayjs={dayjs}
                 />
               )}
             />
@@ -72,14 +74,14 @@ const ReviewListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />;
               </View>
             </ScrollView>
-          )} */}
+          )}
         </View>
       </View>
     </SafeAreaView>
   );
 };
 
-export default ReviewListScreen;
+export default ReviewKPIListScreen;
 
 const styles = StyleSheet.create({
   container: {

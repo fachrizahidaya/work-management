@@ -1,40 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-import { FlashList } from "@shopify/flash-list";
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-root-toast";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import { useFetch } from "../../../../hooks/useFetch";
-import PageHeader from "../../../../components/shared/PageHeader";
 import { useLoading } from "../../../../hooks/useLoading";
+import ReviewAppraisalDetailList from "../../../../components/Tribe/Performance/ReviewList/ReviewAppraisalDetailList";
+import ReviewAppraisalDetailItem from "../../../../components/Tribe/Performance/ReviewList/ReviewAppraisalDetailItem";
+import PageHeader from "../../../../components/shared/PageHeader";
+import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import AppraisalDetailList from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailList";
-import AppraisalDetailItem from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailItem";
-import AppraisalForm from "../../../../components/Tribe/Performance/Form/AppraisalForm";
 import { useFormik } from "formik";
 
-const AppraisalScreen = () => {
+const ReviewAppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
 
   const navigation = useNavigation();
-  const route = useRoute();
   const formScreenSheetRef = useRef(null);
+  const route = useRoute();
 
   const { id } = route.params;
 
-  const { data: appraisalSelected } = useFetch(`/hr/employee-appraisal/${id}/start`);
-
-  const appraisalId = appraisalSelected?.data?.id;
-
-  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(`/hr/employee-appraisal/${appraisalId}`);
+  const { data: appraisalList } = useFetch(`/hr/employee-review/appraisal/${id}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -149,77 +141,54 @@ const AppraisalScreen = () => {
     <>
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="Employee Appraisal"
-            backButton={true}
-            onPress={() => {
-              navigation.goBack();
-              // toggleReturnModal()
-            }}
-          />
-          <TouchableOpacity onPress={() => submitHandler()}>
-            {submitIsLoading ? <ActivityIndicator /> : <Text>Save</Text>}
+          <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => toggleReturnModal()} />
+          <TouchableOpacity
+          // onPress={() => {
+          //   submitHandler();
+          //   navigation.goBack();
+          // }}
+          >
+            <Text>Done</Text>
           </TouchableOpacity>
         </View>
-        <AppraisalDetailList
+        <ReviewAppraisalDetailList
           dayjs={dayjs}
-          begin_date={appraisalList?.data?.begin_date}
-          end_date={appraisalList?.data?.end_date}
-          name={appraisalList?.data?.description}
-          position={appraisalList?.data?.target_level}
+          begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
+          end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
+          position={appraisalList?.data?.performance_appraisal?.target_level}
           target={appraisalList?.data?.performance_appraisal?.target_name}
           targetLevel={appraisalList?.data?.performance_appraisal?.target_level}
+          name={appraisalList?.data?.employee?.name}
         />
 
         <View style={styles.container}>
-          <View style={{ flex: 1, paddingHorizontal: 16 }}>
+          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {appraisalValues &&
               appraisalValues.length > 0 &&
               appraisalValues.map((item, index) => {
                 return (
-                  <AppraisalDetailItem
+                  <ReviewAppraisalDetailItem
                     key={index}
-                    id={item?.performance_appraisal_value_id || item?.id}
+                    id={item?.id}
                     description={item?.description}
-                    item={item}
-                    choice={item?.choice}
                     onChange={employeeAppraisalValueUpdateHandler}
-                    choice_a={item?.choice_a}
-                    choice_b={item?.choice_b}
-                    choice_c={item?.choice_c}
-                    choice_d={item?.choice_d}
-                    choice_e={item?.choice_e}
-                    handleOpen={openSelectedAppraisal}
                   />
                 );
               })}
-          </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
-      {/* <ReturnConfirmationModal
+      <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
-      /> */}
-      <AppraisalForm
-        reference={formScreenSheetRef}
-        handleClose={closeSelectedAppraisal}
-        description={appraisal?.description}
-        choice_a={appraisal?.choice_a}
-        choice_b={appraisal?.choice_b}
-        choice_c={appraisal?.choice_c}
-        choice_d={appraisal?.choice_d}
-        choice_e={appraisal?.choice_e}
-        formik={formik}
-        choice={appraisal?.choice}
       />
     </>
   );
 };
 
-export default AppraisalScreen;
+export default ReviewAppraisalScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -31,10 +31,13 @@ import KPIListScreen from "../screens/Tribe/Performance/KPI/KPIListScreen";
 import AppraisalListScreen from "../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
-import ReviewListScreen from "../screens/Tribe/Performance/Review/ReviewListScreen";
-import ReviewScreen from "../screens/Tribe/Performance/Review/ReviewScreen";
+import ReviewKPIListScreen from "../screens/Tribe/Performance/Review/ReviewKPIListScreen";
+import ReviewKPIScreen from "../screens/Tribe/Performance/Review/ReviewKPIScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
+import KPIAppraisalReviewScreen from "../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
+import ReviewAppraisalListScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalListScreen";
+import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -182,13 +185,27 @@ const HomeStack = () => {
 
       <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Review Screen" component={ReviewListScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Review KPI" component={ReviewKPIListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Review Appraisal"
+        component={ReviewAppraisalListScreen}
+        options={{ header: () => <Header /> }}
+      />
 
       <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Review Detail" component={ReviewScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Review KPI Detail" component={ReviewKPIScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Review Appraisal Detail"
+        component={ReviewAppraisalScreen}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen name="Review Screen" component={KPIAppraisalReviewScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

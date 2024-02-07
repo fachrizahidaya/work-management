@@ -13,7 +13,8 @@ const OngoingPerformanceListItem = ({ id, start_date, end_date, position, naviga
     <Pressable
       style={{
         ...card.card,
-        marginVertical: 5,
+        marginVertical: 14,
+        marginBottom: 4,
         elevation: 1,
         flexDirection: "column",
         alignItems: "flex-start",

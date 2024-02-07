@@ -8,29 +8,25 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewListItem = ({ key, id, start_date, end_date, position, navigation, name, type, target }) => {
+const OngoingReviewKPIListItem = ({ id, start_date, end_date, position, navigation, name, type, target, dayjs }) => {
   return (
     <Pressable
       style={{
         ...card.card,
-        marginVertical: 5,
+        marginVertical: 14,
+        marginBottom: 4,
         elevation: 1,
         flexDirection: "column",
         alignItems: "flex-start",
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("KPI Detail", {
+        navigation.navigate("Review KPI Detail", {
           id: id,
         })
       }
     >
-      <Text
-        style={[{ paddingVertical: 5, paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15 }, TextProps]}
-      >
-        {status || "Pending"}
-      </Text>
-      <Text style={[TextProps]}>{name}</Text>
+      <Text style={[{}, TextProps]}>{name}</Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
         <Text style={[TextProps]}>{target}</Text>
@@ -44,4 +40,4 @@ const OngoingReviewListItem = ({ key, id, start_date, end_date, position, naviga
   );
 };
 
-export default OngoingReviewListItem;
+export default OngoingReviewKPIListItem;

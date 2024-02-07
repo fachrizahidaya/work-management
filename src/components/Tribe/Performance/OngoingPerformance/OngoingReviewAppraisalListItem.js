@@ -1,13 +1,24 @@
 import React from "react";
-import dayjs from "dayjs";
+import { useNavigation } from "@react-navigation/native";
 
 import { Pressable, Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigation, status, target }) => {
+const OngoingReviewAppraisalListItem = ({
+  id,
+  start_date,
+  end_date,
+  position,
+  navigation,
+  name,
+  type,
+  target,
+  dayjs,
+}) => {
   return (
     <Pressable
       style={{
@@ -19,13 +30,13 @@ const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigati
         alignItems: "flex-start",
         gap: 10,
       }}
-      onPress={() => navigation.navigate("Appraisal Detail", { id: id })}
+      onPress={() =>
+        navigation.navigate("Review Appraisal Detail", {
+          id: id,
+        })
+      }
     >
-      <Text
-        style={[{ paddingVertical: 5, paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15 }, TextProps]}
-      >
-        {status || "Pending"}
-      </Text>
+      <Text style={[{}, TextProps]}>{name}</Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
         <Text style={[TextProps]}>{target}</Text>
@@ -39,4 +50,4 @@ const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigati
   );
 };
 
-export default OngoingAppraisalListItem;
+export default OngoingReviewAppraisalListItem;

@@ -1,15 +1,23 @@
 import React from "react";
-
 import { Keyboard, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import Input from "../../../shared/Forms/Input";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailItem = ({ target, achievement, description, handleOpen, item }) => {
+const ReviewAppraisalDetailItem = ({
+  choice,
+  description,
+  item,
+  choice_a,
+  choice_b,
+  choice_c,
+  choice_d,
+  choice_e,
+  handleOpen,
+}) => {
   return (
     <Pressable
       style={{
@@ -28,13 +36,24 @@ const ReviewDetailItem = ({ target, achievement, description, handleOpen, item }
       <Text style={[TextProps]}>{description}</Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name={"chart-bar"} size={15} style={{ opacity: 0.5 }} />
+        <MaterialCommunityIcons name={"widgets-outline"} size={15} style={{ opacity: 0.5 }} />
 
-        <Text style={[TextProps]}>{achievement || 0} of</Text>
-        <Text style={[TextProps]}>{target}</Text>
+        <Text style={[TextProps]}>
+          {choice == "a"
+            ? choice_a
+            : choice == "b"
+            ? choice_b
+            : choice == "c"
+            ? choice_c
+            : choice == "d"
+            ? choice_d
+            : choice == "e"
+            ? choice_e
+            : null}
+        </Text>
       </View>
     </Pressable>
   );
 };
 
-export default ReviewDetailItem;
+export default ReviewAppraisalDetailItem;
