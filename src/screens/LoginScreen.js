@@ -97,24 +97,28 @@ const LoginScreen = () => {
         const userToken = userData.access_token.replace(/"/g, "");
 
         // Get firebase messaging token for push notification
-        const fbtoken = await messaging().getToken();
+        const isAllowed = await messaging().hasPermission();
 
-        await axios
-          .post(
-            `${process.env.EXPO_PUBLIC_API}/auth/create-firebase-token`,
-            {
-              firebase_token: fbtoken,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${userToken}`,
+        if (isAllowed === messaging.AuthorizationStatus.AUTHORIZED) {
+          const fbtoken = await messaging().getToken();
+
+          await axios
+            .post(
+              `${process.env.EXPO_PUBLIC_API}/auth/create-firebase-token`,
+              {
+                firebase_token: fbtoken,
               },
-            }
-          )
-          .then(async () => {
-            await SecureStore.setItemAsync("firebase_token", fbtoken);
-            navigation.navigate("Loading", { userData });
-          });
+              {
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                },
+              }
+            )
+            .then(async () => {
+              await SecureStore.setItemAsync("firebase_token", fbtoken);
+              navigation.navigate("Loading", { userData });
+            });
+        }
 
         navigation.navigate("Loading", { userData });
         formik.setSubmitting(false);
