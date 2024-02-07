@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel, name }) => {
+const ReviewAppraisalDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel, name }) => {
   return (
     <View
       style={{
@@ -44,4 +44,4 @@ const ReviewDetailList = ({ dayjs, status, begin_date, end_date, position, targe
   );
 };
 
-export default ReviewDetailList;
+export default ReviewAppraisalDetailList;

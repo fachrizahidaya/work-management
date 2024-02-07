@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 import Input from "../../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
-const PerformanceForm = ({
+const KPIReviewForm = ({
   reference,
   threshold,
   weight,
   measurement,
   description,
   formik,
+  handleClose,
+  achievement,
+  target,
   onChange,
-  kpiValues,
-  formikChangeHandler,
 }) => {
   return (
     <ActionSheet ref={reference}>
@@ -24,11 +25,15 @@ const PerformanceForm = ({
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={() => {
-                formik.handleSubmit();
-                reference.current?.hide();
+                if (achievement == formik.values.actual_achievement) {
+                  null;
+                } else {
+                  formik.handleSubmit();
+                  handleClose();
+                }
               }}
             >
-              <Text>Done</Text>
+              <Text style={{ opacity: achievement == formik.values.actual_achievement ? 0.5 : 1 }}>Save</Text>
             </TouchableOpacity>
           </View>
           <Text>{description}</Text>
@@ -40,10 +45,13 @@ const PerformanceForm = ({
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Measurement</Text>
             <Text>{measurement}</Text>
           </View>
-
+          <View style={{ gap: 3 }}>
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Goals / Target</Text>
+            <Text>{target}</Text>
+          </View>
           <View style={{ gap: 3 }}>
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Weight</Text>
-            <Text>{weight} %</Text>
+            <Text>{weight}%</Text>
           </View>
           <Input
             formik={formik}
@@ -52,7 +60,9 @@ const PerformanceForm = ({
             value={formik.values.actual_achievement}
             placeHolder="Input Number Only"
             keyboardType="numeric"
-            onChangeText={(value) => formik.setFieldValue("actual_achievement", value)}
+            onChangeText={(value) => {
+              formik.setFieldValue("actual_achievement", value);
+            }}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -60,4 +70,4 @@ const PerformanceForm = ({
   );
 };
 
-export default PerformanceForm;
+export default KPIReviewForm;

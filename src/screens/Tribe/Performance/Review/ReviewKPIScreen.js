@@ -1,40 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-root-toast";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import PageHeader from "../../../../components/shared/PageHeader";
-import KPIDetailItem from "../../../../components/Tribe/Performance/KPIList/KPIDetailItem";
-import KPIDetailList from "../../../../components/Tribe/Performance/KPIList/KPIDetailList";
-import { useFetch } from "../../../../hooks/useFetch";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import axiosInstance from "../../../../config/api";
 import { useLoading } from "../../../../hooks/useLoading";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import KPIForm from "../../../../components/Tribe/Performance/Form/KPIForm";
+import ReviewDetailList from "../../../../components/Tribe/Performance/ReviewList/ReviewDetailList";
+import ReviewDetailItem from "../../../../components/Tribe/Performance/ReviewList/ReviewDetailItem";
+import PageHeader from "../../../../components/shared/PageHeader";
+import { useFetch } from "../../../../hooks/useFetch";
+import KPIReviewForm from "../../../../components/Tribe/Performance/Form/KPIReviewForm";
+import axiosInstance from "../../../../config/api";
 
-const KPIScreen = () => {
+const ReviewKPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
   const [formValue, setFormValue] = useState(null);
 
   const navigation = useNavigation();
-  const route = useRoute();
   const formScreenSheetRef = useRef(null);
+  const route = useRoute();
 
   const { id } = route.params;
 
-  const { data: kpiSelected } = useFetch(`/hr/employee-kpi/${id}/start`);
-
-  const kpiId = kpiSelected?.data?.id;
-
-  const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
+  const { data: kpiList } = useFetch(`/hr/employee-review/kpi/${id}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -164,26 +158,24 @@ const KPIScreen = () => {
     <>
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="Employee KPI"
-            backButton={true}
-            onPress={() => {
-              navigation.goBack();
-              // toggleReturnModal()
-            }}
-          />
-          <TouchableOpacity onPress={() => submitHandler()}>
-            {submitIsLoading ? <ActivityIndicator /> : <Text>Save</Text>}
+          <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => toggleReturnModal()} />
+          <TouchableOpacity
+          // onPress={() => {
+          //   submitHandler();
+          //   navigation.goBack();
+          // }}
+          >
+            <Text>Done</Text>
           </TouchableOpacity>
         </View>
-        <KPIDetailList
+        <ReviewDetailList
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
           end_date={kpiList?.data?.performance_kpi?.review?.end_date}
           position={kpiList?.data?.performance_kpi?.target_level}
           target={kpiList?.data?.performance_kpi?.target_name}
           targetLevel={kpiList?.data?.performance_kpi?.target_level}
+          name={kpiList?.data?.employee?.name}
         />
 
         <View style={styles.container}>
@@ -192,15 +184,15 @@ const KPIScreen = () => {
               kpiValues.length > 0 &&
               kpiValues.map((item, index) => {
                 return (
-                  <KPIDetailItem
+                  <ReviewDetailItem
                     key={index}
+                    id={item?.id}
                     description={item?.description}
                     target={item?.target}
                     weight={item?.weight}
                     threshold={item?.threshold}
                     measurement={item?.measurement}
                     achievement={item?.actual_achievement}
-                    item={item}
                     handleOpen={openSelectedKpi}
                   />
                 );
@@ -208,29 +200,29 @@ const KPIScreen = () => {
           </ScrollView>
         </View>
       </SafeAreaView>
-      {/* <ReturnConfirmationModal
+      <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
-      /> */}
-      <KPIForm
+      />
+      <KPIReviewForm
         reference={formScreenSheetRef}
-        threshold={kpi?.threshold}
-        weight={kpi?.weight}
-        measurement={kpi?.measurement}
-        description={kpi?.description}
+        threshold={null}
+        weight={null}
+        measurement={null}
+        description={null}
         formik={formik}
-        onChange={formikChangeHandler}
         handleClose={closeSelectedKpi}
-        achievement={kpi?.actual_achievement}
-        target={kpi?.target}
+        achievement={null}
+        target={null}
+        onChange={formikChangeHandler}
       />
     </>
   );
 };
 
-export default KPIScreen;
+export default ReviewKPIScreen;
 
 const styles = StyleSheet.create({
   container: {

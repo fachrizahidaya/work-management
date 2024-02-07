@@ -1,9 +1,6 @@
 import React from "react";
-import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import ActionSheet from "react-native-actions-sheet";
-import Select from "../../../shared/Forms/Select";
 
-const AppraisalForm = ({
+const AppraisalReviewForm = ({
   reference,
   handleClose,
   description,
@@ -55,4 +52,4 @@ const AppraisalForm = ({
   );
 };
 
-export default AppraisalForm;
+export default AppraisalReviewForm;
