@@ -35,6 +35,7 @@ const ChatListScreen = () => {
   const userSelector = useSelector((state) => state.auth);
 
   const searchFromRef = useRef(null);
+  const scrollRef = useRef(null);
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
 
@@ -264,7 +265,7 @@ const ChatListScreen = () => {
       {isReady ? (
         <>
           <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
               <View style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
                 <PageHeader title="Chats" onPress={() => navigation.goBack()} />
               </View>
@@ -283,6 +284,7 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
+                scrollRef={scrollRef}
               />
 
               <PersonalSection
@@ -293,6 +295,7 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
+                scrollRef={scrollRef}
               />
 
               {searchResult?.message?.length > 0 && (

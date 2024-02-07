@@ -11,6 +11,7 @@ const GroupSection = ({
   onPinControl,
   navigation,
   userSelector,
+  scrollRef,
 }) => {
   return !searchKeyword ? (
     <>
@@ -48,6 +49,7 @@ const GroupSection = ({
             onPin={onPinControl}
             navigation={navigation}
             userSelector={userSelector}
+            simultaneousHandlers={scrollRef}
           />
         ))}
     </>
