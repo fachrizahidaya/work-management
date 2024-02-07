@@ -22,7 +22,6 @@ const TaskSection = ({ tasks, keyword }) => {
     opacity: 0.5,
   };
 
-  console.log(tasks);
   return (
     <View style={styles.wrapper}>
       <Text style={{ fontWeight: "500", color: "#176688" }}>TASKS</Text>
