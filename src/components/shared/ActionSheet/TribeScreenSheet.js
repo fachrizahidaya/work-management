@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import ActionSheet from "react-native-actions-sheet";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 import { TextProps } from "../CustomStylings";
@@ -31,7 +31,7 @@ const TribeScreenSheet = (props) => {
 
   return (
     <ActionSheet ref={props.reference}>
-      <View style={{ paddingBottom: 40 }}>
+      <ScrollView style={{ height: 500, paddingBottom: 40 }}>
         {filteredMenu?.map((item, idx) => {
           return (
             <TouchableOpacity
@@ -97,7 +97,7 @@ const TribeScreenSheet = (props) => {
             <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </ActionSheet>
   );
 };
