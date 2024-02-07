@@ -30,7 +30,7 @@ export default function App() {
 
       if (!enabled) {
         Alert.alert(
-          "You haven't given permission for Nest to send notification. \n Go to Settigs > Apps & permissions > App manager > Nest > Notifications > Allow notifications"
+          "You haven't given permission for Nest to send notification \n \n Please enable notifications to enhance your app experience"
         );
       }
     } else {

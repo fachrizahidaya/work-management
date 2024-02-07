@@ -21,6 +21,8 @@ const TaskSection = ({ tasks, keyword }) => {
   const baseStyles = {
     opacity: 0.5,
   };
+
+  console.log(tasks);
   return (
     <View style={styles.wrapper}>
       <Text style={{ fontWeight: "500", color: "#176688" }}>TASKS</Text>
@@ -44,15 +46,19 @@ const TaskSection = ({ tasks, keyword }) => {
             />
             {!task.title.includes(keyword) && (
               <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                <Text style={{ opacity: 0.5 }}>In project :</Text>
+                {task?.project_title && (
+                  <>
+                    <Text style={{ opacity: 0.5 }}>In project :</Text>
 
-                <RenderHTML
-                  contentWidth={width}
-                  source={{
-                    html: renderItem(task.project_title),
-                  }}
-                  baseStyle={baseStyles}
-                />
+                    <RenderHTML
+                      contentWidth={width}
+                      source={{
+                        html: renderItem(task?.project_title),
+                      }}
+                      baseStyle={baseStyles}
+                    />
+                  </>
+                )}
               </View>
             )}
           </View>
