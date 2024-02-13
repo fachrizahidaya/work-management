@@ -46,7 +46,8 @@ const FeedCommentPost = ({
     <>
       <View
         style={{
-          padding: 16,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
           backgroundColor: "#FFFFFF",
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,

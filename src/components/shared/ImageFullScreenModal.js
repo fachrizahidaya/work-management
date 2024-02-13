@@ -53,7 +53,7 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
                     <MaterialCommunityIcons name="download" size={20} color="#FFFFFF" />
                   </TouchableOpacity>
                   <TouchableOpacity style={{ padding: 5 }} onPress={() => setIsFullScreen(false)}>
-                    <MaterialCommunityIcons name="close" size={20} color="#EB0E29" />
+                    <MaterialCommunityIcons name="close" size={20} color="#FF7272" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -91,7 +91,7 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
               <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
             </TouchableOpacity>
             <TouchableOpacity style={{ padding: 5 }} onPress={() => setIsFullScreen(false)}>
-              <MaterialCommunityIcons name="close" size={30} color="#EB0E29" />
+              <MaterialCommunityIcons name="close" size={30} color="#FF7272" />
             </TouchableOpacity>
           </View>
         </View>

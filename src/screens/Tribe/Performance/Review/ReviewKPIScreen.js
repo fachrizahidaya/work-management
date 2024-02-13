@@ -63,6 +63,7 @@ const ReviewKPIScreen = () => {
             id: val?.id,
             performance_kpi_value_id: val?.performance_kpi_value_id,
             supervisor_actual_achievement: val?.supervisor_actual_achievement,
+            employee_actual_achievement: val?.actual_achievement,
           },
         ];
       });
@@ -274,6 +275,7 @@ const ReviewKPIScreen = () => {
         target={kpi?.target}
         onChange={formikChangeHandler}
         achievementValue={employeeKpi?.supervisor_actual_achievement}
+        employee_achievement={employeeKpi?.employee_actual_achievement}
       />
     </>
   );

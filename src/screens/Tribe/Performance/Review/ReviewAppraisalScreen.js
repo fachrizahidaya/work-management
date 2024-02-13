@@ -62,6 +62,7 @@ const ReviewAppraisalScreen = () => {
             id: val?.id,
             performance_appraisal_value_id: val?.performance_appraisal_value_id,
             supervisor_choice: val?.supervisor_choice,
+            employee_choice: val?.choice,
           },
         ];
       });
@@ -262,6 +263,7 @@ const ReviewAppraisalScreen = () => {
         formik={formik}
         choice={appraisal?.supervisor_choice}
         choiceValue={employeeAppraisal?.supervisor_choice}
+        employee_choice={appraisal?.employee_choice}
       />
     </>
   );

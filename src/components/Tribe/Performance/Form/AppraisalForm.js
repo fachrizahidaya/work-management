@@ -17,7 +17,11 @@ const AppraisalForm = ({
   choiceValue,
 }) => {
   return (
-    <ActionSheet ref={reference}>
+    <ActionSheet
+      ref={reference}
+      closeOnPressBack={false}
+      closeOnTouchBackdrop={choiceValue == formik.values.choice ? true : false}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -37,7 +41,7 @@ const AppraisalForm = ({
           </View>
           <Text>{description}</Text>
           <Select
-            value={choiceValue === choice ? formik.values.choice : choiceValue}
+            value={formik.values.choice}
             placeHolder="Select your answer"
             items={[
               { value: "a", label: choice_a },

@@ -17,9 +17,14 @@ const AppraisalReviewForm = ({
   formik,
   choice,
   choiceValue,
+  employee_choice,
 }) => {
   return (
-    <ActionSheet ref={reference}>
+    <ActionSheet
+      ref={reference}
+      closeOnPressBack={false}
+      closeOnTouchBackdrop={choiceValue == formik.values.supervisor_choice ? true : false}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -38,8 +43,23 @@ const AppraisalReviewForm = ({
             </TouchableOpacity>
           </View>
           <Text>{description}</Text>
+          <View style={{ gap: 3 }}>
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Employee Choice</Text>
+            <Text>
+              {employee_choice == "a"
+                ? "Jelek"
+                : employee_choice == "b"
+                ? "Lumayan"
+                : employee_choice == "c"
+                ? "Baik"
+                : employee_choice == "d"
+                ? "Bagus"
+                : "Keren"}
+            </Text>
+          </View>
           <Select
-            value={choiceValue === choice ? formik.values.supervisor_choice : choiceValue}
+            title="Select your choice"
+            value={formik.values.supervisor_choice}
             placeHolder="Select your answer"
             items={[
               { value: "a", label: choice_a },

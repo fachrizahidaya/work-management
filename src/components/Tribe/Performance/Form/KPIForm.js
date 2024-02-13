@@ -19,7 +19,11 @@ const KPIForm = ({
   achievementValue,
 }) => {
   return (
-    <ActionSheet ref={reference}>
+    <ActionSheet
+      ref={reference}
+      closeOnPressBack={false}
+      closeOnTouchBackdrop={achievementValue == formik.values.actual_achievement ? true : false}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

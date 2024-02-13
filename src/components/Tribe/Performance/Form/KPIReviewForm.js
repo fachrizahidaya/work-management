@@ -17,9 +17,14 @@ const KPIReviewForm = ({
   target,
   onChange,
   achievementValue,
+  employee_achievement,
 }) => {
   return (
-    <ActionSheet ref={reference}>
+    <ActionSheet
+      ref={reference}
+      closeOnPressBack={false}
+      closeOnTouchBackdrop={achievementValue == formik.values.supervisor_actual_achievement ? true : false}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -56,9 +61,13 @@ const KPIReviewForm = ({
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Weight</Text>
             <Text>{weight}%</Text>
           </View>
+          <View style={{ gap: 3 }}>
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Employee Actual Achievement</Text>
+            <Text>{employee_achievement}</Text>
+          </View>
           <Input
             formik={formik}
-            title="Actual Achievement"
+            title="Supervisor Actual Achievement"
             fieldName="supervisor_actual_achievement"
             value={achievementValue === achievement ? formik.values.supervisor_actual_achievement : achievementValue}
             placeHolder="Input Number Only"

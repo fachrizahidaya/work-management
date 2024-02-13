@@ -16,6 +16,7 @@ import {
   Platform,
   Linking,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import Toast from "react-native-root-toast";
 import Modal from "react-native-modal";
@@ -28,6 +29,7 @@ import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +38,7 @@ const TribeAddNewSheet = (props) => {
   const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
   const [filledLocation, setFilledLocation] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -44,6 +47,7 @@ const TribeAddNewSheet = (props) => {
   const { data: profile } = useFetch("/hr/my-profile");
 
   const { toggle: toggleClockModal, isOpen: clockModalIsOpen, close } = useDisclosure(false);
+  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -121,6 +125,7 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
+      toggleAttendance();
       if (locationOn === false) {
         showAlertToActivateLocation();
       } else if (status === false) {
@@ -134,6 +139,7 @@ const TribeAddNewSheet = (props) => {
             check_from: "Mobile App",
           });
 
+          toggleAttendance();
           refetchAttendance();
           toggleClockModal();
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
@@ -142,6 +148,7 @@ const TribeAddNewSheet = (props) => {
         }
       }
     } catch (err) {
+      toggleAttendance();
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
     }
@@ -171,13 +178,13 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (isLoading) {
-      attendanceCheckHandler().then(() => {
-        setIsLoading(false);
-      });
-    }
-  }, [isLoading]);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     attendanceCheckHandler().then(() => {
+  //       setIsLoading(false);
+  //     });
+  //   }
+  // }, [isLoading]);
 
   /**
    * Handle change for the location permission status
@@ -224,6 +231,7 @@ const TribeAddNewSheet = (props) => {
 
   return (
     <>
+      <StatusBar animated={true} backgroundColor={clockModalIsOpen ? "#176688" : null} />
       <ActionSheet ref={props.reference}>
         <View style={styles.container}>
           {items.slice(0, 2).map((item, idx) => {
@@ -265,6 +273,9 @@ const TribeAddNewSheet = (props) => {
                       onClock={attendanceCheckHandler}
                       location={location}
                       locationOn={locationOn}
+                      success={success}
+                      setSuccess={setSuccess}
+                      isLoading={attendanceIsLoading}
                     />
                   </Pressable>
                 )

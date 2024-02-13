@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text, Pressable } from "react-native";
+import { TouchableOpacity, StyleSheet, SafeAreaView, View, Text } from "react-native";
 import { Skeleton } from "moti/skeleton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -100,7 +100,7 @@ const SettingScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <Pressable style={styles.item}>
+            <TouchableOpacity style={styles.item}>
               <View
                 style={{
                   display: "flex",
@@ -130,8 +130,8 @@ const SettingScreen = () => {
 
                 {myProfile?.data && <Text style={TextProps}>{myProfile.data.division_name || "You have no team"}</Text>}
               </View>
-              {/* <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} /> */}
-            </Pressable>
+              <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
+            </TouchableOpacity>
           </View>
 
           <View style={{ backgroundColor: "#FAFAFA", borderRadius: 9 }}>

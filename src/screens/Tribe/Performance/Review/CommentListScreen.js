@@ -38,7 +38,7 @@ const CommentListScreen = () => {
     }, [commentList]);
   }
 
-  const [tabValue, setTabValue] = useState(!commentList?.data ? "Personal" : "Waiting Review");
+  const [tabValue, setTabValue] = useState(commentList?.data.length > 0 ? "Waiting Review" : "Personal");
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);

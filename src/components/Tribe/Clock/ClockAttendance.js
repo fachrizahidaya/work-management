@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { View, Text, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -10,15 +10,13 @@ import Animated, {
   useDerivedValue,
   interpolateColor,
 } from "react-native-reanimated";
-import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
-  const [success, setSuccess] = useState(false);
+const ClockAttendance = ({ attendance, onClock, location, locationOn, success, setSuccess, isLoading }) => {
   const translateX = useSharedValue(0);
 
   const MIN_TRANSLATE_X = 180;
@@ -81,11 +79,6 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
       [0, parentWidth - MIN_TRANSLATE_X],
       ["#186688", "#FFFFFF"]
     );
-    const iconTintColor = interpolateColor(
-      limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
-      ["#186688", success ? "#FFFFFF" : "#186688"]
-    );
     return {
       transform: [
         {
@@ -93,19 +86,17 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
         },
       ],
       backgroundColor: success ? "#FFFFFF" : backgroundColor,
-      // tintColor: iconTintColor,
     };
   });
 
-  const rIconStyle = useAnimatedStyle(() => {
+  const animatedIconStyle = useAnimatedStyle(() => {
     const iconColor = interpolateColor(
       limitedTranslateX.value,
       [0, parentWidth - MIN_TRANSLATE_X],
-      ["#186688", "#FFFFFF"]
+      ["#FFFFFF", success ? "#FFFFFF" : "#186688"]
     );
     return {
-      // transform: [{ translateX: limitedTranslateX.value }],
-      // backgroundColor: success ? "#186688" : iconColor,
+      color: iconColor,
     };
   });
 
@@ -119,8 +110,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
       ["#186688", "#FFFFFF"]
     );
     return {
-      // opacity: textOpacity.value,
-      color: textColor,
+      color: success ? "#FFFFFF" : textColor,
     };
   });
 
@@ -132,112 +122,122 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
   }, [success]);
 
   return (
-    <View style={{ gap: 20 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingHorizontal: 1,
-        }}
-      >
+    <>
+      <View style={{ gap: 20 }}>
         <View
           style={{
-            gap: 10,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-            backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
-            borderRadius: 10,
-            width: "40%",
+            justifyContent: "space-between",
+            paddingHorizontal: 1,
           }}
         >
-          <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
-          <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
-            {attendance?.time_in ? attendance?.time_in : "-:-"}
-          </Text>
-        </View>
-        <View
-          style={{
-            gap: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-            backgroundColor: attendance?.early ? "#feedaf" : "#daecfc",
-            borderRadius: 10,
-            width: "40%",
-          }}
-        >
-          <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
-          <Text style={{ fontWeight: "500", color: attendance?.early ? "#fdc500" : "#377893", textAlign: "center" }}>
-            {attendance?.time_out ? attendance?.time_out : "-:-"}
-          </Text>
-        </View>
-      </View>
-
-      <Animated.View
-        style={[
-          {
-            backgroundColor: success ? "#186688" : "#87878721",
-            borderRadius: 60,
-            paddingVertical: 15,
-            paddingHorizontal: 10,
-            position: "relative",
-            flexDirection: "row",
-            alignItems: "center",
-          },
-          rContainerStyle,
-        ]}
-      >
-        <PanGestureHandler onGestureEvent={panGesture}>
-          <Animated.View
-            style={[
-              rTaskContainerStyle,
-              {
-                zIndex: 3,
-                backgroundColor: success ? "#FFFFFF" : "#186688",
-                borderRadius: 50,
-                padding: 6,
-              },
-            ]}
+          <View
+            style={{
+              gap: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 20,
+              backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
+              borderRadius: 10,
+              width: "40%",
+            }}
           >
-            <AnimatedIcon name="chevron-right" size={50} color={success ? "#186688" : "#FFFFFF"} style={[rIconStyle]} />
-          </Animated.View>
-        </PanGestureHandler>
+            <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
+            <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
+              {attendance?.time_in ? attendance?.time_in : "-:-"}
+            </Text>
+          </View>
+          <View
+            style={{
+              gap: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 20,
+              backgroundColor: attendance?.early ? "#feedaf" : "#daecfc",
+              borderRadius: 10,
+              width: "40%",
+            }}
+          >
+            <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
+            <Text style={{ fontWeight: "500", color: attendance?.early ? "#fdc500" : "#377893", textAlign: "center" }}>
+              {attendance?.time_out ? attendance?.time_out : "-:-"}
+            </Text>
+          </View>
+        </View>
 
         <Animated.View
           style={[
-            textContainerStyle,
             {
-              padding: 20,
+              backgroundColor: success ? "#186688" : "#87878721",
+              borderRadius: 60,
+              paddingVertical: 15,
+              paddingHorizontal: 10,
+              position: "relative",
+              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
-              marginLeft: 30,
-              zIndex: 0,
             },
+            rContainerStyle,
           ]}
         >
-          <AnimatedText
+          <PanGestureHandler onGestureEvent={panGesture}>
+            <Animated.View
+              style={[
+                rTaskContainerStyle,
+                {
+                  zIndex: 3,
+                  backgroundColor: success ? "#FFFFFF" : "#186688",
+                  borderRadius: 50,
+                  padding: 6,
+                },
+              ]}
+            >
+              <AnimatedIcon
+                name="chevron-right"
+                size={50}
+                color={success ? "#186688" : "#FFFFFF"}
+                style={[
+                  // animatedIconStyle,
+                  {},
+                ]}
+              />
+            </Animated.View>
+          </PanGestureHandler>
+
+          <View
             style={[
-              textContainerStyle,
+              // textContainerStyle,
               {
-                fontSize: 16,
-                fontWeight: "500",
-                color: success ? "#FFFFFF" : "#186688",
+                padding: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: 30,
+                zIndex: 0,
               },
             ]}
           >
-            {success && location
-              ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
-              : success && !locationOn
-              ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
-              : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
-          </AnimatedText>
+            <AnimatedText
+              style={[
+                textContainerStyle,
+                {
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: success ? "#FFFFFF" : "#186688",
+                },
+              ]}
+            >
+              {success && !location
+                ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
+                : success && !locationOn
+                ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
+                : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
+            </AnimatedText>
+          </View>
         </Animated.View>
-      </Animated.View>
-    </View>
+      </View>
+    </>
   );
 };
 
