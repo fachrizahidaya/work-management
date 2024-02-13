@@ -30,6 +30,7 @@ import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { useLoading } from "../../../hooks/useLoading";
+import SuccessModal from "../Modal/SuccessModal";
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -222,27 +223,8 @@ const TribeAddNewSheet = (props) => {
     getLocation();
   }, [status, locationOn]);
 
-  useEffect(() => {
-    if (clockModalIsOpen) {
-      const timeout = setTimeout(() => {
-        toggleClockModal();
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [clockModalIsOpen]);
-
-  useEffect(() => {
-    if (newLeaveRequestModalIsOpen) {
-      const timeout = setTimeout(() => {
-        toggleNewLeaveRequestModal();
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [newLeaveRequestModalIsOpen]);
-
   return (
     <>
-      <StatusBar animated={true} backgroundColor={clockModalIsOpen ? "#176688" : null} />
       <ActionSheet ref={props.reference}>
         <View style={styles.container}>
           {items.slice(0, 2).map((item, idx) => {
@@ -296,20 +278,11 @@ const TribeAddNewSheet = (props) => {
           })}
         </View>
       </ActionSheet>
-      <Modal
-        isVisible={clockModalIsOpen}
-        onBackdropPress={() => {
-          toggleClockModal();
-        }}
-        deviceHeight={125}
-        deviceWidth={deviceWidth}
-        animationIn={"slideInDown"}
-        animationOut={"slideOutUp"}
-        backdropColor="#176688"
-        backdropOpacity={1}
-        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
-      >
-        <View style={{ alignItems: "center", gap: 5 }}>
+
+      <SuccessModal
+        isOpen={clockModalIsOpen}
+        toggle={toggleClockModal}
+        topElement={
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{ color: !attendance?.data?.time_in ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
@@ -318,35 +291,27 @@ const TribeAddNewSheet = (props) => {
             </Text>
             <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
           </View>
+        }
+        bottomElement={
           <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
             at {!attendance?.data?.time_out ? attendance?.data?.time_in : attendance?.data?.time_out}
           </Text>
-        </View>
-        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
-      </Modal>
+        }
+      />
 
-      <Modal
-        isVisible={newLeaveRequestModalIsOpen}
-        onBackdropPress={() => {
-          toggleNewLeaveRequestModal();
-        }}
-        deviceHeight={125}
-        deviceWidth={deviceWidth}
-        animationIn={"slideInDown"}
-        animationOut={"slideOutUp"}
-        backdropColor="#176688"
-        backdropOpacity={1}
-        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
-      >
-        <View style={{ alignItems: "center", gap: 5 }}>
+      <SuccessModal
+        isOpen={newLeaveRequestModalIsOpen}
+        toggle={toggleNewLeaveRequestModal}
+        topElement={
           <View style={{ flexDirection: "row" }}>
             <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Request </Text>
             <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>sent!</Text>
           </View>
+        }
+        bottomElement={
           <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Please wait for approval</Text>
-        </View>
-        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
-      </Modal>
+        }
+      />
     </>
   );
 };
