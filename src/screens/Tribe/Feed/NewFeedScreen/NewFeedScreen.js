@@ -47,8 +47,15 @@ const NewFeedScreen = () => {
 
   const route = useRoute();
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, scrollNewMessage, setScrollNewMessage } =
-    route.params;
+  const {
+    loggedEmployeeImage,
+    loggedEmployeeName,
+    postRefetchHandler,
+    scrollNewMessage,
+    setScrollNewMessage,
+    isOpen,
+    toggle,
+  } = route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
@@ -69,7 +76,8 @@ const NewFeedScreen = () => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show("Posted successfully!", SuccessToastProps);
+      toggle();
+      // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

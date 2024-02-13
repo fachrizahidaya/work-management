@@ -46,7 +46,9 @@ const TribeAddNewSheet = (props) => {
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const { toggle: toggleClockModal, isOpen: clockModalIsOpen, close } = useDisclosure(false);
+  const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
+  const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
+
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
   const deviceWidth = Dimensions.get("window").width;
@@ -229,6 +231,15 @@ const TribeAddNewSheet = (props) => {
     }
   }, [clockModalIsOpen]);
 
+  useEffect(() => {
+    if (newLeaveRequestModalIsOpen) {
+      const timeout = setTimeout(() => {
+        toggleNewLeaveRequestModal();
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [newLeaveRequestModalIsOpen]);
+
   return (
     <>
       <StatusBar animated={true} backgroundColor={clockModalIsOpen ? "#176688" : null} />
@@ -245,6 +256,8 @@ const TribeAddNewSheet = (props) => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
                       employeeId: profile?.data?.id,
+                      isOpen: newLeaveRequestModalIsOpen,
+                      toggle: toggleNewLeaveRequestModal,
                     });
                   } else if (item.title === "New Reimbursement") {
                     navigation.navigate("New Reimbursement");
@@ -308,6 +321,29 @@ const TribeAddNewSheet = (props) => {
           <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
             at {!attendance?.data?.time_out ? attendance?.data?.time_in : attendance?.data?.time_out}
           </Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
+      </Modal>
+
+      <Modal
+        isVisible={newLeaveRequestModalIsOpen}
+        onBackdropPress={() => {
+          toggleNewLeaveRequestModal();
+        }}
+        deviceHeight={125}
+        deviceWidth={deviceWidth}
+        animationIn={"slideInDown"}
+        animationOut={"slideOutUp"}
+        backdropColor="#176688"
+        backdropOpacity={1}
+        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
+      >
+        <View style={{ alignItems: "center", gap: 5 }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Request </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>sent!</Text>
+          </View>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Please wait for approval</Text>
         </View>
         <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
       </Modal>
