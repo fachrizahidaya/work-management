@@ -197,6 +197,10 @@ const ContactListItem = ({
     ],
   }));
 
+  const animatedBackgroundStyle = useAnimatedStyle(() => ({
+    backgroundColor: translateX.value > 0 ? "#959595" : "#377893",
+  }));
+
   /**
    * left view after swipe handler
    * @returns
@@ -301,10 +305,13 @@ const ContactListItem = ({
         onSwipeableClose={() => setShrink(false)}
       > */}
       <Animated.View
-        style={{
-          backgroundColor: eventValue > 0 ? "#377893" : "#959595",
-          justifyContent: "center",
-        }}
+        style={[
+          animatedBackgroundStyle,
+          {
+            // backgroundColor: translateX.value > 0 ? "#377893" : "#959595",
+            justifyContent: "center",
+          },
+        ]}
       >
         <View
           style={{
