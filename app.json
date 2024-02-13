@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
@@ -26,7 +28,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.kolabora.kssmobileapp",
-      "versionCode": 13
+      "versionCode": 13,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -51,7 +58,9 @@
       [
         "expo-notifications",
         {
-          "sounds": ["./assets/sounds/nest_notification_sound.wav"]
+          "sounds": [
+            "./assets/sounds/nest_notification_sound.wav"
+          ]
         }
       ],
       [
@@ -60,6 +69,12 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d6f15ca0-eae2-46de-af2d-b93edf31e91f"
+    }
   }
 }

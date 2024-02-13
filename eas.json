@@ -15,7 +15,8 @@
       },
       "env": {
         "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
-      }
+      },
+      "channel": "development"
     },
     "internal-testing": {
       "ios": {
@@ -27,7 +28,8 @@
       "env": {
         "EXPO_PUBLIC_API": "https://api-dev.ksshub.com"
       },
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "internal-testing"
     },
     "production": {
       "env": {
@@ -42,7 +44,8 @@
         "EXPO_PUBLIC_WS_FORCE_TLS": "false",
         "EXPO_PUBLIC_WS_DISABLE_STATS": "false",
         "EXPO_PUBLIC_WS_CLUSTER": "mt1"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {

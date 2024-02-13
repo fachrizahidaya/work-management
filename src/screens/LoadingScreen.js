@@ -86,7 +86,7 @@ const LoadingScreen = ({ route }) => {
       await SecureStore.setItemAsync("user_token", userData.userData.access_token);
 
       // Dispatch band module to firstly be rendered
-      dispatch(setModule("BAND"));
+      dispatch(setModule("TRIBE"));
 
       // Dispatch a login action with the provided user data
       dispatch(login(userData.userData));

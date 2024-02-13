@@ -60,11 +60,6 @@ const ProjectFilter = ({
               </TouchableOpacity>
             </View>
           }
-          startAdornment={
-            <Pressable>
-              <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
-            </Pressable>
-          }
         />
       </View>
 
