@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import RenderHtml from "react-native-render-html";
 
-import { PanGestureHandler, RectButton, Swipeable } from "react-native-gesture-handler";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -9,7 +9,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { StyleSheet, TouchableOpacity, View, Text, Pressable, I18nManager, PanResponder } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable, I18nManager } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
@@ -48,11 +48,6 @@ const ContactListItem = ({
   simultaneousHandlers,
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  const [shrink, setShrink] = useState(false);
-  const [eventValue, setEventValue] = useState(null);
-  // const [animatedBackgroundColor, setAnimatedBackgroundColor] = useState(new Animated.Value(0));
-
-  const swipeableRef = useRef(null);
 
   /**
    * Fetch members of selected group
@@ -138,27 +133,6 @@ const ContactListItem = ({
     return text;
   };
 
-  // const panResponder = PanResponder.create({
-  //   onStartShouldSetPanResponder: () => true,
-  //   onPanResponderMove: Animated.event([
-  //     null,
-  //     { dx: animatedBackgroundColor }, // Update animatedBackgroundColor with gesture dx
-  //   ]),
-  //   onPanResponderRelease: () => {
-  //     // Reset background color after gesture release
-  //     Animated.timing(animatedBackgroundColor, {
-  //       toValue: 0,
-  //       duration: 300,
-  //       useNativeDriver: false,
-  //     }).start();
-  //   },
-  // });
-
-  // const backgroundColor = animatedBackgroundColor.interpolate({
-  //   inputRange: [0, 300], // Adjust as needed based on gesture range
-  //   outputRange: ["#FFFFFF", "#377893"], // Start and end colors
-  // });
-
   const translateX = useSharedValue(0);
   const swipeThresholdPositive = 150;
   const swipeThresholdNegative = -150;
@@ -170,20 +144,19 @@ const ContactListItem = ({
       translateX.value = context.startX + event.translationX;
     },
     onEnd: (event) => {
-      runOnJS(setEventValue)(event.translationX);
       if (event.translationX > 0) {
         const dismissed = translateX.value < swipeThresholdPositive;
         if (dismissed) {
           translateX.value = withTiming(0);
         } else {
-          translateX.value = withTiming(50);
+          translateX.value = withTiming(70);
         }
       } else {
         const dismissed = translateX.value > swipeThresholdNegative;
         if (dismissed) {
           translateX.value = withTiming(0);
         } else {
-          translateX.value = withTiming(-50);
+          translateX.value = withTiming(-60);
         }
       }
     },
@@ -201,114 +174,16 @@ const ContactListItem = ({
     backgroundColor: translateX.value > 0 ? "#959595" : "#377893",
   }));
 
-  /**
-   * left view after swipe handler
-   * @returns
-   */
-  const renderLeftView = (progress, dragX) => {
-    const scale = dragX.interpolate({
-      inputRange: [0, 80],
-      outputRange: [0, 1],
-      extrapolate: "clamp",
-    });
-
-    return (
-      <>
-        <View
-          style={{
-            ...styles.leftAction,
-            flex: shrink ? 0.1 : 1,
-          }}
-        >
-          <View style={{ alignItems: "center" }}>
-            <AnimatedIcon
-              onPress={() => {
-                if (swipeableRef.current) {
-                  swipeableRef.current.close();
-                }
-                onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
-              }}
-              name="pin"
-              color="#ffffff"
-              size={20}
-              style={{ transform: [{ scale }] }}
-            />
-            <AnimatedText style={{ color: "#FFFFFF", transform: [{ scale }] }}>
-              {isPinned?.pin_chat ? "Unpin" : "Pin"}
-            </AnimatedText>
-          </View>
-        </View>
-      </>
-    );
-  };
-
-  /**
-   * right view after swipe handler
-   * @returns
-   */
-  const renderRightView = (progress, dragX) => {
-    const scale = dragX.interpolate({
-      inputRange: [-80, 0],
-      outputRange: [1, 0],
-      extrapolate: "clamp",
-    });
-
-    return (
-      <>
-        <View
-          style={{
-            ...styles.rightAction,
-            flex: shrink ? 0.1 : 1,
-          }}
-        >
-          <View style={{ alignItems: "center" }}>
-            <AnimatedIcon
-              onPress={() => {
-                if (swipeableRef.current) {
-                  swipeableRef.current.close();
-                }
-                onSwipe(chat);
-              }}
-              name="dots-horizontal"
-              color="#ffffff"
-              size={20}
-              style={{ transform: [{ scale }] }}
-            />
-            <AnimatedText style={{ color: "#ffffff", transform: [{ scale }] }}>More</AnimatedText>
-          </View>
-        </View>
-      </>
-    );
-  };
-
   useEffect(() => {
     fetchSelectedGroupMembers();
   }, [id]);
 
   return (
     <>
-      {/* <Swipeable
-        leftThreshold={40}
-        rightThreshold={20}
-        ref={swipeableRef}
-        renderLeftActions={renderLeftView}
-        renderRightActions={renderRightView}
-        onSwipeableOpen={(direction = "left") => {
-          if (direction === "left") {
-            setShrink(true);
-            swipeableRef.current.openLeft();
-          } else {
-            setShrink(true);
-            swipeableRef.current.openRight();
-          }
-        }}
-        onSwipeableClose={() => setShrink(false)}
-      > */}
       <Animated.View
         style={[
           animatedBackgroundStyle,
           {
-            // backgroundColor: translateX.value > 0 ? "#377893" : "#959595",
             justifyContent: "center",
           },
         ]}
@@ -329,7 +204,7 @@ const ContactListItem = ({
               translateX.value = withTiming(0);
               onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
             }}
-            style={{ alignItems: "center" }}
+            style={{ alignItems: "center", paddingLeft: isPinned?.pin_chat ? 5 : 10 }}
           >
             <AnimatedIcon name="pin" color="#ffffff" size={20} />
             <AnimatedText
@@ -346,7 +221,7 @@ const ContactListItem = ({
               translateX.value = withTiming(0);
               onSwipe(chat);
             }}
-            style={{ alignItems: "center" }}
+            style={{ alignItems: "center", paddingRight: 5 }}
           >
             <AnimatedIcon name="dots-horizontal" color="#ffffff" size={20} style={{}} />
             <AnimatedText style={{ color: "#ffffff" }}>More</AnimatedText>
@@ -490,7 +365,6 @@ const ContactListItem = ({
           </Animated.View>
         </PanGestureHandler>
       </Animated.View>
-      {/* </Swipeable> */}
     </>
   );
 };
@@ -505,21 +379,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderColor: "#E8E9EB",
-  },
-  leftAction: {
-    flex: 1,
-    backgroundColor: "#377893",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: 20,
-    flexDirection: I18nManager.isRTL ? "row" : "row-reverse",
-  },
-  rightAction: {
-    flex: 1,
-    backgroundColor: "#959595",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: 20,
-    flexDirection: !I18nManager.isRTL ? "row" : "row-reverse",
   },
 });
