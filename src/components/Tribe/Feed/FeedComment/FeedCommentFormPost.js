@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+
 import { StyleSheet, View } from "react-native";
 import { MentionInput } from "react-native-controlled-mentions";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -23,7 +24,7 @@ const FeedCommentFormPost = ({
 
   return (
     <View style={{ ...styles.container }}>
-      {/* <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} /> */}
+      <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} />
       <View style={{ flex: 1 }}>
         <MentionInput
           value={formik.values.comments}

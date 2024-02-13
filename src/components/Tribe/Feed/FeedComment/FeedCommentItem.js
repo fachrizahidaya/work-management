@@ -125,7 +125,7 @@ const FeedCommentItem = ({
             }}
           >
             {viewReplyToggle === false ? (
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373", marginLeft: 10 }}>
                 View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
               </Text>
             ) : (
