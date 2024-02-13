@@ -17,12 +17,14 @@ import axiosInstance from "../../../../config/api";
 import { useLoading } from "../../../../hooks/useLoading";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import KPIForm from "../../../../components/Tribe/Performance/Form/KPIForm";
+import Button from "../../../../components/shared/Forms/Button";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
   const [formValue, setFormValue] = useState(null);
+  const [employeeKpi, setEmployeeKpi] = useState(null);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -40,13 +42,13 @@ const KPIScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const openSelectedKpi = (data) => {
+  const openSelectedKpi = (data, value) => {
     setKpi(data);
+    setEmployeeKpi(value);
     formScreenSheetRef.current?.show();
   };
 
   const closeSelectedKpi = () => {
-    setKpi(null);
     formScreenSheetRef.current?.hide();
   };
 
@@ -144,6 +146,25 @@ const KPIScreen = () => {
     setFormValue(formik.values);
   };
 
+  function compareActualAchievement(kpiValues, employeeKpiValue) {
+    let differences = [];
+
+    for (let empKpi of employeeKpiValue) {
+      let kpiValue = kpiValues.find((kpi) => kpi.id === empKpi.id);
+
+      if (kpiValue && kpiValue.actual_achievement !== empKpi.actual_achievement) {
+        differences.push({
+          id: empKpi.id,
+          difference: empKpi.actual_achievement - kpiValue.actual_achievement,
+        });
+      }
+    }
+
+    return differences;
+  }
+
+  let differences = compareActualAchievement(kpiValues, employeeKpiValue);
+
   useEffect(() => {
     if (formValue) {
       formik.handleSubmit();
@@ -169,13 +190,27 @@ const KPIScreen = () => {
             title="Employee KPI"
             backButton={true}
             onPress={() => {
-              navigation.goBack();
-              // toggleReturnModal()
+              if (differences.length === 0) {
+                navigation.goBack();
+              } else {
+                toggleReturnModal();
+              }
             }}
           />
-          <TouchableOpacity onPress={() => submitHandler()}>
-            {submitIsLoading ? <ActivityIndicator /> : <Text>Save</Text>}
-          </TouchableOpacity>
+
+          <Button
+            height={35}
+            padding={10}
+            children={submitIsLoading ? <ActivityIndicator/> :  <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>}
+            onPress={() => {
+              if (submitIsLoading || differences.length === 0) {
+                null;
+              } else {
+                submitHandler();
+              }
+            }}
+            disabled={differences.length === 0 || submitIsLoading}
+          />
         </View>
         <KPIDetailList
           dayjs={dayjs}
@@ -191,6 +226,7 @@ const KPIScreen = () => {
             {kpiValues &&
               kpiValues.length > 0 &&
               kpiValues.map((item, index) => {
+                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
                 return (
                   <KPIDetailItem
                     key={index}
@@ -202,18 +238,19 @@ const KPIScreen = () => {
                     achievement={item?.actual_achievement}
                     item={item}
                     handleOpen={openSelectedKpi}
+                    employeeKpiValue={correspondingEmployeeKpi}
                   />
                 );
               })}
           </ScrollView>
         </View>
       </SafeAreaView>
-      {/* <ReturnConfirmationModal
+      <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
-      /> */}
+      />
       <KPIForm
         reference={formScreenSheetRef}
         threshold={kpi?.threshold}
@@ -225,6 +262,7 @@ const KPIScreen = () => {
         handleClose={closeSelectedKpi}
         achievement={kpi?.actual_achievement}
         target={kpi?.target}
+        achievementValue={employeeKpi?.actual_achievement}
       />
     </>
   );

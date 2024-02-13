@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { Pressable, Text, View } from "react-native";
 
@@ -8,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewAppraisalListItem = ({ id, start_date, end_date, navigation, name, target, dayjs }) => {
+const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, target, dayjs, description }) => {
   return (
     <Pressable
       style={{
@@ -21,15 +20,14 @@ const OngoingReviewAppraisalListItem = ({ id, start_date, end_date, navigation, 
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("Review Appraisal Detail", {
+        navigation.navigate("Comment Detail", {
           id: id,
         })
       }
     >
       <Text style={[{}, TextProps]}>{name}</Text>
       <View>
-        <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-        <Text style={[TextProps]}>{target}</Text>
+        <Text style={[TextProps]}>{description}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
@@ -40,4 +38,4 @@ const OngoingReviewAppraisalListItem = ({ id, start_date, end_date, navigation, 
   );
 };
 
-export default OngoingReviewAppraisalListItem;
+export default OngoingCommentListItem;

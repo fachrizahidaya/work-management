@@ -34,7 +34,7 @@ const ContactScreen = () => {
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
-    limit: 10,
+    limit: 50,
   };
 
   const {

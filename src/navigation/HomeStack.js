@@ -27,17 +27,16 @@ import EmployeeProfileScreen from "../screens/Tribe/Employee/[employeeId]";
 import NewLeaveRequest from "../screens/Tribe/Leave/NewLeaveRequest/NewLeaveRequest";
 import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeaveScreen";
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
-import KPIListScreen from "../screens/Tribe/Performance/KPI/KPIListScreen";
-import AppraisalListScreen from "../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
 import ReviewKPIListScreen from "../screens/Tribe/Performance/Review/ReviewKPIListScreen";
 import ReviewKPIScreen from "../screens/Tribe/Performance/Review/ReviewKPIScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
-import KPIAppraisalReviewScreen from "../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
 import ReviewAppraisalListScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalListScreen";
 import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
+import CommentListScreen from "../screens/Tribe/Performance/Review/CommentListScreen";
+import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -181,10 +180,6 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="KPI Screen" component={KPIListScreen} options={{ header: () => <Header /> }} />
-
-      <Stack.Screen name="Appraisal Screen" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
-
       <Stack.Screen name="Review KPI" component={ReviewKPIListScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen
@@ -205,7 +200,9 @@ const HomeStack = () => {
         options={{ header: () => <Header /> }}
       />
 
-      <Stack.Screen name="Review Screen" component={KPIAppraisalReviewScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Comment Screen" component={CommentListScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

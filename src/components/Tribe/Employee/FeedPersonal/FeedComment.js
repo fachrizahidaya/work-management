@@ -143,20 +143,19 @@ const FeedComment = ({
           copyToClipboard={copyToClipboard}
           employeeUsername={employeeUsername}
         />
-
-        <FeedCommentForm
-          postId={postId}
-          loggedEmployeeImage={loggedEmployeeImage}
-          loggedEmployeeName={loggedEmployeeName}
-          parentId={parentId}
-          onSubmit={onSubmit}
-          employees={employees}
-          renderSuggestions={renderSuggestions}
-          handleChange={handleChange}
-          formik={formik}
-          suggestion={suggestions}
-        />
       </View>
+      <FeedCommentForm
+        postId={postId}
+        loggedEmployeeImage={loggedEmployeeImage}
+        loggedEmployeeName={loggedEmployeeName}
+        parentId={parentId}
+        onSubmit={onSubmit}
+        employees={employees}
+        renderSuggestions={renderSuggestions}
+        handleChange={handleChange}
+        formik={formik}
+        suggestion={suggestions}
+      />
     </ActionSheet>
   );
 };

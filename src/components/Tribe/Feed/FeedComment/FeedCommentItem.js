@@ -93,7 +93,7 @@ const FeedCommentItem = ({
 
   return (
     <View style={{ gap: 3 }}>
-      <View style={{ marginVertical: 10 }}>
+      <Pressable onPress={() => onReply(null)} style={{ marginVertical: 10 }}>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View>
             <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
@@ -103,9 +103,10 @@ const FeedCommentItem = ({
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
             <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
-            <Pressable onPress={() => onReply(parentId)}>
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>
-            </Pressable>
+
+            <Text onPress={() => onReply(parentId)} style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+              Reply
+            </Text>
           </View>
         </View>
 
@@ -179,7 +180,7 @@ const FeedCommentItem = ({
             )}
           </>
         )}
-      </View>
+      </Pressable>
       {/* <CustomAccordion
         title={`${totalReplies ? ` ${totalReplies}` : ""} ${totalReplies > 1 ? "Replies" : "Reply"}`}
         subTitle={totalReplies}

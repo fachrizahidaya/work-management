@@ -1,9 +1,9 @@
 import React from "react";
 
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
 
 import Input from "../../../shared/Forms/Input";
-import ActionSheet from "react-native-actions-sheet";
 
 const KPIReviewForm = ({
   reference,
@@ -16,6 +16,7 @@ const KPIReviewForm = ({
   achievement,
   target,
   onChange,
+  achievementValue,
 }) => {
   return (
     <ActionSheet ref={reference}>
@@ -25,7 +26,7 @@ const KPIReviewForm = ({
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={() => {
-                if (achievement == formik.values.actual_achievement) {
+                if (achievement == formik.values.supervisor_actual_achievement) {
                   null;
                 } else {
                   formik.handleSubmit();
@@ -33,7 +34,9 @@ const KPIReviewForm = ({
                 }
               }}
             >
-              <Text style={{ opacity: achievement == formik.values.actual_achievement ? 0.5 : 1 }}>Save</Text>
+              <Text style={{ opacity: achievement == formik.values.supervisor_actual_achievement ? 0.5 : 1 }}>
+                Save
+              </Text>
             </TouchableOpacity>
           </View>
           <Text>{description}</Text>
@@ -56,12 +59,12 @@ const KPIReviewForm = ({
           <Input
             formik={formik}
             title="Actual Achievement"
-            fieldName="actual_achievement"
-            value={formik.values.actual_achievement}
+            fieldName="supervisor_actual_achievement"
+            value={achievementValue === achievement ? formik.values.supervisor_actual_achievement : achievementValue}
             placeHolder="Input Number Only"
             keyboardType="numeric"
             onChangeText={(value) => {
-              formik.setFieldValue("actual_achievement", value);
+              formik.setFieldValue("supervisor_actual_achievement", value);
             }}
           />
         </View>

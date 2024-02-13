@@ -49,17 +49,11 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
                   style={{ ...styles.image, width, height, resizeMode: "contain" }}
                 />
                 <View style={styles.actionGroupMedia}>
-                  <TouchableOpacity
-                    style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-                    onPress={() => attachmentDownloadHandler(item)}
-                  >
+                  <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(item)}>
                     <MaterialCommunityIcons name="download" size={20} color="#FFFFFF" />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-                    onPress={() => setIsFullScreen(false)}
-                  >
-                    <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
+                  <TouchableOpacity style={{ padding: 5 }} onPress={() => setIsFullScreen(false)}>
+                    <MaterialCommunityIcons name="close" size={20} color="#EB0E29" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -93,17 +87,11 @@ const ImageFullScreenModal = ({ isFullScreen, setIsFullScreen, file_path, media,
             style={styles.image}
           />
           <View style={styles.actionGroup}>
-            <TouchableOpacity
-              style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-              onPress={() => attachmentDownloadHandler(file_path)}
-            >
+            <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(file_path)}>
               <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: "black", borderRadius: 20, padding: 5 }}
-              onPress={() => setIsFullScreen(false)}
-            >
-              <MaterialCommunityIcons name="close" size={30} color="#FFFFFF" />
+            <TouchableOpacity style={{ padding: 5 }} onPress={() => setIsFullScreen(false)}>
+              <MaterialCommunityIcons name="close" size={30} color="#EB0E29" />
             </TouchableOpacity>
           </View>
         </View>

@@ -9,7 +9,7 @@ import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const FeedCardItem = ({
+const FeedCardItemPost = ({
   id,
   employeeId,
   employeeName,
@@ -125,7 +125,10 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <Pressable style={{ ...card.card, gap: 20 }} onPress={() => navigation.navigate("Post Screen", { id: id })}>
+      <Pressable
+        style={{ padding: 16, gap: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: "#FFFFFF" }}
+        onPress={() => navigation.navigate("Post Screen", { id: id })}
+      >
         <View style={styles.cardHeader}>
           <TouchableOpacity
             onPress={() =>
@@ -179,14 +182,18 @@ const FeedCardItem = ({
 
         <View style={styles.dockAction}>
           <View style={styles.iconAction}>
-            <Pressable
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
+              {" "}
+              {totalComment > 1 ? "Comments" : "Comment"}
+            </Text>
+            {/* <Pressable
               onPress={() => {
                 onCommentToggle(id);
               }}
             >
               <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-            </Pressable>
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
+            </Pressable> */}
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
@@ -208,13 +215,13 @@ const FeedCardItem = ({
   );
 };
 
-export default FeedCardItem;
+export default FeedCardItemPost;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     marginVertical: 14,
-    marginBottom: 2,
+    marginBottom: 0,
   },
   defaultText: {
     color: "#000000",

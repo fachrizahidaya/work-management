@@ -14,6 +14,7 @@ const AppraisalForm = ({
   choice_e,
   formik,
   choice,
+  choiceValue,
 }) => {
   return (
     <ActionSheet ref={reference}>
@@ -36,7 +37,7 @@ const AppraisalForm = ({
           </View>
           <Text>{description}</Text>
           <Select
-            value={formik.values.choice}
+            value={choiceValue === choice ? formik.values.choice : choiceValue}
             placeHolder="Select your answer"
             items={[
               { value: "a", label: choice_a },

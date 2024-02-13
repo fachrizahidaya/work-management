@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
 
-import { FlashList } from "@shopify/flash-list";
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
@@ -16,13 +16,14 @@ import { ErrorToastProps, SuccessToastProps } from "../../../../components/share
 import AppraisalDetailList from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailList";
 import AppraisalDetailItem from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailItem";
 import AppraisalForm from "../../../../components/Tribe/Performance/Form/AppraisalForm";
-import { useFormik } from "formik";
+import Button from "../../../../components/shared/Forms/Button";
 
 const AppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
+  const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -40,13 +41,13 @@ const AppraisalScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const openSelectedAppraisal = (data) => {
+  const openSelectedAppraisal = (data, value) => {
     setAppraisal(data);
+    setEmployeeAppraisal(value);
     formScreenSheetRef.current?.show();
   };
 
   const closeSelectedAppraisal = () => {
-    setAppraisal(null);
     formScreenSheetRef.current?.hide();
   };
 
@@ -129,6 +130,25 @@ const AppraisalScreen = () => {
     setFormValue(formik.values);
   };
 
+  function compareActualChoice(appraisalValues, employeeAppraisalValue) {
+    let differences = [];
+
+    for (let empAppraisal of employeeAppraisalValue) {
+      let appraisalValue = appraisalValues.find((appraisal) => appraisal.id === empAppraisal.id);
+
+      if (appraisalValue && appraisalValue.choice !== empAppraisal.choice) {
+        differences.push({
+          id: empAppraisal.id,
+          difference: [empAppraisal.choice, appraisalValue.choice],
+        });
+      }
+    }
+
+    return differences;
+  }
+
+  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+
   useEffect(() => {
     if (formValue) {
       formik.handleSubmit();
@@ -154,13 +174,33 @@ const AppraisalScreen = () => {
             title="Employee Appraisal"
             backButton={true}
             onPress={() => {
-              navigation.goBack();
-              // toggleReturnModal()
+              if (differences.length === 0) {
+                navigation.goBack();
+              } else {
+                toggleReturnModal();
+              }
             }}
           />
-          <TouchableOpacity onPress={() => submitHandler()}>
-            {submitIsLoading ? <ActivityIndicator /> : <Text>Save</Text>}
-          </TouchableOpacity>
+
+          <Button
+            height={35}
+            padding={10}
+            children={
+              submitIsLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
+              )
+            }
+            onPress={() => {
+              if (submitIsLoading || differences.length === 0) {
+                null;
+              } else {
+                submitHandler();
+              }
+            }}
+            disabled={differences.length === 0 || submitIsLoading}
+          />
         </View>
         <AppraisalDetailList
           dayjs={dayjs}
@@ -177,6 +217,9 @@ const AppraisalScreen = () => {
             {appraisalValues &&
               appraisalValues.length > 0 &&
               appraisalValues.map((item, index) => {
+                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+                  (empAppraisal) => empAppraisal.id === item.id
+                );
                 return (
                   <AppraisalDetailItem
                     key={index}
@@ -191,18 +234,19 @@ const AppraisalScreen = () => {
                     choice_d={item?.choice_d}
                     choice_e={item?.choice_e}
                     handleOpen={openSelectedAppraisal}
+                    employeeAppraisalValue={correspondingEmployeeAppraisal}
                   />
                 );
               })}
           </View>
         </View>
       </SafeAreaView>
-      {/* <ReturnConfirmationModal
+      <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
-      /> */}
+      />
       <AppraisalForm
         reference={formScreenSheetRef}
         handleClose={closeSelectedAppraisal}
@@ -214,6 +258,7 @@ const AppraisalScreen = () => {
         choice_e={appraisal?.choice_e}
         formik={formik}
         choice={appraisal?.choice}
+        choiceValue={employeeAppraisal?.choice}
       />
     </>
   );

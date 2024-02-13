@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
+const CommentDetailItem = ({ description, handleOpen, item, employeeCommentValue, comment }) => {
   return (
     <Pressable
       style={{
@@ -20,7 +20,7 @@ const KPIDetailItem = ({ target, achievement, description, handleOpen, item, emp
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item, employeeKpiValue);
+        handleOpen(item, employeeCommentValue);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>
@@ -28,11 +28,10 @@ const KPIDetailItem = ({ target, achievement, description, handleOpen, item, emp
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name={"chart-bar"} size={15} style={{ opacity: 0.5 }} />
 
-        <Text style={[TextProps]}>{achievement || 0} of</Text>
-        <Text style={[TextProps]}>{target}</Text>
+        <Text style={[TextProps]}>{comment}</Text>
       </View>
     </Pressable>
   );
 };
 
-export default KPIDetailItem;
+export default CommentDetailItem;

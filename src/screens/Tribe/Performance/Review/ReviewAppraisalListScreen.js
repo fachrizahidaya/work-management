@@ -2,19 +2,17 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewKPIListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import { useFetch } from "../../../../hooks/useFetch";
 import OngoingReviewAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewAppraisalListItem";
 
 const ReviewAppraisalListScreen = () => {
-  const [tabValue, setTabValue] = useState("Waiting Review");
   const navigation = useNavigation();
 
   const {
@@ -23,13 +21,24 @@ const ReviewAppraisalListScreen = () => {
     isFetching: appraisalListIsFetching,
   } = useFetch("/hr/employee-review/appraisal");
 
-  const tabs = useMemo(() => {
-    return [
-      { title: `Waiting Review (${appraisalList?.data.length || 0})`, value: "Waiting Review" },
-      { title: `Personal (${0})`, value: "Personal" },
-      { title: `My Team (${0})`, value: "My Team" },
-    ];
-  }, [appraisalList]);
+  if (appraisalList?.data.length > 0) {
+    var tabs = useMemo(() => {
+      return [
+        { title: `Waiting Review (${appraisalList?.data.length || 0})`, value: "Waiting Review" },
+        { title: `Personal (${0})`, value: "Personal" },
+        { title: `My Team (${0})`, value: "My Team" },
+      ];
+    }, [appraisalList]);
+  } else {
+    var tabs = useMemo(() => {
+      return [
+        { title: `Personal (${0})`, value: "Personal" },
+        { title: `My Team (${0})`, value: "My Team" },
+      ];
+    }, [appraisalList]);
+  }
+
+  const [tabValue, setTabValue] = useState(appraisalList?.data.length > 0 ? "Waiting Review" : "Personal");
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -38,7 +47,7 @@ const ReviewAppraisalListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Review" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Appraisal Review" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
@@ -58,10 +67,8 @@ const ReviewAppraisalListScreen = () => {
                   id={item?.id}
                   start_date={item?.begin_date}
                   end_date={item?.end_date}
-                  position={item?.target_level}
                   navigation={navigation}
                   name={item?.employee?.name}
-                  type="kpi"
                   target={item?.performance_appraisal?.target_name}
                   dayjs={dayjs}
                 />
@@ -72,7 +79,7 @@ const ReviewAppraisalListScreen = () => {
             // refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}
             >
               <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />;
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )}

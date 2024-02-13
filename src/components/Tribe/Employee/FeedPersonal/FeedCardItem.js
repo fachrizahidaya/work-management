@@ -36,6 +36,7 @@ const FeedCardItem = ({
   employeeUsername,
   toggleDeleteModal,
   toggleEditModal,
+  navigation,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -127,7 +128,7 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <View gap={20} style={card.card}>
+      <Pressable gap={20} style={card.card} onPress={() => navigation.navigate("Post Screen", { id: id })}>
         <View style={styles.cardHeader}>
           <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
 
@@ -160,22 +161,36 @@ const FeedCardItem = ({
                               paddingBottom: -20,
                             }}
                           >
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleEditModal();
-                              }}
-                            >
-                              <Text style={[TextProps]}>Edit Post</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleDeleteModal();
-                              }}
-                            >
-                              <Text style={[{ fontSize: 14 }, TextProps]}>Delete Post</Text>
-                            </TouchableOpacity>
+                            <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                              <TouchableOpacity
+                                onPress={async () => {
+                                  await SheetManager.hide("form-sheet");
+                                  toggleEditModal();
+                                }}
+                                style={{
+                                  ...styles.containerEdit,
+                                  justifyContent: "space-between",
+                                  borderBottomWidth: 1,
+                                  borderBottomColor: "#FFFFFF",
+                                }}
+                              >
+                                <Text style={[{ fontSize: 16 }, TextProps]}>Edit Post</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={async () => {
+                                  await SheetManager.hide("form-sheet");
+                                  toggleDeleteModal();
+                                }}
+                                style={{
+                                  ...styles.containerEdit,
+                                  justifyContent: "space-between",
+                                  borderBottomWidth: 1,
+                                  borderBottomColor: "#FFFFFF",
+                                }}
+                              >
+                                <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         ),
                       },
@@ -233,7 +248,7 @@ const FeedCardItem = ({
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
           </View>
         </View>
-      </View>
+      </Pressable>
     </View>
   );
 };
@@ -280,5 +295,14 @@ const styles = StyleSheet.create({
     height: 350,
     backgroundColor: "white",
     resizeMode: "cover",
+  },
+  containerEdit: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

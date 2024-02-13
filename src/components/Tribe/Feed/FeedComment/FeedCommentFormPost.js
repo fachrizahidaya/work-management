@@ -1,14 +1,12 @@
-import { useEffect } from "react";
-
-import { StyleSheet, View, Platform, KeyboardAvoidingView, Dimensions } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import { MentionInput } from "react-native-controlled-mentions";
-
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import FormButton from "../../../shared/FormButton";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 
-const FeedCommentForm = ({
+const FeedCommentFormPost = ({
   loggedEmployeeImage,
   parentId,
   loggedEmployeeName,
@@ -25,7 +23,7 @@ const FeedCommentForm = ({
 
   return (
     <View style={{ ...styles.container }}>
-      <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} />
+      {/* <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} /> */}
       <View style={{ flex: 1 }}>
         <MentionInput
           value={formik.values.comments}
@@ -67,7 +65,7 @@ const FeedCommentForm = ({
   );
 };
 
-export default FeedCommentForm;
+export default FeedCommentFormPost;
 
 const styles = StyleSheet.create({
   container: {
@@ -76,10 +74,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingTop: 6,
     paddingBottom: 14,
-    paddingLeft: 8,
+    paddingLeft: 14,
     paddingRight: 6,
     borderTopWidth: 1,
     borderTopColor: "#DBDBDB",
     gap: 10,
+    backgroundColor: "#FFFFFF",
   },
 });

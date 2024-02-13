@@ -8,9 +8,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import PageHeader from "../../../../components/shared/PageHeader";
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../../components/shared/CustomStylings";
+import useCheckAccess from "../../../../hooks/useCheckAccess";
+import { useSelector } from "react-redux";
 
 const KPIAppraisalReviewScreen = () => {
   const navigation = useNavigation();
+  const menuSelector = useSelector((state) => state.user_menu.user_menu);
 
   const menu = [
     {
@@ -23,12 +26,17 @@ const KPIAppraisalReviewScreen = () => {
       icon: "file-chart-outline",
       navigation: "Review Appraisal",
     },
+    {
+      name: "Comment",
+      icon: "file-account-outline",
+      navigation: "Comment Screen",
+    },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader width={200} title="My Performance" backButton={false} />
+        <PageHeader width={200} title="Employee Review" backButton={false} />
       </View>
 
       <View

@@ -378,6 +378,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   toggleDeleteModal={toggleDeleteModal}
                   toggleEditModal={toggleEditModal}
                   reference={teammatesScreenSheetRef}
+                  navigation={navigation}
                 />
 
                 <FeedComment

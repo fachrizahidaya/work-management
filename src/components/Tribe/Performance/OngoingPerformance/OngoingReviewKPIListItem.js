@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import { Pressable, Text, View } from "react-native";
 
@@ -8,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewKPIListItem = ({ id, start_date, end_date, position, navigation, name, type, target, dayjs }) => {
+const OngoingReviewKPIListItem = ({ id, start_date, end_date, navigation, name, target, dayjs }) => {
   return (
     <Pressable
       style={{

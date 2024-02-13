@@ -5,15 +5,29 @@ import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  AppState,
+  Platform,
+  Linking,
+  Dimensions,
+} from "react-native";
 import Toast from "react-native-root-toast";
+import Modal from "react-native-modal";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const TribeAddNewSheet = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,12 +35,21 @@ const TribeAddNewSheet = (props) => {
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
+  const [filledLocation, setFilledLocation] = useState(null);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
+
+  const { toggle: toggleClockModal, isOpen: clockModalIsOpen, close } = useDisclosure(false);
+
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -98,9 +121,9 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (locationOn == false) {
+      if (locationOn === false) {
         showAlertToActivateLocation();
-      } else if (status == false) {
+      } else if (status === false) {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
       } else {
@@ -112,7 +135,7 @@ const TribeAddNewSheet = (props) => {
           });
 
           refetchAttendance();
-
+          toggleClockModal();
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           // Toast.show("You already checked out at this time", ErrorToastProps);
@@ -120,7 +143,7 @@ const TribeAddNewSheet = (props) => {
       }
     } catch (err) {
       console.log(err);
-      // Toast.show(err.response.data.message, ErrorToastProps);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -142,6 +165,7 @@ const TribeAddNewSheet = (props) => {
 
       const currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
+      setFilledLocation(currentLocation);
     } catch (err) {
       console.log(err.message);
     }
@@ -167,6 +191,7 @@ const TribeAddNewSheet = (props) => {
         const { granted } = await Location.getForegroundPermissionsAsync();
 
         setStatus(granted);
+        setLocation(filledLocation);
       } catch (err) {
         console.log(err);
       }
@@ -188,50 +213,94 @@ const TribeAddNewSheet = (props) => {
     getLocation();
   }, [status, locationOn]);
 
-  return (
-    <ActionSheet ref={props.reference}>
-      <View style={styles.container}>
-        {items.slice(0, 2).map((item, idx) => {
-          return item.title !== "Clock in" ? (
-            <TouchableOpacity
-              key={idx}
-              borderColor="#E8E9EB"
-              borderBottomWidth={1}
-              style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-              onPress={() => {
-                if (item.title === "New Leave Request") {
-                  navigation.navigate("New Leave Request", {
-                    employeeId: profile?.data?.id,
-                  });
-                } else if (item.title === "New Reimbursement") {
-                  navigation.navigate("New Reimbursement");
-                }
+  useEffect(() => {
+    if (clockModalIsOpen) {
+      const timeout = setTimeout(() => {
+        toggleClockModal();
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [clockModalIsOpen]);
 
-                props.reference.current?.hide();
-              }}
-            >
-              <View style={styles.flex}>
-                <View style={styles.item}>
-                  <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+  return (
+    <>
+      <ActionSheet ref={props.reference}>
+        <View style={styles.container}>
+          {items.slice(0, 2).map((item, idx) => {
+            return item.title !== "Clock in" ? (
+              <TouchableOpacity
+                key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
+                style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+                onPress={() => {
+                  if (item.title === "New Leave Request") {
+                    navigation.navigate("New Leave Request", {
+                      employeeId: profile?.data?.id,
+                    });
+                  } else if (item.title === "New Reimbursement") {
+                    navigation.navigate("New Reimbursement");
+                  }
+
+                  props.reference.current?.hide();
+                }}
+              >
+                <View style={styles.flex}>
+                  <View style={styles.item}>
+                    <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                  </View>
+                  <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                    {item.title}
+                  </Text>
                 </View>
-                <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                  {item.title}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            attendance?.data &&
-              attendance?.data?.day_type === "Work Day" &&
-              attendance?.date?.att_type !== "Leave" &&
-              attendance?.data?.att_type !== "Holiday" && (
-                <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
-                  <ClockAttendance attendance={attendance?.data} onClock={attendanceCheckHandler} location={location} />
-                </Pressable>
-              )
-          );
-        })}
-      </View>
-    </ActionSheet>
+              </TouchableOpacity>
+            ) : (
+              attendance?.data &&
+                attendance?.data?.day_type === "Work Day" &&
+                attendance?.date?.att_type !== "Leave" &&
+                attendance?.data?.att_type !== "Holiday" && (
+                  <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
+                    <ClockAttendance
+                      attendance={attendance?.data}
+                      onClock={attendanceCheckHandler}
+                      location={location}
+                      locationOn={locationOn}
+                    />
+                  </Pressable>
+                )
+            );
+          })}
+        </View>
+      </ActionSheet>
+      <Modal
+        isVisible={clockModalIsOpen}
+        onBackdropPress={() => {
+          toggleClockModal();
+        }}
+        deviceHeight={125}
+        deviceWidth={deviceWidth}
+        animationIn={"slideInDown"}
+        animationOut={"slideOutUp"}
+        backdropColor="#176688"
+        backdropOpacity={1}
+        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
+      >
+        <View style={{ alignItems: "center", gap: 5 }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{ color: !attendance?.data?.time_in ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
+            >
+              {!attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
+          </View>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            at {!attendance?.data?.time_out ? attendance?.data?.time_in : attendance?.data?.time_out}
+          </Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
+      </Modal>
+    </>
   );
 };
 

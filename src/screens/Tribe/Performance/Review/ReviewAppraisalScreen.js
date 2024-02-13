@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useFormik } from "formik";
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-root-toast";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -12,13 +14,16 @@ import ReviewAppraisalDetailItem from "../../../../components/Tribe/Performance/
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { useFormik } from "formik";
+import AppraisalReviewForm from "../../../../components/Tribe/Performance/Form/AppraisalReviewForm";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import Button from "../../../../components/shared/Forms/Button";
 
 const ReviewAppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
+  const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
 
   const navigation = useNavigation();
   const formScreenSheetRef = useRef(null);
@@ -26,19 +31,23 @@ const ReviewAppraisalScreen = () => {
 
   const { id } = route.params;
 
-  const { data: appraisalList } = useFetch(`/hr/employee-review/appraisal/${id}`);
+  const {
+    data: appraisalList,
+    isFetching: appraisalListIsFetching,
+    refetch: refetchAppraisalList,
+  } = useFetch(`/hr/employee-review/appraisal/${id}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const openSelectedAppraisal = (data) => {
+  const openSelectedAppraisal = (data, value) => {
     setAppraisal(data);
+    setEmployeeAppraisal(value);
     formScreenSheetRef.current?.show();
   };
 
   const closeSelectedAppraisal = () => {
-    setAppraisal(null);
     formScreenSheetRef.current?.hide();
   };
 
@@ -52,7 +61,7 @@ const ReviewAppraisalScreen = () => {
             ...val?.performance_appraisal_value,
             id: val?.id,
             performance_appraisal_value_id: val?.performance_appraisal_value_id,
-            choice: val?.choice,
+            supervisor_choice: val?.supervisor_choice,
           },
         ];
       });
@@ -68,7 +77,7 @@ const ReviewAppraisalScreen = () => {
           employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
       );
       if (index > -1) {
-        currentData[index].choice = data?.choice;
+        currentData[index].supervisor_choice = data?.supervisor_choice;
       } else {
         currentData = [...currentData, data];
       }
@@ -78,16 +87,19 @@ const ReviewAppraisalScreen = () => {
 
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
-      const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
+      // const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
       const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
-      return [...employeeAppraisalValue, ...performanceAppraisalValue];
+      return [
+        ...employeeAppraisalValue,
+        // ...performanceAppraisalValue
+      ];
     });
   };
 
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(`/hr/employee-appraisal/${appraisalList?.data?.id}`, {
+      const res = await axiosInstance.patch(`/hr/employee-review/appraisal/${appraisalList?.data?.id}`, {
         appraisal_value: employeeAppraisalValue,
       });
       refetchAppraisalList();
@@ -104,7 +116,7 @@ const ReviewAppraisalScreen = () => {
   const formik = useFormik({
     initialValues: {
       performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
-      choice: appraisal?.choice || "",
+      supervisor_choice: appraisal?.supervisor_choice || "",
     },
     onSubmit: (values) => {
       if (formik.isValid) {
@@ -116,10 +128,29 @@ const ReviewAppraisalScreen = () => {
 
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
-      formik.handleChange("choice", e);
+      formik.handleChange("supervisor_choice", e);
     }
     setFormValue(formik.values);
   };
+
+  function compareActualChoice(appraisalValues, employeeAppraisalValue) {
+    let differences = [];
+
+    for (let empAppraisal of employeeAppraisalValue) {
+      let appraisalValue = appraisalValues.find((appraisal) => appraisal.id === empAppraisal.id);
+
+      if (appraisalValue && appraisalValue.supervisor_choice !== empAppraisal.supervisor_choice) {
+        differences.push({
+          id: empAppraisal.id,
+          difference: [empAppraisal.supervisor_choice, appraisalValue.supervisor_choice],
+        });
+      }
+    }
+
+    return differences;
+  }
+
+  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
 
   useEffect(() => {
     if (formValue) {
@@ -141,15 +172,38 @@ const ReviewAppraisalScreen = () => {
     <>
       <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
         <View style={styles.header}>
-          <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => toggleReturnModal()} />
-          <TouchableOpacity
-          // onPress={() => {
-          //   submitHandler();
-          //   navigation.goBack();
-          // }}
-          >
-            <Text>Done</Text>
-          </TouchableOpacity>
+          <PageHeader
+            width={200}
+            title="Employee Appraisal"
+            backButton={true}
+            onPress={() => {
+              if (differences.length === 0) {
+                navigation.goBack();
+              } else {
+                toggleReturnModal();
+              }
+            }}
+          />
+
+          <Button
+            height={35}
+            padding={10}
+            children={
+              submitIsLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
+              )
+            }
+            onPress={() => {
+              if (submitIsLoading || differences.length === 0) {
+                null;
+              } else {
+                submitHandler();
+              }
+            }}
+            disabled={differences.length === 0 || submitIsLoading}
+          />
         </View>
         <ReviewAppraisalDetailList
           dayjs={dayjs}
@@ -166,12 +220,24 @@ const ReviewAppraisalScreen = () => {
             {appraisalValues &&
               appraisalValues.length > 0 &&
               appraisalValues.map((item, index) => {
+                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+                  (empAppraisal) => empAppraisal.id === item.id
+                );
                 return (
                   <ReviewAppraisalDetailItem
                     key={index}
+                    item={item}
                     id={item?.id}
                     description={item?.description}
                     onChange={employeeAppraisalValueUpdateHandler}
+                    handleOpen={openSelectedAppraisal}
+                    choice_a={item?.choice_a}
+                    choice_b={item?.choice_b}
+                    choice_c={item?.choice_c}
+                    choice_d={item?.choice_d}
+                    choice_e={item?.choice_e}
+                    choice={item?.supervisor_choice}
+                    employeeAppraisalValue={correspondingEmployeeAppraisal}
                   />
                 );
               })}
@@ -183,6 +249,19 @@ const ReviewAppraisalScreen = () => {
         toggle={toggleReturnModal}
         description="Are you sure want to return? Data changes will not be save."
         onPress={() => navigation.goBack()}
+      />
+      <AppraisalReviewForm
+        reference={formScreenSheetRef}
+        handleClose={closeSelectedAppraisal}
+        description={appraisal?.description}
+        choice_a={appraisal?.choice_a}
+        choice_b={appraisal?.choice_b}
+        choice_c={appraisal?.choice_c}
+        choice_d={appraisal?.choice_d}
+        choice_e={appraisal?.choice_e}
+        formik={formik}
+        choice={appraisal?.supervisor_choice}
+        choiceValue={employeeAppraisal?.supervisor_choice}
       />
     </>
   );

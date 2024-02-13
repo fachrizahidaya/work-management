@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { Keyboard, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { SheetManager } from "react-native-actions-sheet";
+import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
-import Input from "../../../shared/Forms/Input";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const AppraisalDetailItem = ({
@@ -19,6 +17,7 @@ const AppraisalDetailItem = ({
   choice_d,
   choice_e,
   handleOpen,
+  employeeAppraisalValue,
 }) => {
   return (
     <Pressable
@@ -32,7 +31,7 @@ const AppraisalDetailItem = ({
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item);
+        handleOpen(item, employeeAppraisalValue);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

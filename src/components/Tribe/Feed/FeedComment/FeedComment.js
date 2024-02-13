@@ -1,7 +1,19 @@
 import { useState, useCallback, memo } from "react";
 import { useFormik } from "formik";
 
-import { Clipboard, Linking, StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  Clipboard,
+  Linking,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  KeyboardAvoidingView,
+  Dimensions,
+  SafeAreaView,
+  Platform,
+} from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
@@ -31,8 +43,6 @@ const FeedComment = ({
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
-
   const employeeData = employees?.map(({ id, username }) => ({ id, name: username }));
 
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
@@ -42,7 +52,7 @@ const FeedComment = ({
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 100 }}>
+      <ScrollView style={{ maxHeight: 100 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -50,11 +60,11 @@ const FeedComment = ({
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
+              <Text style={{ fontSize: 12, fontWeight: "400" }}>{item.name}</Text>
             </Pressable>
           )}
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -149,17 +159,16 @@ const FeedComment = ({
           copyToClipboard={copyToClipboard}
           employeeUsername={employeeUsername}
         />
-
-        <FeedCommentForm
-          loggedEmployeeImage={loggedEmployeeImage}
-          loggedEmployeeName={loggedEmployeeName}
-          parentId={parentId}
-          renderSuggestions={renderSuggestions}
-          handleChange={handleChange}
-          formik={formik}
-          suggestion={suggestions}
-        />
       </View>
+      <FeedCommentForm
+        loggedEmployeeImage={loggedEmployeeImage}
+        loggedEmployeeName={loggedEmployeeName}
+        parentId={parentId}
+        renderSuggestions={renderSuggestions}
+        handleChange={handleChange}
+        formik={formik}
+        suggestion={suggestions}
+      />
     </ActionSheet>
   );
 };

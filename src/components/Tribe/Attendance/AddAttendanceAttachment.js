@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import dayjs from "dayjs";
 
 import { View, Text, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
@@ -14,20 +15,21 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month }) => {
   const formik = useFormik({
+    // enableReinitialize: true,
     initialValues: {
       title: "",
-      begin_date: "",
-      end_date: "",
+      begin_date: dayjs().format("YYYY-MM-DD") || "",
+      end_date: dayjs().format("YYYY-MM-DD") || "",
       attachment: fileAttachment?.name || "",
     },
     validationSchema: yup.object().shape({
-      title: yup.string().required("Title is required"),
+      // title: yup.string().required("Title is required"),
       begin_date: yup.date().required("Start date is required"),
       end_date: yup
         .date()
         .required("End date is required")
         .min(yup.ref("begin_date"), "End date can't be less than start date"),
-      attachment: yup.mixed().required("Attachment file is required"),
+      // attachment: yup.mixed().required("Attachment file is required"),
     }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
@@ -133,7 +135,10 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               )}
             </View>
 
-            {!formik.values.attachment ? (
+            {!formik.values.attachment ||
+            !formik.values.title ||
+            !formik.values.begin_date ||
+            !formik.values.end_date ? (
               <FormButton
                 opacity={0.5}
                 disabled={true}

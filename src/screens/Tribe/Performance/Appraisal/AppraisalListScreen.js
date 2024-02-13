@@ -39,7 +39,7 @@ const AppraisalListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Appraisal" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Employee Appraisal" backButton={false} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

@@ -1,15 +1,13 @@
 import React from "react";
 
-import { Keyboard, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { SheetManager } from "react-native-actions-sheet";
+import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
-import Input from "../../../shared/Forms/Input";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailItem = ({ target, achievement, description, handleOpen, item }) => {
+const ReviewDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
   return (
     <Pressable
       style={{
@@ -22,7 +20,7 @@ const ReviewDetailItem = ({ target, achievement, description, handleOpen, item }
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item);
+        handleOpen(item, employeeKpiValue);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

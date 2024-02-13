@@ -45,7 +45,7 @@ const ContactList = ({
                   fontSize: 14,
                   fontWeight: "500",
                   color: "#3F434A",
-                  width: 110,
+                  width: 160,
                   overflow: "hidden",
                 }}
                 numberOfLines={1}
@@ -68,7 +68,19 @@ const ContactList = ({
               ) : null}
             </View>
 
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{position}</Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#20A144",
+                width: 140,
+                overflow: "hidden",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {position}
+            </Text>
           </View>
         </View>
 

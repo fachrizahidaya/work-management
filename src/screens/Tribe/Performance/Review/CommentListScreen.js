@@ -2,43 +2,43 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewKPIListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import { useFetch } from "../../../../hooks/useFetch";
+import OngoingCommentListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingCommentListItem";
 
-const ReviewKPIListScreen = () => {
+const CommentListScreen = () => {
   const navigation = useNavigation();
 
   const {
-    data: reviewList,
-    refetch: refetchReviewList,
-    isFetching: reviewListIsFetching,
-  } = useFetch("/hr/employee-review/kpi");
+    data: commentList,
+    refetch: refetchCommentList,
+    isFetching: commentListIsFetching,
+  } = useFetch("/hr/employee-review/comment");
 
-  if (reviewList?.data.length > 0) {
+  if (commentList?.data.length > 0) {
     var tabs = useMemo(() => {
       return [
-        { title: `Waiting Review (${reviewList?.data.length || 0})`, value: "Waiting Review" },
+        { title: `Waiting Review (${commentList?.data.length || 0})`, value: "Waiting Review" },
         { title: `Personal (${0})`, value: "Personal" },
         { title: `My Team (${0})`, value: "My Team" },
       ];
-    }, [reviewList]);
+    }, [commentList]);
   } else {
     var tabs = useMemo(() => {
       return [
         { title: `Personal (${0})`, value: "Personal" },
         { title: `My Team (${0})`, value: "My Team" },
       ];
-    }, [reviewList]);
+    }, [commentList]);
   }
 
-  const [tabValue, setTabValue] = useState(!reviewList?.data ? "Personal" : "Waiting Review");
+  const [tabValue, setTabValue] = useState(!commentList?.data ? "Personal" : "Waiting Review");
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -47,7 +47,7 @@ const ReviewKPIListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="KPI Review" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Comment Employee" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
@@ -57,26 +57,28 @@ const ReviewKPIListScreen = () => {
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Waiting Review" ? (
             <FlashList
-              data={reviewList?.data}
+              data={commentList?.data}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
               renderItem={({ item, index }) => (
-                <OngoingReviewKPIListItem
+                <OngoingCommentListItem
                   key={index}
                   id={item?.id}
-                  start_date={item?.begin_date}
-                  end_date={item?.end_date}
+                  start_date={item?.performance_review?.begin_date}
+                  end_date={item?.performance_review?.end_date}
                   navigation={navigation}
                   name={item?.employee?.name}
                   target={item?.performance_kpi?.target_name}
                   dayjs={dayjs}
+                  description={item?.performance_review?.description}
                 />
               )}
+              refreshControl={<RefreshControl refreshing={commentListIsFetching} onRefresh={refetchCommentList} />}
             />
           ) : (
             <ScrollView
-            // refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}
+              refreshControl={<RefreshControl refreshing={commentListIsFetching} onRefresh={refetchCommentList} />}
             >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
@@ -89,7 +91,7 @@ const ReviewKPIListScreen = () => {
   );
 };
 
-export default ReviewKPIListScreen;
+export default CommentListScreen;
 
 const styles = StyleSheet.create({
   container: {

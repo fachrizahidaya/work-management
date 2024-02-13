@@ -16,6 +16,7 @@ const KPIForm = ({
   achievement,
   target,
   onChange,
+  achievementValue,
 }) => {
   return (
     <ActionSheet ref={reference}>
@@ -57,7 +58,7 @@ const KPIForm = ({
             formik={formik}
             title="Actual Achievement"
             fieldName="actual_achievement"
-            value={formik.values.actual_achievement}
+            value={achievementValue === achievement ? formik.values.actual_achievement : achievementValue}
             placeHolder="Input Number Only"
             keyboardType="numeric"
             onChangeText={(value) => {

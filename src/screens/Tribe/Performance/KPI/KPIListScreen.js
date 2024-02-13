@@ -38,7 +38,7 @@ const KPIListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="KPI" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Employee KPI" backButton={false} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

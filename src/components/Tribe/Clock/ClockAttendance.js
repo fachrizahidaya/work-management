@@ -10,10 +10,14 @@ import Animated, {
   useDerivedValue,
   interpolateColor,
 } from "react-native-reanimated";
+import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ClockAttendance = ({ attendance, onClock, location }) => {
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+const AnimatedText = Animated.createAnimatedComponent(Text);
+
+const ClockAttendance = ({ attendance, onClock, location, locationOn }) => {
   const [success, setSuccess] = useState(false);
   const translateX = useSharedValue(0);
 
@@ -89,7 +93,19 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
         },
       ],
       backgroundColor: success ? "#FFFFFF" : backgroundColor,
-      tintColor: iconTintColor,
+      // tintColor: iconTintColor,
+    };
+  });
+
+  const rIconStyle = useAnimatedStyle(() => {
+    const iconColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      ["#186688", "#FFFFFF"]
+    );
+    return {
+      // transform: [{ translateX: limitedTranslateX.value }],
+      // backgroundColor: success ? "#186688" : iconColor,
     };
   });
 
@@ -97,9 +113,13 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
    * Handle animation for text color
    */
   const textContainerStyle = useAnimatedStyle(() => {
-    const textColor = success ? "#FFFFFF" : "#186688";
+    const textColor = interpolateColor(
+      limitedTranslateX.value,
+      [0, parentWidth - MIN_TRANSLATE_X],
+      ["#186688", "#FFFFFF"]
+    );
     return {
-      opacity: textOpacity.value,
+      // opacity: textOpacity.value,
       color: textColor,
     };
   });
@@ -183,7 +203,7 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
               },
             ]}
           >
-            <MaterialCommunityIcons name="chevron-right" size={50} color={success ? "#186688" : "#FFFFFF"} />
+            <AnimatedIcon name="chevron-right" size={50} color={success ? "#186688" : "#FFFFFF"} style={[rIconStyle]} />
           </Animated.View>
         </PanGestureHandler>
 
@@ -199,13 +219,22 @@ const ClockAttendance = ({ attendance, onClock, location }) => {
             },
           ]}
         >
-          <Text style={{ fontSize: 16, fontWeight: "500", color: success ? "#FFFFFF" : "#186688" }}>
+          <AnimatedText
+            style={[
+              textContainerStyle,
+              {
+                fontSize: 16,
+                fontWeight: "500",
+                color: success ? "#FFFFFF" : "#186688",
+              },
+            ]}
+          >
             {success && location
               ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} success!`
-              : success && !location
+              : success && !locationOn
               ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
               : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
-          </Text>
+          </AnimatedText>
         </Animated.View>
       </Animated.View>
     </View>
