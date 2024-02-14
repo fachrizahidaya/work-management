@@ -116,6 +116,7 @@ const NoteForm = ({ route }) => {
                 formik.setFieldValue("content", descriptionText);
               }}
               initialContentHTML={preprocessContent(formik.values.content)}
+              style={{ minHeight: 400 }}
             />
           </ScrollView>
 
