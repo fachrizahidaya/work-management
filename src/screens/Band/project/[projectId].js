@@ -142,12 +142,13 @@ const ProjectDetailScreen = ({ route }) => {
                     SheetManager.show("form-sheet", {
                       payload: {
                         children: (
-                          <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                          <View style={styles.menu}>
                             <TouchableOpacity
                               onPress={async () => {
                                 await SheetManager.hide("form-sheet");
                                 toggleUserModal();
                               }}
+                              style={styles.menuItem}
                             >
                               <Text style={TextProps}>Change Ownership</Text>
                             </TouchableOpacity>
@@ -161,6 +162,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   });
                                   SheetManager.hide("form-sheet");
                                 }}
+                                style={styles.menuItem}
                               >
                                 <Text style={TextProps}>Edit</Text>
                               </TouchableOpacity>
@@ -172,6 +174,7 @@ const ProjectDetailScreen = ({ route }) => {
                                   await SheetManager.hide("form-sheet");
                                   toggle();
                                 }}
+                                style={styles.menuItem}
                               >
                                 <Text style={{ color: "red" }}>Delete</Text>
                               </TouchableOpacity>
@@ -318,6 +321,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
   },
 });
 
