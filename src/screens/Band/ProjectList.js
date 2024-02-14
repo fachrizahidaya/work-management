@@ -25,7 +25,7 @@ const ProjectList = () => {
   const [searchInput, setSearchInput] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
-  const [tabValue, setTabValue] = useState("Open");
+  const [tabValue, setTabValue] = useState("On Progress");
   const createActionCheck = useCheckAccess("create", "Projects");
 
   const dependencies = [status, currentPage, searchInput, selectedPriority, deadlineSort, ownerName];
