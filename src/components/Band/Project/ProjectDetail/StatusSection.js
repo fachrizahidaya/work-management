@@ -3,7 +3,7 @@ import React, { memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { SheetManager } from "react-native-actions-sheet";
 
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -32,21 +32,24 @@ const StatusSection = ({ projectData, onChange }) => {
           SheetManager.show("form-sheet", {
             payload: {
               children: (
-                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                  {statuses.map((status) => {
-                    return (
-                      <TouchableOpacity
-                        key={status}
-                        onPress={() => {
-                          if (status !== "Open") {
-                            setValue(status);
-                            toggle();
-                            onChange(status === "On Progress" ? "start" : "finish");
-                            SheetManager.hide("form-sheet");
-                          }
-                        }}
-                      >
-                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
+                <View style={styles.menu}>
+                  <View style={styles.wrapper}>
+                    {statuses.map((status) => {
+                      return (
+                        <TouchableOpacity
+                          key={status}
+                          onPress={() => {
+                            if (status !== "Open") {
+                              setValue(status);
+                              toggle();
+                              onChange(status === "On Progress" ? "start" : "finish");
+                              SheetManager.hide("form-sheet");
+                            }
+                          }}
+                          style={styles.menuItem}
+                        >
+                          <Text style={(TextProps, { fontSize: 16 })}>{status}</Text>
+
                           <View
                             style={{
                               height: 15,
@@ -56,11 +59,10 @@ const StatusSection = ({ projectData, onChange }) => {
                               borderRadius: 4,
                             }}
                           />
-                          <Text style={TextProps}>{status}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
                 </View>
               ),
             },
@@ -104,5 +106,27 @@ const StatusSection = ({ projectData, onChange }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  menu: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+  },
+});
 
 export default memo(StatusSection);

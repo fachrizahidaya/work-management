@@ -2,7 +2,7 @@ import React from "react";
 
 import { SheetManager } from "react-native-actions-sheet";
 
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../../../../shared/CustomStylings";
 
@@ -89,24 +89,25 @@ const AttachmentList = ({
           SheetManager.show("form-sheet", {
             payload: {
               children: (
-                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                  <TouchableOpacity
-                    style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
-                    onPress={() => downloadFileHandler(path)}
-                  >
-                    <MaterialCommunityIcons name="download-outline" size={20} color="#3F434A" />
-                    <Text style={TextProps}>Download</Text>
-                  </TouchableOpacity>
-
-                  {!disabled && (
-                    <TouchableOpacity
-                      style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
-                      onPress={() => deleteFileHandler(id, from)}
-                    >
-                      <MaterialCommunityIcons name="delete-outline" size={20} color="red" />
-                      <Text style={{ color: "red" }}>Delete</Text>
+                <View style={styles.menu}>
+                  <View style={styles.wrapper}>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => downloadFileHandler(path)}>
+                      <Text style={(TextProps, { fontSize: 16 })}>Download</Text>
+                      <MaterialCommunityIcons name="download-outline" size={20} color="#3F434A" />
                     </TouchableOpacity>
-                  )}
+                  </View>
+
+                  <View style={styles.wrapper}>
+                    {!disabled && (
+                      <TouchableOpacity
+                        style={[styles.menuItem, { marginTop: 3 }]}
+                        onPress={() => deleteFileHandler(id, from)}
+                      >
+                        <Text style={{ color: "red", fontSize: 16, fontWeight: 700 }}>Delete</Text>
+                        <MaterialCommunityIcons name="delete-outline" size={20} color="red" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
               ),
             },
@@ -118,5 +119,29 @@ const AttachmentList = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+  },
+});
 
 export default AttachmentList;
