@@ -3,28 +3,34 @@ import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
-import OngoingPerformanceListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
-import Tabs from "../../../components/shared/Tabs";
-import PageHeader from "../../../components/shared/PageHeader";
-import { useFetch } from "../../../hooks/useFetch";
-import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+import PageHeader from "../../../../components/shared/PageHeader";
+import Tabs from "../../../../components/shared/Tabs";
+import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
+import { useFetch } from "../../../../hooks/useFetch";
+import OngoingPerformanceListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const PerformanceListScreen = () => {
+const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
 
   const navigation = useNavigation();
 
-  const { data: kpiList } = useFetch("/hr/employee-kpi/ongoing");
+  const {
+    data: appraisalList,
+    refetch: refetchAppraisalList,
+    isFetching: appraisalListIsFetching,
+  } = useFetch("/hr/employee-appraisal/ongoing");
 
   const tabs = useMemo(() => {
     return [
-      { title: `Ongoing (${kpiList?.data.length || 0})`, value: "Ongoing" },
+      { title: `Ongoing (${appraisalList?.data.length || 0})`, value: "Ongoing" },
       { title: `Archived (${0})`, value: "Archived" },
     ];
-  }, []);
+  }, [appraisalList]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -33,22 +39,22 @@ const PerformanceListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="KPI" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Employee Appraisal" backButton={false} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <View style={{ flex: 1, paddingHorizontal: 15 }}>
           {tabValue === "Ongoing" ? (
             <FlashList
-              data={kpiList?.data}
+              data={appraisalList?.data}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
               renderItem={({ item, index }) => (
-                <OngoingPerformanceListItem
+                <OngoingAppraisalListItem
                   key={index}
                   id={item?.id}
                   start_date={item?.review?.begin_date}
@@ -56,12 +62,15 @@ const PerformanceListScreen = () => {
                   position={item?.target_level}
                   navigation={navigation}
                   name={item?.review?.description}
-                  type="kpi"
+                  type="appraisal"
+                  target={item?.target_name}
                 />
               )}
             />
           ) : (
-            <ScrollView>
+            <ScrollView
+              refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}
+            >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
@@ -73,7 +82,7 @@ const PerformanceListScreen = () => {
   );
 };
 
-export default PerformanceListScreen;
+export default AppraisalListScreen;
 
 const styles = StyleSheet.create({
   container: {

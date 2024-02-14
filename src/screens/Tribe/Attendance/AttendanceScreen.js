@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect, Fragment, useRef } from "react";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
+import Modal from "react-native-modal";
 
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
@@ -240,6 +241,22 @@ const AttendanceScreen = () => {
     toggleDeleteAttachment();
   };
 
+  const renderCustomHeader = (date) => {
+    return (
+      <View>
+        <TouchableOpacity>
+          {/* Your custom left arrow shape component */}
+          <Text>{"<-"}</Text>
+        </TouchableOpacity>
+        {/* <Text >{date.toString('MMMM yyyy')}</Text> */}
+        <TouchableOpacity>
+          {/* Your custom right arrow shape component */}
+          <Text>{"->"}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   /**
    * Marked dates in Calendar Handler
    * @returns
@@ -321,6 +338,8 @@ const AttendanceScreen = () => {
           customStyles = {
             container: {
               backgroundColor: backgroundColor,
+              // elevation: 2,
+              borderRadius: 5,
             },
             text: {
               color: textColor,
@@ -340,6 +359,7 @@ const AttendanceScreen = () => {
           markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
+          theme={{ arrowColor: "orange" }}
         />
       </Fragment>
     );

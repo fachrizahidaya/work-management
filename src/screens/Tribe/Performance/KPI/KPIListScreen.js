@@ -3,29 +3,33 @@ import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
-import PageHeader from "../../../components/shared/PageHeader";
-import Tabs from "../../../components/shared/Tabs";
-import OngoingAppraisalListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
-import { useFetch } from "../../../hooks/useFetch";
-import OngoingPerformanceListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
-import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+import OngoingPerformanceListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
+import Tabs from "../../../../components/shared/Tabs";
+import PageHeader from "../../../../components/shared/PageHeader";
+import { useFetch } from "../../../../hooks/useFetch";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const AppraisalListScreen = () => {
+const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
 
   const navigation = useNavigation();
 
-  const { data: appraisalList } = useFetch("/hr/employee-appraisal/ongoing");
+  const {
+    data: kpiList,
+    refetch: refetchKpiList,
+    isFetching: kpiListIsFetching,
+  } = useFetch("/hr/employee-kpi/ongoing");
 
   const tabs = useMemo(() => {
     return [
-      { title: "Ongoing", value: "Ongoing" },
-      { title: "Archived", value: "Archived" },
+      { title: `Ongoing (${kpiList?.data.length || 0})`, value: "Ongoing" },
+      { title: `Archived (${0})`, value: "Archived" },
     ];
-  }, []);
+  }, [kpiList]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
@@ -34,15 +38,17 @@ const AppraisalListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Appraisal" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Employee KPI" backButton={false} />
       </View>
 
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
+      <View style={{ paddingHorizontal: 16 }}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 15 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Ongoing" ? (
             <FlashList
-              data={appraisalList?.data}
+              data={kpiList?.data}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
@@ -55,12 +61,13 @@ const AppraisalListScreen = () => {
                   position={item?.target_level}
                   navigation={navigation}
                   name={item?.review?.description}
-                  type="appraisal"
+                  type="kpi"
+                  target={item?.target_name}
                 />
               )}
             />
           ) : (
-            <ScrollView>
+            <ScrollView refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}>
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
@@ -72,7 +79,7 @@ const AppraisalListScreen = () => {
   );
 };
 
-export default AppraisalListScreen;
+export default KPIListScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -135,6 +135,7 @@ const AttendanceForm = ({
               timeLateOrEarly={date?.late}
               placeholder="Select Late Type"
               fieldOption="late_type"
+              inputType={formik.values.late_type}
             />
           )}
 
@@ -155,6 +156,7 @@ const AttendanceForm = ({
               timeLateOrEarly={date?.early}
               placeholder="Select Early Type"
               fieldOption="early_type"
+              inputType={formik.values.early_type}
             />
           )}
 
@@ -440,6 +442,7 @@ const LateOrEarlyTime = ({
   timeLateOrEarly,
   placeholder,
   fieldOption,
+  inputType,
 }) => {
   return (
     <View style={{ gap: 10 }}>
@@ -453,7 +456,7 @@ const LateOrEarlyTime = ({
       <Options
         formik={formik}
         title={title}
-        value={inputValue}
+        value={inputType}
         valueChange={selectOnValueChange}
         types={arrayList}
         placeholder={placeholder}

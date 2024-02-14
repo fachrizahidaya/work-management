@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -146,58 +146,84 @@ const ChatHeader = ({
                       paddingBottom: -20,
                     }}
                   >
-                    {/* <TouchableOpacity
+                    <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                      {/* <TouchableOpacity
                       onPress={() => {
                         toggleSearch();
                         SheetManager.hide("form-sheet");
                       }}
                     >
-                      <Text style={[{ fontSize: 14 }, TextProps]}>Search</Text>
+                      <Text style={[{ fontSize: 16 }, TextProps]}>Search</Text>
                     </TouchableOpacity> */}
-                    <TouchableOpacity
-                      onPress={() => {
-                        onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
-                        SheetManager.hide("form-sheet");
-                      }}
-                    >
-                      <Text style={[{ fontSize: 14 }, TextProps]}>
-                        {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
-                      </Text>
-                    </TouchableOpacity>
-                    {type === "group" ? (
-                      <>
-                        {active_member === 1 ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+                          SheetManager.hide("form-sheet");
+                        }}
+                        style={{
+                          ...styles.container,
+                          justifyContent: "space-between",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#FFFFFF",
+                        }}
+                      >
+                        <Text style={[{ fontSize: 16 }, TextProps]}>
+                          {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
+                        </Text>
+                      </TouchableOpacity>
+                      {type === "group" ? (
+                        <>
+                          {active_member === 1 ? (
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                toggleExitModal();
+                              }}
+                              style={{
+                                ...styles.container,
+                                justifyContent: "space-between",
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#FFFFFF",
+                              }}
+                            >
+                              <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                toggleDeleteGroupModal();
+                              }}
+                              style={{
+                                ...styles.container,
+                                justifyContent: "space-between",
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#FFFFFF",
+                              }}
+                            >
+                              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
+                            </TouchableOpacity>
+                          )}
+                        </>
+                      ) : (
+                        <>
                           <TouchableOpacity
                             onPress={async () => {
                               await SheetManager.hide("form-sheet");
-                              toggleExitModal();
+                              toggleDeleteModal();
+                            }}
+                            style={{
+                              ...styles.container,
+                              justifyContent: "space-between",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "#FFFFFF",
                             }}
                           >
-                            <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
+                            <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
                           </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await SheetManager.hide("form-sheet");
-                              toggleDeleteGroupModal();
-                            }}
-                          >
-                            <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
-                          </TouchableOpacity>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <TouchableOpacity
-                          onPress={async () => {
-                            await SheetManager.hide("form-sheet");
-                            toggleDeleteModal();
-                          }}
-                        >
-                          <Text style={[{ fontSize: 14 }, TextProps]}>Delete Chat</Text>
-                        </TouchableOpacity>
-                      </>
-                    )}
+                        </>
+                      )}
+                    </View>
                   </View>
                 ),
               },
@@ -221,3 +247,21 @@ const ChatHeader = ({
 };
 
 export default ChatHeader;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 21,
+    paddingBottom: -20,
+  },
+});

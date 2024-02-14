@@ -34,6 +34,7 @@ const FeedCard = ({
   toggleDeleteModal,
   toggleEditModal,
   reference,
+  navigation,
 }) => {
   /**
    * Like a Post handler
@@ -153,6 +154,7 @@ const FeedCard = ({
                 employeeUsername={employeeUsername}
                 toggleDeleteModal={toggleDeleteModal}
                 toggleEditModal={toggleEditModal}
+                navigation={navigation}
               />
             </View>
           );

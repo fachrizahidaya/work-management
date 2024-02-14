@@ -125,9 +125,9 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ ...card.card, gap: 20 }}>
+      <Pressable style={{ ...card.card, gap: 20 }} onPress={() => navigation.navigate("Post Screen", { id: id })}>
         <View style={styles.cardHeader}>
-          <Pressable
+          <TouchableOpacity
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
@@ -137,20 +137,20 @@ const FeedCardItem = ({
             }
           >
             <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
-          </Pressable>
+          </TouchableOpacity>
 
           <View style={{ flex: 1, gap: 5 }}>
-            <TouchableOpacity style={styles.dockName}>
-              <Text
-                style={[{ fontSize: 14 }, TextProps]}
-                onPress={() =>
-                  navigation.navigate("Employee Profile", {
-                    employeeId: employeeId,
-                    loggedEmployeeId: loggedEmployeeId,
-                    loggedEmployeeImage: loggedEmployeeImage,
-                  })
-                }
-              >
+            <TouchableOpacity
+              style={styles.dockName}
+              onPress={() =>
+                navigation.navigate("Employee Profile", {
+                  employeeId: employeeId,
+                  loggedEmployeeId: loggedEmployeeId,
+                  loggedEmployeeImage: loggedEmployeeImage,
+                })
+              }
+            >
+              <Text style={[{ fontSize: 14 }, TextProps]}>
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
@@ -200,10 +200,10 @@ const FeedCardItem = ({
               </Pressable>
             )}
 
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
           </View>
         </View>
-      </View>
+      </Pressable>
     </View>
   );
 };
@@ -234,9 +234,9 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   image: {
-    flex: 1,
+    // flex: 1,
     width: "100%",
-    height: 350,
+    height: 250,
     backgroundColor: "white",
     resizeMode: "cover",
   },

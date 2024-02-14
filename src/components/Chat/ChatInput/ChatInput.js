@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { SheetManager } from "react-native-actions-sheet";
@@ -135,7 +135,7 @@ const ChatInput = ({
     const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 100 }}>
+      <ScrollView style={{ maxHeight: 100 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -147,7 +147,7 @@ const ChatInput = ({
             </Pressable>
           )}
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -282,16 +282,20 @@ const ChatInput = ({
                       {
                         pattern:
                           /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                        textStyle: { color: "blue" },
                       },
                       {
                         trigger: "@",
                         renderSuggestions: renderSuggestions,
+                        textStyle: {
+                          fontWeight: "400",
+                          color: "#377893",
+                        },
                       },
                     ]}
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
+                      alignItems: "center",
                       // height: 45,
                       // borderWidth: 1,
                       // borderColor: "#CBCBCB",
@@ -323,6 +327,7 @@ const ChatInput = ({
                     : null
                 }
                 opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
+                style={{}}
               >
                 <MaterialIcons name="send" size={25} color="#8A9099" />
               </TouchableOpacity>

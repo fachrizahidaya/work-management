@@ -27,58 +27,70 @@ const PostAction = ({
         }}
       >
         <View>
-          <Text style={[{ fontSize: 12 }, TextProps]}>Choose Post Type</Text>
+          <Text style={[{ fontSize: 16, fontWeight: "700" }]}>Choose Post Type</Text>
         </View>
-
-        <TouchableOpacity onPress={publicToggleHandler}>
-          <View
+        <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+          <TouchableOpacity
+            onPress={publicToggleHandler}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              ...styles.container,
+              borderBottomWidth: 1,
+              borderBottomColor: "#FFFFFF",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <MaterialIcons name="people" size={15} color="#3F434A" />
-              <Text style={[{ fontSize: 12 }, TextProps]}>Public</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <MaterialIcons name="people" size={15} color="#3F434A" />
+                <Text style={[{ fontSize: 12 }, TextProps]}>Public</Text>
+              </View>
             </View>
             {formik.values.type === "Public" ? <MaterialCommunityIcons name="check" color="#3F434A" /> : ""}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            announcementToggleHandler();
-          }}
-        >
-          <View
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              announcementToggleHandler();
+            }}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              ...styles.container,
+              borderBottomWidth: 1,
+              borderBottomColor: "#FFFFFF",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <MaterialCommunityIcons name="bullhorn" size={15} color="#3F434A" />
-              <View>
-                <Text style={[{ fontSize: 12 }, TextProps]}>Announcement</Text>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
-                  {isAnnouncementSelected && dateShown ? (
-                    <CustomDateTimePicker
-                      defaultValue={formik.values.end_date}
-                      onChange={endDateAnnouncementHandler}
-                      withText={true}
-                      textLabel="Adjust date"
-                      fontSize={12}
-                    />
-                  ) : null}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <MaterialCommunityIcons name="bullhorn" size={15} color="#3F434A" />
+                <View>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>Announcement</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
+                    {isAnnouncementSelected && dateShown ? (
+                      <CustomDateTimePicker
+                        defaultValue={formik.values.end_date}
+                        onChange={endDateAnnouncementHandler}
+                        withText={true}
+                        textLabel="Adjust date"
+                        fontSize={12}
+                      />
+                    ) : null}
+                  </View>
                 </View>
               </View>
             </View>
             {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" color="#3F434A" /> : ""}
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </View>
     </ActionSheet>
   );
@@ -108,5 +120,14 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });

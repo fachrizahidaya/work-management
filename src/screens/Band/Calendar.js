@@ -32,7 +32,14 @@ const CalendarScreen = () => {
 
   projectDeadlines?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { marked: true, dotColor: "#daecfc" };
+    const value = {
+      customStyles: {
+        container: {
+          backgroundColor: "#daecfc",
+          borderRadius: 5,
+        },
+      },
+    };
 
     formattedDotColorProjects[date] = value;
   });
@@ -51,7 +58,14 @@ const CalendarScreen = () => {
 
   taskDeadlines?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { marked: true, dotColor: "#daecfc" };
+    const value = {
+      customStyles: {
+        container: {
+          backgroundColor: "#daecfc",
+          borderRadius: 5,
+        },
+      },
+    };
 
     formattedDotColorTasks[date] = value;
   });
@@ -69,7 +83,14 @@ const CalendarScreen = () => {
 
   holidays?.data.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { marked: true, dotColor: "#3bc14a" };
+    const value = {
+      customStyles: {
+        container: {
+          backgroundColor: "#3bc14a",
+          borderRadius: 5,
+        },
+      },
+    };
 
     formattedDotColorHolidays[date] = value;
   });

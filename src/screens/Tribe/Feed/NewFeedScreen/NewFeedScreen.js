@@ -47,8 +47,15 @@ const NewFeedScreen = () => {
 
   const route = useRoute();
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, scrollNewMessage, setScrollNewMessage } =
-    route.params;
+  const {
+    loggedEmployeeImage,
+    loggedEmployeeName,
+    postRefetchHandler,
+    scrollNewMessage,
+    setScrollNewMessage,
+    isOpen,
+    toggle,
+  } = route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
 
@@ -69,7 +76,8 @@ const NewFeedScreen = () => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show("Posted successfully!", SuccessToastProps);
+      toggle();
+      // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -198,7 +206,7 @@ const NewFeedScreen = () => {
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         {isReady ? (
           <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
-            <View style={styles.container}>
+            <View style={styles.header}>
               <PageHeader
                 title="New Post"
                 onPress={
@@ -211,16 +219,18 @@ const NewFeedScreen = () => {
                       }
                 }
               />
-              <ReturnConfirmationModal
-                isOpen={returnModalIsOpen}
-                toggle={toggleReturnModal}
-                onPress={() => {
-                  toggleReturnModal();
-                  navigation.goBack();
-                  setImage(null);
-                }}
-                description="Are you sure want to exit? It will be deleted."
-              />
+            </View>
+            <ReturnConfirmationModal
+              isOpen={returnModalIsOpen}
+              toggle={toggleReturnModal}
+              onPress={() => {
+                toggleReturnModal();
+                navigation.goBack();
+                setImage(null);
+              }}
+              description="Are you sure want to exit? It will be deleted."
+            />
+            <View style={styles.container}>
               <View
                 style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? "center" : "center" }}
               >
@@ -286,12 +296,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    padding: 20,
+    paddingHorizontal: 16,
   },
   inputHeader: {
     flexDirection: "row",
     gap: 5,
     marginHorizontal: 2,
     marginTop: 22,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
 });

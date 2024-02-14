@@ -12,7 +12,6 @@ const CalendarWithSlider = ({ items, colorDots }) => {
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
   const renderItem = (reservation) => {
-    const dotColor = reservation.dotColor || "black";
     return (
       <TouchableOpacity
         style={styles.item}
@@ -25,7 +24,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
         }}
       >
         <Text style={TextProps}>{reservation.description}</Text>
-        <View style={{ backgroundColor: dotColor, width: 10, height: 10, borderRadius: 5, marginTop: 5 }} />
+        <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5 }} />
       </TouchableOpacity>
     );
   };

@@ -2,8 +2,9 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Dimensions, Platform, StatusBar } from "react-native";
 import Toast from "react-native-root-toast";
+import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -13,6 +14,7 @@ import { TextProps, ErrorToastProps } from "../../../components/shared/CustomSty
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -39,6 +41,14 @@ const FeedScreen = () => {
   const navigation = useNavigation();
 
   const flashListRef = useRef(null);
+
+  const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
+
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
   /**
    * Toggle fullscreen image
@@ -215,8 +225,18 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
+  useEffect(() => {
+    if (postModalIsOpen) {
+      const timeout = setTimeout(() => {
+        togglePostModal();
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [postModalIsOpen]);
+
   return (
     <>
+      <StatusBar animated={true} backgroundColor={postModalIsOpen ? "#176688" : null} />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
@@ -237,6 +257,8 @@ const FeedScreen = () => {
               loggedEmployeeDivision: profile?.data?.position_id,
               scrollNewMessage: scrollNewMessage,
               setScrollNewMessage: setScrollNewMessage,
+              isOpen: postModalIsOpen,
+              toggle: togglePostModal,
             });
           }}
         >
@@ -292,6 +314,30 @@ const FeedScreen = () => {
         />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      <Modal
+        isVisible={postModalIsOpen}
+        onBackdropPress={() => {
+          togglePostModal();
+        }}
+        deviceHeight={125}
+        deviceWidth={deviceWidth}
+        animationIn={"slideInDown"}
+        animationOut={"slideOutUp"}
+        backdropColor="#176688"
+        backdropOpacity={1}
+        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
+      >
+        <View style={{ alignItems: "center", gap: 5 }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
+          </View>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Thank you for contributing to the community
+          </Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
+      </Modal>
     </>
   );
 };

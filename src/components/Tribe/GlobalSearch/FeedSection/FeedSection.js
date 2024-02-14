@@ -74,7 +74,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
             <Pressable
               style={styles.item}
               key={item?.id}
-              onPress={() => navigation.navigate("Employee Profile", { employeeId: item?.author_id })}
+              onPress={() => navigation.navigate("Post Screen", { id: item?.id })}
             >
               <View style={styles.cardHeader}>
                 <AvatarPlaceholder image={item?.employee_image} name={item?.employee_name} size="lg" isThumb={false} />
@@ -95,18 +95,10 @@ const FeedSection = ({ feed, employeeUsername }) => {
                   </Text>
                 </View>
               </View>
-              <Text style={[{ fontSize: 14 }, TextProps]}>
-                {
-                  styledTexts
-                  //   item?.content
-                }
-              </Text>
+              <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
 
               {item?.file_path ? (
-                <View
-                  key={item?.id}
-                  //   onPress={() => attachment && toggleFullScreen(attachment)}
-                >
+                <View key={item?.id}>
                   <Image
                     style={styles.image}
                     source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item?.file_path}` }}
