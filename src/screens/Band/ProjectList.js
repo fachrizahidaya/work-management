@@ -8,13 +8,13 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import ProjectListItem from "../../components/Band/Project/ProjectList/ProjectListItem";
 import { useFetch } from "../../hooks/useFetch";
-import Pagination from "../../components/shared/Pagination";
 import PageHeader from "../../components/shared/PageHeader";
 import EmptyPlaceholder from "../../components/shared/EmptyPlaceholder";
 import ProjectSkeleton from "../../components/Band/Project/ProjectList/ProjectSkeleton";
 import useCheckAccess from "../../hooks/useCheckAccess";
-import Select from "../../components/shared/Forms/Select";
 import ProjectFilter from "../../components/Band/Project/ProjectFilter/ProjectFilter";
+import Tabs from "../../components/shared/Tabs";
+import Pagination from "../../components/shared/Pagination";
 
 const ProjectList = () => {
   const navigation = useNavigation();
@@ -25,6 +25,7 @@ const ProjectList = () => {
   const [searchInput, setSearchInput] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
+  const [tabValue, setTabValue] = useState("On Progress");
   const createActionCheck = useCheckAccess("create", "Projects");
 
   const dependencies = [status, currentPage, searchInput, selectedPriority, deadlineSort, ownerName];
@@ -40,6 +41,18 @@ const ProjectList = () => {
     owner_name: ownerName,
   };
   const { data, isLoading, isFetching, refetch } = useFetch("/pm/projects", dependencies, params);
+
+  const tabs = [
+    { title: "Open", value: "Open" },
+    { title: "On Progress", value: "On Progress" },
+    { title: "Finish", value: "Finish" },
+    { title: "Archived", value: "Archived" },
+  ];
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setStatus(value);
+  }, []);
 
   const renderSkeletons = () => {
     const skeletons = [];
@@ -73,7 +86,7 @@ const ProjectList = () => {
             alignItems: "center",
             backgroundColor: "white",
             paddingVertical: 14,
-            paddingHorizontal: 15,
+            paddingHorizontal: 16,
           }}
         >
           <PageHeader title="My Project" backButton={false} />
@@ -85,11 +98,7 @@ const ProjectList = () => {
             flex: 1,
             gap: 14,
             backgroundColor: "white",
-            paddingTop: 17,
-            paddingBottom: 4,
-            marginHorizontal: 16,
-            marginVertical: 20,
-            borderRadius: 10,
+            paddingBottom: 10,
           }}
         >
           <ProjectFilter
@@ -102,20 +111,9 @@ const ProjectList = () => {
             selectedPriority={selectedPriority}
           />
 
-          <View style={{ paddingHorizontal: 16, paddingBottom: 1 }}>
-            <Select
-              onChange={(value) => setStatus(value)}
-              value={status}
-              items={[
-                { label: "Open", value: "Open" },
-                { label: "On Progress", value: "On Progress" },
-                { label: "Finish", value: "Finish" },
-                { label: "Archived", value: "Archived" },
-              ]}
-            />
+          <View style={{ paddingHorizontal: 16 }}>
+            <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
           </View>
-
-          <View style={{ borderWidth: 1, borderColor: "#E8E9EB" }} />
 
           {!isLoading ? (
             data?.data?.data?.length > 0 ? (
@@ -170,7 +168,7 @@ const ProjectList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#fff",
     position: "relative",
   },
   hoverButton: {
