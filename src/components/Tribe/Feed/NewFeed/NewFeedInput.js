@@ -60,7 +60,7 @@ const NewFeedInput = ({ employees, formik }) => {
           },
         ]}
         placeholder="Type something..."
-        style={{ padding: 12, paddingTop: Platform.OS === 'ios' ? 12 : null }}
+        style={{ padding: 12, paddingTop:Platform.OS === 'ios' ? 12 : null }}
       />
     </>
   );
