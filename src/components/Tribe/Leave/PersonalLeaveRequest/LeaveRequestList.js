@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
-import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { StyleSheet, View,  ActivityIndicator, Platform } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import Tabs from "../../../shared/Tabs";
@@ -42,6 +42,8 @@ const LeaveRequestList = ({
   hasBeenScrolledCanceled,
   setHasBeenScrolledCanceled,
   refetchPersonalLeaveRequest,
+  teamLeaveRequestData,
+  checkAccess
 }) => {
   return (
     <>
@@ -49,7 +51,7 @@ const LeaveRequestList = ({
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
-            <View style={{ flex: 1, marginTop: 12 }}>
+            <View style={{  height:Platform.OS === 'ios' && teamLeaveRequestData > 0  ? 540 : Platform.OS === 'ios' && teamLeaveRequestData === 0 ? 555  : Platform.OS === 'android' && teamLeaveRequestData === 0 ? 590 : 575,  marginTop: 12 }}>
               <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
@@ -87,6 +89,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
+            style={{height:Platform.OS === 'ios' ? 560 : 590}}
               refreshControl={
                 <RefreshControl
                   refreshing={pendingLeaveRequestIsFetching}
@@ -104,7 +107,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Approved" ? (
           approvedList?.length > 0 ? (
-            <View style={{ flex: 1, marginTop: 12 }}>
+            <View style={{  height:Platform.OS === 'ios' && teamLeaveRequestData > 0  ? 540 : Platform.OS === 'ios' && teamLeaveRequestData === 0 ? 555  : Platform.OS === 'android' && teamLeaveRequestData === 0 ? 590 : 575,  marginTop: 12 }}>
               <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
@@ -142,6 +145,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
+            style={{height:Platform.OS === 'ios' ? 560 : 590}}
               refreshControl={
                 <RefreshControl
                   refreshing={approvedLeaveRequestIsFetching}
@@ -159,7 +163,7 @@ const LeaveRequestList = ({
           )
         ) : tabValue === "Canceled" ? (
           canceledList?.length > 0 ? (
-            <View style={{ flex: 1, marginTop: 12 }}>
+            <View style={{  height:Platform.OS === 'ios' && teamLeaveRequestData > 0  ? 540 : Platform.OS === 'ios' && teamLeaveRequestData === 0 ? 555  : Platform.OS === 'android' && teamLeaveRequestData === 0 ? 590 : 575,  marginTop: 12 }}>
               <FlashList
                 data={canceledList}
                 onEndReachedThreshold={0.1}
@@ -196,6 +200,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
+            style={{height:Platform.OS === 'ios' ? 560 : 590}}
               refreshControl={
                 <RefreshControl
                   refreshing={canceledLeaveRequestIsFetching}
@@ -212,7 +217,7 @@ const LeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedList?.length > 0 ? (
-          <View style={{ flex: 1, marginTop: 12 }}>
+          <View style={{  height:Platform.OS === 'ios' && teamLeaveRequestData > 0  ? 540 : Platform.OS === 'ios' && teamLeaveRequestData === 0 ? 555  : Platform.OS === 'android' && teamLeaveRequestData === 0 ? 590 : 575,  marginTop: 12}}>
             <FlashList
               removeClippedSubviews={true}
               data={rejectedList}
@@ -251,6 +256,7 @@ const LeaveRequestList = ({
           </View>
         ) : (
           <ScrollView
+          style={{height:Platform.OS === 'ios' ? 560 : 590}}
             refreshControl={
               <RefreshControl
                 refreshing={rejectedLeaveRequestIsFetching}

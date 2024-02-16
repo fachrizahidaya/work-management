@@ -243,9 +243,9 @@ const PostScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
+      <SafeAreaView style={styles.container}>
             <View style={styles.header}>
               <PageHeader
                 title="Post"
@@ -255,6 +255,7 @@ const PostScreen = () => {
               />
             </View>
             <ScrollView
+            style={{backgroundColor:'#F8F8F8'}}
               refreshControl={
                 <RefreshControl
                   refreshing={postDataIsFetching && commentIsFetching}
@@ -318,11 +319,11 @@ const PostScreen = () => {
               formik={formik}
               suggestion={suggestions}
             />
+          </SafeAreaView>
           </>
         ) : (
           <></>
         )}
-      </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );
@@ -333,7 +334,7 @@ export default PostScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",

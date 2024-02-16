@@ -37,6 +37,8 @@ import ReviewAppraisalListScreen from "../screens/Tribe/Performance/Review/Revie
 import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
 import CommentListScreen from "../screens/Tribe/Performance/Review/CommentListScreen";
 import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
+import PerformanceCommentListScreen from "../screens/Tribe/Performance/Review/PerformanceCommentListScreen";
+
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -203,6 +205,8 @@ const HomeStack = () => {
       <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Comment Screen" component={CommentListScreen} options={{ header: () => <Header /> }} />
+
+      {/* <Stack.Screen name="Performance Comment List" component={PerformanceCommentListScreen} options={{ header: () => <Header /> }} /> */}
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

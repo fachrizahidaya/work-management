@@ -8,7 +8,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable, Dimensions, Platform } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
@@ -47,6 +47,8 @@ const ContactListItem = ({
   simultaneousHandlers,
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+
+  const width = Dimensions.get('window')
 
   /**
    * Fetch members of selected group
@@ -170,7 +172,7 @@ const ContactListItem = ({
   }));
 
   const animatedBackgroundStyle = useAnimatedStyle(() => ({
-    backgroundColor: translateX.value > 0 ? "#959595" : "#377893",
+    backgroundColor: translateX.value > 0 ? "#377893"  :  "#959595",
   }));
 
   useEffect(() => {
@@ -184,6 +186,7 @@ const ContactListItem = ({
           animatedBackgroundStyle,
           {
             justifyContent: "center",
+            
           },
         ]}
       >
@@ -193,7 +196,8 @@ const ContactListItem = ({
             position: "absolute",
             alignItems: "center",
             justifyContent: "space-between",
-            width: 420,
+            width: Platform.OS === 'ios' ? 400 : 420,
+           
             paddingVertical: 5,
             paddingHorizontal: 16,
           }}

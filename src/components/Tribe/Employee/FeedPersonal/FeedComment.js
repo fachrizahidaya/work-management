@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from "react";
 import { useFormik } from "formik";
 
-import { Clipboard, Linking, StyleSheet, View, Text, ScrollView, Pressable } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text,  Pressable } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { replaceMentionValues } from "react-native-controlled-mentions";

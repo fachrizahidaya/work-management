@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { SheetManager } from "react-native-actions-sheet";
@@ -200,6 +200,7 @@ const ChatInput = ({
           backgroundColor: "#FFFFFF",
           paddingVertical: 10,
           paddingHorizontal: 16,
+          
         }}
       >
         <View
@@ -219,7 +220,7 @@ const ChatInput = ({
             </Text>
           ) : (
             <>
-              <Pressable
+              <TouchableOpacity
                 style={{ marginRight: 1 }}
                 onPress={() =>
                   SheetManager.show("form-sheet", {
@@ -271,7 +272,7 @@ const ChatInput = ({
                   color="#8A9099"
                   style={{ transform: [{ rotate: "270deg" }] }}
                 />
-              </Pressable>
+              </TouchableOpacity>
 
               <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
                 {type === "group" ? (
@@ -290,16 +291,15 @@ const ChatInput = ({
                           fontWeight: "400",
                           color: "#377893",
                         },
+                      
                       },
                     ]}
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
+                      paddingTop:Platform.OS === 'ios' ?  12 : null,
                       alignItems: "center",
-                      // height: 45,
-                      // borderWidth: 1,
-                      // borderColor: "#CBCBCB",
-                      // borderRadius: 10
+                      
                     }}
                   />
                 ) : (
@@ -313,6 +313,7 @@ const ChatInput = ({
                     sizeChange={true}
                     height={40}
                     setHeight={setHeight}
+                    style={{paddingTop:Platform.OS === 'ios' ? 12  : null}}
                   />
                 )}
               </View>

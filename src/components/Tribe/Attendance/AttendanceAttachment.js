@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, FlatList, StyleSheet, Linking, TouchableOpacity } from "react-native";
+import { View, Text, Pressable,  StyleSheet, Linking, TouchableOpacity } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 

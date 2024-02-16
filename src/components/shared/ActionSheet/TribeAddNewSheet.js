@@ -15,11 +15,8 @@ import {
   AppState,
   Platform,
   Linking,
-  Dimensions,
-  StatusBar,
 } from "react-native";
 import Toast from "react-native-root-toast";
-import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -52,11 +49,7 @@ const TribeAddNewSheet = (props) => {
 
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
-  const deviceWidth = Dimensions.get("window").width;
-  const deviceHeight =
-    Platform.OS === "ios"
-      ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+  
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -277,8 +270,6 @@ const TribeAddNewSheet = (props) => {
             );
           })}
         </View>
-      </ActionSheet>
-
       <SuccessModal
         isOpen={clockModalIsOpen}
         toggle={toggleClockModal}
@@ -298,6 +289,8 @@ const TribeAddNewSheet = (props) => {
           </Text>
         }
       />
+      </ActionSheet>
+
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}

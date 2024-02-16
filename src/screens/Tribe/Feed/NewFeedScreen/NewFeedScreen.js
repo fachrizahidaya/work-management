@@ -1,3 +1,4 @@
+NewFeedScreen
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -76,8 +77,7 @@ const NewFeedScreen = () => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      toggle();
-      // Toast.show("Posted successfully!", SuccessToastProps);
+      Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

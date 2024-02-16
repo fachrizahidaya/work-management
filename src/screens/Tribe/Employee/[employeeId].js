@@ -85,7 +85,7 @@ const EmployeeProfileScreen = ({ route }) => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 5,
+    limit: 20,
   };
 
   const {

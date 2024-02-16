@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ActionSheet from "react-native-actions-sheet";
@@ -60,6 +60,10 @@ const PostAction = ({
               ...styles.container,
               borderBottomWidth: 1,
               borderBottomColor: "#FFFFFF",
+              height: Platform.OS === 'ios' && dateShown && isAnnouncementSelected ?  220 : null
+              
+              
+              
             }}
           >
             <View
@@ -67,12 +71,16 @@ const PostAction = ({
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+              
+            
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10,   }}>
                 <MaterialCommunityIcons name="bullhorn" size={15} color="#3F434A" />
                 <View>
                   <Text style={[{ fontSize: 12 }, TextProps]}>Announcement</Text>
+                  {
+                    Platform.OS === 'android' ?
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
                     {isAnnouncementSelected && dateShown ? (
@@ -85,10 +93,26 @@ const PostAction = ({
                       />
                     ) : null}
                   </View>
+                     :
+                  <View style={{ flexDirection: "column", gap: 5 }}>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
+                    {isAnnouncementSelected && dateShown ? (
+                      <CustomDateTimePicker
+                        defaultValue={formik.values.end_date}
+                        onChange={endDateAnnouncementHandler}
+                        withText={true}
+                        textLabel="Adjust date"
+                        fontSize={12}
+                        marginLeft={-15}
+                      />
+                    ) : null}
+                  </View>
+
+                  }
                 </View>
               </View>
             </View>
-            {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" color="#3F434A" /> : ""}
+            {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" color="#3F434A" style={{marginLeft: Platform.OS == 'ios' ? -10 : null}} /> : ""}
           </TouchableOpacity>
         </View>
       </View>

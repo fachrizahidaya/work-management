@@ -20,6 +20,7 @@ import PerformanceScreen from "../../screens/Tribe/Performance/PerformanceScreen
 import KPIListScreen from "../../screens/Tribe/Performance/KPI/KPIListScreen";
 import AppraisalListScreen from "../../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIAppraisalReviewScreen from "../../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
+import PerformanceCommentListScreen from "../../screens/Tribe/Performance/Review/PerformanceCommentListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -57,6 +58,7 @@ const TribeTab = () => {
             "Employee KPI",
             "Employee Appraisal",
             "Employee Review",
+            'Performance Comment List'
           ].includes(route.name)
             ? () => {
                 return null;
@@ -162,6 +164,8 @@ const TribeTab = () => {
         <Tab.Screen name="Employee Appraisal" component={AppraisalListScreen} />
 
         <Tab.Screen name="Employee Review" component={KPIAppraisalReviewScreen} />
+
+        <Tab.Screen name="Performance Comment List" component={PerformanceCommentListScreen} />
       </Tab.Navigator>
 
       {/* Sheets */}

@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { FlatList, View, ActivityIndicator, Text } from "react-native";
+import {  View, ActivityIndicator, Text } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 

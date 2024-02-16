@@ -6,12 +6,12 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-na
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
-import Modal from "react-native-modal";
 
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import PageHeader from "../../../components/shared/PageHeader";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../../hooks/useCheckAccess";
@@ -37,6 +37,8 @@ const AttendanceScreen = () => {
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
+  const {isOpen: attendanceReportModalIsOpen, toggle: toggleAttendanceReportModal} = useDisclosure(false)
+  const {isOpen: attendanceAttachmentModalIsOpen, toggle: toggleAttendanceAttachmentModal} = useDisclosure(false)
 
   const attendanceFetchParameters = filter;
 
@@ -48,6 +50,7 @@ const AttendanceScreen = () => {
     isLoading: attachmentIsLoading,
     refetch: refetchAttachment,
   } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
+
 
   /**
    * Status attendance Handler
@@ -168,7 +171,8 @@ const AttendanceScreen = () => {
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
-      Toast.show("Report submitted", SuccessToastProps);
+      toggleAttendanceReportModal()
+      // Toast.show("Report submitted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -226,7 +230,8 @@ const AttendanceScreen = () => {
         },
       });
       refetchAttachment();
-      Toast.show("Attachment submitted", SuccessToastProps);
+      toggleAttendanceAttachmentModal()
+      // Toast.show("Attachment submitted", SuccessToastProps);
       setStatus("success");
       setSubmitting(false);
     } catch (err) {
@@ -338,7 +343,6 @@ const AttendanceScreen = () => {
           customStyles = {
             container: {
               backgroundColor: backgroundColor,
-              // elevation: 2,
               borderRadius: 5,
             },
             text: {
@@ -359,7 +363,7 @@ const AttendanceScreen = () => {
           markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
-          theme={{ arrowColor: "orange" }}
+          theme={{ arrowColor: "black" }}
         />
       </Fragment>
     );
@@ -411,6 +415,8 @@ const AttendanceScreen = () => {
         isLeave={isLeave}
         CURRENT_DATE={CURRENT_DATE}
         reference={attendanceScreenSheetRef}
+        isOpen={attendanceReportModalIsOpen}
+        toggle={toggleAttendanceReportModal}
       />
 
       <AddAttendanceAttachment
@@ -433,6 +439,24 @@ const AttendanceScreen = () => {
           refetchAttachment();
         }}
       />
+      <SuccessModal isOpen={attendanceReportModalIsOpen} toggle={toggleAttendanceReportModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+
+      } />
+      <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+
+      } />
     </>
   );
 };
