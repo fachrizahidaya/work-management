@@ -122,7 +122,7 @@ const TribeAddNewSheet = (props) => {
   const attendanceCheckHandler = async () => {
     try {
       toggleAttendance();
-      if (locationOn === false) {
+      if (locationOn === false  ) {
         showAlertToActivateLocation();
       } else if (status === false) {
         await Location.requestForegroundPermissionsAsync();
@@ -137,7 +137,10 @@ const TribeAddNewSheet = (props) => {
 
           toggleAttendance();
           refetchAttendance();
-          toggleClockModal();
+          if (location && locationOn) { 
+            toggleClockModal();
+
+          }
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           // Toast.show("You already checked out at this time", ErrorToastProps);
