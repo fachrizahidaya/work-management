@@ -5,7 +5,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import _ from "lodash";
 
-import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -19,6 +19,7 @@ import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedCom
 import EditPost from "../../../components/Tribe/Employee/FeedPersonal/EditPost";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -52,6 +53,8 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
+  const {isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal} = useDisclosure(false)
+  const {isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal} = useDisclosure(false)
 
   const { height } = Dimensions.get("screen");
 
@@ -245,7 +248,8 @@ const EmployeeProfileScreen = ({ route }) => {
       postRefetchHandler();
       setIsLoading(false);
       toggleEditModal();
-      Toast.show("Edited successfully!", SuccessToastProps);
+      toggleUpdatePostModal()
+      // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -430,6 +434,7 @@ const EmployeeProfileScreen = ({ route }) => {
         hasSuccessFunc={true}
         onSuccess={() => {
           refetchPersonalPost();
+          toggleDeletePostModal()
         }}
         description="Are you sure to delete this post?"
         successMessage="Post deleted"
@@ -444,6 +449,24 @@ const EmployeeProfileScreen = ({ route }) => {
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
       />
+      <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+
+      } />
+      <SuccessModal isOpen={deletePostModalIsOpen} toggle={toggleDeletePostModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+
+      } />
     </>
   );
 };
