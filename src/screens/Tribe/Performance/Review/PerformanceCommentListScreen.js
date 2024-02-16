@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
 import { FlashList } from '@shopify/flash-list';
 
 import PageHeader from '../../../../components/shared/PageHeader'
