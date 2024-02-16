@@ -7,6 +7,7 @@ import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+import { ScrollView } from "react-native-gesture-handler";
 
 import axiosInstance from "../../config/api";
 import FormButton from "../../components/shared/FormButton";
@@ -14,7 +15,6 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import useCheckAccess from "../../hooks/useCheckAccess";
 import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
-import { ScrollView } from "react-native-gesture-handler";
 
 const NoteForm = ({ route }) => {
   const { noteData } = route.params;
