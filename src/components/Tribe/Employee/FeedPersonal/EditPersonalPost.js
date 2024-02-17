@@ -23,9 +23,9 @@ import NewFeedInput from "../../Feed/NewFeed/NewFeedInput";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import Button from "../../../shared/Forms/Button";
 import { TextProps } from "../../../shared/CustomStylings";
-import PostAction from "../../Feed/NewFeed/PostAction";
+import PostTypeOptions from "../../Feed/NewFeed/PostTypeOptions";
 
-const EditPost = ({
+const EditPersonalPost = ({
   isVisible,
   onBackdrop,
   employees,
@@ -265,7 +265,7 @@ const EditPost = ({
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      <PostAction
+      <PostTypeOptions
         publicToggleHandler={publicToggleHandler}
         announcementToggleHandler={announcementToggleHandler}
         isAnnouncementSelected={isAnnouncementSelected}
@@ -278,7 +278,7 @@ const EditPost = ({
   );
 };
 
-export default EditPost;
+export default EditPersonalPost;
 
 const styles = StyleSheet.create({
   container: {

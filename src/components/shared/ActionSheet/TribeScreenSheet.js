@@ -66,7 +66,7 @@ const TribeScreenSheet = (props) => {
         })}
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Performance Comment List");
+            navigation.navigate("Comment List Screen");
             props.reference.current?.hide();
           }}
           style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}

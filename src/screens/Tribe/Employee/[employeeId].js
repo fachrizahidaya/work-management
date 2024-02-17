@@ -16,10 +16,10 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import EditPost from "../../../components/Tribe/Employee/FeedPersonal/EditPost";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
+import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -411,7 +411,7 @@ const EmployeeProfileScreen = ({ route }) => {
         ) : null}
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
-      <EditPost
+      <EditPersonalPost
         isVisible={editModalIsOpen}
         onBackdrop={closeSelectedPersonalPost}
         employees={employees?.data}

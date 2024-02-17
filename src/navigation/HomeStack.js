@@ -62,6 +62,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import ConfirmedCommentScreen from "../screens/Tribe/Performance/Review/ConfirmedCommentScreen";
 
 const Stack = createStackNavigator();
 
@@ -204,9 +205,7 @@ const HomeStack = () => {
 
       <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Comment Screen" component={CommentListScreen} options={{ header: () => <Header /> }} />
-
-      {/* <Stack.Screen name="Performance Comment List" component={PerformanceCommentListScreen} options={{ header: () => <Header /> }} /> */}
+      <Stack.Screen name="Confirmed Comment Detail" component={ConfirmedCommentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

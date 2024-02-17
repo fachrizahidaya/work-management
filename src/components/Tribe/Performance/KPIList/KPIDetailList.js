@@ -14,20 +14,20 @@ const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, target, 
     >
       <View style={{ gap: 10 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text
-            style={[
-              {
-                paddingVertical: 5,
+          <View style={{paddingVertical: 5,
                 paddingHorizontal: 15,
                 backgroundColor: "#D9D9D9",
-                borderRadius: 15,
-                textAlign: "center",
-              },
+                borderRadius: 15,}}>
+
+          <Text
+            style={[
+              
               TextProps,
             ]}
           >
             {status || "Pending"}
           </Text>
+          </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
               {begin_date ? dayjs(begin_date).format("DD MMM YYYY") : "-"} to

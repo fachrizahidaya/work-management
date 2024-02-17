@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const CommentDetailList = ({ dayjs, begin_date, end_date, target, name, title }) => {
+const CommentDetailList = ({ dayjs, begin_date, end_date, target, name, title, type }) => {
   return (
     <View
       style={{
@@ -26,7 +26,7 @@ const CommentDetailList = ({ dayjs, begin_date, end_date, target, name, title })
               TextProps,
             ]}
           >
-            {name}
+            {type === 'team' || type === 'ongoing' ?  name : title}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
@@ -37,7 +37,7 @@ const CommentDetailList = ({ dayjs, begin_date, end_date, target, name, title })
         </View>
         <View>
           {/* <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text> */}
-          <Text style={[TextProps]}>{title}</Text>
+          <Text style={[TextProps]}>{type === 'team' || type === 'ongoing' ? title : null}</Text>
         </View>
       </View>
     </View>

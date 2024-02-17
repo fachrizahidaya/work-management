@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
 import { FlashList } from '@shopify/flash-list';
 
@@ -10,6 +10,7 @@ import Tabs from '../../../../components/shared/Tabs'
 import OngoingPerformanceCommentListItem from '../../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceCommentListItem'
 import EmptyPlaceholder from '../../../../components/shared/EmptyPlaceholder'
 import { useFetch } from '../../../../hooks/useFetch'
+import FormButton from '../../../../components/shared/FormButton';
 
 const PerformanceCommentListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -23,6 +24,8 @@ const PerformanceCommentListScreen = () => {
     refetch: refetchCommentList,
     isFetching: commentListIsFetching,
   } = useFetch("/hr/employee-review/comment");
+
+  
 
   const tabs = useMemo(() => {
     return [
@@ -41,11 +44,15 @@ const PerformanceCommentListScreen = () => {
       <View style={styles.header}>
         <PageHeader width={200} title="Performance Comment" backButton={false}  />
       </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Comment Screen')}>
+        <Text>click here</Text>
+      </TouchableOpacity>
 
       <View style={{ paddingHorizontal: 16 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={styles.container}>
+       
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Ongoing" ? (
             <FlashList

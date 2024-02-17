@@ -6,7 +6,7 @@ import ActionSheet from "react-native-actions-sheet";
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const PostAction = ({
+const PostTypeOptions = ({
   publicToggleHandler,
   formik,
   announcementToggleHandler,
@@ -120,7 +120,7 @@ const PostAction = ({
   );
 };
 
-export default PostAction;
+export default PostTypeOptions;
 
 const styles = StyleSheet.create({
   title: {
