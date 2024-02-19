@@ -4,8 +4,10 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -187,7 +189,7 @@ const ReviewKPIScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader
             width={200}
@@ -222,6 +224,12 @@ const ReviewKPIScreen = () => {
             disabled={differences.length === 0 || submitIsLoading}
           />
         </View>
+        <Pressable
+          style={styles.createPostIcon}
+          
+        >
+          <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+        </Pressable>
         <ReviewDetailList
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
@@ -296,5 +304,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  createPostIcon: {
+    backgroundColor: "#377893",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 50,
+    right: 15,
+    zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
   },
 });

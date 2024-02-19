@@ -31,6 +31,9 @@ const TribeScreenSheet = (props) => {
     "Performance Review",
     "Performance KPI",
     "Performance Appraisal",
+    'Employee KPI',
+    'Employee Appraisal',
+    'Employee Review',
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
@@ -40,7 +43,9 @@ const TribeScreenSheet = (props) => {
         paddingBottom:40
         }}>
 
-      <ScrollView style={{ maxHeight: 500, paddingBottom: 40 }}>
+      <ScrollView style={{ maxHeight: 500, 
+        // paddingBottom: 40 
+        }}>
         {filteredMenu?.map((item, idx) => {
           return (
             <TouchableOpacity
@@ -64,7 +69,7 @@ const TribeScreenSheet = (props) => {
             </TouchableOpacity>
           );
         })}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             navigation.navigate("Comment List Screen");
             props.reference.current?.hide();
@@ -77,7 +82,7 @@ const TribeScreenSheet = (props) => {
             </View>
             <Text style={[{ fontSize: 14 }, TextProps]}>Performance Result</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("My Information");

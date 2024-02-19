@@ -10,6 +10,7 @@ style={{
   paddingHorizontal: 16,
   borderWidth: 1,
   borderColor: "#E2E2E2",
+  backgroundColor: '#FFFFFF'
 }}
 >
 <View style={{ gap: type === 'personal' ? null : 10 }}>

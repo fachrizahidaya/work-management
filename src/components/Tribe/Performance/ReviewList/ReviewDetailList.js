@@ -10,6 +10,7 @@ const ReviewDetailList = ({ dayjs, status, begin_date, end_date, position, targe
         paddingHorizontal: 16,
         borderWidth: 1,
         borderColor: "#E2E2E2",
+        backgroundColor:'#ffffff'
       }}
     >
       <View style={{ gap: 10 }}>

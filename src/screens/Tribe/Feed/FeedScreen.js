@@ -44,8 +44,6 @@ const FeedScreen = () => {
 
   const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
 
-  
-
   /**
    * Toggle fullscreen image
    */
