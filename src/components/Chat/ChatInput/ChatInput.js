@@ -46,19 +46,21 @@ const ChatInput = ({
       icon: "file-document-outline",
       name: "Document",
       color: "#1E4AB9",
-      onPress: async () => {
-        await SheetManager.hide("form-sheet");
-        selectFile();
-      },
+      onPress: selectFile
+      // async () => {
+      //   await SheetManager.hide("form-sheet");
+      //   selectFile();
+      // },
     },
     {
       icon: "image-multiple-outline",
       name: "Photo",
       color: "#39B326",
-      onPress: async () => {
-        await SheetManager.hide("form-sheet");
-        pickImageHandler();
-      },
+      onPress: pickImageHandler
+      // async () => {
+      //   await SheetManager.hide("form-sheet");
+      //   pickImageHandler();
+      // },
     },
     {
       icon: "circle-slice-2",
