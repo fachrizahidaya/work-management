@@ -75,7 +75,7 @@ const TribeScreenSheet = (props) => {
             <View style={styles.item}>
               <MaterialCommunityIcons size={20} name="file-star-outline" color="#3F434A" />
             </View>
-            <Text style={[{ fontSize: 14 }, TextProps]}>Performance Comment</Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>Performance Result</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity

@@ -8,7 +8,7 @@ import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const ConfirmedCommentDetailItem = ({
-     subject, grade, total_score, employeeKPI, supervisorKPI, employeeAppraisal, supervisorAppraisal, navigation, appraisalData
+     id, subject, grade, total_score, employeeKPI, supervisorKPI, employeeAppraisal, supervisorAppraisal, navigation, appraisalData, type
 }) => {
   return (
    <Pressable
@@ -22,9 +22,20 @@ const ConfirmedCommentDetailItem = ({
         justifyContent:'space-between',
         gap: 5,
       }}
-      onPress={() => navigation.navigate('Appraisal Employee', {
-        appraisal: appraisalData
-      })}
+      onPress={() => 
+        {
+          if (employeeKPI && supervisorKPI) {
+            navigation.navigate('KPI Employee', {
+              id: id, type: type
+            })
+          } else {
+
+            navigation.navigate('Appraisal Employee', {
+            id: id, type: type
+          })
+          }
+        }
+    }
     >
 
       <View style={{ flexDirection: "column",  gap: 5 }}>
@@ -51,12 +62,7 @@ const ConfirmedCommentDetailItem = ({
             <Text style={[{}, TextProps]}>{total_score}</Text>
         </View>
       </View>
-      {
-        employeeAppraisal && supervisorAppraisal &&
-
       <MaterialCommunityIcons name={"chevron-right"} size={20} style={{ opacity: 0.5 }} />
-      }
-
     </Pressable>
   )
 }

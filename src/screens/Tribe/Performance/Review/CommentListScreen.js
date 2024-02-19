@@ -58,7 +58,7 @@ const CommentListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Comment Employee" backButton={false} />
+        <PageHeader width={200} title="Performance Result" backButton={false} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

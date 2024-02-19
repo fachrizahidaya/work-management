@@ -187,7 +187,7 @@ const KPIScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Employee KPI"
+            title="KPI"
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {

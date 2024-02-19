@@ -59,6 +59,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import KPIEmployeeScreen from "../screens/Tribe/Performance/Review/KPIEmployeeScreen";
 
 const Stack = createStackNavigator();
 
@@ -194,6 +195,8 @@ const HomeStack = () => {
       <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Confirmed Comment Detail" component={ConfirmedCommentScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="KPI Employee" component={KPIEmployeeScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Employee" component={AppraisalEmployeeScreen} options={{ header: () => <Header /> }} />
 

@@ -181,7 +181,7 @@ const PostScreen = () => {
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "400" }}>{item.name}</Text>
+              <Text style={[{}, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />

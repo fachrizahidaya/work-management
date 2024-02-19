@@ -24,7 +24,7 @@ const ConfirmedCommentScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Comment"
+            title="Result"
             backButton={true}
             onPress={() => {
              navigation.goBack()
@@ -44,8 +44,8 @@ const ConfirmedCommentScreen = () => {
           
         <View style={styles.container}>
         <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-        <ConfirmedCommentDetailItem grade={type === 'personal' ? comment?.data?.conclusion?.employee?.grade : teamComment?.data?.conclusion?.employee?.grade } subject='Employee' total_score={type === 'personal' ? comment?.data?.conclusion?.employee?.total_score : teamComment?.data?.conclusion?.employee?.total_score} employeeKPI={type === 'personal' ? comment?.data?.conclusion?.employee?.item[0] : teamComment?.data?.conclusion?.employee?.item[0]} supervisorKPI={type === 'personal' ? comment?.data?.conclusion?.supervisor?.item[0] : teamComment?.data?.conclusion?.supervisor?.item[0]} employeeAppraisal={null} supervisorAppraisal={null} appraisalData={null} />
-        <ConfirmedCommentDetailItem grade={type === 'personal' ? comment?.data?.conclusion?.supervisor?.grade : teamComment?.data?.conclusion?.supervisor?.grade} subject='Supervisor' total_score={type === 'personal' ? comment?.data?.conclusion?.supervisor?.total_score : teamComment?.data?.conclusion?.supervisor?.total_score} employeeKPI={null} supervisorKPI={null} employeeAppraisal={type === 'personal' ? comment?.data?.conclusion?.employee?.item[1] : teamComment?.data?.conclusion?.employee?.item[1]} supervisorAppraisal={type === 'personal' ? comment?.data?.conclusion?.supervisor?.item[1] : teamComment?.data?.conclusion?.supervisor?.item[1]} navigation={navigation} appraisalData={comment?.data?.employee_appraisal?.employee_appraisal_value} />
+        <ConfirmedCommentDetailItem grade={type === 'personal' ? comment?.data?.conclusion?.employee?.grade : teamComment?.data?.conclusion?.employee?.grade } subject='Employee' total_score={type === 'personal' ? comment?.data?.conclusion?.employee?.total_score : teamComment?.data?.conclusion?.employee?.total_score} employeeKPI={type === 'personal' ? comment?.data?.conclusion?.employee?.item[0] : teamComment?.data?.conclusion?.employee?.item[0]} supervisorKPI={type === 'personal' ? comment?.data?.conclusion?.supervisor?.item[0] : teamComment?.data?.conclusion?.supervisor?.item[0]} employeeAppraisal={null} supervisorAppraisal={null} appraisalData={null} navigation={navigation} />
+        <ConfirmedCommentDetailItem id={type === 'personal' ? comment?.data?.comment?.id : teamComment?.data?.comment?.id} type={type} grade={type === 'personal' ? comment?.data?.conclusion?.supervisor?.grade : teamComment?.data?.conclusion?.supervisor?.grade} subject='Supervisor' total_score={type === 'personal' ? comment?.data?.conclusion?.supervisor?.total_score : teamComment?.data?.conclusion?.supervisor?.total_score} employeeKPI={null} supervisorKPI={null} employeeAppraisal={type === 'personal' ? comment?.data?.conclusion?.employee?.item[1] : teamComment?.data?.conclusion?.employee?.item[1]} supervisorAppraisal={type === 'personal' ? comment?.data?.conclusion?.supervisor?.item[1] : teamComment?.data?.conclusion?.supervisor?.item[1]} navigation={navigation}  />
         </ScrollView>
         </View>
       </SafeAreaView>

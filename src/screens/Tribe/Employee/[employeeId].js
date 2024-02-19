@@ -247,7 +247,7 @@ const EmployeeProfileScreen = ({ route }) => {
       setStatus("success");
       postRefetchHandler();
       setIsLoading(false);
-      toggleEditModal();
+      // toggleEditModal();
       toggleUpdatePostModal()
       // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
@@ -425,6 +425,8 @@ const EmployeeProfileScreen = ({ route }) => {
         checkAccess={checkAccess}
         imagePreview={imagePreview}
         setImagePreview={setImagePreview}
+        updatePostModalIsOpen={updatePostModalIsOpen}
+        toggleUpdatePostModal={toggleUpdatePostModal}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -437,7 +439,7 @@ const EmployeeProfileScreen = ({ route }) => {
           toggleDeletePostModal()
         }}
         description="Are you sure to delete this post?"
-        successMessage="Post deleted"
+        successMessage={null}
         isDelete={true}
         isPatch={false}
       />
@@ -449,14 +451,14 @@ const EmployeeProfileScreen = ({ route }) => {
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
       />
-      <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
+      {/* <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
       </View>
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-      } />
+      } /> */}
       <SuccessModal isOpen={deletePostModalIsOpen} toggle={toggleDeletePostModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>

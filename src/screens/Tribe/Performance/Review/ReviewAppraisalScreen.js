@@ -175,7 +175,7 @@ const ReviewAppraisalScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Employee Appraisal"
+            title="Appraisal Review"
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {

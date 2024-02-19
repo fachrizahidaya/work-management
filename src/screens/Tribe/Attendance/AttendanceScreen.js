@@ -412,6 +412,8 @@ const AttendanceScreen = () => {
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
         reference={attachmentScreenSheetRef}
+        attendanceAttachmentModalIsOpen={attendanceAttachmentModalIsOpen}
+        toggleAttendanceAttachmentModal={toggleAttendanceAttachmentModal}
       />
 
       <ConfirmationModal
@@ -434,14 +436,14 @@ const AttendanceScreen = () => {
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
       } /> */}
-      <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
+      {/* <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
       </View>
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
-      } />
+      } /> */}
     </>
   );
 };

@@ -9,7 +9,7 @@ import PageHeader from '../../../../components/shared/PageHeader'
 import { card } from '../../../../styles/Card'
 import { TextProps } from '../../../../components/shared/CustomStylings'
 
-const AppraisalEmployeeScreen = () => {
+const KPIEmployeeScreen = () => {
     const navigation = useNavigation()
     const route = useRoute()
     const {id, type} = route.params;
@@ -25,7 +25,7 @@ const AppraisalEmployeeScreen = () => {
       <View style={styles.header}>
         <PageHeader
           width={200}
-          title="Appraisal Result"
+          title="KPI Result"
           backButton={true}
           onPress={() => {
            navigation.goBack()
@@ -63,7 +63,7 @@ const AppraisalEmployeeScreen = () => {
   )
 }
 
-export default AppraisalEmployeeScreen
+export default KPIEmployeeScreen
 
 const styles = StyleSheet.create({
     container: {
