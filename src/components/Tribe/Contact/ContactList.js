@@ -1,4 +1,6 @@
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet, Platform } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
@@ -22,6 +24,7 @@ const ContactList = ({
   user_image,
   room_id,
   navigation,
+  leave_status,
 }) => {
   return (
     <TouchableOpacity
@@ -36,12 +39,59 @@ const ContactList = ({
     >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
           <View>
-            <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
-              {name.length > 30 ? name.split(" ")[0] : name}
+
+          <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
+          {
+            leave_status ?
+          <View
+            style={styles.editPicture}
+           
+          >
+            <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
+          </View> : null
+          }
+          </View>
+          <View>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  color: "#3F434A",
+                  width: Platform.OS === 'android' ? 160 : 150,
+                  overflow: "hidden",
+                 
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {name}
+              </Text>
+              {/* {
+            leave_status ?
+          <View
+            style={styles.editPicture}
+           
+          >
+            <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
+          </View> : null
+          } */}
+            </View>
+
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#20A144",
+                width: 140,
+                overflow: "hidden",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {position}
             </Text>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#20A144" }}>{position}</Text>
           </View>
         </View>
 
@@ -73,5 +123,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 3,
+  },
+  editPicture: {
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    
+    width: 20,
+    height: 20,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    zIndex: 2,
+    shadowOffset: 0,
   },
 });

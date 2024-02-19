@@ -34,6 +34,7 @@ const FeedCard = ({
   toggleDeleteModal,
   toggleEditModal,
   reference,
+  navigation,
 }) => {
   /**
    * Like a Post handler
@@ -78,8 +79,8 @@ const FeedCard = ({
   };
 
   return (
-    <View>
-      <FlatList
+    <View style={{flex:1}}>
+      <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
@@ -153,6 +154,7 @@ const FeedCard = ({
                 employeeUsername={employeeUsername}
                 toggleDeleteModal={toggleDeleteModal}
                 toggleEditModal={toggleEditModal}
+                navigation={navigation}
               />
             </View>
           );

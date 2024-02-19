@@ -23,9 +23,10 @@ import NewFeedInput from "../../Feed/NewFeed/NewFeedInput";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import Button from "../../../shared/Forms/Button";
 import { TextProps } from "../../../shared/CustomStylings";
-import PostAction from "../../Feed/NewFeed/PostAction";
+import PostTypeOptions from "../../Feed/NewFeed/PostTypeOptions";
+import SuccessModal from "../../../shared/Modal/SuccessModal";
 
-const EditPost = ({
+const EditPersonalPost = ({
   isVisible,
   onBackdrop,
   employees,
@@ -39,6 +40,8 @@ const EditPost = ({
   checkAccess,
   imagePreview,
   setImagePreview,
+  updatePostModalIsOpen,
+  toggleUpdatePostModal
 }) => {
   const [dateShown, setDateShown] = useState(false);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
@@ -264,8 +267,16 @@ const EditPost = ({
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
+        <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+      } />
       </Modal>
-      <PostAction
+      <PostTypeOptions
         publicToggleHandler={publicToggleHandler}
         announcementToggleHandler={announcementToggleHandler}
         isAnnouncementSelected={isAnnouncementSelected}
@@ -275,10 +286,11 @@ const EditPost = ({
         reference={postActionScreenSheetRef}
       />
     </>
+    
   );
 };
 
-export default EditPost;
+export default EditPersonalPost;
 
 const styles = StyleSheet.create({
   container: {

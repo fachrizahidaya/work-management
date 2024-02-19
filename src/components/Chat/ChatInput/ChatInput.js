@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { SheetManager } from "react-native-actions-sheet";
@@ -135,7 +135,7 @@ const ChatInput = ({
     const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <View style={{ height: 100 }}>
+      <ScrollView style={{ maxHeight: 100 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -147,7 +147,7 @@ const ChatInput = ({
             </Pressable>
           )}
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -200,6 +200,7 @@ const ChatInput = ({
           backgroundColor: "#FFFFFF",
           paddingVertical: 10,
           paddingHorizontal: 16,
+          
         }}
       >
         <View
@@ -219,7 +220,7 @@ const ChatInput = ({
             </Text>
           ) : (
             <>
-              <Pressable
+              <TouchableOpacity
                 style={{ marginRight: 1 }}
                 onPress={() =>
                   SheetManager.show("form-sheet", {
@@ -271,7 +272,7 @@ const ChatInput = ({
                   color="#8A9099"
                   style={{ transform: [{ rotate: "270deg" }] }}
                 />
-              </Pressable>
+              </TouchableOpacity>
 
               <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
                 {type === "group" ? (
@@ -282,20 +283,23 @@ const ChatInput = ({
                       {
                         pattern:
                           /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                        textStyle: { color: "blue" },
                       },
                       {
                         trigger: "@",
                         renderSuggestions: renderSuggestions,
+                        textStyle: {
+                          fontWeight: "400",
+                          color: "#377893",
+                        },
+                      
                       },
                     ]}
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
-                      // height: 45,
-                      // borderWidth: 1,
-                      // borderColor: "#CBCBCB",
-                      // borderRadius: 10
+                      paddingTop:Platform.OS === 'ios' ?  12 : null,
+                      alignItems: "center",
+                      
                     }}
                   />
                 ) : (
@@ -309,6 +313,7 @@ const ChatInput = ({
                     sizeChange={true}
                     height={40}
                     setHeight={setHeight}
+                    style={{paddingTop:Platform.OS === 'ios' ? 12  : null}}
                   />
                 )}
               </View>
@@ -323,6 +328,7 @@ const ChatInput = ({
                     : null
                 }
                 opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
+                style={{}}
               >
                 <MaterialIcons name="send" size={25} color="#8A9099" />
               </TouchableOpacity>

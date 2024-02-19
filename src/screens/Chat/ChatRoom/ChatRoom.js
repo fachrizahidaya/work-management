@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, Alert } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
 import Toast from "react-native-root-toast";
 
 import axiosInstance from "../../../config/api";
@@ -59,8 +59,8 @@ const ChatRoom = () => {
   const navigation = useNavigation();
 
   const clearChatScreenSheetRef = useRef(null);
-  const menuAttachmentScreenSheetRef = useRef(null);
   const searchFormRef = useRef(null);
+  const scrollRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -611,6 +611,7 @@ const ChatRoom = () => {
               userSelector={userSelector}
               navigation={navigation}
               filteredSearch={filteredSearch}
+              scrollRef={scrollRef}
             />
 
             <ChatInput

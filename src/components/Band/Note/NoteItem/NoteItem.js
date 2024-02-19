@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, openEditForm }) => {
+const NoteItem = ({ note, title, date, isPinned, onPress, openDeleteModal, openEditForm }) => {
   const deleteCheckAccess = useCheckAccess("delete", "Notes");
 
   return (
@@ -55,18 +55,19 @@ const NoteItem = ({ note, id, title, date, isPinned, onPress, openDeleteModal, o
                   SheetManager.show("form-sheet", {
                     payload: {
                       children: (
-                        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await SheetManager.hide("form-sheet");
-                              openDeleteModal(note);
-                            }}
-                          >
-                            <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+                        <View style={styles.menu}>
+                          <View style={styles.wrapper}>
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                openDeleteModal(note);
+                              }}
+                              style={styles.menuItem}
+                            >
+                              <Text style={{ color: "red", fontSize: 16, fontWeight: 700 }}>Delete</Text>
                               <MaterialCommunityIcons name="delete-outline" color="red" size={20} />
-                              <Text style={{ color: "red", fontWeight: 500 }}>Delete</Text>
-                            </View>
-                          </TouchableOpacity>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       ),
                     },
@@ -115,5 +116,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     display: "flex",
     gap: 20,
+  },
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
   },
 });

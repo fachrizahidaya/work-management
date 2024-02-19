@@ -3,7 +3,7 @@ import React, { memo, useState } from "react";
 import { SheetManager } from "react-native-actions-sheet";
 import Toast from "react-native-root-toast";
 
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -122,18 +122,20 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
                           SheetManager.show("form-sheet", {
                             payload: {
                               children: (
-                                <View style={{ padding: 20 }}>
-                                  <TouchableOpacity
-                                    onPress={async () => {
-                                      await SheetManager.hide("form-sheet");
-                                      getSelectedMember(item.id);
-                                    }}
-                                    style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}
-                                  >
-                                    <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
+                                <View style={styles.menu}>
+                                  <View style={styles.wrapper}>
+                                    <TouchableOpacity
+                                      onPress={async () => {
+                                        await SheetManager.hide("form-sheet");
+                                        getSelectedMember(item.id);
+                                      }}
+                                      style={styles.menuItem}
+                                    >
+                                      <Text style={{ color: "red", fontSize: 16, fontWeight: 700 }}>Remove Member</Text>
 
-                                    <Text style={{ color: "red" }}>Remove Member</Text>
-                                  </TouchableOpacity>
+                                      <MaterialCommunityIcons name="account-remove-outline" size={20} color="red" />
+                                    </TouchableOpacity>
+                                  </View>
                                 </View>
                               ),
                             },
@@ -164,5 +166,29 @@ const MemberSection = ({ projectId, projectData, members, refetchMember, isAllow
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+  },
+});
 
 export default memo(MemberSection);

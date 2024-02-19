@@ -44,7 +44,7 @@ const NewLeaveRequest = () => {
 
   const route = useRoute();
 
-  const { employeeId } = route.params;
+  const { employeeId, isOpen, toggle } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -128,7 +128,8 @@ const NewLeaveRequest = () => {
       setSubmitting(false);
       setStatus("success");
       refetchLeaveHistory();
-      Toast.show("Request created", SuccessToastProps);
+      toggle();
+      // Toast.show("Request created", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

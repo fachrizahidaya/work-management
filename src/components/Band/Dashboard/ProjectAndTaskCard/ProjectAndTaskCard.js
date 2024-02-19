@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Skeleton } from "moti/skeleton";
 import { StyleSheet, TouchableOpacity, View, Image, Text, Dimensions } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { SkeletonCommonProps, TextProps } from "../../../shared/CustomStylings";
@@ -16,11 +17,12 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
       {!projectIsLoading ? (
         <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Projects")}>
           <View style={styles.imageWrapper}>
-            <Image
+            {/* <Image
               source={require("../../../../assets/icons/project_chart.png")}
               alt="project chart"
               style={styles.image}
-            />
+            /> */}
+            <MaterialCommunityIcons name="lightning-bolt" size={45} color="#176688" />
             <Text style={TextProps}>On going projects</Text>
             <Text style={[{ fontWeight: 500, fontSize: 20 }, TextProps]}>{projects}</Text>
           </View>
@@ -32,7 +34,9 @@ const ProjectAndTaskCard = ({ projects, tasks, projectIsLoading, taskIsLoading }
       {!taskIsLoading ? (
         <TouchableOpacity style={[card.card, { flex: 1 }]} onPress={() => navigation.navigate("Tasks")}>
           <View style={styles.imageWrapper}>
-            <Image source={require("../../../../assets/icons/task_chart.png")} alt="task chart" style={styles.image} />
+            {/* <Image source={require("../../../../assets/icons/task_chart.png")} alt="task chart" style={styles.image} /> */}
+            <MaterialCommunityIcons name="format-list-bulleted" size={45} color="#FF965D" />
+
             <Text style={TextProps}>Total tasks</Text>
             <Text style={[{ fontWeight: 500, fontSize: 20 }, TextProps]}>{tasks}</Text>
           </View>

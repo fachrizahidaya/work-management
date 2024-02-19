@@ -28,7 +28,7 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
           marginBottom: 25,
           backgroundColor: !isRead ? (modul === "Task" ? "#FF965D33" : "#49C96D33") : "white",
           borderRadius: 8,
-          paddingVertical: 2,
+          paddingVertical: 8,
           paddingHorizontal: 4,
         }}
       >

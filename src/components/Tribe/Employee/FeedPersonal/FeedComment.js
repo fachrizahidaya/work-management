@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from "react";
 import { useFormik } from "formik";
 
-import { Clipboard, Linking, StyleSheet, View, Text, ScrollView, Pressable } from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text,  Pressable } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { replaceMentionValues } from "react-native-controlled-mentions";
@@ -143,20 +143,19 @@ const FeedComment = ({
           copyToClipboard={copyToClipboard}
           employeeUsername={employeeUsername}
         />
-
-        <FeedCommentForm
-          postId={postId}
-          loggedEmployeeImage={loggedEmployeeImage}
-          loggedEmployeeName={loggedEmployeeName}
-          parentId={parentId}
-          onSubmit={onSubmit}
-          employees={employees}
-          renderSuggestions={renderSuggestions}
-          handleChange={handleChange}
-          formik={formik}
-          suggestion={suggestions}
-        />
       </View>
+      <FeedCommentForm
+        postId={postId}
+        loggedEmployeeImage={loggedEmployeeImage}
+        loggedEmployeeName={loggedEmployeeName}
+        parentId={parentId}
+        onSubmit={onSubmit}
+        employees={employees}
+        renderSuggestions={renderSuggestions}
+        handleChange={handleChange}
+        formik={formik}
+        suggestion={suggestions}
+      />
     </ActionSheet>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import Constants from "expo-constants";
 
 import { useSelector } from "react-redux";
 
@@ -16,9 +17,8 @@ import { SkeletonCommonProps, TextProps } from "../../components/shared/CustomSt
 
 const SettingScreen = () => {
   const navigation = useNavigation();
-
+  const appVersion = Constants.expoConfig.version;
   const userSelector = useSelector((state) => state.auth);
-
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
   const { data: myProfile } = useFetch("/hr/my-profile"); // for other user data, use myProfile
 
@@ -100,7 +100,7 @@ const SettingScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.item}>
+            <View style={styles.item}>
               <View
                 style={{
                   display: "flex",
@@ -130,8 +130,8 @@ const SettingScreen = () => {
 
                 {myProfile?.data && <Text style={TextProps}>{myProfile.data.division_name || "You have no team"}</Text>}
               </View>
-              <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
-            </TouchableOpacity>
+              {/* <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} /> */}
+            </View>
           </View>
 
           <View style={{ backgroundColor: "#FAFAFA", borderRadius: 9 }}>
@@ -200,6 +200,8 @@ const SettingScreen = () => {
           <FormButton onPress={() => navigation.navigate("Log Out")} fontColor="red" backgroundColor="#FAFAFA">
             <Text style={{ color: "red" }}>Log Out</Text>
           </FormButton>
+
+          <Text style={[TextProps, { textAlign: "center", opacity: 0.5 }]}>version {appVersion}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -220,6 +222,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 42,
     padding: 8,
-    opacity: 0.5,
+    // opacity: 0.5,
   },
 });

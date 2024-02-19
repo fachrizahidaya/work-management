@@ -2,8 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import ActionSheet from "react-native-actions-sheet";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 import { TextProps } from "../CustomStylings";
 
@@ -26,12 +28,24 @@ const TribeScreenSheet = (props) => {
     "Payroll Components",
     "Upload Payslip",
     "Dashboard",
+    "Performance Review",
+    "Performance KPI",
+    "Performance Appraisal",
+    'Employee KPI',
+    'Employee Appraisal',
+    'Employee Review',
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
   return (
     <ActionSheet ref={props.reference}>
-      <View style={{ paddingBottom: 40 }}>
+      <View style={{
+        paddingBottom:40
+        }}>
+
+      <ScrollView style={{ maxHeight: 500, 
+        // paddingBottom: 40 
+        }}>
         {filteredMenu?.map((item, idx) => {
           return (
             <TouchableOpacity
@@ -55,6 +69,20 @@ const TribeScreenSheet = (props) => {
             </TouchableOpacity>
           );
         })}
+        {/* <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Comment List Screen");
+            props.reference.current?.hide();
+          }}
+          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+        >
+          <View style={styles.flex}>
+            <View style={styles.item}>
+              <MaterialCommunityIcons size={20} name="file-star-outline" color="#3F434A" />
+            </View>
+            <Text style={[{ fontSize: 14 }, TextProps]}>Performance Result</Text>
+          </View>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("My Information");
@@ -69,20 +97,8 @@ const TribeScreenSheet = (props) => {
             <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
           </View>
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("My KPI");
-            props.reference.current?.hide();
-          }}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-        >
-          <View style={styles.flex}>
-            <View style={styles.item}>
-              <MaterialCommunityIcons size={20} name="signal-cellular-3" color="#3F434A" />
-            </View>
-            <Text style={[{ fontSize: 14 }, TextProps]}>My Key Performance Indicator</Text>
-          </View>
-        </TouchableOpacity> */}
+
+
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("Calendar Tribe");
@@ -97,6 +113,7 @@ const TribeScreenSheet = (props) => {
             <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
           </View>
         </TouchableOpacity>
+      </ScrollView>
       </View>
     </ActionSheet>
   );

@@ -1,15 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet,  View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl } from "react-native-gesture-handler";
 
-import PageHeader from "../../../components/shared/PageHeader";
-import Tabs from "../../../components/shared/Tabs";
-import OngoingAppraisalListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
-import { useFetch } from "../../../hooks/useFetch";
-import OngoingPerformanceListItem from "../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
-import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+import PageHeader from "../../../../components/shared/PageHeader";
+import Tabs from "../../../../components/shared/Tabs";
+import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
+import { useFetch } from "../../../../hooks/useFetch";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -18,36 +18,52 @@ const AppraisalListScreen = () => {
 
   const navigation = useNavigation();
 
-  const { data: appraisalList } = useFetch("/hr/employee-appraisal/ongoing");
+  const {
+    data: appraisalList,
+    refetch: refetchAppraisalList,
+    isFetching: appraisalListIsFetching,
+  } = useFetch("/hr/employee-appraisal/ongoing");
 
   const tabs = useMemo(() => {
     return [
-      { title: "Ongoing", value: "Ongoing" },
-      { title: "Archived", value: "Archived" },
+      { title: `Ongoing (${appraisalList?.data.length || 0})`, value: "Ongoing" },
+      { title: `Archived (${0})`, value: "Archived" },
     ];
-  }, []);
+  }, [appraisalList]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
   }, []);
 
+  useEffect(() => {
+    if (
+      appraisalList?.data.length
+    ) {
+      setOngoingList((prevData) => [...prevData, ...appraisalList?.data])
+
+    }
+  }, [appraisalList?.data.length])
+
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Appraisal" backButton={true} onPress={() => navigation.goBack()} />
+        <PageHeader width={200} title="Employee Appraisal" backButton={false} />
       </View>
 
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} flexDir="row" justify="space-evenly" gap={2} />
+      <View style={{ paddingHorizontal: 16 }}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
           {tabValue === "Ongoing" ? (
+            ongoingList?.length > 0 ? 
             <FlashList
               data={appraisalList?.data}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
               renderItem={({ item, index }) => (
-                <OngoingPerformanceListItem
+                <OngoingAppraisalListItem
                   key={index}
                   id={item?.id}
                   start_date={item?.review?.begin_date}
@@ -56,15 +72,30 @@ const AppraisalListScreen = () => {
                   navigation={navigation}
                   name={item?.review?.description}
                   type="appraisal"
+                  target={item?.target_name}
                 />
               )}
             />
-          ) : (
-            <ScrollView>
+            :
+            <ScrollView
+              refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}
+            >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
+
+          ) : (
+            archivedList?.length > 0 ? null
+            :
+            <ScrollView
+              refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}
+            >
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+
           )}
         </View>
       </View>

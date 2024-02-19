@@ -32,6 +32,7 @@ const CustomDateTimePicker = ({
   fontSize,
   unlimitStartDate,
   title,
+  marginLeft
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -140,7 +141,7 @@ const CustomDateTimePicker = ({
           value={date}
           display="spinner"
           onChange={onChangeDate}
-          style={styles.datePicker}
+          style={{...styles.datePicker, marginLeft:marginLeft}}
           minimumDate={unlimitStartDate ? unlimitMinimumDate : new Date(dayjs().format("YYYY-MM-DD"))}
           maximumDate={maximumDate && new Date(maximumDate)}
         />

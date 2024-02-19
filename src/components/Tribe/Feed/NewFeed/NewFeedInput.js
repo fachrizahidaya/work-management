@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { View, Pressable, Text, ScrollView } from "react-native";
+import { Pressable, Text, ScrollView, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { TextProps } from "../../../shared/CustomStylings";
@@ -17,7 +17,7 @@ const NewFeedInput = ({ employees, formik }) => {
     const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
-      <ScrollView nestedScrollEnabled={true} style={{ height: 200 }}>
+      <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
         <FlashList
           data={data}
           onEndReachedThreshold={0.1}
@@ -49,15 +49,18 @@ const NewFeedInput = ({ employees, formik }) => {
           {
             pattern:
               /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-            textStyle: { color: "blue" },
           },
           {
             trigger: "@",
             renderSuggestions: renderSuggestions,
+            textStyle: {
+              fontWeight: "400",
+              color: "#377893",
+            },
           },
         ]}
         placeholder="Type something..."
-        style={{ padding: 12 }}
+        style={{ padding: 12, paddingTop:Platform.OS === 'ios' ? 12 : null }}
       />
     </>
   );

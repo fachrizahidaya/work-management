@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { SheetManager } from "react-native-actions-sheet";
 
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDisclosure } from "../../../../../hooks/useDisclosure";
@@ -25,35 +25,46 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
           SheetManager.show("form-sheet", {
             payload: {
               children: (
-                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                  <TouchableOpacity
-                    onPress={async () => {
-                      await onTakeTask();
-                      SheetManager.hide("form-sheet");
-                    }}
-                  >
-                    <Text style={TextProps}>Take task</Text>
-                  </TouchableOpacity>
-                  {editCheckAccess && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        SheetManager.hide("form-sheet");
-                        openEditForm();
-                      }}
-                    >
-                      <Text style={TextProps}>Edit</Text>
-                    </TouchableOpacity>
-                  )}
-                  {deleteCheckAccess && (
+                <View style={styles.menu}>
+                  <View style={styles.wrapper}>
                     <TouchableOpacity
                       onPress={async () => {
-                        await SheetManager.hide("form-sheet");
-                        toggleDeleteModal();
+                        await onTakeTask();
+                        SheetManager.hide("form-sheet");
                       }}
+                      style={styles.menuItem}
                     >
-                      <Text style={{ color: "red" }}>Delete</Text>
+                      <Text style={(TextProps, { fontSize: 16 })}>Take task</Text>
+                      <MaterialCommunityIcons name="playlist-play" size={20} />
                     </TouchableOpacity>
-                  )}
+                    {editCheckAccess && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          SheetManager.hide("form-sheet");
+                          openEditForm();
+                        }}
+                        style={[styles.menuItem, { marginTop: 3 }]}
+                      >
+                        <Text style={(TextProps, { fontSize: 16 })}>Edit</Text>
+                        <MaterialCommunityIcons name="file-edit" size={20} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+
+                  <View style={styles.wrapper}>
+                    {deleteCheckAccess && (
+                      <TouchableOpacity
+                        onPress={async () => {
+                          await SheetManager.hide("form-sheet");
+                          toggleDeleteModal();
+                        }}
+                        style={[styles.menuItem, { marginTop: 3 }]}
+                      >
+                        <Text style={{ fontSize: 16, fontWeight: 700, color: "#EB0E29" }}>Delete</Text>
+                        <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
               ),
             },
@@ -81,5 +92,29 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+  },
+});
 
 export default memo(MenuSection);

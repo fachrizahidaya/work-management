@@ -9,6 +9,7 @@ import Tabs from "../../shared/Tabs";
 import Input from "../../shared/Forms/Input";
 import Select from "../../shared/Forms/Select";
 import { TextProps } from "../../shared/CustomStylings";
+import SuccessModal from "../../shared/Modal/SuccessModal";
 
 const AttendanceForm = ({
   toggleReport,
@@ -28,6 +29,8 @@ const AttendanceForm = ({
   isLeave,
   CURRENT_DATE,
   reference,
+  attendanceReportModalIsOpen,
+  toggleAttendanceReportModal
 }) => {
   const [tabValue, setTabValue] = useState("late");
   /**
@@ -135,6 +138,7 @@ const AttendanceForm = ({
               timeLateOrEarly={date?.late}
               placeholder="Select Late Type"
               fieldOption="late_type"
+              inputType={formik.values.late_type}
             />
           )}
 
@@ -155,6 +159,7 @@ const AttendanceForm = ({
               timeLateOrEarly={date?.early}
               placeholder="Select Early Type"
               fieldOption="early_type"
+              inputType={formik.values.early_type}
             />
           )}
 
@@ -357,6 +362,14 @@ const AttendanceForm = ({
           )}
         </View>
       </TouchableWithoutFeedback>
+        <SuccessModal isOpen={attendanceReportModalIsOpen} toggle={toggleAttendanceReportModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } />
     </ActionSheet>
   );
 };
@@ -440,6 +453,7 @@ const LateOrEarlyTime = ({
   timeLateOrEarly,
   placeholder,
   fieldOption,
+  inputType,
 }) => {
   return (
     <View style={{ gap: 10 }}>
@@ -453,7 +467,7 @@ const LateOrEarlyTime = ({
       <Options
         formik={formik}
         title={title}
-        value={inputValue}
+        value={inputType}
         valueChange={selectOnValueChange}
         types={arrayList}
         placeholder={placeholder}

@@ -142,40 +142,50 @@ const ProjectDetailScreen = ({ route }) => {
                     SheetManager.show("form-sheet", {
                       payload: {
                         children: (
-                          <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleUserModal();
-                              }}
-                            >
-                              <Text style={TextProps}>Change Ownership</Text>
-                            </TouchableOpacity>
-
-                            {editCheckAccess && (
-                              <TouchableOpacity
-                                onPress={() => {
-                                  navigation.navigate("Project Form", {
-                                    projectData: projectData?.data,
-                                    refetchSelectedProject: refetch,
-                                  });
-                                  SheetManager.hide("form-sheet");
-                                }}
-                              >
-                                <Text style={TextProps}>Edit</Text>
-                              </TouchableOpacity>
-                            )}
-
-                            {deleteCheckAccess && (
+                          <View style={styles.menu}>
+                            <View style={styles.wrapper}>
                               <TouchableOpacity
                                 onPress={async () => {
                                   await SheetManager.hide("form-sheet");
-                                  toggle();
+                                  toggleUserModal();
                                 }}
+                                style={styles.menuItem}
                               >
-                                <Text style={{ color: "red" }}>Delete</Text>
+                                <Text style={(TextProps, { fontSize: 16 })}>Change Ownership</Text>
+                                <MaterialCommunityIcons name="account-switch" size={20} />
                               </TouchableOpacity>
-                            )}
+
+                              {editCheckAccess && (
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    navigation.navigate("Project Form", {
+                                      projectData: projectData?.data,
+                                      refetchSelectedProject: refetch,
+                                    });
+                                    SheetManager.hide("form-sheet");
+                                  }}
+                                  style={styles.menuItem}
+                                >
+                                  <Text style={(TextProps, { fontSize: 16 })}>Edit</Text>
+                                  <MaterialCommunityIcons name="file-edit" size={20} />
+                                </TouchableOpacity>
+                              )}
+                            </View>
+
+                            <View style={styles.wrapper}>
+                              {deleteCheckAccess && (
+                                <TouchableOpacity
+                                  onPress={async () => {
+                                    await SheetManager.hide("form-sheet");
+                                    toggle();
+                                  }}
+                                  style={[styles.menuItem, { marginTop: 3 }]}
+                                >
+                                  <Text style={{ fontSize: 16, fontWeight: 700, color: "#EB0E29" }}>Delete</Text>
+                                  <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
+                                </TouchableOpacity>
+                              )}
+                            </View>
                           </View>
                         ),
                       },
@@ -318,6 +328,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
   },
 });
 

@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 
-import { StyleSheet, View, Text, Pressable, FlatList } from "react-native";
+import { StyleSheet, View, Text, Pressable,  } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../../hooks/useFetch";
@@ -52,13 +52,7 @@ const FeedCommentItem = ({
         <Text
           key={index}
           style={textStyle}
-          // onPress={() =>
-          //   navigation.navigate("Employee Profile", {
-          //     employeeId: specificEmployeeId,
-          //     loggedEmployeeId: loggedEmployeeId,
-          //     loggedEmployeeImage: loggedEmployeeImage,
-          //   })
-          // }
+         
         >
           @{item}{" "}
         </Text>
@@ -93,7 +87,7 @@ const FeedCommentItem = ({
 
   return (
     <View style={{ gap: 3 }}>
-      <View style={{ marginVertical: 10 }}>
+      <Pressable onPress={() => onReply(null)} style={{ marginVertical: 10 }}>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View>
             <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
@@ -103,9 +97,10 @@ const FeedCommentItem = ({
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
             <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
-            <Pressable onPress={() => onReply(parentId)}>
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>
-            </Pressable>
+
+            <Text onPress={() => onReply(parentId)} style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+              Reply
+            </Text>
           </View>
         </View>
 
@@ -124,7 +119,7 @@ const FeedCommentItem = ({
             }}
           >
             {viewReplyToggle === false ? (
-              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373", marginLeft: 10 }}>
                 View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
               </Text>
             ) : (
@@ -179,39 +174,8 @@ const FeedCommentItem = ({
             )}
           </>
         )}
-      </View>
-      {/* <CustomAccordion
-        title={`${totalReplies ? ` ${totalReplies}` : ""} ${totalReplies > 1 ? "Replies" : "Reply"}`}
-        subTitle={totalReplies}
-      >
-        <View style={{ flex: 1, minHeight: 2 }}>
-          <FlashList
-            data={commentRepliesData?.data}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            updateCellsBatchingPeriod={50}
-            windowSize={5}
-            onEndReachedThreshold={0.1}
-            keyExtractor={(item, index) => index}
-            estimatedItemSize={200}
-            renderItem={({ item, index }) => (
-              <FeedCommentReplyItem
-                key={index}
-                authorName={item?.employee_name}
-                authorImage={item?.employee_image}
-                comments={item?.comments}
-                totalReplies={item?.total_replies}
-                parentId={parentId}
-                onReply={onReply}
-                handleEmailPress={handleEmailPress}
-                handleLinkPress={handleLinkPress}
-                copyToClipboard={copyToClipboard}
-                employeeUsername={employeeUsername}
-              />
-            )}
-          />
-        </View>
-      </CustomAccordion> */}
+      </Pressable>
+      
     </View>
   );
 };

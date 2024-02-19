@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TextProps } from "../../shared/CustomStylings";
 
 const AttendanceColor = () => {
   const listIcons = [
@@ -17,7 +18,7 @@ const AttendanceColor = () => {
         return (
           <View key={item?.key} style={styles.content}>
             <MaterialCommunityIcons name="circle" color={item.color} size={15} />
-            <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
           </View>
         );
       })}

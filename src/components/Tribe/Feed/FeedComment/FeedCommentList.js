@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { FlatList, View, ActivityIndicator, Text } from "react-native";
+import {  View, ActivityIndicator, Text } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
@@ -23,7 +23,7 @@ const FeedCommentList = ({
 }) => {
   return (
     <GestureHandlerRootView>
-      <View style={{ height: 500 }}>
+      <View style={{ height: 320 }}>
         {comments.length > 0 ? (
           <FlashList
             data={comments}

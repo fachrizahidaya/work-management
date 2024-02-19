@@ -246,8 +246,9 @@ const CommentInput = ({ taskId, projectId, data }) => {
             isSubmitting={formik.isSubmitting}
             onPress={formik.handleSubmit}
             color="white"
-            borderRadius={50}
-            style={{ height: 40, width: 40, transform: [{ rotate: "-45deg" }] }}
+            borderRadius={20}
+            height={40}
+            style={{ width: 40, transform: [{ rotate: "-45deg" }] }}
           >
             <MaterialCommunityIcons name="send" size={20} color="white" />
           </FormButton>

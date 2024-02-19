@@ -1,8 +1,9 @@
+FeedScreen
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Dimensions, Platform, StatusBar } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,6 +14,7 @@ import { TextProps, ErrorToastProps } from "../../../components/shared/CustomSty
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -40,6 +42,8 @@ const FeedScreen = () => {
 
   const flashListRef = useRef(null);
 
+  const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
+
   /**
    * Toggle fullscreen image
    */
@@ -51,7 +55,7 @@ const FeedScreen = () => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 5,
+    limit: 20,
   };
 
   const {
@@ -160,7 +164,7 @@ const FeedScreen = () => {
    */
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.post(`/hr/posts/comment`, data);
+      await axiosInstance.post(`/hr/posts/comment`, data);
       commentRefetchHandler();
       commentAddHandler(postId);
       setCommentParentId(null);
@@ -215,8 +219,11 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
+  
+
   return (
     <>
+      <StatusBar animated={true} backgroundColor={postModalIsOpen ? "#176688" : null} />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
@@ -237,6 +244,8 @@ const FeedScreen = () => {
               loggedEmployeeDivision: profile?.data?.position_id,
               scrollNewMessage: scrollNewMessage,
               setScrollNewMessage: setScrollNewMessage,
+              isOpen: postModalIsOpen,
+              toggle: togglePostModal,
             });
           }}
         >
@@ -292,6 +301,7 @@ const FeedScreen = () => {
         />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      
     </>
   );
 };

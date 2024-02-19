@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -98,19 +98,19 @@ const LeaveRequestItem = ({
           }}
         >
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
-          <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
+          <Text style={{ fontSize: Platform.OS === 'android' ? 12 : 10, fontWeight: "400", color: "#595F69" }}>
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} •
           </Text>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
+          <Text style={[{ fontSize: Platform.OS === 'android' ? 12 : 10 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
         {
           status === "Pending" ? (
             <Text
               style={{
-                fontSize: 12,
+                fontSize: Platform.OS === 'android' ? 12 : 10,
                 fontWeight: "400",
                 color: "#377893",
-                width: 120,
+                width: Platform.OS === 'android' ? 120 : 100,
                 textAlign: "right",
               }}
               numberOfLines={2}
@@ -121,7 +121,7 @@ const LeaveRequestItem = ({
           ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
             <Text
               style={{
-                fontSize: 12,
+                fontSize: Platform.OS === 'android' ? 12 : 10,
                 fontWeight: "400",
                 color: "#377893",
                 width: 80,

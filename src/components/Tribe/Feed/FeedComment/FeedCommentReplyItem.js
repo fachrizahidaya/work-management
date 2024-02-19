@@ -1,3 +1,4 @@
+FeedCommentReplyItem
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
@@ -37,13 +38,7 @@ const FeedCommentReplyItem = ({
         <Text
           key={index}
           style={textStyle}
-          // onPress={() =>
-          //   navigation.navigate("Employee Profile", {
-          //     employeeId: specificEmployeeId,
-          //     loggedEmployeeId: loggedEmployeeId,
-          //     loggedEmployeeImage: loggedEmployeeImage,
-          //   })
-          // }
+          
         >
           @{item}{" "}
         </Text>
