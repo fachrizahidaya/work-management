@@ -54,7 +54,7 @@ const KPIAppraisalReviewScreen = () => {
     return [
       { title: `KPI (${kpiData?.data.length || 0})`, value: "KPI" },
       { title: `Appraisal (${appraisalData?.data.length || 0})`, value: "Appraisal" },
-      { title: `Comment (${commentData?.data.length || 0})`, value: "Comment" },
+      
     ];
   }, [kpi, appraisal, comment, kpiData, appraisalData, commentData]);
 

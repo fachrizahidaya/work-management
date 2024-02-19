@@ -6,7 +6,6 @@ import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "reac
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const FeedCardItemPost = ({
@@ -153,7 +152,7 @@ const FeedCardItemPost = ({
                 })
               }
             >
-              <Text style={[{ fontSize: 14 }, TextProps]}>
+              <Text style={[{}, TextProps]}>
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (

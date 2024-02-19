@@ -31,12 +31,21 @@ const TribeScreenSheet = (props) => {
     "Performance Review",
     "Performance KPI",
     "Performance Appraisal",
+    'Employee KPI',
+    'Employee Appraisal',
+    'Employee Review',
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
   return (
     <ActionSheet ref={props.reference}>
-      <ScrollView style={{ maxHeight: 500, paddingBottom: 40 }}>
+      <View style={{
+        paddingBottom:40
+        }}>
+
+      <ScrollView style={{ maxHeight: 500, 
+        // paddingBottom: 40 
+        }}>
         {filteredMenu?.map((item, idx) => {
           return (
             <TouchableOpacity
@@ -60,6 +69,20 @@ const TribeScreenSheet = (props) => {
             </TouchableOpacity>
           );
         })}
+        {/* <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Comment List Screen");
+            props.reference.current?.hide();
+          }}
+          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
+        >
+          <View style={styles.flex}>
+            <View style={styles.item}>
+              <MaterialCommunityIcons size={20} name="file-star-outline" color="#3F434A" />
+            </View>
+            <Text style={[{ fontSize: 14 }, TextProps]}>Performance Result</Text>
+          </View>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("My Information");
@@ -74,6 +97,7 @@ const TribeScreenSheet = (props) => {
             <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
           </View>
         </TouchableOpacity>
+
 
         <TouchableOpacity
           onPress={() => {
@@ -90,6 +114,7 @@ const TribeScreenSheet = (props) => {
           </View>
         </TouchableOpacity>
       </ScrollView>
+      </View>
     </ActionSheet>
   );
 };

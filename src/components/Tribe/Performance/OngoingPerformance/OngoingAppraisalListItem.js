@@ -21,11 +21,14 @@ const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigati
       }}
       onPress={() => navigation.navigate("Appraisal Detail", { id: id })}
     >
+       <View style={{paddingVertical: 5,paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15}}>
+
       <Text
-        style={[{ paddingVertical: 5, paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15 }, TextProps]}
+        style={[ TextProps]}
       >
         {status || "Pending"}
       </Text>
+       </View>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
         <Text style={[TextProps]}>{target}</Text>

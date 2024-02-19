@@ -15,11 +15,8 @@ import {
   AppState,
   Platform,
   Linking,
-  Dimensions,
-  StatusBar,
 } from "react-native";
 import Toast from "react-native-root-toast";
-import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -52,11 +49,8 @@ const TribeAddNewSheet = (props) => {
 
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
-  const deviceWidth = Dimensions.get("window").width;
-  const deviceHeight =
-    Platform.OS === "ios"
-      ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+  const date = dayjs().format('YYYY-MM-DD')
+  const time = dayjs().format('HH:mm')
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -129,22 +123,27 @@ const TribeAddNewSheet = (props) => {
   const attendanceCheckHandler = async () => {
     try {
       toggleAttendance();
-      if (locationOn === false) {
+      if (locationOn === false  ) {
         showAlertToActivateLocation();
       } else if (status === false) {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
       } else {
-        if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
+        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
             longitude: location?.coords?.longitude,
             latitude: location?.coords?.latitude,
             check_from: "Mobile App",
+            date: date,
+            time: time
           });
 
           toggleAttendance();
           refetchAttendance();
-          toggleClockModal();
+          if (location && locationOn) { 
+            toggleClockModal();
+
+          }
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           // Toast.show("You already checked out at this time", ErrorToastProps);
@@ -277,17 +276,15 @@ const TribeAddNewSheet = (props) => {
             );
           })}
         </View>
-      </ActionSheet>
-
       <SuccessModal
         isOpen={clockModalIsOpen}
         toggle={toggleClockModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
             <Text
-              style={{ color: !attendance?.data?.time_in ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
+              style={{ color: !attendance?.data?.time_out ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
             >
-              {!attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
+              {!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}{" "}
             </Text>
             <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
           </View>
@@ -298,6 +295,7 @@ const TribeAddNewSheet = (props) => {
           </Text>
         }
       />
+      </ActionSheet>
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}

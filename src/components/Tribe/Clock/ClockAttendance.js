@@ -1,3 +1,4 @@
+ClockAttendance
 import { useEffect } from "react";
 import { View, Text, Platform } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -208,7 +209,6 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
 
           <View
             style={[
-              // textContainerStyle,
               {
                 padding: 20,
                 alignItems: "center",

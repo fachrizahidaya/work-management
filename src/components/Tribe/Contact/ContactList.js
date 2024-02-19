@@ -1,4 +1,6 @@
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet, Platform } from "react-native";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { card } from "../../../styles/Card";
@@ -37,7 +39,19 @@ const ContactList = ({
     >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View>
+
           <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
+          {
+            leave_status ?
+          <View
+            style={styles.editPicture}
+           
+          >
+            <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
+          </View> : null
+          }
+          </View>
           <View>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
               <Text
@@ -45,27 +59,24 @@ const ContactList = ({
                   fontSize: 14,
                   fontWeight: "500",
                   color: "#3F434A",
-                  width: 160,
+                  width: Platform.OS === 'android' ? 160 : 150,
                   overflow: "hidden",
+                 
                 }}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
                 {name}
               </Text>
-              {leave_status ? (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "400",
-                    backgroundColor: "#f5f5f5",
-                    borderRadius: 10,
-                    padding: 3,
-                  }}
-                >
-                  On Leave
-                </Text>
-              ) : null}
+              {/* {
+            leave_status ?
+          <View
+            style={styles.editPicture}
+           
+          >
+            <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
+          </View> : null
+          } */}
             </View>
 
             <Text
@@ -112,5 +123,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 3,
+  },
+  editPicture: {
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    
+    width: 20,
+    height: 20,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    zIndex: 2,
+    shadowOffset: 0,
   },
 });

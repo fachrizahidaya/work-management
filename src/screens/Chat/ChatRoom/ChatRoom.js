@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, Alert } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
 import Toast from "react-native-root-toast";
 
 import axiosInstance from "../../../config/api";

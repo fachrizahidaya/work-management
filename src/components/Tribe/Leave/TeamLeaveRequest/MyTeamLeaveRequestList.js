@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import { ScrollView, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { ScrollView, StyleSheet, View,  ActivityIndicator, Platform } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
@@ -81,7 +81,7 @@ const MyTeamLeaveRequestList = ({
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === "Pending" ? (
           pendingLeaveRequests.length > 0 ? (
-            <View style={{ flex: 1, marginTop: 12 }}>
+            <View style={{  height:Platform.OS === 'ios' ? 600 : 670, marginTop: 12 }}>
               <FlashList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
@@ -122,6 +122,7 @@ const MyTeamLeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
+            style={{height:Platform.OS === 'ios' ? 600 : 660}}
               refreshControl={
                 <RefreshControl
                   refreshing={pendingLeaveRequestIsFetching}
@@ -139,7 +140,7 @@ const MyTeamLeaveRequestList = ({
           )
         ) : tabValue === "Approved" ? (
           approvedLeaveRequests.length > 0 ? (
-            <View style={{ flex: 1, marginTop: 12 }}>
+            <View style={{ height:Platform.OS === 'ios' ?  600 : 660, marginTop: 12 }}>
               <FlashList
                 data={approvedLeaveRequests}
                 onEndReachedThreshold={0.1}
@@ -177,6 +178,7 @@ const MyTeamLeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
+            style={{height:Platform.OS === 'ios' ? 600 : 660}}
               refreshControl={
                 <RefreshControl
                   refreshing={approvedLeaveRequestIsFetching}
@@ -193,7 +195,7 @@ const MyTeamLeaveRequestList = ({
             </ScrollView>
           )
         ) : rejectedLeaveRequests.length > 0 ? (
-          <View style={{ flex: 1, marginTop: 12 }}>
+          <View style={{  height:Platform.OS === 'ios' ? 600 : 660, marginTop: 12 }}>
             <FlashList
               data={rejectedLeaveRequests}
               onEndReachedThreshold={0.1}
@@ -231,6 +233,8 @@ const MyTeamLeaveRequestList = ({
           </View>
         ) : (
           <ScrollView
+          style={{height:Platform.OS === 'ios' ? 600 : 660}}
+
             refreshControl={
               <RefreshControl
                 refreshing={rejectedLeaveRequestIsFetching}

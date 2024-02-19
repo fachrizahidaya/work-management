@@ -188,7 +188,7 @@ const FeedCardItem = ({
                                   borderBottomColor: "#FFFFFF",
                                 }}
                               >
-                                <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
+                                <Text style={[{ fontSize: 16, fontWeight:'400', color: "#D64B4B" }]}>Delete Post</Text>
                               </TouchableOpacity>
                             </View>
                           </View>

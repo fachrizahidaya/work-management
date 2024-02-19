@@ -1,3 +1,4 @@
+NewFeedScreen
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -21,7 +22,7 @@ import axiosInstance from "../../../../config/api";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
-import PostAction from "../../../../components/Tribe/Feed/NewFeed/PostAction";
+import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 
 const NewFeedScreen = () => {
@@ -76,8 +77,7 @@ const NewFeedScreen = () => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      toggle();
-      // Toast.show("Posted successfully!", SuccessToastProps);
+      Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -271,7 +271,7 @@ const NewFeedScreen = () => {
                 pickImageHandler={pickImageHandler}
                 employees={employees?.data}
               />
-              <PostAction
+              <PostTypeOptions
                 publicToggleHandler={publicToggleHandler}
                 announcementToggleHandler={announcementToggleHandler}
                 isAnnouncementSelected={isAnnouncementSelected}

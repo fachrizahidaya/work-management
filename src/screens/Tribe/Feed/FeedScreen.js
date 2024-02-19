@@ -1,10 +1,10 @@
+FeedScreen
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable, Dimensions, Platform, StatusBar } from "react-native";
 import Toast from "react-native-root-toast";
-import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -44,12 +44,6 @@ const FeedScreen = () => {
 
   const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
 
-  const deviceWidth = Dimensions.get("window").width;
-  const deviceHeight =
-    Platform.OS === "ios"
-      ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
-
   /**
    * Toggle fullscreen image
    */
@@ -61,7 +55,7 @@ const FeedScreen = () => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 5,
+    limit: 20,
   };
 
   const {
@@ -170,7 +164,7 @@ const FeedScreen = () => {
    */
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.post(`/hr/posts/comment`, data);
+      await axiosInstance.post(`/hr/posts/comment`, data);
       commentRefetchHandler();
       commentAddHandler(postId);
       setCommentParentId(null);
@@ -225,14 +219,7 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
-  useEffect(() => {
-    if (postModalIsOpen) {
-      const timeout = setTimeout(() => {
-        togglePostModal();
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [postModalIsOpen]);
+  
 
   return (
     <>
@@ -314,30 +301,7 @@ const FeedScreen = () => {
         />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
-      <Modal
-        isVisible={postModalIsOpen}
-        onBackdropPress={() => {
-          togglePostModal();
-        }}
-        deviceHeight={125}
-        deviceWidth={deviceWidth}
-        animationIn={"slideInDown"}
-        animationOut={"slideOutUp"}
-        backdropColor="#176688"
-        backdropOpacity={1}
-        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
-      >
-        <View style={{ alignItems: "center", gap: 5 }}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
-          </View>
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Thank you for contributing to the community
-          </Text>
-        </View>
-        <MaterialCommunityIcons name="chevron-up" color="#FFFFFF" size={20} />
-      </Modal>
+      
     </>
   );
 };

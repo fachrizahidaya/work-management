@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { SafeAreaView, View, Pressable, Text, Image } from "react-native";
+import { SafeAreaView, View, Pressable, Text, Image, Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -34,6 +34,8 @@ const Header = () => {
     moduleSelector.module_name === "BAND" ? "/pm/notifications/new" : "/hr/notifications/new"
   );
   const { data: unreads } = useFetch("/chat/unread-message");
+
+  const screenWidth = Dimensions.get('screen')
 
   /**
    * Unread messages changes event listener
@@ -125,7 +127,7 @@ const Header = () => {
             {myProfile?.data && (
               // adjust for the position font properties
               <Text
-                style={[{ fontSize: 14, overflow: "hidden", width: 150 }, TextProps]}
+                style={[{ fontSize: 14, overflow: "hidden", maxWidth: screenWidth.width - 150 }, TextProps]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -205,6 +207,7 @@ const Header = () => {
           >
             {!routeName[0]?.state?.routeNames[2].includes("Tribe") &&
               !routeName[0]?.state?.routeNames[2].includes("Band") &&
+              
               unreadMessages?.data?.total_unread > 0 && (
                 <View
                   style={{
@@ -213,7 +216,7 @@ const Header = () => {
                     position: "absolute",
                     top: -12,
                     right: -8,
-                    backgroundColor: "#FD7972",
+                    backgroundColor: routeName[1]?.name === "Chat List" ? '#FFFFFF' : "#FD7972",
                     borderRadius: 50,
                     zIndex: 1,
                     display: "flex",
@@ -221,6 +224,8 @@ const Header = () => {
                     justifyContent: "center",
                   }}
                 >
+                {routeName[1]?.name === "Chat List" ? null :
+
                   <Text
                     style={{
                       fontSize: 12,
@@ -230,6 +235,7 @@ const Header = () => {
                   >
                     {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
                   </Text>
+                }
                 </View>
               )}
 

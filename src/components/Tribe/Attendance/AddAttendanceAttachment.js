@@ -12,8 +12,9 @@ import FormButton from "../../shared/FormButton";
 import CustomDateTimePicker from "../../shared/CustomDateTimePicker";
 import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
+import SuccessModal from "../../shared/Modal/SuccessModal";
 
-const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month }) => {
+const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month, attendanceAttachmentModalIsOpen, toggleAttendanceAttachmentModal }) => {
   const formik = useFormik({
     // enableReinitialize: true,
     initialValues: {
@@ -55,8 +56,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      reference.current?.hide();
+      // reference.current?.hide()
       formik.resetForm();
+      setFileAttachment(null)
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -155,6 +157,14 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
           </View>
         </View>
       </TouchableWithoutFeedback>
+      <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } />
     </ActionSheet>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Pressable, Text, ScrollView } from "react-native";
+import { Pressable, Text, ScrollView, Platform } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { TextProps } from "../../../shared/CustomStylings";
@@ -60,7 +60,7 @@ const NewFeedInput = ({ employees, formik }) => {
           },
         ]}
         placeholder="Type something..."
-        style={{ padding: 12 }}
+        style={{ padding: 12, paddingTop:Platform.OS === 'ios' ? 12 : null }}
       />
     </>
   );

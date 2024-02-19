@@ -9,10 +9,7 @@ import {
   Text,
   Pressable,
   ScrollView,
-  KeyboardAvoidingView,
-  Dimensions,
-  SafeAreaView,
-  Platform,
+  
 } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { replaceMentionValues } from "react-native-controlled-mentions";
@@ -20,7 +17,6 @@ import { FlashList } from "@shopify/flash-list";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
-import { useKeyboardChecker } from "../../../../hooks/useKeyboardChecker";
 
 const FeedComment = ({
   postId,
@@ -141,7 +137,7 @@ const FeedComment = ({
           paddingHorizontal: 20,
           flexDirection: "column",
           justifyContent: "center",
-          paddingBottom: 40,
+          
         }}
       >
         <FeedCommentList
@@ -167,7 +163,7 @@ const FeedComment = ({
         renderSuggestions={renderSuggestions}
         handleChange={handleChange}
         formik={formik}
-        suggestion={suggestions}
+       
       />
     </ActionSheet>
   );

@@ -6,12 +6,12 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-na
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
-import Modal from "react-native-modal";
 
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import PageHeader from "../../../components/shared/PageHeader";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../../hooks/useCheckAccess";
@@ -37,6 +37,8 @@ const AttendanceScreen = () => {
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
   const { isOpen: deleteAttachmentIsOpen, toggle: toggleDeleteAttachment } = useDisclosure(false);
+  const {isOpen: attendanceReportModalIsOpen, toggle: toggleAttendanceReportModal} = useDisclosure(false)
+  const {isOpen: attendanceAttachmentModalIsOpen, toggle: toggleAttendanceAttachmentModal} = useDisclosure(false)
 
   const attendanceFetchParameters = filter;
 
@@ -48,6 +50,7 @@ const AttendanceScreen = () => {
     isLoading: attachmentIsLoading,
     refetch: refetchAttachment,
   } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
+
 
   /**
    * Status attendance Handler
@@ -164,11 +167,12 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      attendanceScreenSheetRef.current?.hide();
+      // attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
-      Toast.show("Report submitted", SuccessToastProps);
+      toggleAttendanceReportModal()
+      // Toast.show("Report submitted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -226,7 +230,8 @@ const AttendanceScreen = () => {
         },
       });
       refetchAttachment();
-      Toast.show("Attachment submitted", SuccessToastProps);
+      toggleAttendanceAttachmentModal()
+      // Toast.show("Attachment submitted", SuccessToastProps);
       setStatus("success");
       setSubmitting(false);
     } catch (err) {
@@ -239,22 +244,6 @@ const AttendanceScreen = () => {
   const openDeleteAttachmentModalHandler = (id) => {
     setAttachmentId(id);
     toggleDeleteAttachment();
-  };
-
-  const renderCustomHeader = (date) => {
-    return (
-      <View>
-        <TouchableOpacity>
-          {/* Your custom left arrow shape component */}
-          <Text>{"<-"}</Text>
-        </TouchableOpacity>
-        {/* <Text >{date.toString('MMMM yyyy')}</Text> */}
-        <TouchableOpacity>
-          {/* Your custom right arrow shape component */}
-          <Text>{"->"}</Text>
-        </TouchableOpacity>
-      </View>
-    );
   };
 
   /**
@@ -280,8 +269,11 @@ const AttendanceScreen = () => {
             textColor = dayOff.textColor;
           } else if (
             (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && event?.date !== CURRENT_DATE)
+            (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) 
+            ||
+            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && !event?.attendanceReason
+            && event?.date !== CURRENT_DATE
+            )
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;
@@ -338,7 +330,6 @@ const AttendanceScreen = () => {
           customStyles = {
             container: {
               backgroundColor: backgroundColor,
-              // elevation: 2,
               borderRadius: 5,
             },
             text: {
@@ -359,7 +350,7 @@ const AttendanceScreen = () => {
           markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
-          theme={{ arrowColor: "orange" }}
+          theme={{ arrowColor: "black" }}
         />
       </Fragment>
     );
@@ -411,6 +402,8 @@ const AttendanceScreen = () => {
         isLeave={isLeave}
         CURRENT_DATE={CURRENT_DATE}
         reference={attendanceScreenSheetRef}
+        attendanceReportModalIsOpen={attendanceReportModalIsOpen}
+        toggleAttendanceReportModal={toggleAttendanceReportModal}
       />
 
       <AddAttendanceAttachment
@@ -419,6 +412,8 @@ const AttendanceScreen = () => {
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
         reference={attachmentScreenSheetRef}
+        attendanceAttachmentModalIsOpen={attendanceAttachmentModalIsOpen}
+        toggleAttendanceAttachmentModal={toggleAttendanceAttachmentModal}
       />
 
       <ConfirmationModal
@@ -433,6 +428,22 @@ const AttendanceScreen = () => {
           refetchAttachment();
         }}
       />
+      {/* <SuccessModal isOpen={attendanceReportModalIsOpen} toggle={toggleAttendanceReportModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } /> */}
+      {/* <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } /> */}
     </>
   );
 };

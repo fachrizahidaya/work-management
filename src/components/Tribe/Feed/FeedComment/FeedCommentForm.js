@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { StyleSheet, View, Platform, KeyboardAvoidingView, Dimensions } from "react-native";
+import { StyleSheet, View, Platform,  } from "react-native";
 import { MentionInput } from "react-native-controlled-mentions";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -15,7 +15,7 @@ const FeedCommentForm = ({
   renderSuggestions,
   handleChange,
   formik,
-  suggestion,
+  
 }) => {
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -24,7 +24,7 @@ const FeedCommentForm = ({
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <View style={{ ...styles.container }}>
+    <View style={{ ...styles.container, paddingBottom: Platform.OS === 'ios' ?30  : 14, paddingHorizontal:Platform.OS === 'ios' ?12 :14, paddingVertical:Platform.OS === 'ios' ? 6 : 6  }}>
       <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} />
       <View style={{ flex: 1 }}>
         <MentionInput
@@ -74,10 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingTop: 6,
-    paddingBottom: 14,
-    paddingLeft: 8,
-    paddingRight: 6,
+   
     borderTopWidth: 1,
     borderTopColor: "#DBDBDB",
     gap: 10,

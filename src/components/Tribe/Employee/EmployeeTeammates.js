@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Platform } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
@@ -13,7 +13,7 @@ const EmployeeTeammates = ({ teammates, reference, handleSearch, inputToShow, se
           paddingHorizontal: 20,
           paddingVertical: 16,
           gap: 21,
-          paddingBottom: 40,
+          paddingBottom: Platform.OS === 'android' ?   40 : null,
         }}
       >
         <Input

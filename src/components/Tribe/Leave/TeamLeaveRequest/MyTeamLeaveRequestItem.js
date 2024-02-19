@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
 
 import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
-import FormButton from "../../../shared/FormButton";
 import { TextProps } from "../../../shared/CustomStylings";
-import { SheetManager } from "react-native-actions-sheet";
 
 const MyTeamLeaveRequestItem = ({
   id,
@@ -17,8 +17,6 @@ const MyTeamLeaveRequestItem = ({
   begin_date,
   end_date,
   responseHandler,
-  isSubmitting,
-  formik,
   item,
   status,
 }) => {
@@ -67,22 +65,37 @@ const MyTeamLeaveRequestItem = ({
                         paddingBottom: -20,
                       }}
                     >
+                                                  <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+
                       <TouchableOpacity
                         onPress={async () => {
                           await SheetManager.hide("form-sheet");
                           responseHandler("Approved", item);
                         }}
+                        style={{
+                          ...styles.containerApproval,
+                          justifyContent: "space-between",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#FFFFFF",
+                        }}
                       >
-                        <Text style={[{ fontSize: 14, fontWeight: "400" }, TextProps]}>Approve</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Approve</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={async () => {
                           await SheetManager.hide("form-sheet");
                           responseHandler("Rejected", item);
                         }}
+                        style={{
+                          ...styles.containerApproval,
+                          justifyContent: "space-between",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#FFFFFF",
+                        }}
                       >
-                        <Text style={[{ fontSize: 14, fontWeight: "400", color: "#D64B4B" }]}>Decline</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: "400", color: "#D64B4B" }]}>Decline</Text>
                       </TouchableOpacity>
+                                                  </View>
                     </View>
                   ),
                 },
@@ -117,36 +130,7 @@ const MyTeamLeaveRequestItem = ({
             {days < 2 ? "day" : "days"}
           </Text>
         </View>
-        {/* {status === "Pending" ? (
-          <View style={{ flexDirection: "row", gap: 5 }}>
-            <FormButton
-              onPress={() => responseHandler("Rejected", item)}
-              isSubmitting={isSubmitting === "Rejected" ? formik.isSubmitting : null}
-              size="xs"
-              backgroundColor="#FF6262"
-              fontColor="white"
-              padding={5}
-              height={35}
-            >
-              <Text style={[{ fontSize: 12, color: "#FFFFFF" }]}>Decline</Text>
-            </FormButton>
-            <FormButton
-              onPress={() => responseHandler("Approved", item)}
-              isSubmitting={isSubmitting === "Approved" ? formik.isSubmitting : null}
-              size="xs"
-              backgroundColor="#377893"
-              fontColor="white"
-              padding={5}
-              height={35}
-            >
-              <Text style={[{ fontSize: 12, color: "#FFFFFF" }]}>Approve</Text>
-            </FormButton>
-          </View>
-        ) : (
-          <Text style={{ color: status === "Pending" ? "#F0C290" : status === "Approved" ? "#377893" : "#FF6262" }}>
-            {item?.status}
-          </Text>
-        )} */}
+       
       </View>
     </View>
   );
@@ -156,6 +140,15 @@ export default MyTeamLeaveRequestItem;
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+  containerApproval: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
