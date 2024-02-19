@@ -43,11 +43,15 @@ const TribeAddNewSheet = (props) => {
 
   const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
+  console.log('a', attendance?.data)
 
   const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
   const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
 
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
+
+  const date = dayjs().format('YYYY-MM-DD')
+  const time = dayjs().format('HH:mm')
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -126,11 +130,13 @@ const TribeAddNewSheet = (props) => {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
       } else {
-        if (dayjs().format("HH:mm") !== attendance?.time_out || !attendance) {
+        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
           const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
             longitude: location?.coords?.longitude,
             latitude: location?.coords?.latitude,
             check_from: "Mobile App",
+            date: date,
+            time: time
           });
 
           toggleAttendance();
@@ -277,9 +283,9 @@ const TribeAddNewSheet = (props) => {
         topElement={
           <View style={{ flexDirection: "row" }}>
             <Text
-              style={{ color: !attendance?.data?.time_in ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
+              style={{ color: !attendance?.data?.time_out ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
             >
-              {!attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
+              {!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}{" "}
             </Text>
             <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
           </View>
@@ -291,7 +297,6 @@ const TribeAddNewSheet = (props) => {
         }
       />
       </ActionSheet>
-
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}
