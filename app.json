@@ -2,7 +2,7 @@
   "expo": {
     "name": "Nest",
     "slug": "kss-mobile-app",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/nest-icon.png",
     "userInterfaceStyle": "light",
@@ -12,14 +12,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.kolabora.kssmobileapp",
-      "buildNumber": "13"
+      "buildNumber": "14"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -27,9 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon-adr.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_BACKGROUND_LOCATION", "ACCESS_COARSE_LOCATION"],
       "package": "com.kolabora.kssmobileapp",
-      "versionCode": 13,
+      "versionCode": 14,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
@@ -59,9 +56,7 @@
       [
         "expo-notifications",
         {
-          "sounds": [
-            "./assets/sounds/nest_notification_sound.wav"
-          ]
+          "sounds": ["./assets/sounds/nest_notification_sound.wav"]
         }
       ],
       [
