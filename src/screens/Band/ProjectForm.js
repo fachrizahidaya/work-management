@@ -150,6 +150,7 @@ const ProjectForm = ({ route }) => {
                 formik.setFieldValue("description", descriptionText);
               }}
               initialContentHTML={preprocessContent(formik.values.description)}
+              style={{ minHeight: 200 }}
             />
           </ScrollView>
 

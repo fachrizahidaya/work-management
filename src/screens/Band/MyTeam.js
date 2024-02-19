@@ -195,66 +195,83 @@ const MyTeamScreen = ({ route }) => {
           SheetManager.show("form-sheet", {
             payload: {
               children: (
-                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                  {createCheckAccess && (
-                    <TouchableOpacity
-                      onPress={async () => {
-                        await SheetManager.hide("form-sheet");
-                        openNewTeamFormHandler();
-                      }}
-                    >
-                      <Text style={TextProps}>Create new team</Text>
-                    </TouchableOpacity>
-                  )}
-                  {team && (
-                    <>
-                      {createProjectCheckAccess && (
+                <View style={styles.menu}>
+                  <View style={styles.wrapper}>
+                    {createCheckAccess && (
+                      <TouchableOpacity
+                        onPress={async () => {
+                          await SheetManager.hide("form-sheet");
+                          openNewTeamFormHandler();
+                        }}
+                        style={styles.menuItem}
+                      >
+                        <Text style={(TextProps, { fontSize: 16 })}>Create new team</Text>
+                        <MaterialCommunityIcons name="account-group" size={20} />
+                      </TouchableOpacity>
+                    )}
+                    {team && (
+                      <>
+                        {createProjectCheckAccess && (
+                          <TouchableOpacity
+                            onPress={async () => {
+                              await SheetManager.hide("form-sheet");
+                              navigation.navigate("Project Form", { projectData: null, teamMembers: members?.data });
+                            }}
+                            style={styles.menuItem}
+                          >
+                            <Text style={(TextProps, { fontSize: 16 })}>Create project with this team </Text>
+                            <MaterialCommunityIcons name="lightning-bolt" size={20} />
+                          </TouchableOpacity>
+                        )}
+
+                        {team?.owner_id === userSelector.id && (
+                          <>
+                            {editCheckAccess && (
+                              <>
+                                <TouchableOpacity
+                                  onPress={async () => {
+                                    await SheetManager.hide("form-sheet");
+                                    openMemberModalHandler();
+                                  }}
+                                  style={styles.menuItem}
+                                >
+                                  <Text style={(TextProps, { fontSize: 16 })}>Add new member to this team</Text>
+                                  <MaterialCommunityIcons name="account-plus" size={20} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                  onPress={async () => {
+                                    await SheetManager.hide("form-sheet");
+                                    openEditTeamFormHandler();
+                                  }}
+                                  style={styles.menuItem}
+                                >
+                                  <Text style={(TextProps, { fontSize: 16 })}>Edit this team</Text>
+                                  <MaterialCommunityIcons name="file-edit" size={20} />
+                                </TouchableOpacity>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </View>
+
+                  {team?.owner_id === userSelector.id && (
+                    <View style={styles.wrapper}>
+                      {deleteCheckAccess && (
                         <TouchableOpacity
                           onPress={async () => {
                             await SheetManager.hide("form-sheet");
-                            navigation.navigate("Project Form", { projectData: null, teamMembers: members?.data });
+                            toggleDeleteModal();
                           }}
+                          style={[styles.menuItem, { marginTop: 3 }]}
                         >
-                          <Text style={TextProps}>Create project with this team </Text>
+                          <Text style={{ fontSize: 16, fontWeight: 700, color: "#EB0E29" }}>Delete this team</Text>
+                          <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
                         </TouchableOpacity>
                       )}
-
-                      {team?.owner_id === userSelector.id && (
-                        <>
-                          {editCheckAccess && (
-                            <>
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  openMemberModalHandler();
-                                }}
-                              >
-                                <Text style={TextProps}>Add new member to this team</Text>
-                              </TouchableOpacity>
-
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  openEditTeamFormHandler();
-                                }}
-                              >
-                                <Text style={TextProps}>Edit this team</Text>
-                              </TouchableOpacity>
-                            </>
-                          )}
-                          {deleteCheckAccess && (
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleDeleteModal();
-                              }}
-                            >
-                              <Text style={{ color: "red" }}>Delete this team</Text>
-                            </TouchableOpacity>
-                          )}
-                        </>
-                      )}
-                    </>
+                    </View>
                   )}
                 </View>
               ),
@@ -343,5 +360,26 @@ const styles = StyleSheet.create({
     elevation: 0,
     borderWidth: 3,
     borderColor: "white",
+  },
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
   },
 });
