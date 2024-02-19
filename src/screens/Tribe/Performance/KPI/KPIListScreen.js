@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -33,8 +33,19 @@ const KPIListScreen = () => {
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
+    setOngoingList([])
+    setArchivedList([])
   }, []);
 
+  useEffect(() => {
+    if (
+      kpiList?.data.length
+    ) {
+      setOngoingList((prevData) => [...prevData, ...kpiList?.data])
+
+    }
+  }, [kpiList?.data.length])
+  
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
@@ -47,31 +58,45 @@ const KPIListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Ongoing" ? (
-            <FlashList
-              data={kpiList?.data}
-              estimatedItemSize={50}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              renderItem={({ item, index }) => (
-                <OngoingPerformanceListItem
-                  key={index}
-                  id={item?.id}
-                  start_date={item?.review?.begin_date}
-                  end_date={item?.review?.end_date}
-                  position={item?.target_level}
-                  navigation={navigation}
-                  name={item?.review?.description}
-                  type="kpi"
-                  target={item?.target_name}
-                />
-              )}
-            />
-          ) : (
+            ongoingList?.length > 0 ? 
+            (
+              <FlashList
+                data={kpiList?.data}
+                estimatedItemSize={50}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                renderItem={({ item, index }) => (
+                  <OngoingPerformanceListItem
+                    key={index}
+                    id={item?.id}
+                    start_date={item?.review?.begin_date}
+                    end_date={item?.review?.end_date}
+                    position={item?.target_level}
+                    navigation={navigation}
+                    name={item?.review?.description}
+                    type="kpi"
+                    target={item?.target_name}
+                  />
+                )}
+              />
+            )
+            :
             <ScrollView refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}>
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
+
+          ) : (
+            archivedList?.length > 0 ? null
+            :
+            <ScrollView refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}>
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+
+
           )}
         </View>
       </View>

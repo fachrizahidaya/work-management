@@ -73,7 +73,7 @@ const TribeScreenSheet = (props) => {
         >
           <View style={styles.flex}>
             <View style={styles.item}>
-              <MaterialCommunityIcons size={20} name="account-outline" color="#3F434A" />
+              <MaterialCommunityIcons size={20} name="file-star-outline" color="#3F434A" />
             </View>
             <Text style={[{ fontSize: 14 }, TextProps]}>Performance Comment</Text>
           </View>

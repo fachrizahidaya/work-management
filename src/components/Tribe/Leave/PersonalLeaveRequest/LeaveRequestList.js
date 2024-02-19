@@ -89,7 +89,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
-            style={{height:Platform.OS === 'ios' ? 560 : 590}}
+            style={{height:Platform.OS === 'ios' ? 570 : 600}}
               refreshControl={
                 <RefreshControl
                   refreshing={pendingLeaveRequestIsFetching}
@@ -145,7 +145,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
-            style={{height:Platform.OS === 'ios' ? 560 : 590}}
+            style={{height:Platform.OS === 'ios' ? 570 : 600}}
               refreshControl={
                 <RefreshControl
                   refreshing={approvedLeaveRequestIsFetching}
@@ -200,7 +200,7 @@ const LeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
-            style={{height:Platform.OS === 'ios' ? 560 : 590}}
+            style={{height:Platform.OS === 'ios' ? 570 : 600}}
               refreshControl={
                 <RefreshControl
                   refreshing={canceledLeaveRequestIsFetching}
@@ -256,7 +256,7 @@ const LeaveRequestList = ({
           </View>
         ) : (
           <ScrollView
-          style={{height:Platform.OS === 'ios' ? 560 : 590}}
+          style={{height:Platform.OS === 'ios' ? 570 : 600}}
             refreshControl={
               <RefreshControl
                 refreshing={rejectedLeaveRequestIsFetching}

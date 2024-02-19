@@ -8,7 +8,7 @@ import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const CommentListItem = ({
-    id, start_date, end_date, navigation, name, target, dayjs, description
+    id, start_date, end_date, navigation, name, target, dayjs, description, type
 }) => {
   return (
     <Pressable
@@ -23,11 +23,14 @@ const CommentListItem = ({
     }}
     onPress={() =>
       navigation.navigate("Confirmed Comment Detail", {
-        id: id,
+        id: id, type: type
       })
     }
   >
+    {
+      type === 'personal' ? null : 
     <Text style={[{}, TextProps]}>{name}</Text>
+    }
     <View>
       <Text style={[TextProps]}>{description}</Text>
     </View>

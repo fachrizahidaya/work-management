@@ -8,7 +8,7 @@ import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const ConfirmedCommentDetailItem = ({
-    description, handleOpen, item, employeeCommentValue, comment
+     subject, grade, total_score, employeeKPI, supervisorKPI, employeeAppraisal, supervisorAppraisal, navigation, appraisalData
 }) => {
   return (
    <Pressable
@@ -17,21 +17,46 @@ const ConfirmedCommentDetailItem = ({
         marginVertical: 14,
         marginBottom: 2,
         elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent:'space-between',
+        gap: 5,
       }}
-      onPress={() => {
-        handleOpen(item, employeeCommentValue);
-      }}
+      onPress={() => navigation.navigate('Appraisal Employee', {
+        appraisal: appraisalData
+      })}
     >
-      <Text style={[TextProps]}>{description}</Text>
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name={"chart-bar"} size={15} style={{ opacity: 0.5 }} />
+      <View style={{ flexDirection: "column",  gap: 5 }}>
+        <Text style={[{fontSize:16, fontWeight:'700'}, TextProps]}>{employeeKPI?.item ? employeeKPI?.item || supervisorKPI?.item : employeeAppraisal?.item || supervisorAppraisal?.item}</Text>
+        <View style={{flexDirection:'row', alignItems:'center'}}>
+      <Text style={[{fontSize:14, fontWeight:'700'}, TextProps]}>Grade: </Text>
+      <Text style={[TextProps]}>{grade}</Text>
+        </View>
+            {
+              employeeKPI && supervisorKPI ? 
+              <>
+              <Text style={[TextProps]}>Employee Score: {employeeKPI?.score}</Text>
+              <Text style={[TextProps]}>Supervisor Score: {supervisorKPI?.score}</Text>
+              </>
+              :
+              <>
+            <Text style={[TextProps]}>Employee Score: {employeeAppraisal?.score}</Text>
+            <Text style={[TextProps]}>Supervisor Score: {supervisorAppraisal?.score}</Text>
+              </>
+            }
+        <View style={{flexDirection:'row', alignItems:'center'}}>
 
-        <Text style={[TextProps]}>{comment}</Text>
+            <Text style={[{fontSize:14, fontWeight:'700'}, TextProps]}>Total Score: </Text>
+            <Text style={[{}, TextProps]}>{total_score}</Text>
+        </View>
       </View>
+      {
+        employeeAppraisal && supervisorAppraisal &&
+
+      <MaterialCommunityIcons name={"chevron-right"} size={20} style={{ opacity: 0.5 }} />
+      }
+
     </Pressable>
   )
 }

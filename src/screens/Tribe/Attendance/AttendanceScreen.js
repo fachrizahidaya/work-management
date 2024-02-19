@@ -167,7 +167,7 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      attendanceScreenSheetRef.current?.hide();
+      // attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
@@ -246,22 +246,6 @@ const AttendanceScreen = () => {
     toggleDeleteAttachment();
   };
 
-  const renderCustomHeader = (date) => {
-    return (
-      <View>
-        <TouchableOpacity>
-          {/* Your custom left arrow shape component */}
-          <Text>{"<-"}</Text>
-        </TouchableOpacity>
-        {/* <Text >{date.toString('MMMM yyyy')}</Text> */}
-        <TouchableOpacity>
-          {/* Your custom right arrow shape component */}
-          <Text>{"->"}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   /**
    * Marked dates in Calendar Handler
    * @returns
@@ -285,8 +269,11 @@ const AttendanceScreen = () => {
             textColor = dayOff.textColor;
           } else if (
             (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && event?.date !== CURRENT_DATE)
+            (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) 
+            ||
+            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && !event?.attendanceReason
+            && event?.date !== CURRENT_DATE
+            )
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;
@@ -415,8 +402,8 @@ const AttendanceScreen = () => {
         isLeave={isLeave}
         CURRENT_DATE={CURRENT_DATE}
         reference={attendanceScreenSheetRef}
-        isOpen={attendanceReportModalIsOpen}
-        toggle={toggleAttendanceReportModal}
+        attendanceReportModalIsOpen={attendanceReportModalIsOpen}
+        toggleAttendanceReportModal={toggleAttendanceReportModal}
       />
 
       <AddAttendanceAttachment
@@ -439,15 +426,14 @@ const AttendanceScreen = () => {
           refetchAttachment();
         }}
       />
-      <SuccessModal isOpen={attendanceReportModalIsOpen} toggle={toggleAttendanceReportModal} topElement={
+      {/* <SuccessModal isOpen={attendanceReportModalIsOpen} toggle={toggleAttendanceReportModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
       </View>
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
-
-      } />
+      } /> */}
       <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
@@ -455,7 +441,6 @@ const AttendanceScreen = () => {
       </View>
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
-
       } />
     </>
   );

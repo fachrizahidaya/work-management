@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet,  View } from "react-native";
@@ -35,6 +35,15 @@ const AppraisalListScreen = () => {
     setTabValue(value);
   }, []);
 
+  useEffect(() => {
+    if (
+      appraisalList?.data.length
+    ) {
+      setOngoingList((prevData) => [...prevData, ...appraisalList?.data])
+
+    }
+  }, [appraisalList?.data.length])
+
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
@@ -47,6 +56,7 @@ const AppraisalListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
           {tabValue === "Ongoing" ? (
+            ongoingList?.length > 0 ? 
             <FlashList
               data={appraisalList?.data}
               estimatedItemSize={50}
@@ -66,7 +76,7 @@ const AppraisalListScreen = () => {
                 />
               )}
             />
-          ) : (
+            :
             <ScrollView
               refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}
             >
@@ -74,6 +84,18 @@ const AppraisalListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
+
+          ) : (
+            archivedList?.length > 0 ? null
+            :
+            <ScrollView
+              refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}
+            >
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            </ScrollView>
+
           )}
         </View>
       </View>

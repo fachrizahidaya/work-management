@@ -218,7 +218,6 @@ const CommentScreen = () => {
           target={null}
           name={commentList?.data?.employee?.name}
           title={commentList?.data?.performance_review?.description}
-          type='ongoing'
         />
 
         <View style={styles.container}>

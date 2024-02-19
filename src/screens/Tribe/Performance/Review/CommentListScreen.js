@@ -22,7 +22,6 @@ const CommentListScreen = () => {
     isFetching: commentListIsFetching,
   } = useFetch("/hr/employee-review/comment");
 
-  const {data} = useFetch(`/hr/employee-review/comment/9b4694be-487b-410a-a4ae-49f3264ceee4`)
   const {data: personalCommentList, refetch: refetchPersonalCommentList, isFetching: personalCommentListIsFetching} = useFetch("/hr/performance-result/personal")
   const {data: teamCommentList, refetch: refetchTeamCommentList, isFetching: teamCommentListIsFetching} = useFetch('/hr/performance-result/my-team')
 
@@ -41,7 +40,6 @@ const CommentListScreen = () => {
         { title: `My Team (${teamCommentList?.data.length || 0})`, value: "My Team" },
       ];
     }, [teamCommentList, personalCommentList]);
-
   } 
   else {
     var tabs = useMemo(() => {
@@ -62,9 +60,6 @@ const CommentListScreen = () => {
       <View style={styles.header}>
         <PageHeader width={200} title="Comment Employee" backButton={false} />
       </View>
-      {/* <TouchableOpacity onPress={() => navigation.navigate('Comment Detail')}>
-        <Text>click here</Text>
-      </TouchableOpacity> */}
 
       <View style={{ paddingHorizontal: 16 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
@@ -101,7 +96,6 @@ const CommentListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
-
           ) 
           : 
           tabValue === 'My Team' ?  (
@@ -123,6 +117,7 @@ const CommentListScreen = () => {
                   target={null}
                   dayjs={dayjs}
                   description={item?.performance_review?.description}
+                  type='my-team'
                   />
                 )}
                 refreshControl={<RefreshControl refreshing={teamCommentListIsFetching} onRefresh={refetchTeamCommentList} />}
@@ -136,7 +131,6 @@ const CommentListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
-
 ) : personalCommentList?.data?.length > 0 ?
 (
   <FlashList
@@ -155,9 +149,10 @@ const CommentListScreen = () => {
         target={null}
         dayjs={dayjs}
         description={item?.performance_review?.description}
+        type='personal'
       />
     )}
-    refreshControl={<RefreshControl refreshing={personalCommentList} onRefresh={refetchPersonalCommentList} />}
+    refreshControl={<RefreshControl refreshing={personalCommentListIsFetching} onRefresh={refetchPersonalCommentList} />}
   />
 )
         :

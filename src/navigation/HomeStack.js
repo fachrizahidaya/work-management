@@ -29,16 +29,13 @@ import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeav
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
-import ReviewKPIListScreen from "../screens/Tribe/Performance/Review/ReviewKPIListScreen";
 import ReviewKPIScreen from "../screens/Tribe/Performance/Review/ReviewKPIScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
-import ReviewAppraisalListScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalListScreen";
 import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
-import CommentListScreen from "../screens/Tribe/Performance/Review/CommentListScreen";
 import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
-import PerformanceCommentListScreen from "../screens/Tribe/Performance/Review/PerformanceCommentListScreen";
-
+import ConfirmedCommentScreen from "../screens/Tribe/Performance/Review/ConfirmedCommentScreen";
+import AppraisalEmployeeScreen from "../screens/Tribe/Performance/Review/AppraisalEmployeeScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -62,7 +59,6 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import ConfirmedCommentScreen from "../screens/Tribe/Performance/Review/ConfirmedCommentScreen";
 
 const Stack = createStackNavigator();
 
@@ -183,14 +179,6 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Review KPI" component={ReviewKPIListScreen} options={{ header: () => <Header /> }} />
-
-      <Stack.Screen
-        name="Review Appraisal"
-        component={ReviewAppraisalListScreen}
-        options={{ header: () => <Header /> }}
-      />
-
       <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
@@ -206,6 +194,8 @@ const HomeStack = () => {
       <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Confirmed Comment Detail" component={ConfirmedCommentScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Appraisal Employee" component={AppraisalEmployeeScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />

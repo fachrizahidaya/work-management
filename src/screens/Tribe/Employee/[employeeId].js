@@ -456,16 +456,14 @@ const EmployeeProfileScreen = ({ route }) => {
       </View>
       } bottomElement={
         <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-
       } />
       <SuccessModal isOpen={deletePostModalIsOpen} toggle={toggleDeletePostModal} topElement={
         <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
       </View>
       } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
       } />
     </>
   );

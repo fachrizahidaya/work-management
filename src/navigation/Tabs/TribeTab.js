@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useSelector } from "react-redux";
 
 import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
@@ -16,11 +17,9 @@ import ReimbursementScreen from "../../screens/Tribe/Reimbursement/Reimbursement
 import TribeScreenSheet from "../../components/shared/ActionSheet/TribeScreenSheet";
 import TribeAddNewSheet from "../../components/shared/ActionSheet/TribeAddNewSheet";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
-import PerformanceScreen from "../../screens/Tribe/Performance/PerformanceScreen";
 import KPIListScreen from "../../screens/Tribe/Performance/KPI/KPIListScreen";
 import AppraisalListScreen from "../../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIAppraisalReviewScreen from "../../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
-import PerformanceCommentListScreen from "../../screens/Tribe/Performance/Review/PerformanceCommentListScreen";
 import CommentListScreen from "../../screens/Tribe/Performance/Review/CommentListScreen";
 
 const Tab = createBottomTabNavigator();
@@ -33,6 +32,9 @@ const TribeTab = () => {
   const tribeScreenSheetRef = useRef(null);
   const tribeAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
+
+  const menuSelector = useSelector((state) => state.user_menu);
+  const userSelector = useSelector((state) => state.auth);
 
   /**
    * Toggles the specified state and resets other states to false.
@@ -59,8 +61,7 @@ const TribeTab = () => {
             "Employee KPI",
             "Employee Appraisal",
             "Employee Review",
-            // 'Performance Comment List'
-            'Comment List Screen'
+            "Comment List Screen"
           ].includes(route.name)
             ? () => {
                 return null;

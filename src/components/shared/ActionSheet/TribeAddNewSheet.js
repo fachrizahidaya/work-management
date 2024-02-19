@@ -49,8 +49,6 @@ const TribeAddNewSheet = (props) => {
 
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
-  
-
   const items = [
     createLeaveRequestCheckAccess && {
       icons: "clipboard-clock-outline",
