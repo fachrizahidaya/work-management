@@ -15,6 +15,7 @@ import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -42,7 +43,7 @@ const FeedScreen = () => {
 
   const flashListRef = useRef(null);
 
-  const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
+  const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
 
   /**
    * Toggle fullscreen image
@@ -223,7 +224,6 @@ const FeedScreen = () => {
 
   return (
     <>
-      <StatusBar animated={true} backgroundColor={postModalIsOpen ? "#176688" : null} />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
@@ -244,8 +244,7 @@ const FeedScreen = () => {
               loggedEmployeeDivision: profile?.data?.position_id,
               scrollNewMessage: scrollNewMessage,
               setScrollNewMessage: setScrollNewMessage,
-              isOpen: postModalIsOpen,
-              toggle: togglePostModal,
+              toggleSuccess: togglePostSuccess
             });
           }}
         >
@@ -301,7 +300,14 @@ const FeedScreen = () => {
         />
       </SafeAreaView>
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
-      
+      {/* <SuccessModal isOpen={postSuccessIsOpen} toggle={togglePostSuccess} topElement={
+         <View style={{ flexDirection: "row" }}>
+         <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
+         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
+       </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for contributing to the community</Text>
+      } /> */}
     </>
   );
 };

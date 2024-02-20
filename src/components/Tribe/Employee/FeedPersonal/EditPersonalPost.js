@@ -256,7 +256,7 @@ const EditPersonalPost = ({
                     ) : (
                       <MaterialCommunityIcons
                         name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}
-                        size={25}
+                        size={20}
                         color="#FFFFFF"
                         style={{ transform: [{ rotate: "-45deg" }] }}
                       />

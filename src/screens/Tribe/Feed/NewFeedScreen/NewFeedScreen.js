@@ -54,8 +54,7 @@ const NewFeedScreen = () => {
     postRefetchHandler,
     scrollNewMessage,
     setScrollNewMessage,
-    isOpen,
-    toggle,
+    toggleSuccess
   } = route.params;
 
   const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
@@ -77,7 +76,8 @@ const NewFeedScreen = () => {
       setStatus("success");
       setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show("Posted successfully!", SuccessToastProps);
+      // toggleSuccess()
+      // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

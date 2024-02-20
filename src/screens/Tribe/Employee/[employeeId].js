@@ -437,7 +437,7 @@ const EmployeeProfileScreen = ({ route }) => {
         onSuccess={() => {
           // postRefetchHandler()
           refetchPersonalPost();
-          // toggleDeletePostModal()
+          toggleDeletePostModal()
         }}
         description="Are you sure to delete this post?"
         successMessage={'Post deleted'}
