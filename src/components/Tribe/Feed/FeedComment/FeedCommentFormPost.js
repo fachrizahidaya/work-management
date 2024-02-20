@@ -14,7 +14,6 @@ const FeedCommentFormPost = ({
   renderSuggestions,
   handleChange,
   formik,
-  suggestion,
 }) => {
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {

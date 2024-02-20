@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { card } from "../../../styles/Card";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const PayslipList = ({ id, month, year, openSelectedPayslip }) => {

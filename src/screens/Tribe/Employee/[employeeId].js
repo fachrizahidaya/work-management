@@ -88,7 +88,7 @@ const EmployeeProfileScreen = ({ route }) => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 10,
   };
 
   const {
@@ -177,7 +177,6 @@ const EmployeeProfileScreen = ({ route }) => {
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    // refetchPersonalPost();
     setForceRerender(!forceRerender);
   };
 
@@ -383,6 +382,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   toggleEditModal={toggleEditModal}
                   reference={teammatesScreenSheetRef}
                   navigation={navigation}
+                  postRefetchHandler={postRefetchHandler}
                 />
 
                 <FeedComment
@@ -435,11 +435,12 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
+          // postRefetchHandler()
           refetchPersonalPost();
-          toggleDeletePostModal()
+          // toggleDeletePostModal()
         }}
         description="Are you sure to delete this post?"
-        successMessage={null}
+        successMessage={'Post deleted'}
         isDelete={true}
         isPatch={false}
       />
@@ -451,14 +452,6 @@ const EmployeeProfileScreen = ({ route }) => {
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
       />
-      {/* <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-      } /> */}
       <SuccessModal isOpen={deletePostModalIsOpen} toggle={toggleDeletePostModal} topElement={
         <View style={{ flexDirection: "row" }}>
         <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>

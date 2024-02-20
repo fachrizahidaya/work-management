@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -11,7 +11,6 @@ import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeave
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
-import { Text } from "react-native";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);

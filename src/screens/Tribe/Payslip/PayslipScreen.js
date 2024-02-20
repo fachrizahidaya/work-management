@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
+import { Linking, SafeAreaView, StyleSheet, View, Text, Image, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";

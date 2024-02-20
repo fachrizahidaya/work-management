@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 
-import { StyleSheet, View, Text, Pressable,  } from "react-native";
+import { StyleSheet, View, Text, Pressable} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../../hooks/useFetch";

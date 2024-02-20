@@ -1,18 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import PageHeader from "../../../../components/shared/PageHeader";
-import { card } from "../../../../styles/Card";
-import { TextProps } from "../../../../components/shared/CustomStylings";
-import useCheckAccess from "../../../../hooks/useCheckAccess";
 import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";

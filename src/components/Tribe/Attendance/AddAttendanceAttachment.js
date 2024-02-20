@@ -16,7 +16,7 @@ import SuccessModal from "../../shared/Modal/SuccessModal";
 
 const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month, attendanceAttachmentModalIsOpen, toggleAttendanceAttachmentModal }) => {
   const formik = useFormik({
-    // enableReinitialize: true,
+    enableReinitialize: true,
     initialValues: {
       title: "",
       begin_date: dayjs().format("YYYY-MM-DD") || "",

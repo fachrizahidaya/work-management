@@ -296,11 +296,8 @@ const PostScreen = () => {
                   loggedEmployeeName={userSelector?.name}
                   loggedEmployeeImage={profile?.data?.image}
                   comments={comments}
-                  commentIsFetching={commentIsFetching}
                   commentIsLoading={commentIsLoading}
-                  refetchComment={refetchComment}
                   onEndReached={commentEndReachedHandler}
-                  commentRefetchHandler={commentRefetchHandler}
                   parentId={commentParentId}
                   onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
@@ -317,7 +314,6 @@ const PostScreen = () => {
               renderSuggestions={renderSuggestions}
               handleChange={handleChange}
               formik={formik}
-              suggestion={suggestions}
             />
           </SafeAreaView>
           </>

@@ -35,6 +35,7 @@ const FeedCard = ({
   toggleEditModal,
   reference,
   navigation,
+  postRefetchHandler
 }) => {
   /**
    * Like a Post handler
@@ -93,6 +94,7 @@ const FeedCard = ({
           <RefreshControl
             refreshing={personalPostIsFetching}
             onRefresh={() => {
+              postRefetchHandler()
               refetchPersonalPost();
             }}
           />
