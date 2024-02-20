@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel }) => {
+const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel, isExpired }) => {
   return (
     <View
       style={{
@@ -25,7 +25,7 @@ const KPIDetailList = ({ dayjs, status, begin_date, end_date, position, target, 
               TextProps,
             ]}
           >
-            {status || "Pending"}
+            {isExpired ? 'Finished' : "Pending"}
           </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from "dayjs";
 
 import { SafeAreaView, ScrollView, StyleSheet,  View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -24,25 +25,45 @@ const AppraisalListScreen = () => {
     isFetching: appraisalListIsFetching,
   } = useFetch("/hr/employee-appraisal/ongoing");
 
+  const currentDate = dayjs().format('YYYY-MM-DD')
+  const filteredData = appraisalList?.data.map((item) => {
+    if (item?.review?.end_date >= currentDate) {
+      return item
+    }
+  }).filter(Boolean)
+
+  const archivedData = appraisalList?.data.map((item) => {
+    if (item?.review?.end_date <= currentDate) {
+      return item
+    }
+  }).filter(Boolean)
+
   const tabs = useMemo(() => {
     return [
-      { title: `Ongoing (${appraisalList?.data.length || 0})`, value: "Ongoing" },
-      { title: `Archived (${0})`, value: "Archived" },
+      { title: `Ongoing (${filteredData?.length || 0})`, value: "Ongoing" },
+      { title: `Archived (${archivedData?.length || 0})`, value: "Archived" },
     ];
-  }, [appraisalList]);
+  }, [filteredData, archivedData]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
+    setOngoingList([])
+    setArchivedList([])
   }, []);
 
   useEffect(() => {
     if (
-      appraisalList?.data.length
+      filteredData?.length
     ) {
-      setOngoingList((prevData) => [...prevData, ...appraisalList?.data])
-
+      setOngoingList((prevData) => [...prevData, ...filteredData])
     }
-  }, [appraisalList?.data.length])
+  }, [filteredData?.length, tabValue])
+
+  useEffect(() => {
+    if (archivedData?.length) {
+      setArchivedList((prevData) => [...prevData, ...archivedData])
+    }
+  }, [archivedData?.length, tabValue])
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -58,7 +79,7 @@ const AppraisalListScreen = () => {
           {tabValue === "Ongoing" ? (
             ongoingList?.length > 0 ? 
             <FlashList
-              data={appraisalList?.data}
+              data={ongoingList}
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
@@ -73,6 +94,7 @@ const AppraisalListScreen = () => {
                   name={item?.review?.description}
                   type="appraisal"
                   target={item?.target_name}
+                  isExpired={false}
                 />
               )}
             />
@@ -84,9 +106,28 @@ const AppraisalListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
-
           ) : (
-            archivedList?.length > 0 ? null
+            archivedList?.length > 0 ? 
+            <FlashList
+                data={archivedList}
+                estimatedItemSize={50}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                renderItem={({ item, index }) => (
+                  <OngoingAppraisalListItem
+                    key={index}
+                    id={item?.id}
+                    start_date={item?.review?.begin_date}
+                    end_date={item?.review?.end_date}
+                    position={item?.target_level}
+                    navigation={navigation}
+                    name={item?.review?.description}
+                    type="kpi"
+                    target={item?.target_name}
+                    isExpired={true}
+                  />
+                )}
+              />
             :
             <ScrollView
               refreshControl={<RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />}

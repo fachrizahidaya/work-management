@@ -18,7 +18,6 @@ const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
   const [kpiList, setKpiList] = useState([]);
   const [appraisalList, setAppraisalList] = useState([]);
-  const [commentList, setCommentList] = useState([]);
 
   const navigation = useNavigation();
 
@@ -26,56 +25,41 @@ const KPIAppraisalReviewScreen = () => {
     data: kpi,
     refetch: refetchKpi,
     isFetching: kpiIsFetching,
-  } = useFetch(tabValue == "KPI" && "/hr/employee-review/kpi");
+  } = useFetch(tabValue == "KPI" && "/hr/employee-review/kpi", [tabValue]);
 
   const {
     data: appraisal,
     refetch: refetchAppraisal,
     isFetching: appraisalIsFetching,
-  } = useFetch(tabValue == "Appraisal" && "/hr/employee-review/appraisal");
-
-  const {
-    data: comment,
-    refetch: refetchcomment,
-    isFetching: commentIsFetching,
-  } = useFetch(tabValue == "Comment" && "/hr/employee-review/comment");
+  } = useFetch(tabValue == "Appraisal" && "/hr/employee-review/appraisal", [tabValue]);
 
   const { data: kpiData } = useFetch("/hr/employee-review/kpi");
   const { data: appraisalData } = useFetch("/hr/employee-review/appraisal");
-  const { data: commentData } = useFetch("/hr/employee-review/comment");
 
   const tabs = useMemo(() => {
     return [
-      { title: `KPI (${kpiData?.data.length || 0})`, value: "KPI" },
-      { title: `Appraisal (${appraisalData?.data.length || 0})`, value: "Appraisal" },
-      
+      { title: `KPI (${kpiData?.data?.length || 0})`, value: "KPI" },
+      { title: `Appraisal (${appraisalData?.data?.length || 0})`, value: "Appraisal" },
     ];
-  }, [kpi, appraisal, comment, kpiData, appraisalData, commentData]);
+  }, [kpi, appraisal, kpiData, appraisalData]);
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
     setKpiList([]);
     setAppraisalList([]);
-    setCommentList([]);
   }, []);
 
   useEffect(() => {
     if (kpi?.data.length) {
       setKpiList((prevData) => [...prevData, ...kpi?.data]);
     }
-  }, [kpi?.data.length]);
+  }, [kpi?.data.length, tabValue]);
 
   useEffect(() => {
     if (appraisal?.data.length) {
       setAppraisalList((prevData) => [...prevData, ...appraisal?.data]);
     }
-  }, [appraisal?.data.length]);
-
-  useEffect(() => {
-    if (comment?.data.length) {
-      setCommentList((prevData) => [...prevData, ...comment?.data]);
-    }
-  }, [comment?.data.length]);
+  }, [appraisal?.data.length, tabValue]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,7 +100,7 @@ const KPIAppraisalReviewScreen = () => {
               </View>
             </ScrollView>
           )
-        ) : tabValue == "Appraisal" ? (
+        ) : (
           appraisalList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 16 }}>
               <FlashList
@@ -148,38 +132,7 @@ const KPIAppraisalReviewScreen = () => {
               </View>
             </ScrollView>
           )
-        ) : tabValue == "Comment" ? (
-          commentList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 16 }}>
-              <FlashList
-                data={commentList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item, index }) => (
-                  <OngoingCommentListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.performance_review?.begin_date}
-                    end_date={item?.performance_review?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    target={item?.performance_kpi?.target_name}
-                    dayjs={dayjs}
-                    description={item?.performance_review?.description}
-                  />
-                )}
-                refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchcomment} />}
-              />
-            </View>
-          ) : (
-            <ScrollView refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchcomment} />}>
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
-        ) : null}
+        )}
       </View>
     </SafeAreaView>
   );

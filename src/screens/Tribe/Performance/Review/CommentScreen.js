@@ -38,7 +38,6 @@ const CommentScreen = () => {
     refetch: refetchCommentList,
   } = useFetch(`/hr/employee-review/comment/${
     id 
-    // '9b4694be-487b-410a-a4ae-49f3264ceee4'
   }`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);

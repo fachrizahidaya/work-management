@@ -23,6 +23,7 @@ const ConfirmationModal = ({
   body = {},
   isDelete = true,
   isPatch = false,
+  isGet = false,
   placement,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -40,7 +41,10 @@ const ConfirmationModal = ({
         await axiosInstance.delete(apiUrl);
       } else if (isPatch) {
         await axiosInstance.patch(apiUrl);
-      } else {
+      } else if (isGet) {
+        await axiosInstance.get(apiUrl)
+      }
+       else {
         await axiosInstance.post(apiUrl, body);
       }
       toggle();

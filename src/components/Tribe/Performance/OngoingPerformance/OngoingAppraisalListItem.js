@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigation, status, target }) => {
+const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigation, status, target, isExpired }) => {
   return (
     <Pressable
       style={{
@@ -19,14 +19,14 @@ const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigati
         alignItems: "flex-start",
         gap: 10,
       }}
-      onPress={() => navigation.navigate("Appraisal Detail", { id: id })}
+      onPress={() => navigation.navigate("Appraisal Detail", { id: id, isExpired: isExpired })}
     >
        <View style={{paddingVertical: 5,paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15}}>
 
       <Text
         style={[ TextProps]}
       >
-        {status || "Pending"}
+         {isExpired ? 'Finished' : "Ongoing"}
       </Text>
        </View>
       <View>

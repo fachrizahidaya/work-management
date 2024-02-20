@@ -18,6 +18,8 @@ import { useLoading } from "../../../../hooks/useLoading";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import KPIForm from "../../../../components/Tribe/Performance/Form/KPIForm";
 import Button from "../../../../components/shared/Forms/Button";
+import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -30,7 +32,7 @@ const KPIScreen = () => {
   const route = useRoute();
   const formScreenSheetRef = useRef(null);
 
-  const { id } = route.params;
+  const { id, isExpired } = route.params;
 
   const { data: kpiSelected } = useFetch(`/hr/employee-kpi/${id}/start`);
 
@@ -39,6 +41,7 @@ const KPIScreen = () => {
   const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
@@ -86,11 +89,13 @@ const KPIScreen = () => {
   };
 
   const sumUpKpiValue = () => {
-    setKpiValues(() => {
+    setKpiValues(() => 
+    {
       const performanceKpiValue = kpiList?.data?.performance_kpi?.value;
       const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
       return [...employeeKpiValue, ...performanceKpiValue];
-    });
+    }
+    );
   };
 
   const submitHandler = async () => {
@@ -99,7 +104,8 @@ const KPIScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-kpi/${kpiList?.data?.id}`, {
         kpi_value: employeeKpiValue,
       });
-      Toast.show("Data saved!", SuccessToastProps);
+      toggleSaveModal()
+      // Toast.show("Data saved!", SuccessToastProps);
       refetchKpiList();
     } catch (err) {
       console.log(err);
@@ -197,7 +203,8 @@ const KPIScreen = () => {
               }
             }}
           />
-
+          {
+            isExpired ? null :
           <Button
             height={35}
             padding={10}
@@ -211,6 +218,7 @@ const KPIScreen = () => {
             }}
             disabled={differences.length === 0 || submitIsLoading}
           />
+          }
         </View>
         <KPIDetailList
           dayjs={dayjs}
@@ -219,29 +227,36 @@ const KPIScreen = () => {
           position={kpiList?.data?.performance_kpi?.target_level}
           target={kpiList?.data?.performance_kpi?.target_name}
           targetLevel={kpiList?.data?.performance_kpi?.target_level}
+          isExpired={isExpired}
         />
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {kpiValues &&
-              kpiValues.length > 0 &&
-              kpiValues.map((item, index) => {
-                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                return (
-                  <KPIDetailItem
-                    key={index}
-                    description={item?.description}
-                    target={item?.target}
-                    weight={item?.weight}
-                    threshold={item?.threshold}
-                    measurement={item?.measurement}
-                    achievement={item?.actual_achievement}
-                    item={item}
-                    handleOpen={openSelectedKpi}
-                    employeeKpiValue={correspondingEmployeeKpi}
-                  />
-                );
-              })}
+              kpiValues.length > 0 ? (
+                kpiValues.map((item, index) => {
+                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                  return (
+                    <KPIDetailItem
+                      key={index}
+                      description={item?.description}
+                      target={item?.target}
+                      weight={item?.weight}
+                      threshold={item?.threshold}
+                      measurement={item?.measurement}
+                      achievement={item?.actual_achievement}
+                      item={item}
+                      handleOpen={openSelectedKpi}
+                      employeeKpiValue={correspondingEmployeeKpi}
+                    />
+                  );
+                }
+                )
+              ) : 
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            }
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -264,6 +279,14 @@ const KPIScreen = () => {
         target={kpi?.target}
         achievementValue={employeeKpi?.actual_achievement}
       />
+      <SuccessModal isOpen={saveModalIsOpen} toggle={toggleSaveModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+      } />
     </>
   );
 };
@@ -283,5 +306,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const AppraisalDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel }) => {
+const AppraisalDetailList = ({ dayjs, status, begin_date, end_date, position, target, targetLevel, isExpired }) => {
   return (
     <View
       style={{
@@ -19,7 +19,7 @@ const AppraisalDetailList = ({ dayjs, status, begin_date, end_date, position, ta
 <Text
   style={[ TextProps]}
 >
-  {status || "Pending"}
+  {isExpired ? 'Finished' : "Pending"}
 </Text>
  </View>
           

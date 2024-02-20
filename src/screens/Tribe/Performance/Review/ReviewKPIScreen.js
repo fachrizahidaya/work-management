@@ -20,6 +20,9 @@ import KPIReviewForm from "../../../../components/Tribe/Performance/Form/KPIRevi
 import axiosInstance from "../../../../config/api";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import Button from "../../../../components/shared/Forms/Button";
+import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const ReviewKPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -41,6 +44,9 @@ const ReviewKPIScreen = () => {
   } = useFetch(`/hr/employee-review/kpi/${id}`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } = useDisclosure(false);
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
@@ -105,7 +111,8 @@ const ReviewKPIScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-review/kpi/${kpiList?.data?.id}`, {
         kpi_value: employeeKpiValue,
       });
-      Toast.show("Data saved!", SuccessToastProps);
+      // Toast.show("Data saved!", SuccessToastProps);
+      toggleSaveModal()
       refetchKpiList();
     } catch (err) {
       console.log(err);
@@ -203,7 +210,8 @@ const ReviewKPIScreen = () => {
               }
             }}
           />
-
+          {
+            kpiList?.data?.confirm ? null :
           <Button
             height={35}
             padding={10}
@@ -223,10 +231,11 @@ const ReviewKPIScreen = () => {
             }}
             disabled={differences.length === 0 || submitIsLoading}
           />
+          }
         </View>
         <Pressable
-          style={styles.createPostIcon}
-          
+          style={styles.confirmIcon}
+          onPress={toggleConfirmationModal}
         >
           <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
         </Pressable>
@@ -243,25 +252,32 @@ const ReviewKPIScreen = () => {
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {kpiValues &&
-              kpiValues.length > 0 &&
-              kpiValues.map((item, index) => {
-                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                return (
-                  <ReviewDetailItem
-                    key={index}
-                    item={item}
-                    id={item?.id}
-                    description={item?.description}
-                    target={item?.target}
-                    weight={item?.weight}
-                    threshold={item?.threshold}
-                    measurement={item?.measurement}
-                    achievement={item?.supervisor_actual_achievement}
-                    handleOpen={openSelectedKpi}
-                    employeeKpiValue={correspondingEmployeeKpi}
-                  />
-                );
-              })}
+              kpiValues.length > 0 ? (
+
+                kpiValues.map((item, index) => {
+                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                  return (
+                    <ReviewDetailItem
+                      key={index}
+                      item={item}
+                      id={item?.id}
+                      description={item?.description}
+                      target={item?.target}
+                      weight={item?.weight}
+                      threshold={item?.threshold}
+                      measurement={item?.measurement}
+                      achievement={item?.supervisor_actual_achievement}
+                      handleOpen={openSelectedKpi}
+                      employeeKpiValue={correspondingEmployeeKpi}
+                    />
+                  );
+                })
+              )
+            :
+            <View style={styles.content}>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </View>
+            }
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -285,6 +301,38 @@ const ReviewKPIScreen = () => {
         achievementValue={employeeKpi?.supervisor_actual_achievement}
         employee_achievement={employeeKpi?.employee_actual_achievement}
       />
+      <ConfirmationModal 
+      isOpen={confirmationModalIsOpen} 
+      toggle={toggleConfirmationModal}
+      isGet={true}
+      isDelete={false}
+      isPatch={false}
+      apiUrl={`/hr/employee-review/kpi/${id}/finish`}
+      color="#377893"
+      hasSuccessFunc={true}
+      onSuccess={() => {
+        toggleConfirmedModal()
+        navigation.goBack()
+      }}
+      description='Are you sure want to confirm this review?'
+      successMessage='Review confirmed'
+      /> 
+      <SuccessModal isOpen={saveModalIsOpen} toggle={toggleSaveModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+      } />
+      <SuccessModal isOpen={confirmedModalIsOpen} toggle={toggleConfirmedModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } />
     </>
   );
 };
@@ -305,7 +353,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  createPostIcon: {
+  confirmIcon: {
     backgroundColor: "#377893",
     alignItems: "center",
     justifyContent: "center",
@@ -319,5 +367,11 @@ const styles = StyleSheet.create({
     shadowOffset: 0,
     borderWidth: 3,
     borderColor: "#FFFFFF",
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -47,14 +47,14 @@ const AppraisalReviewForm = ({
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Employee Choice</Text>
             <Text>
               {employee_choice == "a"
-                ? "Jelek"
+                ? choice_a
                 : employee_choice == "b"
-                ? "Lumayan"
+                ? choice_b
                 : employee_choice == "c"
-                ? "Baik"
+                ? choice_c
                 : employee_choice == "d"
-                ? "Bagus"
-                : "Keren"}
+                ? choice_d
+                : choice_e}
             </Text>
           </View>
           <Select

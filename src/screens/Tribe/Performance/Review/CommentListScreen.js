@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
@@ -14,6 +14,9 @@ import OngoingCommentListItem from "../../../../components/Tribe/Performance/Ong
 import CommentListItem from "../../../../components/Tribe/Performance/Comment/CommentListItem";
 
 const CommentListScreen = () => {
+  const [ongoingList, setOngoingList] = useState([])
+  const [personalList, setPersonalList] = useState([])
+  const [teamList, setTeamList] = useState([])
   const navigation = useNavigation();
 
   const {
@@ -21,7 +24,6 @@ const CommentListScreen = () => {
     refetch: refetchCommentList,
     isFetching: commentListIsFetching,
   } = useFetch("/hr/employee-review/comment");
-
   const {data: personalCommentList, refetch: refetchPersonalCommentList, isFetching: personalCommentListIsFetching} = useFetch("/hr/performance-result/personal")
   const {data: teamCommentList, refetch: refetchTeamCommentList, isFetching: teamCommentListIsFetching} = useFetch('/hr/performance-result/my-team')
 
@@ -30,9 +32,9 @@ const CommentListScreen = () => {
       return [
         { title: `Ongoing (${commentList?.data.length || 0})`, value: "Ongoing" },
         { title: `Personal (${personalCommentList?.data.length || 0})`, value: "Personal" },
-        { title: `My Team (${0})`, value: "My Team" },
+        { title: `My Team (${teamCommentList?.data.length})`, value: "My Team" },
       ];
-    }, [commentList, personalCommentList]);
+    }, [commentList, personalCommentList, teamCommentList]);
   } else if (commentList?.data.length === 0 && teamCommentList?.data.length > 0) {
     var tabs = useMemo(() => {
       return [
@@ -46,14 +48,38 @@ const CommentListScreen = () => {
       return [
         { title: `Personal (${personalCommentList?.data.length || 0})`, value: "Personal" },
       ];
-    }, [ personalCommentList]);
+    }, [personalCommentList]);
   }
 
-  const [tabValue, setTabValue] = useState(commentList?.data.length > 0 ? "Waiting Review" : "Personal");
+  const [tabValue, setTabValue] = useState(commentList?.data.length > 0 ? "Ongoing" : "Personal");
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
+    setOngoingList([])
+    setPersonalList([])
+    setTeamList([])
   }, []);
+
+  useEffect(() => {
+    if (commentList?.data.length) {
+      setOngoingList((prevData) => [...prevData, ...commentList?.data])
+
+    }
+  }, [commentList?.data.length, tabValue])
+
+  useEffect(() => {
+    if (personalCommentList?.data.length) {
+      setPersonalList((prevData) => [...prevData, ...personalCommentList?.data])
+
+    }
+  }, [personalCommentList?.data.length, tabValue])
+
+  useEffect(() => {
+    if (teamCommentList?.data.length) {
+      setTeamList((prevData) => [...prevData, ...teamCommentList?.data])
+
+    }
+  }, [teamCommentList?.data.length, tabValue])
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -66,10 +92,10 @@ const CommentListScreen = () => {
       </View>
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          {tabValue === "Waiting Review" ? (
-            commentList?.data?.length > 0 ?(
+          {tabValue === "Ongoing" ? (
+            ongoingList.length > 0 ?(
               <FlashList
-                data={commentList?.data}
+                data={ongoingList}
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
@@ -99,10 +125,10 @@ const CommentListScreen = () => {
           ) 
           : 
           tabValue === 'My Team' ?  (
-            teamCommentList?.data?.length > 0 ?
+            teamList.length > 0 ?
             (
               <FlashList
-                data={teamCommentList?.data}
+                data={teamList}
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
@@ -131,10 +157,10 @@ const CommentListScreen = () => {
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
-) : personalCommentList?.data?.length > 0 ?
+) : personalList.length > 0 ?
 (
   <FlashList
-    data={personalCommentList?.data}
+    data={personalList}
     estimatedItemSize={50}
     onEndReachedThreshold={0.1}
     keyExtractor={(item, index) => index}
