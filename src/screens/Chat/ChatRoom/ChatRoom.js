@@ -10,6 +10,7 @@ import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
 import Toast from "react-native-root-toast";
+import { SheetManager } from "react-native-actions-sheet";
 
 import axiosInstance from "../../../config/api";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
@@ -368,6 +369,7 @@ const ChatRoom = () => {
       allowsEditing: true,
       quality: 1,
     });
+    SheetManager.hide('form-sheet')
 
     // Handling for name
     var filename = result.assets[0].uri.substring(
@@ -396,6 +398,7 @@ const ChatRoom = () => {
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: false,
       });
+      SheetManager.hide('form-sheet')
 
       // Check if there is selected file
       if (result) {
