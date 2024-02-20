@@ -61,7 +61,6 @@ const ChatRoom = () => {
 
   const clearChatScreenSheetRef = useRef(null);
   const searchFormRef = useRef(null);
-  const scrollRef = useRef(null);
 
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
@@ -614,7 +613,6 @@ const ChatRoom = () => {
               userSelector={userSelector}
               navigation={navigation}
               filteredSearch={filteredSearch}
-              scrollRef={scrollRef}
             />
 
             <ChatInput
