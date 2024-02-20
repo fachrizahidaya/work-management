@@ -188,7 +188,7 @@ const AppraisalScreen = () => {
               }
             }}
           />
-          {isExpired ? null :
+          {isExpired || appraisalValues.length === 0 ? null :
           <Button
             height={35}
             padding={10}

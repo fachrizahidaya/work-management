@@ -204,7 +204,7 @@ const KPIScreen = () => {
             }}
           />
           {
-            isExpired ? null :
+            isExpired || kpiValues.length === 0 ? null :
           <Button
             height={35}
             padding={10}

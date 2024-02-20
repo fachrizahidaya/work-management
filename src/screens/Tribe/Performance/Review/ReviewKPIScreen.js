@@ -211,7 +211,7 @@ const ReviewKPIScreen = () => {
             }}
           />
           {
-            kpiList?.data?.confirm ? null :
+            kpiValues.length === 0 || kpiList?.data?.confirm ? null :
           <Button
             height={35}
             padding={10}
@@ -233,12 +233,15 @@ const ReviewKPIScreen = () => {
           />
           }
         </View>
+        {kpiValues.length > 0 ? 
         <Pressable
           style={styles.confirmIcon}
           onPress={toggleConfirmationModal}
         >
           <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
         </Pressable>
+        : null
+        }
         <ReviewDetailList
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
@@ -253,7 +256,6 @@ const ReviewKPIScreen = () => {
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {kpiValues &&
               kpiValues.length > 0 ? (
-
                 kpiValues.map((item, index) => {
                   const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
                   return (

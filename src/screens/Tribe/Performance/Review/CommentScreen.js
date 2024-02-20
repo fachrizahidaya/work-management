@@ -4,8 +4,10 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -18,6 +20,9 @@ import { ErrorToastProps, SuccessToastProps } from "../../../../components/share
 import Button from "../../../../components/shared/Forms/Button";
 import CommentDetailItem from "../../../../components/Tribe/Performance/CommentList/CommentDetailItem";
 import CommentForm from "../../../../components/Tribe/Performance/Form/CommentForm";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const CommentScreen = () => {
   const [commentValues, setCommentValues] = useState([]);
@@ -41,6 +46,9 @@ const CommentScreen = () => {
   }`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } = useDisclosure(false);
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
@@ -189,8 +197,9 @@ const CommentScreen = () => {
               }
             }}
           />
-
-          <Button
+          {
+            commentValues.length > 0 ? 
+            <Button
             height={35}
             padding={10}
             children={
@@ -209,7 +218,23 @@ const CommentScreen = () => {
             }}
             disabled={differences.length === 0 || submitIsLoading}
           />
+            : 
+            null
+          }
+          
         </View>
+        {
+          commentValues.length > 0 ?
+        <Pressable
+          style={styles.confirmIcon}
+          onPress={toggleConfirmationModal}
+        >
+          <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+        </Pressable>
+           :
+           null
+
+        }
         <CommentDetailList
           dayjs={dayjs}
           begin_date={commentList?.data?.performance_review?.begin_date}
@@ -222,22 +247,27 @@ const CommentScreen = () => {
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {commentValues &&
-              commentValues.length > 0 &&
-              commentValues.map((item, index) => {
-                const correspondingEmployeeComment = employeeCommentValue.find(
-                  (empComment) => empComment.id === item.id
-                );
-                return (
-                  <CommentDetailItem
-                    key={index}
-                    item={item}
-                    description={item?.description}
-                    handleOpen={openSelectedComment}
-                    employeeCommentValue={correspondingEmployeeComment}
-                    comment={item?.comment}
-                  />
-                );
-              })}
+              commentValues.length > 0 ? (
+                commentValues.map((item, index) => {
+                  const correspondingEmployeeComment = employeeCommentValue.find(
+                    (empComment) => empComment.id === item.id
+                  );
+                  return (
+                    <CommentDetailItem
+                      key={index}
+                      item={item}
+                      description={item?.description}
+                      handleOpen={openSelectedComment}
+                      employeeCommentValue={correspondingEmployeeComment}
+                      comment={item?.comment}
+                    />
+                  );
+                })
+              ) : 
+              <View style={styles.content}>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </View>
+            }
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -256,6 +286,38 @@ const CommentScreen = () => {
         comment={comment?.comment}
         commentValue={employeeComment?.comment}
       />
+       <ConfirmationModal
+      isOpen={confirmationModalIsOpen} 
+      toggle={toggleConfirmationModal}
+      isGet={true}
+      isDelete={false}
+      isPatch={false}
+      apiUrl={`/hr/employee-review/comment/${id}/finish`}
+      color="#377893"
+      hasSuccessFunc={true}
+      onSuccess={() => {
+        toggleConfirmedModal()
+        navigation.goBack()
+      }}
+      description='Are you sure want to confirm this review?'
+      successMessage='Review confirmed'
+      /> 
+      <SuccessModal isOpen={saveModalIsOpen} toggle={toggleSaveModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+      } />
+      <SuccessModal isOpen={confirmedModalIsOpen} toggle={toggleConfirmedModal} topElement={
+        <View style={{ flexDirection: "row" }}>
+        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+      </View>
+      } bottomElement={
+        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
+      } />
     </>
   );
 };
@@ -275,5 +337,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  confirmIcon: {
+    backgroundColor: "#377893",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 50,
+    right: 15,
+    zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

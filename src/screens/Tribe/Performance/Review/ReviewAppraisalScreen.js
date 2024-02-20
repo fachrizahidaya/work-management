@@ -194,7 +194,7 @@ const ReviewAppraisalScreen = () => {
               }
             }}
           />
-
+          {appraisalValues.length === 0 || appraisalList?.data?.confirm ? null :
           <Button
             height={35}
             padding={10}
@@ -214,13 +214,17 @@ const ReviewAppraisalScreen = () => {
             }}
             disabled={differences.length === 0 || submitIsLoading}
           />
+          }
         </View>
+        {appraisalValues.length > 0 ? 
         <Pressable
           style={styles.confirmIcon}
           onPress={toggleConfirmationModal}
         >
           <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
         </Pressable>
+        : null
+        }
         <ReviewAppraisalDetailList
           dayjs={dayjs}
           begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
