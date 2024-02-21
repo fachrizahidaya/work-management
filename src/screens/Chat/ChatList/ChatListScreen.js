@@ -19,7 +19,10 @@ import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSe
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
@@ -37,33 +40,50 @@ const ChatListScreen = () => {
   const searchFromRef = useRef(null);
   const scrollRef = useRef(null);
 
-  const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
+  const { data: searchResult } = useFetch(
+    "/chat/global-search",
+    [globalKeyword],
+    { search: globalKeyword }
+  );
 
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } =
+    useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
+    useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } =
+    useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } =
+    useDisclosure(false);
 
-  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+  const {
+    isLoading: deleteChatMessageIsLoading,
+    toggle: toggleDeleteChatMessage,
+  } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } =
+    useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } =
+    useLoading(false);
 
   /**
    * Event listener for new chats
    */
   const personalChatEvent = () => {
-    laravelEcho.channel(`personal.list.${userSelector?.id}`).listen(".personal.list", (event) => {
-      setPersonalChats(event.data);
-    });
+    laravelEcho
+      .channel(`personal.list.${userSelector?.id}`)
+      .listen(".personal.list", (event) => {
+        setPersonalChats(event.data);
+      });
   };
 
   /**
    * Event listener for new group chats
    */
   const groupChatEvent = () => {
-    laravelEcho.channel(`group.list.${userSelector.id}`).listen(".group.list", (event) => {
-      setGroupChats(event.data);
-    });
+    laravelEcho
+      .channel(`group.list.${userSelector.id}`)
+      .listen(".group.list", (event) => {
+        setGroupChats(event.data);
+      });
   };
 
   /**
@@ -225,7 +245,9 @@ const ChatListScreen = () => {
    */
   const chatPinUpdateHandler = async (chatType, id, action) => {
     try {
-      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      const res = await axiosInstance.patch(
+        `/chat/${chatType}/${id}/${action}`
+      );
     } catch (err) {
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
@@ -299,7 +321,10 @@ const ChatListScreen = () => {
               />
 
               {searchResult?.message?.length > 0 && (
-                <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+                <GlobalSearchChatSection
+                  searchResult={searchResult}
+                  globalKeyword={globalKeyword}
+                />
               )}
             </ScrollView>
           </SafeAreaView>

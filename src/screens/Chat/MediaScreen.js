@@ -99,7 +99,12 @@ const MediaScreen = () => {
           </View>
         </View>
       </View>
-      <MediaList media={media} docs={docs} tabValue={tabValue} toggleFullScreen={toggleFullScreen} />
+      <MediaList
+        media={media}
+        docs={docs}
+        tabValue={tabValue}
+        toggleFullScreen={toggleFullScreen}
+      />
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
