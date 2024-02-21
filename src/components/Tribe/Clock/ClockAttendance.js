@@ -16,7 +16,16 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const ClockAttendance = ({ attendance, onClock, location, locationOn, success, setSuccess, isLoading }) => {
+const ClockAttendance = ({
+  attendance,
+  onClock,
+  location,
+  locationOn,
+  success,
+  setSuccess,
+  isLoading,
+  modalIsOpen,
+}) => {
   const translateX = useSharedValue(0);
 
   const MIN_TRANSLATE_X = 180;
@@ -33,7 +42,10 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
     onActive: (event) => {
       // while slide the button
       if (event.translationX > 0) {
-        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATE_X);
+        translateX.value = Math.min(
+          event.translationX,
+          parentWidth - MIN_TRANSLATE_X
+        );
       }
     },
     onEnd: (event) => {
@@ -48,11 +60,16 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
     },
   });
 
-  const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
+  const limitedTranslateX = useDerivedValue(() =>
+    Math.max(translateX.value, 0)
+  );
   const textOpacity = useDerivedValue(() => {
     const threshold = 50;
     const fadeOutRange = 100;
-    return Math.max(0, 1 - (limitedTranslateX.value - threshold) / fadeOutRange);
+    return Math.max(
+      0,
+      1 - (limitedTranslateX.value - threshold) / fadeOutRange
+    );
   });
 
   /**
@@ -144,8 +161,16 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
               width: "40%",
             }}
           >
-            <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
-            <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
+            <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>
+              Clock-in
+            </Text>
+            <Text
+              style={{
+                fontWeight: "500",
+                color: attendance?.late ? "#fdc500" : "#377893",
+                textAlign: "center",
+              }}
+            >
               {attendance?.time_in ? attendance?.time_in : "-:-"}
             </Text>
           </View>
@@ -161,8 +186,16 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
               width: "40%",
             }}
           >
-            <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
-            <Text style={{ fontWeight: "500", color: attendance?.early ? "#fdc500" : "#377893", textAlign: "center" }}>
+            <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>
+              Clock-out
+            </Text>
+            <Text
+              style={{
+                fontWeight: "500",
+                color: attendance?.early ? "#fdc500" : "#377893",
+                textAlign: "center",
+              }}
+            >
               {attendance?.time_out ? attendance?.time_out : "-:-"}
             </Text>
           </View>
@@ -182,7 +215,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
             rContainerStyle,
           ]}
         >
-          <PanGestureHandler onGestureEvent={panGesture}>
+          <PanGestureHandler onGestureEvent={!isLoading && panGesture}>
             <Animated.View
               style={[
                 rTaskContainerStyle,
@@ -217,8 +250,23 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
               },
             ]}
           >
-            {isLoading ? <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10}}><ActivityIndicator color='#FFFFFF' /><Text style={{color:'#FFFFFF', fontSize: 16,
-                  fontWeight: "500",}}>Processing</Text></View> :
+            {/* {isLoading ? ( */}
+            {/* <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <ActivityIndicator color="#FFFFFF" />
+                <Text
+                  style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
+                >
+                  Processing
+                </Text>
+              </View> */}
+            {/* ) : ( */}
             <AnimatedText
               style={[
                 textContainerStyle,
@@ -235,7 +283,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
                 ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
                 : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
             </AnimatedText>
-            }
+            {/* )} */}
           </View>
         </Animated.View>
       </View>
