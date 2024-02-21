@@ -1,6 +1,5 @@
-ClockAttendance
 import { useEffect } from "react";
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, ActivityIndicator } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -67,7 +66,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
     );
     return {
       transform: [],
-      backgroundColor: success ? "#186688" : backgroundColor,
+      backgroundColor: success || isLoading ? "#186688" : backgroundColor,
     };
   });
 
@@ -86,7 +85,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
           translateX: limitedTranslateX.value,
         },
       ],
-      backgroundColor: success ? "#FFFFFF" : backgroundColor,
+      backgroundColor: success || isLoading ? "#FFFFFF" : backgroundColor,
     };
   });
 
@@ -172,7 +171,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
         <Animated.View
           style={[
             {
-              backgroundColor: success ? "#186688" : "#87878721",
+              backgroundColor: success || isLoading ? "#186688" : "#87878721",
               borderRadius: 60,
               paddingVertical: 15,
               paddingHorizontal: 10,
@@ -189,7 +188,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
                 rTaskContainerStyle,
                 {
                   zIndex: 3,
-                  backgroundColor: success ? "#FFFFFF" : "#186688",
+                  backgroundColor: success || isLoading ? "#FFFFFF" : "#186688",
                   borderRadius: 50,
                   padding: 6,
                 },
@@ -218,6 +217,8 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
               },
             ]}
           >
+            {isLoading ? <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10}}><ActivityIndicator color='#FFFFFF' /><Text style={{color:'#FFFFFF', fontSize: 16,
+                  fontWeight: "500",}}>Processing</Text></View> :
             <AnimatedText
               style={[
                 textContainerStyle,
@@ -234,6 +235,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, success, s
                 ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
                 : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
             </AnimatedText>
+            }
           </View>
         </Animated.View>
       </View>
