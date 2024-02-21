@@ -2,8 +2,7 @@ import { useCallback, useState, memo, useRef } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { View, ActivityIndicator, FlatList } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ActivityIndicator, FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
@@ -80,15 +79,8 @@ const ChatList = ({
 
   return (
     <>
-    {/* <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA" }}> */}
-      {/* <ScrollView 
-      showsVerticalScrollIndicator={false} 
-      ref={scrollRef}
-      style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA" }} 
-      > */}
       <FlashList
       showsVerticalScrollIndicator={false}
-      ref={scrollRef}
       inverted
         ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
@@ -140,7 +132,6 @@ const ChatList = ({
           </>
         )}
       />
-      {/* </ScrollView> */}
 
       {fileAttachment && (
         <>
@@ -159,7 +150,6 @@ const ChatList = ({
           setBandAttachment={setBandAttachment}
         />
       )}
-    {/* </View> */}
     </>
   );
 };
