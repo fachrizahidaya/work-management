@@ -31,7 +31,9 @@ const KPIAppraisalReviewScreen = () => {
     data: appraisal,
     refetch: refetchAppraisal,
     isFetching: appraisalIsFetching,
-  } = useFetch(tabValue == "Appraisal" && "/hr/employee-review/appraisal", [tabValue]);
+  } = useFetch(tabValue == "Appraisal" && "/hr/employee-review/appraisal", [
+    tabValue,
+  ]);
 
   const { data: kpiData } = useFetch("/hr/employee-review/kpi");
   const { data: appraisalData } = useFetch("/hr/employee-review/appraisal");
@@ -39,7 +41,10 @@ const KPIAppraisalReviewScreen = () => {
   const tabs = useMemo(() => {
     return [
       { title: `KPI (${kpiData?.data?.length || 0})`, value: "KPI" },
-      { title: `Appraisal (${appraisalData?.data?.length || 0})`, value: "Appraisal" },
+      {
+        title: `Appraisal (${appraisalData?.data?.length || 0})`,
+        value: "Appraisal",
+      },
     ];
   }, [kpi, appraisal, kpiData, appraisalData]);
 
@@ -69,7 +74,9 @@ const KPIAppraisalReviewScreen = () => {
       <View style={{ paddingHorizontal: 16, backgroundColor: "#FFFFFF" }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
-      <View style={{ backgroundColor: "#f8f8f8", flex: 1, flexDirection: "column" }}>
+      <View
+        style={{ backgroundColor: "#f8f8f8", flex: 1, flexDirection: "column" }}
+      >
         {tabValue == "KPI" ? (
           kpiList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 16 }}>
@@ -90,48 +97,68 @@ const KPIAppraisalReviewScreen = () => {
                     dayjs={dayjs}
                   />
                 )}
-                refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}
-              />
-            </View>
-          ) : (
-            <ScrollView refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}>
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
-        ) : (
-          appraisalList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 16 }}>
-              <FlashList
-                data={appraisalList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item, index }) => (
-                  <OngoingReviewAppraisalListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.begin_date}
-                    end_date={item?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    target={item?.performance_appraisal?.target_name}
-                    dayjs={dayjs}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={kpiIsFetching}
+                    onRefresh={refetchKpi}
                   />
-                )}
-                refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
+                }
               />
             </View>
           ) : (
             <ScrollView
-              refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={kpiIsFetching}
+                  onRefresh={refetchKpi}
+                />
+              }
             >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
+        ) : appraisalList?.length > 0 ? (
+          <View style={{ flex: 1, paddingHorizontal: 16 }}>
+            <FlashList
+              data={appraisalList}
+              estimatedItemSize={50}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item, index }) => (
+                <OngoingReviewAppraisalListItem
+                  key={index}
+                  id={item?.id}
+                  start_date={item?.begin_date}
+                  end_date={item?.end_date}
+                  navigation={navigation}
+                  name={item?.employee?.name}
+                  target={item?.performance_appraisal?.target_name}
+                  dayjs={dayjs}
+                />
+              )}
+              refreshControl={
+                <RefreshControl
+                  refreshing={appraisalIsFetching}
+                  onRefresh={refetchAppraisal}
+                />
+              }
+            />
+          </View>
+        ) : (
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={appraisalIsFetching}
+                onRefresh={refetchAppraisal}
+              />
+            }
+          >
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          </ScrollView>
         )}
       </View>
     </SafeAreaView>

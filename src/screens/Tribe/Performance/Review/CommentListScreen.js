@@ -2,7 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -14,9 +21,9 @@ import OngoingCommentListItem from "../../../../components/Tribe/Performance/Ong
 import CommentListItem from "../../../../components/Tribe/Performance/Comment/CommentListItem";
 
 const CommentListScreen = () => {
-  const [ongoingList, setOngoingList] = useState([])
-  const [personalList, setPersonalList] = useState([])
-  const [teamList, setTeamList] = useState([])
+  const [ongoingList, setOngoingList] = useState([]);
+  const [personalList, setPersonalList] = useState([]);
+  const [teamList, setTeamList] = useState([]);
   const navigation = useNavigation();
 
   const {
@@ -24,62 +31,92 @@ const CommentListScreen = () => {
     refetch: refetchCommentList,
     isFetching: commentListIsFetching,
   } = useFetch("/hr/employee-review/comment");
-  const {data: personalCommentList, refetch: refetchPersonalCommentList, isFetching: personalCommentListIsFetching} = useFetch("/hr/performance-result/personal")
-  const {data: teamCommentList, refetch: refetchTeamCommentList, isFetching: teamCommentListIsFetching} = useFetch('/hr/performance-result/my-team')
+  const {
+    data: personalCommentList,
+    refetch: refetchPersonalCommentList,
+    isFetching: personalCommentListIsFetching,
+  } = useFetch("/hr/performance-result/personal");
+  const {
+    data: teamCommentList,
+    refetch: refetchTeamCommentList,
+    isFetching: teamCommentListIsFetching,
+  } = useFetch("/hr/performance-result/my-team");
 
   if (commentList?.data.length > 0) {
     var tabs = useMemo(() => {
       return [
-        { title: `Ongoing (${commentList?.data.length || 0})`, value: "Ongoing" },
-        { title: `Personal (${personalCommentList?.data.length || 0})`, value: "Personal" },
-        { title: `My Team (${teamCommentList?.data.length})`, value: "My Team" },
+        {
+          title: `Ongoing (${commentList?.data.length || 0})`,
+          value: "Ongoing",
+        },
+        {
+          title: `Personal (${personalCommentList?.data.length || 0})`,
+          value: "Personal",
+        },
+        {
+          title: `My Team (${teamCommentList?.data.length})`,
+          value: "My Team",
+        },
       ];
     }, [commentList, personalCommentList, teamCommentList]);
-  } else if (commentList?.data.length === 0 && teamCommentList?.data.length > 0) {
+  } else if (
+    commentList?.data.length === 0 &&
+    teamCommentList?.data.length > 0
+  ) {
     var tabs = useMemo(() => {
       return [
-        { title: `Personal (${personalCommentList?.data.length || 0})`, value: "Personal" },
-        { title: `My Team (${teamCommentList?.data.length || 0})`, value: "My Team" },
+        {
+          title: `Personal (${personalCommentList?.data.length || 0})`,
+          value: "Personal",
+        },
+        {
+          title: `My Team (${teamCommentList?.data.length || 0})`,
+          value: "My Team",
+        },
       ];
     }, [teamCommentList, personalCommentList]);
-  } 
-  else {
+  } else {
     var tabs = useMemo(() => {
       return [
-        { title: `Personal (${personalCommentList?.data.length || 0})`, value: "Personal" },
+        {
+          title: `Personal (${personalCommentList?.data.length || 0})`,
+          value: "Personal",
+        },
       ];
     }, [personalCommentList]);
   }
 
-  const [tabValue, setTabValue] = useState(commentList?.data.length > 0 ? "Ongoing" : "Personal");
+  const [tabValue, setTabValue] = useState(
+    commentList?.data.length > 0 ? "Ongoing" : "Personal"
+  );
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
-    setOngoingList([])
-    setPersonalList([])
-    setTeamList([])
+    setOngoingList([]);
+    setPersonalList([]);
+    setTeamList([]);
   }, []);
 
   useEffect(() => {
     if (commentList?.data.length) {
-      setOngoingList((prevData) => [...prevData, ...commentList?.data])
-
+      setOngoingList((prevData) => [...prevData, ...commentList?.data]);
     }
-  }, [commentList?.data.length, tabValue])
+  }, [commentList?.data.length, tabValue]);
 
   useEffect(() => {
     if (personalCommentList?.data.length) {
-      setPersonalList((prevData) => [...prevData, ...personalCommentList?.data])
-
+      setPersonalList((prevData) => [
+        ...prevData,
+        ...personalCommentList?.data,
+      ]);
     }
-  }, [personalCommentList?.data.length, tabValue])
+  }, [personalCommentList?.data.length, tabValue]);
 
   useEffect(() => {
     if (teamCommentList?.data.length) {
-      setTeamList((prevData) => [...prevData, ...teamCommentList?.data])
-
+      setTeamList((prevData) => [...prevData, ...teamCommentList?.data]);
     }
-  }, [teamCommentList?.data.length, tabValue])
+  }, [teamCommentList?.data.length, tabValue]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -93,7 +130,7 @@ const CommentListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "Ongoing" ? (
-            ongoingList.length > 0 ?(
+            ongoingList.length > 0 ? (
               <FlashList
                 data={ongoingList}
                 estimatedItemSize={50}
@@ -112,21 +149,29 @@ const CommentListScreen = () => {
                     description={item?.performance_review?.description}
                   />
                 )}
-                refreshControl={<RefreshControl refreshing={commentListIsFetching} onRefresh={refetchCommentList} />}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={commentListIsFetching}
+                    onRefresh={refetchCommentList}
+                  />
+                }
               />
-            ) : 
-            <ScrollView
-              refreshControl={<RefreshControl refreshing={commentListIsFetching} onRefresh={refetchCommentList} />}
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          ) 
-          : 
-          tabValue === 'My Team' ?  (
-            teamList.length > 0 ?
-            (
+            ) : (
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={commentListIsFetching}
+                    onRefresh={refetchCommentList}
+                  />
+                }
+              >
+                <View style={styles.content}>
+                  <EmptyPlaceholder height={250} width={250} text="No Data" />
+                </View>
+              </ScrollView>
+            )
+          ) : tabValue === "My Team" ? (
+            teamList.length > 0 ? (
               <FlashList
                 data={teamList}
                 estimatedItemSize={50}
@@ -134,6 +179,47 @@ const CommentListScreen = () => {
                 keyExtractor={(item, index) => index}
                 renderItem={({ item, index }) => (
                   <CommentListItem
+                    key={index}
+                    id={item?.id}
+                    start_date={item?.performance_review?.begin_date}
+                    end_date={item?.performance_review?.end_date}
+                    navigation={navigation}
+                    name={item?.employee?.name}
+                    target={null}
+                    dayjs={dayjs}
+                    description={item?.performance_review?.description}
+                    type="my-team"
+                  />
+                )}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={teamCommentListIsFetching}
+                    onRefresh={refetchTeamCommentList}
+                  />
+                }
+              />
+            ) : (
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={teamCommentListIsFetching}
+                    onRefresh={refetchTeamCommentList}
+                  />
+                }
+              >
+                <View style={styles.content}>
+                  <EmptyPlaceholder height={250} width={250} text="No Data" />
+                </View>
+              </ScrollView>
+            )
+          ) : personalList.length > 0 ? (
+            <FlashList
+              data={personalList}
+              estimatedItemSize={50}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item, index }) => (
+                <CommentListItem
                   key={index}
                   id={item?.id}
                   start_date={item?.performance_review?.begin_date}
@@ -143,53 +229,30 @@ const CommentListScreen = () => {
                   target={null}
                   dayjs={dayjs}
                   description={item?.performance_review?.description}
-                  type='my-team'
-                  />
-                )}
-                refreshControl={<RefreshControl refreshing={teamCommentListIsFetching} onRefresh={refetchTeamCommentList} />}
-              />
-            )
-            :
+                  type="personal"
+                />
+              )}
+              refreshControl={
+                <RefreshControl
+                  refreshing={personalCommentListIsFetching}
+                  onRefresh={refetchPersonalCommentList}
+                />
+              }
+            />
+          ) : (
             <ScrollView
-            refreshControl={<RefreshControl refreshing={teamCommentListIsFetching} onRefresh={refetchTeamCommentList} />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={personalCommentListIsFetching}
+                  onRefresh={refetchPersonalCommentList}
+                />
+              }
             >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
-) : personalList.length > 0 ?
-(
-  <FlashList
-    data={personalList}
-    estimatedItemSize={50}
-    onEndReachedThreshold={0.1}
-    keyExtractor={(item, index) => index}
-    renderItem={({ item, index }) => (
-      <CommentListItem
-        key={index}
-        id={item?.id}
-        start_date={item?.performance_review?.begin_date}
-        end_date={item?.performance_review?.end_date}
-        navigation={navigation}
-        name={item?.employee?.name}
-        target={null}
-        dayjs={dayjs}
-        description={item?.performance_review?.description}
-        type='personal'
-      />
-    )}
-    refreshControl={<RefreshControl refreshing={personalCommentListIsFetching} onRefresh={refetchPersonalCommentList} />}
-  />
-)
-        :
-            <ScrollView
-            refreshControl={<RefreshControl refreshing={personalCommentListIsFetching} onRefresh={refetchPersonalCommentList} />}
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-        }
+          )}
         </View>
       </View>
     </SafeAreaView>

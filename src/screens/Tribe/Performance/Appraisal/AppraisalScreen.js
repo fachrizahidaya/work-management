@@ -3,7 +3,13 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Toast from "react-native-root-toast";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -13,7 +19,10 @@ import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useLoading } from "../../../../hooks/useLoading";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 import AppraisalDetailList from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailList";
 import AppraisalDetailItem from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailItem";
 import AppraisalForm from "../../../../components/Tribe/Performance/Form/AppraisalForm";
@@ -36,16 +45,21 @@ const AppraisalScreen = () => {
 
   const { data: appraisalSelected } = useFetch(
     `/hr/employee-appraisal/${id}/start`
-    );
+  );
 
   const appraisalId = appraisalSelected?.data?.id;
 
-  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(`/hr/employee-appraisal/${appraisalId}`);
+  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(
+    `/hr/employee-appraisal/${appraisalId}`
+  );
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
-  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } =
+    useDisclosure(false);
 
-  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } =
+    useLoading(false);
 
   const openSelectedAppraisal = (data, value) => {
     setAppraisal(data);
@@ -80,7 +94,8 @@ const AppraisalScreen = () => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
         (employee_appraisal_val) =>
-          employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
+          employee_appraisal_val?.performance_appraisal_value_id ===
+          data?.performance_appraisal_value_id
       );
       if (index > -1) {
         currentData[index].choice = data?.choice;
@@ -93,8 +108,11 @@ const AppraisalScreen = () => {
 
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
-      const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
-      const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+      const performanceAppraisalValue =
+        appraisalList?.data?.performance_appraisal?.value;
+      const employeeAppraisalValue = getEmployeeAppraisalValue(
+        appraisalList?.data?.employee_appraisal_value
+      );
       return [...employeeAppraisalValue, ...performanceAppraisalValue];
     });
   };
@@ -102,10 +120,13 @@ const AppraisalScreen = () => {
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(`/hr/employee-appraisal/${appraisalList?.data?.id}`, {
-        appraisal_value: employeeAppraisalValue,
-      });
-      toggleSaveModal()
+      const res = await axiosInstance.patch(
+        `/hr/employee-appraisal/${appraisalList?.data?.id}`,
+        {
+          appraisal_value: employeeAppraisalValue,
+        }
+      );
+      toggleSaveModal();
       // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
@@ -119,7 +140,8 @@ const AppraisalScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
+      performance_appraisal_value_id:
+        appraisal?.performance_appraisal_value_id || appraisal?.id,
       choice: appraisal?.choice || "",
     },
     onSubmit: (values) => {
@@ -141,7 +163,9 @@ const AppraisalScreen = () => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
-      let appraisalValue = appraisalValues.find((appraisal) => appraisal.id === empAppraisal.id);
+      let appraisalValue = appraisalValues.find(
+        (appraisal) => appraisal.id === empAppraisal.id
+      );
 
       if (appraisalValue && appraisalValue.choice !== empAppraisal.choice) {
         differences.push({
@@ -154,7 +178,10 @@ const AppraisalScreen = () => {
     return differences;
   }
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoice(
+    appraisalValues,
+    employeeAppraisalValue
+  );
 
   useEffect(() => {
     if (formValue) {
@@ -166,7 +193,9 @@ const AppraisalScreen = () => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
       setEmployeeAppraisalValue(() => {
-        const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+        const employeeAppraisalValue = getEmployeeAppraisalValue(
+          appraisalList?.data?.employee_appraisal_value
+        );
         return [...employeeAppraisalValue];
       });
     }
@@ -188,27 +217,35 @@ const AppraisalScreen = () => {
               }
             }}
           />
-          {isExpired || appraisalValues.length === 0 ? null :
-          <Button
-            height={35}
-            padding={10}
-            children={
-              submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
-              )
-            }
-            onPress={() => {
-              if (submitIsLoading || differences.length === 0) {
-                null;
-              } else {
-                submitHandler();
+          {isExpired || appraisalValues.length === 0 ? null : (
+            <Button
+              height={35}
+              padding={10}
+              children={
+                submitIsLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Save
+                  </Text>
+                )
               }
-            }}
-            disabled={differences.length === 0 || submitIsLoading}
-          />
-          }
+              onPress={() => {
+                if (submitIsLoading || differences.length === 0) {
+                  null;
+                } else {
+                  submitHandler();
+                }
+              }}
+              disabled={differences.length === 0 || submitIsLoading}
+            />
+          )}
         </View>
         <AppraisalDetailList
           dayjs={dayjs}
@@ -223,35 +260,35 @@ const AppraisalScreen = () => {
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {appraisalValues &&
-              appraisalValues.length > 0 ? (
-                appraisalValues.map((item, index) => {
-                  const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+            {appraisalValues && appraisalValues.length > 0 ? (
+              appraisalValues.map((item, index) => {
+                const correspondingEmployeeAppraisal =
+                  employeeAppraisalValue.find(
                     (empAppraisal) => empAppraisal.id === item.id
                   );
-                  return (
-                    <AppraisalDetailItem
-                      key={index}
-                      id={item?.performance_appraisal_value_id || item?.id}
-                      description={item?.description}
-                      item={item}
-                      choice={item?.choice}
-                      onChange={employeeAppraisalValueUpdateHandler}
-                      choice_a={item?.choice_a}
-                      choice_b={item?.choice_b}
-                      choice_c={item?.choice_c}
-                      choice_d={item?.choice_d}
-                      choice_e={item?.choice_e}
-                      handleOpen={openSelectedAppraisal}
-                      employeeAppraisalValue={correspondingEmployeeAppraisal}
-                    />
-                  );
-                })
-              ) : 
+                return (
+                  <AppraisalDetailItem
+                    key={index}
+                    id={item?.performance_appraisal_value_id || item?.id}
+                    description={item?.description}
+                    item={item}
+                    choice={item?.choice}
+                    onChange={employeeAppraisalValueUpdateHandler}
+                    choice_a={item?.choice_a}
+                    choice_b={item?.choice_b}
+                    choice_c={item?.choice_c}
+                    choice_d={item?.choice_d}
+                    choice_e={item?.choice_e}
+                    handleOpen={openSelectedAppraisal}
+                    employeeAppraisalValue={correspondingEmployeeAppraisal}
+                  />
+                );
+              })
+            ) : (
               <View style={styles.content}>
-              <EmptyPlaceholder height={250} width={250} text="No Data" />
-            </View>
-            }
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            )}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -274,14 +311,25 @@ const AppraisalScreen = () => {
         choice={appraisal?.choice}
         choiceValue={employeeAppraisal?.choice}
       />
-      <SuccessModal isOpen={saveModalIsOpen} toggle={toggleSaveModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-      } />
+      <SuccessModal
+        isOpen={saveModalIsOpen}
+        toggle={toggleSaveModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully updated
+          </Text>
+        }
+      />
     </>
   );
 };

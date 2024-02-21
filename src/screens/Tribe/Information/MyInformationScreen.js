@@ -1,6 +1,13 @@
 import { useNavigation } from "@react-navigation/core";
 
-import { SafeAreaView, StyleSheet, View, Text, Image, Linking } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Linking,
+} from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
@@ -11,7 +18,11 @@ import SupervisorInformation from "../../../components/Tribe/MyInformation/Super
 import { TextProps } from "../../../components/shared/CustomStylings";
 
 const MyInformationScreen = () => {
-  const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
+  const {
+    data: profile,
+    isFetching: profileIsFetching,
+    refetch: refetchProfile,
+  } = useFetch("/hr/my-profile");
 
   const navigation = useNavigation();
 
@@ -26,11 +37,24 @@ const MyInformationScreen = () => {
           <PageHeader title="My Information" backButton={false} />
         </View>
 
-        <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={profileIsFetching}
+              onRefresh={refetchProfile}
+            />
+          }
+        >
           <View style={styles.content}>
             {/* Content here */}
             {!profile?.data ? (
-              <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 5,
+                }}
+              >
                 <Image
                   source={require("../../../assets/vectors/empty.png")}
                   style={{ width: 300, height: 300, resizeMode: "contain" }}
@@ -56,7 +80,15 @@ const MyInformationScreen = () => {
                   image={profile?.data?.image}
                   navigation={navigation}
                 />
-                <Text style={{ fontSize: 16, fontWeight: "500", paddingHorizontal: 10 }}>My Supervisor</Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  My Supervisor
+                </Text>
                 <SupervisorInformation
                   supervisorId={profile?.data?.supervisor_employee_id}
                   supervisorName={profile?.data?.supervisor_name}

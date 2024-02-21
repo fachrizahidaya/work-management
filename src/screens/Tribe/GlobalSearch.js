@@ -24,10 +24,14 @@ const GlobalSearchTribe = () => {
   const [searchInput, setSearchInput] = useState("");
   const [shownInput, setShownInput] = useState("");
 
-  const { data, isFetching } = useFetch(searchInput && "/hr/global-search", [searchInput], {
-    search: searchInput,
-    sort: "desc",
-  });
+  const { data, isFetching } = useFetch(
+    searchInput && "/hr/global-search",
+    [searchInput],
+    {
+      search: searchInput,
+      sort: "desc",
+    }
+  );
 
   const { data: employees } = useFetch("/hr/employees");
   const employeeUsername = employees?.data?.map((item) => {
@@ -62,7 +66,11 @@ const GlobalSearchTribe = () => {
             placeHolder="Search..."
             startAdornment={
               <Pressable>
-                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
+                <MaterialCommunityIcons
+                  name="magnify"
+                  size={20}
+                  color="#3F434A"
+                />
               </Pressable>
             }
             onChangeText={(value) => {
@@ -70,7 +78,14 @@ const GlobalSearchTribe = () => {
               setShownInput(value);
             }}
             endAdornment={
-              <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "center",
+                }}
+              >
                 {shownInput && (
                   <TouchableOpacity
                     onPress={() => {
@@ -78,7 +93,11 @@ const GlobalSearchTribe = () => {
                       setShownInput("");
                     }}
                   >
-                    <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
+                    <MaterialCommunityIcons
+                      name="close"
+                      size={20}
+                      color="#3F434A"
+                    />
                   </TouchableOpacity>
                 )}
               </View>
@@ -88,7 +107,10 @@ const GlobalSearchTribe = () => {
             {!isFetching ? (
               <>
                 {data?.employee?.length > 0 || data?.post?.length ? (
-                  <GlobalSearchItems data={data} employeeUsername={employeeUsername} />
+                  <GlobalSearchItems
+                    data={data}
+                    employeeUsername={employeeUsername}
+                  />
                 ) : (
                   <Text style={styles.text}>No result</Text>
                 )}

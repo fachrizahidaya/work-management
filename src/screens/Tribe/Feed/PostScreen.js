@@ -3,7 +3,16 @@ import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Linking,
+  Clipboard,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-root-toast";
 import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
@@ -11,7 +20,10 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
+import {
+  TextProps,
+  ErrorToastProps,
+} from "../../../components/shared/CustomStylings";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import PageHeader from "../../../components/shared/PageHeader";
 import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentPost";
@@ -45,7 +57,11 @@ const PostScreen = () => {
 
   const { id } = route.params;
 
-  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
+  const {
+    data: postData,
+    refetch: refetchPostData,
+    isFetching: postDataIsFetching,
+  } = useFetch(`/hr/posts/${id}`);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
@@ -57,7 +73,10 @@ const PostScreen = () => {
       name: item.name,
     };
   });
-  const employeeData = employees?.data.map(({ id, username }) => ({ id, name: username }));
+  const employeeData = employees?.data.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
 
   const {
     data: post,
@@ -102,7 +121,9 @@ const PostScreen = () => {
     setPostTotalComment((prevState) => {
       return prevState + 1;
     });
-    const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
+    const referenceIndex = posts.findIndex(
+      (post) => post.id === postData?.data?.id
+    );
     posts[referenceIndex]["total_comment"] += 1;
     refetchPostData();
   };
@@ -170,7 +191,9 @@ const PostScreen = () => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
+    const data = employeeData.filter((one) =>
+      one.name.toLowerCase().includes(keyword.toLowerCase())
+    );
 
     return (
       <ScrollView style={{ maxHeight: 100 }}>
@@ -180,7 +203,11 @@ const PostScreen = () => {
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
+            <Pressable
+              key={index}
+              onPress={() => onSuggestionPress(item)}
+              style={{ padding: 12 }}
+            >
               <Text style={[{}, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
@@ -193,7 +220,11 @@ const PostScreen = () => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue?.split(" ").pop();
-    setSuggestions(employees?.data.filter((employee) => employee?.name.toLowerCase().includes(lastWord.toLowerCase())));
+    setSuggestions(
+      employees?.data.filter((employee) =>
+        employee?.name.toLowerCase().includes(lastWord.toLowerCase())
+      )
+    );
   };
 
   const formik = useFormik({
@@ -243,9 +274,9 @@ const PostScreen = () => {
 
   return (
     <>
-        {isReady ? (
-          <>
-      <SafeAreaView style={styles.container}>
+      {isReady ? (
+        <>
+          <SafeAreaView style={styles.container}>
             <View style={styles.header}>
               <PageHeader
                 title="Post"
@@ -255,7 +286,7 @@ const PostScreen = () => {
               />
             </View>
             <ScrollView
-            style={{backgroundColor:'#F8F8F8'}}
+              style={{ backgroundColor: "#F8F8F8" }}
               refreshControl={
                 <RefreshControl
                   refreshing={postDataIsFetching && commentIsFetching}
@@ -316,11 +347,15 @@ const PostScreen = () => {
               formik={formik}
             />
           </SafeAreaView>
-          </>
-        ) : (
-          <></>
-        )}
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+        </>
+      ) : (
+        <></>
+      )}
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPicture}
+      />
     </>
   );
 };
