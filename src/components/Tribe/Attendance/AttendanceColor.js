@@ -17,7 +17,11 @@ const AttendanceColor = () => {
       {listIcons.map((item) => {
         return (
           <View key={item?.key} style={styles.content}>
-            <MaterialCommunityIcons name="circle" color={item.color} size={15} />
+            <MaterialCommunityIcons
+              name="circle"
+              color={item.color}
+              size={15}
+            />
             <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
           </View>
         );

@@ -28,7 +28,13 @@ const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
         marginHorizontal: 2,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <Text style={[{ fontSize: 14, color: "#3F434A" }, TextProps]}>
           {dayjs()
             .month(month - 1)
@@ -37,7 +43,11 @@ const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
         </Text>
 
         <Pressable onPress={() => openSelectedPayslip(id)}>
-          <MaterialCommunityIcons name="tray-arrow-down" size={20} color="#3F434A" />
+          <MaterialCommunityIcons
+            name="tray-arrow-down"
+            size={20}
+            color="#3F434A"
+          />
         </Pressable>
       </View>
     </View>
