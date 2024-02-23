@@ -48,7 +48,7 @@ const StatusSection = ({ projectData, onChange }) => {
                           }}
                           style={styles.menuItem}
                         >
-                          <Text style={(TextProps, { fontSize: 16 })}>{status}</Text>
+                          <Text style={[TextProps, { fontSize: 16 }]}>{status}</Text>
 
                           <View
                             style={{

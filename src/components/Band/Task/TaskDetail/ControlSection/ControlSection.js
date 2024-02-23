@@ -32,7 +32,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                         disabled={isLoading}
                         style={styles.menuItem}
                       >
-                        <Text style={(TextProps, { fontSize: 16 })}>Open</Text>
+                        <Text style={[TextProps, { fontSize: 16 }]}>Open</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={async () => {
@@ -42,7 +42,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                         disabled={isLoading}
                         style={styles.menuItem}
                       >
-                        <Text style={(TextProps, { fontSize: 16 })}>On Progress</Text>
+                        <Text style={[TextProps, { fontSize: 16 }]}>On Progress</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={async () => {
@@ -52,7 +52,7 @@ const ControlSection = ({ taskStatus, selectedTask, onChangeStatus, isLoading })
                         disabled={isLoading}
                         style={styles.menuItem}
                       >
-                        <Text style={(TextProps, { fontSize: 16 })}>Finish</Text>
+                        <Text style={[TextProps, { fontSize: 16 }]}>Finish</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
