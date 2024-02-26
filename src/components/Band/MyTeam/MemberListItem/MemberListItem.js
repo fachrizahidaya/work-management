@@ -4,6 +4,7 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { TextProps } from "../../../shared/CustomStylings";
 
 const MemberListItem = ({
@@ -21,7 +22,6 @@ const MemberListItem = ({
     let hash = 0;
     let i;
 
-    /* eslint-disable no-bitwise */
     for (i = 0; i < string?.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -32,7 +32,6 @@ const MemberListItem = ({
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
-    /* eslint-enable no-bitwise */
 
     return color;
   }
@@ -114,15 +113,19 @@ const MemberListItem = ({
                   SheetManager.show("form-sheet", {
                     payload: {
                       children: (
-                        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await SheetManager.hide("form-sheet");
-                              openRemoveMemberModal(member);
-                            }}
-                          >
-                            <Text style={{ fontWeight: 500, color: "red" }}>Remove Member</Text>
-                          </TouchableOpacity>
+                        <View style={styles.menu}>
+                          <View style={styles.wrapper}>
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await SheetManager.hide("form-sheet");
+                                openRemoveMemberModal(member);
+                              }}
+                              style={styles.menuItem}
+                            >
+                              <Text style={{ fontSize: 16, fontWeight: 700, color: "#EB0E29" }}>Remove member</Text>
+                              <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       ),
                     },
@@ -163,5 +166,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
+  },
+  menu: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  wrapper: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
   },
 });

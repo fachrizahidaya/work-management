@@ -205,8 +205,8 @@ const MyTeamScreen = ({ route }) => {
                         }}
                         style={styles.menuItem}
                       >
-                        <Text style={(TextProps, { fontSize: 16 })}>Create new team</Text>
-                        <MaterialCommunityIcons name="account-group" size={20} />
+                        <Text style={[TextProps, { fontSize: 16 }]}>Create new team</Text>
+                        <MaterialCommunityIcons name="account-group" size={20} color={"#176688"} />
                       </TouchableOpacity>
                     )}
                     {team && (
@@ -219,8 +219,8 @@ const MyTeamScreen = ({ route }) => {
                             }}
                             style={styles.menuItem}
                           >
-                            <Text style={(TextProps, { fontSize: 16 })}>Create project with this team </Text>
-                            <MaterialCommunityIcons name="lightning-bolt" size={20} />
+                            <Text style={[TextProps, { fontSize: 16 }]}>Create project with this team </Text>
+                            <MaterialCommunityIcons name="lightning-bolt" size={20} color={"#176688"} />
                           </TouchableOpacity>
                         )}
 
@@ -235,8 +235,8 @@ const MyTeamScreen = ({ route }) => {
                                   }}
                                   style={styles.menuItem}
                                 >
-                                  <Text style={(TextProps, { fontSize: 16 })}>Add new member to this team</Text>
-                                  <MaterialCommunityIcons name="account-plus" size={20} />
+                                  <Text style={[TextProps, { fontSize: 16 }]}>Add new member to this team</Text>
+                                  <MaterialCommunityIcons name="account-plus" size={20} color={"#176688"} />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
@@ -246,8 +246,8 @@ const MyTeamScreen = ({ route }) => {
                                   }}
                                   style={styles.menuItem}
                                 >
-                                  <Text style={(TextProps, { fontSize: 16 })}>Edit this team</Text>
-                                  <MaterialCommunityIcons name="file-edit" size={20} />
+                                  <Text style={[TextProps, { fontSize: 16 }]}>Edit this team</Text>
+                                  <MaterialCommunityIcons name="file-edit" size={20} color={"#176688"} />
                                 </TouchableOpacity>
                               </>
                             )}

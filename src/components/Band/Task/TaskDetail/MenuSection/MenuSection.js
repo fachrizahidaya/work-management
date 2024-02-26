@@ -34,8 +34,8 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
                       }}
                       style={styles.menuItem}
                     >
-                      <Text style={(TextProps, { fontSize: 16 })}>Take task</Text>
-                      <MaterialCommunityIcons name="playlist-play" size={20} />
+                      <Text style={[TextProps, { fontSize: 16 }]}>Take task</Text>
+                      <MaterialCommunityIcons name="playlist-play" size={20} color="#176688" />
                     </TouchableOpacity>
                     {editCheckAccess && (
                       <TouchableOpacity
@@ -45,8 +45,8 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
                         }}
                         style={[styles.menuItem, { marginTop: 3 }]}
                       >
-                        <Text style={(TextProps, { fontSize: 16 })}>Edit</Text>
-                        <MaterialCommunityIcons name="file-edit" size={20} />
+                        <Text style={[TextProps, { fontSize: 16 }]}>Edit</Text>
+                        <MaterialCommunityIcons name="file-edit" size={20} color="#176688" />
                       </TouchableOpacity>
                     )}
                   </View>

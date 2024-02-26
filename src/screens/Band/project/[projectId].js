@@ -151,8 +151,8 @@ const ProjectDetailScreen = ({ route }) => {
                                 }}
                                 style={styles.menuItem}
                               >
-                                <Text style={(TextProps, { fontSize: 16 })}>Change Ownership</Text>
-                                <MaterialCommunityIcons name="account-switch" size={20} />
+                                <Text style={[TextProps, { fontSize: 16 }]}>Change Ownership</Text>
+                                <MaterialCommunityIcons name="account-switch" size={20} color="#176688" />
                               </TouchableOpacity>
 
                               {editCheckAccess && (
@@ -166,8 +166,8 @@ const ProjectDetailScreen = ({ route }) => {
                                   }}
                                   style={styles.menuItem}
                                 >
-                                  <Text style={(TextProps, { fontSize: 16 })}>Edit</Text>
-                                  <MaterialCommunityIcons name="file-edit" size={20} />
+                                  <Text style={[TextProps, { fontSize: 16 }]}>Edit</Text>
+                                  <MaterialCommunityIcons name="file-edit" size={20} color="#176688" />
                                 </TouchableOpacity>
                               )}
                             </View>
