@@ -13,7 +13,6 @@ const OngoingCommentListItem = ({
   end_date,
   navigation,
   name,
-  target,
   dayjs,
   description,
 }) => {

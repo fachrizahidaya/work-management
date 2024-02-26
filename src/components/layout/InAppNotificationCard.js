@@ -1,10 +1,25 @@
 import React, { memo, useEffect, useRef } from "react";
 
-import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
-const InAppNotificationCard = ({ message, isOpen, close }) => {
+const InAppNotificationCard = ({
+  message,
+  isOpen,
+  close,
+  memberName,
+  messageData,
+}) => {
   const autoCloseTimeout = useRef(null);
   const { width } = Dimensions.get("screen");
 
@@ -13,6 +28,42 @@ const InAppNotificationCard = ({ message, isOpen, close }) => {
     left: withTiming(isOpen && message ? 0 : -100),
     width: withTiming(isOpen && message ? width : 0),
   }));
+
+  for (let i = 0; i < memberName?.length; i++) {
+    let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+    messageData = messageData?.replace(placeholder, `@${memberName[i]}`);
+  }
+
+  var allWords = [];
+
+  for (var i = 0; i < memberName?.length; i++) {
+    var words = memberName[i].split(/\s+/);
+    allWords = allWords.concat(words);
+  }
+
+  let styledTexts = null;
+  if (messageData?.length !== 0) {
+    let words;
+    if (typeof messageData === "number" || typeof messageData === "bigint") {
+      words = messageData.toString().split(" ");
+    } else {
+      words = messageData?.split(" ");
+    }
+    styledTexts = words?.map((item, index) => {
+      if (allWords?.find((word) => item?.includes(word))) {
+        return (
+          <Text key={index} style={{ color: "white" }}>
+            {item}{" "}
+          </Text>
+        );
+      }
+      return (
+        <Text key={index} style={{ color: "white" }}>
+          {item}{" "}
+        </Text>
+      );
+    });
+  }
 
   // Clear the timeout when the close button is pressed
   const handlePressClose = () => {
@@ -41,15 +92,37 @@ const InAppNotificationCard = ({ message, isOpen, close }) => {
   return (
     <Animated.View style={[styles.container, tStyle]}>
       <View>
-        <View style={{ display: "flex", flexDirection: "row", gap: 4, alignItems: "baseline" }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>Nest</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 4,
+            alignItems: "baseline",
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
+            Nest
+          </Text>
 
           <Text style={{ fontSize: 12, color: "white" }}>now</Text>
         </View>
 
         <Text style={{ color: "white", fontSize: 14 }}>
-          {message?.from_name} :{" "}
-          {message?.message?.length > 30 ? message?.message?.slice(0, 30) + "..." : message?.message}
+          {
+            message?.from_name
+            // ||
+            // styledTexts
+          }{" "}
+          :{" "}
+          {
+            styledTexts?.length >
+            // || styledTexts
+            30
+              ? styledTexts?.slice(0, 30) + "..."
+              : // || styledTexts
+                styledTexts
+            // || styledTexts
+          }
         </Text>
       </View>
 

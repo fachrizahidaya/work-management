@@ -2,14 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const CommentDetailList = ({
-  dayjs,
-  begin_date,
-  end_date,
-  target,
-  name,
-  title,
-}) => {
+const CommentDetailList = ({ dayjs, begin_date, end_date, name, title }) => {
   return (
     <View
       style={{

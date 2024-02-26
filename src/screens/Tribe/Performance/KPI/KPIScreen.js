@@ -10,7 +10,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-root-toast";
@@ -222,7 +221,7 @@ const KPIScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="KPI"
+            title={kpiList?.data?.performance_kpi?.review?.description}
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {
@@ -266,9 +265,7 @@ const KPIScreen = () => {
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
           end_date={kpiList?.data?.performance_kpi?.review?.end_date}
-          position={kpiList?.data?.performance_kpi?.target_level}
           target={kpiList?.data?.performance_kpi?.target_name}
-          targetLevel={kpiList?.data?.performance_kpi?.target_level}
           isExpired={isExpired}
         />
 
@@ -315,7 +312,6 @@ const KPIScreen = () => {
         measurement={kpi?.measurement}
         description={kpi?.description}
         formik={formik}
-        onChange={formikChangeHandler}
         handleClose={closeSelectedKpi}
         achievement={kpi?.actual_achievement}
         target={kpi?.target}

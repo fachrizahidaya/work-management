@@ -16,8 +16,16 @@ const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageArchived, setCurrentPageArchived] = useState(1);
+  const [reloadArchived, setReloadArchived] = useState(false);
 
   const navigation = useNavigation();
+
+  const fetchArchivedKpiParameters = {
+    page: currentPageArchived,
+    limit: 100,
+  };
 
   const {
     data: kpiList,
@@ -41,6 +49,13 @@ const KPIListScreen = () => {
       }
     })
     .filter(Boolean);
+
+  const fetchMoreArchived = () => {
+    if (currentPageArchived < filteredData?.length) {
+      setCurrentPageArchived(currentPageArchived + 1);
+      setReloadArchived(!reloadArchived);
+    }
+  };
 
   const tabs = useMemo(() => {
     return [
@@ -91,10 +106,8 @@ const KPIListScreen = () => {
                     id={item?.id}
                     start_date={item?.review?.begin_date}
                     end_date={item?.review?.end_date}
-                    position={item?.target_level}
                     navigation={navigation}
                     name={item?.review?.description}
-                    type="kpi"
                     target={item?.target_name}
                     isExpired={false}
                   />
@@ -126,10 +139,8 @@ const KPIListScreen = () => {
                   id={item?.id}
                   start_date={item?.review?.begin_date}
                   end_date={item?.review?.end_date}
-                  position={item?.target_level}
                   navigation={navigation}
                   name={item?.review?.description}
-                  type="kpi"
                   target={item?.target_name}
                   isExpired={true}
                 />

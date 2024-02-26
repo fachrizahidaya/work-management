@@ -12,11 +12,8 @@ const OngoingPerformanceListItem = ({
   id,
   start_date,
   end_date,
-  position,
   navigation,
-  status,
   name,
-  type,
   target,
   isExpired,
 }) => {

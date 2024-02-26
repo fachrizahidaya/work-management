@@ -223,10 +223,12 @@ const ChatProjectTaskScreen = () => {
             setSelectedProject={setSelectedProject}
             selectedTask={selectedTask}
             setSelectedTask={setSelectedTask}
-            projectIsFetching={projectIsFetching}
-            taskIsFetching={taskIsFetching}
             projectIsLoading={projectIsLoading}
             taskIsLoading={taskIsLoading}
+            refetchProject={refetchProject}
+            refetchTask={refetchTask}
+            projectIsFetching={projectIsFetching}
+            taskIsFetching={taskIsFetching}
           />
         </>
       ) : null}

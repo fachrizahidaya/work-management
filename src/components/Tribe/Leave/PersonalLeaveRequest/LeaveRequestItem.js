@@ -131,9 +131,6 @@ const LeaveRequestItem = ({
           justifyContent: "space-between",
         }}
       >
-        {/* <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-          {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")}
-        </Text> */}
         <View
           style={{
             flexDirection: "row",
@@ -169,45 +166,34 @@ const LeaveRequestItem = ({
             {days > 1 ? `${days} days` : `${days} day`}
           </Text>
         </View>
-        {
-          status === "Pending" ? (
-            <Text
-              style={{
-                fontSize: Platform.OS === "android" ? 12 : 10,
-                fontWeight: "400",
-                color: "#377893",
-                width: Platform.OS === "android" ? 120 : 100,
-                textAlign: "right",
-              }}
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              Waiting approval by {approval_by}
-            </Text>
-          ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
-            <Text
-              style={{
-                fontSize: Platform.OS === "android" ? 12 : 10,
-                fontWeight: "400",
-                color: "#377893",
-                width: 80,
-                textAlign: "right",
-              }}
-              numberOfLines={2}
-            >
-              {status} by {approval_by}
-            </Text>
-          ) : null
-          // <Text
-          //   style={{
-          //     fontSize: 12,
-          //     fontWeight: "400",
-          //     color: "#377893",
-          //   }}
-          // >
-          //   {status}
-          // </Text>
-        }
+        {status === "Pending" ? (
+          <Text
+            style={{
+              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontWeight: "400",
+              color: "#377893",
+              width: "30%",
+              textAlign: "right",
+            }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            Waiting approval by {approval_by}
+          </Text>
+        ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
+          <Text
+            style={{
+              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontWeight: "400",
+              color: "#377893",
+              width: "25%",
+              textAlign: "right",
+            }}
+            numberOfLines={2}
+          >
+            {status} by {approval_by}
+          </Text>
+        ) : null}
       </View>
     </View>
   );

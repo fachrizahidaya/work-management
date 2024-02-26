@@ -21,7 +21,6 @@ const KPIForm = ({
   handleClose,
   achievement,
   target,
-  onChange,
   achievementValue,
 }) => {
   return (

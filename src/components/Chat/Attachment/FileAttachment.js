@@ -1,11 +1,9 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
 const FileAttachment = ({ file, setFile }) => {
-  const docTypes = ["docx", "xlsx", "pptx", "doc", "xls", "ppt", "pdf", "txt"];
-
   /**
    * Convert byte into proper unit
    *
@@ -16,7 +14,17 @@ const FileAttachment = ({ file, setFile }) => {
     if (!+bytes) return "0 Bytes";
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+    const sizes = [
+      "Bytes",
+      "KiB",
+      "MiB",
+      "GiB",
+      "TiB",
+      "PiB",
+      "EiB",
+      "ZiB",
+      "YiB",
+    ];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   };
@@ -28,8 +36,19 @@ const FileAttachment = ({ file, setFile }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: Platform.OS === "ios" ? 60 : null,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Text
           style={[{ fontSize: 12, width: 300, overflow: "hidden" }, TextProps]}
           numberOfLines={1}
@@ -65,7 +84,9 @@ const FileAttachment = ({ file, setFile }) => {
           color="#595f69"
         />
         <Text style={[{ fontSize: 12 }, TextProps]}>No Preview Available</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{formatBytes(file.size)}</Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>
+          {formatBytes(file.size)}
+        </Text>
       </View>
     </View>
   );

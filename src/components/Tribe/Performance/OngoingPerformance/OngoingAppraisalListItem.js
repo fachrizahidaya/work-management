@@ -11,9 +11,7 @@ const OngoingAppraisalListItem = ({
   id,
   start_date,
   end_date,
-  position,
   navigation,
-  status,
   target,
   isExpired,
 }) => {

@@ -2,13 +2,7 @@ import { useState, useCallback, useEffect, Fragment, useRef } from "react";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
@@ -451,7 +445,13 @@ const AttendanceScreen = () => {
           markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
-          theme={{ arrowColor: "black" }}
+          theme={{
+            arrowColor: "black",
+            "stylesheet.calendar.header": {
+              dayTextAtIndex0: { color: "#FF7272" },
+              dayTextAtIndex6: { color: "#FF7272" },
+            },
+          }}
         />
       </Fragment>
     );

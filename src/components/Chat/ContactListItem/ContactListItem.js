@@ -8,7 +8,14 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { StyleSheet, TouchableOpacity, View, Text, Pressable, Dimensions, Platform } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Pressable,
+  Dimensions,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
@@ -48,7 +55,7 @@ const ContactListItem = ({
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
-  const width = Dimensions.get('window')
+  const width = Dimensions.get("window");
 
   /**
    * Fetch members of selected group
@@ -79,7 +86,10 @@ const ContactListItem = ({
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
-    return sentence?.replace(regex, `<strong style="color: #176688;">$&</strong>`);
+    return sentence?.replace(
+      regex,
+      `<strong style="color: #176688;">$&</strong>`
+    );
   };
 
   const renderName = () => {
@@ -172,7 +182,7 @@ const ContactListItem = ({
   }));
 
   const animatedBackgroundStyle = useAnimatedStyle(() => ({
-    backgroundColor: translateX.value > 0 ? "#377893"  :  "#959595",
+    backgroundColor: translateX.value > 0 ? "#377893" : "#959595",
   }));
 
   useEffect(() => {
@@ -186,7 +196,6 @@ const ContactListItem = ({
           animatedBackgroundStyle,
           {
             justifyContent: "center",
-            
           },
         ]}
       >
@@ -196,10 +205,10 @@ const ContactListItem = ({
             position: "absolute",
             alignItems: "center",
             justifyContent: "space-between",
-            width: Platform.OS === 'ios' ? 400 : 420,
-           
+            width: "100%",
+
             paddingVertical: 5,
-            paddingHorizontal: 16,
+            paddingHorizontal: 10,
           }}
         >
           <Pressable
@@ -207,7 +216,10 @@ const ContactListItem = ({
               translateX.value = withTiming(0);
               onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
             }}
-            style={{ alignItems: "center", paddingLeft: isPinned?.pin_chat ? 5 : 10 }}
+            style={{
+              alignItems: "center",
+              paddingLeft: isPinned?.pin_chat ? 5 : 10,
+            }}
           >
             <AnimatedIcon name="pin" color="#ffffff" size={20} />
             <AnimatedText
@@ -226,11 +238,19 @@ const ContactListItem = ({
             }}
             style={{ alignItems: "center", paddingRight: 5 }}
           >
-            <AnimatedIcon name="dots-horizontal" color="#ffffff" size={20} style={{}} />
+            <AnimatedIcon
+              name="dots-horizontal"
+              color="#ffffff"
+              size={20}
+              style={{}}
+            />
             <AnimatedText style={{ color: "#ffffff" }}>More</AnimatedText>
           </Pressable>
         </View>
-        <PanGestureHandler simultaneousHandlers={simultaneousHandlers} onGestureEvent={panGesture}>
+        <PanGestureHandler
+          simultaneousHandlers={simultaneousHandlers}
+          onGestureEvent={panGesture}
+        >
           <Animated.View style={animatedStyle}>
             <TouchableOpacity
               style={{ backgroundColor: "#FFFFFF" }}
@@ -250,12 +270,31 @@ const ContactListItem = ({
               }}
             >
               <View style={styles.contactBox}>
-                <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
-                  <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <AvatarPlaceholder
+                    name={name}
+                    image={image}
+                    size="md"
+                    isThumb={false}
+                  />
                   <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       {!searchKeyword ? (
-                        <Text style={[{ fontSize: 14, fontWeight: "500" }]}>{name}</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: "500" }]}>
+                          {name}
+                        </Text>
                       ) : (
                         <RenderHtml
                           contentWidth={400}
@@ -275,10 +314,17 @@ const ContactListItem = ({
                         justifyContent: "space-between",
                       }}
                     >
-                      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          flex: 1,
+                        }}
+                      >
                         {type === "group" && chat?.latest_message ? (
                           <Text style={[{ fontSize: 12 }, TextProps]}>
-                            {userSelector?.name === chat?.latest_message?.user?.name
+                            {userSelector?.name ===
+                            chat?.latest_message?.user?.name
                               ? "You"
                               : chat?.latest_message?.user?.name}
                             :{" "}
@@ -297,13 +343,27 @@ const ContactListItem = ({
                               <View style={{ flexDirection: "row" }}>
                                 {message && (
                                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                                    {message.length > 40 ? message.slice(0, 40) + "..." : message}
+                                    {message.length > 40
+                                      ? message.slice(0, 40) + "..."
+                                      : message}
                                   </Text>
                                 )}
                                 {!message && (project || task || fileName) && (
-                                  <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                                    <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
-                                    <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      alignItems: "center",
+                                      gap: 3,
+                                    }}
+                                  >
+                                    <MaterialCommunityIcons
+                                      name={generateIcon()}
+                                      size={20}
+                                      color="#3F434A"
+                                    />
+                                    <Text style={[{ fontSize: 12 }, TextProps]}>
+                                      {generateAttachmentText()}
+                                    </Text>
                                   </View>
                                 )}
                               </View>
@@ -319,34 +379,78 @@ const ContactListItem = ({
                                     justifyContent: "center",
                                   }}
                                 >
-                                  <Text style={{ fontSize: 12, textAlign: "center", color: "#FFFFFF" }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 12,
+                                      textAlign: "center",
+                                      color: "#FFFFFF",
+                                    }}
+                                  >
                                     {isRead > 20 ? "20+" : isRead}
                                   </Text>
                                 </View>
                               )}
                             </View>
                           </>
-                        ) : isDeleted && userSelector.id === latest?.user?.id ? (
-                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        ) : isDeleted &&
+                          userSelector.id === latest?.user?.id ? (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 3,
+                            }}
+                          >
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
+                              style={{
+                                opacity: 0.5,
+                                transform: [{ rotate: "90deg" }],
+                              }}
                               color="#3F434A"
                             />
-                            <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                            <Text
+                              style={[
+                                {
+                                  fontSize: 12,
+                                  fontStyle: "italic",
+                                  opacity: 0.5,
+                                },
+                                TextProps,
+                              ]}
+                            >
                               You deleted this message
                             </Text>
                           </View>
-                        ) : isDeleted && userSelector.id !== latest?.user?.id ? (
-                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                        ) : isDeleted &&
+                          userSelector.id !== latest?.user?.id ? (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 3,
+                            }}
+                          >
                             <MaterialCommunityIcons
                               name="block-helper"
                               size={10}
-                              style={{ opacity: 0.5, transform: [{ rotate: "90deg" }] }}
+                              style={{
+                                opacity: 0.5,
+                                transform: [{ rotate: "90deg" }],
+                              }}
                               color="#3F434A"
                             />
-                            <Text style={[{ fontSize: 12, fontStyle: "italic", opacity: 0.5 }, TextProps]}>
+                            <Text
+                              style={[
+                                {
+                                  fontSize: 12,
+                                  fontStyle: "italic",
+                                  opacity: 0.5,
+                                },
+                                TextProps,
+                              ]}
+                            >
                               This message was deleted
                             </Text>
                           </View>

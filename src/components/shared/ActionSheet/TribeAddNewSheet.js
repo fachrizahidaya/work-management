@@ -23,7 +23,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
-import axiosInstance from "../../../config/api";
 import {
   TextProps,
   ErrorToastProps,
@@ -246,72 +245,173 @@ const TribeAddNewSheet = (props) => {
     <>
       <ActionSheet ref={props.reference}>
         <View style={styles.container}>
-          {items.slice(0, 2).map((item, idx) => {
-            return item.title !== "Clock in" ? (
-              <TouchableOpacity
-                key={idx}
-                borderColor="#E8E9EB"
-                borderBottomWidth={1}
-                style={{
-                  ...styles.wrapper,
-                  borderBottomWidth: 1,
-                  borderColor: "#E8E9EB",
-                }}
-                onPress={() => {
-                  if (item.title === "New Leave Request") {
-                    navigation.navigate("New Leave Request", {
-                      employeeId: profile?.data?.id,
-                      isOpen: newLeaveRequestModalIsOpen,
-                      toggle: toggleNewLeaveRequestModal,
-                    });
-                  } else if (item.title === "New Reimbursement") {
-                    navigation.navigate("New Reimbursement");
-                  }
-
-                  props.reference.current?.hide();
-                }}
-              >
-                <View style={styles.flex}>
-                  <View style={styles.item}>
-                    <MaterialCommunityIcons
-                      name={item.icons}
-                      size={20}
-                      color="#3F434A"
-                    />
-                  </View>
-                  <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                    {item.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              attendance?.data &&
-                attendance?.data?.day_type === "Work Day" &&
-                attendance?.date?.att_type !== "Leave" &&
-                attendance?.data?.att_type !== "Holiday" && (
-                  <Pressable
+          {createLeaveRequestCheckAccess
+            ? items.slice(0, 2).map((item, idx) => {
+                return item.title !== "Clock in" ? (
+                  <TouchableOpacity
                     key={idx}
+                    borderColor="#E8E9EB"
+                    borderBottomWidth={1}
                     style={{
                       ...styles.wrapper,
                       borderBottomWidth: 1,
                       borderColor: "#E8E9EB",
                     }}
+                    onPress={() => {
+                      if (item.title === "New Leave Request") {
+                        navigation.navigate("New Leave Request", {
+                          employeeId: profile?.data?.id,
+                          isOpen: newLeaveRequestModalIsOpen,
+                          toggle: toggleNewLeaveRequestModal,
+                        });
+                      } else if (item.title === "New Reimbursement") {
+                        navigation.navigate("New Reimbursement");
+                      }
+
+                      props.reference.current?.hide();
+                    }}
                   >
-                    <ClockAttendance
-                      attendance={attendance?.data}
-                      onClock={attendanceCheckHandler}
-                      location={location}
-                      locationOn={locationOn}
-                      success={success}
-                      setSuccess={setSuccess}
-                      isLoading={attendanceIsLoading}
-                      modalIsOpen={attendanceModalIsopen}
-                    />
-                  </Pressable>
-                )
-            );
-          })}
+                    <View style={styles.flex}>
+                      <View style={styles.item}>
+                        <MaterialCommunityIcons
+                          name={item.icons}
+                          size={20}
+                          color="#3F434A"
+                        />
+                      </View>
+                      <Text
+                        key={item.title}
+                        style={[{ fontSize: 14 }, TextProps]}
+                      >
+                        {item.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  attendance?.data &&
+                    attendance?.data?.day_type === "Work Day" &&
+                    attendance?.date?.att_type !== "Leave" &&
+                    attendance?.data?.att_type !== "Holiday" && (
+                      <Pressable
+                        key={idx}
+                        style={{
+                          ...styles.wrapper,
+                          borderBottomWidth: 1,
+                          borderColor: "#E8E9EB",
+                        }}
+                      >
+                        <ClockAttendance
+                          attendance={attendance?.data}
+                          onClock={attendanceCheckHandler}
+                          location={location}
+                          locationOn={locationOn}
+                          success={success}
+                          setSuccess={setSuccess}
+                          isLoading={attendanceIsLoading}
+                          modalIsOpen={attendanceModalIsopen}
+                        />
+                      </Pressable>
+                    )
+                );
+              })
+            : items.slice(1, 2).map((item, idx) => {
+                return item.title !== "Clock in" ? (
+                  <TouchableOpacity
+                    key={idx}
+                    borderColor="#E8E9EB"
+                    borderBottomWidth={1}
+                    style={{
+                      ...styles.wrapper,
+                      borderBottomWidth: 1,
+                      borderColor: "#E8E9EB",
+                    }}
+                    onPress={() => {
+                      if (item.title === "New Leave Request") {
+                        navigation.navigate("New Leave Request", {
+                          employeeId: profile?.data?.id,
+                          isOpen: newLeaveRequestModalIsOpen,
+                          toggle: toggleNewLeaveRequestModal,
+                        });
+                      } else if (item.title === "New Reimbursement") {
+                        navigation.navigate("New Reimbursement");
+                      }
+
+                      props.reference.current?.hide();
+                    }}
+                  >
+                    <View style={styles.flex}>
+                      <View style={styles.item}>
+                        <MaterialCommunityIcons
+                          name={item.icons}
+                          size={20}
+                          color="#3F434A"
+                        />
+                      </View>
+                      <Text
+                        key={item.title}
+                        style={[{ fontSize: 14 }, TextProps]}
+                      >
+                        {item.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  attendance?.data &&
+                    attendance?.data?.day_type === "Work Day" &&
+                    attendance?.date?.att_type !== "Leave" &&
+                    attendance?.data?.att_type !== "Holiday" && (
+                      <Pressable
+                        key={idx}
+                        style={{
+                          ...styles.wrapper,
+                          borderBottomWidth: 1,
+                          borderColor: "#E8E9EB",
+                        }}
+                      >
+                        <ClockAttendance
+                          attendance={attendance?.data}
+                          onClock={attendanceCheckHandler}
+                          location={location}
+                          locationOn={locationOn}
+                          success={success}
+                          setSuccess={setSuccess}
+                          isLoading={attendanceIsLoading}
+                          modalIsOpen={attendanceModalIsopen}
+                        />
+                      </Pressable>
+                    )
+                );
+              })}
         </View>
+
+        <ConfirmationModal
+          isOpen={attendanceModalIsopen}
+          toggle={toggleAttendanceModal}
+          apiUrl={`/hr/timesheets/personal/attendance-check`}
+          body={{
+            longitude: location?.coords?.longitude,
+            latitude: location?.coords?.latitude,
+            check_from: "Mobile App",
+          }}
+          header={`Confirm ${
+            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+          }`}
+          hasSuccessFunc={true}
+          onSuccess={() => {
+            toggleClockModal();
+            toggleAttendance();
+            refetchAttendance();
+          }}
+          description={`Are you sure want to ${
+            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+          }?`}
+          successMessage={`${
+            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+          } success`}
+          isDelete={false}
+          isGet={false}
+          isPatch={false}
+        />
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}
@@ -319,12 +419,12 @@ const TribeAddNewSheet = (props) => {
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{
-                  color: !attendance?.data?.time_out ? "#FCFF58" : "#92C4FF",
+                  color: attendance?.data?.time_in ? "#FCFF58" : "#92C4FF",
                   fontSize: 16,
                   fontWeight: "500",
                 }}
               >
-                {!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}{" "}
+                {attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
               </Text>
               <Text
                 style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
@@ -336,42 +436,13 @@ const TribeAddNewSheet = (props) => {
           bottomElement={
             <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
               at{" "}
-              {!attendance?.data?.time_out
-                ? attendance?.data?.time_in
-                : attendance?.data?.time_out}
+              {attendance?.data?.time_in
+                ? dayjs(attendance?.data?.time_in).format("HH:mm")
+                : dayjs(attendance?.data?.time_out).format("HH:mm")}
             </Text>
           }
         />
       </ActionSheet>
-
-      <ConfirmationModal
-        isOpen={attendanceModalIsopen}
-        toggle={toggleAttendanceModal}
-        apiUrl={`/hr/timesheets/personal/attendance-check`}
-        body={{
-          longitude: location?.coords?.longitude,
-          latitude: location?.coords?.latitude,
-          check_from: "Mobile App",
-        }}
-        header={`Confirm ${
-          !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
-        }`}
-        hasSuccessFunc={true}
-        onSuccess={() => {
-          toggleAttendance();
-          refetchAttendance();
-          toggleClockModal();
-        }}
-        description={`Are you sure want to ${
-          !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
-        }?`}
-        successMessage={`${
-          !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
-        } success`}
-        isDelete={false}
-        isGet={false}
-        isPatch={false}
-      />
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}

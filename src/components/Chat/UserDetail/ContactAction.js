@@ -1,10 +1,16 @@
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
+const ContactAction = ({
+  type,
+  active_member,
+  toggleClearChatMessage,
+  toggleExitModal,
+  toggleDeleteGroupModal,
+}) => {
   return (
     <View
       style={{
@@ -29,6 +35,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
             gap: 10,
             paddingHorizontal: 5,
             paddingVertical: 8,
@@ -37,7 +44,14 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
           }}
           onPress={toggleClearChatMessage}
         >
-          <Text style={[{ fontSize: 14 }, TextProps]}>Clear Messages</Text>
+          <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>
+            Clear Messages
+          </Text>
+          <MaterialCommunityIcons
+            name={"close-circle-outline"}
+            size={15}
+            color="#EB0E29"
+          />
         </TouchableOpacity>
 
         {type === "group" && active_member === 1 && (
@@ -56,7 +70,11 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             onPress={toggleExitModal}
           >
             <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
-            <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={15} color="#3F434A" />
+            <MaterialCommunityIcons
+              name={type === "personal" ? "not-interested" : "exit-to-app"}
+              size={15}
+              color="#3F434A"
+            />
           </TouchableOpacity>
         )}
         {type === "group" && active_member === 0 && (
@@ -74,8 +92,18 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             }}
             onPress={toggleDeleteGroupModal}
           >
-            <Text style={[{ fontSize: 14 }, TextProps]}>Delete Group</Text>
-            <MaterialIcons name={type === "personal" ? "not-interested" : "exit-to-app"} size={15} color="#3F434A" />
+            <Text
+              style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}
+            >
+              Delete Group
+            </Text>
+            <MaterialCommunityIcons
+              name={
+                type === "personal" ? "not-interested" : "trash-can-outline"
+              }
+              size={15}
+              color="#EB0E29"
+            />
           </TouchableOpacity>
         )}
         {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>

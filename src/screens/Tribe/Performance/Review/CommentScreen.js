@@ -212,7 +212,9 @@ const CommentScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Employee Comment"
+            title={
+              <Text>{commentList?.data?.performance_review?.description}</Text>
+            }
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {
@@ -264,7 +266,6 @@ const CommentScreen = () => {
           dayjs={dayjs}
           begin_date={commentList?.data?.performance_review?.begin_date}
           end_date={commentList?.data?.performance_review?.end_date}
-          target={null}
           name={commentList?.data?.employee?.name}
           title={commentList?.data?.performance_review?.description}
         />
@@ -306,9 +307,7 @@ const CommentScreen = () => {
         description={comment?.description}
         formik={formik}
         handleClose={closeSelectedComment}
-        onChange={formikChangeHandler}
         comment={comment?.comment}
-        commentValue={employeeComment?.comment}
       />
       <ConfirmationModal
         isOpen={confirmationModalIsOpen}
