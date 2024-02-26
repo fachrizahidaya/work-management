@@ -400,7 +400,7 @@ const TribeAddNewSheet = (props) => {
           }`}
           hasSuccessFunc={true}
           onSuccess={() => {
-            toggleClockModal();
+            // toggleClockModal();
             toggleAttendance();
             refetchAttendance();
           }}
@@ -411,11 +411,14 @@ const TribeAddNewSheet = (props) => {
           isDelete={false}
           isGet={false}
           isPatch={false}
+          otherModalOpen={true}
+          toggleOtherModal={toggleClockModal}
         />
 
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}
+          multipleModal={true}
           topElement={
             <View style={{ flexDirection: "row" }}>
               <Text

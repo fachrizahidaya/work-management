@@ -531,14 +531,17 @@ const AttendanceScreen = () => {
         apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
         hasSuccessFunc={true}
         onSuccess={() => {
-          toggleSuccessDeleteModal();
+          // toggleSuccessDeleteModal();
           refetchAttachment();
         }}
+        otherModalOpen={true}
+        toggleOtherModal={toggleSuccessDeleteModal}
       />
 
       <SuccessModal
         isOpen={successDeleteModalIsOpen}
         toggle={toggleSuccessDeleteModal}
+        multipleModal={true}
         topElement={
           <View style={{ flexDirection: "row" }}>
             <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>

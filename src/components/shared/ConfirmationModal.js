@@ -36,6 +36,8 @@ const ConfirmationModal = ({
   isPatch = false,
   isGet = false,
   placement,
+  otherModalOpen,
+  toggleOtherModal,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -79,6 +81,15 @@ const ConfirmationModal = ({
       onBackdropPress={() => !isDeleting && toggle()}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
+      hideModalContentWhileAnimating={true}
+      useNativeDriver={false}
+      onModalHide={() => {
+        if (otherModalOpen) {
+          toggleOtherModal();
+        } else {
+          null;
+        }
+      }}
     >
       <View
         style={{

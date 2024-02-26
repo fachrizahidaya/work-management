@@ -5,7 +5,13 @@ import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SuccessModal = ({ isOpen, toggle, topElement, bottomElement }) => {
+const SuccessModal = ({
+  isOpen,
+  toggle,
+  topElement,
+  bottomElement,
+  multipleModal,
+}) => {
   const deviceWidth = Dimensions.get("window").width;
 
   useEffect(() => {
@@ -21,20 +27,47 @@ const SuccessModal = ({ isOpen, toggle, topElement, bottomElement }) => {
     <>
       <StatusBar animated={true} backgroundColor={isOpen ? "#176688" : null} />
       <Modal
+        onBackdropPress={() => toggle()}
         isVisible={isOpen}
-        deviceHeight={Platform.OS === 'ios' ? 150 : 125}
+        deviceHeight={Platform.OS === "ios" ? 150 : 125}
         deviceWidth={deviceWidth}
         animationIn={"slideInDown"}
         animationOut={"slideOutUp"}
         backdropColor="#176688"
         backdropOpacity={1}
-        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
+        hideModalContentWhileAnimating={true}
+        useNativeDriver={false}
+        onModalHide={() => {
+          if (multipleModal) {
+            console.log("modal closed");
+          } else {
+            null;
+          }
+        }}
+        style={{
+          justifyContent: "flex-start",
+          alignItems: "center",
+          padding: 10,
+          gap: 10,
+          flex: 0.2,
+        }}
       >
-        <View style={{ alignItems: "center", gap: 5, paddingTop: Platform.OS === 'ios' ? 30 : null }}>
+        <View
+          style={{
+            alignItems: "center",
+            gap: 5,
+            paddingTop: Platform.OS === "ios" ? 30 : null,
+          }}
+        >
           {topElement}
           {bottomElement}
         </View>
-        <MaterialCommunityIcons onPress={() => toggle()} name="chevron-up" color="#FFFFFF" size={20} />
+        <MaterialCommunityIcons
+          onPress={() => toggle()}
+          name="chevron-up"
+          color="#FFFFFF"
+          size={20}
+        />
       </Modal>
     </>
   );
