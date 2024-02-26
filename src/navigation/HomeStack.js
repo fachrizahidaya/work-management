@@ -36,6 +36,9 @@ import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewApp
 import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
 import ConfirmedCommentScreen from "../screens/Tribe/Performance/Review/ConfirmedCommentScreen";
 import AppraisalEmployeeScreen from "../screens/Tribe/Performance/Review/AppraisalEmployeeScreen";
+import KPIEmployeeScreen from "../screens/Tribe/Performance/Review/KPIEmployeeScreen";
+import CommentEmployeeScreen from "../screens/Tribe/Performance/Review/CommentEmployeeScreen";
+import ConclusionScreen from "../screens/Tribe/Performance/Review/ConclusionScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -59,7 +62,6 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
-import KPIEmployeeScreen from "../screens/Tribe/Performance/Review/KPIEmployeeScreen";
 
 const Stack = createStackNavigator();
 
@@ -74,9 +76,13 @@ const HomeStack = () => {
       .getInitialNotification()
       .then((message) => {
         if (message) {
-          if (message.data.type === "personal" || message.data.type === "group") {
+          if (
+            message.data.type === "personal" ||
+            message.data.type === "group"
+          ) {
             const parsedIsPinnedObj = JSON.parse(message.data.is_pinned);
-            const parsedUserObj = message.data.user && JSON.parse(message.data.user);
+            const parsedUserObj =
+              message.data.user && JSON.parse(message.data.user);
             navigation.navigate("Chat Room", {
               name: message.data.name,
               userId: message.data.user_id,
@@ -116,9 +122,17 @@ const HomeStack = () => {
       </Stack.Screen>
 
       {/* Independent Screens */}
-      <Stack.Screen name="Notification" component={NotificationScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Notification"
+        component={NotificationScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Log Out" component={LogoutScreen} options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen
+        name="Log Out"
+        component={LogoutScreen}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
 
       {/* Nest Screens */}
       <Stack.Screen
@@ -130,61 +144,165 @@ const HomeStack = () => {
         }}
       />
 
-      <Stack.Screen name="Chat Room" component={ChatRoom} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Chat Room"
+        component={ChatRoom}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Group Participant" component={AddGroupParticipantScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Group Participant"
+        component={AddGroupParticipantScreen}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Group Form" component={GroupFormScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Group Form"
+        component={GroupFormScreen}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="New Chat" component={AddPersonalChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="New Chat"
+        component={AddPersonalChatScreen}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="User Detail" component={ContactDetail} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="User Detail"
+        component={ContactDetail}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Edit Group" component={EditGroupProfile} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Edit Group"
+        component={EditGroupProfile}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Media" component={MediaScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Media"
+        component={MediaScreen}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Project Screen" component={ChatProjectTaskScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Project Screen"
+        component={ChatProjectTaskScreen}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Project Detail Screen"
+        component={ProjectDetail}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Task Detail Screen"
+        component={TaskDetail}
+        options={{ headerShown: false }}
+      />
 
       {/* Band Screens */}
-      <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Project Detail"
+        component={ProjectDetailScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Project Task" component={ProjectTaskScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Project Task"
+        component={ProjectTaskScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Task Detail"
+        component={TaskDetailScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Project Form" component={ProjectForm} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Project Form"
+        component={ProjectForm}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Task Form" component={TaskForm} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Task Form"
+        component={TaskForm}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Note Form" component={NoteForm} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Note Form"
+        component={NoteForm}
+        options={{ header: () => <Header /> }}
+      />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Global Search" component={GlobalSearch} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="Global Search"
+          component={GlobalSearch}
+          options={{ headerShown: false }}
+        />
       </Stack.Group>
 
       {/* Tribe Screens */}
-      <Stack.Screen name="New Feed" component={NewFeedScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="New Feed"
+        component={NewFeedScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Employee Profile" component={EmployeeProfileScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Employee Profile"
+        component={EmployeeProfileScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Post Screen" component={PostScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Post Screen"
+        component={PostScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="New Leave Request" component={NewLeaveRequest} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="New Leave Request"
+        component={NewLeaveRequest}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Team Leave Request" component={MyTeamLeaveScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Team Leave Request"
+        component={MyTeamLeaveScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="New Reimbursement"
+        component={NewReimbursement}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="KPI Detail"
+        component={KPIScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Appraisal Detail"
+        component={AppraisalScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Review KPI Detail" component={ReviewKPIScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Review KPI Detail"
+        component={ReviewKPIScreen}
+        options={{ header: () => <Header /> }}
+      />
 
       <Stack.Screen
         name="Review Appraisal Detail"
@@ -192,32 +310,92 @@ const HomeStack = () => {
         options={{ header: () => <Header /> }}
       />
 
-      <Stack.Screen name="Comment Detail" component={CommentScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Comment Detail"
+        component={CommentScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Confirmed Comment Detail" component={ConfirmedCommentScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Confirmed Comment Detail"
+        component={ConfirmedCommentScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="KPI Employee" component={KPIEmployeeScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="KPI Employee"
+        component={KPIEmployeeScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Appraisal Employee" component={AppraisalEmployeeScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Appraisal Employee"
+        component={AppraisalEmployeeScreen}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen
+        name="Comment Employee"
+        component={CommentEmployeeScreen}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen
+        name="Conclusion Screen"
+        component={ConclusionScreen}
+        options={{ header: () => <Header /> }}
+      />
 
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Global Search Tribe" component={GlobalSearchTribe} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="Global Search Tribe"
+          component={GlobalSearchTribe}
+          options={{ headerShown: false }}
+        />
       </Stack.Group>
 
       {/* Setting Screens */}
-      <Stack.Screen name="Setting Screen" component={SettingScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Setting Screen"
+        component={SettingScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Account Screen" component={AccountScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Account Screen"
+        component={AccountScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Profile Screen" component={MyProfileScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Profile Screen"
+        component={MyProfileScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Company Screen" component={CompanyScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Company Screen"
+        component={CompanyScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Subscription Screen" component={SubscriptionScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Subscription Screen"
+        component={SubscriptionScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Payment Screen"
+        component={PaymentScreen}
+        options={{ header: () => <Header /> }}
+      />
 
-      <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen
+        name="Change Password"
+        component={ChangePasswordScreen}
+        options={{ header: () => <Header /> }}
+      />
     </Stack.Navigator>
   );
 };

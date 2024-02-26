@@ -21,7 +21,6 @@ const KPIReviewForm = ({
   handleClose,
   achievement,
   target,
-  onChange,
   achievementValue,
   employee_achievement,
 }) => {

@@ -23,8 +23,8 @@ const EmployeeContact = ({ employee }) => {
       id: 3,
       component: (
         <PersonalNestButton
-          height={25}
-          width={25}
+          height={20}
+          width={20}
           email={employee?.data?.email}
           user_id={employee?.data?.user?.id}
           room_id={employee?.data?.user?.id}
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 2,
+    gap: 5,
     paddingTop: 10,
     paddingHorizontal: 8,
   },

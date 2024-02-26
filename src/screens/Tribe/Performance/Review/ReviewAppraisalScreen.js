@@ -10,7 +10,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-root-toast";
@@ -278,9 +277,7 @@ const ReviewAppraisalScreen = () => {
           end_date={
             appraisalList?.data?.performance_appraisal?.review?.end_date
           }
-          position={appraisalList?.data?.performance_appraisal?.target_level}
           target={appraisalList?.data?.performance_appraisal?.target_name}
-          targetLevel={appraisalList?.data?.performance_appraisal?.target_level}
           name={appraisalList?.data?.employee?.name}
         />
 

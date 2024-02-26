@@ -96,22 +96,27 @@ const ProjectDetail = () => {
                   {
                     fontSize: 14,
                     fontWeight: "500",
-                    width: 200,
-                    overflow: "hidden",
                   },
                   TextProps,
                 ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
               >
-                {project?.data?.title}
+                {task?.data?.title.length > 20
+                  ? task?.data?.title.slice(0, 20) + "..."
+                  : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(project?.data?.deadline).format("DD MMMM YYYY")}
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              justifyContent: "flex-end",
+            }}
+          >
             <Text style={[{ fontSize: 10 }, TextProps]}>Created by</Text>
             <AvatarPlaceholder
               name={project?.data?.owner?.name}

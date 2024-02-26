@@ -2,16 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailList = ({
-  dayjs,
-  status,
-  begin_date,
-  end_date,
-  position,
-  target,
-  targetLevel,
-  isExpired,
-}) => {
+const KPIDetailList = ({ dayjs, begin_date, end_date, target, isExpired }) => {
   return (
     <View
       style={{

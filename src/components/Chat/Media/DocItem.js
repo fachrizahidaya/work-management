@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+
 import { Image, Linking, Pressable, Text, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const doc = "../../../assets/doc-icons/doc-format.png";
@@ -37,7 +38,10 @@ const DocItem = ({ image, path, type, size }) => {
 
   const attachmentDownloadHandler = async (file_path) => {
     try {
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
+      Linking.openURL(
+        `${process.env.EXPO_PUBLIC_API}/download/${file_path}`,
+        "_blank"
+      );
     } catch (err) {
       console.log(err);
     }
@@ -50,15 +54,24 @@ const DocItem = ({ image, path, type, size }) => {
   return (
     <Pressable
       onPress={() => attachmentDownloadHandler(path)}
-      style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        paddingVertical: 5,
+      }}
     >
       <Image
         source={
-          getFileExt() === "doc" || getFileExt() === "docx" || extension.includes("word")
+          getFileExt() === "doc" ||
+          getFileExt() === "docx" ||
+          extension.includes("word")
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension.includes("spreadsheet")
+            : getFileExt() === "xls" ||
+              getFileExt() === "xlsx" ||
+              extension.includes("spreadsheet")
             ? require(xls)
             : getFileExt() === "ppt" ||
               getFileExt() === "pptx" ||
@@ -85,14 +98,19 @@ const DocItem = ({ image, path, type, size }) => {
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Text
-            style={[{ fontSize: 10, opacity: 0.5, overflow: "hidden", width: 25 }, TextProps]}
+            style={[
+              { fontSize: 10, opacity: 0.5, overflow: "hidden", width: 25 },
+              TextProps,
+            ]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {getFileExt()}
           </Text>
           <Text>•</Text>
-          <Text style={[{ fontSize: 10, opacity: 0.5 }, TextProps]}>{size}</Text>
+          <Text style={[{ fontSize: 10, opacity: 0.5 }, TextProps]}>
+            {size}
+          </Text>
         </View>
       </View>
     </Pressable>

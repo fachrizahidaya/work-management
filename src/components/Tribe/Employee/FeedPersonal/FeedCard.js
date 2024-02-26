@@ -9,6 +9,7 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
@@ -95,7 +96,7 @@ const FeedCard = ({
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
         onEndReachedThreshold={0.1}
-        estimatedItemSize={100}
+        estimatedItemSize={150}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         ListFooterComponent={() =>
@@ -212,6 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 3,
     paddingVertical: 10,
+    paddingTop: 30,
   },
   contact: {
     flexDirection: "row-reverse",

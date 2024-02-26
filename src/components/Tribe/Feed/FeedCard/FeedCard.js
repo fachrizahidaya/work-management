@@ -7,6 +7,7 @@ import {
   View,
   ActivityIndicator,
   FlatList,
+  Platform,
 } from "react-native";
 import Toast from "react-native-root-toast";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -82,7 +83,7 @@ const FeedCard = ({
     <View style={styles.container}>
       <FlashList
         removeClippedSubviews={true}
-        ref={scrollNewMessage ? flashListRef : null}
+        // ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
         onEndReachedThreshold={0.1}

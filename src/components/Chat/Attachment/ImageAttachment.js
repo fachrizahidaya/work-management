@@ -1,10 +1,15 @@
-import { View, Image, Pressable, StyleSheet } from "react-native";
+import { View, Image, Pressable, StyleSheet, Platform } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ImageAttachment = ({ image, setImage }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: Platform.OS === "ios" ? 60 : null,
+      }}
+    >
       <View style={{ flexDirection: "row-reverse" }}>
         <Pressable onPress={() => setImage(null)}>
           <MaterialCommunityIcons name="close" size={20} />
@@ -13,7 +18,13 @@ const ImageAttachment = ({ image, setImage }) => {
       <View style={{ alignSelf: "center" }}>
         <Image
           source={{ uri: image.uri }}
-          style={{ flex: 1, width: 350, height: 500, backgroundColor: "white", resizeMode: "contain" }}
+          style={{
+            flex: 1,
+            width: 350,
+            height: 500,
+            backgroundColor: "white",
+            resizeMode: "contain",
+          }}
           alt="image selected"
         />
       </View>
