@@ -80,20 +80,24 @@ const LeaveRequestItem = ({
                         }}
                         style={{
                           ...styles.container,
-                          justifyContent: "center",
                         }}
                       >
                         <Text
                           style={[
                             {
-                              fontSize: 14,
-                              fontWeight: "400",
+                              fontSize: 16,
+                              fontWeight: "700",
                               color: "#D64B4B",
                             },
                           ]}
                         >
                           Cancel Request
                         </Text>
+                        <MaterialCommunityIcons
+                          name={"close-circle-outline"}
+                          size={20}
+                          color="#EB0E29"
+                        />
                       </TouchableOpacity>
                     </View>
                   ),

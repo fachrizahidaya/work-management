@@ -223,8 +223,13 @@ const FeedCardItem = ({
                                 }}
                               >
                                 <Text style={[{ fontSize: 16 }, TextProps]}>
-                                  Edit Post
+                                  Edit
                                 </Text>
+                                <MaterialCommunityIcons
+                                  name="file-edit"
+                                  size={20}
+                                  color="#176688"
+                                />
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={async () => {
@@ -242,13 +247,18 @@ const FeedCardItem = ({
                                   style={[
                                     {
                                       fontSize: 16,
-                                      fontWeight: "400",
-                                      color: "#D64B4B",
+                                      fontWeight: "700",
+                                      color: "#EB0E29",
                                     },
                                   ]}
                                 >
-                                  Delete Post
+                                  Delete
                                 </Text>
+                                <MaterialCommunityIcons
+                                  name="trash-can-outline"
+                                  color="#EB0E29"
+                                  size={20}
+                                />
                               </TouchableOpacity>
                             </View>
                           </View>
