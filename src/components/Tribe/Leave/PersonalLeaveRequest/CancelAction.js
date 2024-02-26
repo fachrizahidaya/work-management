@@ -4,7 +4,10 @@ import ActionSheet from "react-native-actions-sheet";
 const CancelAction = ({ onDeselect, toggleCancelModal, reference }) => {
   return (
     <ActionSheet ref={reference} onClose={onDeselect}>
-      <TouchableOpacity onPress={toggleCancelModal} style={{ ...styles.wrapper }}>
+      <TouchableOpacity
+        onPress={toggleCancelModal}
+        style={{ ...styles.wrapper }}
+      >
         <View>
           <Text>Cancel Request</Text>
         </View>

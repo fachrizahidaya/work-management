@@ -1,6 +1,12 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -19,29 +25,60 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
 
   return (
     <>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
+      <Tabs
+        tabs={tabs}
+        value={tabValue}
+        onChange={onChangeTab}
+        justify="space-evenly"
+        flexDir="row"
+        gap={2}
+      />
       <View style={{ gap: 15 }}>
         <ScrollView style={{ maxHeight: 300 }}>
           <View style={styles.container}>
             {tabValue === "pending" ? (
               data.map((item) => {
                 return (
-                  <View style={{ gap: 5, borderTopColor: "#E8E9EB", borderTopWidth: 1, padding: 5 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <Text style={[{ fontSize: 14 }, TextProps]}>{item.title}</Text>
+                  <View
+                    style={{
+                      gap: 5,
+                      borderTopColor: "#E8E9EB",
+                      borderTopWidth: 1,
+                      padding: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={[{ fontSize: 14 }, TextProps]}>
+                        {item.title}
+                      </Text>
                       <Pressable
                         style={{ marginRight: 1 }}
                         onPress={() =>
                           SheetManager.show("form-sheet", {
                             payload: {
                               children: (
-                                <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16 }}>
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    gap: 21,
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 16,
+                                  }}
+                                >
                                   <TouchableOpacity
                                     onPress={async () => {
                                       await SheetManager.hide("form-sheet");
                                     }}
                                   >
-                                    <Text style={[{ fontSize: 12 }, TextProps]}>Cancel Request</Text>
+                                    <Text style={[{ fontSize: 12 }, TextProps]}>
+                                      Cancel Request
+                                    </Text>
                                   </TouchableOpacity>
                                 </View>
                               ),
@@ -49,16 +86,36 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                           })
                         }
                       >
-                        <MaterialCommunityIcons name="dots-vertical" size={15} color="#3F434A" />
+                        <MaterialCommunityIcons
+                          name="dots-vertical"
+                          size={15}
+                          color="#3F434A"
+                        />
                       </Pressable>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <View>
-                        <Text style={[{ fontSize: 12 }, TextProps]}>{item.description}</Text>
+                        <Text style={[{ fontSize: 12 }, TextProps]}>
+                          {item.description}
+                        </Text>
                       </View>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>{rupiah(item.total)}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {rupiah(item.total)}
+                      </Text>
 
                       <MaterialCommunityIcons
                         name="attachment"
@@ -67,9 +124,19 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                         style={{ transform: [{ rotate: "-35deg" }] }}
                       />
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>{dayjs(item.date).format("DD.MM.YYYY")}</Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>{item.status}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {dayjs(item.date).format("DD.MM.YYYY")}
+                      </Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        {item.status}
+                      </Text>
                     </View>
                   </View>
                 );

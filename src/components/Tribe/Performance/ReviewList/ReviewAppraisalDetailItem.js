@@ -35,7 +35,11 @@ const ReviewAppraisalDetailItem = ({
       <Text style={[TextProps]}>{description}</Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name={"widgets-outline"} size={15} style={{ opacity: 0.5 }} />
+        <MaterialCommunityIcons
+          name={"widgets-outline"}
+          size={15}
+          style={{ opacity: 0.5 }}
+        />
 
         <Text style={[TextProps]}>
           {choice == "a"

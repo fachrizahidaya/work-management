@@ -1,15 +1,26 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
-import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Keyboard,
+  Alert,
+  Platform,
+} from "react-native";
 import Toast from "react-native-root-toast";
+import { SheetManager } from "react-native-actions-sheet";
 
 import axiosInstance from "../../../config/api";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
@@ -24,7 +35,10 @@ import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMess
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -54,24 +68,46 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
+  const {
+    userId,
+    name,
+    roomId,
+    image,
+    position,
+    email,
+    type,
+    active_member,
+    isPinned,
+  } = route.params;
 
   const navigation = useNavigation();
 
   const clearChatScreenSheetRef = useRef(null);
   const searchFormRef = useRef(null);
-  const scrollRef = useRef(null);
 
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } =
+    useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } =
+    useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
+    useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
-  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } =
+    useDisclosure(false);
 
-  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
-  const { isLoading: chatIsLoading, stop: stopLoadingChat, start: startLoadingChat } = useLoading(false);
+  const {
+    isLoading: deleteChatMessageIsLoading,
+    toggle: toggleDeleteChatMessage,
+  } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } =
+    useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } =
+    useLoading(false);
+  const {
+    isLoading: chatIsLoading,
+    stop: stopLoadingChat,
+    start: startLoadingChat,
+  } = useLoading(false);
 
   /**
    * Handle for mention name in group member
@@ -127,14 +163,16 @@ const ChatRoom = () => {
    */
   const personalChatMessageEvent = () => {
     if (userSelector?.id && currentUser) {
-      laravelEcho.channel(`personal.chat.${userSelector?.id}.${userId}`).listen(".personal.chat", (event) => {
-        if (event.data.type === "New") {
-          stopLoadingChat();
-          setChatList((prevState) => [event.data, ...prevState]);
-        } else {
-          deleteChatFromChatMessages(event.data);
-        }
-      });
+      laravelEcho
+        .channel(`personal.chat.${userSelector?.id}.${userId}`)
+        .listen(".personal.chat", (event) => {
+          if (event.data.type === "New") {
+            stopLoadingChat();
+            setChatList((prevState) => [event.data, ...prevState]);
+          } else {
+            deleteChatFromChatMessages(event.data);
+          }
+        });
     }
   };
 
@@ -143,14 +181,16 @@ const ChatRoom = () => {
    */
   const groupChatMessageEvent = () => {
     if (userSelector?.id && currentUser) {
-      laravelEcho.channel(`group.chat.${currentUser}.${userSelector?.id}`).listen(".group.chat", (event) => {
-        if (event.data.type === "New") {
-          stopLoadingChat();
-          setChatList((prevState) => [event.data, ...prevState]);
-        } else {
-          deleteChatFromChatMessages(event.data);
-        }
-      });
+      laravelEcho
+        .channel(`group.chat.${currentUser}.${userSelector?.id}`)
+        .listen(".group.chat", (event) => {
+          if (event.data.type === "New") {
+            stopLoadingChat();
+            setChatList((prevState) => [event.data, ...prevState]);
+          } else {
+            deleteChatFromChatMessages(event.data);
+          }
+        });
     }
   };
 
@@ -175,7 +215,10 @@ const ChatRoom = () => {
 
         if (!searchMessage) {
           setChatList((currentChats) => {
-            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+            if (
+              currentChats.length !==
+              currentChats.length + res?.data?.data.length
+            ) {
               return [...currentChats, ...res?.data?.data];
             } else {
               setHasMore(false);
@@ -186,7 +229,10 @@ const ChatRoom = () => {
           setFilteredSearch([]);
         } else {
           setFilteredSearch((currentChats) => {
-            if (currentChats.length !== currentChats.length + res?.data?.data.length) {
+            if (
+              currentChats.length !==
+              currentChats.length + res?.data?.data.length
+            ) {
               return [...currentChats, ...res?.data?.data];
             } else {
               setHasMore(false);
@@ -273,7 +319,9 @@ const ChatRoom = () => {
   const messagedeleteHandler = async (chat_message_id, delete_type) => {
     try {
       toggleDeleteChatMessage();
-      await axiosInstance.delete(`/chat/${type}/message/${delete_type}/${chat_message_id}`);
+      await axiosInstance.delete(
+        `/chat/${type}/message/${delete_type}/${chat_message_id}`
+      );
       toggleDeleteModalChat();
       toggleDeleteChatMessage();
     } catch (err) {
@@ -298,7 +346,10 @@ const ChatRoom = () => {
         prevState.splice(index, 1);
       } else if (chatMessageObj.type === "Delete For Everyone") {
         const updatedState = [...prevState];
-        updatedState[index] = { ...updatedState[index], delete_for_everyone: 1 };
+        updatedState[index] = {
+          ...updatedState[index],
+          delete_for_everyone: 1,
+        };
         return updatedState;
       }
       return [...prevState];
@@ -368,6 +419,7 @@ const ChatRoom = () => {
       allowsEditing: true,
       quality: 1,
     });
+    SheetManager.hide("form-sheet");
 
     // Handling for name
     var filename = result.assets[0].uri.substring(
@@ -396,6 +448,7 @@ const ChatRoom = () => {
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: false,
       });
+      SheetManager.hide("form-sheet");
 
       // Check if there is selected file
       if (result) {
@@ -517,7 +570,9 @@ const ChatRoom = () => {
          * To reset all state
          */
         if (type === "personal") {
-          laravelEcho.leaveChannel(`personal.chat.${userSelector?.id}.${roomId}`);
+          laravelEcho.leaveChannel(
+            `personal.chat.${userSelector?.id}.${roomId}`
+          );
         } else {
           laravelEcho.leaveChannel(`group.chat.${userId}.${userSelector?.id}`);
         }
@@ -554,15 +609,26 @@ const ChatRoom = () => {
   useEffect(() => {
     const { routes } = navigation.getState();
     const filteredRoutes = routes.filter(
-      (route) => route.name !== "New Chat" && route.name !== "Group Form" && route.name !== "Group Participant"
+      (route) =>
+        route.name !== "New Chat" &&
+        route.name !== "Group Form" &&
+        route.name !== "Group Participant"
     );
-    navigation.reset({ index: filteredRoutes.length - 1, routes: filteredRoutes });
+    navigation.reset({
+      index: filteredRoutes.length - 1,
+      routes: filteredRoutes,
+    });
   }, []);
 
   return (
     <>
       {isReady ? (
-        <SafeAreaView style={[styles.container, { marginBottom: Platform.OS === "ios" && keyboardHeight }]}>
+        <SafeAreaView
+          style={[
+            styles.container,
+            { marginBottom: Platform.OS === "ios" && keyboardHeight },
+          ]}
+        >
           <>
             <ChatHeader
               name={name}
@@ -611,7 +677,6 @@ const ChatRoom = () => {
               userSelector={userSelector}
               navigation={navigation}
               filteredSearch={filteredSearch}
-              scrollRef={scrollRef}
             />
 
             <ChatInput
@@ -643,10 +708,18 @@ const ChatRoom = () => {
 
           <RemoveConfirmationModal
             isOpen={
-              type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+              type === "personal"
+                ? deleteModalIsOpen
+                : active_member === 1
+                ? exitModalIsOpen
+                : deleteGroupModalIsOpen
             }
             toggle={
-              type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+              type === "personal"
+                ? toggleDeleteModal
+                : active_member === 1
+                ? toggleExitModal
+                : toggleDeleteGroupModal
             }
             description={
               type === "personal"
@@ -666,10 +739,16 @@ const ChatRoom = () => {
                 ? groupDeleteHandler(roomId, toggleChatRoom)
                 : null
             }
-            isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
+            isLoading={
+              type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading
+            }
           />
 
-          <ClearChatAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
+          <ClearChatAction
+            name={name}
+            isLoading={clearMessageIsLoading}
+            reference={clearChatScreenSheetRef}
+          />
 
           <ImageFullScreenModal
             isFullScreen={isFullScreen}

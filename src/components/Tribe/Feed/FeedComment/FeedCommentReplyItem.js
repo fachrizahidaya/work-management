@@ -1,4 +1,4 @@
-FeedCommentReplyItem
+FeedCommentReplyItem;
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
@@ -20,13 +20,19 @@ const FeedCommentReplyItem = ({
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
+    specificEmployee = employeeUsername?.find((employee) =>
+      item?.includes(employee.username)
+    );
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => handleLinkPress(item)}
+        >
           {item}{" "}
         </Text>
       );
@@ -35,11 +41,7 @@ const FeedCommentReplyItem = ({
       item = specificEmployee.username;
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          
-        >
+        <Text key={index} style={textStyle}>
           @{item}{" "}
         </Text>
       );
@@ -50,14 +52,22 @@ const FeedCommentReplyItem = ({
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => copyToClipboard(item)}
+        >
           {item}{" "}
         </Text>
       );
     } else if (item.includes("@") && item.includes(".com")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => handleEmailPress(item)}
+        >
           {item}{" "}
         </Text>
       );
@@ -75,7 +85,12 @@ const FeedCommentReplyItem = ({
     <View style={{ marginHorizontal: 40, marginVertical: 10 }}>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <View>
-          <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
+          <AvatarPlaceholder
+            image={authorImage}
+            name={authorName}
+            size="md"
+            isThumb={false}
+          />
         </View>
         <View style={{ flex: 1, gap: 5 }}>
           <Text style={{ fontSize: 12, fontWeight: "500" }}>
@@ -87,7 +102,9 @@ const FeedCommentReplyItem = ({
               onReply(parentId);
             }}
           >
-            <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>
+            <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+              Reply
+            </Text>
           </Pressable>
         </View>
       </View>

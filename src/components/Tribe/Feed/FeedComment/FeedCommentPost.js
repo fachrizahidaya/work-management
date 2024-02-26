@@ -5,12 +5,9 @@ import { Clipboard, Linking, View } from "react-native";
 import FeedCommentListPost from "./FeedCommentListPost";
 
 const FeedCommentPost = ({
-  commentIsFetching,
   commentIsLoading,
   comments,
-  refetchComment,
   onEndReached,
-  commentRefetchHandler,
   onReply,
   employeeUsername,
 }) => {
@@ -61,10 +58,7 @@ const FeedCommentPost = ({
           comments={comments}
           onReply={onReply}
           commentEndReachedHandler={onEndReached}
-          commentsRefetchHandler={commentRefetchHandler}
-          commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
-          refetchComment={refetchComment}
           employeeUsername={employeeUsername}
           hasBeenScrolled={hasBeenScrolled}
           setHasBeenScrolled={setHasBeenScrolled}

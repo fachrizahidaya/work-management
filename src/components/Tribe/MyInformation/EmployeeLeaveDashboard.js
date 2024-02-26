@@ -3,7 +3,12 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved, id }) => {
+const EmployeeLeaveDashboard = ({
+  availableLeave,
+  pendingApproval,
+  approved,
+  id,
+}) => {
   const navigation = useNavigation();
 
   const items = [
@@ -43,13 +48,30 @@ const EmployeeLeaveDashboard = ({ availableLeave, pendingApproval, approved, id 
     <View style={styles.icon}>
       {items.map((item) => {
         return (
-          <Pressable onPress={item.onPress} key={item.id} style={styles.content}>
-            <View style={{ ...styles.card, backgroundColor: item.backgroundColor }}>
-              <MaterialCommunityIcons name={item.icon} size={30} color={item.iconColor} />
+          <Pressable
+            onPress={item.onPress}
+            key={item.id}
+            style={styles.content}
+          >
+            <View
+              style={{ ...styles.card, backgroundColor: item.backgroundColor }}
+            >
+              <MaterialCommunityIcons
+                name={item.icon}
+                size={30}
+                color={item.iconColor}
+              />
             </View>
             <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.qty}</Text>
             <Text
-              style={{ fontSize: 12, fontWeight: "400", color: "#8A9099", textAlign: "center", width: 60, height: 40 }}
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#8A9099",
+                textAlign: "center",
+                width: 60,
+                height: 40,
+              }}
               numberOfLines={2}
             >
               {item.name}

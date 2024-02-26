@@ -3,8 +3,15 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Toast from "react-native-root-toast";
+import { ScrollView } from "react-native-gesture-handler";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -12,11 +19,16 @@ import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useLoading } from "../../../../hooks/useLoading";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 import AppraisalDetailList from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailList";
 import AppraisalDetailItem from "../../../../components/Tribe/Performance/AppraisalList/AppraisalDetailItem";
 import AppraisalForm from "../../../../components/Tribe/Performance/Form/AppraisalForm";
 import Button from "../../../../components/shared/Forms/Button";
+import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const AppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
@@ -29,17 +41,25 @@ const AppraisalScreen = () => {
   const route = useRoute();
   const formScreenSheetRef = useRef(null);
 
-  const { id } = route.params;
+  const { id, isExpired } = route.params;
 
-  const { data: appraisalSelected } = useFetch(`/hr/employee-appraisal/${id}/start`);
+  const { data: appraisalSelected } = useFetch(
+    `/hr/employee-appraisal/${id}/start`
+  );
 
   const appraisalId = appraisalSelected?.data?.id;
 
-  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(`/hr/employee-appraisal/${appraisalId}`);
+  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(
+    `/hr/employee-appraisal/${appraisalId}`
+  );
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } =
+    useDisclosure(false);
 
-  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } =
+    useLoading(false);
 
   const openSelectedAppraisal = (data, value) => {
     setAppraisal(data);
@@ -74,7 +94,8 @@ const AppraisalScreen = () => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
         (employee_appraisal_val) =>
-          employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
+          employee_appraisal_val?.performance_appraisal_value_id ===
+          data?.performance_appraisal_value_id
       );
       if (index > -1) {
         currentData[index].choice = data?.choice;
@@ -87,8 +108,11 @@ const AppraisalScreen = () => {
 
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
-      const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
-      const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+      const performanceAppraisalValue =
+        appraisalList?.data?.performance_appraisal?.value;
+      const employeeAppraisalValue = getEmployeeAppraisalValue(
+        appraisalList?.data?.employee_appraisal_value
+      );
       return [...employeeAppraisalValue, ...performanceAppraisalValue];
     });
   };
@@ -96,11 +120,15 @@ const AppraisalScreen = () => {
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(`/hr/employee-appraisal/${appraisalList?.data?.id}`, {
-        appraisal_value: employeeAppraisalValue,
-      });
+      const res = await axiosInstance.patch(
+        `/hr/employee-appraisal/${appraisalList?.data?.id}`,
+        {
+          appraisal_value: employeeAppraisalValue,
+        }
+      );
+      toggleSaveModal();
+      // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
-      Toast.show("Data saved!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleSubmit();
@@ -112,7 +140,8 @@ const AppraisalScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
+      performance_appraisal_value_id:
+        appraisal?.performance_appraisal_value_id || appraisal?.id,
       choice: appraisal?.choice || "",
     },
     onSubmit: (values) => {
@@ -134,7 +163,9 @@ const AppraisalScreen = () => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
-      let appraisalValue = appraisalValues.find((appraisal) => appraisal.id === empAppraisal.id);
+      let appraisalValue = appraisalValues.find(
+        (appraisal) => appraisal.id === empAppraisal.id
+      );
 
       if (appraisalValue && appraisalValue.choice !== empAppraisal.choice) {
         differences.push({
@@ -147,7 +178,10 @@ const AppraisalScreen = () => {
     return differences;
   }
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoice(
+    appraisalValues,
+    employeeAppraisalValue
+  );
 
   useEffect(() => {
     if (formValue) {
@@ -159,7 +193,9 @@ const AppraisalScreen = () => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
       setEmployeeAppraisalValue(() => {
-        const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+        const employeeAppraisalValue = getEmployeeAppraisalValue(
+          appraisalList?.data?.employee_appraisal_value
+        );
         return [...employeeAppraisalValue];
       });
     }
@@ -181,26 +217,35 @@ const AppraisalScreen = () => {
               }
             }}
           />
-
-          <Button
-            height={35}
-            padding={10}
-            children={
-              submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
-              )
-            }
-            onPress={() => {
-              if (submitIsLoading || differences.length === 0) {
-                null;
-              } else {
-                submitHandler();
+          {isExpired || appraisalValues.length === 0 ? null : (
+            <Button
+              height={35}
+              padding={10}
+              children={
+                submitIsLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Save
+                  </Text>
+                )
               }
-            }}
-            disabled={differences.length === 0 || submitIsLoading}
-          />
+              onPress={() => {
+                if (submitIsLoading || differences.length === 0) {
+                  null;
+                } else {
+                  submitHandler();
+                }
+              }}
+              disabled={differences.length === 0 || submitIsLoading}
+            />
+          )}
         </View>
         <AppraisalDetailList
           dayjs={dayjs}
@@ -210,16 +255,17 @@ const AppraisalScreen = () => {
           position={appraisalList?.data?.target_level}
           target={appraisalList?.data?.performance_appraisal?.target_name}
           targetLevel={appraisalList?.data?.performance_appraisal?.target_level}
+          isExpired={isExpired}
         />
 
         <View style={styles.container}>
-          <View style={{ flex: 1, paddingHorizontal: 16 }}>
-            {appraisalValues &&
-              appraisalValues.length > 0 &&
+          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+            {appraisalValues && appraisalValues.length > 0 ? (
               appraisalValues.map((item, index) => {
-                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
-                  (empAppraisal) => empAppraisal.id === item.id
-                );
+                const correspondingEmployeeAppraisal =
+                  employeeAppraisalValue.find(
+                    (empAppraisal) => empAppraisal.id === item.id
+                  );
                 return (
                   <AppraisalDetailItem
                     key={index}
@@ -237,8 +283,13 @@ const AppraisalScreen = () => {
                     employeeAppraisalValue={correspondingEmployeeAppraisal}
                   />
                 );
-              })}
-          </View>
+              })
+            ) : (
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            )}
+          </ScrollView>
         </View>
       </SafeAreaView>
       <ReturnConfirmationModal
@@ -260,6 +311,25 @@ const AppraisalScreen = () => {
         choice={appraisal?.choice}
         choiceValue={employeeAppraisal?.choice}
       />
+      <SuccessModal
+        isOpen={saveModalIsOpen}
+        toggle={toggleSaveModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully updated
+          </Text>
+        }
+      />
     </>
   );
 };
@@ -279,5 +349,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

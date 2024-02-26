@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ActionSheet from "react-native-actions-sheet";
@@ -16,7 +22,11 @@ const PostTypeOptions = ({
   reference,
 }) => {
   return (
-    <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
+    <ActionSheet
+      ref={reference}
+      onClose={() => reference.current?.hide()}
+      size="full"
+    >
       <View
         style={{
           display: "flex",
@@ -27,7 +37,9 @@ const PostTypeOptions = ({
         }}
       >
         <View>
-          <Text style={[{ fontSize: 16, fontWeight: "700" }]}>Choose Post Type</Text>
+          <Text style={[{ fontSize: 16, fontWeight: "700" }]}>
+            Choose Post Type
+          </Text>
         </View>
         <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
           <TouchableOpacity
@@ -45,12 +57,18 @@ const PostTypeOptions = ({
                 justifyContent: "space-between",
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
                 <MaterialIcons name="people" size={15} color="#3F434A" />
                 <Text style={[{ fontSize: 12 }, TextProps]}>Public</Text>
               </View>
             </View>
-            {formik.values.type === "Public" ? <MaterialCommunityIcons name="check" color="#3F434A" /> : ""}
+            {formik.values.type === "Public" ? (
+              <MaterialCommunityIcons name="check" color="#3F434A" />
+            ) : (
+              ""
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -60,10 +78,10 @@ const PostTypeOptions = ({
               ...styles.container,
               borderBottomWidth: 1,
               borderBottomColor: "#FFFFFF",
-              height: Platform.OS === 'ios' && dateShown && isAnnouncementSelected ?  220 : null
-              
-              
-              
+              height:
+                Platform.OS === "ios" && dateShown && isAnnouncementSelected
+                  ? 220
+                  : null,
             }}
           >
             <View
@@ -71,48 +89,70 @@ const PostTypeOptions = ({
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-              
-            
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10,   }}>
-                <MaterialCommunityIcons name="bullhorn" size={15} color="#3F434A" />
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
+                <MaterialCommunityIcons
+                  name="bullhorn"
+                  size={15}
+                  color="#3F434A"
+                />
                 <View>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>Announcement</Text>
-                  {
-                    Platform.OS === 'android' ?
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
-                    {isAnnouncementSelected && dateShown ? (
-                      <CustomDateTimePicker
-                        defaultValue={formik.values.end_date}
-                        onChange={endDateAnnouncementHandler}
-                        withText={true}
-                        textLabel="Adjust date"
-                        fontSize={12}
-                      />
-                    ) : null}
-                  </View>
-                     :
-                  <View style={{ flexDirection: "column", gap: 5 }}>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
-                    {isAnnouncementSelected && dateShown ? (
-                      <CustomDateTimePicker
-                        defaultValue={formik.values.end_date}
-                        onChange={endDateAnnouncementHandler}
-                        withText={true}
-                        textLabel="Adjust date"
-                        fontSize={12}
-                        marginLeft={-15}
-                      />
-                    ) : null}
-                  </View>
-
-                  }
+                  <Text style={[{ fontSize: 12 }, TextProps]}>
+                    Announcement
+                  </Text>
+                  {Platform.OS === "android" ? (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 5,
+                      }}
+                    >
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        End Date must be provided
+                      </Text>
+                      {isAnnouncementSelected && dateShown ? (
+                        <CustomDateTimePicker
+                          defaultValue={formik.values.end_date}
+                          onChange={endDateAnnouncementHandler}
+                          withText={true}
+                          textLabel="Adjust date"
+                          fontSize={12}
+                        />
+                      ) : null}
+                    </View>
+                  ) : (
+                    <View style={{ flexDirection: "column", gap: 5 }}>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>
+                        End Date must be provided
+                      </Text>
+                      {isAnnouncementSelected && dateShown ? (
+                        <CustomDateTimePicker
+                          defaultValue={formik.values.end_date}
+                          onChange={endDateAnnouncementHandler}
+                          withText={true}
+                          textLabel="Adjust date"
+                          fontSize={12}
+                          marginLeft={-15}
+                        />
+                      ) : null}
+                    </View>
+                  )}
                 </View>
               </View>
             </View>
-            {formik.values.type === "Announcement" ? <MaterialCommunityIcons name="check" color="#3F434A" style={{marginLeft: Platform.OS == 'ios' ? -10 : null}} /> : ""}
+            {formik.values.type === "Announcement" ? (
+              <MaterialCommunityIcons
+                name="check"
+                color="#3F434A"
+                style={{ marginLeft: Platform.OS == "ios" ? -10 : null }}
+              />
+            ) : (
+              ""
+            )}
           </TouchableOpacity>
         </View>
       </View>

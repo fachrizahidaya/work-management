@@ -1,7 +1,14 @@
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import { StyleSheet, SafeAreaView, View, Text, Pressable, Image } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  Pressable,
+  Image,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -59,18 +66,41 @@ const ProjectDetail = () => {
           paddingHorizontal: 16,
         }}
       >
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable
-              style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
               onPress={() => navigation.goBack()}
             >
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
-            <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
+            <MateriaCommunitylIcons
+              name="circle-slice-2"
+              size={25}
+              color="#3F434A"
+            />
             <View>
               <Text
-                style={[{ fontSize: 14, fontWeight: "500", width: 200, overflow: "hidden" }, TextProps]}
+                style={[
+                  {
+                    fontSize: 14,
+                    fontWeight: "500",
+                    width: 200,
+                    overflow: "hidden",
+                  },
+                  TextProps,
+                ]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -83,16 +113,37 @@ const ProjectDetail = () => {
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ fontSize: 10 }, TextProps]}>Created by</Text>
-            <AvatarPlaceholder name={project?.data?.owner?.name} image={project?.data?.owner?.image} />
-            <Text style={[{ fontSize: 10 }, TextProps]}>{project?.data?.owner?.name?.split(" ")[0]}</Text>
+            <AvatarPlaceholder
+              name={project?.data?.owner?.name}
+              image={project?.data?.owner?.image}
+            />
+            <Text style={[{ fontSize: 10 }, TextProps]}>
+              {project?.data?.owner?.name?.split(" ")[0]}
+            </Text>
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "#FAFAFA", borderRadius: 10, marginVertical: 10, marginHorizontal: 16 }}>
-        <Description description={project?.data?.description} navigation={navigation} />
+      <View
+        style={{
+          backgroundColor: "#FAFAFA",
+          borderRadius: 10,
+          marginVertical: 10,
+          marginHorizontal: 16,
+        }}
+      >
+        <Description
+          description={project?.data?.description}
+          navigation={navigation}
+        />
       </View>
       <View
-        style={{ flexDirection: "row", gap: 5, backgroundColor: "#FAFAFA", marginVertical: 10, marginHorizontal: 16 }}
+        style={{
+          flexDirection: "row",
+          gap: 5,
+          backgroundColor: "#FAFAFA",
+          marginVertical: 10,
+          marginHorizontal: 16,
+        }}
       >
         <DateSection
           start={dayjs(project?.data?.created_at).format("MMM DD, YYYY")}
@@ -114,18 +165,36 @@ const ProjectDetail = () => {
           marginHorizontal: 16,
         }}
       >
-        <View style={{ flex: 0.5, borderRadius: 10, padding: 10, backgroundColor: "#FFFFFF" }}>
+        <View
+          style={{
+            flex: 0.5,
+            borderRadius: 10,
+            padding: 10,
+            backgroundColor: "#FFFFFF",
+          }}
+        >
           <FlashList
             data={project?.data?.member}
             estimatedItemSize={50}
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             renderItem={({ item, index }) => (
-              <MemberSection key={index} name={item?.user?.name} image={item?.user?.image} />
+              <MemberSection
+                key={index}
+                name={item?.user?.name}
+                image={item?.user?.image}
+              />
             )}
           />
         </View>
-        <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: 10, padding: 5 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 10,
+            padding: 5,
+          }}
+        >
           <AttachmentSection />
         </View>
       </View>
@@ -178,13 +247,19 @@ const ProjectDetail = () => {
                 >
                   <View>
                     <Text style={[{ fontSize: 14 }, TextProps]}>
-                      {item?.title.length > 50 ? item?.title.slice(0, 30) + "..." : item?.title}
+                      {item?.title.length > 50
+                        ? item?.title.slice(0, 30) + "..."
+                        : item?.title}
                     </Text>
                     <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                       Due {dayjs(item?.deadline).format("DD MMMM YYYY")}
                     </Text>
                   </View>
-                  <AvatarPlaceholder name={item?.owner?.name} image={item?.owner?.image} size="sm" />
+                  <AvatarPlaceholder
+                    name={item?.owner?.name}
+                    image={item?.owner?.image}
+                    size="sm"
+                  />
                 </Pressable>
               </View>
             )}
@@ -202,7 +277,9 @@ const ProjectDetail = () => {
               padding: 5,
             }}
           >
-            <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
+            <View
+              style={{ alignItems: "center", justifyContent: "center", gap: 5 }}
+            >
               <Image
                 source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
@@ -253,8 +330,14 @@ const ProjectDetail = () => {
             });
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>Import Project</Text>
-          <MateriaCommunitylIcons name="lightning-bolt" size={25} color="#176688" />
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>
+            Import Project
+          </Text>
+          <MateriaCommunitylIcons
+            name="lightning-bolt"
+            size={25}
+            color="#176688"
+          />
         </Pressable>
       </View>
     </SafeAreaView>

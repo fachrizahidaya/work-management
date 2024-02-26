@@ -103,11 +103,18 @@ const PayslipPasswordEdit = ({
               placeholder="Enter Confirm password"
               secureTextEntry={hideConfirmPassword}
               endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
-              onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}
+              onPressEndIcon={() =>
+                setHideConfirmPassword(!hideConfirmPassword)
+              }
             />
           </View>
-          {formik.values.old_password && formik.values.new_password && formik.values.confirm_password ? (
-            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+          {formik.values.old_password &&
+          formik.values.new_password &&
+          formik.values.confirm_password ? (
+            <FormButton
+              isSubmitting={formik.isSubmitting}
+              onPress={formik.handleSubmit}
+            >
               <Text style={{ color: "#FFFFFF" }}>Submit</Text>
             </FormButton>
           ) : (

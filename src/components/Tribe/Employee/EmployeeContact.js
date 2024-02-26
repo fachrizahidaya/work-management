@@ -11,7 +11,9 @@ const EmployeeContact = ({ employee }) => {
   const contacts = [
     {
       id: 1,
-      component: <WhatsappButton phone={employee?.data?.phone_number} size={20} />,
+      component: (
+        <WhatsappButton phone={employee?.data?.phone_number} size={20} />
+      ),
     },
     {
       id: 2,

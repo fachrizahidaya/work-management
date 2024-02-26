@@ -1,6 +1,13 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -40,8 +47,16 @@ const LeaveRequestItem = ({
         marginHorizontal: 2,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>{leave_name}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
+          {leave_name}
+        </Text>
         {status === "Pending" ? (
           <Pressable
             style={{ marginRight: 1 }}
@@ -63,9 +78,22 @@ const LeaveRequestItem = ({
                           await SheetManager.hide("form-sheet");
                           onSelect(item);
                         }}
-                        style={{ ...styles.container, justifyContent: "center" }}
+                        style={{
+                          ...styles.container,
+                          justifyContent: "center",
+                        }}
                       >
-                        <Text style={[{ fontSize: 14, fontWeight: "400", color: "#D64B4B" }]}>Cancel Request</Text>
+                        <Text
+                          style={[
+                            {
+                              fontSize: 14,
+                              fontWeight: "400",
+                              color: "#D64B4B",
+                            },
+                          ]}
+                        >
+                          Cancel Request
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   ),
@@ -73,16 +101,36 @@ const LeaveRequestItem = ({
               })
             }
           >
-            <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" style={{ borderRadius: 20 }} />
+            <MaterialCommunityIcons
+              name="dots-vertical"
+              size={20}
+              color="#3F434A"
+              style={{ borderRadius: 20 }}
+            />
           </Pressable>
         ) : null}
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 5,
+        }}
+      >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>
+            {reason}
+          </Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+        }}
+      >
         {/* <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
           {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")}
         </Text> */}
@@ -97,20 +145,38 @@ const LeaveRequestItem = ({
             backgroundColor: "#F8F8F8",
           }}
         >
-          <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
-          <Text style={{ fontSize: Platform.OS === 'android' ? 12 : 10, fontWeight: "400", color: "#595F69" }}>
-            {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} •
+          <MaterialCommunityIcons
+            name="calendar-month"
+            size={20}
+            color="#3F434A"
+          />
+          <Text
+            style={{
+              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontWeight: "400",
+              color: "#595F69",
+            }}
+          >
+            {dayjs(begin_date).format("DD MMM YYYY")} -{" "}
+            {dayjs(end_date).format("DD MMM YYYY")} •
           </Text>
-          <Text style={[{ fontSize: Platform.OS === 'android' ? 12 : 10 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
+          <Text
+            style={[
+              { fontSize: Platform.OS === "android" ? 12 : 10 },
+              TextProps,
+            ]}
+          >
+            {days > 1 ? `${days} days` : `${days} day`}
+          </Text>
         </View>
         {
           status === "Pending" ? (
             <Text
               style={{
-                fontSize: Platform.OS === 'android' ? 12 : 10,
+                fontSize: Platform.OS === "android" ? 12 : 10,
                 fontWeight: "400",
                 color: "#377893",
-                width: Platform.OS === 'android' ? 120 : 100,
+                width: Platform.OS === "android" ? 120 : 100,
                 textAlign: "right",
               }}
               numberOfLines={2}
@@ -121,7 +187,7 @@ const LeaveRequestItem = ({
           ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
             <Text
               style={{
-                fontSize: Platform.OS === 'android' ? 12 : 10,
+                fontSize: Platform.OS === "android" ? 12 : 10,
                 fontWeight: "400",
                 color: "#377893",
                 width: 80,

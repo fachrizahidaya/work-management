@@ -7,7 +7,16 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigation, status, target }) => {
+const OngoingAppraisalListItem = ({
+  id,
+  start_date,
+  end_date,
+  position,
+  navigation,
+  status,
+  target,
+  isExpired,
+}) => {
   return (
     <Pressable
       style={{
@@ -19,24 +28,39 @@ const OngoingAppraisalListItem = ({ id, start_date, end_date, position, navigati
         alignItems: "flex-start",
         gap: 10,
       }}
-      onPress={() => navigation.navigate("Appraisal Detail", { id: id })}
+      onPress={() =>
+        navigation.navigate("Appraisal Detail", {
+          id: id,
+          isExpired: isExpired,
+        })
+      }
     >
-       <View style={{paddingVertical: 5,paddingHorizontal: 15, backgroundColor: "#D9D9D9", borderRadius: 15}}>
-
-      <Text
-        style={[ TextProps]}
+      <View
+        style={{
+          paddingVertical: 5,
+          paddingHorizontal: 15,
+          backgroundColor: "#D9D9D9",
+          borderRadius: 15,
+        }}
       >
-        {status || "Pending"}
-      </Text>
-       </View>
+        <Text style={[TextProps]}>{isExpired ? "Finished" : "Ongoing"}</Text>
+      </View>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
         <Text style={[TextProps]}>{target}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
-        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(start_date).format("DD MMM YYYY")} to</Text>
-        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(end_date).format("DD MMM YYYY")}</Text>
+        <MaterialCommunityIcons
+          name="calendar-month"
+          size={15}
+          style={{ opacity: 0.5 }}
+        />
+        <Text style={[{ opacity: 0.5 }, TextProps]}>
+          {dayjs(start_date).format("DD MMM YYYY")} to
+        </Text>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>
+          {dayjs(end_date).format("DD MMM YYYY")}
+        </Text>
       </View>
     </Pressable>
   );

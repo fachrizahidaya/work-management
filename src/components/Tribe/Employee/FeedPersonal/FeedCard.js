@@ -1,6 +1,15 @@
 import { memo } from "react";
 
-import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
+import {
+  Linking,
+  Clipboard,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
@@ -35,6 +44,7 @@ const FeedCard = ({
   toggleEditModal,
   reference,
   navigation,
+  postRefetchHandler,
 }) => {
   /**
    * Like a Post handler
@@ -79,7 +89,7 @@ const FeedCard = ({
   };
 
   return (
-    <View style={{flex:1}}>
+    <View style={{ flex: 1 }}>
       <FlashList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
@@ -88,11 +98,14 @@ const FeedCard = ({
         estimatedItemSize={100}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
-        ListFooterComponent={() => personalPostIsLoading && <ActivityIndicator />}
+        ListFooterComponent={() =>
+          personalPostIsLoading && <ActivityIndicator />
+        }
         refreshControl={
           <RefreshControl
             refreshing={personalPostIsFetching}
             onRefresh={() => {
+              postRefetchHandler();
               refetchPersonalPost();
             }}
           />
@@ -100,7 +113,11 @@ const FeedCard = ({
         // Employee Information
         ListHeaderComponent={
           <View>
-            <Image source={require("../../../../assets/profile_banner.jpg")} style={styles.image} alt="empty" />
+            <Image
+              source={require("../../../../assets/profile_banner.jpg")}
+              style={styles.image}
+              alt="empty"
+            />
             {/* When the employee id is not equal, it will appear the contacts of employee */}
             <View style={styles.information}>
               {userSelector?.id !== employee?.data?.user_id ? (
@@ -108,10 +125,18 @@ const FeedCard = ({
                   <View style={styles.contact}>
                     <EmployeeContact employee={employee} />
                   </View>
-                  <EmployeeProfile employee={employee} teammates={teammates} reference={reference} />
+                  <EmployeeProfile
+                    employee={employee}
+                    teammates={teammates}
+                    reference={reference}
+                  />
                 </>
               ) : (
-                <EmployeeSelfProfile employee={employee} teammates={teammates} reference={reference} />
+                <EmployeeSelfProfile
+                  employee={employee}
+                  teammates={teammates}
+                  reference={reference}
+                />
               )}
             </View>
           </View>
@@ -121,7 +146,9 @@ const FeedCard = ({
           if (item.id === "no-posts") {
             return (
               <View style={styles.noPost}>
-                <Text style={{ fontSize: 16, fontWeight: "500" }}>No Posts Yet</Text>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  No Posts Yet
+                </Text>
               </View>
             );
           }

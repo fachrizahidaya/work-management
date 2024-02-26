@@ -6,7 +6,10 @@ const PostAction = ({ toggleAction, toggleDeleteModal, reference }) => {
   return (
     <>
       <ActionSheet ref={reference} onClose={toggleAction}>
-        <TouchableOpacity onPress={toggleDeleteModal} style={{ ...styles.wrapper }}>
+        <TouchableOpacity
+          onPress={toggleDeleteModal}
+          style={{ ...styles.wrapper }}
+        >
           <View>
             <Text style={[{ fontSize: 16 }, TextProps]}>Delete Post</Text>
           </View>

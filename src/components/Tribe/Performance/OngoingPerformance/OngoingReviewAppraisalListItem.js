@@ -8,7 +8,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewAppraisalListItem = ({ id, start_date, end_date, navigation, name, target, dayjs }) => {
+const OngoingReviewAppraisalListItem = ({
+  id,
+  start_date,
+  end_date,
+  navigation,
+  name,
+  target,
+  dayjs,
+}) => {
   return (
     <Pressable
       style={{
@@ -32,9 +40,17 @@ const OngoingReviewAppraisalListItem = ({ id, start_date, end_date, navigation, 
         <Text style={[TextProps]}>{target}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
-        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(start_date).format("DD MMM YYYY")} to</Text>
-        <Text style={[{ opacity: 0.5 }, TextProps]}>{dayjs(end_date).format("DD MMM YYYY")}</Text>
+        <MaterialCommunityIcons
+          name="calendar-month"
+          size={15}
+          style={{ opacity: 0.5 }}
+        />
+        <Text style={[{ opacity: 0.5 }, TextProps]}>
+          {dayjs(start_date).format("DD MMM YYYY")} to
+        </Text>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>
+          {dayjs(end_date).format("DD MMM YYYY")}
+        </Text>
       </View>
     </Pressable>
   );

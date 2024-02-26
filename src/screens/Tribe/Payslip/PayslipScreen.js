@@ -1,7 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image, FlatList, ActivityIndicator } from "react-native";
+import {
+  Linking,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
@@ -15,7 +23,11 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  TextProps,
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -33,7 +45,8 @@ const PayslipScreen = () => {
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
-  const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
+  const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } =
+    useDisclosure(false);
 
   const fetchPayslipParameters = {
     page: currentPage,
@@ -69,9 +82,16 @@ const PayslipScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const payslipPasswordUpdateHandler = async (data, setSubmitting, setStatus) => {
+  const payslipPasswordUpdateHandler = async (
+    data,
+    setSubmitting,
+    setStatus
+  ) => {
     try {
-      const res = await axiosInstance.patch(`/hr/payslip/change-password`, data);
+      const res = await axiosInstance.patch(
+        `/hr/payslip/change-password`,
+        data
+      );
       setSubmitting(false);
       setStatus("success");
       formik.resetForm();
@@ -94,10 +114,15 @@ const PayslipScreen = () => {
    */
   const payslipDownloadHandler = async (data, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.get(`/hr/payslip/${selectedPayslip}/download`, {
-        params: data,
-      });
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${res?.data?.data}`);
+      const res = await axiosInstance.get(
+        `/hr/payslip/${selectedPayslip}/download`,
+        {
+          params: data,
+        }
+      );
+      Linking.openURL(
+        `${process.env.EXPO_PUBLIC_API}/download/${res?.data?.data}`
+      );
       setSubmitting(false);
       setStatus("success");
     } catch (err) {
@@ -117,13 +142,25 @@ const PayslipScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
+      <SafeAreaView
+        style={
+          payslip?.data?.data?.length > 0
+            ? styles.container
+            : styles.containerEmpty
+        }
+      >
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button
             height={35}
             padding={5}
-            children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
+            children={
+              <Text
+                style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}
+              >
+                Change PIN
+              </Text>
+            }
             onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
           />
           <PayslipPasswordEdit
@@ -148,8 +185,15 @@ const PayslipScreen = () => {
               onEndReachedThreshold={0.1}
               onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
               estimatedItemSize={50}
-              refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-              ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={payslipIsFetching}
+                  onRefresh={refetchPayslip}
+                />
+              }
+              ListFooterComponent={() =>
+                payslipIsFetching && <ActivityIndicator />
+              }
               renderItem={({ item, index }) => (
                 <PayslipList
                   key={index}

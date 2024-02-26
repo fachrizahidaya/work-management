@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Platform } from "react-native";
 import { TextProps } from "../../shared/CustomStylings";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, setProjects, setTasks }) => {
@@ -22,7 +22,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, s
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
-        marginLeft: 90,
+        marginLeft: Platform.OS === 'ios' ? 80 : 90,
       }}
     >
       <View

@@ -3,8 +3,19 @@ import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Toast from "react-native-root-toast";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -15,8 +26,14 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import AppraisalReviewForm from "../../../../components/Tribe/Performance/Form/AppraisalReviewForm";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 import Button from "../../../../components/shared/Forms/Button";
+import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
+import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
+import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
 const ReviewAppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
@@ -37,9 +54,17 @@ const ReviewAppraisalScreen = () => {
     refetch: refetchAppraisalList,
   } = useFetch(`/hr/employee-review/appraisal/${id}`);
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } =
+    useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } =
+    useDisclosure(false);
+  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } =
+    useDisclosure(false);
 
-  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } =
+    useLoading(false);
 
   const openSelectedAppraisal = (data, value) => {
     setAppraisal(data);
@@ -75,7 +100,8 @@ const ReviewAppraisalScreen = () => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
         (employee_appraisal_val) =>
-          employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
+          employee_appraisal_val?.performance_appraisal_value_id ===
+          data?.performance_appraisal_value_id
       );
       if (index > -1) {
         currentData[index].supervisor_choice = data?.supervisor_choice;
@@ -89,7 +115,9 @@ const ReviewAppraisalScreen = () => {
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
       // const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
-      const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+      const employeeAppraisalValue = getEmployeeAppraisalValue(
+        appraisalList?.data?.employee_appraisal_value
+      );
       return [
         ...employeeAppraisalValue,
         // ...performanceAppraisalValue
@@ -100,11 +128,15 @@ const ReviewAppraisalScreen = () => {
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(`/hr/employee-review/appraisal/${appraisalList?.data?.id}`, {
-        appraisal_value: employeeAppraisalValue,
-      });
+      const res = await axiosInstance.patch(
+        `/hr/employee-review/appraisal/${appraisalList?.data?.id}`,
+        {
+          appraisal_value: employeeAppraisalValue,
+        }
+      );
+      toggleSaveModal();
+      // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
-      Toast.show("Data saved!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       toggleSubmit();
@@ -116,7 +148,8 @@ const ReviewAppraisalScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
+      performance_appraisal_value_id:
+        appraisal?.performance_appraisal_value_id || appraisal?.id,
       supervisor_choice: appraisal?.supervisor_choice || "",
     },
     onSubmit: (values) => {
@@ -138,12 +171,20 @@ const ReviewAppraisalScreen = () => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
-      let appraisalValue = appraisalValues.find((appraisal) => appraisal.id === empAppraisal.id);
+      let appraisalValue = appraisalValues.find(
+        (appraisal) => appraisal.id === empAppraisal.id
+      );
 
-      if (appraisalValue && appraisalValue.supervisor_choice !== empAppraisal.supervisor_choice) {
+      if (
+        appraisalValue &&
+        appraisalValue.supervisor_choice !== empAppraisal.supervisor_choice
+      ) {
         differences.push({
           id: empAppraisal.id,
-          difference: [empAppraisal.supervisor_choice, appraisalValue.supervisor_choice],
+          difference: [
+            empAppraisal.supervisor_choice,
+            appraisalValue.supervisor_choice,
+          ],
         });
       }
     }
@@ -151,7 +192,10 @@ const ReviewAppraisalScreen = () => {
     return differences;
   }
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoice(
+    appraisalValues,
+    employeeAppraisalValue
+  );
 
   useEffect(() => {
     if (formValue) {
@@ -163,7 +207,9 @@ const ReviewAppraisalScreen = () => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
       setEmployeeAppraisalValue(() => {
-        const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
+        const employeeAppraisalValue = getEmployeeAppraisalValue(
+          appraisalList?.data?.employee_appraisal_value
+        );
         return [...employeeAppraisalValue];
       });
     }
@@ -185,31 +231,53 @@ const ReviewAppraisalScreen = () => {
               }
             }}
           />
-
-          <Button
-            height={35}
-            padding={10}
-            children={
-              submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
-              )
-            }
-            onPress={() => {
-              if (submitIsLoading || differences.length === 0) {
-                null;
-              } else {
-                submitHandler();
+          {appraisalValues.length === 0 ||
+          appraisalList?.data?.confirm ? null : (
+            <Button
+              height={35}
+              padding={10}
+              children={
+                submitIsLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Save
+                  </Text>
+                )
               }
-            }}
-            disabled={differences.length === 0 || submitIsLoading}
-          />
+              onPress={() => {
+                if (submitIsLoading || differences.length === 0) {
+                  null;
+                } else {
+                  submitHandler();
+                }
+              }}
+              disabled={differences.length === 0 || submitIsLoading}
+            />
+          )}
         </View>
+        {appraisalValues.length > 0 ? (
+          <Pressable
+            style={styles.confirmIcon}
+            onPress={toggleConfirmationModal}
+          >
+            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+          </Pressable>
+        ) : null}
         <ReviewAppraisalDetailList
           dayjs={dayjs}
-          begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
-          end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
+          begin_date={
+            appraisalList?.data?.performance_appraisal?.review?.begin_date
+          }
+          end_date={
+            appraisalList?.data?.performance_appraisal?.review?.end_date
+          }
           position={appraisalList?.data?.performance_appraisal?.target_level}
           target={appraisalList?.data?.performance_appraisal?.target_name}
           targetLevel={appraisalList?.data?.performance_appraisal?.target_level}
@@ -218,12 +286,12 @@ const ReviewAppraisalScreen = () => {
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {appraisalValues &&
-              appraisalValues.length > 0 &&
+            {appraisalValues && appraisalValues.length > 0 ? (
               appraisalValues.map((item, index) => {
-                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
-                  (empAppraisal) => empAppraisal.id === item.id
-                );
+                const correspondingEmployeeAppraisal =
+                  employeeAppraisalValue.find(
+                    (empAppraisal) => empAppraisal.id === item.id
+                  );
                 return (
                   <ReviewAppraisalDetailItem
                     key={index}
@@ -241,7 +309,12 @@ const ReviewAppraisalScreen = () => {
                     employeeAppraisalValue={correspondingEmployeeAppraisal}
                   />
                 );
-              })}
+              })
+            ) : (
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            )}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -265,6 +338,60 @@ const ReviewAppraisalScreen = () => {
         choiceValue={employeeAppraisal?.supervisor_choice}
         employee_choice={appraisal?.employee_choice}
       />
+      <ConfirmationModal
+        isOpen={confirmationModalIsOpen}
+        toggle={toggleConfirmationModal}
+        isGet={true}
+        isDelete={false}
+        isPatch={false}
+        apiUrl={`/hr/employee-review/appraisal/${id}/finish`}
+        color="#377893"
+        hasSuccessFunc={true}
+        onSuccess={() => {
+          toggleConfirmedModal();
+          navigation.goBack();
+        }}
+        description="Are you sure want to confirm this review?"
+        successMessage="Review confirmed"
+      />
+      <SuccessModal
+        isOpen={saveModalIsOpen}
+        toggle={toggleSaveModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully updated
+          </Text>
+        }
+      />
+      <SuccessModal
+        isOpen={confirmedModalIsOpen}
+        toggle={toggleConfirmedModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Report{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              submitted!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Your report is logged
+          </Text>
+        }
+      />
     </>
   );
 };
@@ -284,5 +411,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
+  },
+  confirmIcon: {
+    backgroundColor: "#377893",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 60,
+    height: 60,
+    position: "absolute",
+    bottom: 50,
+    right: 15,
+    zIndex: 2,
+    borderRadius: 30,
+    shadowOffset: 0,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  content: {
+    marginTop: 20,
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

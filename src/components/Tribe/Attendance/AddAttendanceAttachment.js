@@ -3,7 +3,14 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,9 +21,18 @@ import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
 import SuccessModal from "../../shared/Modal/SuccessModal";
 
-const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachment, onSubmit, reference, month, attendanceAttachmentModalIsOpen, toggleAttendanceAttachmentModal }) => {
+const AddAttendanceAttachment = ({
+  onSelectFile,
+  fileAttachment,
+  setFileAttachment,
+  onSubmit,
+  reference,
+  month,
+  attendanceAttachmentModalIsOpen,
+  toggleAttendanceAttachmentModal,
+}) => {
   const formik = useFormik({
-    // enableReinitialize: true,
+    enableReinitialize: true,
     initialValues: {
       title: "",
       begin_date: dayjs().format("YYYY-MM-DD") || "",
@@ -58,7 +74,7 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
     if (!formik.isSubmitting && formik.status === "success") {
       // reference.current?.hide()
       formik.resetForm();
-      setFileAttachment(null)
+      setFileAttachment(null);
     }
   }, [formik.isSubmitting, formik.status]);
 
@@ -86,7 +102,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               value={formik.values.title}
             />
 
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
               <View style={{ gap: 5 }}>
                 <CustomDateTimePicker
                   unlimitStartDate={true}
@@ -97,7 +115,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                   title="Start Date"
                 />
                 {!formik.errors.begin_date ? null : (
-                  <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
+                  <Text style={{ fontSize: 14, color: "red" }}>
+                    {formik.errors.begin_date}
+                  </Text>
                 )}
               </View>
               <View style={{ gap: 5 }}>
@@ -109,7 +129,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                   title="End Date"
                 />
                 {!formik.errors.end_date ? null : (
-                  <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
+                  <Text style={{ fontSize: 14, color: "red" }}>
+                    {formik.errors.end_date}
+                  </Text>
                 )}
               </View>
             </View>
@@ -118,11 +140,21 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
               <Pressable onPress={onSelectFile} style={styles.attachment}>
                 <Text
-                  style={[{ fontSize: 12, opacity: 0.5, overflow: "hidden", width: 300 }, TextProps]}
+                  style={[
+                    {
+                      fontSize: 12,
+                      opacity: 0.5,
+                      overflow: "hidden",
+                      width: 300,
+                    },
+                    TextProps,
+                  ]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
+                  {!fileAttachment
+                    ? "Upload image or .pdf"
+                    : fileAttachment?.name}
                 </Text>
                 <MaterialCommunityIcons
                   name="attachment"
@@ -132,7 +164,9 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
                 />
               </Pressable>
               {!formik.errors.attachment ? null : (
-                <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+                <Text style={{ fontSize: 14, color: "red" }}>
+                  {formik.errors.attachment}
+                </Text>
               )}
             </View>
 
@@ -143,28 +177,59 @@ const AddAttendanceAttachment = ({ onSelectFile, fileAttachment, setFileAttachme
               <FormButton
                 opacity={0.5}
                 disabled={true}
-                children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
+                children={
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "400",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Submit
+                  </Text>
+                }
                 fontColor="white"
               />
             ) : (
               <FormButton
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
-                children={<Text style={{ fontSize: 12, fontWeight: "400", color: "#FFFFFF" }}>Submit</Text>}
+                children={
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "400",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Submit
+                  </Text>
+                }
                 fontColor="white"
               />
             )}
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <SuccessModal isOpen={attendanceAttachmentModalIsOpen} toggle={toggleAttendanceAttachmentModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>
-      } />
+      <SuccessModal
+        isOpen={attendanceAttachmentModalIsOpen}
+        toggle={toggleAttendanceAttachmentModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Report{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              submitted!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Your report is logged
+          </Text>
+        }
+      />
     </ActionSheet>
   );
 };
