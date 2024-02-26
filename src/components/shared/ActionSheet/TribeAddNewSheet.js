@@ -15,6 +15,7 @@ import {
   AppState,
   Platform,
   Linking,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Toast from "react-native-root-toast";
 
@@ -398,15 +399,16 @@ const TribeAddNewSheet = (props) => {
           }`}
           hasSuccessFunc={true}
           onSuccess={() => {
-            toggleClockModal();
+            toggle;
             toggleAttendance();
             refetchAttendance();
+            toggleClockModal();
           }}
           description={`Are you sure want to ${
             !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
           }?`}
           successMessage={`${
-            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+            attendance?.data?.time_in ? "Clock-in" : "Clock-out"
           } success`}
           isDelete={false}
           isGet={false}
@@ -443,7 +445,6 @@ const TribeAddNewSheet = (props) => {
           }
         />
       </ActionSheet>
-
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}
         toggle={toggleNewLeaveRequestModal}
