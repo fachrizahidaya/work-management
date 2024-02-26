@@ -11,7 +11,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-root-toast";
@@ -290,9 +289,7 @@ const ReviewKPIScreen = () => {
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
           end_date={kpiList?.data?.performance_kpi?.review?.end_date}
-          position={kpiList?.data?.performance_kpi?.target_level}
           target={kpiList?.data?.performance_kpi?.target_name}
-          targetLevel={kpiList?.data?.performance_kpi?.target_level}
           name={kpiList?.data?.employee?.name}
         />
 
@@ -343,7 +340,6 @@ const ReviewKPIScreen = () => {
         handleClose={closeSelectedKpi}
         achievement={kpi?.supervisor_actual_achievement}
         target={kpi?.target}
-        onChange={formikChangeHandler}
         achievementValue={employeeKpi?.supervisor_actual_achievement}
         employee_achievement={employeeKpi?.employee_actual_achievement}
       />

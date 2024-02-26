@@ -11,7 +11,7 @@ import { TextProps } from "../../../shared/CustomStylings";
 const NewFeedInput = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
 
-  const employeeData = employees.map(({ id, username }) => ({
+  const employeeData = employees?.map(({ id, username }) => ({
     id,
     name: username,
   }));
@@ -20,7 +20,7 @@ const NewFeedInput = ({ employees, formik }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData.filter((one) =>
+    const data = employeeData?.filter((one) =>
       one.name.toLowerCase().includes(keyword.toLowerCase())
     );
 
@@ -50,7 +50,7 @@ const NewFeedInput = ({ employees, formik }) => {
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
     setSuggestions(
-      employees.filter((employee) =>
+      employees?.filter((employee) =>
         employee.name.toLowerCase().includes(lastWord.toLowerCase())
       )
     );

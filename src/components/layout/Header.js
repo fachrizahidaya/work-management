@@ -3,7 +3,14 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import { SafeAreaView, View, Pressable, Text, Image, Dimensions } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Pressable,
+  Text,
+  Image,
+  Dimensions,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,6 +29,8 @@ const Header = () => {
   const [routeName, setRouteName] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotificationList, setUnreadNotificationList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [messageData, setMessageData] = useState(null);
 
   const {
     isOpen: notificationCardIsOpen,
@@ -31,20 +40,43 @@ const Header = () => {
   const { laravelEcho } = useWebsocketContext();
   const { data: myProfile } = useFetch("/hr/my-profile");
   const { data: notifications, refetch: refetchNotifications } = useFetch(
-    moduleSelector.module_name === "BAND" ? "/pm/notifications/new" : "/hr/notifications/new"
+    moduleSelector.module_name === "BAND"
+      ? "/pm/notifications/new"
+      : "/hr/notifications/new"
   );
+
+  const userFetchParameters = {
+    page: currentPage,
+    limit: 1000,
+  };
   const { data: unreads } = useFetch("/chat/unread-message");
 
-  const screenWidth = Dimensions.get('screen')
+  const { data: user } = useFetch(
+    "/chat/user",
+    [currentPage],
+    userFetchParameters
+  );
+
+  /**
+   * Handle for mention name in group member
+   */
+  const memberName = user?.data?.data.map((item) => {
+    return item?.name;
+  });
+
+  const screenWidth = Dimensions.get("screen");
 
   /**
    * Unread messages changes event listener
    */
   const unreadMessagesEvent = () => {
-    laravelEcho?.channel(`unread.message.${userSelector?.id}`)?.listen(".unread.message", (event) => {
-      openNotificationCard();
-      setUnreadMessages(event);
-    });
+    laravelEcho
+      ?.channel(`unread.message.${userSelector?.id}`)
+      ?.listen(".unread.message", (event) => {
+        openNotificationCard();
+        setUnreadMessages(event);
+        setMessageData(event?.notification?.message);
+      });
   };
 
   useEffect(() => {
@@ -102,12 +134,24 @@ const Header = () => {
           margin: 0,
         }}
       >
-        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
           {/* {routeName[1]?.name === "Chat List" && (
             <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} color="#3F434A" />
           )} */}
           <Pressable onPress={() => navigation.navigate("Setting Screen")}>
-            <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
+            <AvatarPlaceholder
+              size="md"
+              image={userSelector.image}
+              name={userSelector.name}
+              isThumb={false}
+            />
           </Pressable>
 
           <View>
@@ -121,13 +165,22 @@ const Header = () => {
                 TextProps,
               ]}
             >
-              {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
+              {userSelector.name.length > 30
+                ? userSelector.split(" ")[0]
+                : userSelector.name}
             </Text>
 
             {myProfile?.data && (
               // adjust for the position font properties
               <Text
-                style={[{ fontSize: 14, overflow: "hidden", maxWidth: screenWidth.width - 150 }, TextProps]}
+                style={[
+                  {
+                    fontSize: 14,
+                    overflow: "hidden",
+                    maxWidth: screenWidth.width - 150,
+                  },
+                  TextProps,
+                ]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -159,7 +212,11 @@ const Header = () => {
                   }
                 }}
               >
-                <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
+                <MaterialCommunityIcons
+                  name="bell-outline"
+                  size={20}
+                  color="#3F434A"
+                />
               </Pressable>
 
               {unreadNotificationList?.length > 0 && (
@@ -186,7 +243,9 @@ const Header = () => {
                       color: "white",
                     }}
                   >
-                    {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
+                    {unreadNotificationList.length <= 5
+                      ? unreadNotificationList.length
+                      : "5+"}
                   </Text>
                 </View>
               )}
@@ -207,7 +266,6 @@ const Header = () => {
           >
             {!routeName[0]?.state?.routeNames[2].includes("Tribe") &&
               !routeName[0]?.state?.routeNames[2].includes("Band") &&
-              
               unreadMessages?.data?.total_unread > 0 && (
                 <View
                   style={{
@@ -216,7 +274,10 @@ const Header = () => {
                     position: "absolute",
                     top: -12,
                     right: -8,
-                    backgroundColor: routeName[1]?.name === "Chat List" ? '#FFFFFF' : "#FD7972",
+                    backgroundColor:
+                      routeName[1]?.name === "Chat List"
+                        ? "#FFFFFF"
+                        : "#FD7972",
                     borderRadius: 50,
                     zIndex: 1,
                     display: "flex",
@@ -224,18 +285,19 @@ const Header = () => {
                     justifyContent: "center",
                   }}
                 >
-                {routeName[1]?.name === "Chat List" ? null :
-
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      textAlign: "center",
-                      color: "white",
-                    }}
-                  >
-                    {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
-                  </Text>
-                }
+                  {routeName[1]?.name === "Chat List" ? null : (
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        textAlign: "center",
+                        color: "white",
+                      }}
+                    >
+                      {unreadMessages?.data?.total_unread <= 5
+                        ? unreadMessages?.data?.total_unread
+                        : "5+"}
+                    </Text>
+                  )}
                 </View>
               )}
 
@@ -253,6 +315,8 @@ const Header = () => {
           message={unreadMessages?.notification}
           isOpen={notificationCardIsOpen}
           close={toggleNotificationCard}
+          memberName={memberName}
+          messageData={messageData}
         />
       </View>
     </SafeAreaView>

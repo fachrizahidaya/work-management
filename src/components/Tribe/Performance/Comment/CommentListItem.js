@@ -13,7 +13,6 @@ const CommentListItem = ({
   end_date,
   navigation,
   name,
-  target,
   dayjs,
   description,
   type,

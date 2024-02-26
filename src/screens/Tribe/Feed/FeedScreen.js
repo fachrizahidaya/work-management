@@ -3,16 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Dimensions,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -331,14 +322,25 @@ const FeedScreen = () => {
         setIsFullScreen={setIsFullScreen}
         file_path={selectedPicture}
       />
-      {/* <SuccessModal isOpen={postSuccessIsOpen} toggle={togglePostSuccess} topElement={
-         <View style={{ flexDirection: "row" }}>
-         <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
-         <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
-       </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for contributing to the community</Text>
-      } /> */}
+      <SuccessModal
+        isOpen={postSuccessIsOpen}
+        toggle={togglePostSuccess}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>
+              Post{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              shared!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Thank you for contributing to the community
+          </Text>
+        }
+      />
     </>
   );
 };

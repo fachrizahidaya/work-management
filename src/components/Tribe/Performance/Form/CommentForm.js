@@ -16,9 +16,7 @@ const CommentForm = ({
   description,
   formik,
   handleClose,
-  onChange,
   comment,
-  commentValue,
 }) => {
   return (
     <ActionSheet ref={reference}>

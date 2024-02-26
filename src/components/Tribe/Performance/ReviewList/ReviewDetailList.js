@@ -2,16 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailList = ({
-  dayjs,
-  status,
-  begin_date,
-  end_date,
-  position,
-  target,
-  targetLevel,
-  name,
-}) => {
+const ReviewDetailList = ({ dayjs, begin_date, end_date, target, name }) => {
   return (
     <View
       style={{
@@ -24,20 +15,7 @@ const ReviewDetailList = ({
     >
       <View style={{ gap: 10 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text
-            style={[
-              {
-                // paddingVertical: 5,
-                // paddingHorizontal: 15,
-                // backgroundColor: "#D9D9D9",
-                // borderRadius: 15,
-                // textAlign: "center",
-              },
-              TextProps,
-            ]}
-          >
-            {name}
-          </Text>
+          <Text style={[{}, TextProps]}>{name}</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
               {begin_date ? dayjs(begin_date).format("DD MMM YYYY") : "-"} to

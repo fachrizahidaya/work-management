@@ -91,7 +91,7 @@ const TaskDetail = () => {
             <View>
               <Text style={[{ fontSize: 14, fontWeight: "500" }, TextProps]}>
                 {task?.data?.title.length > 20
-                  ? task?.data?.title.slice(0, 30) + "..."
+                  ? task?.data?.title.slice(0, 20) + "..."
                   : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
@@ -99,7 +99,14 @@ const TaskDetail = () => {
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              justifyContent: "flex-end",
+            }}
+          >
             <Text style={[{ fontSize: 10 }, TextProps]}>Assigned to</Text>
             <AvatarPlaceholder
               name={task?.data?.responsible?.user?.name}
