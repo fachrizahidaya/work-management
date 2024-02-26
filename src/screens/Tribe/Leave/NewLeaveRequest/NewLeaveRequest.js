@@ -274,7 +274,7 @@ const NewLeaveRequest = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {isReady ? (
           <View style={{ ...styles.container, width: width, height: height }}>
             <PageHeader
