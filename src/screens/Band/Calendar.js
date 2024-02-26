@@ -39,7 +39,7 @@ const CalendarScreen = () => {
   const formattedDotColorToday = {};
   const formattedDotColorLeaves = {};
 
-  projectDeadlines?.data.forEach((item) => {
+  projectDeadlines?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
     const value = {
@@ -56,7 +56,7 @@ const CalendarScreen = () => {
     }
   });
 
-  projectDeadlines?.data.forEach((item) => {
+  projectDeadlines?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
     const value = {
@@ -74,7 +74,7 @@ const CalendarScreen = () => {
     formattedDotColorProjects[key] = value;
   });
 
-  taskDeadlines?.data.forEach((item) => {
+  taskDeadlines?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
     const value = {
@@ -91,7 +91,7 @@ const CalendarScreen = () => {
     }
   });
 
-  taskDeadlines?.data.forEach((item) => {
+  taskDeadlines?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const key = `${date.slice(0, 7)}-01`; // Truncate to the first day of the month
     const value = {
@@ -109,7 +109,7 @@ const CalendarScreen = () => {
     formattedDotColorTasks[key] = value;
   });
 
-  holidays?.data.forEach((item) => {
+  holidays?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const value = { description: item.description, dotColor: "#3bc14a" };
 
@@ -120,7 +120,7 @@ const CalendarScreen = () => {
     }
   });
 
-  holidays?.data.forEach((item) => {
+  holidays?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
     const value = {
       customStyles: {
@@ -137,7 +137,7 @@ const CalendarScreen = () => {
     formattedDotColorHolidays[date] = value;
   });
 
-  filteredLeave.forEach((item) => {
+  filteredLeave?.forEach((item) => {
     const date = item.date;
     const value = { description: item.att_type, dotColor: "#4688D5" };
 
@@ -148,7 +148,7 @@ const CalendarScreen = () => {
     }
   });
 
-  filteredLeave.forEach((item) => {
+  filteredLeave?.forEach((item) => {
     const date = item.date;
     const value = {
       customStyles: {

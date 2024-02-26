@@ -55,6 +55,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
         renderItem={renderItem}
         theme={{
           selectedDayBackgroundColor: "#D5D5D5",
+          selectedDayTextColor: "#000000",
           "stylesheet.calendar.header": {
             dayTextAtIndex0: { color: "#FF7272" },
             dayTextAtIndex6: { color: "#FF7272" },
