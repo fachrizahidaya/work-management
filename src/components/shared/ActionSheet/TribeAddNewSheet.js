@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -15,7 +15,6 @@ import {
   AppState,
   Platform,
   Linking,
-  TouchableWithoutFeedback,
 } from "react-native";
 import Toast from "react-native-root-toast";
 
@@ -35,7 +34,6 @@ import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState();
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
@@ -199,6 +197,13 @@ const TribeAddNewSheet = (props) => {
       console.log(err.message);
     }
   };
+
+  const onSuccessModalOpened = useCallback(() => {
+    // toggleAttendanceModal();
+    setTimeout(() => {
+      toggleClockModal();
+    }, 2000);
+  }, []);
 
   /**
    * Handle change for the location permission status
@@ -395,20 +400,19 @@ const TribeAddNewSheet = (props) => {
           }`}
           hasSuccessFunc={true}
           onSuccess={() => {
+            toggleClockModal();
             toggleAttendance();
             refetchAttendance();
-            toggleClockModal();
           }}
           description={`Are you sure want to ${
             !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
           }?`}
-          successMessage={`${
-            !attendance?.data?.time_out ? "Clock-in" : null
-          } success`}
+          successMessage={`Process success`}
           isDelete={false}
           isGet={false}
           isPatch={false}
         />
+
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}

@@ -21,7 +21,7 @@ const AppraisalEmployeeScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
         <View style={styles.header}>
           <PageHeader
             width={200}
