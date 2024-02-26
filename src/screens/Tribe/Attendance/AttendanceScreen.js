@@ -2,13 +2,7 @@ import { useState, useCallback, useEffect, Fragment, useRef } from "react";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Calendar } from "react-native-calendars";
 import Toast from "react-native-root-toast";
@@ -28,6 +22,7 @@ import AttendanceForm from "../../../components/Tribe/Attendance/AttendanceForm"
 import AddAttendanceAttachment from "../../../components/Tribe/Attendance/AddAttendanceAttachment";
 import AttendanceAttachment from "../../../components/Tribe/Attendance/AttendanceAttachment";
 import AttendanceColor from "../../../components/Tribe/Attendance/AttendanceColor";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -54,6 +49,8 @@ const AttendanceScreen = () => {
     isOpen: attendanceAttachmentModalIsOpen,
     toggle: toggleAttendanceAttachmentModal,
   } = useDisclosure(false);
+  const { isOpen: successDeleteModalIsOpen, toggle: toggleSuccessDeleteModal } =
+    useDisclosure(false);
 
   const attendanceFetchParameters = filter;
 
@@ -451,7 +448,13 @@ const AttendanceScreen = () => {
           markingType={"custom"}
           markedDates={markedDates}
           onMonthChange={(date) => handleMonthChange(date)}
-          theme={{ arrowColor: "black" }}
+          theme={{
+            arrowColor: "black",
+            "stylesheet.calendar.header": {
+              dayTextAtIndex0: { color: "#FF7272" },
+              dayTextAtIndex6: { color: "#FF7272" },
+            },
+          }}
         />
       </Fragment>
     );
@@ -528,8 +531,32 @@ const AttendanceScreen = () => {
         apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
         hasSuccessFunc={true}
         onSuccess={() => {
+          // toggleSuccessDeleteModal();
           refetchAttachment();
         }}
+        otherModalOpen={true}
+        toggleOtherModal={toggleSuccessDeleteModal}
+      />
+
+      <SuccessModal
+        isOpen={successDeleteModalIsOpen}
+        toggle={toggleSuccessDeleteModal}
+        multipleModal={true}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully deleted
+          </Text>
+        }
       />
     </>
   );

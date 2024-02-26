@@ -9,7 +9,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../../components/shared/CustomStylings";
 
-const AppraisalEmployeeScreen = () => {
+const CommentEmployeeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { id, type } = route.params;
@@ -25,7 +25,7 @@ const AppraisalEmployeeScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Appraisal"
+            title="Comment "
             backButton={true}
             onPress={() => {
               navigation.goBack();
@@ -35,7 +35,7 @@ const AppraisalEmployeeScreen = () => {
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {data?.data?.employee_appraisal?.employee_appraisal_value.map(
+            {data?.data?.comment?.employee_review_comment_value.map(
               (item, index) => {
                 return (
                   <View
@@ -45,31 +45,16 @@ const AppraisalEmployeeScreen = () => {
                       marginBottom: 2,
                       elevation: 1,
                       flexDirection: "column",
-                      gap: 10,
+                      gap: 5,
                     }}
                     key={index}
                   >
                     <Text
                       style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}
                     >
-                      {item?.description}
+                      {item?.performance_review_comment?.description}
                     </Text>
-                    <View style={{ gap: 5 }}>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Text style={[TextProps]}>Employee Score: </Text>
-                        <Text style={[TextProps]}>{item?.score}</Text>
-                      </View>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Text style={[TextProps]}>Supervisor Score: </Text>
-                        <Text style={[TextProps]}>
-                          {item?.supervisor_score}
-                        </Text>
-                      </View>
-                    </View>
+                    <Text style={[TextProps]}>{item?.comment}</Text>
                   </View>
                 );
               }
@@ -81,7 +66,7 @@ const AppraisalEmployeeScreen = () => {
   );
 };
 
-export default AppraisalEmployeeScreen;
+export default CommentEmployeeScreen;
 
 const styles = StyleSheet.create({
   container: {

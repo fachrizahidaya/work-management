@@ -1,13 +1,11 @@
 import { useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useSelector } from "react-redux";
 
 import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FeedScreen from "../../screens/Tribe/Feed/FeedScreen";
 import InformationScreen from "../../screens/Tribe/Information/MyInformationScreen";
-import SettingScreen from "../../screens/Setting/SettingScreen";
 import PayslipScreen from "../../screens/Tribe/Payslip/PayslipScreen";
 import ContactScreen from "../../screens/Tribe/Contact/ContactScreen";
 import PersonalLeaveScreen from "../../screens/Tribe/Leave/PersonalLeaveScreen/PersonalLeaveScreen";
@@ -32,9 +30,6 @@ const TribeTab = () => {
   const tribeScreenSheetRef = useRef(null);
   const tribeAddNewSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
-
-  const menuSelector = useSelector((state) => state.user_menu);
-  const userSelector = useSelector((state) => state.auth);
 
   /**
    * Toggles the specified state and resets other states to false.
@@ -61,7 +56,8 @@ const TribeTab = () => {
             "Employee KPI",
             "Employee Appraisal",
             "Employee Review",
-            "Comment List Screen"
+            "Performance Result",
+            "Comment List Screen",
           ].includes(route.name)
             ? () => {
                 return null;
@@ -75,7 +71,11 @@ const TribeTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="home-outline" size={20} color="#3F434A" />
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  size={20}
+                  color="#3F434A"
+                />
               </View>
             ),
           }}
@@ -86,7 +86,11 @@ const TribeTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
+                <MaterialCommunityIcons
+                  name="magnify"
+                  size={20}
+                  color="#3F434A"
+                />
               </View>
             ),
           }}
@@ -107,7 +111,10 @@ const TribeTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => tribeAddNewSheetRef.current?.show()}>
+              <TouchableOpacity
+                {...props}
+                onPress={() => tribeAddNewSheetRef.current?.show()}
+              >
                 {props.children}
               </TouchableOpacity>
             ),
@@ -123,7 +130,10 @@ const TribeTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => tribeScreenSheetRef.current?.show()}>
+              <TouchableOpacity
+                {...props}
+                onPress={() => tribeScreenSheetRef.current?.show()}
+              >
                 {props.children}
               </TouchableOpacity>
             ),
@@ -142,7 +152,10 @@ const TribeTab = () => {
               />
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
+              <TouchableOpacity
+                {...props}
+                onPress={() => moduleSelectSheetRef.current?.show()}
+              >
                 {props.children}
               </TouchableOpacity>
             ),
@@ -166,9 +179,12 @@ const TribeTab = () => {
 
         <Tab.Screen name="Employee Appraisal" component={AppraisalListScreen} />
 
-        <Tab.Screen name="Employee Review" component={KPIAppraisalReviewScreen} />
+        <Tab.Screen
+          name="Employee Review"
+          component={KPIAppraisalReviewScreen}
+        />
 
-        <Tab.Screen name="Comment List Screen" component={CommentListScreen} />
+        <Tab.Screen name="Performance Result" component={CommentListScreen} />
       </Tab.Navigator>
 
       {/* Sheets */}

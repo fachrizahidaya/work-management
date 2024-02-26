@@ -443,7 +443,6 @@ const ContactDetail = () => {
             onPressAddHandler={addSelectedUserToArray}
             onPressRemoveHandler={removeSelectedUserToArray}
             selectedUsers={selectedUsers}
-            setSelectedUsers={setSelectedUsers}
             forceRerender={forceRerender}
             onAddMoreMember={groupMemberAddHandler}
             addMemberIsLoading={addMemberIsLoading}

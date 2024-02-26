@@ -2,13 +2,24 @@ import { memo } from "react";
 
 import Toast from "react-native-root-toast";
 
-import { ActivityIndicator, Dimensions, Image, Platform, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  Platform,
+  Text,
+  View,
+} from "react-native";
 import Modal from "react-native-modal";
 
 import axiosInstance from "../../config/api";
 import { useLoading } from "../../hooks/useLoading";
 import Button from "./Forms/Button";
-import { ErrorToastProps, SuccessToastProps, TextProps } from "./CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+  TextProps,
+} from "./CustomStylings";
 
 const ConfirmationModal = ({
   isOpen,
@@ -25,12 +36,16 @@ const ConfirmationModal = ({
   isPatch = false,
   isGet = false,
   placement,
+  otherModalOpen,
+  toggleOtherModal,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
       ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+      : require("react-native-extra-dimensions-android").get(
+          "REAL_WINDOW_HEIGHT"
+        );
 
   const { isLoading: isDeleting, toggle: toggleIsDeleting } = useLoading(false);
 
@@ -42,9 +57,8 @@ const ConfirmationModal = ({
       } else if (isPatch) {
         await axiosInstance.patch(apiUrl);
       } else if (isGet) {
-        await axiosInstance.get(apiUrl)
-      }
-       else {
+        await axiosInstance.get(apiUrl);
+      } else {
         await axiosInstance.post(apiUrl, body);
       }
       toggle();
@@ -67,8 +81,25 @@ const ConfirmationModal = ({
       onBackdropPress={() => !isDeleting && toggle()}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
+      hideModalContentWhileAnimating={true}
+      useNativeDriver={false}
+      onModalHide={() => {
+        if (otherModalOpen) {
+          toggleOtherModal();
+        } else {
+          null;
+        }
+      }}
     >
-      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+      <View
+        style={{
+          display: "flex",
+          gap: 10,
+          backgroundColor: "white",
+          padding: 20,
+          borderRadius: 10,
+        }}
+      >
         <View style={{ display: "flex", alignItems: "center" }}>
           <Image
             source={require("../../assets/vectors/confirmation.jpg")}
@@ -79,7 +110,9 @@ const ConfirmationModal = ({
               resizeMode: "contain",
             }}
           />
-          <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
+          <Text style={[{ textAlign: "center" }, TextProps]}>
+            {description}
+          </Text>
         </View>
 
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>

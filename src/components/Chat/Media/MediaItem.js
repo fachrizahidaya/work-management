@@ -1,10 +1,11 @@
 import { TouchableOpacity, Image } from "react-native";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 const MediaItem = ({ path, toggleFullScreen }) => {
   return (
-    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => toggleFullScreen(path)}>
+    <TouchableOpacity
+      style={{ marginVertical: 5 }}
+      onPress={() => toggleFullScreen(path)}
+    >
       <Image
         source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${path}` }}
         alt="Chat Image"

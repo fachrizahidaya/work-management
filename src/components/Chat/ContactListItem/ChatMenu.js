@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 const ChatMenu = ({ reference }) => {
@@ -20,17 +20,29 @@ const ChatMenu = ({ reference }) => {
     <ActionSheet ref={reference} onClose={reference.current?.hide()}>
       {menuOptions.map((option, index) => {
         return (
-          <TouchableOpacity key={index} onPress={option.onPress} style={styles.container}>
-            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+          <TouchableOpacity
+            key={index}
+            onPress={option.onPress}
+            style={styles.container}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "400" }}>
+              {option.name}
+            </Text>
           </TouchableOpacity>
         );
       })}
 
       <TouchableOpacity
-        style={{ ...styles.wrapper, alignItems: "center", justifyContent: "center" }}
+        style={{
+          ...styles.wrapper,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
         onPress={() => reference.current?.hide()}
       >
-        <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+        <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>
+          Cancel
+        </Text>
       </TouchableOpacity>
     </ActionSheet>
   );

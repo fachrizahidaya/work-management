@@ -2,7 +2,13 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import ActionSheet from "react-native-actions-sheet";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -31,89 +37,99 @@ const TribeScreenSheet = (props) => {
     "Performance Review",
     "Performance KPI",
     "Performance Appraisal",
-    'Employee KPI',
-    'Employee Appraisal',
-    'Employee Review',
   ];
-  const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
+  const filteredMenu = mergedMenu.filter(
+    (item) => !excludeSubscreen.includes(item.name)
+  );
 
   return (
     <ActionSheet ref={props.reference}>
-      <View style={{
-        paddingBottom:40
-        }}>
-
-      <ScrollView style={{ maxHeight: 500, 
-        // paddingBottom: 40 
-        }}>
-        {filteredMenu?.map((item, idx) => {
-          return (
-            <TouchableOpacity
-              key={idx}
-              onPress={() => {
-                navigation.navigate(item.name);
-                props.reference.current?.hide();
-              }}
-              style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-            >
-              <View style={styles.flex}>
-                <View style={styles.item}>
-                  <MaterialCommunityIcons
-                    size={20}
-                    name={item.mobile_icon ? item.mobile_icon : item.icon}
-                    color="#3F434A"
-                  />
+      <View
+        style={{
+          paddingBottom: 40,
+        }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            maxHeight: 500,
+            // paddingBottom: 40
+          }}
+        >
+          {filteredMenu?.map((item, idx) => {
+            return (
+              <TouchableOpacity
+                key={idx}
+                onPress={() => {
+                  navigation.navigate(item.name);
+                  props.reference.current?.hide();
+                }}
+                style={{
+                  ...styles.wrapper,
+                  borderBottomWidth: 1,
+                  borderColor: "#E8E9EB",
+                }}
+              >
+                <View style={styles.flex}>
+                  <View style={styles.item}>
+                    <MaterialCommunityIcons
+                      size={20}
+                      name={item.mobile_icon ? item.mobile_icon : item.icon}
+                      color="#3F434A"
+                    />
+                  </View>
+                  <Text style={[{ fontSize: 14 }, TextProps]}>{item.name}</Text>
                 </View>
-                <Text style={[{ fontSize: 14 }, TextProps]}>{item.name}</Text>
+              </TouchableOpacity>
+            );
+          })}
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("My Information");
+              props.reference.current?.hide();
+            }}
+            style={{
+              ...styles.wrapper,
+              borderBottomWidth: 1,
+              borderColor: "#E8E9EB",
+            }}
+          >
+            <View style={styles.flex}>
+              <View style={styles.item}>
+                <MaterialCommunityIcons
+                  size={20}
+                  name="account-outline"
+                  color="#3F434A"
+                />
               </View>
-            </TouchableOpacity>
-          );
-        })}
-        {/* <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Comment List Screen");
-            props.reference.current?.hide();
-          }}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-        >
-          <View style={styles.flex}>
-            <View style={styles.item}>
-              <MaterialCommunityIcons size={20} name="file-star-outline" color="#3F434A" />
+              <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
             </View>
-            <Text style={[{ fontSize: 14 }, TextProps]}>Performance Result</Text>
-          </View>
-        </TouchableOpacity> */}
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("My Information");
-            props.reference.current?.hide();
-          }}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-        >
-          <View style={styles.flex}>
-            <View style={styles.item}>
-              <MaterialCommunityIcons size={20} name="account-outline" color="#3F434A" />
-            </View>
-            <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Calendar Tribe");
-            props.reference.current?.hide();
-          }}
-          style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-        >
-          <View style={styles.flex}>
-            <View style={styles.item}>
-              <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Calendar Tribe");
+              props.reference.current?.hide();
+            }}
+            style={{
+              ...styles.wrapper,
+              borderBottomWidth: 1,
+              borderColor: "#E8E9EB",
+            }}
+          >
+            <View style={styles.flex}>
+              <View style={styles.item}>
+                <MaterialCommunityIcons
+                  size={20}
+                  name="calendar-clock"
+                  color="#3F434A"
+                />
+              </View>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
             </View>
-            <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </ActionSheet>
   );
