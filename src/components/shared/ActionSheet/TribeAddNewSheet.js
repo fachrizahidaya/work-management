@@ -40,7 +40,6 @@ const TribeAddNewSheet = (props) => {
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
-  const [filledLocation, setFilledLocation] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const navigation = useNavigation();
@@ -65,9 +64,6 @@ const TribeAddNewSheet = (props) => {
 
   const { isLoading: attendanceIsLoading, toggle: toggleAttendance } =
     useLoading(false);
-
-  const date = dayjs().format("YYYY-MM-DD");
-  const time = dayjs().format("HH:mm");
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -399,7 +395,6 @@ const TribeAddNewSheet = (props) => {
           }`}
           hasSuccessFunc={true}
           onSuccess={() => {
-            toggle;
             toggleAttendance();
             refetchAttendance();
             toggleClockModal();
@@ -408,7 +403,7 @@ const TribeAddNewSheet = (props) => {
             !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
           }?`}
           successMessage={`${
-            attendance?.data?.time_in ? "Clock-in" : "Clock-out"
+            !attendance?.data?.time_out ? "Clock-in" : null
           } success`}
           isDelete={false}
           isGet={false}
@@ -445,6 +440,7 @@ const TribeAddNewSheet = (props) => {
           }
         />
       </ActionSheet>
+
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}
         toggle={toggleNewLeaveRequestModal}
