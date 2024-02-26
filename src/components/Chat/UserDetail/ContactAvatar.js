@@ -5,7 +5,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 
-const ContactAvatar = ({ navigation, roomId, type, name, image, position, currentUserIsAdmin }) => {
+const ContactAvatar = ({
+  navigation,
+  roomId,
+  type,
+  name,
+  image,
+  position,
+  currentUserIsAdmin,
+}) => {
   return (
     <View
       style={{
@@ -13,37 +21,48 @@ const ContactAvatar = ({ navigation, roomId, type, name, image, position, curren
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
         paddingBottom: 5,
+        gap: 10,
       }}
     >
       <View style={{ gap: 10 }}>
-        <AvatarPlaceholder size="xl" name={name} image={image} isThumb={false} />
-        {type === "group" && currentUserIsAdmin ? (
-          <Pressable
-            style={styles.editPicture}
-            onPress={() =>
-              navigation.navigate("Edit Group", {
-                name: name,
-                image: image,
-                roomId: roomId,
-              })
-            }
-          >
-            <MaterialCommunityIcons name="pencil" size={15} color="#3F434A" />
-          </Pressable>
-        ) : (
-          <Pressable style={styles.editPicture}>
-            <MaterialCommunityIcons name="checkbox-blank-circle" size={15} color="#49C96D" />
-          </Pressable>
-        )}
+        <AvatarPlaceholder
+          size="xl"
+          name={name}
+          image={image}
+          isThumb={false}
+        />
+        {
+          type === "group" && currentUserIsAdmin ? (
+            <Pressable
+              style={styles.editPicture}
+              onPress={() =>
+                navigation.navigate("Edit Group", {
+                  name: name,
+                  image: image,
+                  roomId: roomId,
+                })
+              }
+            >
+              <MaterialCommunityIcons name="pencil" size={15} color="#3F434A" />
+            </Pressable>
+          ) : null
+          // <Pressable style={styles.editPicture}>
+          //   <MaterialCommunityIcons name="checkbox-blank-circle" size={15} color="#49C96D" />
+          // </Pressable>
+        }
       </View>
 
-      <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+      <View>
+        <Text style={{ fontSize: 16, fontWeight: "500" }}>
+          {name?.length > 30 ? name?.split(" ")[0] : name}
+        </Text>
 
-      {type === "personal" ? (
-        <View style={{ alignItems: "center" }}>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{position}</Text>
-        </View>
-      ) : null}
+        {type === "personal" ? (
+          <View style={{ alignItems: "center" }}>
+            <Text style={[{ fontSize: 12 }, TextProps]}>{position}</Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 };

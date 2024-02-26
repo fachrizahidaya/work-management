@@ -28,6 +28,7 @@ import {
   ErrorToastProps,
   SuccessToastProps,
 } from "../../../components/shared/CustomStylings";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -46,6 +47,8 @@ const PayslipScreen = () => {
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
   const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } =
+    useDisclosure(false);
+  const { isOpen: pinUpdateModalIsOpen, toggle: togglePinUpdateModal } =
     useDisclosure(false);
 
   const fetchPayslipParameters = {
@@ -92,11 +95,13 @@ const PayslipScreen = () => {
         `/hr/payslip/change-password`,
         data
       );
+      console.log(res.data);
       setSubmitting(false);
       setStatus("success");
-      formik.resetForm();
+      // formik.resetForm();
       refetchPayslip();
-      Toast.show("Password updated", SuccessToastProps);
+      togglePinUpdateModal();
+      // Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -173,6 +178,8 @@ const PayslipScreen = () => {
             hideConfirmPassword={hideConfirmPassword}
             setHideConfirmPassword={setHideConfirmPassword}
             onUpdatePassword={payslipPasswordUpdateHandler}
+            isOpen={pinUpdateModalIsOpen}
+            toggle={togglePinUpdateModal}
           />
         </View>
 

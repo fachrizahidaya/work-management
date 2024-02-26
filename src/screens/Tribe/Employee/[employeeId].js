@@ -71,7 +71,7 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
-  const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
+  const checkAccess = menuSelector[1].sub[2]?.actions.create_announcement;
 
   const fetchTeammatesParameters = {
     search: searchInput,
@@ -267,9 +267,9 @@ const EmployeeProfileScreen = ({ route }) => {
       });
       setSubmitting(false);
       setStatus("success");
+      setPosts([]);
       postRefetchHandler();
       setIsLoading(false);
-      // toggleEditModal();
       toggleUpdatePostModal();
       // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
@@ -468,8 +468,9 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
-          // postRefetchHandler()
-          refetchPersonalPost();
+          setPosts([]);
+          postRefetchHandler();
+          // refetchPersonalPost();
           toggleDeletePostModal();
         }}
         description="Are you sure to delete this post?"

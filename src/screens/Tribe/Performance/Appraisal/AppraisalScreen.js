@@ -207,7 +207,9 @@ const AppraisalScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Appraisal"
+            title={
+              appraisalList?.data?.performance_appraisal?.review?.description
+            }
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {
@@ -252,9 +254,7 @@ const AppraisalScreen = () => {
           begin_date={appraisalList?.data?.begin_date}
           end_date={appraisalList?.data?.end_date}
           name={appraisalList?.data?.description}
-          position={appraisalList?.data?.target_level}
           target={appraisalList?.data?.performance_appraisal?.target_name}
-          targetLevel={appraisalList?.data?.performance_appraisal?.target_level}
           isExpired={isExpired}
         />
 

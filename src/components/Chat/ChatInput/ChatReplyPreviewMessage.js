@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
+
 const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
     return sentence.replace(regex, `<strong class='text-primary'>$&</strong>`);
   };
-  const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
+  const renderDangerouslyInnerHTMLContent = (
+    message = "",
+    alt_message = ""
+  ) => {
     for (let i = 0; i < memberName.length; i++) {
       let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
       message = message?.replace(placeholder, `@${memberName[i]}`);
@@ -26,7 +30,13 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
-            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -44,12 +54,21 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
-            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             <MaterialCommunityIcons name="file-outline" color="#3F434A" />
-            {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
+            {renderDangerouslyInnerHTMLContent(
+              message?.message,
+              message?.file_name
+            )}
           </Text>
         </View>
       );
@@ -58,12 +77,21 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
-              style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#3F434A",
+                width: 200,
+                overflow: "hidden",
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               <MaterialCommunityIcons name="lightning-bolt" color="#3F434A" />
-              {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
+              {renderDangerouslyInnerHTMLContent(
+                message?.message,
+                message?.project_title
+              )}
             </Text>
           </View>
         );
@@ -71,19 +99,37 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
-              style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#3F434A",
+                width: 200,
+                overflow: "hidden",
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#3F434A" />
-              {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
+              <MaterialCommunityIcons
+                name="checkbox-marked-circle-outline"
+                color="#3F434A"
+              />
+              {renderDangerouslyInnerHTMLContent(
+                message?.message,
+                message?.task_title
+              )}
             </Text>
           </View>
         );
       } else {
         return (
           <Text
-            style={{ fontSize: 12, fontWeight: "400", color: "#3F434A", width: 200, overflow: "hidden" }}
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
@@ -103,9 +149,14 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
       {message?.delete_for_everyone ? (
         <Text>Message has been deleted</Text>
       ) : (
-        renderMessage(mimeTypeInfo?.file_type === "not supported" ? mimeTypeInfo?.file_ext : mimeTypeInfo?.file_type)
+        renderMessage(
+          mimeTypeInfo?.file_type === "not supported"
+            ? mimeTypeInfo?.file_ext
+            : mimeTypeInfo?.file_type
+        )
       )}
     </>
   );
 };
+
 export default ChatReplyPreviewMessage;

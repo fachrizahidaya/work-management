@@ -16,7 +16,13 @@ const FeedSection = ({ feed, employeeUsername }) => {
     <View style={styles.wrapper}>
       <Text style={{ fontWeight: "500", opacity: 0.5 }}>POSTS</Text>
 
-      <View style={{ paddingHorizontal: 4 }}>
+      <View
+        style={{
+          paddingHorizontal: 14,
+          backgroundColor: "#f8f8f8",
+          borderRadius: 15,
+        }}
+      >
         {feed.map((item) => {
           const words = item?.content?.split(" ");
           const styledTexts = words?.map((item, index) => {
@@ -182,6 +188,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     backgroundColor: "#ffffff",
+    gap: 10,
   },
   icon: {
     borderWidth: 1,
@@ -199,7 +206,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     marginVertical: 14,
     marginBottom: 4,
-    elevation: 2,
   },
   cardHeader: {
     flexDirection: "row",

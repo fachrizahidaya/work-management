@@ -4,12 +4,9 @@ import { TextProps } from "../../../shared/CustomStylings";
 
 const AppraisalDetailList = ({
   dayjs,
-  status,
   begin_date,
   end_date,
-  position,
   target,
-  targetLevel,
   isExpired,
 }) => {
   return (

@@ -90,9 +90,9 @@ const NewFeedScreen = () => {
       });
       setSubmitting(false);
       setStatus("success");
-      setScrollNewMessage(!scrollNewMessage);
+      // setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      // toggleSuccess()
+      toggleSuccess();
       // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);

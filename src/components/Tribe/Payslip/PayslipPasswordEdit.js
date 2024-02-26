@@ -7,6 +7,7 @@ import { View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
+import SuccessModal from "../../shared/Modal/SuccessModal";
 
 const PayslipPasswordEdit = ({
   hideNewPassword,
@@ -18,6 +19,8 @@ const PayslipPasswordEdit = ({
   onUpdatePassword,
   reference,
   setPasswordError,
+  isOpen,
+  toggle,
 }) => {
   /**
    * Change password handler
@@ -124,6 +127,25 @@ const PayslipPasswordEdit = ({
           )}
         </View>
       </TouchableWithoutFeedback>
+      <SuccessModal
+        isOpen={isOpen}
+        toggle={toggle}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully updated
+          </Text>
+        }
+      />
     </ActionSheet>
   );
 };

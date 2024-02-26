@@ -10,7 +10,6 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import OngoingCommentListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingCommentListItem";
 import OngoingReviewAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewAppraisalListItem";
 import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewKPIListItem";
 
@@ -18,22 +17,45 @@ const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
   const [kpiList, setKpiList] = useState([]);
   const [appraisalList, setAppraisalList] = useState([]);
+  const [currentPageKPI, setCurrentPageKPI] = useState(1);
+  const [currentPageAppraisal, setCurrentPageAppraisal] = useState(1);
+  const [reloadKpi, setReloadKpi] = useState(false);
+  const [reloadAppraisal, setReloadAppraisal] = useState(false);
+  const [kpiHasBeenScrolled, setKpiHasBeenScrolled] = useState(false);
+  const [appraisalHasBeenScrolled, setAppraisalHasBeenScrolled] =
+    useState(false);
 
   const navigation = useNavigation();
+
+  const fetchKpiParameters = {
+    page: currentPageKPI,
+    limit: 10,
+  };
+
+  const fetchAppraisalParameters = {
+    page: currentPageAppraisal,
+    limit: 10,
+  };
 
   const {
     data: kpi,
     refetch: refetchKpi,
     isFetching: kpiIsFetching,
-  } = useFetch(tabValue == "KPI" && "/hr/employee-review/kpi", [tabValue]);
+  } = useFetch(
+    tabValue == "KPI" && "/hr/employee-review/kpi",
+    [currentPageKPI, reloadKpi, tabValue],
+    fetchKpiParameters
+  );
 
   const {
     data: appraisal,
     refetch: refetchAppraisal,
     isFetching: appraisalIsFetching,
-  } = useFetch(tabValue == "Appraisal" && "/hr/employee-review/appraisal", [
-    tabValue,
-  ]);
+  } = useFetch(
+    tabValue == "Appraisal" && "/hr/employee-review/appraisal",
+    [tabValue, currentPageAppraisal, reloadAppraisal],
+    fetchAppraisalParameters
+  );
 
   const { data: kpiData } = useFetch("/hr/employee-review/kpi");
   const { data: appraisalData } = useFetch("/hr/employee-review/appraisal");
@@ -48,10 +70,26 @@ const KPIAppraisalReviewScreen = () => {
     ];
   }, [kpi, appraisal, kpiData, appraisalData]);
 
+  const fetchMoreKpi = () => {
+    if (currentPageKPI < kpi?.data?.last_page) {
+      setCurrentPageKPI(currentPageKPI + 1);
+      setReloadKpi(!reloadKpi);
+    }
+  };
+
+  const fetchMoreAppraisal = () => {
+    if (currentPageAppraisal < appraisal?.data?.last_page) {
+      setCurrentPageAppraisal(currentPageAppraisal + 1);
+      setReloadAppraisal(!reloadAppraisal);
+    }
+  };
+
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
     setKpiList([]);
     setAppraisalList([]);
+    setCurrentPageKPI(1);
+    setCurrentPageAppraisal(1);
   }, []);
 
   useEffect(() => {
@@ -85,6 +123,10 @@ const KPIAppraisalReviewScreen = () => {
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
+                onScrollBeginDrag={() =>
+                  setKpiHasBeenScrolled(!kpiHasBeenScrolled)
+                }
+                onEndReached={kpiHasBeenScrolled === true ? fetchMoreKpi : null}
                 renderItem={({ item, index }) => (
                   <OngoingReviewKPIListItem
                     key={index}
@@ -126,6 +168,12 @@ const KPIAppraisalReviewScreen = () => {
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
+              onScrollBeginDrag={() =>
+                setAppraisalHasBeenScrolled(!appraisalHasBeenScrolled)
+              }
+              onEndReached={
+                appraisalHasBeenScrolled === true ? fetchMoreAppraisal : null
+              }
               renderItem={({ item, index }) => (
                 <OngoingReviewAppraisalListItem
                   key={index}

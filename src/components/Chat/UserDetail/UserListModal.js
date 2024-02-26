@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { View, Pressable, ActivityIndicator, Dimensions, Platform, Text } from "react-native";
+import {
+  View,
+  Pressable,
+  ActivityIndicator,
+  Dimensions,
+  Platform,
+  Text,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
 import Modal from "react-native-modal";
@@ -26,7 +33,6 @@ const UserListModal = ({
   onPressAddHandler,
   onPressRemoveHandler,
   selectedUsers,
-  setSelectedUsers,
   forceRerender,
   onAddMoreMember,
   addMemberIsLoading,
@@ -38,7 +44,9 @@ const UserListModal = ({
   const deviceHeight =
     Platform.OS === "ios"
       ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+      : require("react-native-extra-dimensions-android").get(
+          "REAL_WINDOW_HEIGHT"
+        );
 
   return (
     <Modal
@@ -47,7 +55,15 @@ const UserListModal = ({
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
-      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+      <View
+        style={{
+          display: "flex",
+          gap: 10,
+          backgroundColor: "white",
+          padding: 20,
+          borderRadius: 10,
+        }}
+      >
         <Text style={[{ fontSize: 12 }, TextProps]}>Choose User</Text>
         <Input
           value={inputToShow}
@@ -107,7 +123,11 @@ const UserListModal = ({
           {addMemberIsLoading ? (
             <ActivityIndicator />
           ) : (
-            <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+            <MaterialCommunityIcons
+              name="arrow-right"
+              size={20}
+              color="#FFFFFF"
+            />
           )}
         </Pressable>
       </View>

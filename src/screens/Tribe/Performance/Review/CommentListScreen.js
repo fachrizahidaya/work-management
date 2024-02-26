@@ -2,14 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -24,23 +17,62 @@ const CommentListScreen = () => {
   const [ongoingList, setOngoingList] = useState([]);
   const [personalList, setPersonalList] = useState([]);
   const [teamList, setTeamList] = useState([]);
+  const [currentPageOngoing, setCurrentPageOngoing] = useState(1);
+  const [currentPagePersonal, setCurrentPagePersonal] = useState(1);
+  const [currentPageMyTeam, setCurrentPageMyTeam] = useState(1);
+  const [reloadOngoing, setReloadOngoing] = useState(false);
+  const [reloadPersonal, setReloadPersonal] = useState(false);
+  const [reloadMyTeam, setReloadMyTeam] = useState(false);
+  const [ongoingHasBeenScrolled, setOngoingHasBeenScrolled] = useState(false);
+  const [personalHasBeenScrolled, setPersonalHasBeenScrolled] = useState(false);
+  const [myTeamHasBeenScrolled, setMyTeamHasBeenScrolled] = useState(false);
+
   const navigation = useNavigation();
+
+  // const fetchOngoingParameters = {
+  //   page: currentPageOngoing,
+  //   limit: 10,
+  // };
+
+  // const fetchPersonalParameters = {
+  //   page: currentPagePersonal,
+  //   limit: 10,
+  // };
+
+  // const fetchMyTeamParameters = {
+  //   page: currentPageMyTeam,
+  //   limit: 10,
+  // };
 
   const {
     data: commentList,
     refetch: refetchCommentList,
     isFetching: commentListIsFetching,
-  } = useFetch("/hr/employee-review/comment");
+  } = useFetch(
+    "/hr/employee-review/comment"
+    // [currentPageOngoing, reloadOngoing],
+    // fetchOngoingParameters
+  );
+
   const {
     data: personalCommentList,
     refetch: refetchPersonalCommentList,
     isFetching: personalCommentListIsFetching,
-  } = useFetch("/hr/performance-result/personal");
+  } = useFetch(
+    "/hr/performance-result/personal"
+    // [currentPagePersonal, reloadPersonal],
+    // fetchPersonalParameters
+  );
+
   const {
     data: teamCommentList,
     refetch: refetchTeamCommentList,
     isFetching: teamCommentListIsFetching,
-  } = useFetch("/hr/performance-result/my-team");
+  } = useFetch(
+    "/hr/performance-result/my-team"
+    // [currentPageMyTeam, reloadMyTeam],
+    // fetchMyTeamParameters
+  );
 
   if (commentList?.data.length > 0) {
     var tabs = useMemo(() => {
@@ -95,7 +127,31 @@ const CommentListScreen = () => {
     setOngoingList([]);
     setPersonalList([]);
     setTeamList([]);
+    // setCurrentPageOngoing(1);
+    // setCurrentPagePersonal(1);
+    // setCurrentPageMyTeam(1);
   }, []);
+
+  // const fetchMoreOngoing = () => {
+  //   if (currentPageOngoing < commentList?.data?.last_page) {
+  //     setCurrentPageOngoing(currentPageOngoing + 1);
+  //     setReloadOngoing(!reloadOngoing);
+  //   }
+  // };
+
+  // const fetchMorePersonal = () => {
+  //   if (currentPagePersonal < personalCommentList?.data?.last_page) {
+  //     setCurrentPagePersonal(currentPagePersonal + 1);
+  //     setReloadPersonal(!reloadPersonal);
+  //   }
+  // };
+
+  // const fetchMoreMyTeam = () => {
+  //   if (currentPageMyTeam < teamCommentList?.data?.last_page) {
+  //     setCurrentPageMyTeam(currentPageMyTeam + 1);
+  //     setReloadMyTeam(!reloadMyTeam);
+  //   }
+  // };
 
   useEffect(() => {
     if (commentList?.data.length) {
@@ -136,6 +192,12 @@ const CommentListScreen = () => {
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
+                // onScrollBeginDrag={() =>
+                //   setOngoingHasBeenScrolled(!ongoingHasBeenScrolled)
+                // }
+                // onEndReached={
+                //   ongoingHasBeenScrolled === true ? fetchMoreOngoing : null
+                // }
                 renderItem={({ item, index }) => (
                   <OngoingCommentListItem
                     key={index}
@@ -144,7 +206,6 @@ const CommentListScreen = () => {
                     end_date={item?.performance_review?.end_date}
                     navigation={navigation}
                     name={item?.employee?.name}
-                    target={item?.performance_kpi?.target_name}
                     dayjs={dayjs}
                     description={item?.performance_review?.description}
                   />
@@ -177,6 +238,12 @@ const CommentListScreen = () => {
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
+                // onScrollBeginDrag={() =>
+                //   setPersonalHasBeenScrolled(!personalHasBeenScrolled)
+                // }
+                // onEndReached={
+                //   personalHasBeenScrolled === true ? fetchMorePersonal : null
+                // }
                 renderItem={({ item, index }) => (
                   <CommentListItem
                     key={index}
@@ -218,6 +285,12 @@ const CommentListScreen = () => {
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
+              // onScrollBeginDrag={() =>
+              //   setMyTeamHasBeenScrolled(!myTeamHasBeenScrolled)
+              // }
+              // onEndReached={
+              //   myTeamHasBeenScrolled === true ? fetchMoreMyTeam : null
+              // }
               renderItem={({ item, index }) => (
                 <CommentListItem
                   key={index}
@@ -226,7 +299,6 @@ const CommentListScreen = () => {
                   end_date={item?.performance_review?.end_date}
                   navigation={navigation}
                   name={item?.employee?.name}
-                  target={null}
                   dayjs={dayjs}
                   description={item?.performance_review?.description}
                   type="personal"

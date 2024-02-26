@@ -1,5 +1,13 @@
 import { memo } from "react";
-import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
+import {
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Pressable,
+  Image,
+} from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -72,14 +80,22 @@ const ChatBubble = ({
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          <Text
+            key={index}
+            style={textStyle}
+            onPress={() => handleLinkPress(item)}
+          >
             {item}{" "}
           </Text>
         );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+          <Text
+            key={index}
+            style={textStyle}
+            onPress={() => CopyToClipboard(item)}
+          >
             {item}{" "}
           </Text>
         );
@@ -93,7 +109,11 @@ const ChatBubble = ({
       } else if (item.includes("@gmail.com")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          <Text
+            key={index}
+            style={textStyle}
+            onPress={() => handleEmailPress(item)}
+          >
             {item}{" "}
           </Text>
         );
@@ -141,7 +161,10 @@ const ChatBubble = ({
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
-        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATEX);
+        translateX.value = Math.min(
+          event.translationX,
+          parentWidth - MIN_TRANSLATEX
+        );
       }
     },
     onEnd: (event) => {
@@ -179,7 +202,13 @@ const ChatBubble = ({
       }}
     >
       {!isOptimistic && (
-        <Pressable style={{ ...styles.iconContainer, marginRight: myMessage ? 5 : null, alignSelf: "center" }}>
+        <Pressable
+          style={{
+            ...styles.iconContainer,
+            marginRight: myMessage ? 5 : null,
+            alignSelf: "center",
+          }}
+        >
           <MaterialIcons name="reply" size={15} />
         </Pressable>
       )}
@@ -188,7 +217,12 @@ const ChatBubble = ({
           ) : type === "group" && !myMessage ? (
             <Box ml={8}></Box>
           ) : null} */}
-      <PanGestureHandler simultaneousHandlers={simultaneousHandlers} failOffsetY={[-5,5]} activeOffsetX={[-5,5]} onGestureEvent={!isDeleted && panGesture}>
+      <PanGestureHandler
+        simultaneousHandlers={simultaneousHandlers}
+        failOffsetY={[-5, 5]}
+        activeOffsetX={[-5, 5]}
+        onGestureEvent={!isDeleted && panGesture}
+      >
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             style={{
@@ -197,17 +231,26 @@ const ChatBubble = ({
               maxWidth: 300,
               borderRadius: 10,
               padding: 8,
-              backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
+              backgroundColor: isOptimistic
+                ? "#9E9E9E"
+                : !myMessage
+                ? "#FFFFFF"
+                : "#377893",
               gap: 5,
             }}
             onLongPress={() => {
-              !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
+              !isDeleted &&
+                openChatBubbleHandler(chat, !myMessage ? "right" : "left");
             }}
             delayLongPress={200}
           >
             {type === "group" && name && !myMessage && (
               <Text
-                style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#176688" : "#FFFFFF" }}
+                style={{
+                  fontSize: 12,
+                  fontWeight: "700",
+                  color: !myMessage ? "#176688" : "#FFFFFF",
+                }}
                 fontSize={12}
                 fontWeight={700}
                 color={!myMessage ? "#377893" : "#FFFFFF"}
@@ -235,7 +278,9 @@ const ChatBubble = ({
                       <>
                         <TouchableOpacity
                           style={{ borderRadius: 5 }}
-                          onPress={() => file_path && toggleFullScreen(file_path)}
+                          onPress={() =>
+                            file_path && toggleFullScreen(file_path)
+                          }
                         >
                           <Image
                             style={{
@@ -246,7 +291,9 @@ const ChatBubble = ({
                               backgroundColor: "gray",
                             }}
                             source={{
-                              uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
+                              uri: isOptimistic
+                                ? file_path
+                                : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
                             }}
                             alt="Chat Image"
                             resizeMethod="auto"
@@ -278,33 +325,77 @@ const ChatBubble = ({
                 )}
               </>
             ) : null}
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 5,
+              }}
+            >
               {!isDeleted ? (
                 <Text
-                  style={{ flexShrink: 1, fontSize: 14, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}
+                  style={{
+                    flexShrink: 1,
+                    fontSize: 14,
+                    fontWeight: "400",
+                    color: !myMessage ? "#3F434A" : "#FFFFFF",
+                  }}
                 >
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" style={{ opacity: 0.5 }} />
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+                >
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={15}
+                    color="#E8E9EB"
+                    style={{ opacity: 0.5 }}
+                  />
                   <Text
-                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "400",
+                      fontStyle: "italic",
+                      color: "#F1F1F1",
+                      opacity: 0.5,
+                    }}
                   >
                     You deleted this message
                   </Text>
                 </View>
               ) : !myMessage && isDeleted ? (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" style={{ opacity: 0.5 }} />
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+                >
+                  <MaterialIcons
+                    name="block-flipped"
+                    size={15}
+                    color="#3F434A"
+                    style={{ opacity: 0.5 }}
+                  />
                   <Text
-                    style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "400",
+                      fontStyle: "italic",
+                      color: "#3F434A",
+                      opacity: 0.5,
+                    }}
                   >
                     This message was deleted
                   </Text>
                 </View>
               ) : null}
-              <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>
+              <Text
+                style={{
+                  fontSize: 8,
+                  color: !myMessage ? "#8A9099" : "#FFFFFF",
+                  alignSelf: "flex-end",
+                }}
+              >
                 {time}
               </Text>
             </View>

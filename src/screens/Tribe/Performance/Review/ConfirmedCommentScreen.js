@@ -9,6 +9,9 @@ import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ConfirmedCommentDetailItem from "../../../../components/Tribe/Performance/CommentList/ConfirmedCommentDetailItem";
 import ConfirmedCommentDetailList from "../../../../components/Tribe/Performance/CommentList/ConfirmedCommentDetailList";
+import ConfirmedKPIDetailItem from "../../../../components/Tribe/Performance/CommentList/ConfirmedKPIDetailItem";
+import ConfirmedAppraisalDetailItem from "../../../../components/Tribe/Performance/CommentList/ConfirmedAppraisalDetailItem";
+import ConfirmedConclusionDetailItem from "../../../../components/Tribe/Performance/CommentList/ConfirmedConclusionDetailItem";
 
 const ConfirmedCommentScreen = () => {
   const navigation = useNavigation();
@@ -26,7 +29,11 @@ const ConfirmedCommentScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title="Result"
+            title={
+              type === "personal"
+                ? comment?.data?.performance_review?.description
+                : teamComment?.data?.performance_review?.description
+            }
             backButton={true}
             onPress={() => {
               navigation.goBack();
@@ -46,30 +53,13 @@ const ConfirmedCommentScreen = () => {
               ? comment?.data?.performance_review?.end_date
               : teamComment?.data?.performance_review?.end_date
           }
-          target={null}
           name={type === "personal" ? null : teamComment?.data?.employee?.name}
-          title={
-            type === "personal"
-              ? comment?.data?.performance_review?.description
-              : teamComment?.data?.performance_review?.description
-          }
           type={type}
         />
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            <ConfirmedCommentDetailItem
-              grade={
-                type === "personal"
-                  ? comment?.data?.conclusion?.employee?.grade
-                  : teamComment?.data?.conclusion?.employee?.grade
-              }
-              subject="Employee"
-              total_score={
-                type === "personal"
-                  ? comment?.data?.conclusion?.employee?.total_score
-                  : teamComment?.data?.conclusion?.employee?.total_score
-              }
+            <ConfirmedKPIDetailItem
               employeeKPI={
                 type === "personal"
                   ? comment?.data?.conclusion?.employee?.item[0]
@@ -82,10 +72,21 @@ const ConfirmedCommentScreen = () => {
               }
               employeeAppraisal={null}
               supervisorAppraisal={null}
-              appraisalData={null}
-              navigation={navigation}
+              employee_score={
+                type === "personal"
+                  ? comment?.data?.employee_kpi?.employee_kpi_value_sum_score
+                  : teamComment?.data?.employee_kpi
+                      ?.employee_kpi_value_sum_score
+              }
+              supervisor_score={
+                type === "personal"
+                  ? comment?.data?.employee_kpi
+                      ?.employee_kpi_value_sum_supervisor_score
+                  : teamComment?.data?.employee_kpi
+                      ?.employee_kpi_value_sum_supervisor_score
+              }
             />
-            <ConfirmedCommentDetailItem
+            <ConfirmedAppraisalDetailItem
               id={
                 type === "personal"
                   ? comment?.data?.comment?.id
@@ -96,12 +97,6 @@ const ConfirmedCommentScreen = () => {
                 type === "personal"
                   ? comment?.data?.conclusion?.supervisor?.grade
                   : teamComment?.data?.conclusion?.supervisor?.grade
-              }
-              subject="Supervisor"
-              total_score={
-                type === "personal"
-                  ? comment?.data?.conclusion?.supervisor?.total_score
-                  : teamComment?.data?.conclusion?.supervisor?.total_score
               }
               employeeKPI={null}
               supervisorKPI={null}
@@ -116,6 +111,53 @@ const ConfirmedCommentScreen = () => {
                   : teamComment?.data?.conclusion?.supervisor?.item[1]
               }
               navigation={navigation}
+              employee_score={
+                type === "personal"
+                  ? comment?.data?.employee_appraisal
+                      ?.employee_appraisal_value_sum_score
+                  : teamComment?.data?.employee_appraisal
+                      ?.employee_appraisal_value_sum_score
+              }
+              supervisor_score={
+                type === "personal"
+                  ? comment?.data?.employee_appraisal
+                      ?.employee_appraisal_value_sum_supervisor_score
+                  : teamComment?.data?.employee_appraisal
+                      ?.employee_appraisal_value_sum_supervisor_score
+              }
+            />
+            <ConfirmedCommentDetailItem
+              total_comment={
+                type === "personal"
+                  ? comment?.data?.comment?.employee_review_comment_value
+                  : teamComment?.data?.comment?.employee_review_comment_value
+              }
+              navigation={navigation}
+              id={
+                type === "personal"
+                  ? comment?.data?.comment?.id
+                  : teamComment?.data?.comment?.id
+              }
+              type={type}
+            />
+            <ConfirmedConclusionDetailItem
+              navigation={navigation}
+              id={
+                type === "personal"
+                  ? comment?.data?.comment?.id
+                  : teamComment?.data?.comment?.id
+              }
+              type={type}
+              employee_grade={
+                type === "personal"
+                  ? comment?.data?.conclusion?.employee?.grade
+                  : teamComment?.data?.conclusion?.employee?.grade
+              }
+              supervisor_grade={
+                type === "personal"
+                  ? comment?.data?.conclusion?.employee?.grade
+                  : teamComment?.data?.conclusion?.employee?.grade
+              }
             />
           </ScrollView>
         </View>
