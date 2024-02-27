@@ -52,6 +52,7 @@ const NoteForm = ({ route }) => {
       title: yup.string().required("Note title is required"),
       content: yup.string().required("Content is required"),
     }),
+    validateOnChange: false,
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       submitHandler({ ...values, pinned: noteData ? noteData.pinned : false }, setSubmitting, setStatus);
@@ -109,16 +110,24 @@ const NoteForm = ({ route }) => {
             selectedIconTint="#176688"
           />
 
-          <ScrollView style={{ borderWidth: 1, borderColor: "#E8E9EB", borderRadius: 10 }}>
+          <View style={{ flex: 1 }}>
             <RichEditor
               ref={richText}
               onChange={(descriptionText) => {
                 formik.setFieldValue("content", descriptionText);
               }}
               initialContentHTML={preprocessContent(formik.values.content)}
-              style={{ minHeight: 400 }}
+              style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
+              editorStyle={{
+                contentCSSText: `
+                  display: flex; 
+                  flex-direction: column; 
+                  min-height: 200px; 
+                  position: absolute; 
+                  top: 0; right: 0; bottom: 0; left: 0;`,
+              }}
             />
-          </ScrollView>
+          </View>
 
           {editCheckAccess && (
             <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>

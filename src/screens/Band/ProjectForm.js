@@ -7,6 +7,7 @@ import Toast from "react-native-root-toast";
 
 import { Dimensions, Keyboard, TouchableWithoutFeedback, View, Text } from "react-native";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+import { ScrollView } from "react-native-gesture-handler";
 
 import CustomDateTimePicker from "../../components/shared/CustomDateTimePicker";
 import axiosInstance from "../../config/api";
@@ -15,7 +16,6 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 import { ErrorToastProps, SuccessToastProps, TextProps } from "../../components/shared/CustomStylings";
-import { ScrollView } from "react-native-gesture-handler";
 
 const ProjectForm = ({ route }) => {
   const richText = useRef();
@@ -143,16 +143,24 @@ const ProjectForm = ({ route }) => {
             selectedIconTint="#176688"
           />
 
-          <ScrollView style={{ height: 200, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB" }}>
+          <View style={{ height: 200 }}>
             <RichEditor
               ref={richText}
               onChange={(descriptionText) => {
                 formik.setFieldValue("description", descriptionText);
               }}
               initialContentHTML={preprocessContent(formik.values.description)}
-              style={{ minHeight: 200 }}
+              style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
+              editorStyle={{
+                contentCSSText: `
+                  display: flex; 
+                  flex-direction: column; 
+                  min-height: 200px; 
+                  position: absolute; 
+                  top: 0; right: 0; bottom: 0; left: 0;`,
+              }}
             />
-          </ScrollView>
+          </View>
 
           <View>
             <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
