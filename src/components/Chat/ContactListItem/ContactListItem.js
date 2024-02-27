@@ -46,7 +46,7 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
-  onSwipe,
+  onClickMore,
   onPin,
   navigation,
   latest,
@@ -55,7 +55,17 @@ const ContactListItem = ({
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
-  const width = Dimensions.get("window");
+  const params = {
+    userId: userId,
+    name: name,
+    roomId: id,
+    image: image,
+    position: position,
+    email: email,
+    type: type,
+    active_member: active_member,
+    isPinned: isPinned,
+  };
 
   /**
    * Fetch members of selected group
@@ -234,7 +244,7 @@ const ContactListItem = ({
           <Pressable
             onPress={() => {
               translateX.value = withTiming(0);
-              onSwipe(chat);
+              onClickMore(chat);
             }}
             style={{ alignItems: "center", paddingRight: 5 }}
           >
@@ -256,17 +266,7 @@ const ContactListItem = ({
               style={{ backgroundColor: "#FFFFFF" }}
               activeOpacity={1}
               onPress={() => {
-                navigation.navigate("Chat Room", {
-                  userId: userId,
-                  name: name,
-                  roomId: id,
-                  image: image,
-                  position: position,
-                  email: email,
-                  type: type,
-                  active_member: active_member,
-                  isPinned: isPinned,
-                });
+                navigation.navigate("Chat Room", params);
               }}
             >
               <View style={styles.contactBox}>

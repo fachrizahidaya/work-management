@@ -21,6 +21,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
           paddingHorizontal: 14,
           backgroundColor: "#f8f8f8",
           borderRadius: 15,
+          paddingBottom: 14,
         }}
       >
         {feed.map((item) => {

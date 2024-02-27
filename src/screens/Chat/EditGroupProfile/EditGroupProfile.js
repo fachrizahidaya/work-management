@@ -140,11 +140,7 @@ const EditGroupProfile = () => {
       <SafeAreaView style={styles.container}>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "#FFFFFF",
-            paddingVertical: 14,
-            paddingHorizontal: 16,
+            ...styles.header,
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -164,11 +160,7 @@ const EditGroupProfile = () => {
         </View>
         <View
           style={{
-            flex: 1,
-            backgroundColor: "#FFFFFF",
-            paddingHorizontal: 16,
-            paddingVertical: 14,
-            gap: 10,
+            ...styles.content,
           }}
         >
           <View
@@ -285,6 +277,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
   editPicture: {
     backgroundColor: "#FFFFFF",
     alignItems: "center",
@@ -299,5 +298,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: "#C6C9CC",
     shadowOffset: 0,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
   },
 });

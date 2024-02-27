@@ -37,6 +37,7 @@ const TribeScreenSheet = (props) => {
     "Performance Review",
     "Performance KPI",
     "Performance Appraisal",
+    "Announcement",
   ];
   const filteredMenu = mergedMenu.filter(
     (item) => !excludeSubscreen.includes(item.name)

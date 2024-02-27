@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import dayjs from "dayjs";
 
 import {
@@ -7,6 +6,7 @@ import {
   Platform,
   ActivityIndicator,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -29,9 +29,6 @@ const ClockAttendance = ({
   onClock,
   location,
   locationOn,
-  success,
-  setSuccess,
-  isLoading,
   modalIsOpen,
 }) => {
   const translateX = useSharedValue(0);
@@ -65,7 +62,6 @@ const ClockAttendance = ({
       if (event.translationX > 0) {
         if (translateX.value > MIN_TRANSLATE_X) {
           runOnJS(onClock)();
-          runOnJS(setSuccess)(true);
         }
       }
       translateX.value = withTiming(0);
@@ -75,6 +71,7 @@ const ClockAttendance = ({
   const limitedTranslateX = useDerivedValue(() =>
     Math.max(translateX.value, 0)
   );
+
   const textOpacity = useDerivedValue(() => {
     const threshold = 50;
     const fadeOutRange = 100;
@@ -143,22 +140,12 @@ const ClockAttendance = ({
     };
   });
 
-  useEffect(() => {
-    const resetSuccess = setTimeout(() => {
-      setSuccess(false);
-    }, 1000);
-    return () => clearTimeout(resetSuccess);
-  }, [success]);
-
   return (
     <>
       <View style={{ gap: 20 }}>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 1,
+            ...styles.container,
           }}
         >
           <View
@@ -247,10 +234,6 @@ const ClockAttendance = ({
                 name="chevron-right"
                 size={50}
                 color={modalIsOpen ? "#186688" : "#FFFFFF"}
-                style={[
-                  // animatedIconStyle,
-                  {},
-                ]}
               />
             </Animated.View>
           </PanGestureHandler>
@@ -267,7 +250,6 @@ const ClockAttendance = ({
             ]}
           >
             {modalIsOpen ? (
-              // || isLoading
               <View
                 style={{
                   flexDirection: "row",
@@ -311,3 +293,12 @@ const ClockAttendance = ({
 };
 
 export default ClockAttendance;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 1,
+  },
+});

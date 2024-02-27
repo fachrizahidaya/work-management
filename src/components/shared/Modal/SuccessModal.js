@@ -10,7 +10,8 @@ const SuccessModal = ({
   toggle,
   topElement,
   bottomElement,
-  multipleModal,
+  onSuccess,
+  multipleModal = false,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
 
@@ -18,6 +19,11 @@ const SuccessModal = ({
     if (isOpen) {
       const timeout = setTimeout(() => {
         toggle();
+        if (multipleModal) {
+          onSuccess(false);
+        } else {
+          null;
+        }
       }, 2000);
       return () => clearTimeout(timeout);
     }
@@ -27,7 +33,6 @@ const SuccessModal = ({
     <>
       <StatusBar animated={true} backgroundColor={isOpen ? "#176688" : null} />
       <Modal
-        onBackdropPress={() => toggle()}
         isVisible={isOpen}
         deviceHeight={Platform.OS === "ios" ? 150 : 125}
         deviceWidth={deviceWidth}
@@ -37,13 +42,6 @@ const SuccessModal = ({
         backdropOpacity={1}
         hideModalContentWhileAnimating={true}
         useNativeDriver={false}
-        onModalHide={() => {
-          if (multipleModal) {
-            console.log("modal closed");
-          } else {
-            null;
-          }
-        }}
         style={{
           justifyContent: "flex-start",
           alignItems: "center",

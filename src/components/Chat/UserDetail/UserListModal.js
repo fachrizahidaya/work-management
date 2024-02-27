@@ -8,6 +8,7 @@ import {
   Dimensions,
   Platform,
   Text,
+  StyleSheet,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlashList } from "@shopify/flash-list";
@@ -55,15 +56,7 @@ const UserListModal = ({
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
-      <View
-        style={{
-          display: "flex",
-          gap: 10,
-          backgroundColor: "white",
-          padding: 20,
-          borderRadius: 10,
-        }}
-      >
+      <View style={{ ...styles.container }}>
         <Text style={[{ fontSize: 12 }, TextProps]}>Choose User</Text>
         <Input
           value={inputToShow}
@@ -106,15 +99,7 @@ const UserListModal = ({
         </View>
         <Pressable
           style={{
-            position: "absolute",
-            right: 10,
-            bottom: 20,
-            backgroundColor: "#176688",
-            borderRadius: 40,
-            shadowOffset: 0,
-            padding: 20,
-            borderWidth: 3,
-            borderColor: "#FFFFFF",
+            ...styles.addMember,
           }}
           onPress={() => {
             onAddMoreMember(roomId, selectedUsers, toggleAddMember);
@@ -136,3 +121,24 @@ const UserListModal = ({
 };
 
 export default UserListModal;
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    gap: 10,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+  addMember: {
+    position: "absolute",
+    right: 10,
+    bottom: 20,
+    backgroundColor: "#176688",
+    borderRadius: 40,
+    shadowOffset: 0,
+    padding: 20,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+});

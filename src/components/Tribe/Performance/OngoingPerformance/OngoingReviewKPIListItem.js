@@ -15,6 +15,7 @@ const OngoingReviewKPIListItem = ({
   name,
   target,
   dayjs,
+  target_level,
 }) => {
   return (
     <Pressable
@@ -35,7 +36,7 @@ const OngoingReviewKPIListItem = ({
     >
       <Text style={[{}, TextProps]}>{name}</Text>
       <View>
-        <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
