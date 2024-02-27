@@ -119,15 +119,6 @@ const TaskForm = ({ route }) => {
               placeHolder="Input task title..."
             />
 
-            {/* <Input
-              formik={formik}
-              title="Description"
-              fieldName="description"
-              value={formik.values.description}
-              placeHolder="Input task description..."
-              multiline
-            /> */}
-
             <RichToolbar
               editor={richText}
               actions={[
@@ -142,18 +133,24 @@ const TaskForm = ({ route }) => {
               selectedIconTint="#176688"
             />
 
-            <ScrollView
-              style={{ height: 200, borderWidth: 1, borderRadius: 10, borderColor: "#E8E9EB", paddingBottom: 40 }}
-            >
+            <View style={{ height: 200 }}>
               <RichEditor
                 ref={richText}
                 onChange={(descriptionText) => {
                   formik.setFieldValue("description", descriptionText);
                 }}
                 initialContentHTML={preprocessContent(formik.values.description)}
-                style={{ minHeight: 200 }}
+                style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
+                editorStyle={{
+                  contentCSSText: `
+                    display: flex; 
+                    flex-direction: column; 
+                    min-height: 200px; 
+                    position: absolute; 
+                    top: 0; right: 0; bottom: 0; left: 0;`,
+                }}
               />
-            </ScrollView>
+            </View>
 
             <View>
               <Text style={{ marginBottom: 9 }}>End Date</Text>
