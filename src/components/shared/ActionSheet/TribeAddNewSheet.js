@@ -133,19 +133,9 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      // if (
-      //   locationOn &&
-      //   location
-      //   && status
-      // ) {
-      //   toggleAttendance();
-      // }
       if (!locationOn) {
         showAlertToActivateLocation();
-      } else if (
-        !location
-        // || !status
-      ) {
+      } else if (!location) {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
       } else if (location && locationOn) {
@@ -155,9 +145,6 @@ const TribeAddNewSheet = (props) => {
         ) {
           toggleAttendanceModal();
 
-          // if (location && locationOn) {
-          // toggleClockModal();
-          // }
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           // Toast.show("You already checked out at this time", ErrorToastProps);
@@ -197,13 +184,6 @@ const TribeAddNewSheet = (props) => {
       console.log(err.message);
     }
   };
-
-  const onSuccessModalOpened = useCallback(() => {
-    // toggleAttendanceModal();
-    setTimeout(() => {
-      toggleClockModal();
-    }, 2000);
-  }, []);
 
   /**
    * Handle change for the location permission status
@@ -307,9 +287,6 @@ const TribeAddNewSheet = (props) => {
                           onClock={attendanceCheckHandler}
                           location={location}
                           locationOn={locationOn}
-                          success={success}
-                          setSuccess={setSuccess}
-                          isLoading={attendanceIsLoading}
                           modalIsOpen={attendanceModalIsopen}
                         />
                       </Pressable>
@@ -375,9 +352,6 @@ const TribeAddNewSheet = (props) => {
                           onClock={attendanceCheckHandler}
                           location={location}
                           locationOn={locationOn}
-                          success={success}
-                          setSuccess={setSuccess}
-                          isLoading={attendanceIsLoading}
                           modalIsOpen={attendanceModalIsopen}
                         />
                       </Pressable>
@@ -400,7 +374,7 @@ const TribeAddNewSheet = (props) => {
           }`}
           hasSuccessFunc={true}
           onSuccess={() => {
-            // toggleClockModal();
+            setSuccess(true);
             toggleAttendance();
             refetchAttendance();
           }}
@@ -413,12 +387,13 @@ const TribeAddNewSheet = (props) => {
           isPatch={false}
           otherModalOpen={true}
           toggleOtherModal={toggleClockModal}
+          successStatus={success}
         />
 
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}
-          multipleModal={true}
+          onSuccess={setSuccess}
           topElement={
             <View style={{ flexDirection: "row" }}>
               <Text

@@ -18,7 +18,10 @@ const GroupSection = ({
       <View style={styles.header}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate("Group Participant")}
+        >
           <MaterialIcons name="add" color="#3F434A" size={15} />
         </TouchableOpacity>
       </View>
@@ -60,7 +63,10 @@ const GroupSection = ({
           <View style={styles.header}>
             <Text style={{ fontWeight: "500", opacity: 0.5 }}>TEAMS</Text>
 
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("Group Participant")}>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate("Group Participant")}
+            >
               <MaterialIcons name="add" color="black" size={15} />
             </TouchableOpacity>
           </View>

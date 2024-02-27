@@ -1,4 +1,4 @@
-import { Dimensions, Platform, Text, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 
 import Button from "../../shared/Forms/Button";
@@ -17,7 +17,9 @@ const MemberListActionModal = ({
   const deviceHeight =
     Platform.OS === "ios"
       ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+      : require("react-native-extra-dimensions-android").get(
+          "REAL_WINDOW_HEIGHT"
+        );
 
   return (
     <Modal
@@ -26,7 +28,7 @@ const MemberListActionModal = ({
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
-      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+      <View style={{ ...styles.container }}>
         <Text style={[{ fontSize: 12 }, TextProps]}>{memberName}</Text>
         {memberAdminStatus ? (
           <Button
@@ -64,3 +66,13 @@ const MemberListActionModal = ({
 };
 
 export default MemberListActionModal;
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    gap: 10,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+});

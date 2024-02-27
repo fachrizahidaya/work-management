@@ -29,15 +29,14 @@ const ConfirmationModal = ({
   color,
   hasSuccessFunc = false,
   onSuccess,
-  header,
   description,
   body = {},
   isDelete = true,
   isPatch = false,
   isGet = false,
-  placement,
   otherModalOpen,
   toggleOtherModal,
+  successStatus,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -84,7 +83,7 @@ const ConfirmationModal = ({
       hideModalContentWhileAnimating={true}
       useNativeDriver={false}
       onModalHide={() => {
-        if (otherModalOpen) {
+        if (otherModalOpen && successStatus) {
           toggleOtherModal();
         } else {
           null;

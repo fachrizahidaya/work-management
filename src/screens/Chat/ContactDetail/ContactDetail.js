@@ -98,6 +98,12 @@ const ContactDetail = () => {
     fetchUserParameters
   );
 
+  const fetchMorUser = () => {
+    if (currentPage < userList?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   /**
    * Fetch members of selected group
    */
@@ -232,12 +238,6 @@ const ContactDetail = () => {
     }
   };
 
-  const fetchMoreData = () => {
-    if (currentPage < userList?.data?.last_page) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
@@ -313,11 +313,7 @@ const ContactDetail = () => {
         <SafeAreaView style={styles.container}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "#FFFFFF",
-              paddingVertical: 14,
-              paddingHorizontal: 16,
+              ...styles.header,
             }}
           >
             <View
@@ -333,10 +329,7 @@ const ContactDetail = () => {
           </View>
           <View
             style={{
-              flex: 1,
-              position: "relative",
-              gap: 10,
-              backgroundColor: "#FAFAFA",
+              ...styles.content,
             }}
           >
             <ContactAvatar
@@ -348,6 +341,7 @@ const ContactDetail = () => {
               position={position}
               currentUserIsAdmin={currentUserIsAdmin}
             />
+
             <ContactInformation
               type={type}
               selectedGroupMembers={selectedGroupMembers}
@@ -360,13 +354,16 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
+
             {/* <ContactMedia
               qty={media?.data?.length + document?.data?.length}
               media={media?.data}
               docs={document?.data}
               navigation={navigation}
             /> */}
+
             {/* <ContactPersonalized /> */}
+
             <ContactAction
               type={type}
               active_member={active_member}
@@ -375,6 +372,8 @@ const ContactDetail = () => {
               toggleDeleteGroupModal={toggleDeleteGroupModal}
             />
           </View>
+
+          {/* Confirmation modal to delete personal chat or exit group */}
           <RemoveConfirmationModal
             isOpen={
               type === "personal"
@@ -408,6 +407,8 @@ const ContactDetail = () => {
               type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading
             }
           />
+
+          {/* Confirmation modal to remove member from group */}
           <RemoveConfirmationModal
             isOpen={removeMemberActionIsopen}
             toggle={toggleRemoveMemberAction}
@@ -417,6 +418,8 @@ const ContactDetail = () => {
             }}
             isLoading={removeMemberIsLoading}
           />
+
+          {/* Confirmation modal to clear chat */}
           <RemoveConfirmationModal
             isOpen={clearChatMessageIsOpen}
             toggle={toggleClearChatMessage}
@@ -427,6 +430,8 @@ const ContactDetail = () => {
               navigation.navigate("Chat List");
             }}
           />
+
+          {/* If user as group admin, user can add member, delete member, etc. */}
           <UserListModal
             roomId={roomId}
             memberListIsopen={memberListIsopen}
@@ -436,7 +441,7 @@ const ContactDetail = () => {
             inputToShow={inputToShow}
             setInputToShow={setInputToShow}
             setSearchInput={setSearchInput}
-            fetchMoreData={fetchMoreData}
+            fetchMoreData={fetchMorUser}
             cumulativeData={cumulativeData}
             filteredDataArray={filteredDataArray}
             userListIsLoading={userListIsLoading}
@@ -472,5 +477,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  content: {
+    flex: 1,
+    position: "relative",
+    gap: 10,
+    backgroundColor: "#FAFAFA",
   },
 });
