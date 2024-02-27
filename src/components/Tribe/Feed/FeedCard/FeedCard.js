@@ -1,6 +1,14 @@
 import { memo, useCallback } from "react";
 
-import { Clipboard,  Linking, StyleSheet, View, ActivityIndicator } from "react-native";
+import {
+  Clipboard,
+  Linking,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  FlatList,
+  Platform,
+} from "react-native";
 import Toast from "react-native-root-toast";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -36,7 +44,7 @@ const FeedCard = ({
    */
   const postLikeToggleHandler = async (post_id, action) => {
     try {
-     await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
       refetchPost();
       console.log("Process success");
     } catch (err) {
@@ -75,7 +83,7 @@ const FeedCard = ({
     <View style={styles.container}>
       <FlashList
         removeClippedSubviews={true}
-        ref={scrollNewMessage ? flashListRef : null}
+        // ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
         onEndReachedThreshold={0.1}
@@ -134,6 +142,6 @@ export default memo(FeedCard);
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 14,
-    flex:1
+    flex: 1,
   },
 });

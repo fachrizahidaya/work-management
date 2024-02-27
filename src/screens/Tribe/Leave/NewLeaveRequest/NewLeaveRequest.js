@@ -23,7 +23,10 @@ import { useFetch } from "../../../../hooks/useFetch";
 import NewLeaveRequestForm from "../../../../components/Tribe/Leave/NewLeaveRequestForm";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 
 const NewLeaveRequest = () => {
   const [availableLeaves, setAvailableLeaves] = useState(null);
@@ -46,7 +49,8 @@ const NewLeaveRequest = () => {
 
   const { employeeId, isOpen, toggle } = route.params;
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
 
   const navigation = useNavigation();
 
@@ -101,11 +105,16 @@ const NewLeaveRequest = () => {
     let availableLeave = [];
     leaveHistory?.data.map((item) => {
       if (item?.active) {
-        const index = availableLeave.findIndex((leave) => leave?.leave_name === item?.name); // Fix: use item?.name instead of leaveHistory?.name
+        const index = availableLeave.findIndex(
+          (leave) => leave?.leave_name === item?.name
+        ); // Fix: use item?.name instead of leaveHistory?.name
         if (availableLeave.length > 0 && index > -1) {
           availableLeave[index].quota += item?.quota;
         } else {
-          availableLeave.push({ leave_name: item?.leave_name, quota: item?.quota });
+          availableLeave.push({
+            leave_name: item?.leave_name,
+            quota: item?.quota,
+          });
         }
       }
     });
@@ -151,8 +160,14 @@ const NewLeaveRequest = () => {
         end_date: formik.values.end_date,
       });
       formik.setFieldValue("days", res.data.days);
-      formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
-      formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
+      formik.setFieldValue(
+        "begin_date",
+        dayjs(res.data.begin_date).format("YYYY-MM-DD")
+      );
+      formik.setFieldValue(
+        "end_date",
+        dayjs(res.data.end_date).format("YYYY-MM-DD")
+      );
       setIsLoading(false);
       setFormError(false);
       Toast.show("Leave Request available", SuccessToastProps);
@@ -179,7 +194,9 @@ const NewLeaveRequest = () => {
       leave_id: yup.string().required("Leave Type is required"),
       reason: yup.string().required("Purpose of Leave is required"),
       begin_date: yup.date().required("Start date is required"),
-      end_date: yup.date().min(yup.ref("begin_date"), "End date can't be less than start date"),
+      end_date: yup
+        .date()
+        .min(yup.ref("begin_date"), "End date can't be less than start date"),
     }),
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       setStatus("processing");
@@ -232,7 +249,9 @@ const NewLeaveRequest = () => {
 
   useEffect(() => {
     setSelectedGenerateType(() => {
-      const selectedLeave = leaveType?.data.find((leave) => leave.id === formik.values.leave_id);
+      const selectedLeave = leaveType?.data.find(
+        (leave) => leave.id === formik.values.leave_id
+      );
       return selectedLeave?.generate_type;
     });
   }, [formik.values.leave_id]);
@@ -255,16 +274,23 @@ const NewLeaveRequest = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {isReady ? (
           <View style={{ ...styles.container, width: width, height: height }}>
             <PageHeader
               title="New Leave Request"
               onPress={
-                formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                formik.values.leave_id ||
+                formik.values.reason ||
+                formik.values.begin_date ||
+                formik.values.end_date
+                  ? !formik.isSubmitting &&
+                    formik.status !== "processing" &&
+                    toggleReturnModal
                   : () => {
-                      !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
+                      !formik.isSubmitting &&
+                        formik.status !== "processing" &&
+                        formik.resetForm();
                       navigation.goBack();
                     }
               }
@@ -286,12 +312,23 @@ const NewLeaveRequest = () => {
                   <ActivityIndicator />
                 </View>
               ) : !availableLeaves ? (
-                <Text style={{ fontSize: 14, fontWeight: "400" }}>You don't have any leave quota</Text>
+                <Text style={{ fontSize: 14, fontWeight: "400" }}>
+                  You don't have any leave quota
+                </Text>
               ) : (
                 availableLeaves?.map((item, index) => {
                   return (
-                    <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
-                      <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
+                    <View
+                      key={index}
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 10,
+                      }}
+                    >
+                      <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                        {item.quota}
+                      </Text>
                       <Text style={styles.name}>{item.leave_name}</Text>
                     </View>
                   );
@@ -306,7 +343,11 @@ const NewLeaveRequest = () => {
               onChangeEndDate={onChangeEndDate}
               isLoading={isLoading}
               isError={isError}
-              leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
+              leaveType={
+                filteredType.length > 0
+                  ? leaveOptionsFiltered
+                  : leaveOptionsUnfiltered
+              }
               reference={selectLeaveTypeScreenSheetRef}
               handleSearch={handleSearch}
               inputToShow={inputToShow}

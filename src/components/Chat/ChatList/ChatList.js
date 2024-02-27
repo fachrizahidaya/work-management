@@ -1,15 +1,14 @@
-import { useCallback, useState, memo } from "react";
+import { useCallback, useState, memo, useRef } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { View, ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
 import ImageAttachment from "../Attachment/ImageAttachment";
 import FileAttachment from "../Attachment/FileAttachment";
 import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPreview";
-import { ScrollView } from "react-native-gesture-handler";
 
 const ChatList = ({
   type,
@@ -28,9 +27,10 @@ const ChatList = ({
   userSelector,
   navigation,
   filteredSearch,
-  scrollRef,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+
+  const scrollRef = useRef(null)
 
   /**
    * Decide when username should be rendered at
@@ -78,11 +78,10 @@ const ChatList = ({
   );
 
   return (
-    <View style={{ flex: 1, position: "relative", backgroundColor: "#FAFAFA" }}>
-      {/* <ScrollView style={{ flex: 1 }} ref={scrollRef}> */}
+    <>
       <FlashList
-        inverted
-        ref={scrollRef}
+      showsVerticalScrollIndicator={false}
+      inverted
         ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
@@ -133,7 +132,6 @@ const ChatList = ({
           </>
         )}
       />
-      {/* </ScrollView> */}
 
       {fileAttachment && (
         <>
@@ -152,7 +150,7 @@ const ChatList = ({
           setBandAttachment={setBandAttachment}
         />
       )}
-    </View>
+    </>
   );
 };
 

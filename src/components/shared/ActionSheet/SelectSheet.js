@@ -12,7 +12,7 @@ const SelectSheet = ({ reference, children, onChange }) => {
               children.map((item, idx) => {
                 return (
                   <TouchableOpacity key={idx} onPress={() => onChange(item.value)} style={styles.menuItem}>
-                    <Text style={(TextProps, { fontSize: 16 })}>{item.label}</Text>
+                    <Text style={[TextProps, { fontSize: 16 }]}>{item.label}</Text>
                   </TouchableOpacity>
                 );
               })}

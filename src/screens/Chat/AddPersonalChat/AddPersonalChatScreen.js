@@ -4,7 +4,13 @@ import { useSelector } from "react-redux";
 
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../hooks/useFetch";
@@ -29,7 +35,11 @@ const AddPersonalChatScreen = () => {
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
+  const { data, isLoading } = useFetch(
+    "/chat/user",
+    [currentPage, searchKeyword],
+    userFetchParameters
+  );
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -68,9 +78,17 @@ const AddPersonalChatScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, gap: 5 }}>
-        <View style={{ justifyContent: "space-between", paddingVertical: 14, paddingHorizontal: 16 }}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+          }}
+        >
           <PageHeader title="New Chat" onPress={() => navigation.goBack()} />
-          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>{data?.data?.total} users</Text>
+          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>
+            {data?.data?.total} users
+          </Text>
         </View>
 
         <View style={{ flex: 1, gap: 15, paddingHorizontal: 16 }}>

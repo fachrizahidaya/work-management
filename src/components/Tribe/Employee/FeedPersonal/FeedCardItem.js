@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Pressable,
+  Text,
+  Image,
+} from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -60,14 +67,20 @@ const FeedCardItem = ({
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
+    specificEmployee = employeeUsername?.find((employee) =>
+      item?.includes(employee.username)
+    );
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
 
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => handleLinkPress(item)}
+        >
           {item}{" "}
         </Text>
       );
@@ -97,14 +110,22 @@ const FeedCardItem = ({
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => copyToClipboard(item)}
+        >
           {item}{" "}
         </Text>
       );
     } else if (item.includes("@") && item.includes(".com")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+        <Text
+          key={index}
+          style={textStyle}
+          onPress={() => handleEmailPress(item)}
+        >
           {item}{" "}
         </Text>
       );
@@ -128,19 +149,40 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <Pressable gap={20} style={card.card} onPress={() => navigation.navigate("Post Screen", { id: id })}>
+      <Pressable
+        gap={20}
+        style={card.card}
+        onPress={() => navigation.navigate("Post Screen", { id: id })}
+      >
         <View style={styles.cardHeader}>
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
+          <AvatarPlaceholder
+            image={employeeImage}
+            name={employeeName}
+            size="lg"
+            isThumb={false}
+          />
 
           <View style={{ flex: 1, gap: 5 }}>
             <View style={styles.dockName}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
                 <Text style={[{ fontSize: 14 }, TextProps]}>
-                  {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+                  {employeeName?.length > 30
+                    ? employeeName?.split(" ")[0]
+                    : employeeName}
                 </Text>
                 {type === "Announcement" ? (
-                  <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
-                    <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+                  <View
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: "#ADD7FF",
+                      padding: 5,
+                    }}
+                  >
+                    <Text style={[{ fontSize: 10 }, TextProps]}>
+                      Announcement
+                    </Text>
                   </View>
                 ) : null}
               </View>
@@ -161,7 +203,13 @@ const FeedCardItem = ({
                               paddingBottom: -20,
                             }}
                           >
-                            <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                            <View
+                              style={{
+                                gap: 1,
+                                backgroundColor: "#F5F5F5",
+                                borderRadius: 10,
+                              }}
+                            >
                               <TouchableOpacity
                                 onPress={async () => {
                                   await SheetManager.hide("form-sheet");
@@ -174,7 +222,14 @@ const FeedCardItem = ({
                                   borderBottomColor: "#FFFFFF",
                                 }}
                               >
-                                <Text style={[{ fontSize: 16 }, TextProps]}>Edit Post</Text>
+                                <Text style={[{ fontSize: 16 }, TextProps]}>
+                                  Edit
+                                </Text>
+                                <MaterialCommunityIcons
+                                  name="file-edit"
+                                  size={20}
+                                  color="#176688"
+                                />
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={async () => {
@@ -188,7 +243,22 @@ const FeedCardItem = ({
                                   borderBottomColor: "#FFFFFF",
                                 }}
                               >
-                                <Text style={[{ fontSize: 16, fontWeight:'400', color: "#D64B4B" }]}>Delete Post</Text>
+                                <Text
+                                  style={[
+                                    {
+                                      fontSize: 16,
+                                      fontWeight: "700",
+                                      color: "#EB0E29",
+                                    },
+                                  ]}
+                                >
+                                  Delete
+                                </Text>
+                                <MaterialCommunityIcons
+                                  name="trash-can-outline"
+                                  color="#EB0E29"
+                                  size={20}
+                                />
                               </TouchableOpacity>
                             </View>
                           </View>
@@ -198,11 +268,18 @@ const FeedCardItem = ({
                     openSelectedPersonalPost(id);
                   }}
                 >
-                  <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
+                  <MaterialCommunityIcons
+                    name="dots-vertical"
+                    size={20}
+                    borderRadius={20}
+                    color="#000000"
+                  />
                 </Pressable>
               )}
             </View>
-            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
+              {dayjs(createdAt).format("MMM DD, YYYY")}
+            </Text>
           </View>
         </View>
 
@@ -210,9 +287,14 @@ const FeedCardItem = ({
 
         {attachment ? (
           <>
-            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+            <TouchableOpacity
+              key={id}
+              onPress={() => attachment && toggleFullScreen(attachment)}
+            >
               <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}` }}
+                source={{
+                  uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
+                }}
                 style={styles.image}
                 alt="Feed Image"
                 resizeMethod="auto"
@@ -229,19 +311,31 @@ const FeedCardItem = ({
                 onCommentToggle(id);
               }}
             >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
+              <MaterialCommunityIcons
+                name="comment-text-outline"
+                size={20}
+                color="#3F434A"
+              />
             </Pressable>
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart" size={20} color="#FD7972" />
+                <MaterialCommunityIcons
+                  name="heart"
+                  size={20}
+                  color="#FD7972"
+                />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
+                <MaterialCommunityIcons
+                  name="heart-outline"
+                  size={20}
+                  color="#3F434A"
+                />
               </Pressable>
             )}
 

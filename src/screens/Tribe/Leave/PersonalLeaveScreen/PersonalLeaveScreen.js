@@ -3,7 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Pressable } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -38,13 +45,17 @@ const PersonalLeaveScreen = () => {
   const [filterYear, setFilterYear] = useState(dayjs().format("YYYY"));
   const [filterType, setFilterType] = useState("personal");
 
-  const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
+  const approvalLeaveRequestCheckAccess = useCheckAccess(
+    "approval",
+    "Leave Requests"
+  );
 
   const cancleScreenSheetRef = useRef(null);
 
   const navigation = useNavigation();
 
-  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
+  const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } =
+    useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
@@ -114,9 +125,12 @@ const PersonalLeaveScreen = () => {
     fetchMoreCanceledParameters
   );
 
-  const { data: personalLeaveRequest, refetch: refetchPersonalLeaveRequest } = useFetch("/hr/leave-requests/personal");
+  const { data: personalLeaveRequest, refetch: refetchPersonalLeaveRequest } =
+    useFetch("/hr/leave-requests/personal");
 
-  const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
+  const { data: teamLeaveRequestData } = useFetch(
+    "/hr/leave-requests/waiting-approval"
+  );
 
   const pending =
     personalLeaveRequest?.data?.filter((item) => {
@@ -202,19 +216,28 @@ const PersonalLeaveScreen = () => {
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data?.length) {
-      setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
+      setApprovedList((prevData) => [
+        ...prevData,
+        ...approvedLeaveRequest?.data?.data,
+      ]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data?.length) {
-      setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
+      setRejectedList((prevData) => [
+        ...prevData,
+        ...rejectedLeaveRequest?.data?.data,
+      ]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (canceledLeaveRequest?.data?.data?.length) {
-      setCanceledList((prevData) => [...prevData, ...canceledLeaveRequest?.data?.data]);
+      setCanceledList((prevData) => [
+        ...prevData,
+        ...canceledLeaveRequest?.data?.data,
+      ]);
     }
   }, [canceledLeaveRequest?.data?.data?.length]);
 
@@ -223,7 +246,9 @@ const PersonalLeaveScreen = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              My Leave Request
+            </Text>
           </View>
 
           {/* <Pressable
@@ -272,14 +297,26 @@ const PersonalLeaveScreen = () => {
             </View>
           </Pressable> */}
 
-          {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
-            <Button
-              height={35}
-              onPress={() => navigation.navigate("Team Leave Request")}
-              padding={5}
-              children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}> My Team</Text>}
-            />
-          )}
+          {teamLeaveRequestData?.data.length > 0 &&
+            approvalLeaveRequestCheckAccess && (
+              <Button
+                height={35}
+                onPress={() => navigation.navigate("Team Leave Request")}
+                padding={5}
+                children={
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {" "}
+                    My Team
+                  </Text>
+                }
+              />
+            )}
         </View>
 
         <>

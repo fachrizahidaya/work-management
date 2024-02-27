@@ -42,7 +42,11 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
+  } = useFetch(
+    "/hr/employees",
+    [currentPage, searchInput],
+    fetchEmployeeContactParameters
+  );
 
   /**
    * Fetch employee contact Handler
@@ -74,7 +78,10 @@ const ContactScreen = () => {
         setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
         setFilteredDataArray([]);
       } else {
-        setFilteredDataArray((prevData) => [...prevData, ...employeeData?.data?.data]);
+        setFilteredDataArray((prevData) => [
+          ...prevData,
+          ...employeeData?.data?.data,
+        ]);
         setContacts([]);
       }
     }
@@ -118,7 +125,10 @@ const ContactScreen = () => {
               onEndReachedThreshold={0.1}
               estimatedItemSize={60}
               onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-              ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
+              ListFooterComponent={() =>
+                employeeDataIsFetching &&
+                hasBeenScrolled && <ActivityIndicator />
+              }
               renderItem={({ item, index }) => (
                 <ContactList
                   key={index}

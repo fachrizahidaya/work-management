@@ -16,7 +16,8 @@ const NewReimbursement = () => {
   const [fileAttachment, setFileAttachment] = useState(null);
   const { width, height } = Dimensions.get("window");
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
 
   const navigation = useNavigation();
 
@@ -64,7 +65,10 @@ const NewReimbursement = () => {
         <PageHeader
           title="New Reimbursement"
           onPress={
-            formik.values.title || formik.values.description || formik.values.total || formik.values.date
+            formik.values.title ||
+            formik.values.description ||
+            formik.values.total ||
+            formik.values.date
               ? toggleReturnModal
               : () => navigation.navigate("Dashboard")
           }
@@ -80,7 +84,11 @@ const NewReimbursement = () => {
           description="If you return, It will be discarded"
         />
 
-        <NewReimbursementForm formik={formik} onSelectFile={selectFile} fileAttachment={fileAttachment} />
+        <NewReimbursementForm
+          formik={formik}
+          onSelectFile={selectFile}
+          fileAttachment={fileAttachment}
+        />
       </View>
     </View>
   );

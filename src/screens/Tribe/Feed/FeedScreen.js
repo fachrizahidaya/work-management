@@ -1,20 +1,24 @@
-FeedScreen
+FeedScreen;
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Dimensions, Platform, StatusBar } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
+import {
+  TextProps,
+  ErrorToastProps,
+} from "../../../components/shared/CustomStylings";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -42,7 +46,8 @@ const FeedScreen = () => {
 
   const flashListRef = useRef(null);
 
-  const { isOpen: postModalIsOpen, toggle: togglePostModal } = useDisclosure(false);
+  const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } =
+    useDisclosure(false);
 
   /**
    * Toggle fullscreen image
@@ -55,7 +60,7 @@ const FeedScreen = () => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 10,
   };
 
   const {
@@ -63,7 +68,11 @@ const FeedScreen = () => {
     refetch: refetchPost,
     isFetching: postIsFetching,
     isLoading: postIsLoading,
-  } = useFetch("/hr/posts", [reloadPost, currentOffsetPost], postFetchParameters);
+  } = useFetch(
+    "/hr/posts",
+    [reloadPost, currentOffsetPost],
+    postFetchParameters
+  );
 
   // Parameters for fetch comments
   const commentsFetchParameters = {
@@ -76,11 +85,19 @@ const FeedScreen = () => {
     isFetching: commentIsFetching,
     isLoading: commentIsLoading,
     refetch: refetchComment,
-  } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
+  } = useFetch(
+    `/hr/posts/${postId}/comment`,
+    [reloadComment, currentOffsetComments],
+    commentsFetchParameters
+  );
 
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const {
+    data: employees,
+    isFetching: employeesIsFetching,
+    refetch: refetchEmployees,
+  } = useFetch("/hr/employees");
   const employeeUsername = employees?.data?.map((item) => {
     return {
       username: item.username,
@@ -219,18 +236,19 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
-  
-
   return (
     <>
-      <StatusBar animated={true} backgroundColor={postModalIsOpen ? "#176688" : null} />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>
+              News
+            </Text>
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
-          <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
+          <Text style={[{ fontWeight: "700" }, TextProps]}>
+            {userSelector?.company}
+          </Text>
         </View>
 
         <Pressable
@@ -244,8 +262,7 @@ const FeedScreen = () => {
               loggedEmployeeDivision: profile?.data?.position_id,
               scrollNewMessage: scrollNewMessage,
               setScrollNewMessage: setScrollNewMessage,
-              isOpen: postModalIsOpen,
-              toggle: togglePostModal,
+              toggleSuccess: togglePostSuccess,
             });
           }}
         >
@@ -300,8 +317,30 @@ const FeedScreen = () => {
           reference={commentScreenSheetRef}
         />
       </SafeAreaView>
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
-      
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPicture}
+      />
+      <SuccessModal
+        isOpen={postSuccessIsOpen}
+        toggle={togglePostSuccess}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>
+              Post{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              shared!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Thank you for contributing to the community
+          </Text>
+        }
+      />
     </>
   );
 };

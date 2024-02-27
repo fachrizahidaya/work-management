@@ -1,6 +1,12 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -42,11 +48,27 @@ const MyTeamLeaveRequestItem = ({
       }}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <AvatarPlaceholder image={employee_image} name={employee_name} size="lg" isThumb={false} />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <AvatarPlaceholder
+            image={employee_image}
+            name={employee_name}
+            size="lg"
+            isThumb={false}
+          />
           <View style={{ gap: 3 }}>
-            <Text style={{ fontSize: 16, fontWeight: "500", color: "#3F434A" }}>{employee_name}</Text>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: "#377893" }}>{leave_name}</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500", color: "#3F434A" }}>
+              {employee_name}
+            </Text>
+            <Text style={{ fontSize: 14, fontWeight: "400", color: "#377893" }}>
+              {leave_name}
+            </Text>
           </View>
         </View>
         {status === "Pending" ? (
@@ -65,54 +87,96 @@ const MyTeamLeaveRequestItem = ({
                         paddingBottom: -20,
                       }}
                     >
-                                                  <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
-
-                      <TouchableOpacity
-                        onPress={async () => {
-                          await SheetManager.hide("form-sheet");
-                          responseHandler("Approved", item);
-                        }}
+                      <View
                         style={{
-                          ...styles.containerApproval,
-                          justifyContent: "space-between",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "#FFFFFF",
+                          gap: 1,
+                          backgroundColor: "#F5F5F5",
+                          borderRadius: 10,
                         }}
                       >
-                        <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Approve</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={async () => {
-                          await SheetManager.hide("form-sheet");
-                          responseHandler("Rejected", item);
-                        }}
-                        style={{
-                          ...styles.containerApproval,
-                          justifyContent: "space-between",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "#FFFFFF",
-                        }}
-                      >
-                        <Text style={[{ fontSize: 16, fontWeight: "400", color: "#D64B4B" }]}>Decline</Text>
-                      </TouchableOpacity>
-                                                  </View>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            await SheetManager.hide("form-sheet");
+                            responseHandler("Approved", item);
+                          }}
+                          style={{
+                            ...styles.containerApproval,
+                            justifyContent: "space-between",
+                            borderBottomWidth: 1,
+                            borderBottomColor: "#FFFFFF",
+                          }}
+                        >
+                          <Text
+                            style={[
+                              { fontSize: 16, fontWeight: "400" },
+                              TextProps,
+                            ]}
+                          >
+                            Approve
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            await SheetManager.hide("form-sheet");
+                            responseHandler("Rejected", item);
+                          }}
+                          style={{
+                            ...styles.containerApproval,
+                            justifyContent: "space-between",
+                            borderBottomWidth: 1,
+                            borderBottomColor: "#FFFFFF",
+                          }}
+                        >
+                          <Text
+                            style={[
+                              {
+                                fontSize: 16,
+                                fontWeight: "400",
+                                color: "#D64B4B",
+                              },
+                            ]}
+                          >
+                            Decline
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   ),
                 },
               })
             }
           >
-            <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" style={{ borderRadius: 20 }} />
+            <MaterialCommunityIcons
+              name="dots-vertical"
+              size={20}
+              color="#3F434A"
+              style={{ borderRadius: 20 }}
+            />
           </Pressable>
         ) : null}
       </View>
 
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 5,
+        }}
+      >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{item?.reason}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>
+            {item?.reason}
+          </Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -123,14 +187,18 @@ const MyTeamLeaveRequestItem = ({
             backgroundColor: "#F8F8F8",
           }}
         >
-          <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
+          <MaterialCommunityIcons
+            name="calendar-month"
+            size={20}
+            color="#3F434A"
+          />
           {/* <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text> */}
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-            {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
+            {dayjs(begin_date).format("DD MMM YYYY")} -{" "}
+            {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
             {days < 2 ? "day" : "days"}
           </Text>
         </View>
-       
       </View>
     </View>
   );

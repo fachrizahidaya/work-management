@@ -1,4 +1,4 @@
-NewFeedScreen
+NewFeedScreen;
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -9,7 +9,14 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import { useRoute } from "@react-navigation/native";
 
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text, ScrollView } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,7 +30,11 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  TextProps,
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 
 const NewFeedScreen = () => {
   const [image, setImage] = useState(null);
@@ -32,7 +43,8 @@ const NewFeedScreen = () => {
   const [isReady, setIsReady] = useState(false);
   const [dateShown, setDateShown] = useState(false);
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
+    useDisclosure(false);
 
   const postActionScreenSheetRef = useRef(null);
 
@@ -54,11 +66,14 @@ const NewFeedScreen = () => {
     postRefetchHandler,
     scrollNewMessage,
     setScrollNewMessage,
-    isOpen,
-    toggle,
+    toggleSuccess,
   } = route.params;
 
-  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const {
+    data: employees,
+    isFetching: employeesIsFetching,
+    refetch: refetchEmployees,
+  } = useFetch("/hr/employees");
 
   /**
    * Submit a post handler
@@ -75,9 +90,10 @@ const NewFeedScreen = () => {
       });
       setSubmitting(false);
       setStatus("success");
-      setScrollNewMessage(!scrollNewMessage);
+      // setScrollNewMessage(!scrollNewMessage);
       postRefetchHandler();
-      Toast.show("Posted successfully!", SuccessToastProps);
+      toggleSuccess();
+      // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -211,9 +227,13 @@ const NewFeedScreen = () => {
                 title="New Post"
                 onPress={
                   formik.values.content || image !== null
-                    ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                    ? !formik.isSubmitting &&
+                      formik.status !== "processing" &&
+                      toggleReturnModal
                     : () => {
-                        !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
+                        !formik.isSubmitting &&
+                          formik.status !== "processing" &&
+                          navigation.goBack();
                         formik.resetForm();
                         setImage(null);
                       }
@@ -232,32 +252,65 @@ const NewFeedScreen = () => {
             />
             <View style={styles.container}>
               <View
-                style={{ ...styles.inputHeader, alignItems: formik.values.type === "Public" ? "center" : "center" }}
+                style={{
+                  ...styles.inputHeader,
+                  alignItems:
+                    formik.values.type === "Public" ? "center" : "center",
+                }}
               >
-                <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="lg" isThumb={false} />
+                <AvatarPlaceholder
+                  image={loggedEmployeeImage}
+                  name={loggedEmployeeName}
+                  size="lg"
+                  isThumb={false}
+                />
                 <View style={{ gap: 5 }}>
                   <Button
                     disabled={checkAccess ? false : true}
                     padding={8}
                     height={32}
                     backgroundColor="#FFFFFF"
-                    onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
+                    onPress={() =>
+                      checkAccess
+                        ? postActionScreenSheetRef.current?.show()
+                        : null
+                    }
                     borderRadius={15}
                     variant="outline"
                     children={
-                      <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
-                        {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Text style={[{ fontSize: 10 }, TextProps]}>
+                          {formik.values.type}
+                        </Text>
+                        {checkAccess ? (
+                          <MaterialCommunityIcons
+                            name="chevron-down"
+                            color="#3F434A"
+                          />
+                        ) : null}
                       </View>
                     }
                   />
                   {formik.values.type === "Public" ? (
                     ""
                   ) : (
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                      <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="clock-time-three-outline"
+                        color="#3F434A"
+                      />
                       <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                        {!formik.values.end_date
+                          ? "Please select"
+                          : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                       </Text>
                     </View>
                   )}

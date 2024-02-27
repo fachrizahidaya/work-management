@@ -1,17 +1,19 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
-import { Text } from "react-native";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
@@ -82,10 +84,14 @@ const MyTeamLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
+  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch(
+    "/hr/leave-requests/my-team"
+  );
 
-  const {isOpen: approvalModalIsOpen, toggle: toggleApprovalModal} = useDisclosure(false)
-  const {isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal} = useDisclosure(false)
+  const { isOpen: approvalModalIsOpen, toggle: toggleApprovalModal } =
+    useDisclosure(false);
+  const { isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal } =
+    useDisclosure(false);
 
   const pending =
     teamLeaveRequest?.data?.filter((item) => {
@@ -142,10 +148,10 @@ const MyTeamLeaveScreen = () => {
       setStatus("success");
       refetchPendingLeaveRequest();
       refetchTeamLeaveRequest();
-      if (data.status === 'Approved') {
-        toggleApprovalModal()
+      if (data.status === "Approved") {
+        toggleApprovalModal();
       } else {
-        toggleRejectionModal()
+        toggleRejectionModal();
       }
       // Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
@@ -180,13 +186,19 @@ const MyTeamLeaveScreen = () => {
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data?.length) {
-      setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
+      setApprovedList((prevData) => [
+        ...prevData,
+        ...approvedLeaveRequest?.data?.data,
+      ]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data?.length) {
-      setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
+      setRejectedList((prevData) => [
+        ...prevData,
+        ...rejectedLeaveRequest?.data?.data,
+      ]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
 
@@ -196,7 +208,10 @@ const MyTeamLeaveScreen = () => {
         {isReady ? (
           <>
             <View style={styles.header}>
-              <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
+              <PageHeader
+                title="My Team Leave Request"
+                onPress={() => navigation.goBack()}
+              />
             </View>
 
             <MyTeamLeaveRequestList
@@ -230,24 +245,44 @@ const MyTeamLeaveScreen = () => {
           </>
         ) : null}
       </SafeAreaView>
-      <SuccessModal isOpen={approvalModalIsOpen} toggle={toggleApprovalModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Approval </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>confirmed!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for your prompt action</Text>
-
-      } />
-      <SuccessModal isOpen={rejectionModalIsOpen} toggle={toggleRejectionModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Decline </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>with thanks!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Requester will be notified of the decline</Text>
-
-      } />
+      <SuccessModal
+        isOpen={approvalModalIsOpen}
+        toggle={toggleApprovalModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>
+              Approval{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              confirmed!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Thank you for your prompt action
+          </Text>
+        }
+      />
+      <SuccessModal
+        isOpen={rejectionModalIsOpen}
+        toggle={toggleRejectionModal}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>
+              Decline{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              with thanks!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Requester will be notified of the decline
+          </Text>
+        }
+      />
     </>
   );
 };

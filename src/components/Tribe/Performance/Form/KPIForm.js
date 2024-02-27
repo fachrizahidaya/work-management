@@ -1,6 +1,12 @@
 import React from "react";
 
-import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Keyboard,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 import Input from "../../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
@@ -15,19 +21,36 @@ const KPIForm = ({
   handleClose,
   achievement,
   target,
-  onChange,
   achievementValue,
 }) => {
   return (
     <ActionSheet
       ref={reference}
       closeOnPressBack={false}
-      closeOnTouchBackdrop={achievementValue == formik.values.actual_achievement ? true : false}
+      closeOnTouchBackdrop={
+        achievementValue == formik.values.actual_achievement ? true : false
+      }
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ display: "flex", gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
+        <View
+          style={{
+            display: "flex",
+            gap: 21,
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            paddingBottom: 40,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              Actual Achievement
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 if (achievement == formik.values.actual_achievement) {
@@ -38,7 +61,14 @@ const KPIForm = ({
                 }
               }}
             >
-              <Text style={{ opacity: achievement == formik.values.actual_achievement ? 0.5 : 1 }}>Save</Text>
+              <Text
+                style={{
+                  opacity:
+                    achievement == formik.values.actual_achievement ? 0.5 : 1,
+                }}
+              >
+                Save
+              </Text>
             </TouchableOpacity>
           </View>
           <Text>{description}</Text>
@@ -62,7 +92,11 @@ const KPIForm = ({
             formik={formik}
             title="Actual Achievement"
             fieldName="actual_achievement"
-            value={achievementValue === achievement ? formik.values.actual_achievement : achievementValue}
+            value={
+              achievementValue === achievement
+                ? formik.values.actual_achievement
+                : achievementValue
+            }
             placeHolder="Input Number Only"
             keyboardType="numeric"
             onChangeText={(value) => {

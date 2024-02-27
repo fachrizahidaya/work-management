@@ -9,7 +9,6 @@ import {
   Text,
   Pressable,
   ScrollView,
-  
 } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { replaceMentionValues } from "react-native-controlled-mentions";
@@ -39,13 +38,18 @@ const FeedComment = ({
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
-  const employeeData = employees?.map(({ id, username }) => ({ id, name: username }));
+  const employeeData = employees?.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
 
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
+    const data = employeeData.filter((one) =>
+      one.name.toLowerCase().includes(keyword.toLowerCase())
+    );
 
     return (
       <ScrollView style={{ maxHeight: 100 }}>
@@ -55,8 +59,14 @@ const FeedComment = ({
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "400" }}>{item.name}</Text>
+            <Pressable
+              key={index}
+              onPress={() => onSuggestionPress(item)}
+              style={{ padding: 12 }}
+            >
+              <Text style={{ fontSize: 12, fontWeight: "400" }}>
+                {item.name}
+              </Text>
             </Pressable>
           )}
         />
@@ -68,7 +78,11 @@ const FeedComment = ({
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
+    setSuggestions(
+      employees.filter((employee) =>
+        employee.name.toLowerCase().includes(lastWord.toLowerCase())
+      )
+    );
   };
 
   /**
@@ -137,7 +151,6 @@ const FeedComment = ({
           paddingHorizontal: 20,
           flexDirection: "column",
           justifyContent: "center",
-          
         }}
       >
         <FeedCommentList
@@ -163,7 +176,6 @@ const FeedComment = ({
         renderSuggestions={renderSuggestions}
         handleChange={handleChange}
         formik={formik}
-       
       />
     </ActionSheet>
   );

@@ -16,7 +16,10 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
@@ -45,16 +48,21 @@ const EmployeeProfileScreen = ({ route }) => {
   const [filteredType, setFilteredType] = useState([]);
   const [teammatesData, setTeammatesData] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
+  const [deletePostSuccess, setDeletePostSuccess] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
   const teammatesScreenSheetRef = useRef(null);
 
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
-  const {isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal} = useDisclosure(false)
-  const {isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal} = useDisclosure(false)
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
+    useDisclosure(false);
+  const { isOpen: editModalIsOpen, toggle: toggleEditModal } =
+    useDisclosure(false);
+  const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } =
+    useDisclosure(false);
+  const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } =
+    useDisclosure(false);
 
   const { height } = Dimensions.get("screen");
 
@@ -64,7 +72,7 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
-  const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
+  const checkAccess = menuSelector[1].sub[2]?.actions.create_announcement;
 
   const fetchTeammatesParameters = {
     search: searchInput,
@@ -72,11 +80,15 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
-  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
+  const { data: teammates } = useFetch(
+    `/hr/employees/${employeeId}/team`,
+    [searchInput],
+    fetchTeammatesParameters
+  );
 
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const { data: employees, isFetching: employeesIsFetching, refetch: refetchEmployees } = useFetch("/hr/employees");
+  const { data: employees } = useFetch("/hr/employees");
   const employeeUsername = employees?.data?.map((item, index) => {
     return {
       username: item.username,
@@ -88,7 +100,7 @@ const EmployeeProfileScreen = ({ route }) => {
   // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 20,
+    limit: 10,
   };
 
   const {
@@ -96,7 +108,11 @@ const EmployeeProfileScreen = ({ route }) => {
     refetch: refetchPersonalPost,
     isFetching: personalPostIsFetching,
     isLoading: personalPostIsLoading,
-  } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reloadPost, currentOffsetPost], postFetchParameters);
+  } = useFetch(
+    `/hr/posts/personal/${employee?.data?.id}`,
+    [reloadPost, currentOffsetPost],
+    postFetchParameters
+  );
 
   const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
 
@@ -111,7 +127,11 @@ const EmployeeProfileScreen = ({ route }) => {
     isFetching: commentIsFetching,
     isLoading: commentIsLoading,
     refetch: refetchComment,
-  } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComment], commentsFetchParameters);
+  } = useFetch(
+    `/hr/posts/${postId}/comment`,
+    [reloadComment, currentOffsetComment],
+    commentsFetchParameters
+  );
 
   /**
    * Fetch more Posts handler
@@ -177,7 +197,6 @@ const EmployeeProfileScreen = ({ route }) => {
     });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
-    // refetchPersonalPost();
     setForceRerender(!forceRerender);
   };
 
@@ -245,10 +264,10 @@ const EmployeeProfileScreen = ({ route }) => {
       });
       setSubmitting(false);
       setStatus("success");
+      setPosts([]);
       postRefetchHandler();
       setIsLoading(false);
-      // toggleEditModal();
-      toggleUpdatePostModal()
+      toggleUpdatePostModal();
       // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -350,9 +369,15 @@ const EmployeeProfileScreen = ({ route }) => {
         {isReady ? (
           <>
             <>
-              <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+              <View
+                style={isHeaderSticky ? styles.stickyHeader : styles.header}
+              >
                 <PageHeader
-                  title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                  title={
+                    employee?.data?.name.length > 30
+                      ? employee?.data?.name.split(" ")[0]
+                      : employee?.data?.name
+                  }
                   onPress={() => {
                     navigation.goBack();
                   }}
@@ -383,6 +408,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   toggleEditModal={toggleEditModal}
                   reference={teammatesScreenSheetRef}
                   navigation={navigation}
+                  postRefetchHandler={postRefetchHandler}
                 />
 
                 <FeedComment
@@ -410,7 +436,11 @@ const EmployeeProfileScreen = ({ route }) => {
           </>
         ) : null}
       </SafeAreaView>
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPost}
+      />
       <EditPersonalPost
         isVisible={editModalIsOpen}
         onBackdrop={closeSelectedPersonalPost}
@@ -435,13 +465,18 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
-          refetchPersonalPost();
-          toggleDeletePostModal()
+          setDeletePostSuccess(true);
+          setPosts([]);
+          postRefetchHandler();
         }}
         description="Are you sure to delete this post?"
-        successMessage={null}
+        successMessage={"Post deleted"}
         isDelete={true}
         isPatch={false}
+        otherModal={true}
+        toggleOtherModal={toggleDeletePostModal}
+        successStatus={deletePostSuccess}
+        showSuccessToast={false}
       />
       <EmployeeTeammates
         teammates={filteredType.length > 0 ? filteredType : teammatesData}
@@ -451,22 +486,27 @@ const EmployeeProfileScreen = ({ route }) => {
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
       />
-      {/* <SuccessModal isOpen={updatePostModalIsOpen} toggle={toggleUpdatePostModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-      } /> */}
-      <SuccessModal isOpen={deletePostModalIsOpen} toggle={toggleDeletePostModal} topElement={
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-      </View>
-      } bottomElement={
-        <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
-      } />
+      <SuccessModal
+        isOpen={deletePostModalIsOpen}
+        toggle={toggleDeletePostModal}
+        onSuccess={setDeletePostSuccess}
+        multipleModal={true}
+        topElement={
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>
+              Changes{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              saved!
+            </Text>
+          </View>
+        }
+        bottomElement={
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Data has successfully deleted
+          </Text>
+        }
+      />
     </>
   );
 };

@@ -78,7 +78,9 @@ const NewLeaveRequestForm = ({
       {isLoading && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <ActivityIndicator />
-          <Text style={[{ fontSize: 10 }, TextProps]}>Checking availability...</Text>
+          <Text style={[{ fontSize: 10 }, TextProps]}>
+            Checking availability...
+          </Text>
         </View>
       )}
 
@@ -88,7 +90,10 @@ const NewLeaveRequestForm = ({
       formik.values.end_date &&
       !isLoading &&
       !isError ? (
-        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+        <FormButton
+          isSubmitting={formik.isSubmitting}
+          onPress={formik.handleSubmit}
+        >
           <Text style={{ color: "#FFFFFF" }}>Submit</Text>
         </FormButton>
       ) : (

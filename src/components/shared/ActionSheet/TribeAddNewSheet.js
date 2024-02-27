@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -23,34 +23,45 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
-import axiosInstance from "../../../config/api";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
+import {
+  TextProps,
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { useLoading } from "../../../hooks/useLoading";
 import SuccessModal from "../Modal/SuccessModal";
+import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState();
   const [status, setStatus] = useState(null);
   const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
-  const [filledLocation, setFilledLocation] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const navigation = useNavigation();
-  const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
+  const createLeaveRequestCheckAccess = useCheckAccess(
+    "create",
+    "Leave Requests"
+  );
 
-  const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
+  const { data: attendance, refetch: refetchAttendance } = useFetch(
+    "/hr/timesheets/personal/attendance-today"
+  );
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
-  const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
+  const { toggle: toggleClockModal, isOpen: clockModalIsOpen } =
+    useDisclosure(false);
+  const {
+    toggle: toggleNewLeaveRequestModal,
+    isOpen: newLeaveRequestModalIsOpen,
+  } = useDisclosure(false);
+  const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } =
+    useDisclosure(false);
 
-  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
-
-  const date = dayjs().format('YYYY-MM-DD')
-  const time = dayjs().format('HH:mm')
+  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } =
+    useLoading(false);
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -122,28 +133,18 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      toggleAttendance();
-      if (locationOn === false  ) {
+      if (!locationOn) {
         showAlertToActivateLocation();
-      } else if (status === false) {
+      } else if (!location) {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
-      } else {
-        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
-          const res = await axiosInstance.post(`/hr/timesheets/personal/attendance-check`, {
-            longitude: location?.coords?.longitude,
-            latitude: location?.coords?.latitude,
-            check_from: "Mobile App",
-            date: date,
-            time: time
-          });
+      } else if (location && locationOn) {
+        if (
+          dayjs().format("HH:mm") !== attendance?.data?.time_out ||
+          !attendance
+        ) {
+          toggleAttendanceModal();
 
-          toggleAttendance();
-          refetchAttendance();
-          if (location && locationOn) { 
-            toggleClockModal();
-
-          }
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
         } else {
           // Toast.show("You already checked out at this time", ErrorToastProps);
@@ -161,7 +162,10 @@ const TribeAddNewSheet = (props) => {
    */
   const getLocation = async () => {
     try {
-      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
+      if (
+        (locationOn == false && status == false) ||
+        (locationOn == false && status == true)
+      ) {
         showAlertToActivateLocation();
         return;
       }
@@ -171,22 +175,15 @@ const TribeAddNewSheet = (props) => {
         showAlertToAllowPermission();
         return;
       }
+      // const { granted } = await Location.getForegroundPermissionsAsync();
 
       const currentLocation = await Location.getCurrentPositionAsync({});
+      // setStatus(granted)
       setLocation(currentLocation);
-      setFilledLocation(currentLocation);
     } catch (err) {
       console.log(err.message);
     }
   };
-
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     attendanceCheckHandler().then(() => {
-  //       setIsLoading(false);
-  //     });
-  //   }
-  // }, [isLoading]);
 
   /**
    * Handle change for the location permission status
@@ -198,9 +195,10 @@ const TribeAddNewSheet = (props) => {
         setLocationOn(isLocationEnabled);
 
         const { granted } = await Location.getForegroundPermissionsAsync();
+        const currentLocation = await Location.getCurrentPositionAsync({});
 
         setStatus(granted);
-        setLocation(filledLocation);
+        setLocation(currentLocation);
       } catch (err) {
         console.log(err);
       }
@@ -211,6 +209,9 @@ const TribeAddNewSheet = (props) => {
       if (nextAppState === "active") {
         // App has come to the foreground
         runThis();
+      } else if (nextAppState !== "active") {
+        setLocation(null);
+        setStatus(null);
       }
     };
 
@@ -226,75 +227,202 @@ const TribeAddNewSheet = (props) => {
     <>
       <ActionSheet ref={props.reference}>
         <View style={styles.container}>
-          {items.slice(0, 2).map((item, idx) => {
-            return item.title !== "Clock in" ? (
-              <TouchableOpacity
-                key={idx}
-                borderColor="#E8E9EB"
-                borderBottomWidth={1}
-                style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}
-                onPress={() => {
-                  if (item.title === "New Leave Request") {
-                    navigation.navigate("New Leave Request", {
-                      employeeId: profile?.data?.id,
-                      isOpen: newLeaveRequestModalIsOpen,
-                      toggle: toggleNewLeaveRequestModal,
-                    });
-                  } else if (item.title === "New Reimbursement") {
-                    navigation.navigate("New Reimbursement");
-                  }
+          {createLeaveRequestCheckAccess
+            ? items.slice(0, 2).map((item, idx) => {
+                return item.title !== "Clock in" ? (
+                  <TouchableOpacity
+                    key={idx}
+                    borderColor="#E8E9EB"
+                    borderBottomWidth={1}
+                    style={{
+                      ...styles.wrapper,
+                      borderBottomWidth: 1,
+                      borderColor: "#E8E9EB",
+                    }}
+                    onPress={() => {
+                      if (item.title === "New Leave Request") {
+                        navigation.navigate("New Leave Request", {
+                          employeeId: profile?.data?.id,
+                          isOpen: newLeaveRequestModalIsOpen,
+                          toggle: toggleNewLeaveRequestModal,
+                        });
+                      } else if (item.title === "New Reimbursement") {
+                        navigation.navigate("New Reimbursement");
+                      }
 
-                  props.reference.current?.hide();
+                      props.reference.current?.hide();
+                    }}
+                  >
+                    <View style={styles.flex}>
+                      <View style={styles.item}>
+                        <MaterialCommunityIcons
+                          name={item.icons}
+                          size={20}
+                          color="#3F434A"
+                        />
+                      </View>
+                      <Text
+                        key={item.title}
+                        style={[{ fontSize: 14 }, TextProps]}
+                      >
+                        {item.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  attendance?.data &&
+                    attendance?.data?.day_type === "Work Day" &&
+                    attendance?.date?.att_type !== "Leave" &&
+                    attendance?.data?.att_type !== "Holiday" && (
+                      <Pressable
+                        key={idx}
+                        style={{
+                          ...styles.wrapper,
+                          borderBottomWidth: 1,
+                          borderColor: "#E8E9EB",
+                        }}
+                      >
+                        <ClockAttendance
+                          attendance={attendance?.data}
+                          onClock={attendanceCheckHandler}
+                          location={location}
+                          locationOn={locationOn}
+                          modalIsOpen={attendanceModalIsopen}
+                        />
+                      </Pressable>
+                    )
+                );
+              })
+            : items.slice(1, 2).map((item, idx) => {
+                return item.title !== "Clock in" ? (
+                  <TouchableOpacity
+                    key={idx}
+                    borderColor="#E8E9EB"
+                    borderBottomWidth={1}
+                    style={{
+                      ...styles.wrapper,
+                      borderBottomWidth: 1,
+                      borderColor: "#E8E9EB",
+                    }}
+                    onPress={() => {
+                      if (item.title === "New Leave Request") {
+                        navigation.navigate("New Leave Request", {
+                          employeeId: profile?.data?.id,
+                          isOpen: newLeaveRequestModalIsOpen,
+                          toggle: toggleNewLeaveRequestModal,
+                        });
+                      } else if (item.title === "New Reimbursement") {
+                        navigation.navigate("New Reimbursement");
+                      }
+
+                      props.reference.current?.hide();
+                    }}
+                  >
+                    <View style={styles.flex}>
+                      <View style={styles.item}>
+                        <MaterialCommunityIcons
+                          name={item.icons}
+                          size={20}
+                          color="#3F434A"
+                        />
+                      </View>
+                      <Text
+                        key={item.title}
+                        style={[{ fontSize: 14 }, TextProps]}
+                      >
+                        {item.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  attendance?.data &&
+                    attendance?.data?.day_type === "Work Day" &&
+                    attendance?.date?.att_type !== "Leave" &&
+                    attendance?.data?.att_type !== "Holiday" && (
+                      <Pressable
+                        key={idx}
+                        style={{
+                          ...styles.wrapper,
+                          borderBottomWidth: 1,
+                          borderColor: "#E8E9EB",
+                        }}
+                      >
+                        <ClockAttendance
+                          attendance={attendance?.data}
+                          onClock={attendanceCheckHandler}
+                          location={location}
+                          locationOn={locationOn}
+                          modalIsOpen={attendanceModalIsopen}
+                        />
+                      </Pressable>
+                    )
+                );
+              })}
+        </View>
+
+        <ConfirmationModal
+          isOpen={attendanceModalIsopen}
+          toggle={toggleAttendanceModal}
+          apiUrl={`/hr/timesheets/personal/attendance-check`}
+          body={{
+            longitude: location?.coords?.longitude,
+            latitude: location?.coords?.latitude,
+            check_from: "Mobile App",
+          }}
+          header={`Confirm ${
+            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+          }`}
+          hasSuccessFunc={true}
+          onSuccess={() => {
+            setSuccess(true);
+            toggleAttendance();
+            refetchAttendance();
+          }}
+          description={`Are you sure want to ${
+            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
+          }?`}
+          successMessage={`Process success`}
+          isDelete={false}
+          isGet={false}
+          isPatch={false}
+          otherModal={true}
+          toggleOtherModal={toggleClockModal}
+          successStatus={success}
+          showSuccessToast={false}
+        />
+
+        <SuccessModal
+          isOpen={clockModalIsOpen}
+          toggle={toggleClockModal}
+          onSuccess={setSuccess}
+          multipleModal={true}
+          topElement={
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                style={{
+                  color: attendance?.data?.time_in ? "#FCFF58" : "#92C4FF",
+                  fontSize: 16,
+                  fontWeight: "500",
                 }}
               >
-                <View style={styles.flex}>
-                  <View style={styles.item}>
-                    <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
-                  </View>
-                  <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                    {item.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              attendance?.data &&
-                attendance?.data?.day_type === "Work Day" &&
-                attendance?.date?.att_type !== "Leave" &&
-                attendance?.data?.att_type !== "Holiday" && (
-                  <Pressable key={idx} style={{ ...styles.wrapper, borderBottomWidth: 1, borderColor: "#E8E9EB" }}>
-                    <ClockAttendance
-                      attendance={attendance?.data}
-                      onClock={attendanceCheckHandler}
-                      location={location}
-                      locationOn={locationOn}
-                      success={success}
-                      setSuccess={setSuccess}
-                      isLoading={attendanceIsLoading}
-                    />
-                  </Pressable>
-                )
-            );
-          })}
-        </View>
-      <SuccessModal
-        isOpen={clockModalIsOpen}
-        toggle={toggleClockModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={{ color: !attendance?.data?.time_out ? "#FCFF58" : "#92C4FF", fontSize: 16, fontWeight: "500" }}
-            >
-              {!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}{" "}
+                {attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
+              </Text>
+              <Text
+                style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
+              >
+                success!
+              </Text>
+            </View>
+          }
+          bottomElement={
+            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+              at{" "}
+              {attendance?.data?.time_in
+                ? dayjs(attendance?.data?.time_in).format("HH:mm")
+                : dayjs(attendance?.data?.time_out).format("HH:mm")}
             </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            at {!attendance?.data?.time_out ? attendance?.data?.time_in : attendance?.data?.time_out}
-          </Text>
-        }
-      />
+          }
+        />
       </ActionSheet>
 
       <SuccessModal
@@ -302,12 +430,18 @@ const TribeAddNewSheet = (props) => {
         toggle={toggleNewLeaveRequestModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Request </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>sent!</Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
+              Request{" "}
+            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
+              sent!
+            </Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Please wait for approval</Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
+            Please wait for approval
+          </Text>
         }
       />
     </>

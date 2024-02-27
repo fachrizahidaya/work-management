@@ -35,9 +35,17 @@ const ReviewAppraisalDetailItem = ({
       <Text style={[TextProps]}>{description}</Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name={"widgets-outline"} size={15} style={{ opacity: 0.5 }} />
+        <MaterialCommunityIcons
+          name={"widgets-outline"}
+          size={15}
+          style={{ opacity: 0.5 }}
+        />
 
-        <Text style={[TextProps]}>
+        <Text
+          style={[{ width: "80%", overflow: "hidden" }, TextProps]}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
           {choice == "a"
             ? choice_a
             : choice == "b"
@@ -48,7 +56,7 @@ const ReviewAppraisalDetailItem = ({
             ? choice_d
             : choice == "e"
             ? choice_e
-            : null}
+            : "Select your answer"}
         </Text>
       </View>
     </Pressable>

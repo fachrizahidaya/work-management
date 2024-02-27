@@ -12,7 +12,10 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { useLoading } from "../../../hooks/useLoading";
 import { useFetch } from "../../../hooks/useFetch";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import UserListModal from "../../../components/Chat/UserDetail/UserListModal";
@@ -62,14 +65,21 @@ const ContactDetail = () => {
     toggleDeleteChatMessage,
   } = route.params;
 
-  const { isOpen: memberListIsopen, toggle: toggleMemberList } = useDisclosure(false);
-  const { isOpen: memberListActionIsopen, toggle: toggleMemberListAction } = useDisclosure(false);
-  const { isOpen: removeMemberActionIsopen, toggle: toggleRemoveMemberAction } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: memberListIsopen, toggle: toggleMemberList } =
+    useDisclosure(false);
+  const { isOpen: memberListActionIsopen, toggle: toggleMemberListAction } =
+    useDisclosure(false);
+  const { isOpen: removeMemberActionIsopen, toggle: toggleRemoveMemberAction } =
+    useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } =
+    useDisclosure(false);
 
-  const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } = useLoading(false);
-  const { isLoading: addMemberIsLoading, toggle: toggleAddMember } = useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+  const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } =
+    useLoading(false);
+  const { isLoading: addMemberIsLoading, toggle: toggleAddMember } =
+    useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } =
+    useLoading(false);
 
   const fetchUserParameters = {
     page: currentPage,
@@ -82,7 +92,17 @@ const ContactDetail = () => {
     isFetching: userListIsFetching,
     isLoading: userListIsLoading,
     refetch: refetchUserList,
-  } = useFetch(memberListIsopen && "/chat/user", [currentPage, searchInput], fetchUserParameters);
+  } = useFetch(
+    memberListIsopen && "/chat/user",
+    [currentPage, searchInput],
+    fetchUserParameters
+  );
+
+  const fetchMorUser = () => {
+    if (currentPage < userList?.data?.last_page) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   /**
    * Fetch members of selected group
@@ -100,7 +120,11 @@ const ContactDetail = () => {
   /**
    * Fetch media for pictures and docs
    */
-  const { data: media, isFetching: mediaIsFetching, refetch: refetchMedia } = useFetch(`/chat/${type}/${roomId}/media`);
+  const {
+    data: media,
+    isFetching: mediaIsFetching,
+    refetch: refetchMedia,
+  } = useFetch(`/chat/${type}/${roomId}/media`);
   const {
     data: document,
     isFetching: documentIsFetching,
@@ -160,9 +184,12 @@ const ContactDetail = () => {
    */
   const groupMemberUpdateHandler = async (group_member_id, data) => {
     try {
-      const res = await axiosInstance.patch(`/chat/group/member/${group_member_id}`, {
-        is_admin: data,
-      });
+      const res = await axiosInstance.patch(
+        `/chat/group/member/${group_member_id}`,
+        {
+          is_admin: data,
+        }
+      );
       fetchSelectedGroupMembers();
     } catch (err) {
       console.log(err);
@@ -178,7 +205,9 @@ const ContactDetail = () => {
   const groupMemberDeleteHandler = async (group_member_id, item_name) => {
     try {
       toggleRemoveMember();
-      const res = await axiosInstance.delete(`/chat/group/member/${group_member_id}`);
+      const res = await axiosInstance.delete(
+        `/chat/group/member/${group_member_id}`
+      );
       fetchSelectedGroupMembers();
       toggleRemoveMember();
       toggleRemoveMemberAction();
@@ -206,12 +235,6 @@ const ContactDetail = () => {
       });
     } else {
       return users;
-    }
-  };
-
-  const fetchMoreData = () => {
-    if (currentPage < userList?.data?.last_page) {
-      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -246,7 +269,9 @@ const ContactDetail = () => {
   };
 
   useEffect(() => {
-    const myMemberObj = selectedGroupMembers?.find((groupMember) => groupMember.user_id === loggedInUser);
+    const myMemberObj = selectedGroupMembers?.find(
+      (groupMember) => groupMember.user_id === loggedInUser
+    );
     setCurrentUserIsAdmin(myMemberObj?.is_admin ? true : false);
   }, [selectedGroupMembers, loggedInUser]);
 
@@ -261,10 +286,16 @@ const ContactDetail = () => {
   useEffect(() => {
     if (userList?.data?.data?.length) {
       if (!searchInput) {
-        setCumulativeData((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+        setCumulativeData((prevData) => [
+          ...prevData,
+          ...usersWithoutMembers(userList?.data?.data),
+        ]);
         setFilteredDataArray([]);
       } else {
-        setFilteredDataArray((prevData) => [...prevData, ...usersWithoutMembers(userList?.data?.data)]);
+        setFilteredDataArray((prevData) => [
+          ...prevData,
+          ...usersWithoutMembers(userList?.data?.data),
+        ]);
         setCumulativeData([]);
       }
     }
@@ -282,14 +313,12 @@ const ContactDetail = () => {
         <SafeAreaView style={styles.container}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "#FFFFFF",
-              paddingVertical: 14,
-              paddingHorizontal: 16,
+              ...styles.header,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            >
               <Pressable onPress={() => navigation.goBack()}>
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
@@ -298,7 +327,11 @@ const ContactDetail = () => {
               </Text>
             </View>
           </View>
-          <View style={{ flex: 1, position: "relative", gap: 10, backgroundColor: "#FAFAFA" }}>
+          <View
+            style={{
+              ...styles.content,
+            }}
+          >
             <ContactAvatar
               navigation={navigation}
               roomId={roomId}
@@ -308,6 +341,7 @@ const ContactDetail = () => {
               position={position}
               currentUserIsAdmin={currentUserIsAdmin}
             />
+
             <ContactInformation
               type={type}
               selectedGroupMembers={selectedGroupMembers}
@@ -320,13 +354,16 @@ const ContactDetail = () => {
               setMemberAdminStatus={setMemberAdminStatus}
               toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
+
             {/* <ContactMedia
               qty={media?.data?.length + document?.data?.length}
               media={media?.data}
               docs={document?.data}
               navigation={navigation}
             /> */}
+
             {/* <ContactPersonalized /> */}
+
             <ContactAction
               type={type}
               active_member={active_member}
@@ -335,12 +372,22 @@ const ContactDetail = () => {
               toggleDeleteGroupModal={toggleDeleteGroupModal}
             />
           </View>
+
+          {/* Confirmation modal to delete personal chat or exit group */}
           <RemoveConfirmationModal
             isOpen={
-              type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
+              type === "personal"
+                ? deleteModalIsOpen
+                : active_member === 1
+                ? exitModalIsOpen
+                : deleteGroupModalIsOpen
             }
             toggle={
-              type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
+              type === "personal"
+                ? toggleDeleteModal
+                : active_member === 1
+                ? toggleExitModal
+                : toggleDeleteGroupModal
             }
             description={
               type === "personal"
@@ -351,9 +398,17 @@ const ContactDetail = () => {
                 ? "Are you sure want to delete this group?"
                 : null
             }
-            onPress={() => (type === "personal" ? deleteChatPersonal(roomId, toggleDeleteChatMessage) : null)}
-            isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
+            onPress={() =>
+              type === "personal"
+                ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
+                : null
+            }
+            isLoading={
+              type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading
+            }
           />
+
+          {/* Confirmation modal to remove member from group */}
           <RemoveConfirmationModal
             isOpen={removeMemberActionIsopen}
             toggle={toggleRemoveMemberAction}
@@ -363,6 +418,8 @@ const ContactDetail = () => {
             }}
             isLoading={removeMemberIsLoading}
           />
+
+          {/* Confirmation modal to clear chat */}
           <RemoveConfirmationModal
             isOpen={clearChatMessageIsOpen}
             toggle={toggleClearChatMessage}
@@ -373,6 +430,8 @@ const ContactDetail = () => {
               navigation.navigate("Chat List");
             }}
           />
+
+          {/* If user as group admin, user can add member, delete member, etc. */}
           <UserListModal
             roomId={roomId}
             memberListIsopen={memberListIsopen}
@@ -382,14 +441,13 @@ const ContactDetail = () => {
             inputToShow={inputToShow}
             setInputToShow={setInputToShow}
             setSearchInput={setSearchInput}
-            fetchMoreData={fetchMoreData}
+            fetchMoreData={fetchMorUser}
             cumulativeData={cumulativeData}
             filteredDataArray={filteredDataArray}
             userListIsLoading={userListIsLoading}
             onPressAddHandler={addSelectedUserToArray}
             onPressRemoveHandler={removeSelectedUserToArray}
             selectedUsers={selectedUsers}
-            setSelectedUsers={setSelectedUsers}
             forceRerender={forceRerender}
             onAddMoreMember={groupMemberAddHandler}
             addMemberIsLoading={addMemberIsLoading}
@@ -419,5 +477,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  content: {
+    flex: 1,
+    position: "relative",
+    gap: 10,
+    backgroundColor: "#FAFAFA",
   },
 });

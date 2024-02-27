@@ -19,7 +19,10 @@ import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSe
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import {
+  ErrorToastProps,
+  SuccessToastProps,
+} from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
@@ -30,6 +33,7 @@ const ChatListScreen = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
   const [isReady, setIsReady] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigation = useNavigation();
   const userSelector = useSelector((state) => state.auth);
@@ -37,33 +41,49 @@ const ChatListScreen = () => {
   const searchFromRef = useRef(null);
   const scrollRef = useRef(null);
 
-  const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } =
+    useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
+    useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } =
+    useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } =
+    useDisclosure(false);
 
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const {
+    isLoading: deleteChatMessageIsLoading,
+    toggle: toggleDeleteChatMessage,
+  } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } =
+    useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } =
+    useLoading(false);
 
-  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+  const userFetchParameters = {
+    page: currentPage,
+    limit: 1000,
+  };
 
   /**
    * Event listener for new chats
    */
   const personalChatEvent = () => {
-    laravelEcho.channel(`personal.list.${userSelector?.id}`).listen(".personal.list", (event) => {
-      setPersonalChats(event.data);
-    });
+    laravelEcho
+      .channel(`personal.list.${userSelector?.id}`)
+      .listen(".personal.list", (event) => {
+        setPersonalChats(event.data);
+      });
   };
 
   /**
    * Event listener for new group chats
    */
   const groupChatEvent = () => {
-    laravelEcho.channel(`group.list.${userSelector.id}`).listen(".group.list", (event) => {
-      setGroupChats(event.data);
-    });
+    laravelEcho
+      .channel(`group.list.${userSelector.id}`)
+      .listen(".group.list", (event) => {
+        setGroupChats(event.data);
+      });
   };
 
   /**
@@ -91,6 +111,25 @@ const ChatListScreen = () => {
       Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
+
+  const { data: searchResult } = useFetch(
+    "/chat/global-search",
+    [globalKeyword],
+    { search: globalKeyword }
+  );
+
+  const { data: user } = useFetch(
+    "/chat/user",
+    [currentPage],
+    userFetchParameters
+  );
+
+  /**
+   * Handle for mention name in group member
+   */
+  const memberName = user?.data?.data.map((item) => {
+    return item?.name;
+  });
 
   /**
    * Delete message Handler
@@ -135,7 +174,7 @@ const ChatListScreen = () => {
    * Swipe Contact List Item handler
    * @param {*} contact
    */
-  const swipeMore = (contact) => {
+  const contactMenuHandler = (contact) => {
     setSelectedContact(contact);
     SheetManager.show("form-sheet", {
       payload: {
@@ -225,7 +264,9 @@ const ChatListScreen = () => {
    */
   const chatPinUpdateHandler = async (chatType, id, action) => {
     try {
-      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
+      const res = await axiosInstance.patch(
+        `/chat/${chatType}/${id}/${action}`
+      );
     } catch (err) {
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
@@ -280,7 +321,7 @@ const ChatListScreen = () => {
                 groupChats={groupChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.group}
-                onSwipeControl={swipeMore}
+                clickMoreHandler={contactMenuHandler}
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
@@ -291,7 +332,7 @@ const ChatListScreen = () => {
                 personalChats={personalChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.personal}
-                onSwipeControl={swipeMore}
+                clickMoreHandler={contactMenuHandler}
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
@@ -299,7 +340,11 @@ const ChatListScreen = () => {
               />
 
               {searchResult?.message?.length > 0 && (
-                <GlobalSearchChatSection searchResult={searchResult} globalKeyword={globalKeyword} />
+                <GlobalSearchChatSection
+                  searchResult={searchResult}
+                  globalKeyword={globalKeyword}
+                  memberName={memberName}
+                />
               )}
             </ScrollView>
           </SafeAreaView>

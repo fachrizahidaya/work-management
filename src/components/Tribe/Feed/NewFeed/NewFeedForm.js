@@ -1,12 +1,24 @@
 import { useState } from "react";
 
-import { StyleSheet, View, Pressable, Image, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
+const NewFeedForm = ({
+  formik,
+  image,
+  setImage,
+  pickImageHandler,
+  employees,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -17,9 +29,17 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
         <View style={styles.boxImage}>
           {image ? (
             <View style={{ alignSelf: "center" }}>
-              <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
+              <Image
+                source={{ uri: image.uri }}
+                style={styles.image}
+                alt="image selected"
+              />
               <Pressable style={styles.close} onPress={() => setImage(null)}>
-                <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
+                <MaterialCommunityIcons
+                  name="close"
+                  size={20}
+                  color="#FFFFFF"
+                />
               </Pressable>
             </View>
           ) : null}
@@ -38,7 +58,10 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
         </View>
 
         <Pressable
-          style={{ ...styles.submit, opacity: formik.values.content === "" ? 0.5 : 1 }}
+          style={{
+            ...styles.submit,
+            opacity: formik.values.content === "" ? 0.5 : 1,
+          }}
           onPress={
             formik.values.content === ""
               ? null
@@ -53,7 +76,9 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
             <ActivityIndicator />
           ) : (
             <MaterialCommunityIcons
-              name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}
+              name={
+                formik.values.type === "Public" ? "send" : "bullhorn-variant"
+              }
               size={20}
               color="#FFFFFF"
               style={{ transform: [{ rotate: "-45deg" }] }}

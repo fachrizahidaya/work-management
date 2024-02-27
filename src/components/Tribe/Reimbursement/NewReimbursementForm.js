@@ -9,7 +9,14 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const NewReimbursementForm = ({ formik, onSelectFile, fileAttachment }) => {
   return (
-    <View style={{ marginTop: 20, marginVertical: 5, paddingHorizontal: 5, gap: 20 }}>
+    <View
+      style={{
+        marginTop: 20,
+        marginVertical: 5,
+        paddingHorizontal: 5,
+        gap: 20,
+      }}
+    >
       <View style={{ paddingHorizontal: 3, gap: 20 }}>
         <Input
           value={formik.values.title}
@@ -47,7 +54,14 @@ const NewReimbursementForm = ({ formik, onSelectFile, fileAttachment }) => {
         {/* <Text style={{ color: "#FF6262" }}>{formik.errors.end_date}</Text> */}
       </View>
 
-      <View style={{ alignItems: "center", justifyContent: "center", gap: 5, padding: 50 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 5,
+          padding: 50,
+        }}
+      >
         <Pressable style={styles.addIcon} onPress={onSelectFile}>
           <MaterialCommunityIcons name="plus" size={60} />
         </Pressable>

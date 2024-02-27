@@ -7,7 +7,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
+const ReviewDetailItem = ({
+  target,
+  achievement,
+  description,
+  handleOpen,
+  item,
+  employeeKpiValue,
+}) => {
   return (
     <Pressable
       style={{
@@ -26,7 +33,11 @@ const ReviewDetailItem = ({ target, achievement, description, handleOpen, item, 
       <Text style={[TextProps]}>{description}</Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <MaterialCommunityIcons name={"chart-bar"} size={15} style={{ opacity: 0.5 }} />
+        <MaterialCommunityIcons
+          name={"chart-bar"}
+          size={15}
+          style={{ opacity: 0.5 }}
+        />
 
         <Text style={[TextProps]}>{achievement || 0} of</Text>
         <Text style={[TextProps]}>{target}</Text>

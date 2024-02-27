@@ -7,11 +7,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ConfirmedCommentDetailItem = ({
+const ConfirmedConclusionDetailItem = ({
   id,
   type,
-  total_comment,
   navigation,
+  employee_grade,
+  supervisor_grade,
 }) => {
   return (
     <Pressable
@@ -25,7 +26,7 @@ const ConfirmedCommentDetailItem = ({
         justifyContent: "space-between",
       }}
       onPress={() => {
-        navigation.navigate("Comment Employee", {
+        navigation.navigate("Conclusion Screen", {
           id: id,
           type: type,
         });
@@ -33,11 +34,17 @@ const ConfirmedCommentDetailItem = ({
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[{ fontSize: 16, fontWeight: "700" }, TextProps]}>
-          Comment
+          Conclusion
         </Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={[TextProps]}>Total Comments: </Text>
-          <Text style={[TextProps]}>{total_comment?.length}</Text>
+        <View style={{ gap: 5 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[TextProps]}>Employee Grade: </Text>
+            <Text style={[TextProps]}>{employee_grade}</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[TextProps]}>Supervisor Grade: </Text>
+            <Text style={[TextProps]}>{supervisor_grade}</Text>
+          </View>
         </View>
       </View>
       <MaterialCommunityIcons
@@ -49,4 +56,4 @@ const ConfirmedCommentDetailItem = ({
   );
 };
 
-export default ConfirmedCommentDetailItem;
+export default ConfirmedConclusionDetailItem;

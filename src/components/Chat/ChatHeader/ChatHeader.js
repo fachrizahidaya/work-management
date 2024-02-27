@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -58,18 +64,31 @@ const ChatHeader = ({
     setSearchVisible(!searchVisible);
   };
 
+  const params = {
+    name: name,
+    image: image,
+    position: position,
+    type: type,
+    roomId: roomId,
+    loggedInUser: loggedInUser,
+    active_member: active_member,
+    toggleDeleteModal: toggleDeleteModal,
+    toggleExitModal: toggleExitModal,
+    toggleDeleteGroupModal: toggleDeleteGroupModal,
+    deleteModalIsOpen: deleteModalIsOpen,
+    exitModalIsOpen: exitModalIsOpen,
+    deleteGroupModalIsOpen: deleteGroupModalIsOpen,
+    deleteChatPersonal: deleteChatPersonal,
+    deleteChatMessageIsLoading: deleteChatMessageIsLoading,
+    chatRoomIsLoading: chatRoomIsLoading,
+    toggleDeleteChatMessage: toggleDeleteChatMessage,
+  };
+
   return (
     <>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: "#FFFFFF",
-          paddingVertical: 14,
-          paddingHorizontal: 16,
-          borderBottomWidth: 1,
-          borderColor: "#E8E9EB",
+          ...styles.container,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -78,35 +97,24 @@ const ChatHeader = ({
           </Pressable>
 
           <Pressable
-            onPress={() =>
-              navigation.navigate("User Detail", {
-                name: name,
-                image: image,
-                position: position,
-                type: type,
-                roomId: roomId,
-                loggedInUser: loggedInUser,
-                active_member: active_member,
-                toggleDeleteModal: toggleDeleteModal,
-                toggleExitModal: toggleExitModal,
-                toggleDeleteGroupModal: toggleDeleteGroupModal,
-                deleteModalIsOpen: deleteModalIsOpen,
-                exitModalIsOpen: exitModalIsOpen,
-                deleteGroupModalIsOpen: deleteGroupModalIsOpen,
-                deleteChatPersonal: deleteChatPersonal,
-                deleteChatMessageIsLoading: deleteChatMessageIsLoading,
-                chatRoomIsLoading: chatRoomIsLoading,
-                toggleDeleteChatMessage: toggleDeleteChatMessage,
-              })
-            }
+            onPress={() => navigation.navigate("User Detail", params)}
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
+            <AvatarPlaceholder
+              name={name}
+              image={image}
+              size="md"
+              isThumb={false}
+            />
 
             <View>
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {name?.length > 30 ? name?.split(" ")[0] : name}
+              </Text>
               {type === "personal" ? (
-                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{email}</Text>
+                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
+                  {email}
+                </Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>
@@ -146,7 +154,13 @@ const ChatHeader = ({
                       paddingBottom: -20,
                     }}
                   >
-                    <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                    <View
+                      style={{
+                        gap: 1,
+                        backgroundColor: "#F5F5F5",
+                        borderRadius: 10,
+                      }}
+                    >
                       {/* <TouchableOpacity
                       onPress={() => {
                         toggleSearch();
@@ -157,11 +171,15 @@ const ChatHeader = ({
                     </TouchableOpacity> */}
                       <TouchableOpacity
                         onPress={() => {
-                          onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+                          onUpdatePinHandler(
+                            type,
+                            roomId,
+                            isPinned?.pin_chat ? "unpin" : "pin"
+                          );
                           SheetManager.hide("form-sheet");
                         }}
                         style={{
-                          ...styles.container,
+                          ...styles.content,
                           justifyContent: "space-between",
                           borderBottomWidth: 1,
                           borderBottomColor: "#FFFFFF",
@@ -180,13 +198,15 @@ const ChatHeader = ({
                                 toggleExitModal();
                               }}
                               style={{
-                                ...styles.container,
+                                ...styles.content,
                                 justifyContent: "space-between",
                                 borderBottomWidth: 1,
                                 borderBottomColor: "#FFFFFF",
                               }}
                             >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
+                              <Text style={[{ fontSize: 16 }, TextProps]}>
+                                Exit Group
+                              </Text>
                             </TouchableOpacity>
                           ) : (
                             <TouchableOpacity
@@ -195,13 +215,15 @@ const ChatHeader = ({
                                 toggleDeleteGroupModal();
                               }}
                               style={{
-                                ...styles.container,
+                                ...styles.content,
                                 justifyContent: "space-between",
                                 borderBottomWidth: 1,
                                 borderBottomColor: "#FFFFFF",
                               }}
                             >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
+                              <Text style={[{ fontSize: 16 }, TextProps]}>
+                                Delete Group
+                              </Text>
                             </TouchableOpacity>
                           )}
                         </>
@@ -213,13 +235,15 @@ const ChatHeader = ({
                               toggleDeleteModal();
                             }}
                             style={{
-                              ...styles.container,
+                              ...styles.content,
                               justifyContent: "space-between",
                               borderBottomWidth: 1,
                               borderBottomColor: "#FFFFFF",
                             }}
                           >
-                            <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
+                            <Text style={[{ fontSize: 16 }, TextProps]}>
+                              Delete Chat
+                            </Text>
                           </TouchableOpacity>
                         </>
                       )}
@@ -234,6 +258,7 @@ const ChatHeader = ({
         </Pressable>
       </View>
 
+      {/* Handle for search message */}
       {searchVisible && (
         <SearchBox
           toggleSearch={toggleSearch}
@@ -250,6 +275,16 @@ export default ChatHeader;
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
+  },
+  content: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
