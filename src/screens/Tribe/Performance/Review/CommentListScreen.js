@@ -10,29 +10,19 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import { useFetch } from "../../../../hooks/useFetch";
-import OngoingCommentListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingCommentListItem";
 import CommentListItem from "../../../../components/Tribe/Performance/Comment/CommentListItem";
 
 const CommentListScreen = () => {
-  const [ongoingList, setOngoingList] = useState([]);
   const [personalList, setPersonalList] = useState([]);
   const [teamList, setTeamList] = useState([]);
-  const [currentPageOngoing, setCurrentPageOngoing] = useState(1);
   const [currentPagePersonal, setCurrentPagePersonal] = useState(1);
   const [currentPageMyTeam, setCurrentPageMyTeam] = useState(1);
-  const [reloadOngoing, setReloadOngoing] = useState(false);
   const [reloadPersonal, setReloadPersonal] = useState(false);
   const [reloadMyTeam, setReloadMyTeam] = useState(false);
-  const [ongoingHasBeenScrolled, setOngoingHasBeenScrolled] = useState(false);
   const [personalHasBeenScrolled, setPersonalHasBeenScrolled] = useState(false);
   const [myTeamHasBeenScrolled, setMyTeamHasBeenScrolled] = useState(false);
 
   const navigation = useNavigation();
-
-  // const fetchOngoingParameters = {
-  //   page: currentPageOngoing,
-  //   limit: 10,
-  // };
 
   // const fetchPersonalParameters = {
   //   page: currentPagePersonal,
@@ -43,16 +33,6 @@ const CommentListScreen = () => {
   //   page: currentPageMyTeam,
   //   limit: 10,
   // };
-
-  const {
-    data: commentList,
-    refetch: refetchCommentList,
-    isFetching: commentListIsFetching,
-  } = useFetch(
-    "/hr/employee-review/comment"
-    // [currentPageOngoing, reloadOngoing],
-    // fetchOngoingParameters
-  );
 
   const {
     data: personalCommentList,
@@ -74,27 +54,7 @@ const CommentListScreen = () => {
     // fetchMyTeamParameters
   );
 
-  if (commentList?.data.length > 0) {
-    var tabs = useMemo(() => {
-      return [
-        {
-          title: `Ongoing (${commentList?.data.length || 0})`,
-          value: "Ongoing",
-        },
-        {
-          title: `Personal (${personalCommentList?.data.length || 0})`,
-          value: "Personal",
-        },
-        {
-          title: `My Team (${teamCommentList?.data.length})`,
-          value: "My Team",
-        },
-      ];
-    }, [commentList, personalCommentList, teamCommentList]);
-  } else if (
-    commentList?.data.length === 0 &&
-    teamCommentList?.data.length > 0
-  ) {
+  if (teamCommentList?.data.length > 0) {
     var tabs = useMemo(() => {
       return [
         {
@@ -119,25 +79,16 @@ const CommentListScreen = () => {
   }
 
   const [tabValue, setTabValue] = useState(
-    commentList?.data.length > 0 ? "Ongoing" : "Personal"
+    personalCommentList?.data.length > 0 ? "Personal" : "My Team"
   );
 
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
-    setOngoingList([]);
     setPersonalList([]);
     setTeamList([]);
-    // setCurrentPageOngoing(1);
     // setCurrentPagePersonal(1);
     // setCurrentPageMyTeam(1);
   }, []);
-
-  // const fetchMoreOngoing = () => {
-  //   if (currentPageOngoing < commentList?.data?.last_page) {
-  //     setCurrentPageOngoing(currentPageOngoing + 1);
-  //     setReloadOngoing(!reloadOngoing);
-  //   }
-  // };
 
   // const fetchMorePersonal = () => {
   //   if (currentPagePersonal < personalCommentList?.data?.last_page) {
@@ -152,12 +103,6 @@ const CommentListScreen = () => {
   //     setReloadMyTeam(!reloadMyTeam);
   //   }
   // };
-
-  useEffect(() => {
-    if (commentList?.data.length) {
-      setOngoingList((prevData) => [...prevData, ...commentList?.data]);
-    }
-  }, [commentList?.data.length, tabValue]);
 
   useEffect(() => {
     if (personalCommentList?.data.length) {
@@ -185,53 +130,7 @@ const CommentListScreen = () => {
       </View>
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
-          {tabValue === "Ongoing" ? (
-            ongoingList.length > 0 ? (
-              <FlashList
-                data={ongoingList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                // onScrollBeginDrag={() =>
-                //   setOngoingHasBeenScrolled(!ongoingHasBeenScrolled)
-                // }
-                // onEndReached={
-                //   ongoingHasBeenScrolled === true ? fetchMoreOngoing : null
-                // }
-                renderItem={({ item, index }) => (
-                  <OngoingCommentListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.performance_review?.begin_date}
-                    end_date={item?.performance_review?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    dayjs={dayjs}
-                    description={item?.performance_review?.description}
-                  />
-                )}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={commentListIsFetching}
-                    onRefresh={refetchCommentList}
-                  />
-                }
-              />
-            ) : (
-              <ScrollView
-                refreshControl={
-                  <RefreshControl
-                    refreshing={commentListIsFetching}
-                    onRefresh={refetchCommentList}
-                  />
-                }
-              >
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              </ScrollView>
-            )
-          ) : tabValue === "My Team" ? (
+          {tabValue === "My Team" ? (
             teamList.length > 0 ? (
               <FlashList
                 data={teamList}

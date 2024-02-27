@@ -43,7 +43,11 @@ const AppraisalDetailItem = ({
           style={{ opacity: 0.5 }}
         />
 
-        <Text style={[TextProps]}>
+        <Text
+          style={[{ width: "80%", overflow: "hidden" }, TextProps]}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
           {choice == "a"
             ? choice_a
             : choice == "b"
@@ -54,7 +58,7 @@ const AppraisalDetailItem = ({
             ? choice_d
             : choice == "e"
             ? choice_e
-            : null}
+            : "Select your answer"}
         </Text>
       </View>
     </Pressable>

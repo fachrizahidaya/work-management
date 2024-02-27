@@ -1,4 +1,10 @@
-import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Pressable,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -8,7 +14,7 @@ const PersonalSection = ({
   personalChats,
   searchKeyword,
   searchResult,
-  onSwipeControl,
+  clickMoreHandler,
   onPinControl,
   navigation,
   userSelector,
@@ -45,7 +51,13 @@ const PersonalSection = ({
                       paddingBottom: -20,
                     }}
                   >
-                    <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+                    <View
+                      style={{
+                        gap: 1,
+                        backgroundColor: "#F5F5F5",
+                        borderRadius: 10,
+                      }}
+                    >
                       {menuOptions.map((option, index) => {
                         return (
                           <TouchableOpacity
@@ -58,7 +70,9 @@ const PersonalSection = ({
                               borderBottomColor: "#FFFFFF",
                             }}
                           >
-                            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
+                            <Text style={{ fontSize: 16, fontWeight: "400" }}>
+                              {option.name}
+                            </Text>
                           </TouchableOpacity>
                         );
                       })}
@@ -67,7 +81,15 @@ const PersonalSection = ({
                       style={{ justifyContent: "center", ...styles.container }}
                       onPress={() => SheetManager.hide("form-sheet")}
                     >
-                      <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "400",
+                          color: "#176688",
+                        }}
+                      >
+                        Cancel
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 ),
@@ -103,7 +125,7 @@ const PersonalSection = ({
               isRead={personal.unread}
               isPinned={personal?.pin_personal}
               active_member={0}
-              onSwipe={onSwipeControl}
+              onClickMore={clickMoreHandler}
               onPin={onPinControl}
               navigation={navigation}
               userSelector={userSelector}
@@ -119,31 +141,46 @@ const PersonalSection = ({
           <View style={styles.header}>
             <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate("New Chat")}
+            >
               <MaterialIcons name="add" color="black" size={15} />
             </TouchableOpacity>
           </View>
 
-          {searchResult.map((personal) => (
-            <ContactListItem
-              type="personal"
-              key={personal.id}
-              id={personal.id}
-              userId={personal.user?.id}
-              name={personal.user?.name}
-              image={personal.user?.image}
-              message={personal.latest_message?.message}
-              fileName={personal.latest_message?.file_name}
-              project={personal.latest_message?.project_id}
-              task={personal.latest_message?.task_id}
-              isDeleted={personal.latest_message?.delete_for_everyone}
-              time={personal.latest_message?.created_time}
-              isRead={personal.unread}
-              timestamp={personal.latest_message?.created_at}
-              searchKeyword={searchKeyword}
-              navigation={navigation}
-            />
-          ))}
+          {searchResult.map((personal) => {
+            return (
+              <ContactListItem
+                chat={personal}
+                type="personal"
+                key={personal.id}
+                id={personal.id}
+                userId={personal.user?.id}
+                name={personal.user?.name}
+                image={personal.user?.image}
+                position={personal.user?.user_type}
+                email={personal.user?.email}
+                message={personal.latest_message?.message}
+                latest={personal.latest_message}
+                fileName={personal.latest_message?.file_name}
+                project={personal.latest_message?.project_id}
+                task={personal.latest_message?.task_id}
+                isDeleted={personal.latest_message?.delete_for_everyone}
+                time={personal.latest_message?.created_time}
+                isRead={personal.unread}
+                timestamp={personal.latest_message?.created_at}
+                isPinned={personal?.pin_personal}
+                active_member={0}
+                onClickMore={clickMoreHandler}
+                onPin={onPinControl}
+                searchKeyword={searchKeyword}
+                navigation={navigation}
+                userSelector={userSelector}
+                simultaneousHandlers={scrollRef}
+              />
+            );
+          })}
         </>
       )}
     </>

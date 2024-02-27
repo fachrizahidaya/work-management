@@ -46,7 +46,7 @@ const ContactListItem = ({
   active_member,
   isRead,
   isPinned,
-  onSwipe,
+  onClickMore,
   onPin,
   navigation,
   latest,
@@ -244,7 +244,7 @@ const ContactListItem = ({
           <Pressable
             onPress={() => {
               translateX.value = withTiming(0);
-              onSwipe(chat);
+              onClickMore(chat);
             }}
             style={{ alignItems: "center", paddingRight: 5 }}
           >

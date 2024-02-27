@@ -7,7 +7,7 @@ const GroupSection = ({
   groupChats,
   searchKeyword,
   searchResult,
-  onSwipeControl,
+  clickMoreHandler,
   onPinControl,
   navigation,
   userSelector,
@@ -48,7 +48,7 @@ const GroupSection = ({
             isPinned={group?.pin_group}
             type="group"
             active_member={group?.active_member}
-            onSwipe={onSwipeControl}
+            onClickMore={clickMoreHandler}
             onPin={onPinControl}
             navigation={navigation}
             userSelector={userSelector}
@@ -71,25 +71,36 @@ const GroupSection = ({
             </TouchableOpacity>
           </View>
 
-          {searchResult.map((group) => (
-            <ContactListItem
-              key={group.id}
-              id={group.id}
-              name={group.name}
-              image={group.image}
-              message={group.latest_message?.message}
-              fileName={group.latest_message?.file_name}
-              project={group.latest_message?.project_id}
-              task={group.latest_message?.task_id}
-              isDeleted={group.latest_message?.delete_for_everyone}
-              time={group.latest_message?.created_time}
-              timestamp={group.latest_message?.created_at}
-              isRead={group.unread}
-              type="group"
-              searchKeyword={searchKeyword}
-              navigation={navigation}
-            />
-          ))}
+          {searchResult.map((group) => {
+            return (
+              <ContactListItem
+                chat={group}
+                key={group.id}
+                id={group.id}
+                name={group.name}
+                image={group.image}
+                position={null}
+                email={null}
+                message={group.latest_message?.message}
+                fileName={group.latest_message?.file_name}
+                project={group.latest_message?.project_id}
+                task={group.latest_message?.task_id}
+                isDeleted={group.latest_message?.delete_for_everyone}
+                time={group.latest_message?.created_time}
+                timestamp={group.latest_message?.created_at}
+                isRead={group.unread}
+                isPinned={group?.pin_group}
+                type="group"
+                active_member={group?.active_member}
+                onClickMore={clickMoreHandler}
+                onPin={onPinControl}
+                searchKeyword={searchKeyword}
+                navigation={navigation}
+                userSelector={userSelector}
+                simultaneousHandlers={scrollRef}
+              />
+            );
+          })}
         </>
       )}
     </>

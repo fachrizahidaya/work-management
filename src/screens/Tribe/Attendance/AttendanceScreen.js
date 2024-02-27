@@ -33,6 +33,8 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
+  const [deleteAttendanceAttachment, setDeleteAttendanceAttachment] =
+    useState(false);
 
   const attendanceScreenSheetRef = useRef(null);
   const attachmentScreenSheetRef = useRef(null);
@@ -531,16 +533,19 @@ const AttendanceScreen = () => {
         apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
         hasSuccessFunc={true}
         onSuccess={() => {
-          // toggleSuccessDeleteModal();
+          setDeleteAttendanceAttachment(true);
           refetchAttachment();
         }}
-        otherModalOpen={true}
+        otherModal={true}
         toggleOtherModal={toggleSuccessDeleteModal}
+        successStatus={deleteAttendanceAttachment}
+        showSuccessToast={false}
       />
 
       <SuccessModal
         isOpen={successDeleteModalIsOpen}
         toggle={toggleSuccessDeleteModal}
+        onSuccess={setDeleteAttendanceAttachment}
         multipleModal={true}
         topElement={
           <View style={{ flexDirection: "row" }}>

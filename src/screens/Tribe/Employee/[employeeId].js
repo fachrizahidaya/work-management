@@ -48,6 +48,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [filteredType, setFilteredType] = useState([]);
   const [teammatesData, setTeammatesData] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
+  const [deletePostSuccess, setDeletePostSuccess] = useState(false);
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
@@ -87,11 +88,7 @@ const EmployeeProfileScreen = ({ route }) => {
 
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const {
-    data: employees,
-    isFetching: employeesIsFetching,
-    refetch: refetchEmployees,
-  } = useFetch("/hr/employees");
+  const { data: employees } = useFetch("/hr/employees");
   const employeeUsername = employees?.data?.map((item, index) => {
     return {
       username: item.username,
@@ -468,17 +465,18 @@ const EmployeeProfileScreen = ({ route }) => {
         color="red.800"
         hasSuccessFunc={true}
         onSuccess={() => {
+          setDeletePostSuccess(true);
           setPosts([]);
           postRefetchHandler();
-          // refetchPersonalPost();
-          // toggleDeletePostModal();
         }}
         description="Are you sure to delete this post?"
         successMessage={"Post deleted"}
         isDelete={true}
         isPatch={false}
-        otherModalOpen={true}
+        otherModal={true}
         toggleOtherModal={toggleDeletePostModal}
+        successStatus={deletePostSuccess}
+        showSuccessToast={false}
       />
       <EmployeeTeammates
         teammates={filteredType.length > 0 ? filteredType : teammatesData}
@@ -491,6 +489,7 @@ const EmployeeProfileScreen = ({ route }) => {
       <SuccessModal
         isOpen={deletePostModalIsOpen}
         toggle={toggleDeletePostModal}
+        onSuccess={setDeletePostSuccess}
         multipleModal={true}
         topElement={
           <View style={{ flexDirection: "row" }}>

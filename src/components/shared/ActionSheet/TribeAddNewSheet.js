@@ -385,15 +385,17 @@ const TribeAddNewSheet = (props) => {
           isDelete={false}
           isGet={false}
           isPatch={false}
-          otherModalOpen={true}
+          otherModal={true}
           toggleOtherModal={toggleClockModal}
           successStatus={success}
+          showSuccessToast={false}
         />
 
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}
           onSuccess={setSuccess}
+          multipleModal={true}
           topElement={
             <View style={{ flexDirection: "row" }}>
               <Text

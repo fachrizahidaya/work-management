@@ -64,11 +64,14 @@ const AppraisalListScreen = () => {
     ];
   }, [filteredData, archivedData]);
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-    setOngoingList([]);
-    setArchivedList([]);
-  }, []);
+  const onChangeTab = useCallback(
+    (value) => {
+      setTabValue(value);
+      setOngoingList([]);
+      setArchivedList([]);
+    },
+    [appraisalList]
+  );
 
   useEffect(() => {
     if (filteredData?.length) {
@@ -110,6 +113,7 @@ const AppraisalListScreen = () => {
                     name={item?.review?.description}
                     target={item?.target_name}
                     isExpired={false}
+                    target_level={item?.target_level}
                   />
                 )}
               />

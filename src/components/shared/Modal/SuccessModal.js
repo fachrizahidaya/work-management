@@ -11,6 +11,7 @@ const SuccessModal = ({
   topElement,
   bottomElement,
   onSuccess,
+  multipleModal = false,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
 
@@ -18,7 +19,11 @@ const SuccessModal = ({
     if (isOpen) {
       const timeout = setTimeout(() => {
         toggle();
-        onSuccess(false);
+        if (multipleModal) {
+          onSuccess(false);
+        } else {
+          null;
+        }
       }, 2000);
       return () => clearTimeout(timeout);
     }
