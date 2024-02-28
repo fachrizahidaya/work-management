@@ -171,7 +171,8 @@ const ClockAttendance = ({
               }}
             >
               {attendance?.time_in
-                ? dayjs(attendance?.time_in).format("HH:mm")
+                ? dayjs(attendance?.time_in).format("HH:mm") ||
+                  attendance?.time_in
                 : "-:-"}
             </Text>
           </View>
@@ -198,7 +199,8 @@ const ClockAttendance = ({
               }}
             >
               {attendance?.time_out
-                ? dayjs(attendance?.time_out).format("HH:mm")
+                ? dayjs(attendance?.time_out).format("HH:mm") ||
+                  attendance?.time_out
                 : "-:-"}
             </Text>
           </View>

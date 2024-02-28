@@ -14,6 +14,7 @@ const KPIDetailItem = ({
   handleOpen,
   item,
   employeeKpiValue,
+  status,
 }) => {
   return (
     <Pressable
@@ -27,7 +28,11 @@ const KPIDetailItem = ({
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item, employeeKpiValue);
+        if (status === "ongoing") {
+          handleOpen(item, employeeKpiValue);
+        } else {
+          null;
+        }
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

@@ -17,6 +17,7 @@ const OngoingPerformanceListItem = ({
   target,
   isExpired,
   target_level,
+  status,
 }) => {
   return (
     <Pressable
@@ -33,19 +34,10 @@ const OngoingPerformanceListItem = ({
         navigation.navigate("KPI Detail", {
           id: id,
           isExpired: isExpired,
+          status: status,
         })
       }
     >
-      <View
-        style={{
-          paddingVertical: 5,
-          paddingHorizontal: 15,
-          backgroundColor: "#D9D9D9",
-          borderRadius: 15,
-        }}
-      >
-        <Text style={[TextProps]}>{isExpired ? "Finished" : "Ongoing"}</Text>
-      </View>
       <Text style={[TextProps]}>{name}</Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>

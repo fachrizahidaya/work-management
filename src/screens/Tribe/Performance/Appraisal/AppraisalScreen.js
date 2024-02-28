@@ -41,7 +41,7 @@ const AppraisalScreen = () => {
   const route = useRoute();
   const formScreenSheetRef = useRef(null);
 
-  const { id, isExpired } = route.params;
+  const { id, isExpired, status } = route.params;
 
   const { data: appraisalSelected } = useFetch(
     `/hr/employee-appraisal/${id}/start`
@@ -256,6 +256,9 @@ const AppraisalScreen = () => {
           name={appraisalList?.data?.description}
           target={appraisalList?.data?.performance_appraisal?.target_name}
           isExpired={isExpired}
+          target_level={
+            appraisalList?.data?.performance_appraisal?.target_level
+          }
         />
 
         <View style={styles.container}>
@@ -281,6 +284,7 @@ const AppraisalScreen = () => {
                     choice_e={item?.choice_e}
                     handleOpen={openSelectedAppraisal}
                     employeeAppraisalValue={correspondingEmployeeAppraisal}
+                    status={status}
                   />
                 );
               })

@@ -2,7 +2,14 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailList = ({ dayjs, begin_date, end_date, target, isExpired }) => {
+const KPIDetailList = ({
+  dayjs,
+  begin_date,
+  end_date,
+  target,
+  isExpired,
+  target_level,
+}) => {
   return (
     <View
       style={{
@@ -13,18 +20,16 @@ const KPIDetailList = ({ dayjs, begin_date, end_date, target, isExpired }) => {
       }}
     >
       <View style={{ gap: 10 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View
-            style={{
-              paddingVertical: 5,
-              paddingHorizontal: 15,
-              backgroundColor: "#D9D9D9",
-              borderRadius: 15,
-            }}
-          >
-            <Text style={[TextProps]}>
-              {isExpired ? "Finished" : "Pending"}
-            </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <View>
+            <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
+            <Text style={[TextProps]}>{target}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
@@ -34,10 +39,6 @@ const KPIDetailList = ({ dayjs, begin_date, end_date, target, isExpired }) => {
               {end_date ? dayjs(end_date).format("DD MMM YYYY") : "-"}
             </Text>
           </View>
-        </View>
-        <View>
-          <Text style={[{ opacity: 0.5 }, TextProps]}>Position</Text>
-          <Text style={[TextProps]}>{target}</Text>
         </View>
       </View>
     </View>

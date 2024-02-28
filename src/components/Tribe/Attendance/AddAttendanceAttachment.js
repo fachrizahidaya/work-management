@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
@@ -102,39 +103,74 @@ const AddAttendanceAttachment = ({
               value={formik.values.title}
             />
 
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <View style={{ gap: 5 }}>
-                <CustomDateTimePicker
-                  unlimitStartDate={true}
-                  width={180}
-                  defaultValue={formik.values.begin_date}
-                  onChange={onChangeStartDate}
-                  month={month}
-                  title="Start Date"
-                />
-                {!formik.errors.begin_date ? null : (
-                  <Text style={{ fontSize: 14, color: "red" }}>
-                    {formik.errors.begin_date}
-                  </Text>
-                )}
+            {Platform.OS === "android" ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ gap: 5, width: "45%" }}>
+                  <CustomDateTimePicker
+                    unlimitStartDate={true}
+                    defaultValue={formik.values.begin_date}
+                    onChange={onChangeStartDate}
+                    month={month}
+                    title="Start Date"
+                  />
+                  {!formik.errors.begin_date ? null : (
+                    <Text style={{ fontSize: 14, color: "red" }}>
+                      {formik.errors.begin_date}
+                    </Text>
+                  )}
+                </View>
+                <View style={{ gap: 5, width: "45%" }}>
+                  <CustomDateTimePicker
+                    defaultValue={formik.values.end_date}
+                    onChange={onChangeEndDate}
+                    month={month}
+                    title="End Date"
+                  />
+                  {!formik.errors.end_date ? null : (
+                    <Text style={{ fontSize: 14, color: "red" }}>
+                      {formik.errors.end_date}
+                    </Text>
+                  )}
+                </View>
               </View>
-              <View style={{ gap: 5 }}>
-                <CustomDateTimePicker
-                  width={180}
-                  defaultValue={formik.values.end_date}
-                  onChange={onChangeEndDate}
-                  month={month}
-                  title="End Date"
-                />
-                {!formik.errors.end_date ? null : (
-                  <Text style={{ fontSize: 14, color: "red" }}>
-                    {formik.errors.end_date}
-                  </Text>
-                )}
-              </View>
-            </View>
+            ) : (
+              <>
+                <View style={{ gap: 5 }}>
+                  <CustomDateTimePicker
+                    unlimitStartDate={true}
+                    width="100%"
+                    defaultValue={formik.values.begin_date}
+                    onChange={onChangeStartDate}
+                    month={month}
+                    title="Start Date"
+                  />
+                  {!formik.errors.begin_date ? null : (
+                    <Text style={{ fontSize: 14, color: "red" }}>
+                      {formik.errors.begin_date}
+                    </Text>
+                  )}
+                </View>
+                <View style={{ gap: 5 }}>
+                  <CustomDateTimePicker
+                    width="100%"
+                    defaultValue={formik.values.end_date}
+                    onChange={onChangeEndDate}
+                    month={month}
+                    title="End Date"
+                  />
+                  {!formik.errors.end_date ? null : (
+                    <Text style={{ fontSize: 14, color: "red" }}>
+                      {formik.errors.end_date}
+                    </Text>
+                  )}
+                </View>
+              </>
+            )}
 
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>

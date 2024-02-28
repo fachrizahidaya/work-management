@@ -42,7 +42,7 @@ const KPIScreen = () => {
   const route = useRoute();
   const formScreenSheetRef = useRef(null);
 
-  const { id, isExpired } = route.params;
+  const { id, isExpired, status } = route.params;
 
   const { data: kpiSelected } = useFetch(`/hr/employee-kpi/${id}/start`);
 
@@ -267,6 +267,7 @@ const KPIScreen = () => {
           end_date={kpiList?.data?.performance_kpi?.review?.end_date}
           target={kpiList?.data?.performance_kpi?.target_name}
           isExpired={isExpired}
+          target_level={kpiList?.data?.performance_kpi?.target_level}
         />
 
         <View style={styles.container}>
@@ -286,8 +287,9 @@ const KPIScreen = () => {
                     measurement={item?.measurement}
                     achievement={item?.actual_achievement}
                     item={item}
-                    handleOpen={openSelectedKpi}
+                    handleOpen={status === "ongoing" ? openSelectedKpi : null}
                     employeeKpiValue={correspondingEmployeeKpi}
+                    status={status}
                   />
                 );
               })
