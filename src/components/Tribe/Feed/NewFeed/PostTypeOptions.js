@@ -78,10 +78,7 @@ const PostTypeOptions = ({
               ...styles.container,
               borderBottomWidth: 1,
               borderBottomColor: "#FFFFFF",
-              height:
-                Platform.OS === "ios" && dateShown && isAnnouncementSelected
-                  ? 220
-                  : null,
+              height: null,
             }}
           >
             <View
@@ -125,7 +122,12 @@ const PostTypeOptions = ({
                       ) : null}
                     </View>
                   ) : (
-                    <View style={{ flexDirection: "column", gap: 5 }}>
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        gap: 5,
+                      }}
+                    >
                       <Text style={[{ fontSize: 12 }, TextProps]}>
                         End Date must be provided
                       </Text>
@@ -133,8 +135,8 @@ const PostTypeOptions = ({
                         <CustomDateTimePicker
                           defaultValue={formik.values.end_date}
                           onChange={endDateAnnouncementHandler}
-                          withText={true}
-                          textLabel="Adjust date"
+                          // withText={true}
+                          // textLabel="Adjust date"
                           fontSize={12}
                           marginLeft={-15}
                         />

@@ -114,8 +114,21 @@ const AttendanceForm = ({
           {/* If employee ontime for Clock in and Clock out */}
           {hasClockInAndOut && (
             <View style={{ gap: 10 }}>
-              <View style={styles.clock}>
-                <View>
+              <View
+                style={{
+                  gap: 1,
+                  backgroundColor: "#F5F5F5",
+                  borderRadius: 10,
+                }}
+              >
+                <View
+                  style={{
+                    ...styles.content,
+                    justifyContent: "space-between",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#FFFFFF",
+                  }}
+                >
                   <Text style={[{ fontSize: 12 }, TextProps]}>
                     Clock-in Time
                   </Text>
@@ -124,7 +137,14 @@ const AttendanceForm = ({
                   </Text>
                 </View>
                 {!date?.timeOut ? null : (
-                  <View>
+                  <View
+                    style={{
+                      ...styles.content,
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#FFFFFF",
+                    }}
+                  >
                     <Text style={[{ fontSize: 12 }, TextProps]}>
                       Clock-out Time
                     </Text>
@@ -406,8 +426,25 @@ const AttendanceForm = ({
             !date?.timeIn &&
             date?.date === CURRENT_DATE && (
               <View style={{ gap: 10 }}>
-                <View>
-                  <Text style={[TextProps]}>Clock-in required</Text>
+                <View
+                  style={{
+                    gap: 1,
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      ...styles.content,
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#FFFFFF",
+                    }}
+                  >
+                    <Text style={[{ fontSize: 16 }, TextProps]}>
+                      Clock-in required
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}
@@ -448,6 +485,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingBottom: 40,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
   },
 });
 
