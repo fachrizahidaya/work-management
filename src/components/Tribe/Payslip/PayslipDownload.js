@@ -8,16 +8,11 @@ import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
-const PayslipDownload = ({
-  reference,
-  toggleDownloadDialog,
-  setPasswordError,
-  onDownloadPayslip,
-}) => {
+const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, onDownloadPayslip }) => {
   const [hidePassword, setHidePassword] = useState(true);
 
   /**
-   * Input Password Handler
+   * Handle input password payslip
    */
   const formik = useFormik({
     initialValues: {
@@ -69,10 +64,7 @@ const PayslipDownload = ({
             onPressEndIcon={() => setHidePassword(!hidePassword)}
           />
 
-          <FormButton
-            isSubmitting={formik.isSubmitting}
-            onPress={formik.handleSubmit}
-          >
+          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
             <Text style={{ color: "#FFFFFF" }}>Download</Text>
           </FormButton>
         </View>

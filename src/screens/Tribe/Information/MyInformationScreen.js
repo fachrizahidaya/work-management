@@ -1,13 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Linking,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Image, Linking } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
@@ -18,15 +11,15 @@ import SupervisorInformation from "../../../components/Tribe/MyInformation/Super
 import { TextProps } from "../../../components/shared/CustomStylings";
 
 const MyInformationScreen = () => {
-  const {
-    data: profile,
-    isFetching: profileIsFetching,
-    refetch: refetchProfile,
-  } = useFetch("/hr/my-profile");
-
   const navigation = useNavigation();
 
-  const handleCallPress = (phone) => {
+  const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
+
+  /**
+   * Handle press icon call
+   * @param {*} phone
+   */
+  const pressCallHandler = (phone) => {
     Linking.openURL(phone).catch((err) => console.log(err));
   };
 
@@ -37,14 +30,7 @@ const MyInformationScreen = () => {
           <PageHeader title="My Information" backButton={false} />
         </View>
 
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={profileIsFetching}
-              onRefresh={refetchProfile}
-            />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={profileIsFetching} onRefresh={refetchProfile} />}>
           <View style={styles.content}>
             {/* Content here */}
             {!profile?.data ? (
@@ -99,7 +85,7 @@ const MyInformationScreen = () => {
                   refetch={refetchProfile}
                   id={profile?.data?.id}
                   navigation={navigation}
-                  onClickCall={handleCallPress}
+                  onClickCall={pressCallHandler}
                 />
               </>
             )}

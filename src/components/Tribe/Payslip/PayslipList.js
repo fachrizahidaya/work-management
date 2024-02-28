@@ -43,11 +43,7 @@ const PayslipList = ({ id, month, year, openSelectedPayslip }) => {
         </Text>
 
         <Pressable onPress={() => openSelectedPayslip(id)}>
-          <MaterialCommunityIcons
-            name="tray-arrow-down"
-            size={20}
-            color="#3F434A"
-          />
+          <MaterialCommunityIcons name="tray-arrow-down" size={20} color="#3F434A" />
         </Pressable>
       </View>
     </View>

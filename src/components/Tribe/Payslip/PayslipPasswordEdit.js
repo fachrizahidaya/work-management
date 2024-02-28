@@ -23,7 +23,7 @@ const PayslipPasswordEdit = ({
   toggle,
 }) => {
   /**
-   * Change password handler
+   * Handle change password
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -106,18 +106,11 @@ const PayslipPasswordEdit = ({
               placeholder="Enter Confirm password"
               secureTextEntry={hideConfirmPassword}
               endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
-              onPressEndIcon={() =>
-                setHideConfirmPassword(!hideConfirmPassword)
-              }
+              onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}
             />
           </View>
-          {formik.values.old_password &&
-          formik.values.new_password &&
-          formik.values.confirm_password ? (
-            <FormButton
-              isSubmitting={formik.isSubmitting}
-              onPress={formik.handleSubmit}
-            >
+          {formik.values.old_password && formik.values.new_password && formik.values.confirm_password ? (
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
               <Text style={{ color: "#FFFFFF" }}>Submit</Text>
             </FormButton>
           ) : (
@@ -132,18 +125,12 @@ const PayslipPasswordEdit = ({
         toggle={toggle}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>
-              Changes{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              saved!
-            </Text>
+            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Data has successfully updated
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
         }
       />
     </ActionSheet>
