@@ -30,7 +30,6 @@ const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [filterStartDate, setFilterStartDate] = useState(null);
@@ -57,8 +56,6 @@ const KPIListScreen = () => {
     fetchArchivedParameters
   );
 
-  console.log("a", archived);
-
   const { data: ongoingData } = useFetch("/hr/employee-kpi/ongoing");
 
   const filteredData = kpiList?.data
@@ -77,11 +74,12 @@ const KPIListScreen = () => {
     })
     .filter(Boolean);
 
-  const ongoing = ongoingData?.data;
-
   const tabs = useMemo(() => {
     return [
-      { title: `Ongoing (${ongoing?.length || 0})`, value: "Ongoing" },
+      {
+        title: `Ongoing (${ongoingData?.data?.length || 0})`,
+        value: "Ongoing",
+      },
       { title: `Archived`, value: "Archived" },
     ];
   }, [filteredData, archivedData]);
