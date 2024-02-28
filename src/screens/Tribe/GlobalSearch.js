@@ -18,22 +18,21 @@ import { ScrollView } from "react-native-gesture-handler";
 import Input from "../../components/shared/Forms/Input";
 import { useFetch } from "../../hooks/useFetch";
 import GlobalSearchItems from "../../components/Tribe/GlobalSearch/GlobalSearchItems/GlobalSearchItems";
-import ImageFullScreenModal from "../../components/shared/ImageFullScreenModal";
 
 const GlobalSearchTribe = () => {
   const [searchInput, setSearchInput] = useState("");
   const [shownInput, setShownInput] = useState("");
 
-  const { data, isFetching } = useFetch(
-    searchInput && "/hr/global-search",
-    [searchInput],
-    {
-      search: searchInput,
-      sort: "desc",
-    }
-  );
+  const { data, isFetching } = useFetch(searchInput && "/hr/global-search", [searchInput], {
+    search: searchInput,
+    sort: "desc",
+  });
 
   const { data: employees } = useFetch("/hr/employees");
+
+  /**
+   * Handle show username in post
+   */
   const employeeUsername = employees?.data?.map((item) => {
     return {
       username: item.username,
@@ -42,12 +41,16 @@ const GlobalSearchTribe = () => {
     };
   });
 
+  /**
+   * Handle search for employee and feed in Tribe
+   */
   const handleSearch = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
     }, 500),
     []
   );
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={styles.container}>
@@ -66,11 +69,7 @@ const GlobalSearchTribe = () => {
             placeHolder="Search..."
             startAdornment={
               <Pressable>
-                <MaterialCommunityIcons
-                  name="magnify"
-                  size={20}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
               </Pressable>
             }
             onChangeText={(value) => {
@@ -93,11 +92,7 @@ const GlobalSearchTribe = () => {
                       setShownInput("");
                     }}
                   >
-                    <MaterialCommunityIcons
-                      name="close"
-                      size={20}
-                      color="#3F434A"
-                    />
+                    <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
                   </TouchableOpacity>
                 )}
               </View>
@@ -107,10 +102,7 @@ const GlobalSearchTribe = () => {
             {!isFetching ? (
               <>
                 {data?.employee?.length > 0 || data?.post?.length ? (
-                  <GlobalSearchItems
-                    data={data}
-                    employeeUsername={employeeUsername}
-                  />
+                  <GlobalSearchItems data={data} employeeUsername={employeeUsername} />
                 ) : (
                   <Text style={styles.text}>No result</Text>
                 )}
