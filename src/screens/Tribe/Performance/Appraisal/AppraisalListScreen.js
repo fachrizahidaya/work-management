@@ -23,6 +23,7 @@ import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/O
 import { useFetch } from "../../../../hooks/useFetch";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
+import FormButton from "../../../../components/shared/FormButton";
 
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -38,8 +39,8 @@ const AppraisalListScreen = () => {
   const currentDate = dayjs().format("YYYY-MM-DD");
 
   const fetchArchivedParameters = {
-    begin_date: filterStartDate,
-    end_date: filterEndDate,
+    begin_date: startDate,
+    end_date: endDate,
   };
 
   const {
@@ -50,7 +51,7 @@ const AppraisalListScreen = () => {
 
   const { data: archived } = useFetch(
     tabValue === "Archived" && "/hr/employee-appraisal/ongoing",
-    [filterStartDate, filterEndDate],
+    [startDate, endDate],
     fetchArchivedParameters
   );
 
@@ -87,8 +88,10 @@ const AppraisalListScreen = () => {
       setTabValue(value);
       setOngoingList([]);
       setArchivedList([]);
+      setStartDate(null);
+      setEndDate(null);
     },
-    [appraisalList]
+    [appraisalList, archived]
   );
 
   const startDateChangeHandler = (date) => {
@@ -111,16 +114,16 @@ const AppraisalListScreen = () => {
   };
 
   useEffect(() => {
-    if (filteredData?.length) {
-      setOngoingList((prevData) => [...prevData, ...filteredData]);
+    if (appraisalList?.data?.length) {
+      setOngoingList((prevData) => [...prevData, ...appraisalList?.data]);
     }
-  }, [filteredData?.length, tabValue]);
+  }, [appraisalList?.data?.length, tabValue]);
 
   useEffect(() => {
-    if (archivedData?.length) {
-      setArchivedList((prevData) => [...prevData, ...archivedData]);
+    if (archived?.data?.length) {
+      setArchivedList((prevData) => [...prevData, ...archived?.data]);
     }
-  }, [archivedData?.length, tabValue]);
+  }, [archived?.data?.length, tabValue]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -151,6 +154,7 @@ const AppraisalListScreen = () => {
                     target={item?.target_name}
                     isExpired={false}
                     target_level={item?.target_level}
+                    status="ongoing"
                   />
                 )}
               />
@@ -170,7 +174,7 @@ const AppraisalListScreen = () => {
             )
           ) : (
             <View style={{ marginTop: 5, flex: 1 }}>
-              {/* <View style={{ alignItems: "flex-end" }}>
+              <View style={{ alignItems: "flex-end" }}>
                 <Pressable
                   style={{
                     padding: 5,
@@ -193,18 +197,11 @@ const AppraisalListScreen = () => {
                               paddingBottom: -20,
                             }}
                           >
-                            <View style={{ gap: 5, alignItems: "flex-end" }}>
-                              <TouchableOpacity onPress={resetDateHandler}>
-                                <Text>Reset</Text>
-                              </TouchableOpacity>
-                            </View>
                             <View style={{ gap: 5 }}>
                               <CustomDateTimePicker
                                 unlimitStartDate={true}
                                 width="100%"
-                                defaultValue={
-                                  !filterStartDate ? null : filterStartDate
-                                }
+                                defaultValue={startDate ? startDate : null}
                                 onChange={startDateChangeHandler}
                                 title="Begin Date"
                               />
@@ -213,9 +210,7 @@ const AppraisalListScreen = () => {
                               <CustomDateTimePicker
                                 unlimitStartDate={true}
                                 width="100%"
-                                defaultValue={
-                                  !filterEndDate ? null : filterEndDate
-                                }
+                                defaultValue={endDate ? endDate : null}
                                 onChange={endDateChangeHandler}
                                 title="End Date"
                               />
@@ -240,10 +235,10 @@ const AppraisalListScreen = () => {
                     />
                   </View>
                 </Pressable>
-              </View> */}
-              {archivedList?.length > 0 ? (
+              </View>
+              {archived?.data?.length > 0 ? (
                 <FlashList
-                  data={archivedList}
+                  data={archived?.data}
                   estimatedItemSize={50}
                   onEndReachedThreshold={0.1}
                   keyExtractor={(item, index) => index}
@@ -257,6 +252,7 @@ const AppraisalListScreen = () => {
                       name={item?.review?.description}
                       target={item?.target_name}
                       isExpired={true}
+                      status="archived"
                     />
                   )}
                 />

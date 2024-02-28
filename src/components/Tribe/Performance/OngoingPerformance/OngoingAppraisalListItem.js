@@ -15,6 +15,7 @@ const OngoingAppraisalListItem = ({
   target,
   isExpired,
   target_level,
+  status,
 }) => {
   return (
     <Pressable
@@ -31,19 +32,10 @@ const OngoingAppraisalListItem = ({
         navigation.navigate("Appraisal Detail", {
           id: id,
           isExpired: isExpired,
+          status: status,
         })
       }
     >
-      <View
-        style={{
-          paddingVertical: 5,
-          paddingHorizontal: 15,
-          backgroundColor: "#D9D9D9",
-          borderRadius: 15,
-        }}
-      >
-        <Text style={[TextProps]}>{isExpired ? "Finished" : "Ongoing"}</Text>
-      </View>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>

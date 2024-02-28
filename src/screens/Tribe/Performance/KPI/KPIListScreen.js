@@ -22,7 +22,6 @@ import Tabs from "../../../../components/shared/Tabs";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import Select from "../../../../components/shared/Forms/Select";
 import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
 import FormButton from "../../../../components/shared/FormButton";
 
@@ -40,8 +39,8 @@ const KPIListScreen = () => {
   const currentDate = dayjs().format("YYYY-MM-DD");
 
   const fetchArchivedParameters = {
-    begin_date: filterStartDate,
-    end_date: filterEndDate,
+    begin_date: startDate,
+    end_date: endDate,
   };
 
   const {
@@ -52,7 +51,7 @@ const KPIListScreen = () => {
 
   const { data: archived } = useFetch(
     tabValue === "Archived" && "/hr/employee-kpi/ongoing",
-    [filterStartDate, filterEndDate],
+    [startDate, endDate],
     fetchArchivedParameters
   );
 
@@ -89,8 +88,10 @@ const KPIListScreen = () => {
       setTabValue(value);
       setOngoingList([]);
       setArchivedList([]);
+      setStartDate(null);
+      setEndDate(null);
     },
-    [kpiList]
+    [kpiList, archived]
   );
 
   const startDateChangeHandler = (date) => {
@@ -113,16 +114,16 @@ const KPIListScreen = () => {
   };
 
   useEffect(() => {
-    if (filteredData?.length) {
-      setOngoingList((prevData) => [...prevData, ...filteredData]);
+    if (kpiList?.data?.length) {
+      setOngoingList((prevData) => [...prevData, ...kpiList?.data]);
     }
-  }, [filteredData?.length, tabValue]);
+  }, [kpiList?.data?.length, tabValue]);
 
   useEffect(() => {
-    if (archivedData?.length) {
-      setArchivedList((prevData) => [...prevData, ...archivedData]);
+    if (archived?.data?.length) {
+      setArchivedList((prevData) => [...prevData, ...archived?.data]);
     }
-  }, [archivedData?.length, tabValue]);
+  }, [archived?.data?.length, tabValue]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -153,6 +154,7 @@ const KPIListScreen = () => {
                     target={item?.target_name}
                     isExpired={false}
                     target_level={item?.target_level}
+                    status="ongoing"
                   />
                 )}
               />
@@ -172,7 +174,7 @@ const KPIListScreen = () => {
             )
           ) : (
             <View style={{ marginTop: 5, flex: 1 }}>
-              {/* <View style={{ alignItems: "flex-end" }}>
+              <View style={{ alignItems: "flex-end" }}>
                 <Pressable
                   style={{
                     padding: 5,
@@ -195,18 +197,11 @@ const KPIListScreen = () => {
                               paddingBottom: -20,
                             }}
                           >
-                            <View style={{ gap: 5, alignItems: "flex-end" }}>
-                              <TouchableOpacity onPress={resetDateHandler}>
-                                <Text>Reset</Text>
-                              </TouchableOpacity>
-                            </View>
                             <View style={{ gap: 5 }}>
                               <CustomDateTimePicker
                                 unlimitStartDate={true}
                                 width="100%"
-                                defaultValue={
-                                  !filterStartDate ? null : filterStartDate
-                                }
+                                defaultValue={startDate ? startDate : null}
                                 onChange={startDateChangeHandler}
                                 title="Begin Date"
                               />
@@ -215,14 +210,11 @@ const KPIListScreen = () => {
                               <CustomDateTimePicker
                                 unlimitStartDate={true}
                                 width="100%"
-                                defaultValue={
-                                  !filterEndDate ? null : filterEndDate
-                                }
+                                defaultValue={endDate ? endDate : null}
                                 onChange={endDateChangeHandler}
                                 title="End Date"
                               />
                             </View>
-                            
                           </View>
                         ),
                       },
@@ -243,10 +235,10 @@ const KPIListScreen = () => {
                     />
                   </View>
                 </Pressable>
-              </View> */}
-              {archivedList?.length > 0 ? (
+              </View>
+              {archived?.data?.length > 0 ? (
                 <FlashList
-                  data={archivedList}
+                  data={archived?.data}
                   estimatedItemSize={50}
                   onEndReachedThreshold={0.1}
                   keyExtractor={(item, index) => index}
@@ -260,6 +252,7 @@ const KPIListScreen = () => {
                       name={item?.review?.description}
                       target={item?.target_name}
                       isExpired={true}
+                      status="archived"
                     />
                   )}
                 />
