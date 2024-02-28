@@ -289,6 +289,7 @@ const KPIScreen = () => {
                     item={item}
                     handleOpen={status === "ongoing" ? openSelectedKpi : null}
                     employeeKpiValue={correspondingEmployeeKpi}
+                    status={status}
                   />
                 );
               })
