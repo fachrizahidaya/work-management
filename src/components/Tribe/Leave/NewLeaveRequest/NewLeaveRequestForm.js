@@ -44,7 +44,6 @@ const NewLeaveRequestForm = ({
         setSearchInput={setSearchInput}
         fieldNameSearch="search"
         handleSearch={handleSearch}
-        height={580}
       />
 
       <Input

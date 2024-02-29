@@ -8,9 +8,7 @@ import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 import { TextProps } from "./CustomStylings";
 
 const CalendarWithSlider = ({ items, colorDots }) => {
-  const [selectedDate, setSelectedDate] = useState(
-    dayjs().format("YYYY-MM-DD")
-  );
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const navigation = useNavigation();
   const today = dayjs().format("YYYY-MM-DD");
 
@@ -29,9 +27,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
         }}
       >
         <Text style={TextProps}>{reservation.description}</Text>
-        <View
-          style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5 }}
-        />
+        <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5 }} />
       </TouchableOpacity>
     );
   };
@@ -42,9 +38,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
 
   return (
     <>
-      <Text style={[styles.monthLabel, TextProps]}>
-        {dayjs(selectedDate).format("MMMM YYYY")}
-      </Text>
+      <Text style={[styles.monthLabel, TextProps]}>{dayjs(selectedDate).format("MMMM YYYY")}</Text>
       <Agenda
         markingType="custom"
         markedDates={colorDots}
@@ -64,11 +58,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
           return (
             <>
               <View style={styles.container}>
-                <Image
-                  source={require("../../assets/vectors/items.jpg")}
-                  alt="empty"
-                  style={styles.image}
-                />
+                <Image source={require("../../assets/vectors/items.jpg")} alt="empty" style={styles.image} />
                 <Text style={TextProps}>You have no agenda</Text>
               </View>
             </>

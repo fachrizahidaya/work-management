@@ -210,7 +210,6 @@ const AttendanceForm = ({
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -242,7 +241,6 @@ const AttendanceForm = ({
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -267,7 +265,6 @@ const AttendanceForm = ({
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -363,7 +360,6 @@ const AttendanceForm = ({
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -528,7 +524,6 @@ const LateOrEarlyTime = ({
         size="sm"
         variant="solid"
         fontSize={12}
-        fontColor="white"
         isSubmitting={formik.isSubmitting}
         onPress={formik.handleSubmit}
       >
@@ -634,7 +629,6 @@ const LateAndEarlyTime = ({
         size="sm"
         variant="solid"
         fontSize={12}
-        fontColor="white"
         isSubmitting={formik.isSubmitting}
         onPress={formik.handleSubmit}
       >

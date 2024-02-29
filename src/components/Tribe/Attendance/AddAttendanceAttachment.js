@@ -210,7 +210,6 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-                fontColor="white"
               />
             ) : (
               <FormButton
@@ -227,7 +226,6 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-                fontColor="white"
               />
             )}
           </View>

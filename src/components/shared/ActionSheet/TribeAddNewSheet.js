@@ -54,7 +54,7 @@ const TribeAddNewSheet = (props) => {
   ];
 
   /**
-   * Open settings for location
+   * Handle open setting to check location service
    */
   const openSetting = () => {
     if (Platform.OS == "ios") {
@@ -65,7 +65,7 @@ const TribeAddNewSheet = (props) => {
   };
 
   /**
-   * Handle modal for turn on location
+   * Handle modal to turn on location service
    */
   const showAlertToActivateLocation = () => {
     Alert.alert(
@@ -88,6 +88,9 @@ const TribeAddNewSheet = (props) => {
     );
   };
 
+  /**
+   * Handle modal to allow location permission
+   */
   const showAlertToAllowPermission = () => {
     Alert.alert(
       "Permission needed",
@@ -104,7 +107,7 @@ const TribeAddNewSheet = (props) => {
   };
 
   /**
-   * Attendance check-in and check-out handler
+   * Handle submit attendance clock-in and out
    */
   const attendanceCheckHandler = async () => {
     try {
@@ -173,6 +176,10 @@ const TribeAddNewSheet = (props) => {
       }
     };
 
+    /**
+     * Handle device state change
+     * @param {*} nextAppState
+     */
     const handleAppStateChange = (nextAppState) => {
       setAppState(nextAppState);
       if (nextAppState === "active") {

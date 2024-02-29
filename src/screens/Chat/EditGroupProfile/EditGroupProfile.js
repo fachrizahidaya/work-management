@@ -25,10 +25,7 @@ import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import axiosInstance from "../../../config/api";
 import FormButton from "../../../components/shared/FormButton";
 import Input from "../../../components/shared/Forms/Input";
-import {
-  SuccessToastProps,
-  ErrorToastProps,
-} from "../../../components/shared/CustomStylings";
+import { SuccessToastProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
@@ -50,12 +47,7 @@ const EditGroupProfile = () => {
    * @param {*} group_id
    * @param {*} data
    */
-  const groupUpdateHandler = async (
-    group_id,
-    form,
-    setSubmitting,
-    setStatus
-  ) => {
+  const groupUpdateHandler = async (group_id, form, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/chat/group/${group_id}`, form, {
         headers: {
@@ -144,18 +136,10 @@ const EditGroupProfile = () => {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Pressable
-              onPress={() =>
-                !formik.isSubmitting &&
-                formik.status !== "processing" &&
-                navigation.goBack()
-              }
-            >
+            <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Edit Profile
-            </Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Edit Profile</Text>
           </View>
         </View>
         <View
@@ -172,11 +156,7 @@ const EditGroupProfile = () => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {!imageAttachment ? (
-                <AvatarPlaceholder
-                  size="xl"
-                  name={name}
-                  image={!imageAttachment ? image : imageAttachment.uri}
-                />
+                <AvatarPlaceholder size="xl" name={name} image={!imageAttachment ? image : imageAttachment.uri} />
               ) : (
                 <Image
                   source={{
@@ -193,11 +173,7 @@ const EditGroupProfile = () => {
               )}
               <Pressable
                 style={styles.editPicture}
-                onPress={
-                  !imageAttachment
-                    ? pickImageHandler
-                    : () => setImageAttachment(null)
-                }
+                onPress={!imageAttachment ? pickImageHandler : () => setImageAttachment(null)}
               >
                 <MaterialCommunityIcons
                   name={!imageAttachment ? "camera-outline" : "close"}
@@ -220,48 +196,24 @@ const EditGroupProfile = () => {
                 }}
               />
             ) : (
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-              >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "500" }}
-                  numberOfLines={2}
-                >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "500" }} numberOfLines={2}>
                   {name}
                 </Text>
-                <MaterialCommunityIcons
-                  name="pencil"
-                  size={20}
-                  color="#3F434A"
-                  onPress={editGroupNameHandler}
-                />
+                <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
               </View>
             )}
           </View>
           {imageAttachment || formik.values.name !== name ? (
             <FormButton
-              fontColor="white"
               onPress={formik.handleSubmit}
-              children={
-                <Text
-                  style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}
-                >
-                  Save
-                </Text>
-              }
+              children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
             />
           ) : (
             <FormButton
-              fontColor="white"
               opacity={0.5}
               onPress={null}
-              children={
-                <Text
-                  style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}
-                >
-                  Save
-                </Text>
-              }
+              children={<Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>}
             />
           )}
         </View>

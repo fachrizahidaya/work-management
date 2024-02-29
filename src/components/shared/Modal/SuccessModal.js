@@ -5,14 +5,7 @@ import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SuccessModal = ({
-  isOpen,
-  toggle,
-  topElement,
-  bottomElement,
-  onSuccess,
-  multipleModal = false,
-}) => {
+const SuccessModal = ({ isOpen, toggle, topElement, bottomElement, onSuccess, multipleModal = false }) => {
   const deviceWidth = Dimensions.get("window").width;
 
   useEffect(() => {
@@ -60,12 +53,7 @@ const SuccessModal = ({
           {topElement}
           {bottomElement}
         </View>
-        <MaterialCommunityIcons
-          onPress={() => toggle()}
-          name="chevron-up"
-          color="#FFFFFF"
-          size={20}
-        />
+        <MaterialCommunityIcons onPress={() => toggle()} name="chevron-up" color="#FFFFFF" size={20} />
       </Modal>
     </>
   );
