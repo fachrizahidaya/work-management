@@ -7,7 +7,17 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewKPIListItem = ({ id, start_date, end_date, navigation, name, target, dayjs, target_level }) => {
+const OngoingReviewKPIListItem = ({
+  id,
+  start_date,
+  end_date,
+  navigation,
+  name,
+  target,
+  dayjs,
+  target_level,
+  description,
+}) => {
   return (
     <Pressable
       style={{
@@ -25,7 +35,8 @@ const OngoingReviewKPIListItem = ({ id, start_date, end_date, navigation, name, 
         })
       }
     >
-      <Text style={[{}, TextProps]}>{name}</Text>
+      <Text style={[TextProps]}>{description}</Text>
+      <Text style={[TextProps]}>{name}</Text>
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>

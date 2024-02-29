@@ -16,6 +16,7 @@ const OngoingAppraisalListItem = ({
   isExpired,
   target_level,
   status,
+  name,
 }) => {
   return (
     <Pressable
@@ -36,6 +37,8 @@ const OngoingAppraisalListItem = ({
         })
       }
     >
+      <Text style={[TextProps]}>{name}</Text>
+
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>

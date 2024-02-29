@@ -17,6 +17,7 @@ const OngoingReviewAppraisalListItem = ({
   target,
   dayjs,
   target_level,
+  description,
 }) => {
   return (
     <Pressable
@@ -35,7 +36,8 @@ const OngoingReviewAppraisalListItem = ({
         })
       }
     >
-      {target_level === "Employee" ? null : <Text style={[{}, TextProps]}>{name}</Text>}
+      <Text style={[TextProps]}>{description}</Text>
+      {target_level === "Employee" ? null : <Text style={[TextProps]}>{name}</Text>}
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>

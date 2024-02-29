@@ -57,6 +57,8 @@ const PostScreen = () => {
     isLoading: postIsLoading,
   } = useFetch("/hr/posts");
 
+  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
+
   const {
     data: comment,
     isFetching: commentIsFetching,
@@ -67,8 +69,6 @@ const PostScreen = () => {
     [reloadComment, currentOffsetComments],
     commentsFetchParameters
   );
-
-  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
 
   const { data: profile } = useFetch("/hr/my-profile");
 

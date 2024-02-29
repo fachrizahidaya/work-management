@@ -177,6 +177,7 @@ const KPIAppraisalReviewScreen = () => {
                     target={item?.performance_kpi?.target_name}
                     dayjs={dayjs}
                     target_level={item?.performance_kpi?.target_level}
+                    description={item?.performance_kpi?.review?.description}
                   />
                 )}
                 refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}
@@ -210,6 +211,7 @@ const KPIAppraisalReviewScreen = () => {
                     target={item?.performance_appraisal?.target_name}
                     dayjs={dayjs}
                     target_level={item?.performance_appraisal?.target_level}
+                    description={item?.performance_appraisal?.review?.description}
                   />
                 )}
                 refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
