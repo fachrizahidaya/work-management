@@ -64,40 +64,36 @@ const ChatProjectTaskScreen = () => {
     isFetching: projectIsFetching,
     isLoading: projectIsLoading,
     refetch: refetchProject,
-  } = useFetch(
-    tabValue === "project" && "/chat/project",
-    [currentPageProject, searchInput],
-    fetchProjectParameters
-  );
+  } = useFetch(tabValue === "project" && "/chat/project", [currentPageProject, searchInput], fetchProjectParameters);
 
   const {
     data: task,
     isFetching: taskIsFetching,
     isLoading: taskIsLoading,
     refetch: refetchTask,
-  } = useFetch(
-    tabValue === "task" && "/chat/task",
-    [currentPageTask, searchInput],
-    fetchTaskParameters
-  );
+  } = useFetch(tabValue === "task" && "/chat/task", [currentPageTask, searchInput], fetchTaskParameters);
 
+  /**
+   * Handle change offset if reach end
+   */
   const projectEndReachedHandler = () => {
     if (projects.length !== projects.length + project?.data.length) {
       setCurrentOffsetProject(currentOffsetProject + 10);
     }
   };
-
   const taskEndReachedHandler = () => {
     if (tasks.length !== tasks.length + task?.data.length) {
       setCurrentOffsetTask(currentOffsetTask + 10);
     }
   };
 
+  /**
+   * Handle fetch more project and task
+   */
   const projectRefetchHandler = () => {
     setCurrentOffsetProject(0);
     setReloadProject(!reloadProject);
   };
-
   const taskRefetchHandler = () => {
     setCurrentOffsetTask(0);
     setReloadTask(!reloadTask);
@@ -165,9 +161,7 @@ const ChatProjectTaskScreen = () => {
               paddingHorizontal: 16,
             }}
           >
-            <View
-              style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-            >
+            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
               <Pressable
                 style={{
                   display: "flex",
@@ -178,11 +172,7 @@ const ChatProjectTaskScreen = () => {
               >
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
-              <MateriaCommunitylIcons
-                name="circle-slice-2"
-                size={20}
-                color="#3F434A"
-              />
+              <MateriaCommunitylIcons name="circle-slice-2" size={20} color="#3F434A" />
               <OptionButton
                 setSearchInput={setSearchInput}
                 setInputToShow={setInputToShow}

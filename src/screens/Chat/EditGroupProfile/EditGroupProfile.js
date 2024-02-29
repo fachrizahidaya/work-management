@@ -66,6 +66,10 @@ const EditGroupProfile = () => {
     }
   };
 
+  /**
+   * Handle pick image
+   * @returns
+   */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

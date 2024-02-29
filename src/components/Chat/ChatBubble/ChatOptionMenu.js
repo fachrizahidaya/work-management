@@ -4,7 +4,16 @@ import Modal from "react-native-modal";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
-const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggleDeleteModal, placement }) => {
+const ChatOptionMenu = ({
+  optionIsOpen,
+  onClose,
+  setMessageToReply,
+  chat,
+  toggleDeleteModal,
+  placement,
+  setDeleteSelected,
+  deleteSelected,
+}) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -42,8 +51,14 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
       name: "Delete",
       icon: "trash-can-outline",
       onPress: () => {
-        toggleDeleteModal();
-        onClose();
+        if (Platform.OS === "android") {
+          toggleDeleteModal();
+          onClose();
+        } else {
+          // toggleDeleteModal();
+          setDeleteSelected(true);
+          onClose();
+        }
       },
       color: "#FF0303",
     },
@@ -53,10 +68,26 @@ const ChatOptionMenu = ({ optionIsOpen, onClose, setMessageToReply, chat, toggle
     <>
       <Modal
         isVisible={optionIsOpen}
-        onBackdropPress={onClose}
+        onBackdropPress={() => {
+          onClose();
+          setDeleteSelected(false);
+        }}
         backdropColor="#272A2B"
         deviceHeight={deviceHeight}
         deviceWidth={deviceWidth}
+        hideModalContentWhileAnimating={true}
+        useNativeDriver={false}
+        onModalHide={() => {
+          if (Platform.OS === "android") {
+            null;
+          } else {
+            if (deleteSelected) {
+              toggleDeleteModal();
+            } else {
+              null;
+            }
+          }
+        }}
       >
         <View style={{ ...styles[placement], width: 200 }}>
           <View style={{ backgroundColor: "#FFFFFF", padding: 15, gap: 10, borderRadius: 15 }}>

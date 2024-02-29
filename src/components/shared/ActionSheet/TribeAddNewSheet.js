@@ -240,7 +240,7 @@ const TribeAddNewSheet = (props) => {
                   </TouchableOpacity>
                 ) : (
                   attendance?.data &&
-                    attendance?.data?.day_type === "Work Day" &&
+                    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off") &&
                     attendance?.date?.att_type !== "Leave" &&
                     attendance?.data?.att_type !== "Holiday" && (
                       <Pressable
@@ -298,7 +298,7 @@ const TribeAddNewSheet = (props) => {
                   </TouchableOpacity>
                 ) : (
                   attendance?.data &&
-                    attendance?.data?.day_type === "Work Day" &&
+                    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off") &&
                     attendance?.date?.att_type !== "Leave" &&
                     attendance?.data?.att_type !== "Holiday" && (
                       <Pressable

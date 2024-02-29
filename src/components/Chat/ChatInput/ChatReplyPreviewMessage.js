@@ -5,14 +5,13 @@ import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
 const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
+
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
     return sentence.replace(regex, `<strong class='text-primary'>$&</strong>`);
   };
-  const renderDangerouslyInnerHTMLContent = (
-    message = "",
-    alt_message = ""
-  ) => {
+
+  const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
     for (let i = 0; i < memberName.length; i++) {
       let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
       message = message?.replace(placeholder, `@${memberName[i]}`);
@@ -25,6 +24,7 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
     }
     return alt_message;
   };
+
   const renderMessage = (attachment_type) => {
     if (attachment_type === "image") {
       return (
@@ -65,10 +65,7 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
             ellipsizeMode="tail"
           >
             <MaterialCommunityIcons name="file-outline" color="#3F434A" />
-            {renderDangerouslyInnerHTMLContent(
-              message?.message,
-              message?.file_name
-            )}
+            {renderDangerouslyInnerHTMLContent(message?.message, message?.file_name)}
           </Text>
         </View>
       );
@@ -88,10 +85,7 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
               ellipsizeMode="tail"
             >
               <MaterialCommunityIcons name="lightning-bolt" color="#3F434A" />
-              {renderDangerouslyInnerHTMLContent(
-                message?.message,
-                message?.project_title
-              )}
+              {renderDangerouslyInnerHTMLContent(message?.message, message?.project_title)}
             </Text>
           </View>
         );
@@ -109,14 +103,8 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              <MaterialCommunityIcons
-                name="checkbox-marked-circle-outline"
-                color="#3F434A"
-              />
-              {renderDangerouslyInnerHTMLContent(
-                message?.message,
-                message?.task_title
-              )}
+              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#3F434A" />
+              {renderDangerouslyInnerHTMLContent(message?.message, message?.task_title)}
             </Text>
           </View>
         );
@@ -139,21 +127,19 @@ const ChatReplyPreviewMessage = ({ message, keyword = "", memberName }) => {
       }
     }
   };
+
   useEffect(() => {
     if (message) {
       setMimeTypeInfo(MimeTypeInfo(message.mime_type));
     }
   }, [message]);
+
   return (
     <>
       {message?.delete_for_everyone ? (
         <Text>Message has been deleted</Text>
       ) : (
-        renderMessage(
-          mimeTypeInfo?.file_type === "not supported"
-            ? mimeTypeInfo?.file_ext
-            : mimeTypeInfo?.file_type
-        )
+        renderMessage(mimeTypeInfo?.file_type === "not supported" ? mimeTypeInfo?.file_ext : mimeTypeInfo?.file_type)
       )}
     </>
   );

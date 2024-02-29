@@ -1,19 +1,8 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import {
-  View,
-  Text,
-  Pressable,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Platform,
-} from "react-native";
-import {
-  MentionInput,
-  replaceMentionValues,
-} from "react-native-controlled-mentions";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView, Platform } from "react-native";
+import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -101,6 +90,7 @@ const ChatInput = ({
     id: item?.user?.id,
     name: item?.user?.name,
   }));
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -144,9 +134,7 @@ const ChatInput = ({
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = memberData.filter((one) =>
-      one.name.toLowerCase().includes(keyword.toLowerCase())
-    );
+    const data = memberData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
       <ScrollView style={{ maxHeight: 100 }}>
@@ -156,11 +144,7 @@ const ChatInput = ({
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable
-              key={index}
-              onPress={() => onSuggestionPress(item)}
-              style={{ padding: 12 }}
-            >
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
               <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
@@ -182,11 +166,7 @@ const ChatInput = ({
     formik.handleChange("message")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(
-      groupMember.filter((member) =>
-        member?.name?.toLowerCase().includes(lastWord.toLowerCase())
-      )
-    );
+    setSuggestions(groupMember.filter((member) => member?.name?.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   useEffect(() => {
@@ -199,14 +179,9 @@ const ChatInput = ({
       formik.setFieldValue(`${bandAttachmentType}_id`, bandAttachment?.id);
       formik.setFieldValue(
         `${bandAttachmentType}_no`,
-        bandAttachmentType === "project"
-          ? bandAttachment?.project_no
-          : bandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
+        bandAttachmentType === "project" ? bandAttachment?.project_no : bandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
       );
-      formik.setFieldValue(
-        `${bandAttachmentType}_title`,
-        bandAttachment?.title
-      );
+      formik.setFieldValue(`${bandAttachmentType}_title`, bandAttachment?.title);
     }
   }, [bandAttachment, bandAttachmentType]);
 
@@ -241,14 +216,8 @@ const ChatInput = ({
           }}
         >
           {type === "group" && !active_member ? (
-            <Text
-              style={[
-                { fontSize: 12, textAlign: "center", padding: 10 },
-                TextProps,
-              ]}
-            >
-              You can't send message to this group because you're no longer a
-              participant
+            <Text style={[{ fontSize: 12, textAlign: "center", padding: 10 }, TextProps]}>
+              You can't send message to this group because you're no longer a participant
             </Text>
           ) : (
             <>
@@ -286,14 +255,8 @@ const ChatInput = ({
                                     borderBottomColor: "#FFFFFF",
                                   }}
                                 >
-                                  <Text style={[{ fontSize: 16 }, TextProps]}>
-                                    {option.name}
-                                  </Text>
-                                  <MaterialCommunityIcons
-                                    name={option.icon}
-                                    color={option.color}
-                                    size={20}
-                                  />
+                                  <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
+                                  <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
                                 </TouchableOpacity>
                               );
                             })}
@@ -329,9 +292,7 @@ const ChatInput = ({
                 />
               </TouchableOpacity>
 
-              <View
-                style={{ display: "flex", flex: 1, justifyContent: "center" }}
-              >
+              <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
                 {type === "group" ? (
                   <MentionInput
                     value={formik.values.message}
@@ -365,22 +326,7 @@ const ChatInput = ({
                     }}
                     value={formik.values.message}
                     onChange={(value) => formik.setFieldValue("message", value)}
-                    partTypes={
-                      [
-                        // {
-                        //   pattern:
-                        //     /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(xn--)?[a-z0-9-]{2,20}\b([-a-zA-Z0-9@:%_\+\[\],.~#?&\/=]*[-a-zA-Z0-9@:%_\+\]~#?&\/=])*/gi,
-                        // },
-                        // {
-                        //   trigger: "@",
-                        //   renderSuggestions: renderSuggestions,
-                        //   textStyle: {
-                        //     fontWeight: "400",
-                        //     color: "#377893",
-                        //   },
-                        // },
-                      ]
-                    }
+                    partTypes={[]}
                     placeholder="Type a message..."
                     style={{
                       padding: 12,
@@ -388,18 +334,6 @@ const ChatInput = ({
                       alignItems: "center",
                     }}
                   />
-                  // <Input
-                  //   placeHolder="Type a message..."
-                  //   value={formik.values.message}
-                  //   onChangeText={(value) => formik.setFieldValue("message", value)}
-                  //   borderColor="transparent"
-                  //   alignVertical={null}
-                  //   multiline={true}
-                  //   sizeChange={true}
-                  //   height={40}
-                  //   setHeight={setHeight}
-                  //   style={{paddingTop:Platform.OS === 'ios' ? 12  : null}}
-                  // />
                 )}
               </View>
 
@@ -408,19 +342,11 @@ const ChatInput = ({
                   formik.values.message !== "" ||
                   formik.values.file !== "" ||
                   formik.values.project_id ||
-                  (formik.values.task_id &&
-                    !formik.isSubmitting &&
-                    formik.status !== "processing")
+                  (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
                     ? formik.handleSubmit
                     : null
                 }
-                opacity={
-                  formik.values.message === "" &&
-                  fileAttachment === null &&
-                  bandAttachment === null
-                    ? 0.5
-                    : 1
-                }
+                opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
                 style={{}}
               >
                 <MaterialIcons name="send" size={25} color="#8A9099" />

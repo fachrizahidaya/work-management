@@ -1,12 +1,6 @@
 import { useState } from "react";
 
-import {
-  View,
-  Text,
-  Pressable,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -100,21 +94,12 @@ const ChatHeader = ({
             onPress={() => navigation.navigate("User Detail", params)}
             style={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            <AvatarPlaceholder
-              name={name}
-              image={image}
-              size="md"
-              isThumb={false}
-            />
+            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
             <View>
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                {name?.length > 30 ? name?.split(" ")[0] : name}
-              </Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
               {type === "personal" ? (
-                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
-                  {email}
-                </Text>
+                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{email}</Text>
               ) : (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ flexDirection: "row" }}>
@@ -171,11 +156,7 @@ const ChatHeader = ({
                     </TouchableOpacity> */}
                       <TouchableOpacity
                         onPress={() => {
-                          onUpdatePinHandler(
-                            type,
-                            roomId,
-                            isPinned?.pin_chat ? "unpin" : "pin"
-                          );
+                          onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
                           SheetManager.hide("form-sheet");
                         }}
                         style={{
@@ -204,9 +185,7 @@ const ChatHeader = ({
                                 borderBottomColor: "#FFFFFF",
                               }}
                             >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>
-                                Exit Group
-                              </Text>
+                              <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
                             </TouchableOpacity>
                           ) : (
                             <TouchableOpacity
@@ -221,9 +200,7 @@ const ChatHeader = ({
                                 borderBottomColor: "#FFFFFF",
                               }}
                             >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>
-                                Delete Group
-                              </Text>
+                              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
                             </TouchableOpacity>
                           )}
                         </>
@@ -241,9 +218,7 @@ const ChatHeader = ({
                               borderBottomColor: "#FFFFFF",
                             }}
                           >
-                            <Text style={[{ fontSize: 16 }, TextProps]}>
-                              Delete Chat
-                            </Text>
+                            <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
                           </TouchableOpacity>
                         </>
                       )}
