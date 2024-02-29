@@ -18,7 +18,7 @@ import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectS
 import KPIListScreen from "../../screens/Tribe/Performance/KPI/KPIListScreen";
 import AppraisalListScreen from "../../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
 import KPIAppraisalReviewScreen from "../../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
-import CommentListScreen from "../../screens/Tribe/Performance/Review/CommentListScreen";
+import PerformanceListScreen from "../../screens/Tribe/Performance/Result/PerformanceListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -71,11 +71,7 @@ const TribeTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons
-                  name="home-outline"
-                  size={20}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="home-outline" size={20} color="#3F434A" />
               </View>
             ),
           }}
@@ -86,11 +82,7 @@ const TribeTab = () => {
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
-                <MaterialCommunityIcons
-                  name="magnify"
-                  size={20}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
               </View>
             ),
           }}
@@ -111,10 +103,7 @@ const TribeTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => tribeAddNewSheetRef.current?.show()}
-              >
+              <TouchableOpacity {...props} onPress={() => tribeAddNewSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -130,10 +119,7 @@ const TribeTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => tribeScreenSheetRef.current?.show()}
-              >
+              <TouchableOpacity {...props} onPress={() => tribeScreenSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -152,10 +138,7 @@ const TribeTab = () => {
               />
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity
-                {...props}
-                onPress={() => moduleSelectSheetRef.current?.show()}
-              >
+              <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -179,12 +162,9 @@ const TribeTab = () => {
 
         <Tab.Screen name="Employee Appraisal" component={AppraisalListScreen} />
 
-        <Tab.Screen
-          name="Employee Review"
-          component={KPIAppraisalReviewScreen}
-        />
+        <Tab.Screen name="Employee Review" component={KPIAppraisalReviewScreen} />
 
-        <Tab.Screen name="Performance Result" component={CommentListScreen} />
+        <Tab.Screen name="Performance Result" component={PerformanceListScreen} />
       </Tab.Navigator>
 
       {/* Sheets */}

@@ -9,17 +9,17 @@ import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useLoading } from "../../../../hooks/useLoading";
-import CommentDetailList from "../../../../components/Tribe/Performance/CommentList/CommentDetailList";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import Button from "../../../../components/shared/Forms/Button";
-import CommentDetailItem from "../../../../components/Tribe/Performance/CommentList/CommentDetailItem";
-import CommentForm from "../../../../components/Tribe/Performance/Form/CommentForm";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
+import CommentDetailList from "../../../../components/Tribe/Performance/Review/CommentDetailList";
+import CommentDetailItem from "../../../../components/Tribe/Performance/Review/CommentDetailItem";
+import CommentForm from "../../../../components/Tribe/Performance/Review/CommentForm";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
@@ -32,16 +32,12 @@ const CommentScreen = () => {
   const [employeeComment, setEmployeeComment] = useState(null);
 
   const navigation = useNavigation();
-  const formScreenSheetRef = useRef(null);
+
   const route = useRoute();
 
-  const { id } = route.params;
+  const formScreenSheetRef = useRef(null);
 
-  const {
-    data: commentList,
-    isFetching: commentListIsFetching,
-    refetch: refetchCommentList,
-  } = useFetch(`/hr/employee-review/comment/${id}`);
+  const { id } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
@@ -50,12 +46,22 @@ const CommentScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
+  const {
+    data: commentList,
+    isFetching: commentListIsFetching,
+    refetch: refetchCommentList,
+  } = useFetch(`/hr/employee-review/comment/${id}`);
+
+  /**
+   * Handle selected comment
+   * @param {*} data
+   * @param {*} value
+   */
   const openSelectedComment = (data, value) => {
     setComment(data);
     setEmployeeComment(value);
     formScreenSheetRef.current?.show();
   };
-
   const closeSelectedComment = () => {
     formScreenSheetRef.current?.hide();
   };
@@ -78,6 +84,10 @@ const CommentScreen = () => {
     return [...employeeCommentValArr];
   };
 
+  /**
+   * Handle update value of Comment item
+   * @param {*} data
+   */
   const employeeCommentValueUpdateHandler = (data) => {
     setEmployeeCommentValue((prevState) => {
       let currentData = [...prevState];
@@ -94,6 +104,9 @@ const CommentScreen = () => {
     });
   };
 
+  /**
+   * Handle array of update Comment item
+   */
   const sumUpCommentValue = () => {
     setCommentValues(() => {
       // const performanceCommentValue = commentList?.data?.performance_review?.comment;
@@ -105,6 +118,40 @@ const CommentScreen = () => {
     });
   };
 
+  /**
+   * Handle saved current comment value to be can saved or not
+   * @param {*} commentValues
+   * @param {*} employeeCommentValue
+   * @returns
+   */
+  const compareCommentExisting = (commentValues, employeeCommentValue) => {
+    let differences = [];
+
+    for (let empComment of employeeCommentValue) {
+      let commentValue = commentValues.find((comment) => comment.id === empComment.id);
+      if (commentValue && commentValue.comment !== empComment.comment) {
+        differences.push({
+          id: empComment.id,
+          difference: [empComment.comment, commentValue.comment],
+        });
+      }
+    }
+
+    return differences;
+  };
+
+  let differences = compareCommentExisting(commentValues, employeeCommentValue);
+
+  const formikChangeHandler = (e, submitWithoutChange = false) => {
+    if (!submitWithoutChange) {
+      formik.handleChange("comment", e);
+    }
+    setFormValue(formik.values);
+  };
+
+  /**
+   * Handle save filled or updated Comment
+   */
   const submitHandler = async () => {
     try {
       toggleSubmit();
@@ -122,6 +169,9 @@ const CommentScreen = () => {
     }
   };
 
+  /**
+   * Handle create Comment value
+   */
   const formik = useFormik({
     initialValues: {
       performance_review_comment_id: comment?.performance_review_comment_id || comment?.id,
@@ -137,31 +187,6 @@ const CommentScreen = () => {
     },
     enableReinitialize: true,
   });
-
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("comment", e);
-    }
-    setFormValue(formik.values);
-  };
-
-  function compareCommentExisting(commentValues, employeeCommentValue) {
-    let differences = [];
-
-    for (let empComment of employeeCommentValue) {
-      let commentValue = commentValues.find((comment) => comment.id === empComment.id);
-      if (commentValue && commentValue.comment !== empComment.comment) {
-        differences.push({
-          id: empComment.id,
-          difference: [empComment.comment, commentValue.comment],
-        });
-      }
-    }
-
-    return differences;
-  }
-
-  let differences = compareCommentExisting(commentValues, employeeCommentValue);
 
   useEffect(() => {
     if (formValue) {

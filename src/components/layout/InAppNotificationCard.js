@@ -1,25 +1,10 @@
 import React, { memo, useEffect, useRef } from "react";
 
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
-const InAppNotificationCard = ({
-  message,
-  isOpen,
-  close,
-  memberName,
-  messageData,
-}) => {
+const InAppNotificationCard = ({ message, isOpen, close, memberName, messageData }) => {
   const autoCloseTimeout = useRef(null);
   const { width } = Dimensions.get("screen");
 
@@ -100,29 +85,13 @@ const InAppNotificationCard = ({
             alignItems: "baseline",
           }}
         >
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
-            Nest
-          </Text>
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>Nest</Text>
 
           <Text style={{ fontSize: 12, color: "white" }}>now</Text>
         </View>
 
         <Text style={{ color: "white", fontSize: 14 }}>
-          {
-            message?.from_name
-            // ||
-            // styledTexts
-          }{" "}
-          :{" "}
-          {
-            styledTexts?.length >
-            // || styledTexts
-            30
-              ? styledTexts?.slice(0, 30) + "..."
-              : // || styledTexts
-                styledTexts
-            // || styledTexts
-          }
+          {message?.from_name} : {styledTexts?.length > 30 ? styledTexts?.slice(0, 30) + "..." : styledTexts}
         </Text>
       </View>
 

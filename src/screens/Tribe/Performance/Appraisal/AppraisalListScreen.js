@@ -2,28 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
-import { useFetch } from "../../../../hooks/useFetch";
+import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/Appraisal/OngoingAppraisalListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
-import FormButton from "../../../../components/shared/FormButton";
 
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -31,8 +22,6 @@ const AppraisalListScreen = () => {
   const [archivedList, setArchivedList] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [filterStartDate, setFilterStartDate] = useState(null);
-  const [filterEndDate, setFilterEndDate] = useState(null);
 
   const navigation = useNavigation();
 
@@ -55,8 +44,11 @@ const AppraisalListScreen = () => {
     fetchArchivedParameters
   );
 
-  const { data: ongoingData } = useFetch("/hr/employee-kpi/ongoing");
+  const { data: ongoingData } = useFetch("/hr/employee-appraisal/ongoing");
 
+  /**
+   * Handle separate ongoing and archived Appraisal
+   */
   const filteredData = appraisalList?.data
     .map((item) => {
       if (item?.review?.end_date >= currentDate) {
@@ -81,7 +73,7 @@ const AppraisalListScreen = () => {
       },
       { title: `Archived`, value: "Archived" },
     ];
-  }, [filteredData, archivedData]);
+  }, [appraisalList, archived]);
 
   const onChangeTab = useCallback(
     (value) => {
@@ -94,23 +86,16 @@ const AppraisalListScreen = () => {
     [appraisalList, archived]
   );
 
+  /**
+   * Handle start and end date archived
+   * @param {*} date
+   */
   const startDateChangeHandler = (date) => {
     setStartDate(date);
   };
 
   const endDateChangeHandler = (date) => {
     setEndDate(date);
-  };
-
-  const submitFilterDateHandler = () => {
-    setFilterStartDate(startDate);
-    setFilterEndDate(endDate);
-    SheetManager.hide("form-sheet");
-  };
-
-  const resetDateHandler = () => {
-    setFilterStartDate(null);
-    setFilterEndDate(null);
   };
 
   useEffect(() => {
@@ -161,10 +146,7 @@ const AppraisalListScreen = () => {
             ) : (
               <ScrollView
                 refreshControl={
-                  <RefreshControl
-                    refreshing={appraisalListIsFetching}
-                    onRefresh={refetchAppraisalList}
-                  />
+                  <RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />
                 }
               >
                 <View style={styles.content}>
@@ -228,11 +210,7 @@ const AppraisalListScreen = () => {
                       gap: 5,
                     }}
                   >
-                    <MaterialCommunityIcons
-                      name="tune-variant"
-                      size={20}
-                      color="#3F434A"
-                    />
+                    <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
                   </View>
                 </Pressable>
               </View>
@@ -259,10 +237,7 @@ const AppraisalListScreen = () => {
               ) : (
                 <ScrollView
                   refreshControl={
-                    <RefreshControl
-                      refreshing={appraisalListIsFetching}
-                      onRefresh={refetchAppraisalList}
-                    />
+                    <RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />
                   }
                 >
                   <View style={styles.content}>

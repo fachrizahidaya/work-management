@@ -5,17 +5,7 @@ import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  AppState,
-  Platform,
-  Linking,
-} from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,11 +13,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
-import {
-  TextProps,
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import { useLoading } from "../../../hooks/useLoading";
 import SuccessModal from "../Modal/SuccessModal";
@@ -41,27 +27,16 @@ const TribeAddNewSheet = (props) => {
   const [success, setSuccess] = useState(false);
 
   const navigation = useNavigation();
-  const createLeaveRequestCheckAccess = useCheckAccess(
-    "create",
-    "Leave Requests"
-  );
+  const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
 
-  const { data: attendance, refetch: refetchAttendance } = useFetch(
-    "/hr/timesheets/personal/attendance-today"
-  );
+  const { data: attendance, refetch: refetchAttendance } = useFetch("/hr/timesheets/personal/attendance-today");
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const { toggle: toggleClockModal, isOpen: clockModalIsOpen } =
-    useDisclosure(false);
-  const {
-    toggle: toggleNewLeaveRequestModal,
-    isOpen: newLeaveRequestModalIsOpen,
-  } = useDisclosure(false);
-  const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } =
-    useDisclosure(false);
+  const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
+  const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
+  const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } = useDisclosure(false);
 
-  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } =
-    useLoading(false);
+  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -139,10 +114,7 @@ const TribeAddNewSheet = (props) => {
         await Location.requestForegroundPermissionsAsync();
         showAlertToAllowPermission();
       } else if (location && locationOn) {
-        if (
-          dayjs().format("HH:mm") !== attendance?.data?.time_out ||
-          !attendance
-        ) {
+        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
           toggleAttendanceModal();
 
           // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
@@ -162,10 +134,7 @@ const TribeAddNewSheet = (props) => {
    */
   const getLocation = async () => {
     try {
-      if (
-        (locationOn == false && status == false) ||
-        (locationOn == false && status == true)
-      ) {
+      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
         showAlertToActivateLocation();
         return;
       }
@@ -255,16 +224,9 @@ const TribeAddNewSheet = (props) => {
                   >
                     <View style={styles.flex}>
                       <View style={styles.item}>
-                        <MaterialCommunityIcons
-                          name={item.icons}
-                          size={20}
-                          color="#3F434A"
-                        />
+                        <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
                       </View>
-                      <Text
-                        key={item.title}
-                        style={[{ fontSize: 14 }, TextProps]}
-                      >
+                      <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
                         {item.title}
                       </Text>
                     </View>
@@ -320,16 +282,9 @@ const TribeAddNewSheet = (props) => {
                   >
                     <View style={styles.flex}>
                       <View style={styles.item}>
-                        <MaterialCommunityIcons
-                          name={item.icons}
-                          size={20}
-                          color="#3F434A"
-                        />
+                        <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
                       </View>
-                      <Text
-                        key={item.title}
-                        style={[{ fontSize: 14 }, TextProps]}
-                      >
+                      <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
                         {item.title}
                       </Text>
                     </View>
@@ -369,18 +324,14 @@ const TribeAddNewSheet = (props) => {
             latitude: location?.coords?.latitude,
             check_from: "Mobile App",
           }}
-          header={`Confirm ${
-            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
-          }`}
+          header={`Confirm ${!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}`}
           hasSuccessFunc={true}
           onSuccess={() => {
             setSuccess(true);
             toggleAttendance();
             refetchAttendance();
           }}
-          description={`Are you sure want to ${
-            !attendance?.data?.time_out ? "Clock-in" : "Clock-out"
-          }?`}
+          description={`Are you sure want to ${!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}?`}
           successMessage={`Process success`}
           isDelete={false}
           isGet={false}
@@ -407,11 +358,7 @@ const TribeAddNewSheet = (props) => {
               >
                 {attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
               </Text>
-              <Text
-                style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
-              >
-                success!
-              </Text>
+              <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
             </View>
           }
           bottomElement={
@@ -430,18 +377,12 @@ const TribeAddNewSheet = (props) => {
         toggle={toggleNewLeaveRequestModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Request{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              sent!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Request </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>sent!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Please wait for approval
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Please wait for approval</Text>
         }
       />
     </>

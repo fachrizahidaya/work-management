@@ -2,28 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import OngoingPerformanceListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingPerformanceListItem";
+import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
 import PageHeader from "../../../../components/shared/PageHeader";
-import { useFetch } from "../../../../hooks/useFetch";
+import OngoingPerformanceListItem from "../../../../components/Tribe/Performance/KPI/OngoingPerformanceListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
-import FormButton from "../../../../components/shared/FormButton";
 
 const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -31,8 +22,6 @@ const KPIListScreen = () => {
   const [archivedList, setArchivedList] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [filterStartDate, setFilterStartDate] = useState(null);
-  const [filterEndDate, setFilterEndDate] = useState(null);
 
   const navigation = useNavigation();
 
@@ -57,6 +46,9 @@ const KPIListScreen = () => {
 
   const { data: ongoingData } = useFetch("/hr/employee-kpi/ongoing");
 
+  /**
+   * Handle separate ongoing and archived KPI
+   */
   const filteredData = kpiList?.data
     .map((item) => {
       if (item?.review?.end_date >= currentDate) {
@@ -81,7 +73,7 @@ const KPIListScreen = () => {
       },
       { title: `Archived`, value: "Archived" },
     ];
-  }, [filteredData, archivedData]);
+  }, [kpiList, archived]);
 
   const onChangeTab = useCallback(
     (value) => {
@@ -94,23 +86,15 @@ const KPIListScreen = () => {
     [kpiList, archived]
   );
 
+  /**
+   * Handle start and end date archived
+   * @param {*} date
+   */
   const startDateChangeHandler = (date) => {
     setStartDate(date);
   };
-
   const endDateChangeHandler = (date) => {
     setEndDate(date);
-  };
-
-  const submitFilterDateHandler = () => {
-    setFilterStartDate(startDate);
-    setFilterEndDate(endDate);
-    SheetManager.hide("form-sheet");
-  };
-
-  const resetDateHandler = () => {
-    setFilterStartDate(null);
-    setFilterEndDate(null);
   };
 
   useEffect(() => {
@@ -159,14 +143,7 @@ const KPIListScreen = () => {
                 )}
               />
             ) : (
-              <ScrollView
-                refreshControl={
-                  <RefreshControl
-                    refreshing={kpiListIsFetching}
-                    onRefresh={refetchKpiList}
-                  />
-                }
-              >
+              <ScrollView refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}>
                 <View style={styles.content}>
                   <EmptyPlaceholder height={250} width={250} text="No Data" />
                 </View>
@@ -228,11 +205,7 @@ const KPIListScreen = () => {
                       gap: 5,
                     }}
                   >
-                    <MaterialCommunityIcons
-                      name="tune-variant"
-                      size={20}
-                      color="#3F434A"
-                    />
+                    <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
                   </View>
                 </Pressable>
               </View>
@@ -258,12 +231,7 @@ const KPIListScreen = () => {
                 />
               ) : (
                 <ScrollView
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={kpiListIsFetching}
-                      onRefresh={refetchKpiList}
-                    />
-                  }
+                  refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}
                 >
                   <View style={styles.content}>
                     <EmptyPlaceholder height={250} width={250} text="No Data" />
