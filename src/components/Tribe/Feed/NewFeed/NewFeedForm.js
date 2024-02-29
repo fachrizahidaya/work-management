@@ -1,24 +1,12 @@
 import { useState } from "react";
 
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Image,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, View, Pressable, Image, ActivityIndicator } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({
-  formik,
-  image,
-  setImage,
-  pickImageHandler,
-  employees,
-}) => {
+const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -29,17 +17,9 @@ const NewFeedForm = ({
         <View style={styles.boxImage}>
           {image ? (
             <View style={{ alignSelf: "center" }}>
-              <Image
-                source={{ uri: image.uri }}
-                style={styles.image}
-                alt="image selected"
-              />
+              <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
               <Pressable style={styles.close} onPress={() => setImage(null)}>
-                <MaterialCommunityIcons
-                  name="close"
-                  size={20}
-                  color="#FFFFFF"
-                />
+                <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>
           ) : null}
@@ -76,9 +56,7 @@ const NewFeedForm = ({
             <ActivityIndicator />
           ) : (
             <MaterialCommunityIcons
-              name={
-                formik.values.type === "Public" ? "send" : "bullhorn-variant"
-              }
+              name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}
               size={20}
               color="#FFFFFF"
               style={{ transform: [{ rotate: "-45deg" }] }}

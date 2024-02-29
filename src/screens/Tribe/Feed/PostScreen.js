@@ -3,16 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Linking,
-  Clipboard,
-  ScrollView,
-} from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
 import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
@@ -20,10 +11,7 @@ import { RefreshControl } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import {
-  TextProps,
-  ErrorToastProps,
-} from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import PageHeader from "../../../components/shared/PageHeader";
 import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentPost";
@@ -57,26 +45,10 @@ const PostScreen = () => {
 
   const { id } = route.params;
 
-  const {
-    data: postData,
-    refetch: refetchPostData,
-    isFetching: postDataIsFetching,
-  } = useFetch(`/hr/posts/${id}`);
-
-  const { data: profile } = useFetch("/hr/my-profile");
-
-  const { data: employees } = useFetch("/hr/employees");
-  const employeeUsername = employees?.data?.map((item) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-  const employeeData = employees?.data.map(({ id, username }) => ({
-    id,
-    name: username,
-  }));
+  const commentsFetchParameters = {
+    offset: currentOffsetComments,
+    limit: 10,
+  };
 
   const {
     data: post,
@@ -84,11 +56,6 @@ const PostScreen = () => {
     isFetching: postIsFetching,
     isLoading: postIsLoading,
   } = useFetch("/hr/posts");
-
-  const commentsFetchParameters = {
-    offset: currentOffsetComments,
-    limit: 10,
-  };
 
   const {
     data: comment,
@@ -101,11 +68,56 @@ const PostScreen = () => {
     commentsFetchParameters
   );
 
+  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
+
+  const { data: profile } = useFetch("/hr/my-profile");
+
+  const { data: employees } = useFetch("/hr/employees");
+
+  /**
+   * Handle show username in post
+   */
+  const employeeUsername = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
+
+  /**
+   * Handle show username suggestion option
+   */
+  const employeeData = employees?.data.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
+
+  /**
+   * Handle toggle fullscreen image
+   */
   const toggleFullScreen = useCallback((post) => {
     setIsFullScreen(!isFullScreen);
     setSelectedPicture(post);
   }, []);
 
+  /**
+   * Handle add comment
+   */
+  const commentAddHandler = () => {
+    setPostTotalComment((prevState) => {
+      return prevState + 1;
+    });
+    const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
+    posts[referenceIndex]["total_comment"] += 1;
+    refetchPostData();
+  };
+
+  /**
+   * Handle like a post
+   * @param {*} post_id
+   * @param {*} action
+   */
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
@@ -117,17 +129,12 @@ const PostScreen = () => {
     }
   };
 
-  const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
-    const referenceIndex = posts.findIndex(
-      (post) => post.id === postData?.data?.id
-    );
-    posts[referenceIndex]["total_comment"] += 1;
-    refetchPostData();
-  };
-
+  /**
+   * Handle submit a comment
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
   const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
@@ -145,15 +152,25 @@ const PostScreen = () => {
     }
   };
 
+  /**
+   * Handle toggle reply a comment
+   * @param {*} comment_parent_id
+   */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
     setLatestExpandedReply(comment_parent_id);
   };
 
+  /**
+   * Handle press link
+   */
   const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
+  /**
+   * Handle press email
+   */
   const handleEmailPress = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
@@ -163,6 +180,10 @@ const PostScreen = () => {
     }
   }, []);
 
+  /**
+   * Handle copy to clipboard
+   * @param {*} text
+   */
   const copyToClipboard = (text) => {
     try {
       if (typeof text !== String) {
@@ -176,24 +197,35 @@ const PostScreen = () => {
     }
   };
 
+  /**
+   * Handle fetch comment from first offset
+   * After create a new comment, it will return to the first offset
+   */
   const commentRefetchHandler = () => {
     setCurrentOffsetComments(0);
     setReloadComment(!reloadComment);
   };
 
+  /**
+   * Handle fetch more Comments
+   * After end of scroll reached, it will added other earlier comments
+   */
   const commentEndReachedHandler = () => {
     if (comments.length !== comments.length + comment?.data.length) {
       setCurrentOffsetComments(currentOffsetComments + 10);
     }
   };
 
+  /**
+   * Handle show suggestion username
+   * @param {*} param0
+   * @returns
+   */
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData.filter((one) =>
-      one.name.toLowerCase().includes(keyword.toLowerCase())
-    );
+    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
       <ScrollView style={{ maxHeight: 100 }}>
@@ -203,11 +235,7 @@ const PostScreen = () => {
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable
-              key={index}
-              onPress={() => onSuggestionPress(item)}
-              style={{ padding: 12 }}
-            >
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
               <Text style={[{}, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
@@ -216,17 +244,20 @@ const PostScreen = () => {
     );
   };
 
+  /**
+   * Handle adjust the content if there is username
+   * @param {*} value
+   */
   const handleChange = (value) => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue?.split(" ").pop();
-    setSuggestions(
-      employees?.data.filter((employee) =>
-        employee?.name.toLowerCase().includes(lastWord.toLowerCase())
-      )
-    );
+    setSuggestions(employees?.data.filter((employee) => employee?.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
+  /**
+   * Handle create a new comment
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -335,6 +366,9 @@ const PostScreen = () => {
                   employeeUsername={employeeUsername}
                   employees={employees?.data}
                   reference={commentScreenSheetRef}
+                  linkPressHandler={handleLinkPress}
+                  emailPressHandler={handleEmailPress}
+                  copyToClipboardHandler={copyToClipboard}
                 />
               </View>
             </ScrollView>
@@ -351,11 +385,7 @@ const PostScreen = () => {
       ) : (
         <></>
       )}
-      <ImageFullScreenModal
-        isFullScreen={isFullScreen}
-        setIsFullScreen={setIsFullScreen}
-        file_path={selectedPicture}
-      />
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );
 };

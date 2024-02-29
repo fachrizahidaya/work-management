@@ -31,12 +31,7 @@ const FeedCommentForm = ({
         paddingVertical: Platform.OS === "ios" ? 6 : 6,
       }}
     >
-      <AvatarPlaceholder
-        isThumb={false}
-        size="sm"
-        image={loggedEmployeeImage}
-        name={loggedEmployeeName}
-      />
+      <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} />
       <View style={{ flex: 1 }}>
         <MentionInput
           value={formik.values.comments}

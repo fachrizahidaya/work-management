@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
-import { Clipboard, Linking, View } from "react-native";
+import { View } from "react-native";
 
 import FeedCommentListPost from "./FeedCommentListPost";
 
@@ -10,34 +10,11 @@ const FeedCommentPost = ({
   onEndReached,
   onReply,
   employeeUsername,
+  linkPressHandler,
+  emailPressHandler,
+  copyToClipboardHandler,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-
-  const handleLinkPress = useCallback((url) => {
-    Linking.openURL(url);
-  }, []);
-
-  const handleEmailPress = useCallback((email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  const copyToClipboard = (text) => {
-    try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
-      } else {
-        Clipboard.setString(text);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -62,9 +39,9 @@ const FeedCommentPost = ({
           employeeUsername={employeeUsername}
           hasBeenScrolled={hasBeenScrolled}
           setHasBeenScrolled={setHasBeenScrolled}
-          handleLinkPress={handleLinkPress}
-          handleEmailPress={handleEmailPress}
-          copyToClipboard={copyToClipboard}
+          handleLinkPress={linkPressHandler}
+          handleEmailPress={emailPressHandler}
+          copyToClipboard={copyToClipboardHandler}
         />
       </View>
     </>

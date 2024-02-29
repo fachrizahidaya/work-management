@@ -16,10 +16,7 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import {
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
@@ -50,26 +47,21 @@ const EmployeeProfileScreen = ({ route }) => {
   const [imagePreview, setImagePreview] = useState("");
   const [deletePostSuccess, setDeletePostSuccess] = useState(false);
 
+  const navigation = useNavigation();
+
+  const { height } = Dimensions.get("screen");
+
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
   const teammatesScreenSheetRef = useRef(null);
 
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
-    useDisclosure(false);
-  const { isOpen: editModalIsOpen, toggle: toggleEditModal } =
-    useDisclosure(false);
-  const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } =
-    useDisclosure(false);
-  const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } =
-    useDisclosure(false);
-
-  const { height } = Dimensions.get("screen");
-
-  const navigation = useNavigation();
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
+  const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
+  const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
 
   const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
-
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
   const checkAccess = menuSelector[1].sub[2]?.actions.create_announcement;
@@ -78,28 +70,13 @@ const EmployeeProfileScreen = ({ route }) => {
     search: searchInput,
   };
 
-  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
-
-  const { data: teammates } = useFetch(
-    `/hr/employees/${employeeId}/team`,
-    [searchInput],
-    fetchTeammatesParameters
-  );
-
-  const { data: profile } = useFetch("/hr/my-profile");
-
-  const { data: employees } = useFetch("/hr/employees");
-  const employeeUsername = employees?.data?.map((item, index) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
+    limit: 10,
+  };
+
+  const commentsFetchParameters = {
+    offset: currentOffsetComment,
     limit: 10,
   };
 
@@ -108,33 +85,38 @@ const EmployeeProfileScreen = ({ route }) => {
     refetch: refetchPersonalPost,
     isFetching: personalPostIsFetching,
     isLoading: personalPostIsLoading,
-  } = useFetch(
-    `/hr/posts/personal/${employee?.data?.id}`,
-    [reloadPost, currentOffsetPost],
-    postFetchParameters
-  );
-
-  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
-
-  // Parameters for fetch comments
-  const commentsFetchParameters = {
-    offset: currentOffsetComment,
-    limit: 10,
-  };
+  } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reloadPost, currentOffsetPost], postFetchParameters);
 
   const {
     data: comment,
     isFetching: commentIsFetching,
     isLoading: commentIsLoading,
     refetch: refetchComment,
-  } = useFetch(
-    `/hr/posts/${postId}/comment`,
-    [reloadComment, currentOffsetComment],
-    commentsFetchParameters
-  );
+  } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComment], commentsFetchParameters);
+
+  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
+
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
+
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
+
+  const { data: profile } = useFetch("/hr/my-profile");
+
+  const { data: employees } = useFetch("/hr/employees");
 
   /**
-   * Fetch more Posts handler
+   * Handle show username in post
+   */
+  const employeeUsername = employees?.data?.map((item, index) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
+
+  /**
+   * Handle Fetch more Posts
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
@@ -144,7 +126,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Fetch from first offset
+   * Handle fetch post from first offset
    * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
@@ -153,7 +135,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Fetch more Comments handler
+   * Handle fetch more Comments
    * After end of scroll reached, it will added other earlier comments
    */
   const commentEndReachedHandler = () => {
@@ -163,7 +145,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Fetch from first offset
+   * Handle fetch comment from first offset
    * After create a new comment, it will return to the first offset
    */
   const commentRefetchHandler = () => {
@@ -172,7 +154,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Comments open handler
+   * Handle open comment Action sheet
    */
   const commentsOpenHandler = (post_id) => {
     commentsScreenSheetRef.current?.show();
@@ -181,6 +163,9 @@ const EmployeeProfileScreen = ({ route }) => {
     setPostTotalComment(togglePostComment.total_comment);
   };
 
+  /**
+   * Handle close comment Action sheet
+   */
   const commentsCloseHandler = () => {
     commentsScreenSheetRef.current?.hide();
     setPostId(null);
@@ -189,7 +174,23 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Comment submit handler
+   * Handle open option selected post
+   */
+  const openSelectedPersonalPost = useCallback((post) => {
+    setSelectedPost(post);
+  }, []);
+
+  /**
+   * Handle close option selected post
+   */
+  const closeSelectedPersonalPost = () => {
+    setSelectedPost(null);
+    setImagePreview(null);
+    toggleEditModal();
+  };
+
+  /**
+   * Handle add comment
    */
   const commentAddHandler = () => {
     setPostTotalComment((prevState) => {
@@ -200,18 +201,34 @@ const EmployeeProfileScreen = ({ route }) => {
     setForceRerender(!forceRerender);
   };
 
-  const openSelectedPersonalPost = useCallback((post) => {
+  /**
+   * Handle toggle fullscreen image
+   */
+  const toggleFullScreen = useCallback((post) => {
     setSelectedPost(post);
+    setIsFullScreen(!isFullScreen);
   }, []);
 
-  const closeSelectedPersonalPost = () => {
-    setSelectedPost(null);
-    setImagePreview(null);
-    toggleEditModal();
-  };
+  /**
+   * Handle toggle reply comment
+   */
+  const replyHandler = useCallback((comment_parent_id) => {
+    setCommentParentId(comment_parent_id);
+    setLatestExpandedReply(comment_parent_id);
+  }, []);
 
   /**
-   * Submit a comment handler
+   * Handle search teammates
+   */
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+    }, 300),
+    []
+  );
+
+  /**
+   * Handle Submit a comment
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
@@ -233,23 +250,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Control for reply a comment
-   */
-  const replyHandler = useCallback((comment_parent_id) => {
-    setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
-  }, []);
-
-  /**
-   * Toggle fullscreen image
-   */
-  const toggleFullScreen = useCallback((post) => {
-    setSelectedPost(post);
-    setIsFullScreen(!isFullScreen);
-  }, []);
-
-  /**
-   * Edit a post handler
+   * Handle edit a post
    * @param {*} form
    * @param {*} setSubmitting
    * @param {*} setStatus
@@ -279,17 +280,7 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Search teammates handler
-   */
-  const handleSearch = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-    }, 300),
-    []
-  );
-
-  /**
-   * Pick an image Handler
+   * Handle pick an image
    */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -369,15 +360,9 @@ const EmployeeProfileScreen = ({ route }) => {
         {isReady ? (
           <>
             <>
-              <View
-                style={isHeaderSticky ? styles.stickyHeader : styles.header}
-              >
+              <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
                 <PageHeader
-                  title={
-                    employee?.data?.name.length > 30
-                      ? employee?.data?.name.split(" ")[0]
-                      : employee?.data?.name
-                  }
+                  title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
                   onPress={() => {
                     navigation.goBack();
                   }}
@@ -436,11 +421,7 @@ const EmployeeProfileScreen = ({ route }) => {
           </>
         ) : null}
       </SafeAreaView>
-      <ImageFullScreenModal
-        isFullScreen={isFullScreen}
-        setIsFullScreen={setIsFullScreen}
-        file_path={selectedPost}
-      />
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
       <EditPersonalPost
         isVisible={editModalIsOpen}
         onBackdrop={closeSelectedPersonalPost}
@@ -493,18 +474,12 @@ const EmployeeProfileScreen = ({ route }) => {
         multipleModal={true}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>
-              Changes{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              saved!
-            </Text>
+            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Data has successfully deleted
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
         }
       />
     </>

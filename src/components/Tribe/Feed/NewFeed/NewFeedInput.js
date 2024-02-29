@@ -1,28 +1,31 @@
 import React, { useState } from "react";
 
 import { Pressable, Text, ScrollView, Platform } from "react-native";
-import {
-  MentionInput,
-  replaceMentionValues,
-} from "react-native-controlled-mentions";
+import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const NewFeedInput = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
 
+  /**
+   * Handle show username suggestion option
+   */
   const employeeData = employees?.map(({ id, username }) => ({
     id,
     name: username,
   }));
 
+  /**
+   * Handle show suggestion username
+   * @param {*} param0
+   * @returns
+   */
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData?.filter((one) =>
-      one.name.toLowerCase().includes(keyword.toLowerCase())
-    );
+    const data = employeeData?.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
       <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
@@ -32,11 +35,7 @@ const NewFeedInput = ({ employees, formik }) => {
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable
-              key={index}
-              onPress={() => onSuggestionPress(item)}
-              style={{ padding: 12 }}
-            >
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
               <Text style={[{ fontSize: 12 }, TextProps]}>{item.name}</Text>
             </Pressable>
           )}
@@ -45,15 +44,15 @@ const NewFeedInput = ({ employees, formik }) => {
     );
   };
 
+  /**
+   * Handle adjust the content if there is username
+   * @param {*} value
+   */
   const handleChange = (value) => {
     formik.handleChange("content")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(
-      employees?.filter((employee) =>
-        employee.name.toLowerCase().includes(lastWord.toLowerCase())
-      )
-    );
+    setSuggestions(employees?.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   return (

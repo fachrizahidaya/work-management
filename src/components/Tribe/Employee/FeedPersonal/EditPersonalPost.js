@@ -53,14 +53,18 @@ const EditPersonalPost = ({
   const deviceHeight =
     Platform.OS === "ios"
       ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get(
-          "REAL_WINDOW_HEIGHT"
-        );
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
+  /**
+   * Handle show username
+   */
   const initialContent = content?.content || "";
   const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
   const modifiedInitialContent = initialContent.replace(mentionRegex, "@$1");
 
+  /**
+   * Handle edit post
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -98,7 +102,7 @@ const EditPersonalPost = ({
   });
 
   /**
-   * Toggle to Public Handler
+   * Handle toggle Public
    */
   const publicToggleHandler = () => {
     setSelectedOption("Public");
@@ -109,21 +113,21 @@ const EditPersonalPost = ({
   };
 
   /**
-   * End date of announcement handler
-   * @param {*} value
-   */
-  const endDateAnnouncementHandler = (value) => {
-    formik.setFieldValue("end_date", value);
-  };
-
-  /**
-   * Date for announcement handler
+   * Handle toggle announcement
    */
   const announcementToggleHandler = () => {
     setDateShown(true);
     setIsAnnouncementSelected(true);
     setSelectedOption("Announcement");
     formik.setFieldValue("type", "Announcement");
+  };
+
+  /**
+   * Handle End date of announcement
+   * @param {*} value
+   */
+  const endDateAnnouncementHandler = (value) => {
+    formik.setFieldValue("end_date", value);
   };
 
   /**
@@ -147,8 +151,6 @@ const EditPersonalPost = ({
         isVisible={isVisible}
         onBackdropPress={() => {
           onBackdrop();
-          // setImagePreview(content?.file_path);
-          // formik.setFieldValue("content", content?.content);
         }}
         deviceHeight={deviceHeight}
         deviceWidth={deviceWidth}
@@ -167,8 +169,7 @@ const EditPersonalPost = ({
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems:
-                    formik.values.type === "Public" ? "center" : "center",
+                  alignItems: formik.values.type === "Public" ? "center" : "center",
                   gap: 5,
                   marginBottom: 10,
                 }}
@@ -185,26 +186,13 @@ const EditPersonalPost = ({
                     padding={8}
                     height={32}
                     backgroundColor="#FFFFFF"
-                    onPress={() =>
-                      checkAccess
-                        ? postActionScreenSheetRef.current?.show()
-                        : null
-                    }
+                    onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
                     borderRadius={15}
                     variant="outline"
                     children={
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Text style={[{ fontSize: 10 }, TextProps]}>
-                          {formik.values.type}
-                        </Text>
-                        {checkAccess ? (
-                          <MaterialCommunityIcons
-                            name="chevron-down"
-                            color="#3F434A"
-                          />
-                        ) : null}
+                      <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                        {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
                       </View>
                     }
                   />
@@ -218,14 +206,9 @@ const EditPersonalPost = ({
                         gap: 2,
                       }}
                     >
-                      <MaterialCommunityIcons
-                        name="clock-time-three-outline"
-                        color="#3F434A"
-                      />
+                      <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
                       <Text style={[{ fontSize: 10 }, TextProps]}>
-                        {!formik.values.end_date
-                          ? "Please select"
-                          : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
+                        {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
                       </Text>
                     </View>
                   )}
@@ -243,33 +226,15 @@ const EditPersonalPost = ({
                         style={styles.image}
                         alt="image selected"
                       />
-                      <Pressable
-                        style={styles.close}
-                        onPress={() => imagePreviewRemoveHandler()}
-                      >
-                        <MaterialCommunityIcons
-                          name="close"
-                          size={20}
-                          color="#FFFFFF"
-                        />
+                      <Pressable style={styles.close} onPress={() => imagePreviewRemoveHandler()}>
+                        <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
                       </Pressable>
                     </View>
                   ) : image ? (
                     <View style={{ alignSelf: "center" }}>
-                      <Image
-                        source={{ uri: image.uri }}
-                        style={styles.image}
-                        alt="image selected"
-                      />
-                      <Pressable
-                        style={styles.close}
-                        onPress={() => setImage(null)}
-                      >
-                        <MaterialCommunityIcons
-                          name="close"
-                          size={20}
-                          color="#FFFFFF"
-                        />
+                      <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
+                      <Pressable style={styles.close} onPress={() => setImage(null)}>
+                        <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
                       </Pressable>
                     </View>
                   ) : null}
@@ -308,11 +273,7 @@ const EditPersonalPost = ({
                       <ActivityIndicator />
                     ) : (
                       <MaterialCommunityIcons
-                        name={
-                          formik.values.type === "Public"
-                            ? "send"
-                            : "bullhorn-variant"
-                        }
+                        name={formik.values.type === "Public" ? "send" : "bullhorn-variant"}
                         size={20}
                         color="#FFFFFF"
                         style={{ transform: [{ rotate: "-45deg" }] }}
@@ -329,22 +290,12 @@ const EditPersonalPost = ({
           toggle={toggleUpdatePostModal}
           topElement={
             <View style={{ flexDirection: "row" }}>
-              <Text
-                style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}
-              >
-                Changes{" "}
-              </Text>
-              <Text
-                style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
-              >
-                saved!
-              </Text>
+              <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+              <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
             </View>
           }
           bottomElement={
-            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-              Data has successfully updated
-            </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
           }
         />
       </Modal>

@@ -4,15 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  ActivityIndicator,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -24,10 +16,7 @@ import CommentDetailList from "../../../../components/Tribe/Performance/CommentL
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import {
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import Button from "../../../../components/shared/Forms/Button";
 import CommentDetailItem from "../../../../components/Tribe/Performance/CommentList/CommentDetailItem";
 import CommentForm from "../../../../components/Tribe/Performance/Form/CommentForm";
@@ -54,17 +43,12 @@ const CommentScreen = () => {
     refetch: refetchCommentList,
   } = useFetch(`/hr/employee-review/comment/${id}`);
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
-    useDisclosure(false);
-  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } =
-    useDisclosure(false);
-  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } =
-    useDisclosure(false);
-  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } =
-    useDisclosure(false);
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } = useDisclosure(false);
 
-  const { isLoading: submitIsLoading, toggle: toggleSubmit } =
-    useLoading(false);
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
   const openSelectedComment = (data, value) => {
     setComment(data);
@@ -99,8 +83,7 @@ const CommentScreen = () => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
         (employee_comment_val) =>
-          employee_comment_val?.performance_review_comment_id ===
-          data?.performance_review_comment_id
+          employee_comment_val?.performance_review_comment_id === data?.performance_review_comment_id
       );
       if (index > -1) {
         currentData[index].comment = data?.comment;
@@ -114,9 +97,7 @@ const CommentScreen = () => {
   const sumUpCommentValue = () => {
     setCommentValues(() => {
       // const performanceCommentValue = commentList?.data?.performance_review?.comment;
-      const employeeCommentValue = getEmployeeCommentValue(
-        commentList?.data?.employee_review_comment_value
-      );
+      const employeeCommentValue = getEmployeeCommentValue(commentList?.data?.employee_review_comment_value);
       return [
         ...employeeCommentValue,
         // ...performanceCommentValue,
@@ -127,12 +108,9 @@ const CommentScreen = () => {
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(
-        `/hr/employee-review/comment/${commentList?.data?.id}`,
-        {
-          comment_value: employeeCommentValue,
-        }
-      );
+      const res = await axiosInstance.patch(`/hr/employee-review/comment/${commentList?.data?.id}`, {
+        comment_value: employeeCommentValue,
+      });
       Toast.show("Data saved!", SuccessToastProps);
       refetchCommentList();
     } catch (err) {
@@ -146,8 +124,7 @@ const CommentScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      performance_review_comment_id:
-        comment?.performance_review_comment_id || comment?.id,
+      performance_review_comment_id: comment?.performance_review_comment_id || comment?.id,
       comment: comment?.comment || "",
     },
     validationSchema: yup.object().shape({
@@ -172,9 +149,7 @@ const CommentScreen = () => {
     let differences = [];
 
     for (let empComment of employeeCommentValue) {
-      let commentValue = commentValues.find(
-        (comment) => comment.id === empComment.id
-      );
+      let commentValue = commentValues.find((comment) => comment.id === empComment.id);
       if (commentValue && commentValue.comment !== empComment.comment) {
         differences.push({
           id: empComment.id,
@@ -198,9 +173,7 @@ const CommentScreen = () => {
     if (commentList?.data) {
       sumUpCommentValue();
       setEmployeeCommentValue(() => {
-        const employeeCommentValue = getEmployeeCommentValue(
-          commentList?.data?.employee_review_comment_value
-        );
+        const employeeCommentValue = getEmployeeCommentValue(commentList?.data?.employee_review_comment_value);
         return [...employeeCommentValue];
       });
     }
@@ -212,9 +185,7 @@ const CommentScreen = () => {
         <View style={styles.header}>
           <PageHeader
             width={200}
-            title={
-              <Text>{commentList?.data?.performance_review?.description}</Text>
-            }
+            title={<Text>{commentList?.data?.performance_review?.description}</Text>}
             backButton={true}
             onPress={() => {
               if (differences.length === 0) {
@@ -255,10 +226,7 @@ const CommentScreen = () => {
           ) : null}
         </View>
         {commentValues.length > 0 ? (
-          <Pressable
-            style={styles.confirmIcon}
-            onPress={toggleConfirmationModal}
-          >
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
             <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
           </Pressable>
         ) : null}
@@ -330,18 +298,12 @@ const CommentScreen = () => {
         toggle={toggleSaveModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Changes{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              saved!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Data has successfully updated
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
         }
       />
       <SuccessModal
@@ -349,19 +311,11 @@ const CommentScreen = () => {
         toggle={toggleConfirmedModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Report{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              submitted!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
           </View>
         }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Your report is logged
-          </Text>
-        }
+        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );

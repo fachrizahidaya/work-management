@@ -23,12 +23,7 @@ const FeedCommentFormPost = ({
 
   return (
     <View style={{ ...styles.container }}>
-      <AvatarPlaceholder
-        isThumb={false}
-        size="sm"
-        image={loggedEmployeeImage}
-        name={loggedEmployeeName}
-      />
+      <AvatarPlaceholder isThumb={false} size="sm" image={loggedEmployeeImage} name={loggedEmployeeName} />
       <View style={{ flex: 1 }}>
         <MentionInput
           value={formik.values.comments}

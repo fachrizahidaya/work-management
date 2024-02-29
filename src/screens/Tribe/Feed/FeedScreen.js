@@ -10,10 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
-import {
-  TextProps,
-  ErrorToastProps,
-} from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
@@ -38,28 +35,23 @@ const FeedScreen = () => {
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const commentScreenSheetRef = useRef(null);
-
-  const userSelector = useSelector((state) => state.auth);
-
   const navigation = useNavigation();
+
+  const commentScreenSheetRef = useRef(null);
 
   const flashListRef = useRef(null);
 
-  const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } =
-    useDisclosure(false);
+  const userSelector = useSelector((state) => state.auth);
 
-  /**
-   * Toggle fullscreen image
-   */
-  const toggleFullScreen = useCallback((post) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(post);
-  }, []);
+  const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
 
-  // Parameters for fetch posts
   const postFetchParameters = {
     offset: currentOffsetPost,
+    limit: 10,
+  };
+
+  const commentsFetchParameters = {
+    offset: currentOffsetComments,
     limit: 10,
   };
 
@@ -68,36 +60,22 @@ const FeedScreen = () => {
     refetch: refetchPost,
     isFetching: postIsFetching,
     isLoading: postIsLoading,
-  } = useFetch(
-    "/hr/posts",
-    [reloadPost, currentOffsetPost],
-    postFetchParameters
-  );
-
-  // Parameters for fetch comments
-  const commentsFetchParameters = {
-    offset: currentOffsetComments,
-    limit: 10,
-  };
+  } = useFetch("/hr/posts", [reloadPost, currentOffsetPost], postFetchParameters);
 
   const {
     data: comment,
     isFetching: commentIsFetching,
     isLoading: commentIsLoading,
     refetch: refetchComment,
-  } = useFetch(
-    `/hr/posts/${postId}/comment`,
-    [reloadComment, currentOffsetComments],
-    commentsFetchParameters
-  );
+  } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
 
   const { data: profile } = useFetch("/hr/my-profile");
 
-  const {
-    data: employees,
-    isFetching: employeesIsFetching,
-    refetch: refetchEmployees,
-  } = useFetch("/hr/employees");
+  const { data: employees } = useFetch("/hr/employees");
+
+  /**
+   * Handle show username in post
+   */
   const employeeUsername = employees?.data?.map((item) => {
     return {
       username: item.username,
@@ -107,7 +85,15 @@ const FeedScreen = () => {
   });
 
   /**
-   * Fetch more Posts handler
+   * Handle toggle fullscreen image
+   */
+  const toggleFullScreen = useCallback((post) => {
+    setIsFullScreen(!isFullScreen);
+    setSelectedPicture(post);
+  }, []);
+
+  /**
+   * Handle Fetch more Posts
    * After end of scroll reached, it will added other earlier posts
    */
   const postEndReachedHandler = () => {
@@ -117,7 +103,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Fetch from first offset
+   * Handle fetch post from first offset
    * After create a new post or comment, it will return to the first offset
    */
   const postRefetchHandler = () => {
@@ -126,7 +112,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Fetch more Comments handler
+   * Handle fetch more Comments
    * After end of scroll reached, it will added other earlier comments
    */
   const commentEndReachedHandler = () => {
@@ -136,7 +122,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Fetch from first offset
+   * Handle fetch comment from first offset
    * After create a new comment, it will return to the first offset
    */
   const commentRefetchHandler = () => {
@@ -145,7 +131,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Action sheet for comment handler
+   * Handle open comment Action sheet
    */
   const commentsOpenHandler = (post_id) => {
     commentScreenSheetRef.current?.show();
@@ -154,6 +140,9 @@ const FeedScreen = () => {
     setPostTotalComment(togglePostComment.total_comment);
   };
 
+  /**
+   * Handle close comment Action sheet
+   */
   const commentsCloseHandler = () => {
     commentScreenSheetRef.current?.hide();
     setPostId(null);
@@ -162,7 +151,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Submit comment handler
+   * Handle add comment
    */
   const commentAddHandler = () => {
     setPostTotalComment((prevState) => {
@@ -174,7 +163,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Submit a comment handler
+   * Handle Submit a comment
    * @param {*} data
    * @param {*} setSubmitting
    * @param {*} setStatus
@@ -196,7 +185,7 @@ const FeedScreen = () => {
   };
 
   /**
-   * Control for reply a comment
+   * Handle toggle reply comment
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
@@ -241,14 +230,10 @@ const FeedScreen = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>
-              News
-            </Text>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
-          <Text style={[{ fontWeight: "700" }, TextProps]}>
-            {userSelector?.company}
-          </Text>
+          <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
         </View>
 
         <Pressable
@@ -260,8 +245,6 @@ const FeedScreen = () => {
               loggedEmployeeImage: profile?.data?.image,
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
-              scrollNewMessage: scrollNewMessage,
-              setScrollNewMessage: setScrollNewMessage,
               toggleSuccess: togglePostSuccess,
             });
           }}
@@ -288,8 +271,6 @@ const FeedScreen = () => {
             refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
-            scrollNewMessage={scrollNewMessage}
-            flashListRef={flashListRef}
             onCommentToggle={commentsOpenHandler}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
@@ -317,22 +298,14 @@ const FeedScreen = () => {
           reference={commentScreenSheetRef}
         />
       </SafeAreaView>
-      <ImageFullScreenModal
-        isFullScreen={isFullScreen}
-        setIsFullScreen={setIsFullScreen}
-        file_path={selectedPicture}
-      />
+      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
       <SuccessModal
         isOpen={postSuccessIsOpen}
         toggle={togglePostSuccess}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>
-              Post{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              shared!
-            </Text>
+            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
           </View>
         }
         bottomElement={

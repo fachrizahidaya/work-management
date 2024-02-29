@@ -31,22 +31,20 @@ const FeedCommentItem = ({
   } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
 
   const words = comments.split(" ");
+
+  /**
+   * Handle styled for content
+   */
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) =>
-      item?.includes(employee.username)
-    );
+    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => handleLinkPress(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
           {item}{" "}
         </Text>
       );
@@ -66,22 +64,14 @@ const FeedCommentItem = ({
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => copyToClipboard(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
           {item}{" "}
         </Text>
       );
     } else if (item.includes("@") && item.includes(".com")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => handleEmailPress(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
           {item}{" "}
         </Text>
       );
@@ -100,12 +90,7 @@ const FeedCommentItem = ({
       <Pressable onPress={() => onReply(null)} style={{ marginVertical: 10 }}>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View>
-            <AvatarPlaceholder
-              image={authorImage}
-              name={authorName}
-              size="md"
-              isThumb={false}
-            />
+            <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
           </View>
           <View style={{ flex: 1, gap: 5 }}>
             <Text style={{ fontSize: 12, fontWeight: "500" }}>
@@ -113,10 +98,7 @@ const FeedCommentItem = ({
             </Text>
             <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
 
-            <Text
-              onPress={() => onReply(parentId)}
-              style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}
-            >
+            <Text onPress={() => onReply(parentId)} style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
               Reply
             </Text>
           </View>
@@ -145,8 +127,7 @@ const FeedCommentItem = ({
                   marginLeft: 10,
                 }}
               >
-                View{totalReplies ? ` ${totalReplies}` : ""}{" "}
-                {totalReplies > 1 ? "Replies" : "Reply"}
+                View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
               </Text>
             ) : (
               ""
@@ -154,62 +135,60 @@ const FeedCommentItem = ({
           </Pressable>
         )}
 
-        {viewReplyToggle === true &&
-          totalReplies > 0 &&
-          hideReplies === false && (
-            <>
-              <View style={{ flex: 1, minHeight: 2 }}>
-                <FlashList
-                  data={commentRepliesData?.data}
-                  initialNumToRender={10}
-                  maxToRenderPerBatch={10}
-                  updateCellsBatchingPeriod={50}
-                  windowSize={5}
-                  onEndReachedThreshold={0.1}
-                  keyExtractor={(item, index) => index}
-                  estimatedItemSize={200}
-                  renderItem={({ item, index }) => (
-                    <FeedCommentReplyItem
-                      key={index}
-                      authorName={item?.employee_name}
-                      authorImage={item?.employee_image}
-                      comments={item?.comments}
-                      totalReplies={item?.total_replies}
-                      parentId={parentId}
-                      onReply={onReply}
-                      handleEmailPress={handleEmailPress}
-                      handleLinkPress={handleLinkPress}
-                      copyToClipboard={copyToClipboard}
-                      employeeUsername={employeeUsername}
-                    />
-                  )}
-                />
-              </View>
+        {viewReplyToggle === true && totalReplies > 0 && hideReplies === false && (
+          <>
+            <View style={{ flex: 1, minHeight: 2 }}>
+              <FlashList
+                data={commentRepliesData?.data}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                updateCellsBatchingPeriod={50}
+                windowSize={5}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index}
+                estimatedItemSize={200}
+                renderItem={({ item, index }) => (
+                  <FeedCommentReplyItem
+                    key={index}
+                    authorName={item?.employee_name}
+                    authorImage={item?.employee_image}
+                    comments={item?.comments}
+                    totalReplies={item?.total_replies}
+                    parentId={parentId}
+                    onReply={onReply}
+                    handleEmailPress={handleEmailPress}
+                    handleLinkPress={handleLinkPress}
+                    copyToClipboard={copyToClipboard}
+                    employeeUsername={employeeUsername}
+                  />
+                )}
+              />
+            </View>
 
-              {viewReplyToggle === false ? (
-                ""
-              ) : (
-                <View style={{ marginHorizontal: 40, marginVertical: 5 }}>
-                  <Pressable
-                    onPress={() => {
-                      setViewReplyToggle(false);
-                      setHideReplies(true);
+            {viewReplyToggle === false ? (
+              ""
+            ) : (
+              <View style={{ marginHorizontal: 40, marginVertical: 5 }}>
+                <Pressable
+                  onPress={() => {
+                    setViewReplyToggle(false);
+                    setHideReplies(true);
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#8A7373",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: "500",
-                        color: "#8A7373",
-                      }}
-                    >
-                      Hide Reply
-                    </Text>
-                  </Pressable>
-                </View>
-              )}
-            </>
-          )}
+                    Hide Reply
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+          </>
+        )}
       </Pressable>
     </View>
   );

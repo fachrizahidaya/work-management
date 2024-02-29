@@ -5,14 +5,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import Input from "../../shared/Forms/Input";
 import { FlashList } from "@shopify/flash-list";
 
-const EmployeeTeammates = ({
-  teammates,
-  reference,
-  handleSearch,
-  inputToShow,
-  setInputToShow,
-  setSearchInput,
-}) => {
+const EmployeeTeammates = ({ teammates, reference, handleSearch, inputToShow, setInputToShow, setSearchInput }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()}>
       <View
@@ -62,9 +55,7 @@ const EmployeeTeammates = ({
                       color: "#3F434A",
                     }}
                   >
-                    {item?.name.length > 30
-                      ? item?.name.split(" ")[0]
-                      : item?.name}
+                    {item?.name.length > 30 ? item?.name.split(" ")[0] : item?.name}
                   </Text>
                   <Text
                     style={{
