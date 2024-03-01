@@ -139,7 +139,7 @@ const PerformanceListScreen = () => {
                 //   personalHasBeenScrolled === true ? fetchMorePersonal : null
                 // }
                 renderItem={({ item, index }) => (
-                  <CommentListItem
+                  <PerformanceListItem
                     key={index}
                     id={item?.id}
                     start_date={item?.performance_review?.begin_date}
