@@ -7,7 +7,7 @@ import NotificationItem from "../components/Notification/NotificationItem/Notifi
 import PageHeader from "../components/shared/PageHeader";
 import NotificationTimeStamp from "../components/Notification/NotificationTimeStamp/NotificationTimeStamp";
 import axiosInstance from "../config/api";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useLoading } from "../hooks/useLoading";
 
 const NotificationScreen = ({ route }) => {
@@ -17,6 +17,8 @@ const NotificationScreen = ({ route }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [notifications, setNotifications] = useState({});
   const { isLoading: notifIsFetching, toggle: toggleNotifIsFetching } = useLoading(false);
+
+  const navigation = useNavigation();
 
   const notificationFetchParameters = {
     page: currentPage,
@@ -68,8 +70,16 @@ const NotificationScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1, display: "flex", gap: 24, marginHorizontal: 16, marginVertical: 13 }}>
-        <PageHeader backButton={false} title="Notifications" />
+      <View
+        style={{
+          flex: 1,
+          display: "flex",
+          gap: 24,
+          marginHorizontal: 16,
+          marginVertical: 13,
+        }}
+      >
+        <PageHeader backButton={true} title="Notifications" onPress={() => navigation.goBack()} />
 
         <FlatList
           refreshControl={<RefreshControl refreshing={notifIsFetching} onRefresh={fetchAllNotifications} />}

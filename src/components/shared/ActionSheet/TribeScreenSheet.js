@@ -2,13 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import ActionSheet from "react-native-actions-sheet";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -39,9 +33,7 @@ const TribeScreenSheet = (props) => {
     "Performance Appraisal",
     "Announcement",
   ];
-  const filteredMenu = mergedMenu.filter(
-    (item) => !excludeSubscreen.includes(item.name)
-  );
+  const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
   return (
     <ActionSheet ref={props.reference}>
@@ -98,11 +90,7 @@ const TribeScreenSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons
-                  size={20}
-                  name="account-outline"
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons size={20} name="account-outline" color="#3F434A" />
               </View>
               <Text style={[{ fontSize: 14 }, TextProps]}>My Information</Text>
             </View>
@@ -121,11 +109,7 @@ const TribeScreenSheet = (props) => {
           >
             <View style={styles.flex}>
               <View style={styles.item}>
-                <MaterialCommunityIcons
-                  size={20}
-                  name="calendar-clock"
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons size={20} name="calendar-clock" color="#3F434A" />
               </View>
               <Text style={[{ fontSize: 14 }, TextProps]}>Calendar</Text>
             </View>

@@ -4,32 +4,21 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  ActivityIndicator,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useLoading } from "../../../../hooks/useLoading";
-import ReviewDetailList from "../../../../components/Tribe/Performance/ReviewList/ReviewDetailList";
-import ReviewDetailItem from "../../../../components/Tribe/Performance/ReviewList/ReviewDetailItem";
-import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
-import KPIReviewForm from "../../../../components/Tribe/Performance/Form/KPIReviewForm";
 import axiosInstance from "../../../../config/api";
-import {
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import ReviewDetailList from "../../../../components/Tribe/Performance/Review/ReviewDetailList";
+import ReviewDetailItem from "../../../../components/Tribe/Performance/Review/ReviewDetailItem";
+import PageHeader from "../../../../components/shared/PageHeader";
+import KPIReviewForm from "../../../../components/Tribe/Performance/Review/KPIReviewForm";
+import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
@@ -43,10 +32,19 @@ const ReviewKPIScreen = () => {
   const [employeeKpi, setEmployeeKpi] = useState(null);
 
   const navigation = useNavigation();
-  const formScreenSheetRef = useRef(null);
+
   const route = useRoute();
 
+  const formScreenSheetRef = useRef(null);
+
   const { id } = route.params;
+
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
+  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
+  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } = useDisclosure(false);
+
+  const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
   const {
     data: kpiList,
@@ -54,24 +52,16 @@ const ReviewKPIScreen = () => {
     refetch: refetchKpiList,
   } = useFetch(`/hr/employee-review/kpi/${id}`);
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } =
-    useDisclosure(false);
-  const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } =
-    useDisclosure(false);
-  const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } =
-    useDisclosure(false);
-  const { isOpen: confirmedModalIsOpen, toggle: toggleConfirmedModal } =
-    useDisclosure(false);
-
-  const { isLoading: submitIsLoading, toggle: toggleSubmit } =
-    useLoading(false);
-
+  /**
+   * Handle selected KPI item
+   * @param {*} data
+   * @param {*} value
+   */
   const openSelectedKpi = (data, value) => {
     setKpi(data);
     setEmployeeKpi(value);
     formScreenSheetRef.current?.show();
   };
-
   const closeSelectedKpi = () => {
     formScreenSheetRef.current?.hide();
   };
@@ -95,17 +85,18 @@ const ReviewKPIScreen = () => {
     return [...employeeKpiValArr];
   };
 
+  /**
+   * Handle update value of KPI item
+   * @param {*} data
+   */
   const employeeKpiValueUpdateHandler = (data) => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
-        (employee_kpi_val) =>
-          employee_kpi_val?.performance_kpi_value_id ===
-          data?.performance_kpi_value_id
+        (employee_kpi_val) => employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
       );
       if (index > -1) {
-        currentData[index].supervisor_actual_achievement =
-          data?.supervisor_actual_achievement;
+        currentData[index].supervisor_actual_achievement = data?.supervisor_actual_achievement;
       } else {
         currentData = [...currentData, data];
       }
@@ -113,12 +104,13 @@ const ReviewKPIScreen = () => {
     });
   };
 
+  /**
+   * Handle array of update KPI item
+   */
   const sumUpKpiValue = () => {
     setKpiValues(() => {
       // const performanceKpiValue = kpiList?.data?.performance_kpi?.value;
-      const employeeKpiValue = getEmployeeKpiValue(
-        kpiList?.data?.employee_kpi_value
-      );
+      const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
       return [
         ...employeeKpiValue,
         // ...performanceKpiValue,
@@ -126,15 +118,56 @@ const ReviewKPIScreen = () => {
     });
   };
 
+  /**
+   * Handle saved actual achievement value to be can saved or not
+   * @param {*} kpiValues
+   * @param {*} employeeKpiValue
+   * @returns
+   */
+  const compareActualAchievement = (kpiValues, employeeKpiValue) => {
+    let differences = [];
+
+    for (let empKpi of employeeKpiValue) {
+      let kpiValue = kpiValues.find((kpi) => kpi.id === empKpi.id);
+
+      if (kpiValue && kpiValue.supervisor_actual_achievement !== empKpi.supervisor_actual_achievement) {
+        differences.push({
+          id: empKpi.id,
+          difference: empKpi.supervisor_actual_achievement - kpiValue.supervisor_actual_achievement,
+        });
+      }
+    }
+
+    return differences;
+  };
+
+  let differences = compareActualAchievement(kpiValues, employeeKpiValue);
+
+  /**
+   * Handle convert integer to string for KPI
+   */
+  if (!kpi?.supervisor_actual_achievement) {
+    var actualString = null;
+  } else {
+    var actualString = kpi?.supervisor_actual_achievement.toString();
+  }
+
+  const formikChangeHandler = (e, submitWithoutChange = false) => {
+    if (!submitWithoutChange) {
+      formik.handleChange("supervisor_actual_achievement", e);
+    }
+    setFormValue(formik.values);
+  };
+
+  /**
+   * Handle save filled or updated KPI
+   */
   const submitHandler = async () => {
     try {
       toggleSubmit();
-      const res = await axiosInstance.patch(
-        `/hr/employee-review/kpi/${kpiList?.data?.id}`,
-        {
-          kpi_value: employeeKpiValue,
-        }
-      );
+      const res = await axiosInstance.patch(`/hr/employee-review/kpi/${kpiList?.data?.id}`, {
+        kpi_value: employeeKpiValue,
+      });
       // Toast.show("Data saved!", SuccessToastProps);
       toggleSaveModal();
       refetchKpiList();
@@ -147,12 +180,9 @@ const ReviewKPIScreen = () => {
     }
   };
 
-  if (!kpi?.supervisor_actual_achievement) {
-    var actualString = null;
-  } else {
-    var actualString = kpi?.supervisor_actual_achievement.toString();
-  }
-
+  /**
+   * Handle create KPI value
+   */
   const formik = useFormik({
     initialValues: {
       performance_kpi_value_id: kpi?.performance_kpi_value_id || kpi?.id,
@@ -161,17 +191,12 @@ const ReviewKPIScreen = () => {
         actualString || 0,
     },
     validationSchema: yup.object().shape({
-      supervisor_actual_achievement: yup
-        .number()
-        .required("Value is required")
-        .min(0, "Value should not be negative"),
+      supervisor_actual_achievement: yup.number().required("Value is required").min(0, "Value should not be negative"),
     }),
     onSubmit: (values) => {
       if (formik.isValid) {
         if (values.supervisor_actual_achievement) {
-          values.supervisor_actual_achievement = Number(
-            values.supervisor_actual_achievement
-          );
+          values.supervisor_actual_achievement = Number(values.supervisor_actual_achievement);
         } else {
           values.supervisor_actual_achievement = null;
         }
@@ -180,38 +205,6 @@ const ReviewKPIScreen = () => {
     },
     enableReinitialize: true,
   });
-
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("supervisor_actual_achievement", e);
-    }
-    setFormValue(formik.values);
-  };
-
-  function compareActualAchievement(kpiValues, employeeKpiValue) {
-    let differences = [];
-
-    for (let empKpi of employeeKpiValue) {
-      let kpiValue = kpiValues.find((kpi) => kpi.id === empKpi.id);
-
-      if (
-        kpiValue &&
-        kpiValue.supervisor_actual_achievement !==
-          empKpi.supervisor_actual_achievement
-      ) {
-        differences.push({
-          id: empKpi.id,
-          difference:
-            empKpi.supervisor_actual_achievement -
-            kpiValue.supervisor_actual_achievement,
-        });
-      }
-    }
-
-    return differences;
-  }
-
-  let differences = compareActualAchievement(kpiValues, employeeKpiValue);
 
   useEffect(() => {
     if (formValue) {
@@ -223,9 +216,7 @@ const ReviewKPIScreen = () => {
     if (kpiList?.data) {
       sumUpKpiValue();
       setEmployeeKpiValue(() => {
-        const employeeKpiValue = getEmployeeKpiValue(
-          kpiList?.data?.employee_kpi_value
-        );
+        const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
         return [...employeeKpiValue];
       });
     }
@@ -278,10 +269,7 @@ const ReviewKPIScreen = () => {
           )}
         </View>
         {kpiValues.length > 0 ? (
-          <Pressable
-            style={styles.confirmIcon}
-            onPress={toggleConfirmationModal}
-          >
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
             <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
           </Pressable>
         ) : null}
@@ -297,9 +285,7 @@ const ReviewKPIScreen = () => {
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {kpiValues && kpiValues.length > 0 ? (
               kpiValues.map((item, index) => {
-                const correspondingEmployeeKpi = employeeKpiValue.find(
-                  (empKpi) => empKpi.id === item.id
-                );
+                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
                 return (
                   <ReviewDetailItem
                     key={index}
@@ -364,18 +350,12 @@ const ReviewKPIScreen = () => {
         toggle={toggleSaveModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Changes{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              saved!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Data has successfully updated
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
         }
       />
       <SuccessModal
@@ -383,19 +363,11 @@ const ReviewKPIScreen = () => {
         toggle={toggleConfirmedModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Report{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              submitted!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
           </View>
         }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Your report is logged
-          </Text>
-        }
+        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );

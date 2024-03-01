@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Pressable,
-  Text,
-  Image,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -45,9 +38,8 @@ const FeedCardItem = ({
   const [likeAction, setLikeAction] = useState("dislike");
 
   /**
-   * Like post control
+   * Handle toggle like
    */
-
   const toggleLikeHandler = (post_id, action) => {
     if (action === "like") {
       setLikeAction("dislike");
@@ -61,23 +53,21 @@ const FeedCardItem = ({
   };
 
   const words = content?.split(" ");
+
+  /**
+   * Handle styled for content
+   */
   const styledTexts = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) =>
-      item?.includes(employee.username)
-    );
+    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
 
     if (item.includes("https")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => handleLinkPress(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
           {item}{" "}
         </Text>
       );
@@ -107,22 +97,14 @@ const FeedCardItem = ({
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => copyToClipboard(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
           {item}{" "}
         </Text>
       );
     } else if (item.includes("@") && item.includes(".com")) {
       textStyle = styles.highlightedText;
       return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() => handleEmailPress(item)}
-        >
+        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
           {item}{" "}
         </Text>
       );
@@ -146,10 +128,7 @@ const FeedCardItem = ({
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={{ ...card.card, gap: 20 }}
-        onPress={() => navigation.navigate("Post Screen", { id: id })}
-      >
+      <Pressable style={{ ...card.card, gap: 20 }} onPress={() => navigation.navigate("Post Screen", { id: id })}>
         <View style={styles.cardHeader}>
           <TouchableOpacity
             onPress={() =>
@@ -160,12 +139,7 @@ const FeedCardItem = ({
               })
             }
           >
-            <AvatarPlaceholder
-              image={employeeImage}
-              name={employeeName}
-              size="lg"
-              isThumb={false}
-            />
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </TouchableOpacity>
 
           <View style={{ flex: 1, gap: 5 }}>
@@ -180,9 +154,7 @@ const FeedCardItem = ({
               }
             >
               <Text style={[{ fontSize: 14 }, TextProps]}>
-                {employeeName?.length > 30
-                  ? employeeName?.split(" ")[0]
-                  : employeeName}
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
                 <View
@@ -192,25 +164,18 @@ const FeedCardItem = ({
                     padding: 5,
                   }}
                 >
-                  <Text style={[{ fontSize: 10 }, TextProps]}>
-                    Announcement
-                  </Text>
+                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
               ) : null}
             </TouchableOpacity>
-            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
-              {dayjs(createdAt).format("MMM DD, YYYY")}
-            </Text>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
         </View>
 
         <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
 
         {attachment ? (
-          <TouchableOpacity
-            key={id}
-            onPress={() => attachment && toggleFullScreen(attachment)}
-          >
+          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
             <Image
               style={styles.image}
               source={{
@@ -230,37 +195,23 @@ const FeedCardItem = ({
                 onCommentToggle(id);
               }}
             >
-              <MaterialCommunityIcons
-                name="comment-text-outline"
-                size={20}
-                color="#3F434A"
-              />
+              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
             </Pressable>
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons
-                  name="heart"
-                  size={20}
-                  color="#FF0000"
-                />
+                <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
               </Pressable>
             )}
             {likeAction === "like" && (
               <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons
-                  name="heart-outline"
-                  size={20}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
               </Pressable>
             )}
 
-            <Text style={[{ fontSize: 14 }, TextProps]}>
-              {totalLike || total_like}
-            </Text>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
           </View>
         </View>
       </Pressable>

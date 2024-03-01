@@ -11,9 +11,7 @@ const GlobalSearchItems = ({ data, employeeUsername }) => {
   return (
     <View style={styles.flex}>
       {employee?.length > 0 && <EmployeeSection employee={employee} />}
-      {post?.length > 0 && (
-        <FeedSection feed={post} employeeUsername={employeeUsername} />
-      )}
+      {post?.length > 0 && <FeedSection feed={post} employeeUsername={employeeUsername} />}
     </View>
   );
 };

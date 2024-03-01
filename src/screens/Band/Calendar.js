@@ -46,7 +46,7 @@ const CalendarScreen = () => {
       description: item.description,
       id: item.id,
       module: item.module,
-      dotColor: "#daecfc",
+      dotColor: "#49c96d",
     };
 
     if (!formattedProjectDeadlines[key]) {
@@ -62,11 +62,11 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#daecfc",
+          backgroundColor: "#49c96d",
           borderRadius: 5,
         },
         text: {
-          color: "#000000",
+          color: "#ffffff",
         },
       },
     };
@@ -81,7 +81,7 @@ const CalendarScreen = () => {
       description: item.description,
       id: item.id,
       module: item.module,
-      dotColor: "#daecfc",
+      dotColor: "#49c96d",
     };
 
     if (!formattedTaskDeadlines[key]) {
@@ -97,7 +97,7 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#daecfc",
+          backgroundColor: "#49c96d",
           borderRadius: 5,
         },
         text: {
@@ -111,7 +111,7 @@ const CalendarScreen = () => {
 
   holidays?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { description: item.description, dotColor: "#3bc14a" };
+    const value = { description: item.description, dotColor: "#4688D5" };
 
     if (!formattedHolidays[date]) {
       formattedHolidays[date] = [value];
@@ -125,7 +125,7 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#3bc14a",
+          backgroundColor: "#4688D5",
           borderRadius: 5,
         },
         text: {

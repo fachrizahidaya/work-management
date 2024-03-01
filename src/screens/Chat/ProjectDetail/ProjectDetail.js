@@ -1,14 +1,7 @@
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Pressable,
-  Image,
-} from "react-native";
+import { StyleSheet, SafeAreaView, View, Text, Pressable, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -85,11 +78,7 @@ const ProjectDetail = () => {
             >
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
             </Pressable>
-            <MateriaCommunitylIcons
-              name="circle-slice-2"
-              size={25}
-              color="#3F434A"
-            />
+            <MateriaCommunitylIcons name="circle-slice-2" size={25} color="#3F434A" />
             <View>
               <Text
                 style={[
@@ -100,9 +89,7 @@ const ProjectDetail = () => {
                   TextProps,
                 ]}
               >
-                {task?.data?.title.length > 20
-                  ? task?.data?.title.slice(0, 20) + "..."
-                  : task?.data?.title}
+                {task?.data?.title.length > 20 ? task?.data?.title.slice(0, 20) + "..." : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(project?.data?.deadline).format("DD MMMM YYYY")}
@@ -118,13 +105,8 @@ const ProjectDetail = () => {
             }}
           >
             <Text style={[{ fontSize: 10 }, TextProps]}>Created by</Text>
-            <AvatarPlaceholder
-              name={project?.data?.owner?.name}
-              image={project?.data?.owner?.image}
-            />
-            <Text style={[{ fontSize: 10 }, TextProps]}>
-              {project?.data?.owner?.name?.split(" ")[0]}
-            </Text>
+            <AvatarPlaceholder name={project?.data?.owner?.name} image={project?.data?.owner?.image} />
+            <Text style={[{ fontSize: 10 }, TextProps]}>{project?.data?.owner?.name?.split(" ")[0]}</Text>
           </View>
         </View>
       </View>
@@ -136,10 +118,7 @@ const ProjectDetail = () => {
           marginHorizontal: 16,
         }}
       >
-        <Description
-          description={project?.data?.description}
-          navigation={navigation}
-        />
+        <Description description={project?.data?.description} navigation={navigation} />
       </View>
       <View
         style={{
@@ -184,11 +163,7 @@ const ProjectDetail = () => {
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             renderItem={({ item, index }) => (
-              <MemberSection
-                key={index}
-                name={item?.user?.name}
-                image={item?.user?.image}
-              />
+              <MemberSection key={index} name={item?.user?.name} image={item?.user?.image} />
             )}
           />
         </View>
@@ -252,19 +227,13 @@ const ProjectDetail = () => {
                 >
                   <View>
                     <Text style={[{ fontSize: 14 }, TextProps]}>
-                      {item?.title.length > 50
-                        ? item?.title.slice(0, 30) + "..."
-                        : item?.title}
+                      {item?.title.length > 50 ? item?.title.slice(0, 30) + "..." : item?.title}
                     </Text>
                     <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                       Due {dayjs(item?.deadline).format("DD MMMM YYYY")}
                     </Text>
                   </View>
-                  <AvatarPlaceholder
-                    name={item?.owner?.name}
-                    image={item?.owner?.image}
-                    size="sm"
-                  />
+                  <AvatarPlaceholder name={item?.owner?.name} image={item?.owner?.image} size="sm" />
                 </Pressable>
               </View>
             )}
@@ -282,9 +251,7 @@ const ProjectDetail = () => {
               padding: 5,
             }}
           >
-            <View
-              style={{ alignItems: "center", justifyContent: "center", gap: 5 }}
-            >
+            <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
                 source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
@@ -335,14 +302,8 @@ const ProjectDetail = () => {
             });
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>
-            Import Project
-          </Text>
-          <MateriaCommunitylIcons
-            name="lightning-bolt"
-            size={25}
-            color="#176688"
-          />
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>Import Project</Text>
+          <MateriaCommunitylIcons name="lightning-bolt" size={25} color="#176688" />
         </Pressable>
       </View>
     </SafeAreaView>

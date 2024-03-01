@@ -29,9 +29,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
           const styledTexts = words?.map((item, index) => {
             let textStyle = styles.defaultText;
             let specificEmployee;
-            specificEmployee = employeeUsername?.find((employee) =>
-              item?.includes(employee.username)
-            );
+            specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
 
             const hasTag = item.includes("<a");
             const hasHref = item.includes("href");
@@ -83,24 +81,15 @@ const FeedSection = ({ feed, employeeUsername }) => {
             <Pressable
               style={styles.item}
               key={item?.id}
-              onPress={() =>
-                navigation.navigate("Post Screen", { id: item?.id })
-              }
+              onPress={() => navigation.navigate("Post Screen", { id: item?.id })}
             >
               <View style={styles.cardHeader}>
-                <AvatarPlaceholder
-                  image={item?.employee_image}
-                  name={item?.employee_name}
-                  size="lg"
-                  isThumb={false}
-                />
+                <AvatarPlaceholder image={item?.employee_image} name={item?.employee_name} size="lg" isThumb={false} />
 
                 <View style={{ flex: 1, gap: 5 }}>
                   <View style={styles.dockName}>
                     <Text style={[{ fontSize: 14 }, TextProps]}>
-                      {item?.employee_name?.length > 30
-                        ? item?.employee_name?.split(" ")[0]
-                        : item?.employee_name}
+                      {item?.employee_name?.length > 30 ? item?.employee_name?.split(" ")[0] : item?.employee_name}
                     </Text>
                     {item?.type === "Announcement" ? (
                       <View
@@ -110,9 +99,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
                           padding: 5,
                         }}
                       >
-                        <Text style={[{ fontSize: 10 }, TextProps]}>
-                          Announcement
-                        </Text>
+                        <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                       </View>
                     ) : null}
                   </View>
@@ -140,38 +127,22 @@ const FeedSection = ({ feed, employeeUsername }) => {
               <View style={styles.dockAction}>
                 <View style={styles.iconAction}>
                   <Pressable>
-                    <MaterialCommunityIcons
-                      name="comment-text-outline"
-                      size={20}
-                      color="#3F434A"
-                    />
+                    <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
                   </Pressable>
-                  <Text style={[{ fontSize: 14 }, TextProps]}>
-                    {item?.total_comment}
-                  </Text>
+                  <Text style={[{ fontSize: 14 }, TextProps]}>{item?.total_comment}</Text>
                 </View>
                 <View style={styles.iconAction}>
                   {item?.total_like ? (
                     <Pressable>
-                      <MaterialCommunityIcons
-                        name="heart"
-                        size={20}
-                        color="#FF0000"
-                      />
+                      <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
                     </Pressable>
                   ) : (
                     <Pressable>
-                      <MaterialCommunityIcons
-                        name="heart-outline"
-                        size={20}
-                        color="#3F434A"
-                      />
+                      <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
                     </Pressable>
                   )}
 
-                  <Text style={[{ fontSize: 14 }, TextProps]}>
-                    {item?.total_like}
-                  </Text>
+                  <Text style={[{ fontSize: 14 }, TextProps]}>{item?.total_like}</Text>
                 </View>
               </View>
             </Pressable>

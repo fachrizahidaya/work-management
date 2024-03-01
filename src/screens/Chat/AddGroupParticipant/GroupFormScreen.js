@@ -24,20 +24,16 @@ import Toast from "react-native-root-toast";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
-import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
 import axiosInstance from "../../../config/api";
-import {
-  TextProps,
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const GroupFormScreen = ({ route }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  const navigation = useNavigation();
-  const { userArray, groupData } = route.params;
   const [image, setImage] = useState(null);
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+
+  const navigation = useNavigation();
+
+  const { userArray, groupData } = route.params;
 
   const createGroupHandler = async (form, setSubmitting) => {
     try {
@@ -76,10 +72,7 @@ const GroupFormScreen = ({ route }) => {
       member: userArray,
     },
     validationSchema: yup.object().shape({
-      name: yup
-        .string()
-        .max(30, "30 characters maximum")
-        .required("Group name is required"),
+      name: yup.string().max(30, "30 characters maximum").required("Group name is required"),
     }),
     validateOnChange: false,
     onSubmit: (values, { setSubmitting }) => {
@@ -101,7 +94,7 @@ const GroupFormScreen = ({ route }) => {
   });
 
   /**
-   * Pick an image Handler
+   * Handle pick an image
    */
   const pickImageHandler = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -147,14 +140,9 @@ const GroupFormScreen = ({ route }) => {
           }}
           onPress={Keyboard.dismiss}
         >
-          <PageHeader
-            title="New Group"
-            onPress={() => !formik.isSubmitting && navigation.goBack()}
-          />
+          <PageHeader title="New Group" onPress={() => !formik.isSubmitting && navigation.goBack()} />
 
-          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>
-            Participants: {userArray?.length}
-          </Text>
+          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Participants: {userArray?.length}</Text>
         </Pressable>
         <View
           style={{
@@ -179,16 +167,9 @@ const GroupFormScreen = ({ route }) => {
                     gap: 5,
                   }}
                 >
-                  <AvatarPlaceholder
-                    name={user.name}
-                    image={user.image}
-                    isThumb={false}
-                    size="xs"
-                  />
+                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                    {user.name.length > 8
-                      ? user.name.slice(0, 8) + "..."
-                      : user.name}
+                    {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
                   </Text>
                 </View>
               );
@@ -203,10 +184,7 @@ const GroupFormScreen = ({ route }) => {
             paddingHorizontal: 16,
           }}
         >
-          <TouchableOpacity
-            style={styles.groupImage}
-            onPress={pickImageHandler}
-          >
+          <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
             {image ? (
               <Image
                 style={{ height: 150, width: 150, borderRadius: 80 }}
@@ -215,11 +193,7 @@ const GroupFormScreen = ({ route }) => {
               />
             ) : (
               <View style={{ alignItems: "center", gap: 5 }}>
-                <MaterialCommunityIcons
-                  name="camera"
-                  size={20}
-                  color="#FFFFFF"
-                />
+                <MaterialCommunityIcons name="camera" size={20} color="#FFFFFF" />
                 <Text style={{ color: "#FFFFFF" }}>Add group icon</Text>
               </View>
             )}
@@ -230,11 +204,7 @@ const GroupFormScreen = ({ route }) => {
             value={formik.values.name}
             onChangeText={(value) => formik.setFieldValue("name", value)}
           />
-          {formik.errors.name && (
-            <Text style={{ fontSize: 12, color: "#F44336" }}>
-              {formik.errors.name}
-            </Text>
-          )}
+          {formik.errors.name && <Text style={{ fontSize: 12, color: "#F44336" }}>{formik.errors.name}</Text>}
           <Pressable
             style={{
               backgroundColor: formik.isSubmitting ? "#757575" : "#176688",

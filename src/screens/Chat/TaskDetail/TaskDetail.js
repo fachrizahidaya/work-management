@@ -1,14 +1,7 @@
 import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  Pressable,
-  Image,
-  View,
-} from "react-native";
+import { StyleSheet, SafeAreaView, Text, Pressable, Image, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -44,19 +37,11 @@ const TaskDetail = () => {
     taskData,
   } = routes.params;
 
-  const {
-    data: task,
-    isFetching: taskIsFetching,
-    refetch: refetchTask,
-  } = useFetch(`/chat/task/${task_id}`);
+  const { data: task, isFetching: taskIsFetching, refetch: refetchTask } = useFetch(`/chat/task/${task_id}`);
 
-  const filteredData = task?.data?.checklist.filter(
-    (item) => item.status === "Finish"
-  );
+  const filteredData = task?.data?.checklist.filter((item) => item.status === "Finish");
   const percentage =
-    task?.data?.checklist?.length > 0
-      ? (filteredData?.length / task.data?.checklist?.length) * 100
-      : 0;
+    task?.data?.checklist?.length > 0 ? (filteredData?.length / task.data?.checklist?.length) * 100 : 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -90,9 +75,7 @@ const TaskDetail = () => {
             </Pressable>
             <View>
               <Text style={[{ fontSize: 14, fontWeight: "500" }, TextProps]}>
-                {task?.data?.title.length > 20
-                  ? task?.data?.title.slice(0, 20) + "..."
-                  : task?.data?.title}
+                {task?.data?.title.length > 20 ? task?.data?.title.slice(0, 20) + "..." : task?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(task?.data?.deadline).format("DD MMMM YYYY")}
@@ -112,9 +95,7 @@ const TaskDetail = () => {
               name={task?.data?.responsible?.user?.name}
               image={task?.data?.responsible?.user?.image}
             />
-            <Text style={[{ fontSize: 10 }, TextProps]}>
-              {task?.data?.responsible?.user?.name?.split(" ")[0]}
-            </Text>
+            <Text style={[{ fontSize: 10 }, TextProps]}>{task?.data?.responsible?.user?.name?.split(" ")[0]}</Text>
           </View>
         </View>
       </View>
@@ -126,10 +107,7 @@ const TaskDetail = () => {
           marginHorizontal: 16,
         }}
       >
-        <Description
-          description={task?.data?.description}
-          navigation={navigation}
-        />
+        <Description description={task?.data?.description} navigation={navigation} />
       </View>
       <View
         style={{
@@ -166,11 +144,7 @@ const TaskDetail = () => {
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
               renderItem={({ item, index }) => (
-                <ObserverSection
-                  key={index}
-                  name={item?.user?.name.split(" ")[0]}
-                  image={item?.user?.image}
-                />
+                <ObserverSection key={index} name={item?.user?.name.split(" ")[0]} image={item?.user?.image} />
               )}
             />
           </View>
@@ -184,14 +158,11 @@ const TaskDetail = () => {
           }}
         >
           <Text style={[{ fontSize: 12 }, TextProps]}>
-            Checklist (
-            {typeof percentage === "undefined" ? 0 : Math.round(percentage)}
+            Checklist ({typeof percentage === "undefined" ? 0 : Math.round(percentage)}
             %)
           </Text>
           {task?.data?.checklist.length === 0 ? (
-            <View
-              style={{ alignItems: "center", justifyContent: "center", gap: 5 }}
-            >
+            <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
               <Image
                 source={require("../../../assets/vectors/empty.png")}
                 alt="attachment"
@@ -210,11 +181,7 @@ const TaskDetail = () => {
               keyExtractor={(item, index) => index}
               onEndReachedThreshold={0.1}
               renderItem={({ item, index }) => (
-                <ChecklistSection
-                  key={index}
-                  title={item?.title}
-                  status={item?.status}
-                />
+                <ChecklistSection key={index} title={item?.title} status={item?.status} />
               )}
             />
           )}
@@ -235,9 +202,7 @@ const TaskDetail = () => {
           borderRadius: 10,
         }}
       >
-        <View
-          style={{ alignItems: "center", justifyContent: "center", gap: 5 }}
-        >
+        <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
           <Image
             source={require("../../../assets/vectors/empty.png")}
             alt="attachment"
@@ -288,14 +253,8 @@ const TaskDetail = () => {
             });
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>
-            Import Task
-          </Text>
-          <MateriaCommunitylIcons
-            name="checkbox-outline"
-            size={25}
-            color="#176688"
-          />
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#176688" }}>Import Task</Text>
+          <MateriaCommunitylIcons name="checkbox-outline" size={25} color="#176688" />
         </Pressable>
       </View>
     </SafeAreaView>

@@ -15,16 +15,10 @@ const EmployeeSection = ({ employee }) => {
         <Pressable
           style={styles.item}
           key={item.id}
-          onPress={() =>
-            navigation.navigate("Employee Profile", { employeeId: item?.id })
-          }
+          onPress={() => navigation.navigate("Employee Profile", { employeeId: item?.id })}
         >
           <View style={styles.icon}>
-            <MaterialCommunityIcons
-              name="account-outline"
-              size={20}
-              color={"#8A9099"}
-            />
+            <MaterialCommunityIcons name="account-outline" size={20} color={"#8A9099"} />
           </View>
           <Text>{item.name}</Text>
         </Pressable>

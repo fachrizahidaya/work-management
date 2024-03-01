@@ -2,38 +2,53 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
+import { SheetManager } from "react-native-actions-sheet";
 
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingAppraisalListItem";
-import { useFetch } from "../../../../hooks/useFetch";
+import OngoingAppraisalListItem from "../../../../components/Tribe/Performance/Appraisal/OngoingAppraisalListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
 
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
   const [archivedList, setArchivedList] = useState([]);
-  const [currentPageArchived, setCurrentPageArchived] = useState(1);
-  const [reloadArchived, setReloadArchived] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const navigation = useNavigation();
 
-  const fetchArchivedAppraisalParameters = {
-    page: currentPageArchived,
-    limit: 100,
-    status: tabValue,
+  const currentDate = dayjs().format("YYYY-MM-DD");
+
+  const fetchArchivedParameters = {
+    begin_date: startDate,
+    end_date: endDate,
   };
 
   const {
     data: appraisalList,
     refetch: refetchAppraisalList,
     isFetching: appraisalListIsFetching,
-  } = useFetch("/hr/employee-appraisal/ongoing");
+  } = useFetch(tabValue === "Ongoing" && "/hr/employee-appraisal/ongoing");
 
-  const currentDate = dayjs().format("YYYY-MM-DD");
+  const { data: archived } = useFetch(
+    tabValue === "Archived" && "/hr/employee-appraisal/ongoing",
+    [startDate, endDate],
+    fetchArchivedParameters
+  );
+
+  const { data: ongoingData } = useFetch("/hr/employee-appraisal/ongoing");
+
+  /**
+   * Handle separate ongoing and archived Appraisal
+   */
   const filteredData = appraisalList?.data
     .map((item) => {
       if (item?.review?.end_date >= currentDate) {
@@ -50,40 +65,50 @@ const AppraisalListScreen = () => {
     })
     .filter(Boolean);
 
-  const fetchMoreArchived = () => {
-    if (currentPageArchived < filteredData?.length) {
-      setCurrentPageArchived(currentPageArchived + 1);
-      setReloadArchived(!reloadArchived);
-    }
-  };
-
   const tabs = useMemo(() => {
     return [
-      { title: `Ongoing (${filteredData?.length || 0})`, value: "Ongoing" },
-      { title: `Archived (${archivedData?.length || 0})`, value: "Archived" },
+      {
+        title: `Ongoing (${ongoingData?.data?.length || 0})`,
+        value: "Ongoing",
+      },
+      { title: `Archived`, value: "Archived" },
     ];
-  }, [filteredData, archivedData]);
+  }, [appraisalList, archived]);
 
   const onChangeTab = useCallback(
     (value) => {
       setTabValue(value);
       setOngoingList([]);
       setArchivedList([]);
+      setStartDate(null);
+      setEndDate(null);
     },
-    [appraisalList]
+    [appraisalList, archived]
   );
 
-  useEffect(() => {
-    if (filteredData?.length) {
-      setOngoingList((prevData) => [...prevData, ...filteredData]);
-    }
-  }, [filteredData?.length, tabValue]);
+  /**
+   * Handle start and end date archived
+   * @param {*} date
+   */
+  const startDateChangeHandler = (date) => {
+    setStartDate(date);
+  };
+
+  const endDateChangeHandler = (date) => {
+    setEndDate(date);
+  };
 
   useEffect(() => {
-    if (archivedData?.length) {
-      setArchivedList((prevData) => [...prevData, ...archivedData]);
+    if (appraisalList?.data?.length) {
+      setOngoingList((prevData) => [...prevData, ...appraisalList?.data]);
     }
-  }, [archivedData?.length, tabValue]);
+  }, [appraisalList?.data?.length, tabValue]);
+
+  useEffect(() => {
+    if (archived?.data?.length) {
+      setArchivedList((prevData) => [...prevData, ...archived?.data]);
+    }
+  }, [archived?.data?.length, tabValue]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
@@ -114,16 +139,14 @@ const AppraisalListScreen = () => {
                     target={item?.target_name}
                     isExpired={false}
                     target_level={item?.target_level}
+                    status="ongoing"
                   />
                 )}
               />
             ) : (
               <ScrollView
                 refreshControl={
-                  <RefreshControl
-                    refreshing={appraisalListIsFetching}
-                    onRefresh={refetchAppraisalList}
-                  />
+                  <RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />
                 }
               >
                 <View style={styles.content}>
@@ -131,38 +154,100 @@ const AppraisalListScreen = () => {
                 </View>
               </ScrollView>
             )
-          ) : archivedList?.length > 0 ? (
-            <FlashList
-              data={archivedList}
-              estimatedItemSize={50}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              renderItem={({ item, index }) => (
-                <OngoingAppraisalListItem
-                  key={index}
-                  id={item?.id}
-                  start_date={item?.review?.begin_date}
-                  end_date={item?.review?.end_date}
-                  navigation={navigation}
-                  name={item?.review?.description}
-                  target={item?.target_name}
-                  isExpired={true}
-                />
-              )}
-            />
           ) : (
-            <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={appraisalListIsFetching}
-                  onRefresh={refetchAppraisalList}
-                />
-              }
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
+            <View style={{ marginTop: 5, flex: 1 }}>
+              {archived?.data?.length > 0 ? (
+                <>
+                  <View style={{ alignItems: "flex-end" }}>
+                    <Pressable
+                      style={{
+                        padding: 5,
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        borderColor: "#E8E9EB",
+                        backgroundColor: "#FFFFFF",
+                        width: "10%",
+                      }}
+                      onPress={() =>
+                        SheetManager.show("form-sheet", {
+                          payload: {
+                            children: (
+                              <View
+                                style={{
+                                  display: "flex",
+                                  gap: 21,
+                                  paddingHorizontal: 20,
+                                  paddingVertical: 16,
+                                  paddingBottom: -20,
+                                }}
+                              >
+                                <View style={{ gap: 5 }}>
+                                  <CustomDateTimePicker
+                                    unlimitStartDate={true}
+                                    width="100%"
+                                    defaultValue={startDate ? startDate : null}
+                                    onChange={startDateChangeHandler}
+                                    title="Begin Date"
+                                  />
+                                </View>
+                                <View style={{ gap: 5 }}>
+                                  <CustomDateTimePicker
+                                    unlimitStartDate={true}
+                                    width="100%"
+                                    defaultValue={endDate ? endDate : null}
+                                    onChange={endDateChangeHandler}
+                                    title="End Date"
+                                  />
+                                </View>
+                              </View>
+                            ),
+                          },
+                        })
+                      }
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
+                        }}
+                      >
+                        <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
+                      </View>
+                    </Pressable>
+                  </View>
+                  <FlashList
+                    data={archived?.data}
+                    estimatedItemSize={50}
+                    onEndReachedThreshold={0.1}
+                    keyExtractor={(item, index) => index}
+                    renderItem={({ item, index }) => (
+                      <OngoingAppraisalListItem
+                        key={index}
+                        id={item?.id}
+                        start_date={item?.review?.begin_date}
+                        end_date={item?.review?.end_date}
+                        navigation={navigation}
+                        name={item?.review?.description}
+                        target={item?.target_name}
+                        isExpired={true}
+                        status="archived"
+                      />
+                    )}
+                  />
+                </>
+              ) : (
+                <ScrollView
+                  refreshControl={
+                    <RefreshControl refreshing={appraisalListIsFetching} onRefresh={refetchAppraisalList} />
+                  }
+                >
+                  <View style={styles.content}>
+                    <EmptyPlaceholder height={250} width={250} text="No Data" />
+                  </View>
+                </ScrollView>
+              )}
+            </View>
           )}
         </View>
       </View>
