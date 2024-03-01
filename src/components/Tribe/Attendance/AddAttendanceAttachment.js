@@ -3,15 +3,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
+import { View, Text, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -32,6 +24,9 @@ const AddAttendanceAttachment = ({
   attendanceAttachmentModalIsOpen,
   toggleAttendanceAttachmentModal,
 }) => {
+  /**
+   * Handle create attendance attachment
+   */
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -60,20 +55,23 @@ const AddAttendanceAttachment = ({
   });
 
   /**
-   * Begin and End date Leave handler
+   * Handle begin date for attachment
    * @param {*} value
    */
   const onChangeStartDate = (value) => {
     formik.setFieldValue("begin_date", value);
   };
 
+  /**
+   * Handle end date for attachment
+   * @param {*} value
+   */
   const onChangeEndDate = (value) => {
     formik.setFieldValue("end_date", value);
   };
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
-      // reference.current?.hide()
       formik.resetForm();
       setFileAttachment(null);
     }
@@ -119,9 +117,7 @@ const AddAttendanceAttachment = ({
                     title="Start Date"
                   />
                   {!formik.errors.begin_date ? null : (
-                    <Text style={{ fontSize: 14, color: "red" }}>
-                      {formik.errors.begin_date}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
                   )}
                 </View>
                 <View style={{ gap: 5, width: "45%" }}>
@@ -132,9 +128,7 @@ const AddAttendanceAttachment = ({
                     title="End Date"
                   />
                   {!formik.errors.end_date ? null : (
-                    <Text style={{ fontSize: 14, color: "red" }}>
-                      {formik.errors.end_date}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
                   )}
                 </View>
               </View>
@@ -150,9 +144,7 @@ const AddAttendanceAttachment = ({
                     title="Start Date"
                   />
                   {!formik.errors.begin_date ? null : (
-                    <Text style={{ fontSize: 14, color: "red" }}>
-                      {formik.errors.begin_date}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.begin_date}</Text>
                   )}
                 </View>
                 <View style={{ gap: 5 }}>
@@ -164,9 +156,7 @@ const AddAttendanceAttachment = ({
                     title="End Date"
                   />
                   {!formik.errors.end_date ? null : (
-                    <Text style={{ fontSize: 14, color: "red" }}>
-                      {formik.errors.end_date}
-                    </Text>
+                    <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.end_date}</Text>
                   )}
                 </View>
               </>
@@ -188,9 +178,7 @@ const AddAttendanceAttachment = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {!fileAttachment
-                    ? "Upload image or .pdf"
-                    : fileAttachment?.name}
+                  {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
                 </Text>
                 <MaterialCommunityIcons
                   name="attachment"
@@ -200,9 +188,7 @@ const AddAttendanceAttachment = ({
                 />
               </Pressable>
               {!formik.errors.attachment ? null : (
-                <Text style={{ fontSize: 14, color: "red" }}>
-                  {formik.errors.attachment}
-                </Text>
+                <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
               )}
             </View>
 
@@ -224,7 +210,6 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-                fontColor="white"
               />
             ) : (
               <FormButton
@@ -241,7 +226,6 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-                fontColor="white"
               />
             )}
           </View>
@@ -252,19 +236,11 @@ const AddAttendanceAttachment = ({
         toggle={toggleAttendanceAttachmentModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Report{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              submitted!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
           </View>
         }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Your report is logged
-          </Text>
-        }
+        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </ActionSheet>
   );

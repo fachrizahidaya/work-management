@@ -3,14 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 
-import {
-  SafeAreaView,
-  View,
-  Pressable,
-  Text,
-  Image,
-  Dimensions,
-} from "react-native";
+import { SafeAreaView, View, Pressable, Text, Image, Dimensions } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -40,9 +33,7 @@ const Header = () => {
   const { laravelEcho } = useWebsocketContext();
   const { data: myProfile } = useFetch("/hr/my-profile");
   const { data: notifications, refetch: refetchNotifications } = useFetch(
-    moduleSelector.module_name === "BAND"
-      ? "/pm/notifications/new"
-      : "/hr/notifications/new"
+    moduleSelector.module_name === "BAND" ? "/pm/notifications/new" : "/hr/notifications/new"
   );
 
   const userFetchParameters = {
@@ -51,11 +42,7 @@ const Header = () => {
   };
   const { data: unreads } = useFetch("/chat/unread-message");
 
-  const { data: user } = useFetch(
-    "/chat/user",
-    [currentPage],
-    userFetchParameters
-  );
+  const { data: user } = useFetch("/chat/user", [currentPage], userFetchParameters);
 
   /**
    * Handle for mention name in group member
@@ -70,13 +57,11 @@ const Header = () => {
    * Unread messages changes event listener
    */
   const unreadMessagesEvent = () => {
-    laravelEcho
-      ?.channel(`unread.message.${userSelector?.id}`)
-      ?.listen(".unread.message", (event) => {
-        openNotificationCard();
-        setUnreadMessages(event);
-        setMessageData(event?.notification?.message);
-      });
+    laravelEcho?.channel(`unread.message.${userSelector?.id}`)?.listen(".unread.message", (event) => {
+      openNotificationCard();
+      setUnreadMessages(event);
+      setMessageData(event?.notification?.message);
+    });
   };
 
   useEffect(() => {
@@ -146,12 +131,7 @@ const Header = () => {
             <MaterialCommunityIcons name="chevron-left" size={20} onPress={() => navigation.goBack()} color="#3F434A" />
           )} */}
           <Pressable onPress={() => navigation.navigate("Setting Screen")}>
-            <AvatarPlaceholder
-              size="md"
-              image={userSelector.image}
-              name={userSelector.name}
-              isThumb={false}
-            />
+            <AvatarPlaceholder size="md" image={userSelector.image} name={userSelector.name} isThumb={false} />
           </Pressable>
 
           <View>
@@ -165,9 +145,7 @@ const Header = () => {
                 TextProps,
               ]}
             >
-              {userSelector.name.length > 30
-                ? userSelector.split(" ")[0]
-                : userSelector.name}
+              {userSelector.name.length > 30 ? userSelector.split(" ")[0] : userSelector.name}
             </Text>
 
             {myProfile?.data && (
@@ -212,11 +190,7 @@ const Header = () => {
                   }
                 }}
               >
-                <MaterialCommunityIcons
-                  name="bell-outline"
-                  size={20}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="bell-outline" size={20} color="#3F434A" />
               </Pressable>
 
               {unreadNotificationList?.length > 0 && (
@@ -243,9 +217,7 @@ const Header = () => {
                       color: "white",
                     }}
                   >
-                    {unreadNotificationList.length <= 5
-                      ? unreadNotificationList.length
-                      : "5+"}
+                    {unreadNotificationList.length <= 5 ? unreadNotificationList.length : "5+"}
                   </Text>
                 </View>
               )}
@@ -253,15 +225,14 @@ const Header = () => {
           ) : null}
 
           <Pressable
-            onPress={() =>
-              routeName[0]?.state?.routeNames[2] == "Setting Tribe"
-                ? null
-                : // navigation.navigate("Dashboard")
-                routeName[0]?.state?.routeNames[2] == "Setting Band"
-                ? null
-                : // navigation.navigate("Dashboard")
-                  navigation.navigate("Chat List")
-            }
+            onPress={() => {
+              if (
+                routeName[0]?.state?.routeNames[2] !== "Setting Tribe" &&
+                routeName[0]?.state?.routeNames[2] !== "Setting Band"
+              ) {
+                navigation.navigate("Chat List");
+              }
+            }}
             style={{ position: "relative" }}
           >
             {!routeName[0]?.state?.routeNames[2].includes("Tribe") &&
@@ -274,10 +245,7 @@ const Header = () => {
                     position: "absolute",
                     top: -12,
                     right: -8,
-                    backgroundColor:
-                      routeName[1]?.name === "Chat List"
-                        ? "#FFFFFF"
-                        : "#FD7972",
+                    backgroundColor: routeName[1]?.name === "Chat List" ? "#FFFFFF" : "#FD7972",
                     borderRadius: 50,
                     zIndex: 1,
                     display: "flex",
@@ -293,9 +261,7 @@ const Header = () => {
                         color: "white",
                       }}
                     >
-                      {unreadMessages?.data?.total_unread <= 5
-                        ? unreadMessages?.data?.total_unread
-                        : "5+"}
+                      {unreadMessages?.data?.total_unread <= 5 ? unreadMessages?.data?.total_unread : "5+"}
                     </Text>
                   )}
                 </View>

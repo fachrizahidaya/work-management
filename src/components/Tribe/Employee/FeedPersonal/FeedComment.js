@@ -1,14 +1,7 @@
 import { memo, useCallback, useState } from "react";
 import { useFormik } from "formik";
 
-import {
-  Clipboard,
-  Linking,
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-} from "react-native";
+import { Clipboard, Linking, StyleSheet, View, Text, Pressable } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { replaceMentionValues } from "react-native-controlled-mentions";
@@ -38,18 +31,24 @@ const FeedComment = ({
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
+  /**
+   * Handle show username suggestion option
+   */
   const employeeData = employees?.map(({ id, username }) => ({
     id,
     name: username,
   }));
 
+  /**
+   * Handle show suggestion username
+   * @param {*} param0
+   * @returns
+   */
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
-    const data = employeeData.filter((one) =>
-      one.name.toLowerCase().includes(keyword.toLowerCase())
-    );
+    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
 
     return (
       <View style={{ height: 100 }}>
@@ -59,14 +58,8 @@ const FeedComment = ({
           keyExtractor={(item, index) => index}
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
-            <Pressable
-              key={index}
-              onPress={() => onSuggestionPress(item)}
-              style={{ padding: 12 }}
-            >
-              <Text style={{ fontSize: 12, fontWeight: "500" }}>
-                {item.name}
-              </Text>
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
+              <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
             </Pressable>
           )}
         />
@@ -74,19 +67,19 @@ const FeedComment = ({
     );
   };
 
+  /**
+   * Handle adjust the content if there is username
+   * @param {*} value
+   */
   const handleChange = (value) => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(
-      employees.filter((employee) =>
-        employee.name.toLowerCase().includes(lastWord.toLowerCase())
-      )
-    );
+    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   /**
-   * Create a new post handler
+   * Handle create a new comment
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -107,10 +100,16 @@ const FeedComment = ({
     },
   });
 
+  /**
+   * Handle press link
+   */
   const handleLinkPress = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
+  /**
+   * Handle press email
+   */
   const handleEmailPress = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
@@ -120,6 +119,10 @@ const FeedComment = ({
     }
   }, []);
 
+  /**
+   * Handle copy to clipboard
+   * @param {*} text
+   */
   const copyToClipboard = (text) => {
     try {
       if (typeof text !== String) {

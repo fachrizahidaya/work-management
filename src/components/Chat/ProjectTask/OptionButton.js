@@ -22,7 +22,7 @@ const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, s
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
-        marginLeft: Platform.OS === 'ios' ? 80 : 90,
+        marginLeft: Platform.OS === "ios" ? 80 : 90,
       }}
     >
       <View

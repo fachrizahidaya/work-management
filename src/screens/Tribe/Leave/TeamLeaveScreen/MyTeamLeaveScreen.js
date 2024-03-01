@@ -8,10 +8,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
-import {
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 
@@ -32,6 +29,9 @@ const MyTeamLeaveScreen = () => {
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const navigation = useNavigation();
+
+  const { isOpen: approvalModalIsOpen, toggle: toggleApprovalModal } = useDisclosure(false);
+  const { isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
@@ -84,15 +84,11 @@ const MyTeamLeaveScreen = () => {
     fetchMoreRejectedParameters
   );
 
-  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch(
-    "/hr/leave-requests/my-team"
-  );
+  const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
 
-  const { isOpen: approvalModalIsOpen, toggle: toggleApprovalModal } =
-    useDisclosure(false);
-  const { isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal } =
-    useDisclosure(false);
-
+  /**
+   * Handle total of leave status
+   */
   const pending =
     teamLeaveRequest?.data?.filter((item) => {
       return item.status === "Pending";
@@ -114,20 +110,31 @@ const MyTeamLeaveScreen = () => {
     ];
   }, [teamLeaveRequest, pending, approved, rejected]);
 
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+    setPendingList([]);
+    setApprovedList([]);
+    setRejectedList([]);
+    setCurrentPagePending(1);
+    setCurrentPageApproved(1);
+    setCurrentPageRejected(1);
+  }, []);
+
+  /**
+   * Handle fetch more leave by status
+   */
   const fetchMorePending = () => {
     if (currentPagePending < pendingLeaveRequest?.data?.last_page) {
       setCurrentPagePending(currentPagePending + 1);
       setReloadPending(!reloadPending);
     }
   };
-
   const fetchMoreApproved = () => {
     if (currentPageApproved < approvedLeaveRequest?.data?.last_page) {
       setCurrentPageApproved(currentPageApproved + 1);
       setReloadApproved(!reloadApproved);
     }
   };
-
   const fetchMoreRejected = () => {
     if (currentPageRejected < rejectedLeaveRequest?.data?.last_page) {
       setCurrentPageRejected(currentPageRejected + 1);
@@ -136,7 +143,7 @@ const MyTeamLeaveScreen = () => {
   };
 
   /**
-   * Submit response of leave request handler
+   * Handle submit response of leave request
    * @param {*} data
    * @param {*} setStatus
    * @param {*} setSubmitting
@@ -162,16 +169,6 @@ const MyTeamLeaveScreen = () => {
     }
   };
 
-  const onChangeTab = useCallback((value) => {
-    setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPageRejected(1);
-  }, []);
-
   useEffect(() => {
     setTimeout(() => {
       setIsReady(true);
@@ -186,19 +183,13 @@ const MyTeamLeaveScreen = () => {
 
   useEffect(() => {
     if (approvedLeaveRequest?.data?.data?.length) {
-      setApprovedList((prevData) => [
-        ...prevData,
-        ...approvedLeaveRequest?.data?.data,
-      ]);
+      setApprovedList((prevData) => [...prevData, ...approvedLeaveRequest?.data?.data]);
     }
   }, [approvedLeaveRequest?.data?.data?.length]);
 
   useEffect(() => {
     if (rejectedLeaveRequest?.data?.data?.length) {
-      setRejectedList((prevData) => [
-        ...prevData,
-        ...rejectedLeaveRequest?.data?.data,
-      ]);
+      setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
 
@@ -208,10 +199,7 @@ const MyTeamLeaveScreen = () => {
         {isReady ? (
           <>
             <View style={styles.header}>
-              <PageHeader
-                title="My Team Leave Request"
-                onPress={() => navigation.goBack()}
-              />
+              <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
             <MyTeamLeaveRequestList
@@ -250,18 +238,12 @@ const MyTeamLeaveScreen = () => {
         toggle={toggleApprovalModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>
-              Approval{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              confirmed!
-            </Text>
+            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Approval </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>confirmed!</Text>
           </View>
         }
         bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Thank you for your prompt action
-          </Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for your prompt action</Text>
         }
       />
       <SuccessModal
@@ -269,12 +251,8 @@ const MyTeamLeaveScreen = () => {
         toggle={toggleRejectionModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>
-              Decline{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              with thanks!
-            </Text>
+            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Decline </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>with thanks!</Text>
           </View>
         }
         bottomElement={

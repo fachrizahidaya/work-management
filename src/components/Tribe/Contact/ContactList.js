@@ -1,10 +1,4 @@
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  Platform,
-} from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet, Platform } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -46,26 +40,15 @@ const ContactList = ({
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <View>
-            <AvatarPlaceholder
-              image={image}
-              name={name}
-              size="lg"
-              isThumb={false}
-            />
+            <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
             {leave_status ? (
               <View style={styles.editPicture}>
-                <MaterialCommunityIcons
-                  name="airplane"
-                  size={15}
-                  color="#3F434A"
-                />
+                <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
               </View>
             ) : null}
           </View>
           <View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -79,15 +62,6 @@ const ContactList = ({
               >
                 {name}
               </Text>
-              {/* {
-            leave_status ?
-          <View
-            style={styles.editPicture}
-           
-          >
-            <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
-          </View> : null
-          } */}
             </View>
 
             <Text

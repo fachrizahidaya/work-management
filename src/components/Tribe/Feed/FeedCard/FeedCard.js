@@ -1,14 +1,6 @@
 import { memo, useCallback } from "react";
 
-import {
-  Clipboard,
-  Linking,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  FlatList,
-  Platform,
-} from "react-native";
+import { Clipboard, Linking, StyleSheet, View, ActivityIndicator, FlatList } from "react-native";
 import Toast from "react-native-root-toast";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -28,8 +20,6 @@ const FeedCard = ({
   postIsFetching,
   postIsLoading,
   refetchPost,
-  scrollNewMessage,
-  flashListRef,
   onCommentToggle,
   forceRerender,
   setForceRerender,
@@ -38,7 +28,7 @@ const FeedCard = ({
   navigation,
 }) => {
   /**
-   * Like a Post handler
+   * Handle like a Post
    * @param {*} post_id
    * @param {*} action
    */
@@ -53,11 +43,17 @@ const FeedCard = ({
     }
   };
 
-  const handleLinkPress = useCallback((url) => {
+  /**
+   * Handle press link
+   */
+  const linkPressHandler = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
-  const handleEmailPress = useCallback((email) => {
+  /**
+   * Handle press email
+   */
+  const emailPressHandler = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -66,7 +62,11 @@ const FeedCard = ({
     }
   }, []);
 
-  const copyToClipboard = (text) => {
+  /**
+   * Handle copy to clipboard
+   * @param {*} text
+   */
+  const copyToClipboardHandler = (text) => {
     try {
       if (typeof text !== String) {
         var textToCopy = text.toString();
@@ -83,7 +83,6 @@ const FeedCard = ({
     <View style={styles.container}>
       <FlashList
         removeClippedSubviews={true}
-        // ref={scrollNewMessage ? flashListRef : null}
         data={posts}
         extraData={forceRerender} // re-render data handler
         onEndReachedThreshold={0.1}
@@ -125,9 +124,9 @@ const FeedCard = ({
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreen}
-            handleLinkPress={handleLinkPress}
-            handleEmailPress={handleEmailPress}
-            copyToClipboard={copyToClipboard}
+            handleLinkPress={linkPressHandler}
+            handleEmailPress={emailPressHandler}
+            copyToClipboard={copyToClipboardHandler}
             employeeUsername={employeeUsername}
             navigation={navigation}
           />

@@ -19,10 +19,7 @@ import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSe
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { SheetManager } from "react-native-actions-sheet";
-import {
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../components/shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
 
 const ChatListScreen = () => {
@@ -41,49 +38,31 @@ const ChatListScreen = () => {
   const searchFromRef = useRef(null);
   const scrollRef = useRef(null);
 
-  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } =
-    useDisclosure(false);
-  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } =
-    useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } =
-    useDisclosure(false);
-  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } =
-    useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
+  const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
-  const {
-    isLoading: deleteChatMessageIsLoading,
-    toggle: toggleDeleteChatMessage,
-  } = useLoading(false);
-  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } =
-    useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } =
-    useLoading(false);
-
-  const userFetchParameters = {
-    page: currentPage,
-    limit: 1000,
-  };
+  const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
+  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
 
   /**
    * Event listener for new chats
    */
   const personalChatEvent = () => {
-    laravelEcho
-      .channel(`personal.list.${userSelector?.id}`)
-      .listen(".personal.list", (event) => {
-        setPersonalChats(event.data);
-      });
+    laravelEcho.channel(`personal.list.${userSelector?.id}`).listen(".personal.list", (event) => {
+      setPersonalChats(event.data);
+    });
   };
 
   /**
    * Event listener for new group chats
    */
   const groupChatEvent = () => {
-    laravelEcho
-      .channel(`group.list.${userSelector.id}`)
-      .listen(".group.list", (event) => {
-        setGroupChats(event.data);
-      });
+    laravelEcho.channel(`group.list.${userSelector.id}`).listen(".group.list", (event) => {
+      setGroupChats(event.data);
+    });
   };
 
   /**
@@ -112,17 +91,14 @@ const ChatListScreen = () => {
     }
   };
 
-  const { data: searchResult } = useFetch(
-    "/chat/global-search",
-    [globalKeyword],
-    { search: globalKeyword }
-  );
+  const userFetchParameters = {
+    page: currentPage,
+    limit: 1000,
+  };
 
-  const { data: user } = useFetch(
-    "/chat/user",
-    [currentPage],
-    userFetchParameters
-  );
+  const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
+
+  const { data: user } = useFetch("/chat/user", [currentPage], userFetchParameters);
 
   /**
    * Handle for mention name in group member
@@ -132,46 +108,43 @@ const ChatListScreen = () => {
   });
 
   /**
-   * Delete message Handler
+   * Handle select message to open contact menu
    */
   const openSelectedChatHandler = (contact) => {
     setSelectedChat(contact);
     toggleDeleteModal();
   };
-
   const closeSelectedChatHandler = () => {
     setSelectedChat(null);
     toggleDeleteModal();
   };
 
   /**
-   * Clear personal chat message handler
+   * Handle clear chat message
    */
   const openSelectedChatToClearHandler = (contact) => {
     setSelectedChat(contact);
     toggleClearChatMessage();
   };
-
   const closeSelectedChatToClearHandler = () => {
     setSelectedChat(null);
     toggleClearChatMessage();
   };
 
   /**
-   * Clear group chat message handler
+   * Handle delete group chat
    */
   const openSelectedGroupChatHandler = (contact) => {
     setSelectedChat(contact);
     toggleDeleteGroupModal();
   };
-
   const closeSelectedGroupChatHandler = () => {
     setSelectedChat(null);
     toggleDeleteGroupModal();
   };
 
   /**
-   * Swipe Contact List Item handler
+   * Handle open contact menu
    * @param {*} contact
    */
   const contactMenuHandler = (contact) => {
@@ -201,7 +174,7 @@ const ChatListScreen = () => {
   };
 
   /**
-   * Delete chat room personal handler
+   * Handle Delete chat room personal
    * @param {*} id
    */
   const deleteChatPersonal = async (id) => {
@@ -219,7 +192,7 @@ const ChatListScreen = () => {
   };
 
   /**
-   * Delete group after exit group handler
+   * Handle Delete group after exit group
    * @param {*} group_id
    */
   const groupDeleteHandler = async (group_id) => {
@@ -264,9 +237,7 @@ const ChatListScreen = () => {
    */
   const chatPinUpdateHandler = async (chatType, id, action) => {
     try {
-      const res = await axiosInstance.patch(
-        `/chat/${chatType}/${id}/${action}`
-      );
+      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
     } catch (err) {
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);

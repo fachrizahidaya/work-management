@@ -1,13 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import FormButton from "../../shared/FormButton";
@@ -40,7 +34,7 @@ const AttendanceForm = ({
 }) => {
   const [tabValue, setTabValue] = useState("late");
   /**
-   * Late type Handler
+   * Handle for Late type
    */
   const lateType = [
     { label: "Late", value: "Late" },
@@ -49,7 +43,7 @@ const AttendanceForm = ({
   ];
 
   /**
-   * Early type Handler
+   * Handle for Early type
    */
   const earlyType = [
     { label: "Went Home Early", value: "Went Home Early" },
@@ -57,6 +51,9 @@ const AttendanceForm = ({
     { label: "Other", value: "Other" },
   ];
 
+  /**
+   * Handle for Alpa type
+   */
   const alpaType = [
     { label: "Alpa", value: "Alpa" },
     { label: "Sick", value: "Sick" },
@@ -76,7 +73,7 @@ const AttendanceForm = ({
   }, []);
 
   /**
-   * Create attendance report handler
+   * Handle create attendance report
    */
   const formik = useFormik({
     enableReinitialize: true,
@@ -104,9 +101,7 @@ const AttendanceForm = ({
     <ActionSheet
       ref={reference}
       onClose={() =>
-        !formik.isSubmitting &&
-        formik.status !== "processing" &&
-        toggleReport.current?.hide(formik.resetForm)
+        !formik.isSubmitting && formik.status !== "processing" && toggleReport.current?.hide(formik.resetForm)
       }
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -129,12 +124,8 @@ const AttendanceForm = ({
                     borderBottomColor: "#FFFFFF",
                   }}
                 >
-                  <Text style={[{ fontSize: 12 }, TextProps]}>
-                    Clock-in Time
-                  </Text>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>
-                    {date?.timeIn}
-                  </Text>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
+                  <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeIn}</Text>
                 </View>
                 {!date?.timeOut ? null : (
                   <View
@@ -145,12 +136,8 @@ const AttendanceForm = ({
                       borderBottomColor: "#FFFFFF",
                     }}
                   >
-                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                      Clock-out Time
-                    </Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                      {date?.timeOut}
-                    </Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
+                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeOut}</Text>
                   </View>
                 )}
               </View>
@@ -166,12 +153,8 @@ const AttendanceForm = ({
               time={date?.timeIn}
               title="Late Type"
               inputValue={formik.values.late_reason}
-              inputOnChangeText={(value) =>
-                formik.setFieldValue("late_reason", value)
-              }
-              selectOnValueChange={(value) =>
-                formik.setFieldValue("late_type", value)
-              }
+              inputOnChangeText={(value) => formik.setFieldValue("late_reason", value)}
+              selectOnValueChange={(value) => formik.setFieldValue("late_type", value)}
               titleDuty="On Duty"
               timeDuty={date?.onDuty}
               titleLateOrEarly="Late"
@@ -191,12 +174,8 @@ const AttendanceForm = ({
               time={date?.timeOut}
               title="Early Type"
               inputValue={formik.values.early_reason}
-              inputOnChangeText={(value) =>
-                formik.setFieldValue("early_reason", value)
-              }
-              selectOnValueChange={(value) =>
-                formik.setFieldValue("early_type", value)
-              }
+              inputOnChangeText={(value) => formik.setFieldValue("early_reason", value)}
+              selectOnValueChange={(value) => formik.setFieldValue("early_type", value)}
               titleDuty="Off Duty"
               timeDuty={date?.offDuty}
               titleLateOrEarly="Early"
@@ -223,21 +202,14 @@ const AttendanceForm = ({
                 title="Late Type"
                 field="late_type"
                 types={lateType}
-                valueChange={(value) =>
-                  formik.setFieldValue("late_type", value)
-                }
+                valueChange={(value) => formik.setFieldValue("late_type", value)}
               />
-              <Reason
-                formik={formik}
-                value={formik.values.late_reason}
-                fieldName="late_reason"
-              />
+              <Reason formik={formik} value={formik.values.late_reason} fieldName="late_reason" />
               <FormButton
                 width="full"
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -262,20 +234,13 @@ const AttendanceForm = ({
                 title="Early Type"
                 field="early_type"
                 types={earlyType}
-                valueChange={(value) =>
-                  formik.setFieldValue("early_type", value)
-                }
+                valueChange={(value) => formik.setFieldValue("early_type", value)}
               />
-              <Reason
-                formik={formik}
-                value={formik.values.early_reason}
-                fieldName="early_reason"
-              />
+              <Reason formik={formik} value={formik.values.early_reason} fieldName="early_reason" />
               <FormButton
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -295,16 +260,11 @@ const AttendanceForm = ({
                 value={formik.values.att_type}
                 valueChange={(value) => formik.setFieldValue("att_type", value)}
               />
-              <Reason
-                formik={formik}
-                value={formik.values.att_reason}
-                fieldName="att_reason"
-              />
+              <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
               <FormButton
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -395,16 +355,11 @@ const AttendanceForm = ({
                 valueChange={(value) => formik.setFieldValue("att_type", value)}
                 value={formik.values.att_type}
               />
-              <Reason
-                formik={formik}
-                value={formik.values.att_reason}
-                fieldName="att_reason"
-              />
+              <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
               <FormButton
                 size="sm"
                 variant="solid"
                 fontSize={12}
-                fontColor="white"
                 isSubmitting={formik.isSubmitting}
                 onPress={formik.handleSubmit}
               >
@@ -414,40 +369,31 @@ const AttendanceForm = ({
           )}
 
           {/* If attendance type is Leave */}
-          {isLeave && (
-            <LeaveOrPermit
-              type={date?.attendanceType}
-              reason={date?.attendanceReason}
-            />
-          )}
+          {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
           {/* If did not clock-in */}
-          {date?.dayType === "Work Day" &&
-            !date?.timeIn &&
-            date?.date === CURRENT_DATE && (
-              <View style={{ gap: 10 }}>
+          {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
+            <View style={{ gap: 10 }}>
+              <View
+                style={{
+                  gap: 1,
+                  backgroundColor: "#F5F5F5",
+                  borderRadius: 10,
+                }}
+              >
                 <View
                   style={{
-                    gap: 1,
-                    backgroundColor: "#F5F5F5",
-                    borderRadius: 10,
+                    ...styles.content,
+                    justifyContent: "space-between",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#FFFFFF",
                   }}
                 >
-                  <View
-                    style={{
-                      ...styles.content,
-                      justifyContent: "space-between",
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#FFFFFF",
-                    }}
-                  >
-                    <Text style={[{ fontSize: 16 }, TextProps]}>
-                      Clock-in required
-                    </Text>
-                  </View>
+                  <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
                 </View>
               </View>
-            )}
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
       <SuccessModal
@@ -455,19 +401,11 @@ const AttendanceForm = ({
         toggle={toggleAttendanceReportModal}
         topElement={
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>
-              Report{" "}
-            </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>
-              submitted!
-            </Text>
+            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
           </View>
         }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Your report is logged
-          </Text>
-        }
+        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </ActionSheet>
   );
@@ -497,13 +435,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Clock = ({
-  titleDuty,
-  timeDuty,
-  titleClock,
-  timeInOrTimeOut,
-  lateOrEarly,
-}) => {
+const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }) => {
   return (
     <View style={styles.clock}>
       <View>
@@ -522,15 +454,7 @@ const Clock = ({
   );
 };
 
-const Options = ({
-  formik,
-  title,
-  field,
-  types,
-  valueChange,
-  placeholder,
-  value,
-}) => {
+const Options = ({ formik, title, field, types, valueChange, placeholder, value }) => {
   return (
     <View>
       <Select
@@ -538,11 +462,7 @@ const Options = ({
         value={value}
         title={title}
         fieldName={field}
-        onChange={
-          valueChange
-            ? valueChange
-            : (value) => formik.setFieldValue(field, value)
-        }
+        onChange={valueChange ? valueChange : (value) => formik.setFieldValue(field, value)}
         items={types}
         placeHolder={placeholder}
       />
@@ -599,16 +519,11 @@ const LateOrEarlyTime = ({
         placeholder={placeholder}
         field={fieldOption}
       />
-      <Reason
-        formik={formik}
-        value={inputValue}
-        onChangeText={inputOnChangeText}
-      />
+      <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
       <FormButton
         size="sm"
         variant="solid"
         fontSize={12}
-        fontColor="white"
         isSubmitting={formik.isSubmitting}
         onPress={formik.handleSubmit}
       >
@@ -634,12 +549,7 @@ const LateAndEarlyTime = ({
 }) => {
   return (
     <View style={{ gap: 10 }}>
-      <Tabs
-        tabs={tabs}
-        value={tabValue}
-        onChange={onChangeTab}
-        justify="space-evenly"
-      />
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
       {tabValue === "late" ? (
         <>
           <View style={styles.clock}>
@@ -647,9 +557,7 @@ const LateAndEarlyTime = ({
               <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
               <Text style={[{ fontSize: 12 }, TextProps]}>{onDuty}</Text>
             </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
               <View>
                 <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
                 <Text style={[{ fontSize: 12 }, TextProps]}>
@@ -686,13 +594,9 @@ const LateAndEarlyTime = ({
               <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
               <Text style={[{ fontSize: 12 }, TextProps]}>{offDuty}</Text>
             </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
               <View>
-                <Text style={[{ fontSize: 12 }, TextProps]}>
-                  Clock-out Time
-                </Text>
+                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
                 <Text style={[{ fontSize: 12 }, TextProps]}>
                   {timeOut} ({early})
                 </Text>
@@ -725,7 +629,6 @@ const LateAndEarlyTime = ({
         size="sm"
         variant="solid"
         fontSize={12}
-        fontColor="white"
         isSubmitting={formik.isSubmitting}
         onPress={formik.handleSubmit}
       >

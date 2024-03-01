@@ -11,6 +11,7 @@ const ChatMessageDeleteModal = ({
   onDeleteMessage,
   isLoading,
   isDeleted,
+  setDeleteSelected,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -21,10 +22,19 @@ const ChatMessageDeleteModal = ({
   return (
     <Modal
       isVisible={deleteModalChatIsOpen}
-      onBackdropPress={toggleDeleteModalChat}
+      onBackdropPress={() => {
+        if (Platform.OS === "android") {
+          toggleDeleteModalChat();
+        } else {
+          toggleDeleteModalChat();
+          setDeleteSelected(false);
+        }
+      }}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
       backdropColor="#272A2B"
+      hideModalContentWhileAnimating={true}
+      useNativeDriver={false}
     >
       <View style={{ backgroundColor: "#FFFFFF", padding: 15, borderRadius: 10, gap: 10 }}>
         <View>

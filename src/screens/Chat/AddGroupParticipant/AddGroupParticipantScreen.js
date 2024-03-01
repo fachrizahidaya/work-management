@@ -3,14 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 import { useSelector } from "react-redux";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-  Pressable,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, ActivityIndicator, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-root-toast";
@@ -19,11 +12,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
-import {
-  TextProps,
-  ErrorToastProps,
-  SuccessToastProps,
-} from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 
 const AddGroupParticipantScreen = () => {
@@ -34,7 +23,6 @@ const AddGroupParticipantScreen = () => {
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
-  const multiSelect = true;
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
@@ -45,11 +33,7 @@ const AddGroupParticipantScreen = () => {
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch(
-    "/chat/user",
-    [currentPage, searchKeyword],
-    userFetchParameters
-  );
+  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
@@ -124,13 +108,8 @@ const AddGroupParticipantScreen = () => {
           }}
         >
           <View>
-            <PageHeader
-              title="Add Group Participant"
-              onPress={() => navigation.goBack()}
-            />
-            <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>
-              Add participants
-            </Text>
+            <PageHeader title="Add Group Participant" onPress={() => navigation.goBack()} />
+            <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Add participants</Text>
           </View>
         </View>
 
@@ -172,16 +151,9 @@ const AddGroupParticipantScreen = () => {
                       gap: 5,
                     }}
                   >
-                    <AvatarPlaceholder
-                      name={user.name}
-                      image={user.image}
-                      isThumb={false}
-                      size="xs"
-                    />
+                    <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
                     <Text style={[{ fontSize: 12 }, TextProps]}>
-                      {user.name.length > 8
-                        ? user.name.slice(0, 8) + "..."
-                        : user.name}
+                      {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
                     </Text>
                   </View>
                 );

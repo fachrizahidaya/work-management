@@ -22,7 +22,6 @@ const SelectWithSearch = ({
   setInputToShow,
   setSearchInput,
   handleSearch,
-  height, // adjust height
 }) => {
   const onPressValue = (value) => {
     onChange(value);

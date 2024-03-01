@@ -40,22 +40,13 @@ const SupervisorInformation = ({
               })
             }
           >
-            <AvatarPlaceholder
-              image={supervisorImage}
-              name={supervisorName}
-              size="lg"
-              isThumb={false}
-            />
+            <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" isThumb={false} />
           </TouchableOpacity>
           <View>
             <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>
-              {supervisorName.length > 30
-                ? supervisorName.split(" ")[0]
-                : supervisorName}
+              {supervisorName.length > 30 ? supervisorName.split(" ")[0] : supervisorName}
             </Text>
-            <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>
-              {supervisorPosition}
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>{supervisorPosition}</Text>
           </View>
         </View>
       </View>
@@ -71,11 +62,7 @@ const SupervisorInformation = ({
           <Text style={[{ fontSize: 12 }, TextProps]}>Phone:</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
             <TouchableOpacity onPress={() => onClickCall(phoneUrl)}>
-              <Text
-                style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}
-              >
-                {supervisorPhone}
-              </Text>
+              <Text style={{ fontSize: 12, fontWeight: "400", color: "#8A9099" }}>{supervisorPhone}</Text>
             </TouchableOpacity>
           </View>
         </View>

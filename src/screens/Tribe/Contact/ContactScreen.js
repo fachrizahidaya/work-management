@@ -30,7 +30,6 @@ const ContactScreen = () => {
 
   const navigation = useNavigation();
 
-  // Paremeters for fetch contact
   const fetchEmployeeContactParameters = {
     page: currentPage,
     search: searchInput,
@@ -42,14 +41,10 @@ const ContactScreen = () => {
     isFetching: employeeDataIsFetching,
     isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
-  } = useFetch(
-    "/hr/employees",
-    [currentPage, searchInput],
-    fetchEmployeeContactParameters
-  );
+  } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
 
   /**
-   * Fetch employee contact Handler
+   * Handle fetch more employee contact
    */
   const fetchMoreEmployeeContact = () => {
     if (currentPage < employeeData?.data?.last_page) {
@@ -58,7 +53,7 @@ const ContactScreen = () => {
   };
 
   /**
-   * Search contact name handler
+   * Handle search contact
    */
   const handleSearch = useCallback(
     _.debounce((value) => {
@@ -78,10 +73,7 @@ const ContactScreen = () => {
         setContacts((prevData) => [...prevData, ...employeeData?.data?.data]);
         setFilteredDataArray([]);
       } else {
-        setFilteredDataArray((prevData) => [
-          ...prevData,
-          ...employeeData?.data?.data,
-        ]);
+        setFilteredDataArray((prevData) => [...prevData, ...employeeData?.data?.data]);
         setContacts([]);
       }
     }
@@ -125,10 +117,7 @@ const ContactScreen = () => {
               onEndReachedThreshold={0.1}
               estimatedItemSize={60}
               onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-              ListFooterComponent={() =>
-                employeeDataIsFetching &&
-                hasBeenScrolled && <ActivityIndicator />
-              }
+              ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
               renderItem={({ item, index }) => (
                 <ContactList
                   key={index}

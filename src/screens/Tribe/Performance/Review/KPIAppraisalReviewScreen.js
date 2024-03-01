@@ -10,9 +10,9 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import OngoingReviewAppraisalListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewAppraisalListItem";
-import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingReviewKPIListItem";
-import OngoingCommentListItem from "../../../../components/Tribe/Performance/OngoingPerformance/OngoingCommentListItem";
+import OngoingReviewAppraisalListItem from "../../../../components/Tribe/Performance/Review/OngoingReviewAppraisalListItem";
+import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/Review/OngoingReviewKPIListItem";
+import OngoingCommentListItem from "../../../../components/Tribe/Performance/Review/OngoingCommentListItem";
 
 const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
@@ -26,8 +26,7 @@ const KPIAppraisalReviewScreen = () => {
   const [reloadAppraisal, setReloadAppraisal] = useState(false);
   const [reloadComment, setReloadComment] = useState(false);
   const [kpiHasBeenScrolled, setKpiHasBeenScrolled] = useState(false);
-  const [appraisalHasBeenScrolled, setAppraisalHasBeenScrolled] =
-    useState(false);
+  const [appraisalHasBeenScrolled, setAppraisalHasBeenScrolled] = useState(false);
   const [commentHasBeenScrolled, setCommentHasBeenScrolled] = useState(false);
 
   const navigation = useNavigation();
@@ -95,20 +94,21 @@ const KPIAppraisalReviewScreen = () => {
     ];
   }, [kpi, appraisal, comment, kpiData, appraisalData, commentData]);
 
+  /**
+   * Handle fetch more kpi, appraisal, comment
+   */
   const fetchMoreKpi = () => {
     if (currentPageKPI < kpi?.data?.last_page) {
       setCurrentPageKPI(currentPageKPI + 1);
       setReloadKpi(!reloadKpi);
     }
   };
-
   const fetchMoreAppraisal = () => {
     if (currentPageAppraisal < appraisal?.data?.last_page) {
       setCurrentPageAppraisal(currentPageAppraisal + 1);
       setReloadAppraisal(!reloadAppraisal);
     }
   };
-
   const fetchMoreComment = () => {
     if (currentPageComment < comment?.data?.last_page) {
       setCurrentPageComment(currentPageComment + 1);
@@ -155,9 +155,7 @@ const KPIAppraisalReviewScreen = () => {
       <View style={{ paddingHorizontal: 16, backgroundColor: "#FFFFFF" }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
-      <View
-        style={{ backgroundColor: "#f8f8f8", flex: 1, flexDirection: "column" }}
-      >
+      <View style={{ backgroundColor: "#f8f8f8", flex: 1, flexDirection: "column" }}>
         {tabValue == "KPI" ? (
           kpiList?.length > 0 ? (
             <View style={{ flex: 1, paddingHorizontal: 16 }}>
@@ -166,9 +164,7 @@ const KPIAppraisalReviewScreen = () => {
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
-                onScrollBeginDrag={() =>
-                  setKpiHasBeenScrolled(!kpiHasBeenScrolled)
-                }
+                onScrollBeginDrag={() => setKpiHasBeenScrolled(!kpiHasBeenScrolled)}
                 onEndReached={kpiHasBeenScrolled === true ? fetchMoreKpi : null}
                 renderItem={({ item, index }) => (
                   <OngoingReviewKPIListItem
@@ -181,25 +177,14 @@ const KPIAppraisalReviewScreen = () => {
                     target={item?.performance_kpi?.target_name}
                     dayjs={dayjs}
                     target_level={item?.performance_kpi?.target_level}
+                    description={item?.performance_kpi?.review?.description}
                   />
                 )}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={kpiIsFetching}
-                    onRefresh={refetchKpi}
-                  />
-                }
+                refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}
               />
             </View>
           ) : (
-            <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={kpiIsFetching}
-                  onRefresh={refetchKpi}
-                />
-              }
-            >
+            <ScrollView refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}>
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
@@ -213,12 +198,8 @@ const KPIAppraisalReviewScreen = () => {
                 estimatedItemSize={50}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
-                onScrollBeginDrag={() =>
-                  setAppraisalHasBeenScrolled(!appraisalHasBeenScrolled)
-                }
-                onEndReached={
-                  appraisalHasBeenScrolled === true ? fetchMoreAppraisal : null
-                }
+                onScrollBeginDrag={() => setAppraisalHasBeenScrolled(!appraisalHasBeenScrolled)}
+                onEndReached={appraisalHasBeenScrolled === true ? fetchMoreAppraisal : null}
                 renderItem={({ item, index }) => (
                   <OngoingReviewAppraisalListItem
                     key={index}
@@ -230,24 +211,15 @@ const KPIAppraisalReviewScreen = () => {
                     target={item?.performance_appraisal?.target_name}
                     dayjs={dayjs}
                     target_level={item?.performance_appraisal?.target_level}
+                    description={item?.performance_appraisal?.review?.description}
                   />
                 )}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={appraisalIsFetching}
-                    onRefresh={refetchAppraisal}
-                  />
-                }
+                refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
               />
             </View>
           ) : (
             <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={appraisalIsFetching}
-                  onRefresh={refetchAppraisal}
-                />
-              }
+              refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
             >
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
@@ -261,12 +233,8 @@ const KPIAppraisalReviewScreen = () => {
               estimatedItemSize={50}
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => index}
-              onScrollBeginDrag={() =>
-                setCommentHasBeenScrolled(!commentHasBeenScrolled)
-              }
-              onEndReached={
-                commentHasBeenScrolled === true ? fetchMoreComment : null
-              }
+              onScrollBeginDrag={() => setCommentHasBeenScrolled(!commentHasBeenScrolled)}
+              onEndReached={commentHasBeenScrolled === true ? fetchMoreComment : null}
               renderItem={({ item, index }) => (
                 <OngoingCommentListItem
                   key={index}
@@ -280,23 +248,11 @@ const KPIAppraisalReviewScreen = () => {
                   target_level={item?.performance_comment?.target_level}
                 />
               )}
-              refreshControl={
-                <RefreshControl
-                  refreshing={commentIsFetching}
-                  onRefresh={refetchComment}
-                />
-              }
+              refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchComment} />}
             />
           </View>
         ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={commentIsFetching}
-                onRefresh={refetchComment}
-              />
-            }
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchComment} />}>
             <View style={styles.content}>
               <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>

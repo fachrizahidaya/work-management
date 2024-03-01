@@ -67,12 +67,8 @@ const LeaveRequestList = ({
               <FlashList
                 data={pendingList}
                 onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() =>
-                  setHasBeenScrolledPending(!hasBeenScrolledPending)
-                }
-                onEndReached={
-                  hasBeenScrolledPending === true ? fetchMorePending : null
-                }
+                onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
+                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -85,9 +81,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsLoading && <ActivityIndicator />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -141,12 +135,8 @@ const LeaveRequestList = ({
               <FlashList
                 data={approvedList}
                 onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() =>
-                  setHasBeenScrolledApproved(!hasBeenScrolledApproved)
-                }
-                onEndReached={
-                  hasBeenScrolledApproved === true ? fetchMoreApproved : null
-                }
+                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -159,9 +149,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  approvedLeaveRequestIsLoading && <ActivityIndicator />
-                }
+                ListFooterComponent={() => approvedLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -215,12 +203,8 @@ const LeaveRequestList = ({
               <FlashList
                 data={canceledList}
                 onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() =>
-                  setHasBeenScrolledCanceled(!hasBeenScrolledCanceled)
-                }
-                onEndReached={
-                  hasBeenScrolledCanceled === true ? fetchMoreCanceled : null
-                }
+                onScrollBeginDrag={() => setHasBeenScrolledCanceled(!hasBeenScrolledCanceled)}
+                onEndReached={hasBeenScrolledCanceled === true ? fetchMoreCanceled : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={70}
                 refreshing={true}
@@ -233,9 +217,7 @@ const LeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  canceledLeaveRequestIsLoading && <ActivityIndicator />
-                }
+                ListFooterComponent={() => canceledLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <LeaveRequestItem
                     item={item}
@@ -293,9 +275,7 @@ const LeaveRequestList = ({
               keyExtractor={(item, index) => index}
               estimatedItemSize={70}
               refreshing={true}
-              ListFooterComponent={() =>
-                rejectedLeaveRequestIsLoading && <ActivityIndicator />
-              }
+              ListFooterComponent={() => rejectedLeaveRequestIsLoading && <ActivityIndicator />}
               refreshControl={
                 <RefreshControl
                   refreshing={rejectedLeaveRequestIsFetching}

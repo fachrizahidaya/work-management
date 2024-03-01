@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Pressable,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -70,9 +64,7 @@ const PersonalSection = ({
                               borderBottomColor: "#FFFFFF",
                             }}
                           >
-                            <Text style={{ fontSize: 16, fontWeight: "400" }}>
-                              {option.name}
-                            </Text>
+                            <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
                           </TouchableOpacity>
                         );
                       })}
@@ -141,10 +133,7 @@ const PersonalSection = ({
           <View style={styles.header}>
             <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate("New Chat")}
-            >
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("New Chat")}>
               <MaterialIcons name="add" color="black" size={15} />
             </TouchableOpacity>
           </View>

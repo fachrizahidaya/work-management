@@ -16,8 +16,7 @@ const NotificationScreen = ({ route }) => {
   const [cumulativeNotifs, setCumulativeNotifs] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
   const [notifications, setNotifications] = useState({});
-  const { isLoading: notifIsFetching, toggle: toggleNotifIsFetching } =
-    useLoading(false);
+  const { isLoading: notifIsFetching, toggle: toggleNotifIsFetching } = useLoading(false);
 
   const navigation = useNavigation();
 
@@ -29,12 +28,9 @@ const NotificationScreen = ({ route }) => {
   const fetchAllNotifications = async () => {
     try {
       toggleNotifIsFetching();
-      const res = await axiosInstance.get(
-        module === "BAND" ? "/pm/notifications" : "/hr/notifications",
-        {
-          params: notificationFetchParameters,
-        }
-      );
+      const res = await axiosInstance.get(module === "BAND" ? "/pm/notifications" : "/hr/notifications", {
+        params: notificationFetchParameters,
+      });
       setNotifications(res.data);
       toggleNotifIsFetching();
     } catch (error) {
@@ -55,10 +51,7 @@ const NotificationScreen = ({ route }) => {
 
   useEffect(() => {
     if (notifications?.data?.data?.length) {
-      setCumulativeNotifs((prevData) => [
-        ...prevData,
-        ...notifications?.data?.data,
-      ]);
+      setCumulativeNotifs((prevData) => [...prevData, ...notifications?.data?.data]);
     }
   }, [notifications]);
 
@@ -66,11 +59,7 @@ const NotificationScreen = ({ route }) => {
     useCallback(() => {
       return async () => {
         try {
-          await axiosInstance.get(
-            module === "BAND"
-              ? "/pm/notifications/read"
-              : "/hr/notifications/read"
-          );
+          await axiosInstance.get(module === "BAND" ? "/pm/notifications/read" : "/hr/notifications/read");
           refetch();
         } catch (error) {
           console.log(error);
@@ -90,19 +79,10 @@ const NotificationScreen = ({ route }) => {
           marginVertical: 13,
         }}
       >
-        <PageHeader
-          backButton={true}
-          title="Notifications"
-          onPress={() => navigation.goBack()}
-        />
+        <PageHeader backButton={true} title="Notifications" onPress={() => navigation.goBack()} />
 
         <FlatList
-          refreshControl={
-            <RefreshControl
-              refreshing={notifIsFetching}
-              onRefresh={fetchAllNotifications}
-            />
-          }
+          refreshControl={<RefreshControl refreshing={notifIsFetching} onRefresh={fetchAllNotifications} />}
           data={cumulativeNotifs}
           keyExtractor={(item, index) => index}
           onScrollBeginDrag={() => setIsScrolled(true)}
@@ -111,8 +91,7 @@ const NotificationScreen = ({ route }) => {
           renderItem={({ item, index }) => (
             <>
               {cumulativeNotifs[index - 1] ? (
-                item?.created_at.split(" ")[0] !==
-                cumulativeNotifs[index - 1]?.created_at.split(" ")[0] ? (
+                item?.created_at.split(" ")[0] !== cumulativeNotifs[index - 1]?.created_at.split(" ")[0] ? (
                   <>
                     <NotificationTimeStamp
                       key={`${item.id}_${index}_timestamp-group`}
@@ -123,9 +102,7 @@ const NotificationScreen = ({ route }) => {
                   ""
                 )
               ) : (
-                <NotificationTimeStamp
-                  timestamp={item?.created_at.split(" ")[0]}
-                />
+                <NotificationTimeStamp timestamp={item?.created_at.split(" ")[0]} />
               )}
 
               <NotificationItem
