@@ -80,6 +80,8 @@ const EmployeeProfileScreen = ({ route }) => {
     limit: 10,
   };
 
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
+
   const {
     data: personalPost,
     refetch: refetchPersonalPost,
@@ -95,8 +97,6 @@ const EmployeeProfileScreen = ({ route }) => {
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComment], commentsFetchParameters);
 
   const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
-
-  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
   const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
 
