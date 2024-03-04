@@ -56,7 +56,7 @@ const FeedCardItemPost = ({
   /**
    * Handle styled for content
    */
-  const styledTexts = words?.map((item, index) => {
+  const contentStyledTextHandler = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
     specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
@@ -180,7 +180,7 @@ const FeedCardItemPost = ({
           </View>
         </View>
 
-        <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>{contentStyledTextHandler}</Text>
 
         {attachment ? (
           <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>

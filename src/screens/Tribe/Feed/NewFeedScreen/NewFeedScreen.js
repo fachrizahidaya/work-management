@@ -49,8 +49,8 @@ const NewFeedScreen = () => {
     Keyboard.dismiss();
   };
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess } = route.params;
-
+  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, imageToShare, setImageToShare } =
+    route.params;
   const { data: employees } = useFetch("/hr/employees");
 
   /**
@@ -133,8 +133,11 @@ const NewFeedScreen = () => {
           formData.append(key, values[key]);
         }
       }
-
-      formData.append("file", image);
+      if (imageToShare) {
+        formData.append("file", imageToShare);
+      } else {
+        formData.append("file", image);
+      }
 
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
@@ -194,17 +197,21 @@ const NewFeedScreen = () => {
     <>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         {isReady ? (
-          <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#FFFFFF" }}>
             <View style={styles.header}>
               <PageHeader
                 title="New Post"
                 onPress={
-                  formik.values.content || image !== null
+                  formik.values.content || image !== null || imageToShare !== null
                     ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
                     : () => {
                         !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
                         formik.resetForm();
-                        setImage(null);
+                        if (imageToShare) {
+                          setImageToShare(null);
+                        } else {
+                          setImage(null);
+                        }
                       }
                 }
               />
@@ -215,7 +222,11 @@ const NewFeedScreen = () => {
               onPress={() => {
                 toggleReturnModal();
                 navigation.goBack();
-                setImage(null);
+                if (imageToShare) {
+                  setImageToShare(null);
+                } else {
+                  setImage(null);
+                }
               }}
               description="Are you sure want to exit? It will be deleted."
             />
@@ -268,6 +279,8 @@ const NewFeedScreen = () => {
                 setImage={setImage}
                 pickImageHandler={pickImageHandler}
                 employees={employees?.data}
+                imageToShare={imageToShare}
+                setImageToShare={setImageToShare}
               />
               <PostTypeOptions
                 publicToggleHandler={publicToggleHandler}

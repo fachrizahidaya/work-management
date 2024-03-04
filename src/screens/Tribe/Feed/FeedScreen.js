@@ -34,6 +34,7 @@ const FeedScreen = () => {
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [imageToShare, setImageToShare] = useState(null);
 
   const navigation = useNavigation();
 
@@ -76,7 +77,7 @@ const FeedScreen = () => {
   /**
    * Handle show username in post
    */
-  const employeeUsername = employees?.data?.map((item) => {
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
     return {
       username: item.username,
       id: item.id,
@@ -87,9 +88,10 @@ const FeedScreen = () => {
   /**
    * Handle toggle fullscreen image
    */
-  const toggleFullScreen = useCallback((post) => {
+  const toggleFullScreenHandler = useCallback((image) => {
     setIsFullScreen(!isFullScreen);
-    setSelectedPicture(post);
+    setSelectedPicture(image);
+    setImageToShare(image);
   }, []);
 
   /**
@@ -274,8 +276,8 @@ const FeedScreen = () => {
             onCommentToggle={commentsOpenHandler}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
-            toggleFullScreen={toggleFullScreen}
-            employeeUsername={employeeUsername}
+            toggleFullScreen={toggleFullScreenHandler}
+            employeeUsername={objectContainEmployeeUsernameHandler}
             navigation={navigation}
           />
         </View>
@@ -293,12 +295,27 @@ const FeedScreen = () => {
           parentId={commentParentId}
           onSubmit={commentSubmitHandler}
           onReply={replyHandler}
-          employeeUsername={employeeUsername}
+          employeeUsername={objectContainEmployeeUsernameHandler}
           employees={employees?.data}
           reference={commentScreenSheetRef}
         />
       </SafeAreaView>
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPicture}
+        navigation={navigation}
+        postRefetchHandler={postRefetchHandler}
+        loggedEmployeeId={profile?.data?.id}
+        loggedEmployeeImage={profile?.data?.image}
+        loggedEmployeeName={userSelector?.name}
+        loggedEmployeeDivision={profile?.data?.position_id}
+        toggleSuccess={togglePostSuccess}
+        image={imageToShare}
+        setImage={setImageToShare}
+        setSelectedPicture={setSelectedPicture}
+        type="Feed"
+      />
       <SuccessModal
         isOpen={postSuccessIsOpen}
         toggle={togglePostSuccess}

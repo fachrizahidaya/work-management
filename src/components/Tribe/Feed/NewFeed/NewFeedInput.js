@@ -21,7 +21,7 @@ const NewFeedInput = ({ employees, formik }) => {
    * @param {*} param0
    * @returns
    */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
@@ -48,7 +48,7 @@ const NewFeedInput = ({ employees, formik }) => {
    * Handle adjust the content if there is username
    * @param {*} value
    */
-  const handleChange = (value) => {
+  const contentUsernameChangeHandler = (value) => {
     formik.handleChange("content")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
@@ -59,7 +59,7 @@ const NewFeedInput = ({ employees, formik }) => {
     <>
       <MentionInput
         value={formik.values.content}
-        onChange={handleChange}
+        onChange={contentUsernameChangeHandler}
         partTypes={[
           {
             pattern:
@@ -67,7 +67,7 @@ const NewFeedInput = ({ employees, formik }) => {
           },
           {
             trigger: "@",
-            renderSuggestions: renderSuggestions,
+            renderSuggestions: renderSuggestionsHandler,
             textStyle: {
               fontWeight: "400",
               color: "#377893",

@@ -46,6 +46,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [teammatesData, setTeammatesData] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
   const [deletePostSuccess, setDeletePostSuccess] = useState(false);
+  const [imageToShare, setImageToShare] = useState(null);
 
   const navigation = useNavigation();
 
@@ -107,7 +108,7 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Handle show username in post
    */
-  const employeeUsername = employees?.data?.map((item, index) => {
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item, index) => {
     return {
       username: item.username,
       id: item.id,
@@ -176,14 +177,14 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Handle open option selected post
    */
-  const openSelectedPersonalPost = useCallback((post) => {
+  const openSelectedPersonalPostHandler = useCallback((post) => {
     setSelectedPost(post);
   }, []);
 
   /**
    * Handle close option selected post
    */
-  const closeSelectedPersonalPost = () => {
+  const closeSelectedPersonalPostHandler = () => {
     setSelectedPost(null);
     setImagePreview(null);
     toggleEditModal();
@@ -204,9 +205,10 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Handle toggle fullscreen image
    */
-  const toggleFullScreen = useCallback((post) => {
-    setSelectedPost(post);
+  const toggleFullScreenHandler = useCallback((image) => {
     setIsFullScreen(!isFullScreen);
+    setSelectedPost(image);
+    setImageToShare(image);
   }, []);
 
   /**
@@ -220,7 +222,7 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Handle search teammates
    */
-  const handleSearch = useCallback(
+  const teammatesSearchHandler = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
     }, 300),
@@ -385,9 +387,9 @@ const EmployeeProfileScreen = ({ route }) => {
                   forceRerender={forceRerender}
                   setForceRerender={setForceRerender}
                   personalPostIsLoading={personalPostIsLoading}
-                  toggleFullScreen={toggleFullScreen}
-                  openSelectedPersonalPost={openSelectedPersonalPost}
-                  employeeUsername={employeeUsername}
+                  toggleFullScreen={toggleFullScreenHandler}
+                  openSelectedPersonalPost={openSelectedPersonalPostHandler}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   userSelector={userSelector}
                   toggleDeleteModal={toggleDeleteModal}
                   toggleEditModal={toggleEditModal}
@@ -413,7 +415,7 @@ const EmployeeProfileScreen = ({ route }) => {
                   onReply={replyHandler}
                   latestExpandedReply={latestExpandedReply}
                   employees={employees?.data}
-                  employeeUsername={employeeUsername}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   reference={commentsScreenSheetRef}
                 />
               </View>
@@ -421,10 +423,25 @@ const EmployeeProfileScreen = ({ route }) => {
           </>
         ) : null}
       </SafeAreaView>
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPost} />
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPost}
+        image={imageToShare}
+        setImage={setImageToShare}
+        setSelectedPicture={setSelectedPost}
+        toggleSuccess={null}
+        navigation={navigation}
+        postRefetch={postRefetchHandler}
+        loggedEmployeeId={profile?.data?.id}
+        loggedEmployeeImage={profile?.data?.image}
+        loggedEmployeeName={userSelector?.name}
+        loggedEmployeeDivision={profile?.data?.position_id}
+        type="Feed"
+      />
       <EditPersonalPost
         isVisible={editModalIsOpen}
-        onBackdrop={closeSelectedPersonalPost}
+        onBackdrop={closeSelectedPersonalPostHandler}
         employees={employees?.data}
         content={singlePost?.data}
         image={image}
@@ -462,7 +479,7 @@ const EmployeeProfileScreen = ({ route }) => {
       <EmployeeTeammates
         teammates={filteredType.length > 0 ? filteredType : teammatesData}
         reference={teammatesScreenSheetRef}
-        handleSearch={handleSearch}
+        handleSearch={teammatesSearchHandler}
         inputToShow={inputToShow}
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}

@@ -77,7 +77,7 @@ const PostScreen = () => {
   /**
    * Handle show username in post
    */
-  const employeeUsername = employees?.data?.map((item) => {
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
     return {
       username: item.username,
       id: item.id,
@@ -96,7 +96,7 @@ const PostScreen = () => {
   /**
    * Handle toggle fullscreen image
    */
-  const toggleFullScreen = useCallback((post) => {
+  const toggleFullScreenHandler = useCallback((post) => {
     setIsFullScreen(!isFullScreen);
     setSelectedPicture(post);
   }, []);
@@ -164,14 +164,14 @@ const PostScreen = () => {
   /**
    * Handle press link
    */
-  const handleLinkPress = useCallback((url) => {
+  const linkPressHandler = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
   /**
    * Handle press email
    */
-  const handleEmailPress = useCallback((email) => {
+  const emailPressHandler = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -221,7 +221,7 @@ const PostScreen = () => {
    * @param {*} param0
    * @returns
    */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
@@ -248,7 +248,7 @@ const PostScreen = () => {
    * Handle adjust the content if there is username
    * @param {*} value
    */
-  const handleChange = (value) => {
+  const commentContainUsernameHandler = (value) => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue?.split(" ").pop();
@@ -346,11 +346,11 @@ const PostScreen = () => {
                   onToggleLike={postLikeToggleHandler}
                   forceRerender={forceRerender}
                   setForceRerender={setForceRerender}
-                  toggleFullScreen={toggleFullScreen}
-                  handleLinkPress={handleLinkPress}
-                  handleEmailPress={handleEmailPress}
+                  toggleFullScreen={toggleFullScreenHandler}
+                  handleLinkPress={linkPressHandler}
+                  handleEmailPress={emailPressHandler}
                   copyToClipboard={copyToClipboard}
-                  employeeUsername={employeeUsername}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                 />
                 <FeedCommentPost
@@ -363,7 +363,7 @@ const PostScreen = () => {
                   parentId={commentParentId}
                   onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
-                  employeeUsername={employeeUsername}
+                  employeeUsername={objectContatinEmployeeUsernameHandler}
                   employees={employees?.data}
                   reference={commentScreenSheetRef}
                   linkPressHandler={handleLinkPress}
@@ -376,8 +376,8 @@ const PostScreen = () => {
               loggedEmployeeImage={profile?.data?.image}
               loggedEmployeeName={userSelector?.name}
               parentId={commentParentId}
-              renderSuggestions={renderSuggestions}
-              handleChange={handleChange}
+              renderSuggestions={renderSuggestionsHandler}
+              handleChange={commentContainUsernameHandler}
               formik={formik}
             />
           </SafeAreaView>

@@ -56,14 +56,14 @@ const FeedCard = ({
   /**
    * Handle press link
    */
-  const handleLinkPress = (url) => {
+  const linkPressHandler = (url) => {
     Linking.openURL(url);
   };
 
   /**
    * Handle press email
    */
-  const handleEmailPress = (email) => {
+  const emailPressHandler = (email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -159,8 +159,8 @@ const FeedCard = ({
                 forceRerenderPersonal={forceRerender}
                 setForceRerenderPersonal={setForceRerender}
                 toggleFullScreen={toggleFullScreen}
-                handleLinkPress={handleLinkPress}
-                handleEmailPress={handleEmailPress}
+                handleLinkPress={linkPressHandler}
+                handleEmailPress={emailPressHandler}
                 copyToClipboard={copyToClipboard}
                 openSelectedPersonalPost={openSelectedPersonalPost}
                 employeeUsername={employeeUsername}
