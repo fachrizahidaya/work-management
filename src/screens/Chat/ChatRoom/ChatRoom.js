@@ -689,6 +689,7 @@ const ChatRoom = () => {
             type="Chat"
             image={imageToShare}
             setImage={setImageToShare}
+            navigation={navigation}
           />
 
           <ChatOptionMenu
@@ -702,6 +703,7 @@ const ChatRoom = () => {
             deleteSelected={deleteMessageSelected}
             setDeleteSelected={setDeleteMessageSelected}
             copyToClipboard={copyToClipboardHandler}
+            navigation={navigation}
           />
 
           <ChatMessageDeleteModal

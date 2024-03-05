@@ -311,6 +311,7 @@ const FeedScreen = () => {
         loggedEmployeeDivision={profile?.data?.position_id}
         toggleSuccess={togglePostSuccess}
         setSelectedPicture={setSelectedPicture}
+        type="Feed"
       />
       <SuccessModal
         isOpen={postSuccessIsOpen}

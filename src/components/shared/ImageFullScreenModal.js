@@ -14,14 +14,6 @@ const ImageFullScreenModal = ({
   media,
   images,
   navigation,
-  postRefetch,
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  loggedEmployeeName,
-  loggedEmployeeDivision,
-  toggleSuccess,
-  image,
-  setImage,
   type,
   setSelectedPicture,
 }) => {
@@ -142,9 +134,11 @@ const ImageFullScreenModal = ({
               </View>
             </ReactNativeZoomableView>
             <View style={styles.actionGroup}>
-              <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
-                <MaterialCommunityIcons name="share-variant" size={30} color="#FFFFFF" />
-              </TouchableOpacity>
+              {type === "Feed" ? null : (
+                <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
+                  <MaterialCommunityIcons name="share-variant" size={30} color="#FFFFFF" />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(file_path)}>
                 <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
               </TouchableOpacity>
@@ -164,16 +158,9 @@ const ImageFullScreenModal = ({
           <ShareImage
             reference={shareImageScreenSheetRef}
             navigation={navigation}
-            postRefetch={postRefetch}
-            loggedEmployeeId={loggedEmployeeId}
-            loggedEmployeeImage={loggedEmployeeImage}
-            loggedEmployeeName={loggedEmployeeName}
-            loggedEmployeeDivision={loggedEmployeeDivision}
-            toggleSuccess={toggleSuccess}
-            setImage={setImage}
-            image={image}
             toggleFullScreen={setIsFullScreen}
             type={type}
+            setIsFullScreen={setIsFullScreen}
           />
         )}
       </Modal>
