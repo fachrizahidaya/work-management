@@ -58,7 +58,7 @@ const ShareImage = ({
                 borderBottomColor: "#FFFFFF",
               }}
             >
-              <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>New Feed</Text>
+              <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Share in Feed</Text>
             </TouchableOpacity>
           )}
           {type === "Chat" && (
@@ -83,7 +83,7 @@ const ShareImage = ({
                   TextProps,
                 ]}
               >
-                Nest
+                Share from Nest
               </Text>
             </TouchableOpacity>
           )}

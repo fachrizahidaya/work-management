@@ -13,6 +13,7 @@ const ChatOptionMenu = ({
   placement,
   setDeleteSelected,
   deleteSelected,
+  copyToClipboard,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -35,12 +36,15 @@ const ChatOptionMenu = ({
     //   onPress: null,
     //   color: "#176688",
     // },
-    // {
-    //   name: "Copy",
-    //   icon: "content-copy",
-    //   onPress: null,
-    //   color: "#176688",
-    // },
+    {
+      name: "Copy",
+      icon: "content-copy",
+      onPress: () => {
+        copyToClipboard(chat?.message);
+        onClose();
+      },
+      color: "#176688",
+    },
     // {
     //   name: "Report",
     //   icon: "alert-outline",
