@@ -78,22 +78,21 @@ const ContactList = ({
               {position}
             </Text>
           </View>
-        </View>
-
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <WhatsappButton phone={phone} size={20} />
-          <EmailButton email={email} size={20} />
-          <PhoneButton phone={phone} size={20} />
-          {user && (
-            <PersonalNestButton
-              email={email}
-              user_id={user_id}
-              user_name={user_name}
-              user_type={user_type}
-              user_image={user_image}
-              room_id={room_id}
-            />
-          )}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <WhatsappButton phone={phone} size={20} />
+            <EmailButton email={email} size={20} />
+            <PhoneButton phone={phone} size={20} />
+            {user && (
+              <PersonalNestButton
+                email={email}
+                user_id={user_id}
+                user_name={user_name}
+                user_type={user_type}
+                user_image={user_image}
+                room_id={room_id}
+              />
+            )}
+          </View>
         </View>
       </View>
     </TouchableOpacity>

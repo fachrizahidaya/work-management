@@ -87,7 +87,7 @@ const NewLeaveRequest = () => {
   /**
    * Handle Search leave type
    */
-  const handleSearch = useCallback(
+  const leaveTypeSearchHandler = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
     }, 300),
@@ -316,7 +316,7 @@ const NewLeaveRequest = () => {
               isError={isError}
               leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
               reference={selectLeaveTypeScreenSheetRef}
-              handleSearch={handleSearch}
+              handleSearch={leaveTypeSearchHandler}
               inputToShow={inputToShow}
               setInputToShow={setInputToShow}
               setSearchInput={setSearchInput}

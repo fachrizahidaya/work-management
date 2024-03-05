@@ -16,17 +16,11 @@ const CalendarScreen = () => {
   const { data: projectDeadlines } = useFetch("/pm/projects/deadline");
   const { data: holidays } = useFetch("/hr/holidays/calendar");
   const { data: taskDeadlines } = useFetch("/pm/tasks/deadline");
-  const { data: leaves } = useFetch(
-    "/hr/timesheets/personal",
-    [filter],
-    leaveFetchParameters
-  );
+  const { data: leaves } = useFetch("/hr/timesheets/personal", [filter], leaveFetchParameters);
 
   const today = dayjs().format("DD-MM-YYYY");
 
-  const filteredLeave = leaves?.data.filter(
-    (item) => item?.att_type === "Leave"
-  );
+  const filteredLeave = leaves?.data.filter((item) => item?.att_type === "Leave");
 
   const formattedProjectDeadlines = {};
   const formattedTaskDeadlines = {};
@@ -46,7 +40,7 @@ const CalendarScreen = () => {
       description: item.description,
       id: item.id,
       module: item.module,
-      dotColor: "#49c96d",
+      dotColor: "#FFA800",
     };
 
     if (!formattedProjectDeadlines[key]) {
@@ -62,7 +56,7 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#49c96d",
+          backgroundColor: "#FFA800",
           borderRadius: 5,
         },
         text: {
@@ -81,7 +75,7 @@ const CalendarScreen = () => {
       description: item.description,
       id: item.id,
       module: item.module,
-      dotColor: "#49c96d",
+      dotColor: "#FFA800",
     };
 
     if (!formattedTaskDeadlines[key]) {
@@ -97,7 +91,7 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#49c96d",
+          backgroundColor: "#FFA800",
           borderRadius: 5,
         },
         text: {
@@ -111,7 +105,7 @@ const CalendarScreen = () => {
 
   holidays?.data?.forEach((item) => {
     const date = item.date.split("-").reverse().join("-"); // Convert date format
-    const value = { description: item.description, dotColor: "#4688D5" };
+    const value = { description: item.description, dotColor: "#3DD04B" };
 
     if (!formattedHolidays[date]) {
       formattedHolidays[date] = [value];
@@ -125,7 +119,7 @@ const CalendarScreen = () => {
     const value = {
       customStyles: {
         container: {
-          backgroundColor: "#4688D5",
+          backgroundColor: "#3DD04B",
           borderRadius: 5,
         },
         text: {

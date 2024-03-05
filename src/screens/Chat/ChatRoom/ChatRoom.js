@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform, Clipboard } from "react-native";
 import Toast from "react-native-root-toast";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -46,6 +46,7 @@ const ChatRoom = () => {
   const [searchMessage, setSearchMessage] = useState("");
   const [filteredSearch, setFilteredSearch] = useState([]);
   const [deleteMessageSelected, setDeleteMessageSelected] = useState(false);
+  const [imageToShare, setImageToShare] = useState(null);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -125,6 +126,24 @@ const ChatRoom = () => {
    */
   const swipeToReply = (message) => {
     setMessageToReply(message);
+  };
+
+  /**
+   * Handle copy to clipboard
+   * @param {*} text
+   */
+  const copyToClipboardHandler = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+      Toast.show("Copy to Clipboard", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   /**
@@ -666,6 +685,10 @@ const ChatRoom = () => {
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             file_path={selectedChatBubble}
+            setSelectedPicture={setSelectedChatBubble}
+            type="Chat"
+            image={imageToShare}
+            setImage={setImageToShare}
           />
 
           <ChatOptionMenu
@@ -678,6 +701,7 @@ const ChatRoom = () => {
             toggleDeleteChatModal={toggleDeleteModalChat}
             deleteSelected={deleteMessageSelected}
             setDeleteSelected={setDeleteMessageSelected}
+            copyToClipboard={copyToClipboardHandler}
           />
 
           <ChatMessageDeleteModal

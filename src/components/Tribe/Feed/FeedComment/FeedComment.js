@@ -40,10 +40,10 @@ const FeedComment = ({
 
   /**
    * Handle show suggestion username
-   * @param {*} param0
+   * @param {*} param
    * @returns
    */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
@@ -70,7 +70,7 @@ const FeedComment = ({
    * Handle adjust the content if there is username
    * @param {*} value
    */
-  const handleChange = (value) => {
+  const commentContainUsernameHandler = (value) => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
@@ -102,14 +102,14 @@ const FeedComment = ({
   /**
    * Handle press link
    */
-  const handleLinkPress = useCallback((url) => {
+  const linkPressHandler = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
   /**
    * Handle press email
    */
-  const handleEmailPress = useCallback((email) => {
+  const emailPressHandler = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -165,8 +165,8 @@ const FeedComment = ({
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
           refetchComment={refetchComment}
-          handleLinkPress={handleLinkPress}
-          handleEmailPress={handleEmailPress}
+          handleLinkPress={linkPressHandler}
+          handleEmailPress={emailPressHandler}
           copyToClipboard={copyToClipboard}
           employeeUsername={employeeUsername}
         />
@@ -175,8 +175,8 @@ const FeedComment = ({
         loggedEmployeeImage={loggedEmployeeImage}
         loggedEmployeeName={loggedEmployeeName}
         parentId={parentId}
-        renderSuggestions={renderSuggestions}
-        handleChange={handleChange}
+        renderSuggestions={renderSuggestionsHandler}
+        handleChange={commentContainUsernameHandler}
         formik={formik}
       />
     </ActionSheet>

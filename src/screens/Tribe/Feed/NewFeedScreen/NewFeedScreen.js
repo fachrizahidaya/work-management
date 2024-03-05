@@ -50,7 +50,6 @@ const NewFeedScreen = () => {
   };
 
   const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess } = route.params;
-
   const { data: employees } = useFetch("/hr/employees");
 
   /**
@@ -133,7 +132,6 @@ const NewFeedScreen = () => {
           formData.append(key, values[key]);
         }
       }
-
       formData.append("file", image);
 
       if (values.type === "Public") {
@@ -194,7 +192,7 @@ const NewFeedScreen = () => {
     <>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         {isReady ? (
-          <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#FFFFFF" }}>
             <View style={styles.header}>
               <PageHeader
                 title="New Post"

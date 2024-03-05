@@ -22,7 +22,7 @@ const FeedCommentReplyItem = ({
    * Handle styled for content
    */
 
-  const styledTexts = words?.map((item, index) => {
+  const commentStyledTextHandler = words?.map((item, index) => {
     let textStyle = styles.defaultText;
     let specificEmployee;
     specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
@@ -82,7 +82,7 @@ const FeedCommentReplyItem = ({
           <Text style={{ fontSize: 12, fontWeight: "500" }}>
             {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
           </Text>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>{commentStyledTextHandler}</Text>
           <Pressable
             onPress={() => {
               onReply(parentId);

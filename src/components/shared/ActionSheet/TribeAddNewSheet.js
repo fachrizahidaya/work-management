@@ -331,14 +331,14 @@ const TribeAddNewSheet = (props) => {
             latitude: location?.coords?.latitude,
             check_from: "Mobile App",
           }}
-          header={`Confirm ${!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}`}
+          header={`Confirm ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}`}
           hasSuccessFunc={true}
           onSuccess={() => {
             setSuccess(true);
             toggleAttendance();
             refetchAttendance();
           }}
-          description={`Are you sure want to ${!attendance?.data?.time_out ? "Clock-in" : "Clock-out"}?`}
+          description={`Are you sure want to ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}?`}
           successMessage={`Process success`}
           isDelete={false}
           isGet={false}
@@ -373,7 +373,7 @@ const TribeAddNewSheet = (props) => {
               at{" "}
               {attendance?.data?.time_in
                 ? dayjs(attendance?.data?.time_in).format("HH:mm")
-                : dayjs(attendance?.data?.time_out).format("HH:mm")}
+                : dayjs(attendance?.data?.time_out).format("HH:mm") || dayjs().format("HH:mm")}
             </Text>
           }
         />

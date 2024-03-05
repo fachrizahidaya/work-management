@@ -17,6 +17,7 @@ import PageHeader from "../../../components/shared/PageHeader";
 import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentPost";
 import FeedCommentFormPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentFormPost";
 import FeedCardItemPost from "../../../components/Tribe/Feed/FeedCard/FeedCardItemPost";
+import ShareImage from "../../../components/Tribe/Feed/ShareImage";
 
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -40,6 +41,8 @@ const PostScreen = () => {
   const navigation = useNavigation();
 
   const commentScreenSheetRef = useRef(null);
+
+  const sharePostScreenSheetRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -77,7 +80,7 @@ const PostScreen = () => {
   /**
    * Handle show username in post
    */
-  const employeeUsername = employees?.data?.map((item) => {
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
     return {
       username: item.username,
       id: item.id,
@@ -96,7 +99,7 @@ const PostScreen = () => {
   /**
    * Handle toggle fullscreen image
    */
-  const toggleFullScreen = useCallback((post) => {
+  const toggleFullScreenHandler = useCallback((post) => {
     setIsFullScreen(!isFullScreen);
     setSelectedPicture(post);
   }, []);
@@ -164,14 +167,14 @@ const PostScreen = () => {
   /**
    * Handle press link
    */
-  const handleLinkPress = useCallback((url) => {
+  const linkPressHandler = useCallback((url) => {
     Linking.openURL(url);
   }, []);
 
   /**
    * Handle press email
    */
-  const handleEmailPress = useCallback((email) => {
+  const emailPressHandler = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -192,6 +195,18 @@ const PostScreen = () => {
       } else {
         Clipboard.setString(text);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sharePostToWhatsappHandler = async (message, url) => {
+    let messageBody = `${message}\n${url}`;
+
+    let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
+
+    try {
+      await Linking.openURL(whatsappUrl);
     } catch (err) {
       console.log(err);
     }
@@ -221,7 +236,7 @@ const PostScreen = () => {
    * @param {*} param0
    * @returns
    */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
@@ -248,7 +263,7 @@ const PostScreen = () => {
    * Handle adjust the content if there is username
    * @param {*} value
    */
-  const handleChange = (value) => {
+  const commentContainUsernameHandler = (value) => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue?.split(" ").pop();
@@ -346,12 +361,13 @@ const PostScreen = () => {
                   onToggleLike={postLikeToggleHandler}
                   forceRerender={forceRerender}
                   setForceRerender={setForceRerender}
-                  toggleFullScreen={toggleFullScreen}
-                  handleLinkPress={handleLinkPress}
-                  handleEmailPress={handleEmailPress}
+                  toggleFullScreen={toggleFullScreenHandler}
+                  handleLinkPress={linkPressHandler}
+                  handleEmailPress={emailPressHandler}
                   copyToClipboard={copyToClipboard}
-                  employeeUsername={employeeUsername}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
+                  reference={sharePostScreenSheetRef}
                 />
                 <FeedCommentPost
                   postId={postId}
@@ -363,11 +379,11 @@ const PostScreen = () => {
                   parentId={commentParentId}
                   onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
-                  employeeUsername={employeeUsername}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   employees={employees?.data}
                   reference={commentScreenSheetRef}
-                  linkPressHandler={handleLinkPress}
-                  emailPressHandler={handleEmailPress}
+                  linkPressHandler={linkPressHandler}
+                  emailPressHandler={emailPressHandler}
                   copyToClipboardHandler={copyToClipboard}
                 />
               </View>
@@ -376,8 +392,8 @@ const PostScreen = () => {
               loggedEmployeeImage={profile?.data?.image}
               loggedEmployeeName={userSelector?.name}
               parentId={commentParentId}
-              renderSuggestions={renderSuggestions}
-              handleChange={handleChange}
+              renderSuggestions={renderSuggestionsHandler}
+              handleChange={commentContainUsernameHandler}
               formik={formik}
             />
           </SafeAreaView>
@@ -385,6 +401,13 @@ const PostScreen = () => {
       ) : (
         <></>
       )}
+      <ShareImage
+        reference={sharePostScreenSheetRef}
+        navigation={navigation}
+        type="Feed"
+        sharePost={sharePostToWhatsappHandler}
+      />
+
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );

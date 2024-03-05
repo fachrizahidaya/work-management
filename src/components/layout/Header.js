@@ -47,7 +47,7 @@ const Header = () => {
   /**
    * Handle for mention name in group member
    */
-  const memberName = user?.data?.data.map((item) => {
+  const userNameHandler = user?.data?.data.map((item) => {
     return item?.name;
   });
 
@@ -281,7 +281,7 @@ const Header = () => {
           message={unreadMessages?.notification}
           isOpen={notificationCardIsOpen}
           close={toggleNotificationCard}
-          memberName={memberName}
+          memberName={userNameHandler}
           messageData={messageData}
         />
       </View>

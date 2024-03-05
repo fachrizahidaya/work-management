@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@openspacelabs/react-native-zoomable-view": "^2.1.5",
     "@react-native-clipboard/clipboard": "^1.12.1",
     "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/masked-view": "^0.1.11",
@@ -70,7 +71,8 @@
     "react-native-wheel-color-picker": "^1.2.0",
     "react-query": "^3.39.3",
     "react-redux": "^8.1.1",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "expo-linking": "~5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

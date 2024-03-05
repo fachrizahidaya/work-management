@@ -7,7 +7,7 @@ import { FlashList } from "@shopify/flash-list";
 
 import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
-import { ErrorToastProps } from "../../../shared/CustomStylings";
+import { ErrorToastProps, SuccessToastProps } from "../../../shared/CustomStylings";
 
 const FeedCard = ({
   posts,
@@ -47,7 +47,12 @@ const FeedCard = ({
    * Handle press link
    */
   const linkPressHandler = useCallback((url) => {
-    Linking.openURL(url);
+    try {
+      Linking.openURL(url);
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
   }, []);
 
   /**
@@ -74,6 +79,7 @@ const FeedCard = ({
       } else {
         Clipboard.setString(text);
       }
+      Toast.show("Copy to clipboard", SuccessToastProps);
     } catch (err) {
       console.log(err);
     }

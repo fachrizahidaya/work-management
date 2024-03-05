@@ -17,8 +17,13 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
         <View style={styles.boxImage}>
           {image ? (
             <View style={{ alignSelf: "center" }}>
-              <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
-              <Pressable style={styles.close} onPress={() => setImage(null)}>
+              <Image source={{ uri: image?.uri }} style={styles.image} alt="image selected" />
+              <Pressable
+                style={styles.close}
+                onPress={() => {
+                  setImage(null);
+                }}
+              >
                 <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>

@@ -17,7 +17,7 @@ const SuccessModal = ({ isOpen, toggle, topElement, bottomElement, onSuccess, mu
         } else {
           null;
         }
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(timeout);
     }
   }, [isOpen]);

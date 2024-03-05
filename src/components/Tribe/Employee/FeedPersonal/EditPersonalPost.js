@@ -298,16 +298,18 @@ const EditPersonalPost = ({
             <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
           }
         />
+        {postActionScreenSheetRef && (
+          <PostTypeOptions
+            publicToggleHandler={publicToggleHandler}
+            announcementToggleHandler={announcementToggleHandler}
+            isAnnouncementSelected={isAnnouncementSelected}
+            dateShown={dateShown}
+            endDateAnnouncementHandler={endDateAnnouncementHandler}
+            formik={formik}
+            reference={postActionScreenSheetRef}
+          />
+        )}
       </Modal>
-      <PostTypeOptions
-        publicToggleHandler={publicToggleHandler}
-        announcementToggleHandler={announcementToggleHandler}
-        isAnnouncementSelected={isAnnouncementSelected}
-        dateShown={dateShown}
-        endDateAnnouncementHandler={endDateAnnouncementHandler}
-        formik={formik}
-        reference={postActionScreenSheetRef}
-      />
     </>
   );
 };
