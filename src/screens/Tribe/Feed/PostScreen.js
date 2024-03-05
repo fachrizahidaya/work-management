@@ -17,6 +17,7 @@ import PageHeader from "../../../components/shared/PageHeader";
 import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentPost";
 import FeedCommentFormPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentFormPost";
 import FeedCardItemPost from "../../../components/Tribe/Feed/FeedCard/FeedCardItemPost";
+import ShareImage from "../../../components/Tribe/Feed/ShareImage";
 
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -40,6 +41,8 @@ const PostScreen = () => {
   const navigation = useNavigation();
 
   const commentScreenSheetRef = useRef(null);
+
+  const sharePostScreenSheetRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -192,6 +195,18 @@ const PostScreen = () => {
       } else {
         Clipboard.setString(text);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sharePostToWhatsappHandler = async (message, url) => {
+    let messageBody = `${message}\n${url}`;
+
+    let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
+
+    try {
+      await Linking.openURL(whatsappUrl);
     } catch (err) {
       console.log(err);
     }
@@ -352,6 +367,7 @@ const PostScreen = () => {
                   copyToClipboard={copyToClipboard}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
+                  reference={sharePostScreenSheetRef}
                 />
                 <FeedCommentPost
                   postId={postId}
@@ -363,11 +379,11 @@ const PostScreen = () => {
                   parentId={commentParentId}
                   onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
-                  employeeUsername={objectContatinEmployeeUsernameHandler}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   employees={employees?.data}
                   reference={commentScreenSheetRef}
-                  linkPressHandler={handleLinkPress}
-                  emailPressHandler={handleEmailPress}
+                  linkPressHandler={linkPressHandler}
+                  emailPressHandler={emailPressHandler}
                   copyToClipboardHandler={copyToClipboard}
                 />
               </View>
@@ -385,6 +401,13 @@ const PostScreen = () => {
       ) : (
         <></>
       )}
+      <ShareImage
+        reference={sharePostScreenSheetRef}
+        navigation={navigation}
+        type="Feed"
+        sharePost={sharePostToWhatsappHandler}
+      />
+
       <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
     </>
   );

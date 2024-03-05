@@ -1,6 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const ShareImage = ({
@@ -16,6 +20,7 @@ const ShareImage = ({
   image,
   toggleFullScreen,
   type,
+  sharePost,
 }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
@@ -38,17 +43,7 @@ const ShareImage = ({
           {type === "Feed" && (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("New Feed", {
-                  postRefetchHandler: postRefetch,
-                  loggedEmployeeId: loggedEmployeeId,
-                  loggedEmployeeImage: loggedEmployeeImage,
-                  loggedEmployeeName: loggedEmployeeName,
-                  loggedEmployeeDivision: loggedEmployeeDivision,
-                  toggleSuccess: toggleSuccess,
-                  imageToShare: image,
-                  setImageToShare: setImage,
-                });
-                toggleFullScreen(false);
+                sharePost("URL Example", `https://kolabora.ksshub.com/tribe`);
                 reference.current?.hide();
               }}
               style={{
@@ -58,7 +53,8 @@ const ShareImage = ({
                 borderBottomColor: "#FFFFFF",
               }}
             >
-              <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Share in Feed</Text>
+              <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Share via Whatsapp</Text>
+              <MaterialCommunityIcons name="whatsapp" color="#EB0E29" size={20} />
             </TouchableOpacity>
           )}
           {type === "Chat" && (
@@ -85,6 +81,11 @@ const ShareImage = ({
               >
                 Share from Nest
               </Text>
+              <Image
+                source={require("../../../assets/icons/nest_logo.png")}
+                alt="nest"
+                style={{ height: 25, width: 25 }}
+              />
             </TouchableOpacity>
           )}
         </View>

@@ -142,9 +142,9 @@ const ImageFullScreenModal = ({
               </View>
             </ReactNativeZoomableView>
             <View style={styles.actionGroup}>
-              {/* <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
+              <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
                 <MaterialCommunityIcons name="share-variant" size={30} color="#FFFFFF" />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(file_path)}>
                 <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
               </TouchableOpacity>

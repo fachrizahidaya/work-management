@@ -91,7 +91,6 @@ const FeedScreen = () => {
   const toggleFullScreenHandler = useCallback((image) => {
     setIsFullScreen(!isFullScreen);
     setSelectedPicture(image);
-    setImageToShare(image);
   }, []);
 
   /**
@@ -311,10 +310,7 @@ const FeedScreen = () => {
         loggedEmployeeName={userSelector?.name}
         loggedEmployeeDivision={profile?.data?.position_id}
         toggleSuccess={togglePostSuccess}
-        image={imageToShare}
-        setImage={setImageToShare}
         setSelectedPicture={setSelectedPicture}
-        type="Feed"
       />
       <SuccessModal
         isOpen={postSuccessIsOpen}

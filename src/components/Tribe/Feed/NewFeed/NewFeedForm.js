@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, imageToShare, setImageToShare }) => {
+const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -27,25 +27,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, ima
                 <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>
-          ) : //   :
-          // imageToShare ? (
-          //   <View style={{ alignSelf: "center" }}>
-          //     <Image
-          //       source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${imageToShare}` }}
-          //       style={styles.image}
-          //       alt="image selected"
-          //     />
-          //     <Pressable
-          //       style={styles.close}
-          //       onPress={() => {
-          //         setImageToShare(null);
-          //       }}
-          //     >
-          //       <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
-          //     </Pressable>
-          //   </View>
-          // )
-          null}
+          ) : null}
         </View>
       </View>
       <View style={styles.action}>

@@ -32,6 +32,7 @@ const FeedCardItemPost = ({
   copyToClipboard,
   employeeUsername,
   navigation,
+  reference,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -224,6 +225,13 @@ const FeedCardItemPost = ({
             )}
 
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
+          </View>
+          <View style={styles.iconAction}>
+            <TouchableOpacity onPress={() => reference.current?.show()}>
+              <MaterialCommunityIcons name="share-variant" size={20} color="#3F434A" />
+            </TouchableOpacity>
+
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}> Share</Text>
           </View>
         </View>
       </Pressable>

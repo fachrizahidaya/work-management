@@ -26,7 +26,6 @@ import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModa
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
-import UserListItemModal from "../../../components/Chat/UserDetail/UserListItemModal";
 
 const ChatRoom = () => {
   const [chatList, setChatList] = useState([]);
@@ -715,27 +714,6 @@ const ChatRoom = () => {
             onDeleteMessage={messagedeleteHandler}
             setDeleteSelected={setDeleteMessageSelected}
           />
-
-          {/* <UserListItemModal 
-          roomId={roomId}
-          memberListIsopen={memberListIsopen}
-          toggleMemberList={toggleMemberList}
-          toggleAddMember={toggleAddMember}
-          handleSearch={handleSearch}
-          inputToShow={inputToShow}
-          setInputToShow={setInputToShow}
-          setSearchInput={setSearchInput}
-          fetchMoreData={fetchMorUser}
-          cumulativeData={cumulativeData}
-          filteredDataArray={filteredDataArray}
-          userListIsLoading={userListIsLoading}
-          onPressAddHandler={addSelectedUserToArray}
-          onPressRemoveHandler={removeSelectedUserToArray}
-          selectedUsers={selectedUsers}
-          forceRerender={forceRerender}
-          onAddMoreMember={groupMemberAddHandler}
-          addMemberIsLoading={addMemberIsLoading}
-          /> */}
         </SafeAreaView>
       ) : null}
     </>
