@@ -133,11 +133,11 @@ const NewFeedScreen = () => {
           formData.append(key, values[key]);
         }
       }
-      if (imageToShare) {
-        formData.append("file", imageToShare);
-      } else {
-        formData.append("file", image);
-      }
+      // if (imageToShare) {
+      // formData.append("file", imageToShare);
+      // } else {
+      formData.append("file", image);
+      // }
 
       if (values.type === "Public") {
         postSubmitHandler(formData, setSubmitting, setStatus);
@@ -202,16 +202,17 @@ const NewFeedScreen = () => {
               <PageHeader
                 title="New Post"
                 onPress={
-                  formik.values.content || image !== null || imageToShare !== null
-                    ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                  formik.values.content || image !== null
+                    ? // || imageToShare !== null
+                      !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
                     : () => {
                         !formik.isSubmitting && formik.status !== "processing" && navigation.goBack();
                         formik.resetForm();
-                        if (imageToShare) {
-                          setImageToShare(null);
-                        } else {
-                          setImage(null);
-                        }
+                        // if (imageToShare) {
+                        // setImageToShare(null);
+                        // } else {
+                        setImage(null);
+                        // }
                       }
                 }
               />
@@ -222,11 +223,11 @@ const NewFeedScreen = () => {
               onPress={() => {
                 toggleReturnModal();
                 navigation.goBack();
-                if (imageToShare) {
-                  setImageToShare(null);
-                } else {
-                  setImage(null);
-                }
+                // if (imageToShare) {
+                // setImageToShare(null);
+                // } else {
+                setImage(null);
+                // }
               }}
               description="Are you sure want to exit? It will be deleted."
             />

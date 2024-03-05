@@ -15,23 +15,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, ima
         <NewFeedInput employees={employees} formik={formik} />
 
         <View style={styles.boxImage}>
-          {imageToShare ? (
-            <View style={{ alignSelf: "center" }}>
-              <Image
-                source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${imageToShare}` }}
-                style={styles.image}
-                alt="image selected"
-              />
-              <Pressable
-                style={styles.close}
-                onPress={() => {
-                  setImageToShare(null);
-                }}
-              >
-                <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
-              </Pressable>
-            </View>
-          ) : image ? (
+          {image ? (
             <View style={{ alignSelf: "center" }}>
               <Image source={{ uri: image?.uri }} style={styles.image} alt="image selected" />
               <Pressable
@@ -43,7 +27,25 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, ima
                 <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>
-          ) : null}
+          ) : //   :
+          // imageToShare ? (
+          //   <View style={{ alignSelf: "center" }}>
+          //     <Image
+          //       source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${imageToShare}` }}
+          //       style={styles.image}
+          //       alt="image selected"
+          //     />
+          //     <Pressable
+          //       style={styles.close}
+          //       onPress={() => {
+          //         setImageToShare(null);
+          //       }}
+          //     >
+          //       <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
+          //     </Pressable>
+          //   </View>
+          // )
+          null}
         </View>
       </View>
       <View style={styles.action}>
