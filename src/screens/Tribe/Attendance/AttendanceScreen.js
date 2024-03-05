@@ -138,7 +138,7 @@ const AttendanceScreen = () => {
    * Handle switch month on calendar
    * @param {*} newMonth
    */
-  const handleMonthChange = useCallback((newMonth) => {
+  const monthChangeHandler = useCallback((newMonth) => {
     switchMonthHandler(newMonth);
   }, []);
 
@@ -209,7 +209,7 @@ const AttendanceScreen = () => {
   /**
    * Handle select file for attendance attachment
    */
-  const selectFile = async () => {
+  const selectFileHandler = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: false,
@@ -385,7 +385,7 @@ const AttendanceScreen = () => {
           current={currentDate}
           markingType={"custom"}
           markedDates={markedDates}
-          onMonthChange={(date) => handleMonthChange(date)}
+          onMonthChange={(date) => monthChangeHandler(date)}
           theme={{
             arrowColor: "black",
             "stylesheet.calendar.header": {
@@ -449,7 +449,7 @@ const AttendanceScreen = () => {
       />
 
       <AddAttendanceAttachment
-        onSelectFile={selectFile}
+        onSelectFile={selectFileHandler}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}

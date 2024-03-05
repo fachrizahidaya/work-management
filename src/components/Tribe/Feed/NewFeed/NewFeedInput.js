@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { Pressable, Text, ScrollView, Platform } from "react-native";
+import { Pressable, Text, ScrollView, Platform, View } from "react-native";
 import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+
 import { TextProps } from "../../../shared/CustomStylings";
 
 const NewFeedInput = ({ employees, formik }) => {
   const [suggestions, setSuggestions] = useState([]);
+
+  const richText = useRef(null);
 
   /**
    * Handle show username suggestion option
@@ -44,6 +48,10 @@ const NewFeedInput = ({ employees, formik }) => {
     );
   };
 
+  const preprocessContent = (content) => {
+    return content.replace(/<p><\/p>/g, "<br/>");
+  };
+
   /**
    * Handle adjust the content if there is username
    * @param {*} value
@@ -57,6 +65,34 @@ const NewFeedInput = ({ employees, formik }) => {
 
   return (
     <>
+      {/* <RichToolbar
+        editor={richText}
+        actions={[
+          actions.setBold,
+          actions.setItalic,
+          actions.insertBulletsList,
+          actions.insertOrderedList,
+          actions.setUnderline,
+        ]}
+        iconTint="#000000"
+        selectedIconTint="#176688"
+      /> */}
+      {/* <View style={{ height: 200 }}>
+        <RichEditor
+          ref={richText}
+          onChange={contentUsernameChangeHandler}
+          initialContentHTML={preprocessContent(formik.values.content)}
+          style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
+          editorStyle={{
+            contentCSSText: `
+                      display: flex; 
+                      flex-direction: column; 
+                      min-height: 200px; 
+                      position: absolute; 
+                      top: 0; right: 0; bottom: 0; left: 0;`,
+          }}
+        />
+      </View> */}
       <MentionInput
         value={formik.values.content}
         onChange={contentUsernameChangeHandler}
