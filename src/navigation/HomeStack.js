@@ -62,6 +62,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import ForwardScreen from "../screens/Chat/ForwardScreen/ForwardScreen";
 
 const Stack = createStackNavigator();
 
@@ -151,6 +152,8 @@ const HomeStack = () => {
       <Stack.Screen name="Project Detail Screen" component={ProjectDetail} options={{ headerShown: false }} />
 
       <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
+
+      <Stack.Screen name="Forward Screen" component={ForwardScreen} options={{ headerShown: false }} />
 
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />

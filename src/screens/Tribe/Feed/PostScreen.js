@@ -404,11 +404,16 @@ const PostScreen = () => {
       <ShareImage
         reference={sharePostScreenSheetRef}
         navigation={navigation}
-        type="Feed"
+        type="Post"
         sharePost={sharePostToWhatsappHandler}
       />
 
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPicture}
+        setSelectedPicture={setSelectedPicture}
+      />
     </>
   );
 };

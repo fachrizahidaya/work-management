@@ -64,7 +64,7 @@ const FeedCardItem = ({
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
 
-    if (item.includes("https")) {
+    if (item.includes("https" || "http")) {
       textStyle = styles.highlightedText;
       return (
         <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>

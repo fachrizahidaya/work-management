@@ -7,21 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const ShareImage = ({
-  reference,
-  navigation,
-  postRefetch,
-  loggedEmployeeId,
-  loggedEmployeeImage,
-  loggedEmployeeName,
-  loggedEmployeeDivision,
-  toggleSuccess,
-  setImage,
-  image,
-  toggleFullScreen,
-  type,
-  sharePost,
-}) => {
+const ShareImage = ({ reference, navigation, type, sharePost, setIsFullScreen }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
       <View
@@ -40,7 +26,7 @@ const ShareImage = ({
             borderRadius: 10,
           }}
         >
-          {type === "Feed" && (
+          {type === "Post" && (
             <TouchableOpacity
               onPress={() => {
                 sharePost("URL Example", `https://kolabora.ksshub.com/tribe`);
@@ -59,10 +45,11 @@ const ShareImage = ({
           )}
           {type === "Chat" && (
             <TouchableOpacity
-              //   onPress={ () => {
-              //     responseHandler("Rejected", item);
-              //  reference.current?.hide()
-              //   }}
+              onPress={() => {
+                navigation.navigate("Forward Screen");
+                setIsFullScreen(false);
+                reference.current?.hide();
+              }}
               style={{
                 ...styles.containerApproval,
                 justifyContent: "space-between",

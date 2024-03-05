@@ -106,6 +106,8 @@ const MediaScreen = () => {
         file_path={selectedImage}
         // images={imageArray}
         // media={true}
+        setSelectedPicture={setSelectedImage}
+        type="Chat"
       />
     </SafeAreaView>
   );

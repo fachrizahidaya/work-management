@@ -14,6 +14,7 @@ const ChatOptionMenu = ({
   setDeleteSelected,
   deleteSelected,
   copyToClipboard,
+  navigation,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -33,7 +34,10 @@ const ChatOptionMenu = ({
     // {
     //   name: "Forward",
     //   icon: "share",
-    //   onPress: null,
+    //   onPress: () => {
+    //     navigation.navigate("Forward Screen");
+    //     onClose();
+    //   },
     //   color: "#176688",
     // },
     {
