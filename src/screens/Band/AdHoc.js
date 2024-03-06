@@ -91,10 +91,10 @@ const AdHocScreen = () => {
     <>
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={{ gap: 15, marginTop: 13, paddingHorizontal: 16 }}>
+          <View style={{ gap: 15, paddingTop: 13, paddingHorizontal: 16, backgroundColor: "#fff" }}>
             <PageHeader title="Ad Hoc" backButton={false} />
 
-            <View style={{ display: "flex", flexDirection: "row", marginTop: 11, marginBottom: 11 }}>
+            <View style={{ display: "flex", flexDirection: "row", marginBottom: 11 }}>
               <TaskFilter
                 members={fullResponsibleArr}
                 labels={labels}
@@ -157,7 +157,7 @@ export default AdHocScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   hoverButton: {

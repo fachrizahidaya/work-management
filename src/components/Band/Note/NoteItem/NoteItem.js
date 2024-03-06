@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 16,
+    marginTop: 16,
     display: "flex",
     gap: 20,
   },

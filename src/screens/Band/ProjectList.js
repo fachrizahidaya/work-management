@@ -53,7 +53,7 @@ const ProjectList = () => {
     return !isLoading ? (
       data?.data?.data?.length > 0 ? (
         <>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: "#f8f8f8" }}>
             <FlashList
               refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
               data={data?.data.data}
@@ -148,25 +148,14 @@ const ProjectList = () => {
         <View
           style={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
             backgroundColor: "white",
-            paddingVertical: 14,
+            paddingTop: 13,
             paddingHorizontal: 16,
+            gap: 15,
           }}
         >
           <PageHeader title="My Project" backButton={false} />
-        </View>
 
-        <View
-          style={{
-            display: "flex",
-            flex: 1,
-            gap: 14,
-            backgroundColor: "white",
-            paddingBottom: 10,
-          }}
-        >
           <ProjectFilter
             setSearchInput={setSearchInput}
             setDeadlineSort={setDeadlineSort}
@@ -176,7 +165,9 @@ const ProjectList = () => {
             deadlineSort={deadlineSort}
             selectedPriority={selectedPriority}
           />
+        </View>
 
+        <View style={{ display: "flex", flex: 1 }}>
           <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
@@ -220,7 +211,7 @@ const ProjectList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   hoverButton: {

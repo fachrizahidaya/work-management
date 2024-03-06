@@ -122,7 +122,7 @@ const MyTeamScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ display: "flex", gap: 20 }}>
+      <View style={{ gap: 15, paddingTop: 13, paddingHorizontal: 16, backgroundColor: "#fff" }}>
         <PageHeader backButton={false} title="My Team" />
         {!teamIsLoading ? (
           <>
@@ -149,7 +149,7 @@ const MyTeamScreen = ({ route }) => {
         )}
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10 }}>
         {selectedTeamId ? (
           !membersIsLoading ? (
             <FlashList
@@ -345,9 +345,7 @@ export default MyTeamScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 13,
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   hoverButton: {
