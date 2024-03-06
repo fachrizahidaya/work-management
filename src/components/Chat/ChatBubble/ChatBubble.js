@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -77,7 +77,7 @@ const ChatBubble = ({
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+          <Text key={index} style={textStyle} onPress={() => linkPressHandler(item)}>
             {item}{" "}
           </Text>
         );
@@ -98,7 +98,7 @@ const ChatBubble = ({
       } else if (item.includes("@gmail.com")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+          <Text key={index} style={textStyle} onPress={() => emailPressHandler(item)}>
             {item}{" "}
           </Text>
         );
@@ -139,7 +139,7 @@ const ChatBubble = ({
     }
   }, []);
 
-  const handleEmailPress = (email) => {
+  const emailPressHandler = (email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
