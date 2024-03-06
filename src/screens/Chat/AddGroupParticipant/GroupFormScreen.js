@@ -54,6 +54,7 @@ const GroupFormScreen = ({ route }) => {
         email: null,
         active_member: 1,
         roomId: res.data.data.id,
+        forwardedMessage: null,
       });
       setSubmitting(false);
       Toast.show("Group created!", SuccessToastProps);

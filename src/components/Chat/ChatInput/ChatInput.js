@@ -36,6 +36,7 @@ const ChatInput = ({
   email,
   isPinned,
   memberName,
+  forwardedMessage,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [height, setHeight] = useState(40);
@@ -108,11 +109,54 @@ const ChatInput = ({
     },
 
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      // const messageToSend = forwardedMessage ? forwardedMessage : formik.values.message;
       if (
+        // messageToSend !== "" ||
         formik.values.message !== "" ||
         formik.values.file !== "" ||
         formik.values.project_id !== "" ||
         formik.values.task_id !== ""
+      ) {
+        const formData = new FormData();
+        for (let key in values) {
+          formData.append(key, values[key]);
+        }
+        formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
+        setStatus("processing");
+        onSendMessage(formData, setSubmitting, setStatus);
+      }
+      resetForm();
+      setFileAttachment(null);
+      setBandAttachment(null);
+      setBandAttachmentType(null);
+      setMessageToReply(null);
+    },
+  });
+
+  const forwardedMessageFormik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      to_user_id: type === "personal" ? userId : null || "",
+      group_id: type === "group" ? roomId : null || "",
+      reply_to_id: messageToReply?.id || "",
+      message: "",
+      file: "",
+      project_id: "",
+      project_no: "",
+      project_title: "",
+      task_id: "",
+      task_no: "",
+      task_title: "",
+    },
+
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      const messageToSend = forwardedMessage ? forwardedMessage : forwardedMessageFormik.values.message;
+      if (
+        messageToSend !== "" ||
+        // forwardedMessageFormik.values.message !== "" ||
+        forwardedMessageFormik.values.file !== "" ||
+        forwardedMessageFormik.values.project_id !== "" ||
+        forwardedMessageFormik.values.task_id !== ""
       ) {
         const formData = new FormData();
         for (let key in values) {
@@ -160,6 +204,12 @@ const ChatInput = ({
     formik.setFieldValue(`project_id`, "");
     formik.setFieldValue(`project_no`, "");
     formik.setFieldValue(`project_title`, "");
+    forwardedMessageFormik.setFieldValue(`task_id`, "");
+    forwardedMessageFormik.setFieldValue(`task_no`, "");
+    forwardedMessageFormik.setFieldValue(`task_title`, "");
+    forwardedMessageFormik.setFieldValue(`project_id`, "");
+    forwardedMessageFormik.setFieldValue(`project_no`, "");
+    forwardedMessageFormik.setFieldValue(`project_title`, "");
   };
 
   const handleChange = (value) => {
@@ -172,6 +222,19 @@ const ChatInput = ({
   useEffect(() => {
     formik.setFieldValue("file", fileAttachment ? fileAttachment : "");
   }, [fileAttachment]);
+
+  /**
+   * Handle send forwarded message
+   */
+  useEffect(() => {
+    if (forwardedMessage) {
+      forwardedMessageFormik.setValues({
+        ...forwardedMessageFormik.values,
+        message: forwardedMessage,
+      });
+      forwardedMessageFormik.handleSubmit();
+    }
+  }, [forwardedMessage]);
 
   useEffect(() => {
     resetBandAttachment();

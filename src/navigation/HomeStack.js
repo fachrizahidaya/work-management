@@ -89,6 +89,7 @@ const HomeStack = () => {
               email: parsedUserObj?.email,
               active_member: message.data.active_member,
               isPinned: parsedIsPinnedObj,
+              forwardedMessage: null,
             });
           }
         }

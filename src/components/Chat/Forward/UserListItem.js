@@ -21,31 +21,23 @@ const UserListItem = ({
   active_member,
   navigation,
   userSelector,
+  message,
 }) => {
   return (
     <TouchableOpacity
-    // onPress={() => {
-    //   if (multiSelect) {
-    //     // If user already inside array, remove onpress
-    //     if (selectedUsers.find((val) => val.id === id)) {
-    //       onPressRemoveHandler(user);
-    //     } else {
-    //       // If user not inside array, add onpress
-    //       onPressAddHandler(user);
-    //     }
-    //   } else {
-    //     navigation.navigate("Chat Room", {
-    //       name: name,
-    //       userId: id,
-    //       roomId: roomId,
-    //       image: image,
-    //       position: userType,
-    //       email: email,
-    //       type: type,
-    //       active_member: active_member,
-    //     });
-    //   }
-    // }}
+      onPress={() => {
+        navigation.push("Chat Room", {
+          name: name,
+          userId: id,
+          roomId: roomId,
+          image: image,
+          position: userType,
+          email: email,
+          type: type,
+          active_member: active_member,
+          forwardedMessage: message,
+        });
+      }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
