@@ -5,9 +5,11 @@ import { Clipboard, Linking, StyleSheet, View, Text, Pressable, ScrollView } fro
 import ActionSheet from "react-native-actions-sheet";
 import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
+import Toast from "react-native-root-toast";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
+import { ErrorToastProps } from "../../../shared/CustomStylings";
 
 const FeedComment = ({
   postId,
@@ -103,7 +105,31 @@ const FeedComment = ({
    * Handle press link
    */
   const linkPressHandler = useCallback((url) => {
-    Linking.openURL(url);
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
+    }
+
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
+    try {
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
+      } else {
+        Linking.openURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
   }, []);
 
   /**

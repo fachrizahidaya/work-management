@@ -8,6 +8,8 @@ import { replaceMentionValues } from "react-native-controlled-mentions";
 
 import FeedCommentList from "../../Feed/FeedComment/FeedCommentList";
 import FeedCommentForm from "../../Feed/FeedComment/FeedCommentForm";
+import Toast from "react-native-root-toast";
+import { ErrorToastProps } from "../../../shared/CustomStylings";
 
 const FeedComment = ({
   postId,
@@ -103,14 +105,38 @@ const FeedComment = ({
   /**
    * Handle press link
    */
-  const handleLinkPress = useCallback((url) => {
-    Linking.openURL(url);
+  const linkPressHandler = useCallback((url) => {
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
+    }
+
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
+    try {
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
+      } else {
+        Linking.openURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
   }, []);
 
   /**
    * Handle press email
    */
-  const handleEmailPress = useCallback((email) => {
+  const emailPressHandler = useCallback((email) => {
     try {
       const emailUrl = `mailto:${email}`;
       Linking.openURL(emailUrl);
@@ -163,8 +189,8 @@ const FeedComment = ({
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
           refetchComment={refetchComment}
-          handleLinkPress={handleLinkPress}
-          handleEmailPress={handleEmailPress}
+          handleLinkPress={linkPressHandler}
+          handleEmailPress={emailPressHandler}
           copyToClipboard={copyToClipboard}
           employeeUsername={employeeUsername}
         />

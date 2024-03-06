@@ -1,13 +1,5 @@
 import { memo } from "react";
-import {
-  Linking,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Pressable,
-  Image,
-} from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -16,12 +8,17 @@ import Animated, {
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
-const LIST_ITEM_HEIGHT = 70;
+import Toast from "react-native-root-toast";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
 import FileAttachmentBubble from "./FileAttachmentBubble";
 import BandAttachmentBubble from "./BandAttachmentBubble";
 import ChatReplyInfo from "./ChatReplyInfo";
+import { ErrorToastProps } from "../../shared/CustomStylings";
+
+const LIST_ITEM_HEIGHT = 70;
 
 const ChatBubble = ({
   chat,
@@ -80,22 +77,14 @@ const ChatBubble = ({
       if (item.includes("https")) {
         textStyle = styles.highlightedText;
         return (
-          <Text
-            key={index}
-            style={textStyle}
-            onPress={() => handleLinkPress(item)}
-          >
+          <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
             {item}{" "}
           </Text>
         );
       } else if (item.includes("08") || item.includes("62")) {
         textStyle = styles.highlightedText;
         return (
-          <Text
-            key={index}
-            style={textStyle}
-            onPress={() => CopyToClipboard(item)}
-          >
+          <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
             {item}{" "}
           </Text>
         );
@@ -109,11 +98,7 @@ const ChatBubble = ({
       } else if (item.includes("@gmail.com")) {
         textStyle = styles.highlightedText;
         return (
-          <Text
-            key={index}
-            style={textStyle}
-            onPress={() => handleEmailPress(item)}
-          >
+          <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
             {item}{" "}
           </Text>
         );
@@ -126,9 +111,34 @@ const ChatBubble = ({
     });
   }
 
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
+  const linkPressHandler = useCallback((url) => {
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
+    }
+
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
+    try {
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
+      } else {
+        Linking.openURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  }, []);
+
   const handleEmailPress = (email) => {
     try {
       const emailUrl = `mailto:${email}`;
@@ -137,6 +147,7 @@ const ChatBubble = ({
       console.log(err);
     }
   };
+
   const formatMimeType = (type = "") => {
     if (!type) return "Undefined";
     const typeArr = type.split("/");
@@ -161,10 +172,7 @@ const ChatBubble = ({
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       if (event.translationX > 0) {
-        translateX.value = Math.min(
-          event.translationX,
-          parentWidth - MIN_TRANSLATEX
-        );
+        translateX.value = Math.min(event.translationX, parentWidth - MIN_TRANSLATEX);
       }
     },
     onEnd: (event) => {
@@ -231,16 +239,11 @@ const ChatBubble = ({
               maxWidth: 300,
               borderRadius: 10,
               padding: 8,
-              backgroundColor: isOptimistic
-                ? "#9E9E9E"
-                : !myMessage
-                ? "#FFFFFF"
-                : "#377893",
+              backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
               gap: 5,
             }}
             onLongPress={() => {
-              !isDeleted &&
-                openChatBubbleHandler(chat, !myMessage ? "right" : "left");
+              !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
             }}
             delayLongPress={200}
           >
@@ -278,9 +281,7 @@ const ChatBubble = ({
                       <>
                         <TouchableOpacity
                           style={{ borderRadius: 5 }}
-                          onPress={() =>
-                            file_path && toggleFullScreen(file_path)
-                          }
+                          onPress={() => file_path && toggleFullScreen(file_path)}
                         >
                           <Image
                             style={{
@@ -291,9 +292,7 @@ const ChatBubble = ({
                               backgroundColor: "gray",
                             }}
                             source={{
-                              uri: isOptimistic
-                                ? file_path
-                                : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
+                              uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
                             }}
                             alt="Chat Image"
                             resizeMethod="auto"
@@ -345,15 +344,8 @@ const ChatBubble = ({
                   {styledTexts}
                 </Text>
               ) : myMessage && isDeleted ? (
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-                >
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={15}
-                    color="#E8E9EB"
-                    style={{ opacity: 0.5 }}
-                  />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" style={{ opacity: 0.5 }} />
                   <Text
                     style={{
                       fontSize: 14,
@@ -367,15 +359,8 @@ const ChatBubble = ({
                   </Text>
                 </View>
               ) : !myMessage && isDeleted ? (
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-                >
-                  <MaterialIcons
-                    name="block-flipped"
-                    size={15}
-                    color="#3F434A"
-                    style={{ opacity: 0.5 }}
-                  />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" style={{ opacity: 0.5 }} />
                   <Text
                     style={{
                       fontSize: 14,
