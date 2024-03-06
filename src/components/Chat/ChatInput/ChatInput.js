@@ -109,9 +109,7 @@ const ChatInput = ({
     },
 
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      // const messageToSend = forwardedMessage ? forwardedMessage : formik.values.message;
       if (
-        // messageToSend !== "" ||
         formik.values.message !== "" ||
         formik.values.file !== "" ||
         formik.values.project_id !== "" ||
@@ -153,7 +151,6 @@ const ChatInput = ({
       const messageToSend = forwardedMessage ? forwardedMessage : forwardedMessageFormik.values.message;
       if (
         messageToSend !== "" ||
-        // forwardedMessageFormik.values.message !== "" ||
         forwardedMessageFormik.values.file !== "" ||
         forwardedMessageFormik.values.project_id !== "" ||
         forwardedMessageFormik.values.task_id !== ""
