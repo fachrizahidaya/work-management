@@ -299,6 +299,7 @@ const ProjectDetail = () => {
               type: type,
               active_member: active_member,
               isPinned: isPinned,
+              forwardedMessage: null,
             });
           }}
         >

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import _ from "lodash";
 
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
@@ -21,6 +21,10 @@ const ForwardScreen = () => {
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
+
+  const route = useRoute();
+
+  const { message } = route.params;
 
   const userFetchParameters = {
     page: currentPage,
@@ -74,8 +78,7 @@ const ForwardScreen = () => {
             paddingHorizontal: 16,
           }}
         >
-          <PageHeader title="New Chat" onPress={() => navigation.goBack()} />
-          <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>{data?.data?.total} users</Text>
+          <PageHeader title="Send to" onPress={() => navigation.goBack()} />
         </View>
 
         <View style={{ flex: 1, gap: 15, paddingHorizontal: 16 }}>
@@ -94,8 +97,6 @@ const ForwardScreen = () => {
               setInputToShow("");
             }}
           />
-
-          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
 
           <FlashList
             ListFooterComponent={isLoading && <ActivityIndicator />}
@@ -119,6 +120,7 @@ const ForwardScreen = () => {
                   active_member={0}
                   navigation={navigation}
                   userSelector={userSelector}
+                  message={message}
                 />
               </View>
             )}

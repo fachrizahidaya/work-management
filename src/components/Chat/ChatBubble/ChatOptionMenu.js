@@ -31,15 +31,17 @@ const ChatOptionMenu = ({
       },
       color: "#176688",
     },
-    // {
-    //   name: "Forward",
-    //   icon: "share",
-    //   onPress: () => {
-    //     navigation.navigate("Forward Screen");
-    //     onClose();
-    //   },
-    //   color: "#176688",
-    // },
+    {
+      name: "Forward",
+      icon: "share",
+      onPress: () => {
+        navigation.navigate("Forward Screen", {
+          message: chat?.message,
+        });
+        onClose();
+      },
+      color: "#176688",
+    },
     {
       name: "Copy",
       icon: "content-copy",

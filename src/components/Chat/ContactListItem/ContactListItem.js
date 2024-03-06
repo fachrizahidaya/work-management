@@ -8,14 +8,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Pressable,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Pressable, Dimensions } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
@@ -65,6 +58,7 @@ const ContactListItem = ({
     type: type,
     active_member: active_member,
     isPinned: isPinned,
+    forwardedMessage: null,
   };
 
   /**
@@ -96,10 +90,7 @@ const ContactListItem = ({
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
-    return sentence?.replace(
-      regex,
-      `<strong style="color: #176688;">$&</strong>`
-    );
+    return sentence?.replace(regex, `<strong style="color: #176688;">$&</strong>`);
   };
 
   const renderName = () => {
@@ -248,19 +239,11 @@ const ContactListItem = ({
             }}
             style={{ alignItems: "center", paddingRight: 5 }}
           >
-            <AnimatedIcon
-              name="dots-horizontal"
-              color="#ffffff"
-              size={20}
-              style={{}}
-            />
+            <AnimatedIcon name="dots-horizontal" color="#ffffff" size={20} style={{}} />
             <AnimatedText style={{ color: "#ffffff" }}>More</AnimatedText>
           </Pressable>
         </View>
-        <PanGestureHandler
-          simultaneousHandlers={simultaneousHandlers}
-          onGestureEvent={panGesture}
-        >
+        <PanGestureHandler simultaneousHandlers={simultaneousHandlers} onGestureEvent={panGesture}>
           <Animated.View style={animatedStyle}>
             <TouchableOpacity
               style={{ backgroundColor: "#FFFFFF" }}
@@ -278,12 +261,7 @@ const ContactListItem = ({
                     gap: 10,
                   }}
                 >
-                  <AvatarPlaceholder
-                    name={name}
-                    image={image}
-                    size="md"
-                    isThumb={false}
-                  />
+                  <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
                   <View style={{ flex: 1 }}>
                     <View
                       style={{
@@ -292,9 +270,7 @@ const ContactListItem = ({
                       }}
                     >
                       {!searchKeyword ? (
-                        <Text style={[{ fontSize: 14, fontWeight: "500" }]}>
-                          {name}
-                        </Text>
+                        <Text style={[{ fontSize: 14, fontWeight: "500" }]}>{name}</Text>
                       ) : (
                         <RenderHtml
                           contentWidth={400}
@@ -323,8 +299,7 @@ const ContactListItem = ({
                       >
                         {type === "group" && chat?.latest_message ? (
                           <Text style={[{ fontSize: 12 }, TextProps]}>
-                            {userSelector?.name ===
-                            chat?.latest_message?.user?.name
+                            {userSelector?.name === chat?.latest_message?.user?.name
                               ? "You"
                               : chat?.latest_message?.user?.name}
                             :{" "}
@@ -343,9 +318,7 @@ const ContactListItem = ({
                               <View style={{ flexDirection: "row" }}>
                                 {message && (
                                   <Text style={[{ fontSize: 12 }, TextProps]}>
-                                    {message.length > 40
-                                      ? message.slice(0, 40) + "..."
-                                      : message}
+                                    {message.length > 40 ? message.slice(0, 40) + "..." : message}
                                   </Text>
                                 )}
                                 {!message && (project || task || fileName) && (
@@ -356,14 +329,8 @@ const ContactListItem = ({
                                       gap: 3,
                                     }}
                                   >
-                                    <MaterialCommunityIcons
-                                      name={generateIcon()}
-                                      size={20}
-                                      color="#3F434A"
-                                    />
-                                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                                      {generateAttachmentText()}
-                                    </Text>
+                                    <MaterialCommunityIcons name={generateIcon()} size={20} color="#3F434A" />
+                                    <Text style={[{ fontSize: 12 }, TextProps]}>{generateAttachmentText()}</Text>
                                   </View>
                                 )}
                               </View>
@@ -392,8 +359,7 @@ const ContactListItem = ({
                               )}
                             </View>
                           </>
-                        ) : isDeleted &&
-                          userSelector.id === latest?.user?.id ? (
+                        ) : isDeleted && userSelector.id === latest?.user?.id ? (
                           <View
                             style={{
                               flexDirection: "row",
@@ -423,8 +389,7 @@ const ContactListItem = ({
                               You deleted this message
                             </Text>
                           </View>
-                        ) : isDeleted &&
-                          userSelector.id !== latest?.user?.id ? (
+                        ) : isDeleted && userSelector.id !== latest?.user?.id ? (
                           <View
                             style={{
                               flexDirection: "row",

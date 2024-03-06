@@ -44,6 +44,7 @@ const UserListItem = ({
               email: email,
               type: type,
               active_member: active_member,
+              forwardedMessage: null,
             });
           }
         }}

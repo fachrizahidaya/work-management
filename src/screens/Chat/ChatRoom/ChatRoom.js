@@ -57,7 +57,8 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
+  const { userId, name, roomId, image, position, email, type, active_member, isPinned, forwardedMessage } =
+    route.params;
 
   const navigation = useNavigation();
 
@@ -649,6 +650,7 @@ const ChatRoom = () => {
             email={email}
             isPinned={isPinned}
             memberName={memberName}
+            forwardedMessage={forwardedMessage}
           />
 
           <RemoveConfirmationModal
