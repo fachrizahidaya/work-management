@@ -106,7 +106,7 @@ export default memo(NoteItem);
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 16,
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: { width: 0, height: 4 },
