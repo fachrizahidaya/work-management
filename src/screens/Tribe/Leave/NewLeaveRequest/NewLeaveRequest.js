@@ -32,11 +32,11 @@ const NewLeaveRequest = () => {
   const [dateChanges, setDateChanges] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [formError, setFormError] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [filteredType, setFilteredType] = useState([]);
+  const [startDateMore, setStarDateMore] = useState(false);
 
   const navigation = useNavigation();
 
@@ -168,9 +168,15 @@ const NewLeaveRequest = () => {
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
-      setIsLoading(false);
-      setFormError(false);
-      Toast.show("Leave Request available", SuccessToastProps);
+      if (res.data?.begin_date > res.data?.end_date) {
+        setIsLoading(false);
+        setStarDateMore(true);
+        Toast.show("End date can't be less than start date", ErrorToastProps);
+      } else {
+        setIsLoading(false);
+        setStarDateMore(true);
+        Toast.show("Leave Request available", SuccessToastProps);
+      }
     } catch (err) {
       console.log(err);
       setIsLoading(false);
@@ -320,6 +326,7 @@ const NewLeaveRequest = () => {
               inputToShow={inputToShow}
               setInputToShow={setInputToShow}
               setSearchInput={setSearchInput}
+              startDateMore={startDateMore}
             />
           </View>
         ) : null}

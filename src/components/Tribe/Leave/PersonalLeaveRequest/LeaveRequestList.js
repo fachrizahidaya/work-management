@@ -47,21 +47,23 @@ const LeaveRequestList = ({
 }) => {
   return (
     <>
-      <View style={styles.container}>
+      <View style={{ paddingHorizontal: 14 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
+      <View style={styles.container}>
         {tabValue === "Pending" ? (
           pendingList?.length > 0 ? (
             <View
               style={{
                 height:
                   Platform.OS === "ios" && teamLeaveRequestData > 0
-                    ? 540
+                    ? 200
                     : Platform.OS === "ios" && teamLeaveRequestData === 0
-                    ? 555
+                    ? "100%"
                     : Platform.OS === "android" && teamLeaveRequestData === 0
-                    ? 590
+                    ? "100%"
                     : 575,
-                marginTop: 12,
+                // marginTop: 12,
               }}
             >
               <FlashList
@@ -125,11 +127,11 @@ const LeaveRequestList = ({
                   Platform.OS === "ios" && teamLeaveRequestData > 0
                     ? 540
                     : Platform.OS === "ios" && teamLeaveRequestData === 0
-                    ? 555
+                    ? "100%"
                     : Platform.OS === "android" && teamLeaveRequestData === 0
-                    ? 590
+                    ? "100%"
                     : 575,
-                marginTop: 12,
+                // marginTop: 12,
               }}
             >
               <FlashList
@@ -193,11 +195,11 @@ const LeaveRequestList = ({
                   Platform.OS === "ios" && teamLeaveRequestData > 0
                     ? 540
                     : Platform.OS === "ios" && teamLeaveRequestData === 0
-                    ? 555
+                    ? "100%"
                     : Platform.OS === "android" && teamLeaveRequestData === 0
-                    ? 590
+                    ? "100%"
                     : 575,
-                marginTop: 12,
+                // marginTop: 12,
               }}
             >
               <FlashList
@@ -259,11 +261,11 @@ const LeaveRequestList = ({
                 Platform.OS === "ios" && teamLeaveRequestData > 0
                   ? 540
                   : Platform.OS === "ios" && teamLeaveRequestData === 0
-                  ? 555
+                  ? "100%"
                   : Platform.OS === "android" && teamLeaveRequestData === 0
-                  ? 590
+                  ? "100%"
                   : 575,
-              marginTop: 12,
+              // marginTop: 12,
             }}
           >
             <FlashList
@@ -329,7 +331,7 @@ export default memo(LeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
     flex: 1,
     flexDirection: "column",
     paddingHorizontal: 14,
