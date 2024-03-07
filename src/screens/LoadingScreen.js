@@ -11,7 +11,7 @@ import { login } from "../redux/reducer/auth";
 import { setModule } from "../redux/reducer/module";
 
 const LoadingScreen = ({ route }) => {
-  const maxValue = Platform.OS === "android" ? 150 : 140;
+  const maxValue = Platform.OS === "android" ? 150 : 180;
   const userData = route.params;
   const dispatch = useDispatch();
   const [loadingValue, setLoadingValue] = useState(0);
