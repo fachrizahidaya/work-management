@@ -203,7 +203,6 @@ const FeedCard = ({
 export default memo(FeedCard);
 
 const styles = StyleSheet.create({
-  container: {},
   information: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",

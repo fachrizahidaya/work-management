@@ -204,12 +204,12 @@ export default PayslipScreen;
 const styles = StyleSheet.create({
   containerEmpty: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   header: {

@@ -1,12 +1,6 @@
 import dayjs from "dayjs";
 
-import {
-  View,
-  Text,
-  Pressable,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -31,19 +25,17 @@ const MyTeamLeaveRequestItem = ({
       key={id}
       style={{
         backgroundColor: "#ffffff",
-        paddingVertical: 18,
-        paddingHorizontal: 16,
+        paddingVertical: 16,
+        paddingHorizontal: 14,
         borderRadius: 15,
         flexDirection: "column",
-        marginVertical: 5,
+        marginVertical: 8,
         gap: 10,
         elevation: 3,
         shadowColor: "rgba(0, 0, 0, 1)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-        marginTop: 4,
-        marginBottom: 4,
         marginHorizontal: 2,
       }}
     >
@@ -56,19 +48,10 @@ const MyTeamLeaveRequestItem = ({
             gap: 10,
           }}
         >
-          <AvatarPlaceholder
-            image={employee_image}
-            name={employee_name}
-            size="lg"
-            isThumb={false}
-          />
+          <AvatarPlaceholder image={employee_image} name={employee_name} size="lg" isThumb={false} />
           <View style={{ gap: 3 }}>
-            <Text style={{ fontSize: 16, fontWeight: "500", color: "#3F434A" }}>
-              {employee_name}
-            </Text>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: "#377893" }}>
-              {leave_name}
-            </Text>
+            <Text style={{ fontSize: 16, fontWeight: "500", color: "#3F434A" }}>{employee_name}</Text>
+            <Text style={{ fontSize: 14, fontWeight: "400", color: "#377893" }}>{leave_name}</Text>
           </View>
         </View>
         {status === "Pending" ? (
@@ -106,14 +89,7 @@ const MyTeamLeaveRequestItem = ({
                             borderBottomColor: "#FFFFFF",
                           }}
                         >
-                          <Text
-                            style={[
-                              { fontSize: 16, fontWeight: "400" },
-                              TextProps,
-                            ]}
-                          >
-                            Approve
-                          </Text>
+                          <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Approve</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={async () => {
@@ -146,12 +122,7 @@ const MyTeamLeaveRequestItem = ({
               })
             }
           >
-            <MaterialCommunityIcons
-              name="dots-vertical"
-              size={20}
-              color="#3F434A"
-              style={{ borderRadius: 20 }}
-            />
+            <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" style={{ borderRadius: 20 }} />
           </Pressable>
         ) : null}
       </View>
@@ -165,9 +136,7 @@ const MyTeamLeaveRequestItem = ({
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>
-            {item?.reason}
-          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{item?.reason}</Text>
         </View>
       </View>
       <View
@@ -187,15 +156,10 @@ const MyTeamLeaveRequestItem = ({
             backgroundColor: "#F8F8F8",
           }}
         >
-          <MaterialCommunityIcons
-            name="calendar-month"
-            size={20}
-            color="#3F434A"
-          />
+          <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
           {/* <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text> */}
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
-            {dayjs(begin_date).format("DD MMM YYYY")} -{" "}
-            {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
+            {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
             {days < 2 ? "day" : "days"}
           </Text>
         </View>

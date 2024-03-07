@@ -35,7 +35,17 @@ const ContactList = ({
           loggedEmployeeId: loggedEmployeeId,
         })
       }
-      style={{ ...card.card, flexDirection: "column", marginVertical: 5 }}
+      style={{
+        ...card.card,
+        flexDirection: "column",
+        marginVertical: 5,
+        gap: 20,
+        elevation: 1,
+        shadowColor: "rgba(0, 0, 0, 1)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+      }}
     >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>

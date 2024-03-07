@@ -109,6 +109,7 @@ const FeedCard = ({
   return (
     <View style={styles.container}>
       <FlashList
+        showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
         data={posts}
         extraData={forceRerender} // re-render data handler

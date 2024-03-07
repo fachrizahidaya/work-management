@@ -24,19 +24,17 @@ const LeaveRequestItem = ({
       key={id}
       style={{
         backgroundColor: "#ffffff",
-        paddingVertical: 18,
-        paddingHorizontal: 16,
+        paddingVertical: 16,
+        paddingHorizontal: 14,
         borderRadius: 15,
         flexDirection: "column",
-        marginVertical: 5,
+        marginVertical: 8,
         gap: 10,
-        elevation: 3,
+        elevation: 1,
         shadowColor: "rgba(0, 0, 0, 1)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-        marginTop: 4,
-        marginBottom: 4,
         marginHorizontal: 2,
       }}
     >
