@@ -22,6 +22,12 @@ const UserListItem = ({
   navigation,
   userSelector,
   message,
+  project,
+  task,
+  file_path,
+  file_name,
+  file_size,
+  mime_type,
 }) => {
   return (
     <TouchableOpacity
@@ -36,6 +42,12 @@ const UserListItem = ({
           type: type,
           active_member: active_member,
           forwardedMessage: message,
+          forwardedProject: project,
+          forwardedTask: task,
+          forwarded_file_path: file_path,
+          forwarded_file_name: file_name,
+          forwarded_file_size: file_size,
+          forwarded_mime_type: mime_type,
         });
       }}
     >

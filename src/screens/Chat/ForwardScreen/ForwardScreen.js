@@ -5,12 +5,16 @@ import _ from "lodash";
 
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Input from "../../../components/shared/Forms/Input";
 import { useFetch } from "../../../hooks/useFetch";
 import UserListItem from "../../../components/Chat/Forward/UserListItem";
-import { TextProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
+import axiosInstance from "../../../config/api";
+import PersonalSection from "../../../components/Chat/Forward/PersonalSection";
+import GroupSection from "../../../components/Chat/Forward/GroupSection";
 
 const ForwardScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,13 +22,15 @@ const ForwardScreen = () => {
   const [inputToShow, setInputToShow] = useState("");
   const [cumulativeData, setCumulativeData] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
+  const [personalChats, setPersonalChats] = useState([]);
+  const [groupChats, setGroupChats] = useState([]);
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
 
   const route = useRoute();
 
-  const { message } = route.params;
+  const { message, project, task, file_path, file_name, file_size, mime_type } = route.params;
 
   const userFetchParameters = {
     page: currentPage,
@@ -32,14 +38,46 @@ const ForwardScreen = () => {
     limit: 20,
   };
 
-  const { data, isLoading } = useFetch("/chat/user", [currentPage, searchKeyword], userFetchParameters);
+  const { data: personalChat, isLoading: personalChatIsLoading } = useFetch("/chat/personal");
+  const { data: groupChat, isLoading: groupChatIsLoading } = useFetch("/chat/group");
+  const { data: contact, isLoading: contactIsLoading } = useFetch(
+    "/chat/user",
+    [currentPage, searchKeyword],
+    userFetchParameters
+  );
+
+  /**
+   * Fetch all personal chats
+   */
+  const fetchPersonalChats = async () => {
+    try {
+      const res = await axiosInstance.get("/chat/personal");
+      setPersonalChats(res.data.data);
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
+   * Fetch all personal chats
+   */
+  const fetchGroupChats = async () => {
+    try {
+      const res = await axiosInstance.get("/chat/group");
+      setGroupChats(res.data.data);
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
    * Fetches more user data by incrementing currentPage by 1
    */
   const fetchMoreData = () => {
-    if (currentPage < data?.data?.last_page) {
+    if (currentPage < contact?.data?.last_page) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -53,20 +91,25 @@ const ForwardScreen = () => {
   );
 
   useEffect(() => {
+    fetchPersonalChats();
+    fetchGroupChats();
+  }, []);
+
+  useEffect(() => {
     setFilteredDataArray([]);
   }, [searchKeyword]);
 
   useEffect(() => {
-    if (data?.data?.data?.length) {
+    if (contact?.data?.data?.length) {
       if (!searchKeyword) {
-        setCumulativeData((prevData) => [...prevData, ...data?.data?.data]);
+        setCumulativeData((prevData) => [...prevData, ...contact?.data?.data]);
         setFilteredDataArray([]);
       } else {
-        setFilteredDataArray((prevData) => [...prevData, ...data?.data?.data]);
+        setFilteredDataArray((prevData) => [...prevData, ...contact?.data?.data]);
         setCumulativeData([]);
       }
     }
-  }, [data]);
+  }, [contact]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -98,8 +141,36 @@ const ForwardScreen = () => {
             }}
           />
 
+          <GroupSection
+            groupChats={groupChat?.data}
+            navigation={navigation}
+            message={message}
+            project={project}
+            task={task}
+            file_path={file_path}
+            file_name={file_name}
+            file_size={file_size}
+            mime_type={mime_type}
+          />
+
+          <PersonalSection
+            personalChats={personalChat?.data}
+            navigation={navigation}
+            message={message}
+            project={project}
+            task={task}
+            file_path={file_path}
+            file_name={file_name}
+            file_size={file_size}
+            mime_type={mime_type}
+          />
+
+          <View style={styles.header}>
+            <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
+          </View>
+
           <FlashList
-            ListFooterComponent={isLoading && <ActivityIndicator />}
+            ListFooterComponent={contactIsLoading && <ActivityIndicator />}
             estimatedItemSize={200}
             data={cumulativeData.length ? cumulativeData : filteredDataArray}
             keyExtractor={(item, index) => index}
@@ -121,6 +192,12 @@ const ForwardScreen = () => {
                   navigation={navigation}
                   userSelector={userSelector}
                   message={message}
+                  project={project}
+                  task={task}
+                  file_path={file_path}
+                  file_name={file_name}
+                  file_size={file_size}
+                  mime_type={mime_type}
                 />
               </View>
             )}
@@ -137,5 +214,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
 });

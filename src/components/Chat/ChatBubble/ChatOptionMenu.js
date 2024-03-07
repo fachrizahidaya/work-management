@@ -36,7 +36,13 @@ const ChatOptionMenu = ({
       icon: "share",
       onPress: () => {
         navigation.navigate("Forward Screen", {
-          message: chat?.message,
+          message: chat?.message || "",
+          project: chat?.project || "",
+          task: chat?.task || "",
+          file_path: chat?.file_path || "",
+          file_name: chat?.file_name || "",
+          file_size: chat?.file_size || "",
+          mime_type: chat?.mime_type || "",
         });
         onClose();
       },
