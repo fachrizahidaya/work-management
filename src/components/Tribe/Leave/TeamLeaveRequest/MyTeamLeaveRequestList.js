@@ -1,13 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { useFormik } from "formik";
 
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
+import { ScrollView, StyleSheet, View, ActivityIndicator, Platform } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
@@ -83,25 +77,23 @@ const MyTeamLeaveRequestList = ({
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={{ paddingHorizontal: 14 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
+      <View style={styles.container}>
         {tabValue === "Pending" ? (
           pendingLeaveRequests.length > 0 ? (
             <View
               style={{
-                height: Platform.OS === "ios" ? 600 : 670,
-                marginTop: 12,
+                height: "100%",
+                // marginTop: 12,
               }}
             >
               <FlashList
                 data={pendingLeaveRequests}
                 onEndReachedThreshold={0.1}
-                onScrollBeginDrag={() =>
-                  setHasBeenScrolledPending(!hasBeenScrolledPending)
-                }
-                onEndReached={
-                  hasBeenScrolledPending === true ? fetchMorePending : null
-                }
+                onScrollBeginDrag={() => setHasBeenScrolledPending(!hasBeenScrolledPending)}
+                onEndReached={hasBeenScrolledPending === true ? fetchMorePending : null}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={200}
                 refreshing={true}
@@ -114,9 +106,7 @@ const MyTeamLeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  pendingLeaveRequestIsLoading && <ActivityIndicator />
-                }
+                ListFooterComponent={() => pendingLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
                     item={item}
@@ -139,7 +129,7 @@ const MyTeamLeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
-              style={{ height: Platform.OS === "ios" ? 600 : 660 }}
+              style={{ height: "100%" }}
               refreshControl={
                 <RefreshControl
                   refreshing={pendingLeaveRequestIsFetching}
@@ -159,19 +149,15 @@ const MyTeamLeaveRequestList = ({
           approvedLeaveRequests.length > 0 ? (
             <View
               style={{
-                height: Platform.OS === "ios" ? 600 : 660,
-                marginTop: 12,
+                height: "100%",
+                // marginTop: 12,
               }}
             >
               <FlashList
                 data={approvedLeaveRequests}
                 onEndReachedThreshold={0.1}
-                onEndReached={
-                  hasBeenScrolledApproved === true ? fetchMoreApproved : null
-                }
-                onScrollBeginDrag={() =>
-                  setHasBeenScrolledApproved(!hasBeenScrolledApproved)
-                }
+                onEndReached={hasBeenScrolledApproved === true ? fetchMoreApproved : null}
+                onScrollBeginDrag={() => setHasBeenScrolledApproved(!hasBeenScrolledApproved)}
                 keyExtractor={(item, index) => index}
                 estimatedItemSize={200}
                 refreshing={true}
@@ -184,9 +170,7 @@ const MyTeamLeaveRequestList = ({
                     }}
                   />
                 }
-                ListFooterComponent={() =>
-                  approvedLeaveRequestIsLoading && <ActivityIndicator />
-                }
+                ListFooterComponent={() => approvedLeaveRequestIsLoading && <ActivityIndicator />}
                 renderItem={({ item, index }) => (
                   <MyTeamLeaveRequestItem
                     item={item}
@@ -206,7 +190,7 @@ const MyTeamLeaveRequestList = ({
             </View>
           ) : (
             <ScrollView
-              style={{ height: Platform.OS === "ios" ? 600 : 660 }}
+              style={{ height: "100%" }}
               refreshControl={
                 <RefreshControl
                   refreshing={approvedLeaveRequestIsFetching}
@@ -224,7 +208,10 @@ const MyTeamLeaveRequestList = ({
           )
         ) : rejectedLeaveRequests.length > 0 ? (
           <View
-            style={{ height: Platform.OS === "ios" ? 600 : 660, marginTop: 12 }}
+            style={{
+              height: "100%",
+              // marginTop: 12
+            }}
           >
             <FlashList
               data={rejectedLeaveRequests}
@@ -243,9 +230,7 @@ const MyTeamLeaveRequestList = ({
                   }}
                 />
               }
-              ListFooterComponent={() =>
-                rejectedLeaveRequestIsLoading && <ActivityIndicator />
-              }
+              ListFooterComponent={() => rejectedLeaveRequestIsLoading && <ActivityIndicator />}
               renderItem={({ item, index }) => (
                 <MyTeamLeaveRequestItem
                   item={item}
@@ -265,7 +250,7 @@ const MyTeamLeaveRequestList = ({
           </View>
         ) : (
           <ScrollView
-            style={{ height: Platform.OS === "ios" ? 600 : 660 }}
+            style={{ height: "100%" }}
             refreshControl={
               <RefreshControl
                 refreshing={rejectedLeaveRequestIsFetching}
@@ -290,7 +275,7 @@ export default memo(MyTeamLeaveRequestList);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
     flex: 1,
     flexDirection: "column",
     paddingHorizontal: 14,

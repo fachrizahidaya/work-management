@@ -20,6 +20,7 @@ const NewLeaveRequestForm = ({
   inputToShow,
   setInputToShow,
   setSearchInput,
+  startDateMore,
 }) => {
   const [selectedValue, setSelectedValue] = useState(null);
 
@@ -86,12 +87,13 @@ const NewLeaveRequestForm = ({
       formik.values.begin_date &&
       formik.values.end_date &&
       !isLoading &&
-      !isError ? (
-        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+      !isError &&
+      !startDateMore ? (
+        <FormButton isSubmitting={formik.isSubmitting} disabled={false} onPress={formik.handleSubmit}>
           <Text style={{ color: "#FFFFFF" }}>Submit</Text>
         </FormButton>
       ) : (
-        <FormButton opacity={0.5}>
+        <FormButton opacity={0.5} isSubmitting={null} disabled={true} onPress={null}>
           <Text style={{ color: "#FFFFFF" }}>Submit</Text>
         </FormButton>
       )}
