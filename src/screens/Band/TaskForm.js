@@ -16,6 +16,8 @@ import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
 import { ErrorToastProps, SuccessToastProps } from "../../components/shared/CustomStylings";
+import SuccessModal from "../../components/shared/Modal/SuccessModal";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const TaskForm = ({ route }) => {
   const richText = useRef();
@@ -23,6 +25,8 @@ const TaskForm = ({ route }) => {
   const navigation = useNavigation();
   const { width, height } = Dimensions.get("window");
   const [taskId, setTaskId] = useState(null);
+  const [requestType, setRequestType] = useState("");
+  const { isOpen: isSuccess, toggle: toggleSuccess } = useDisclosure(false);
 
   /**
    * Handles submission of task
@@ -39,18 +43,19 @@ const TaskForm = ({ route }) => {
           status: status,
           ...form,
         });
+        setRequestType("post");
         // Set the task id so navigation can redirect to the task detail screen
         setTaskId(res.data.data.id);
       } else {
         await axiosInstance.patch(`/pm/tasks/${taskData.id}`, form);
+        setRequestType("patch");
       }
       if (refetch) {
         refetch();
       }
       setSubmitting(false);
       setStatus("success");
-
-      Toast.show("Task saved", SuccessToastProps);
+      toggleSuccess();
     } catch (error) {
       console.log(error);
       setSubmitting(false);
@@ -177,6 +182,14 @@ const TaskForm = ({ route }) => {
             </FormButton>
           </View>
         </ScrollView>
+
+        <SuccessModal
+          isOpen={isSuccess}
+          toggle={toggleSuccess}
+          title={requestType === "post" ? "Task added!" : "Changes saved!"}
+          description={requestType === "post" ? "Keep the progress updated!" : "Data has successfully updated!"}
+          type={requestType === "post" ? "warning" : "success"}
+        />
       </View>
     </View>
   );

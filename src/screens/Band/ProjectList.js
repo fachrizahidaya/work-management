@@ -167,7 +167,7 @@ const ProjectList = () => {
           />
         </View>
 
-        <View style={{ display: "flex", flex: 1 }}>
+        <View style={{ display: "flex", flex: 1, marginBottom: 10 }}>
           <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
