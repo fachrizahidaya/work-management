@@ -57,8 +57,24 @@ const ChatRoom = () => {
 
   const route = useRoute();
 
-  const { userId, name, roomId, image, position, email, type, active_member, isPinned, forwardedMessage } =
-    route.params;
+  const {
+    userId,
+    name,
+    roomId,
+    image,
+    position,
+    email,
+    type,
+    active_member,
+    isPinned,
+    forwardedMessage,
+    forwardedProject,
+    forwardedTask,
+    forwarded_file_path,
+    forwarded_file_name,
+    forwarded_file_size,
+    forwarded_mime_type,
+  } = route.params;
 
   const navigation = useNavigation();
 
@@ -651,6 +667,12 @@ const ChatRoom = () => {
             isPinned={isPinned}
             memberName={memberName}
             forwardedMessage={forwardedMessage}
+            forwardedProject={forwardedProject}
+            forwardedTask={forwardedTask}
+            forwarded_file_path={forwarded_file_path}
+            forwarded_file_name={forwarded_file_name}
+            forwarded_file_size={forwarded_file_size}
+            forwarded_mime_type={forwarded_mime_type}
           />
 
           <RemoveConfirmationModal
