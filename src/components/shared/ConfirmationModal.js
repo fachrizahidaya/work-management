@@ -25,7 +25,6 @@ const ConfirmationModal = ({
   isGet = false,
   otherModal,
   toggleOtherModal,
-  successStatus,
   showSuccessToast = true,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
@@ -50,15 +49,16 @@ const ConfirmationModal = ({
       }
       toggle();
       toggleIsDeleting();
+
       if (showSuccessToast) {
         Toast.show(successMessage, SuccessToastProps);
-      } else {
-        null;
       }
 
       // If hasSuccessFunc passed then run the available onSuccess function
       if (hasSuccessFunc) {
-        onSuccess();
+        setTimeout(() => {
+          onSuccess();
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
@@ -75,11 +75,7 @@ const ConfirmationModal = ({
       hideModalContentWhileAnimating={true}
       useNativeDriver={false}
       onModalHide={() => {
-        if (otherModal && successStatus) {
-          toggleOtherModal();
-        } else {
-          null;
-        }
+        otherModal && toggleOtherModal();
       }}
     >
       <View

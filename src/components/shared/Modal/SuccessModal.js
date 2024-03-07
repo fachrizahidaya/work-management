@@ -5,7 +5,7 @@ import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SuccessModal = ({ isOpen, toggle, onSuccess, multipleModal = false, title = "", description = "", type }) => {
+const SuccessModal = ({ isOpen, toggle, title = "", description = "", type }) => {
   const deviceWidth = Dimensions.get("window").width;
 
   const renderColor = () => {
@@ -26,11 +26,6 @@ const SuccessModal = ({ isOpen, toggle, onSuccess, multipleModal = false, title 
     if (isOpen) {
       const timeout = setTimeout(() => {
         toggle();
-        if (multipleModal) {
-          onSuccess(false);
-        } else {
-          null;
-        }
       }, 3000);
       return () => clearTimeout(timeout);
     }

@@ -10,10 +10,12 @@ import { useDisclosure } from "../../../../../hooks/useDisclosure";
 import ConfirmationModal from "../../../../shared/ConfirmationModal";
 import useCheckAccess from "../../../../../hooks/useCheckAccess";
 import { TextProps } from "../../../../shared/CustomStylings";
+import SuccessModal from "../../../../shared/Modal/SuccessModal";
 
 const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
   const navigation = useNavigation();
   const { isOpen, toggle: toggleDeleteModal } = useDisclosure(false);
+  const { isOpen: isSuccess, toggle: toggleSuccess } = useDisclosure(false);
   const editCheckAccess = useCheckAccess("update", "Tasks");
   const deleteCheckAccess = useCheckAccess("delete", "Tasks");
 
@@ -86,8 +88,19 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
         successMessage="Task deleted"
         header="Delete Task"
         description={`Are you sure to delete ${selectedTask?.title}?`}
-        hasSuccessFunc={true}
+        hasSuccessFunc
         onSuccess={() => navigation.goBack()}
+        showSuccessToast={false}
+        otherModal={true}
+        toggleOtherModal={toggleSuccess}
+      />
+
+      <SuccessModal
+        isOpen={isSuccess}
+        toggle={toggleSuccess}
+        title="Changes saved!"
+        description="Data has successfully deleted"
+        type="danger"
       />
     </>
   );
