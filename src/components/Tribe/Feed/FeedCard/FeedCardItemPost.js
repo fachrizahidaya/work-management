@@ -23,7 +23,6 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  onCommentToggle,
   forceRerender,
   setForceRerender,
   toggleFullScreen,

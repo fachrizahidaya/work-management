@@ -43,7 +43,6 @@ const LeaveRequestList = ({
   setHasBeenScrolledCanceled,
   refetchPersonalLeaveRequest,
   teamLeaveRequestData,
-  checkAccess,
 }) => {
   return (
     <>

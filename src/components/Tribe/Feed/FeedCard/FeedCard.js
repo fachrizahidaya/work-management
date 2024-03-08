@@ -27,8 +27,6 @@ const FeedCard = ({
   employeeUsername,
   navigation,
 }) => {
-  const [urlResult, setUrlResult] = useState(null);
-
   /**
    * Handle like a Post
    * @param {*} post_id

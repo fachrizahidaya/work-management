@@ -25,16 +25,11 @@ const FeedScreen = () => {
   const [reloadPost, setReloadPost] = useState(false);
   const [reloadComment, setReloadComment] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [scrollNewMessage, setScrollNewMessage] = useState(false);
-  const [commentsOpen, setCommentsOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [commentParentId, setCommentParentId] = useState(null);
-  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [imageToShare, setImageToShare] = useState(null);
 
   const navigation = useNavigation();
 
@@ -138,7 +133,6 @@ const FeedScreen = () => {
     commentScreenSheetRef.current?.show();
     setPostId(post_id);
     const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
   };
 
   /**
@@ -148,16 +142,12 @@ const FeedScreen = () => {
     commentScreenSheetRef.current?.hide();
     setPostId(null);
     setCommentParentId(null);
-    setLatestExpandedReply(null);
   };
 
   /**
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     setForceRerender(!forceRerender);
@@ -190,7 +180,6 @@ const FeedScreen = () => {
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
   };
 
   /**

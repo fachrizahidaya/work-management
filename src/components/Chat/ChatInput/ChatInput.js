@@ -44,8 +44,6 @@ const ChatInput = ({
   forwarded_file_size,
   forwarded_mime_type,
 }) => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [height, setHeight] = useState(40);
   const [forwardedBandAttachment, setForwardedBandAttachment] = useState(null);
   const [forwardedBandAttachmentType, setForwardedBandAttachmentType] = useState(null);
 
@@ -55,20 +53,12 @@ const ChatInput = ({
       name: "Document",
       color: "#1E4AB9",
       onPress: selectFile,
-      // async () => {
-      //   await SheetManager.hide("form-sheet");
-      //   selectFile();
-      // },
     },
     {
       icon: "image-multiple-outline",
       name: "Photo",
       color: "#39B326",
       onPress: pickImageHandler,
-      // async () => {
-      //   await SheetManager.hide("form-sheet");
-      //   pickImageHandler();
-      // },
     },
     {
       icon: "circle-slice-2",
@@ -229,9 +219,9 @@ const ChatInput = ({
 
   const handleChange = (value) => {
     formik.handleChange("message")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(groupMember.filter((member) => member?.name?.toLowerCase().includes(lastWord.toLowerCase())));
+    // const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
+    // const lastWord = replacedValue.split(" ").pop();
+    // setSuggestions(groupMember.filter((member) => member?.name?.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   useEffect(() => {
@@ -245,13 +235,13 @@ const ChatInput = ({
     if (forwardedMessage || forwardedProject || forwardedTask) {
       forwardedMessageFormik.setValues({
         ...forwardedMessageFormik.values,
-        message: forwardedMessage,
-        project_id: forwardedProject?.id,
-        project_no: forwardedProject?.project_no,
-        project_title: forwardedProject?.title,
-        task_id: forwardedTask?.id,
-        task_no: forwardedTask?.task_no,
-        task_title: forwardedTask?.title,
+        message: forwardedMessage || "",
+        project_id: forwardedProject?.id || "",
+        project_no: forwardedProject?.project_no || "",
+        project_title: forwardedProject?.title || "",
+        task_id: forwardedTask?.id || "",
+        task_no: forwardedTask?.task_no || "",
+        task_title: forwardedTask?.title || "",
       });
       forwardedMessageFormik.handleSubmit();
     }

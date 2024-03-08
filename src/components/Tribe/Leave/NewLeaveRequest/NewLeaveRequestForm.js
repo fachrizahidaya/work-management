@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { View, Text, ActivityIndicator } from "react-native";
 
 import Input from "../../../shared/Forms/Input";
@@ -22,8 +20,6 @@ const NewLeaveRequestForm = ({
   setSearchInput,
   startDateMore,
 }) => {
-  const [selectedValue, setSelectedValue] = useState(null);
-
   return (
     <View style={{ gap: 20 }}>
       <SelectWithSearch
@@ -36,8 +32,6 @@ const NewLeaveRequestForm = ({
         fieldName="leave_id"
         onChange={(value) => {
           formik.setFieldValue("leave_id", value);
-          const selectedLeave = leaveType.find((item) => item.value === value);
-          setSelectedValue(selectedLeave ? selectedLeave.value : null);
         }}
         key="leave_id"
         inputToShow={inputToShow}

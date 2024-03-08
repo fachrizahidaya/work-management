@@ -8,8 +8,6 @@ import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor"
 import { TextProps } from "../../../shared/CustomStylings";
 
 const NewFeedInput = ({ employees, formik }) => {
-  const [suggestions, setSuggestions] = useState([]);
-
   const richText = useRef(null);
 
   /**
@@ -58,9 +56,8 @@ const NewFeedInput = ({ employees, formik }) => {
    */
   const contentUsernameChangeHandler = (value) => {
     formik.handleChange("content")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(employees?.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
+    // const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
+    // const lastWord = replacedValue.split(" ").pop();
   };
 
   return (
