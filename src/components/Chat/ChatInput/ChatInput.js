@@ -136,6 +136,9 @@ const ChatInput = ({
     },
   });
 
+  /**
+   * Handle for forward message
+   */
   const forwardedMessageFormik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -219,14 +222,15 @@ const ChatInput = ({
 
   const handleChange = (value) => {
     formik.handleChange("message")(value);
-    // const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    // const lastWord = replacedValue.split(" ").pop();
-    // setSuggestions(groupMember.filter((member) => member?.name?.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   useEffect(() => {
     formik.setFieldValue("file", fileAttachment ? fileAttachment : "");
   }, [fileAttachment]);
+
+  useEffect(() => {
+    formik.setFieldValue("file", forwardedAttachment ? forwardedAttachment : "");
+  }, [forwarded_file_name, forwarded_file_path, forwarded_file_size, forwarded_mime_type]);
 
   /**
    * Handle send forwarded message
@@ -236,6 +240,7 @@ const ChatInput = ({
       forwardedMessageFormik.setValues({
         ...forwardedMessageFormik.values,
         message: forwardedMessage || "",
+        file: forwardedAttachment || "",
         project_id: forwardedProject?.id || "",
         project_no: forwardedProject?.project_no || "",
         project_title: forwardedProject?.title || "",
@@ -259,6 +264,9 @@ const ChatInput = ({
     }
   }, [bandAttachment, bandAttachmentType]);
 
+  /**
+   * Handle forwarded band
+   */
   useEffect(() => {
     if (forwardedProject) {
       setForwardedBandAttachmentType("project");
@@ -270,7 +278,6 @@ const ChatInput = ({
   }, [forwardedProject, forwardedTask]);
 
   useEffect(() => {
-    // resetForwardedBandAttachment();
     if (forwardedBandAttachment) {
       formik.setFieldValue(`${forwardedBandAttachmentType}_id`, forwardedBandAttachment?.id);
       formik.setFieldValue(
