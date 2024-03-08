@@ -18,7 +18,6 @@ const PayslipPasswordEdit = ({
   setHideConfirmPassword,
   onUpdatePassword,
   reference,
-  setPasswordError,
   isOpen,
   toggle,
 }) => {
@@ -57,7 +56,6 @@ const PayslipPasswordEdit = ({
       ref={reference}
       onClose={() => {
         formik.resetForm();
-        setPasswordError("");
         reference.current?.hide();
       }}
     >

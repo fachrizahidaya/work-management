@@ -46,7 +46,7 @@ const NewLeaveRequest = () => {
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
 
-  const { employeeId, isOpen, toggle } = route.params;
+  const { employeeId, toggle } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -60,11 +60,7 @@ const NewLeaveRequest = () => {
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
-  const {
-    data: leaveType,
-    isFetching: leaveTypeIsFetching,
-    refetch: refetchLeaveType,
-  } = useFetch("/hr/leaves", [searchInput], fetchLeaveTypeParameters);
+  const { data: leaveType } = useFetch("/hr/leaves", [searchInput], fetchLeaveTypeParameters);
 
   if (filteredType.length > 0) {
     var leaveOptionsFiltered = filteredType?.map((item) => ({
@@ -157,7 +153,7 @@ const NewLeaveRequest = () => {
    * Handle calculate leave quota
    * @param {*} action
    */
-  const countLeave = async (action = null) => {
+  const countLeave = async () => {
     try {
       setIsLoading(true);
       const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
@@ -174,7 +170,7 @@ const NewLeaveRequest = () => {
         Toast.show("End date can't be less than start date", ErrorToastProps);
       } else {
         setIsLoading(false);
-        setStarDateMore(true);
+        setStarDateMore(false);
         Toast.show("Leave Request available", SuccessToastProps);
       }
     } catch (err) {
@@ -314,7 +310,6 @@ const NewLeaveRequest = () => {
             </View>
 
             <NewLeaveRequestForm
-              onSubmit={leaveRequestAddHandler}
               formik={formik}
               onChangeStartDate={onChangeStartDate}
               onChangeEndDate={onChangeEndDate}

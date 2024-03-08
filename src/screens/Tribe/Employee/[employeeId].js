@@ -29,9 +29,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [reloadComment, setReloadComment] = useState(false);
   const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
   const [currentOffsetComment, setCurrentOffsetComment] = useState(0);
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [postId, setPostId] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
@@ -62,7 +60,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
   const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
 
-  const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
+  const userSelector = useSelector((state) => state.auth);
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
   const checkAccess = menuSelector[1].sub[2]?.actions.create_announcement;
@@ -161,7 +159,6 @@ const EmployeeProfileScreen = ({ route }) => {
     commentsScreenSheetRef.current?.show();
     setPostId(post_id);
     const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
   };
 
   /**
@@ -194,9 +191,6 @@ const EmployeeProfileScreen = ({ route }) => {
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     setForceRerender(!forceRerender);
@@ -362,7 +356,7 @@ const EmployeeProfileScreen = ({ route }) => {
         {isReady ? (
           <>
             <>
-              <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+              <View style={styles.header}>
                 <PageHeader
                   title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
                   onPress={() => {

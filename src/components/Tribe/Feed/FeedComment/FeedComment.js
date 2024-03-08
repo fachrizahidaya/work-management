@@ -30,7 +30,6 @@ const FeedComment = ({
   reference,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
 
   /**
    * Handle show username suggestion option
@@ -76,7 +75,6 @@ const FeedComment = ({
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   /**

@@ -22,25 +22,18 @@ import ShareImage from "../../../components/Tribe/Feed/ShareImage";
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
-  const [postId, setPostId] = useState(null);
   const [commentParentId, setCommentParentId] = useState(null);
-  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [reloadPost, setReloadPost] = useState(false);
   const [reloadComment, setReloadComment] = useState(false);
   const [forceRerender, setForceRerender] = useState(false);
   const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
   const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
 
   const route = useRoute();
 
   const navigation = useNavigation();
-
-  const commentScreenSheetRef = useRef(null);
 
   const sharePostScreenSheetRef = useRef(null);
 
@@ -53,12 +46,7 @@ const PostScreen = () => {
     limit: 10,
   };
 
-  const {
-    data: post,
-    refetch: refetchPost,
-    isFetching: postIsFetching,
-    isLoading: postIsLoading,
-  } = useFetch("/hr/posts");
+  const { data: post, refetch: refetchPost, isFetching: postIsFetching } = useFetch("/hr/posts");
 
   const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
 
@@ -108,9 +96,6 @@ const PostScreen = () => {
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPostData();
@@ -161,7 +146,6 @@ const PostScreen = () => {
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
   };
 
   /**
@@ -291,7 +275,6 @@ const PostScreen = () => {
     formik.handleChange("comments")(value);
     const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
     const lastWord = replacedValue?.split(" ").pop();
-    setSuggestions(employees?.data.filter((employee) => employee?.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   /**
@@ -318,13 +301,14 @@ const PostScreen = () => {
 
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
-      if (currentOffsetPost === 0) {
-        setPosts(post?.data);
-      } else {
-        setPosts((prevData) => [...prevData, ...post?.data]);
-      }
+      // if (currentOffsetPost === 0) {
+      //   setPosts(post?.data);
+      // }
+      // else {
+      setPosts((prevData) => [...prevData, ...post?.data]);
+      // }
     }
-  }, [postIsFetching, reloadPost]);
+  }, [postIsFetching]);
 
   useEffect(() => {
     if (comment?.data && commentIsFetching === false) {
@@ -394,18 +378,11 @@ const PostScreen = () => {
                   reference={sharePostScreenSheetRef}
                 />
                 <FeedCommentPost
-                  postId={postId}
-                  loggedEmployeeName={userSelector?.name}
-                  loggedEmployeeImage={profile?.data?.image}
                   comments={comments}
                   commentIsLoading={commentIsLoading}
                   onEndReached={commentEndReachedHandler}
-                  parentId={commentParentId}
-                  onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
-                  employees={employees?.data}
-                  reference={commentScreenSheetRef}
                   linkPressHandler={linkPressHandler}
                   emailPressHandler={emailPressHandler}
                   copyToClipboardHandler={copyToClipboard}

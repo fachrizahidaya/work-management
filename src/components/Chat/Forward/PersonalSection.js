@@ -3,7 +3,17 @@ import PersonalListItem from "./PersonalListItem";
 import { StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
-const PersonalSection = ({ personalChats, navigation, message }) => {
+const PersonalSection = ({
+  personalChats,
+  navigation,
+  message,
+  project,
+  task,
+  file_path,
+  file_name,
+  file_size,
+  mime_type,
+}) => {
   return (
     <>
       <View style={styles.header}>
@@ -29,6 +39,12 @@ const PersonalSection = ({ personalChats, navigation, message }) => {
               type="personal"
               navigation={navigation}
               message={message}
+              project={project}
+              task={task}
+              file_path={file_path}
+              file_name={file_name}
+              file_size={file_size}
+              mime_type={mime_type}
             />
           </View>
         )}

@@ -55,7 +55,6 @@ const AttendanceScreen = () => {
   const {
     data: attachment,
     isFetching: attachmentIsFetching,
-    isLoading: attachmentIsLoading,
     refetch: refetchAttachment,
   } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
 
@@ -244,7 +243,6 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      // attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");

@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -15,7 +15,6 @@ import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import { useLoading } from "../../../hooks/useLoading";
 import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
 
@@ -35,8 +34,6 @@ const TribeAddNewSheet = (props) => {
   const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
   const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
   const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } = useDisclosure(false);
-
-  const { isLoading: attendanceIsLoading, toggle: toggleAttendance } = useLoading(false);
 
   const items = [
     createLeaveRequestCheckAccess && {
@@ -126,7 +123,6 @@ const TribeAddNewSheet = (props) => {
         }
       }
     } catch (err) {
-      toggleAttendance();
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
     }
@@ -181,7 +177,6 @@ const TribeAddNewSheet = (props) => {
      * @param {*} nextAppState
      */
     const handleAppStateChange = (nextAppState) => {
-      setAppState(nextAppState);
       if (nextAppState === "active") {
         // App has come to the foreground
         runThis();
@@ -219,7 +214,6 @@ const TribeAddNewSheet = (props) => {
                       if (item.title === "New Leave Request") {
                         navigation.navigate("New Leave Request", {
                           employeeId: profile?.data?.id,
-                          isOpen: newLeaveRequestModalIsOpen,
                           toggle: toggleNewLeaveRequestModal,
                         });
                       } else if (item.title === "New Reimbursement") {
@@ -335,7 +329,6 @@ const TribeAddNewSheet = (props) => {
           hasSuccessFunc={true}
           onSuccess={() => {
             setSuccess(true);
-            toggleAttendance();
             refetchAttendance();
           }}
           description={`Are you sure want to ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}?`}

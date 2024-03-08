@@ -338,7 +338,6 @@ const PersonalLeaveScreen = () => {
             onChangeTab={onChangeTab}
             refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
             teamLeaveRequestData={teamLeaveRequestData?.data.length}
-            checkAccess={approvalLeaveRequestCheckAccess}
           />
         </>
       </SafeAreaView>

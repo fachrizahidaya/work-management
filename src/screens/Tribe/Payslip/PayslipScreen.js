@@ -21,9 +21,7 @@ const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
   const [hideOldPassword, setHideOldPassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const [passwordError, setPasswordError] = useState("");
   const [selectedPayslip, setSelectedPayslip] = useState(null);
-  const [passwordDownloadError, setPasswordDownloadError] = useState("");
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [payslips, setPayslips] = useState([]);
@@ -45,7 +43,6 @@ const PayslipScreen = () => {
     data: payslip,
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
-    isLoading: payslipIsLoading,
   } = useFetch("/hr/payslip", [currentPage], fetchPayslipParameters);
 
   const fetchMorePayslip = () => {
@@ -87,7 +84,6 @@ const PayslipScreen = () => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      setPasswordError(err.response.data.message);
       Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
@@ -111,7 +107,6 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       Toast.show(err.response.data.message, ErrorToastProps);
-      setPasswordDownloadError(err.response.data.message);
     }
   };
 
@@ -134,7 +129,6 @@ const PayslipScreen = () => {
           />
           <PayslipPasswordEdit
             reference={payslipPasswordEditScreenSheetRef}
-            setPasswordError={setPasswordError}
             hideNewPassword={hideNewPassword}
             setHideNewPassword={setHideNewPassword}
             hideOldPassword={hideOldPassword}
@@ -191,7 +185,6 @@ const PayslipScreen = () => {
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
-        setPasswordError={setPasswordDownloadError}
         downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
       />

@@ -3,7 +3,17 @@ import { StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import GroupListItem from "./GroupListItem";
 
-const GroupSection = ({ groupChats, navigation, message }) => {
+const GroupSection = ({
+  groupChats,
+  navigation,
+  message,
+  project,
+  task,
+  file_path,
+  file_name,
+  file_size,
+  mime_type,
+}) => {
   return (
     <>
       <View style={styles.header}>
@@ -29,6 +39,12 @@ const GroupSection = ({ groupChats, navigation, message }) => {
               type="group"
               navigation={navigation}
               message={message}
+              project={project}
+              task={task}
+              file_path={file_path}
+              file_name={file_name}
+              file_size={file_size}
+              mime_type={mime_type}
             />
           </View>
         )}
