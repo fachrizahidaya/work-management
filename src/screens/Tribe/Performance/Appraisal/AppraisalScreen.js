@@ -72,6 +72,7 @@ const AppraisalScreen = () => {
             id: val?.id,
             performance_appraisal_value_id: val?.performance_appraisal_value_id,
             choice: val?.choice,
+            notes: val?.notes,
           },
         ];
       });
@@ -92,6 +93,7 @@ const AppraisalScreen = () => {
       );
       if (index > -1) {
         currentData[index].choice = data?.choice;
+        currentData[index].notes = data?.notes;
       } else {
         currentData = [...currentData, data];
       }
@@ -116,7 +118,7 @@ const AppraisalScreen = () => {
    * @param {*} employeeAppraisalValue
    * @returns
    */
-  const compareActualChoice = (appraisalValues, employeeAppraisalValue) => {
+  const compareActualChoiceAndNote = (appraisalValues, employeeAppraisalValue) => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
@@ -128,12 +130,18 @@ const AppraisalScreen = () => {
           difference: [empAppraisal.choice, appraisalValue.choice],
         });
       }
+      if (appraisalValue && appraisalValue.notes !== empAppraisal.notes) {
+        differences.push({
+          id: empAppraisal.id,
+          difference: [empAppraisal.notes, appraisalValue.notes],
+        });
+      }
     }
 
     return differences;
   };
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoiceAndNote(appraisalValues, employeeAppraisalValue);
 
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
@@ -170,6 +178,7 @@ const AppraisalScreen = () => {
     initialValues: {
       performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
       choice: appraisal?.choice || "",
+      notes: appraisal?.notes || "",
     },
     onSubmit: (values) => {
       if (formik.isValid) {
@@ -302,6 +311,8 @@ const AppraisalScreen = () => {
         formik={formik}
         choice={appraisal?.choice}
         choiceValue={employeeAppraisal?.choice}
+        notes={appraisal?.notes}
+        noteValue={employeeAppraisal?.notes}
       />
       <SuccessModal
         isOpen={saveModalIsOpen}

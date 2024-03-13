@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import * as DocumentPicker from "expo-document-picker";
 
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
@@ -27,6 +28,7 @@ const KPIScreen = () => {
   const [kpi, setKpi] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeKpi, setEmployeeKpi] = useState(null);
+  const [fileAttachment, setFileAttachment] = useState(null);
 
   const navigation = useNavigation();
 
@@ -72,6 +74,7 @@ const KPIScreen = () => {
             id: val?.id,
             performance_kpi_value_id: val?.performance_kpi_value_id,
             actual_achievement: val?.actual_achievement,
+            // attachment: val?.attachment,
           },
         ];
       });
@@ -91,6 +94,7 @@ const KPIScreen = () => {
       );
       if (index > -1) {
         currentData[index].actual_achievement = data?.actual_achievement;
+        // currentData[index].attachment = data?.attachment;
       } else {
         currentData = [...currentData, data];
       }
@@ -134,6 +138,12 @@ const KPIScreen = () => {
           difference: empKpi.actual_achievement - kpiValue.actual_achievement,
         });
       }
+      // if (kpiValue && kpiValue.attachment !== empKpi.attachment) {
+      //   differences.push({
+      //     id: empKpi.id,
+      //     difference: [empKpi.attachment, kpiValue.attachment],
+      //   });
+      // }
     }
 
     return differences;
@@ -172,6 +182,34 @@ const KPIScreen = () => {
   };
 
   /**
+   * Handle select file for attendance attachment
+   */
+  const selectFileHandler = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
+
+      // Check if there is selected file
+      if (result) {
+        if (result.assets[0].size < 3000001) {
+          setFileAttachment({
+            name: result.assets[0].name,
+            size: result.assets[0].size,
+            type: result.assets[0].mimeType,
+            uri: result.assets[0].uri,
+            webkitRelativePath: "",
+          });
+        } else {
+          Toast.show("Max file size is 3MB", ErrorToastProps);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
    * Handle create kpi value
    */
   const formik = useFormik({
@@ -180,9 +218,14 @@ const KPIScreen = () => {
       actual_achievement:
         // achievement || 0,
         actualString || 0,
+      // attachment: fileAttachment?.name || "",
     },
     validationSchema: yup.object().shape({
-      actual_achievement: yup.number().required("Value is required").min(0, "Value should not be negative"),
+      actual_achievement: yup
+        .number()
+        .required("Value is required")
+        .min(0, "Value should not be negative")
+        .max(kpi?.target, "Value should not exceed target"),
     }),
     onSubmit: (values) => {
       if (formik.isValid) {
@@ -313,6 +356,9 @@ const KPIScreen = () => {
         achievement={kpi?.actual_achievement}
         target={kpi?.target}
         achievementValue={employeeKpi?.actual_achievement}
+        onSelectFile={selectFileHandler}
+        fileAttachment={fileAttachment}
+        attachment={kpi?.attachment}
       />
       <SuccessModal
         isOpen={saveModalIsOpen}

@@ -29,10 +29,10 @@ import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeav
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
-import ReviewKPIScreen from "../screens/Tribe/Performance/Review/ReviewKPIScreen";
+import KPIReviewScreen from "../screens/Tribe/Performance/Review/KPIReviewScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
-import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
+import AppraisalReviewScreen from "../screens/Tribe/Performance/Review/AppraisalReviewScreen";
 import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
 import PerformanceResultScreen from "../screens/Tribe/Performance/Result/PerformanceResultScreen";
 import AppraisalResultScreen from "../screens/Tribe/Performance/Result/AppraisalResultScreen";
@@ -190,11 +190,11 @@ const HomeStack = () => {
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Review KPI Detail" component={ReviewKPIScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Review KPI Detail" component={KPIReviewScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen
         name="Review Appraisal Detail"
-        component={ReviewAppraisalScreen}
+        component={AppraisalReviewScreen}
         options={{ header: () => <Header /> }}
       />
 

@@ -36,11 +36,18 @@ const AttendanceForm = ({
   /**
    * Handle for Late type
    */
-  const lateType = [
-    { label: "Late", value: "Late" },
-    { label: "Permit", value: "Permit" },
-    { label: "Other", value: "Other" },
-  ];
+  const lateType = date?.available_day_off
+    ? [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+        { label: "Day Off", value: "Day Off" },
+      ]
+    : [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+      ];
 
   /**
    * Handle for Early type
