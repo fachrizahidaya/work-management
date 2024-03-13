@@ -32,10 +32,10 @@ const TribeScreenSheet = (props) => {
     "Performance KPI",
     "Performance Appraisal",
     "Announcement",
-    "Employee KPI",
-    "Employee Appraisal",
-    "Employee Review",
-    "Performance Result",
+    // "Employee KPI",
+    // "Employee Appraisal",
+    // "Employee Review",
+    // "Performance Result",
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
@@ -81,7 +81,7 @@ const TribeScreenSheet = (props) => {
             );
           })}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               navigation.navigate("Evaluation");
               props.reference.current?.hide();
@@ -98,7 +98,7 @@ const TribeScreenSheet = (props) => {
               </View>
               <Text style={[{ fontSize: 14 }, TextProps]}>Evaluation</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             onPress={() => {
