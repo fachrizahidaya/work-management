@@ -1,9 +1,12 @@
 import React from "react";
 
-import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Input from "../../../shared/Forms/Input";
-import ActionSheet from "react-native-actions-sheet";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const KPIForm = ({
   reference,
@@ -16,6 +19,9 @@ const KPIForm = ({
   achievement,
   target,
   achievementValue,
+  onSelectFile,
+  fileAttachment,
+  attachment,
 }) => {
   return (
     <ActionSheet
@@ -88,6 +94,37 @@ const KPIForm = ({
               formik.setFieldValue("actual_achievement", value);
             }}
           />
+          <View style={{ gap: 5 }}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
+            </View>
+            <Pressable onPress={onSelectFile} style={styles.attachment}>
+              <Text
+                style={[
+                  {
+                    fontSize: 12,
+                    opacity: 0.5,
+                    overflow: "hidden",
+                    width: 300,
+                  },
+                  TextProps,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
+              </Text>
+              <MaterialCommunityIcons
+                name="attachment"
+                size={20}
+                style={{ transform: [{ rotate: "-35deg" }] }}
+                color="#3F434A"
+              />
+            </Pressable>
+            {!formik.errors.attachment ? null : (
+              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
+            )}
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </ActionSheet>
@@ -95,3 +132,20 @@ const KPIForm = ({
 };
 
 export default KPIForm;
+
+const styles = StyleSheet.create({
+  attachment: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    borderColor: "#E8E9EB",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+});

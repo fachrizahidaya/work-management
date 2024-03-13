@@ -24,7 +24,7 @@ import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const ReviewKPIScreen = () => {
+const KPIReviewScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
@@ -373,7 +373,7 @@ const ReviewKPIScreen = () => {
   );
 };
 
-export default ReviewKPIScreen;
+export default KPIReviewScreen;
 
 const styles = StyleSheet.create({
   container: {
