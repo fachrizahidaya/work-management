@@ -46,7 +46,7 @@ const NewLeaveRequest = () => {
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
 
-  const { employeeId, toggle } = route.params;
+  const { employeeId, toggle, setRequestType } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -140,6 +140,7 @@ const NewLeaveRequest = () => {
       setStatus("success");
       refetchLeaveHistory();
       toggle();
+      setRequestType("info");
       // Toast.show("Request created", SuccessToastProps);
     } catch (err) {
       console.log(err);

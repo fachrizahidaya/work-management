@@ -24,6 +24,7 @@ const TribeAddNewSheet = (props) => {
   const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -215,6 +216,7 @@ const TribeAddNewSheet = (props) => {
                         navigation.navigate("New Leave Request", {
                           employeeId: profile?.data?.id,
                           toggle: toggleNewLeaveRequestModal,
+                          setRequestType: setRequestType,
                         });
                       } else if (item.title === "New Reimbursement") {
                         navigation.navigate("New Reimbursement");
@@ -329,6 +331,7 @@ const TribeAddNewSheet = (props) => {
           hasSuccessFunc={true}
           onSuccess={() => {
             setSuccess(true);
+            setRequestType("clock");
             refetchAttendance();
           }}
           description={`Are you sure want to ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}?`}
@@ -345,45 +348,22 @@ const TribeAddNewSheet = (props) => {
         <SuccessModal
           isOpen={clockModalIsOpen}
           toggle={toggleClockModal}
-          onSuccess={setSuccess}
-          multipleModal={true}
-          topElement={
-            <View style={{ flexDirection: "row" }}>
-              <Text
-                style={{
-                  color: attendance?.data?.time_in ? "#FCFF58" : "#92C4FF",
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
-                {attendance?.data?.time_in ? "Clock-in" : "Clock-out"}{" "}
-              </Text>
-              <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>success!</Text>
-            </View>
-          }
-          bottomElement={
-            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-              at{" "}
-              {attendance?.data?.time_in
-                ? dayjs(attendance?.data?.time_in).format("HH:mm")
-                : dayjs(attendance?.data?.time_out).format("HH:mm") || dayjs().format("HH:mm")}
-            </Text>
-          }
+          title={`${attendance?.data?.time_in ? "Clock-in" : "Clock-out"} success!`}
+          description={`at ${
+            attendance?.data?.time_in
+              ? dayjs(attendance?.data?.time_in).format("HH:mm")
+              : dayjs(attendance?.data?.time_out).format("HH:mm") || dayjs().format("HH:mm")
+          }`}
+          color={attendance?.data?.time_in ? "#FCFF58" : "#92C4FF"}
         />
       </ActionSheet>
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}
         toggle={toggleNewLeaveRequestModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Request </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>sent!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Please wait for approval</Text>
-        }
+        type={requestType}
+        title="Request sent!"
+        description="Please wait for approval"
       />
     </>
   );

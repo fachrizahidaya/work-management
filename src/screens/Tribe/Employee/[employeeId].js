@@ -45,6 +45,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [imagePreview, setImagePreview] = useState("");
   const [deletePostSuccess, setDeletePostSuccess] = useState(false);
   const [imageToShare, setImageToShare] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -265,6 +266,7 @@ const EmployeeProfileScreen = ({ route }) => {
       postRefetchHandler();
       setIsLoading(false);
       toggleUpdatePostModal();
+      setRequestType("success");
       // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -449,6 +451,7 @@ const EmployeeProfileScreen = ({ route }) => {
         setImagePreview={setImagePreview}
         updatePostModalIsOpen={updatePostModalIsOpen}
         toggleUpdatePostModal={toggleUpdatePostModal}
+        requestType={requestType}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -459,6 +462,7 @@ const EmployeeProfileScreen = ({ route }) => {
         onSuccess={() => {
           setDeletePostSuccess(true);
           setPosts([]);
+          setRequestType("danger");
           postRefetchHandler();
         }}
         description="Are you sure to delete this post?"
@@ -481,17 +485,9 @@ const EmployeeProfileScreen = ({ route }) => {
       <SuccessModal
         isOpen={deletePostModalIsOpen}
         toggle={toggleDeletePostModal}
-        onSuccess={setDeletePostSuccess}
-        multipleModal={true}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully deleted"
       />
     </>
   );

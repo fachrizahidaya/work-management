@@ -14,6 +14,7 @@ import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
+  const [requestType, setRequestType] = useState("");
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
   const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
@@ -30,8 +31,7 @@ const MyTeamLeaveScreen = () => {
 
   const navigation = useNavigation();
 
-  const { isOpen: approvalModalIsOpen, toggle: toggleApprovalModal } = useDisclosure(false);
-  const { isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal } = useDisclosure(false);
+  const { isOpen: responseModalIsOpen, toggle: toggleResponseModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
@@ -155,10 +155,11 @@ const MyTeamLeaveScreen = () => {
       setStatus("success");
       refetchPendingLeaveRequest();
       refetchTeamLeaveRequest();
+      toggleResponseModal();
       if (data.status === "Approved") {
-        toggleApprovalModal();
+        setRequestType("success");
       } else {
-        toggleRejectionModal();
+        setRequestType("danger");
       }
       // Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
@@ -234,31 +235,12 @@ const MyTeamLeaveScreen = () => {
         ) : null}
       </SafeAreaView>
       <SuccessModal
-        isOpen={approvalModalIsOpen}
-        toggle={toggleApprovalModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Approval </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>confirmed!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for your prompt action</Text>
-        }
-      />
-      <SuccessModal
-        isOpen={rejectionModalIsOpen}
-        toggle={toggleRejectionModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Decline </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>with thanks!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Requester will be notified of the decline
-          </Text>
+        isOpen={responseModalIsOpen}
+        toggle={toggleResponseModal}
+        type={requestType}
+        title={requestType === "success" ? "Approval confirmed!" : "Decline with thanks!"}
+        description={
+          requestType === "success" ? "Thank you for your prompt action" : "Requester will be notified of the decline"
         }
       />
     </>

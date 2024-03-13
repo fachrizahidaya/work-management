@@ -27,6 +27,7 @@ const AppraisalScreen = () => {
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -160,6 +161,7 @@ const AppraisalScreen = () => {
         appraisal_value: employeeAppraisalValue,
       });
       toggleSaveModal();
+      setRequestType("info");
       // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
@@ -317,15 +319,9 @@ const AppraisalScreen = () => {
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
       />
     </>
   );

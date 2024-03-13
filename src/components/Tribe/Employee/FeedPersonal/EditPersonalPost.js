@@ -42,6 +42,7 @@ const EditPersonalPost = ({
   setImagePreview,
   updatePostModalIsOpen,
   toggleUpdatePostModal,
+  requestType,
 }) => {
   const [dateShown, setDateShown] = useState(false);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
@@ -288,15 +289,9 @@ const EditPersonalPost = ({
         <SuccessModal
           isOpen={updatePostModalIsOpen}
           toggle={toggleUpdatePostModal}
-          topElement={
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-              <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-            </View>
-          }
-          bottomElement={
-            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-          }
+          type={requestType}
+          title="Changes saved!"
+          description="Data has successfully updated"
         />
         {postActionScreenSheetRef && (
           <PostTypeOptions

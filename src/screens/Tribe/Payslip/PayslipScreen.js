@@ -25,6 +25,7 @@ const PayslipScreen = () => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [payslips, setPayslips] = useState([]);
+  const [requestType, setRequestType] = useState("");
 
   const payslipDownloadScreenSheetRef = useRef(null);
   const payslipPasswordEditScreenSheetRef = useRef(null);
@@ -79,6 +80,7 @@ const PayslipScreen = () => {
       setStatus("success");
       refetchPayslip();
       togglePinUpdateModal();
+      setRequestType("info");
       // Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -138,6 +140,7 @@ const PayslipScreen = () => {
             onUpdatePassword={payslipPasswordUpdateHandler}
             isOpen={pinUpdateModalIsOpen}
             toggle={togglePinUpdateModal}
+            requestType={requestType}
           />
         </View>
 

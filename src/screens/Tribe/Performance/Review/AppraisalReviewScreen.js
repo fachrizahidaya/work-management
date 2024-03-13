@@ -29,6 +29,7 @@ const AppraisalReviewScreen = () => {
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -165,6 +166,7 @@ const AppraisalReviewScreen = () => {
         appraisal_value: employeeAppraisalValue,
       });
       toggleSaveModal();
+      setRequestType("info");
       // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
@@ -333,6 +335,7 @@ const AppraisalReviewScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           toggleConfirmedModal();
+          setRequestType("info");
           navigation.goBack();
         }}
         description="Are you sure want to confirm this review?"
@@ -341,26 +344,32 @@ const AppraisalReviewScreen = () => {
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
+        // topElement={
+        //   <View style={{ flexDirection: "row" }}>
+        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+        //   </View>
+        // }
+        // bottomElement={
+        //   <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+        // }
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
         toggle={toggleConfirmedModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted!"
+        description="Your report is logged"
+        // topElement={
+        //   <View style={{ flexDirection: "row" }}>
+        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+        //   </View>
+        // }
+        // bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );

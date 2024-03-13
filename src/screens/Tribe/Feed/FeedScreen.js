@@ -30,6 +30,7 @@ const FeedScreen = () => {
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -236,6 +237,7 @@ const FeedScreen = () => {
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
               toggleSuccess: togglePostSuccess,
+              setRequestType: setRequestType,
             });
           }}
         >
@@ -305,17 +307,10 @@ const FeedScreen = () => {
       <SuccessModal
         isOpen={postSuccessIsOpen}
         toggle={togglePostSuccess}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Thank you for contributing to the community
-          </Text>
-        }
+        type={requestType}
+        color="#7EB4FF"
+        title="Post shared!"
+        description="Thank you for contributing to the community"
       />
     </>
   );

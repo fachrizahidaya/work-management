@@ -23,6 +23,7 @@ const AddAttendanceAttachment = ({
   month,
   attendanceAttachmentModalIsOpen,
   toggleAttendanceAttachmentModal,
+  requestType,
 }) => {
   /**
    * Handle create attendance attachment
@@ -232,13 +233,9 @@ const AddAttendanceAttachment = ({
       <SuccessModal
         isOpen={attendanceAttachmentModalIsOpen}
         toggle={toggleAttendanceAttachmentModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted"
+        description="Your report is logged"
       />
     </ActionSheet>
   );

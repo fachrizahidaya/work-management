@@ -32,6 +32,10 @@ const TribeScreenSheet = (props) => {
     "Performance KPI",
     "Performance Appraisal",
     "Announcement",
+    "Employee KPI",
+    "Employee Appraisal",
+    "Employee Review",
+    "Performance Result",
   ];
   const filteredMenu = mergedMenu.filter((item) => !excludeSubscreen.includes(item.name));
 
@@ -76,6 +80,25 @@ const TribeScreenSheet = (props) => {
               </TouchableOpacity>
             );
           })}
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Evaluation");
+              props.reference.current?.hide();
+            }}
+            style={{
+              ...styles.wrapper,
+              borderBottomWidth: 1,
+              borderColor: "#E8E9EB",
+            }}
+          >
+            <View style={styles.flex}>
+              <View style={styles.item}>
+                <MaterialCommunityIcons size={20} name="file-check-outline" color="#3F434A" />
+              </View>
+              <Text style={[{ fontSize: 14 }, TextProps]}>Evaluation</Text>
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
