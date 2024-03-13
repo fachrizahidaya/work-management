@@ -318,7 +318,9 @@ const ProjectDetailScreen = ({ route }) => {
         color="red.600"
         successMessage="Project deleted"
         hasSuccessFunc={true}
-        onSuccess={() => navigation.navigate("Projects")}
+        onSuccess={() => {
+          setTimeout(() => navigation.navigate("Projects"), 1000);
+        }}
         header="Delete Project"
         description="Are you sure to delete this project?"
         showSuccessToast={false}
