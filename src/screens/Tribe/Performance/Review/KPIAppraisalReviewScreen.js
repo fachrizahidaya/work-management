@@ -150,7 +150,7 @@ const KPIAppraisalReviewScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Employee Review" backButton={false} />
+        <PageHeader width={200} title="Employee Review" backButton={true} onPress={() => navigation.goBack()} />
       </View>
       <View style={{ paddingHorizontal: 16, backgroundColor: "#FFFFFF" }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />

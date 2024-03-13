@@ -120,7 +120,7 @@ const PayslipScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button
@@ -198,11 +198,6 @@ const PayslipScreen = () => {
 export default PayslipScreen;
 
 const styles = StyleSheet.create({
-  containerEmpty: {
-    flex: 1,
-    backgroundColor: "#f8f8f8",
-    position: "relative",
-  },
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",

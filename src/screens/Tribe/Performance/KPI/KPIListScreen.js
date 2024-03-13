@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import dayjs from "dayjs";
 
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -19,13 +18,10 @@ import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePi
 const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
-  const [archivedList, setArchivedList] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const navigation = useNavigation();
-
-  const currentDate = dayjs().format("YYYY-MM-DD");
 
   const fetchArchivedParameters = {
     begin_date: startDate,
@@ -46,25 +42,6 @@ const KPIListScreen = () => {
 
   const { data: ongoingData } = useFetch("/hr/employee-kpi/ongoing");
 
-  /**
-   * Handle separate ongoing and archived KPI
-   */
-  const filteredData = kpiList?.data
-    .map((item) => {
-      if (item?.review?.end_date >= currentDate) {
-        return item;
-      }
-    })
-    .filter(Boolean);
-
-  const archivedData = kpiList?.data
-    .map((item) => {
-      if (item?.review?.end_date <= currentDate) {
-        return item;
-      }
-    })
-    .filter(Boolean);
-
   const tabs = useMemo(() => {
     return [
       {
@@ -79,7 +56,6 @@ const KPIListScreen = () => {
     (value) => {
       setTabValue(value);
       setOngoingList([]);
-      setArchivedList([]);
       setStartDate(null);
       setEndDate(null);
     },
@@ -103,16 +79,10 @@ const KPIListScreen = () => {
     }
   }, [kpiList?.data?.length, tabValue]);
 
-  useEffect(() => {
-    if (archived?.data?.length) {
-      setArchivedList((prevData) => [...prevData, ...archived?.data]);
-    }
-  }, [archived?.data?.length, tabValue]);
-
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Employee KPI" backButton={false} />
+        <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

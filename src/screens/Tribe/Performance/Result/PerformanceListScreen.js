@@ -117,7 +117,7 @@ const PerformanceListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Performance Result" backButton={false} />
+        <PageHeader width={200} title="Performance Result" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
