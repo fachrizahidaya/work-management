@@ -24,19 +24,19 @@ const MyTeamLeaveRequestItem = ({
     <View
       key={id}
       style={{
+        flexDirection: "column",
         backgroundColor: "#ffffff",
+        gap: 10,
+        borderRadius: 10,
         paddingVertical: 16,
         paddingHorizontal: 14,
-        borderRadius: 15,
-        flexDirection: "column",
         marginVertical: 8,
-        gap: 10,
-        elevation: 3,
+        marginHorizontal: 2,
+        elevation: 4,
         shadowColor: "rgba(0, 0, 0, 1)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-        marginHorizontal: 2,
       }}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

@@ -45,7 +45,6 @@ const ChatBubble = ({
   memberName,
   userSelector,
   navigation,
-  simultaneousHandlers,
 }) => {
   const myMessage = userSelector?.id === fromUserId;
   const imgTypes = ["jpg", "jpeg", "png"];
@@ -225,12 +224,7 @@ const ChatBubble = ({
           ) : type === "group" && !myMessage ? (
             <Box ml={8}></Box>
           ) : null} */}
-      <PanGestureHandler
-        simultaneousHandlers={simultaneousHandlers}
-        failOffsetY={[-5, 5]}
-        activeOffsetX={[-5, 5]}
-        onGestureEvent={!isDeleted && panGesture}
-      >
+      <PanGestureHandler failOffsetY={[-5, 5]} activeOffsetX={[-5, 5]} onGestureEvent={!isDeleted && panGesture}>
         <Animated.View style={[rTaskContainerStyle]}>
           <Pressable
             style={{

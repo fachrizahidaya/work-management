@@ -44,7 +44,6 @@ const ContactListItem = ({
   navigation,
   latest,
   userSelector,
-  simultaneousHandlers,
 }) => {
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
 
@@ -243,7 +242,7 @@ const ContactListItem = ({
             <AnimatedText style={{ color: "#ffffff" }}>More</AnimatedText>
           </Pressable>
         </View>
-        <PanGestureHandler simultaneousHandlers={simultaneousHandlers} onGestureEvent={panGesture}>
+        <PanGestureHandler onGestureEvent={panGesture} failOffsetY={[-5, 5]} activeOffsetX={[-5, 5]}>
           <Animated.View style={animatedStyle}>
             <TouchableOpacity
               style={{ backgroundColor: "#FFFFFF" }}

@@ -294,7 +294,6 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
-                scrollRef={scrollRef}
               />
 
               <PersonalSection
@@ -305,7 +304,6 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
-                scrollRef={scrollRef}
               />
 
               {searchResult?.message?.length > 0 && (
