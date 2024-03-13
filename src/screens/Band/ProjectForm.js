@@ -15,13 +15,17 @@ import FormButton from "../../components/shared/FormButton";
 import PageHeader from "../../components/shared/PageHeader";
 import Input from "../../components/shared/Forms/Input";
 import Select from "../../components/shared/Forms/Select";
-import { ErrorToastProps, SuccessToastProps, TextProps } from "../../components/shared/CustomStylings";
+import { ErrorToastProps, TextProps } from "../../components/shared/CustomStylings";
+import SuccessModal from "../../components/shared/Modal/SuccessModal";
+import { useDisclosure } from "../../hooks/useDisclosure";
 
 const ProjectForm = ({ route }) => {
   const richText = useRef();
   const { width, height } = Dimensions.get("window");
   const { projectData, refetchSelectedProject, teamMembers } = route.params;
   const navigation = useNavigation();
+  const [requestType, setRequestType] = useState("");
+  const { isOpen: isSuccess, toggle: toggleSuccess } = useDisclosure(false);
 
   // State to save editted or created project
   const [projectId, setProjectId] = useState(null);
@@ -46,10 +50,12 @@ const ProjectForm = ({ route }) => {
             user_id: res.data.data.owner_id,
           });
         }
+        setRequestType("post");
         setProjectId(res.data.data.id);
       } else {
         await axiosInstance.patch(`/pm/projects/${projectData.id}`, form);
         setProjectId(projectData.id);
+        setRequestType("patch");
 
         // Fetch current project's detail again
         refetchSelectedProject();
@@ -58,7 +64,7 @@ const ProjectForm = ({ route }) => {
       // Refetch all project (with current selected status)
       setSubmitting(false);
       setStatus("success");
-      Toast.show("Project saved", SuccessToastProps);
+      toggleSuccess();
     } catch (error) {
       console.log(error);
       setSubmitting(false);
@@ -104,90 +110,102 @@ const ProjectForm = ({ route }) => {
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <ScrollView
-        style={{
-          width: width,
-          height: height,
-          paddingVertical: 13,
-          paddingHorizontal: 16,
-          backgroundColor: "white",
-          paddingBottom: 40,
-        }}
-      >
-        <PageHeader
-          title="New Project"
-          onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
-        />
-
-        <View style={{ display: "flex", gap: 17, marginTop: 22 }}>
-          <Input
-            formik={formik}
-            title="Project Name"
-            fieldName="title"
-            value={formik.values.title}
-            placeHolder="Input project title..."
+    <>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          style={{
+            width: width,
+            height: height,
+            paddingVertical: 13,
+            paddingHorizontal: 16,
+            backgroundColor: "white",
+            paddingBottom: 40,
+          }}
+        >
+          <PageHeader
+            title="New Project"
+            onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}
           />
 
-          <RichToolbar
-            editor={richText}
-            actions={[
-              actions.setBold,
-              actions.setItalic,
-              actions.insertBulletsList,
-              actions.insertOrderedList,
-              actions.setStrikethrough,
-              actions.setUnderline,
-            ]}
-            iconTint="#000"
-            selectedIconTint="#176688"
-          />
+          <View style={{ display: "flex", gap: 17, marginTop: 22 }}>
+            <Input
+              formik={formik}
+              title="Project Name"
+              fieldName="title"
+              value={formik.values.title}
+              placeHolder="Input project title..."
+            />
 
-          <View style={{ height: 200 }}>
-            <RichEditor
-              ref={richText}
-              onChange={(descriptionText) => {
-                formik.setFieldValue("description", descriptionText);
-              }}
-              initialContentHTML={preprocessContent(formik.values.description)}
-              style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
-              editorStyle={{
-                contentCSSText: `
+            <RichToolbar
+              editor={richText}
+              actions={[
+                actions.setBold,
+                actions.setItalic,
+                actions.insertBulletsList,
+                actions.insertOrderedList,
+                actions.setStrikethrough,
+                actions.setUnderline,
+              ]}
+              iconTint="#000"
+              selectedIconTint="#176688"
+            />
+
+            <View style={{ height: 200 }}>
+              <RichEditor
+                ref={richText}
+                onChange={(descriptionText) => {
+                  formik.setFieldValue("description", descriptionText);
+                }}
+                initialContentHTML={preprocessContent(formik.values.description)}
+                style={{ flex: 1, borderWidth: 0.5, borderRadius: 10, borderColor: "#E8E9EB" }}
+                editorStyle={{
+                  contentCSSText: `
                   display: flex; 
                   flex-direction: column; 
                   min-height: 200px; 
                   position: absolute; 
                   top: 0; right: 0; bottom: 0; left: 0;`,
-              }}
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
+              <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
+              {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
+            </View>
+
+            <Select
+              value={formik.values.priority}
+              placeHolder="Select Priority"
+              formik={formik}
+              title="Priority"
+              fieldName="priority"
+              onChange={(value) => formik.setFieldValue("priority", value)}
+              items={[
+                { label: "Low", value: "Low" },
+                { label: "Medium", value: "Medium" },
+                { label: "High", value: "High" },
+              ]}
             />
+
+            <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+              <Text style={{ color: "white" }}>{projectData ? "Save" : "Create"}</Text>
+            </FormButton>
           </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
 
-          <View>
-            <Text style={[{ marginBottom: 9 }, TextProps]}>End Date</Text>
-            <CustomDateTimePicker defaultValue={formik.values.deadline} onChange={onChangeDeadline} />
-            {formik.errors.deadline && <Text style={{ marginTop: 9, color: "red" }}>{formik.errors.deadline}</Text>}
-          </View>
-
-          <Select
-            value={formik.values.priority}
-            placeHolder="Select Priority"
-            formik={formik}
-            title="Priority"
-            fieldName="priority"
-            onChange={(value) => formik.setFieldValue("priority", value)}
-            items={[
-              { label: "Low", value: "Low" },
-              { label: "Medium", value: "Medium" },
-              { label: "High", value: "High" },
-            ]}
-          />
-
-          <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
-            <Text style={{ color: "white" }}>{projectData ? "Save" : "Create"}</Text>
-          </FormButton>
-        </View>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+      <SuccessModal
+        isOpen={isSuccess}
+        toggle={toggleSuccess}
+        title={requestType === "post" ? "Project created!" : "Changes saved!"}
+        description={
+          requestType === "post" ? "Thank you for initiating this project" : "Data has successfully updated!"
+        }
+        type={requestType === "post" ? "warning" : "success"}
+      />
+    </>
   );
 };
 

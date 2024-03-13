@@ -1,23 +1,32 @@
 import React, { useEffect } from "react";
-import { Dimensions, Platform, StatusBar, View } from "react-native";
+import { Dimensions, Platform, StatusBar, Text, View } from "react-native";
 
 import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SuccessModal = ({ isOpen, toggle, topElement, bottomElement, onSuccess, multipleModal = false }) => {
+const SuccessModal = ({ isOpen, toggle, title = "", description = "", type }) => {
   const deviceWidth = Dimensions.get("window").width;
+
+  const renderColor = () => {
+    if (type === "info") {
+      return "#CFCFCF";
+    } else if (type === "success") {
+      return "#46D590";
+    } else if (type === "danger") {
+      return "#FF7272";
+    } else if (type === "warning") {
+      return "#FFA800";
+    } else return "#92C4FF";
+  };
+
+  const words = title.split(" ");
 
   useEffect(() => {
     if (isOpen) {
       const timeout = setTimeout(() => {
         toggle();
-        if (multipleModal) {
-          onSuccess(false);
-        } else {
-          null;
-        }
-      }, 1500);
+      }, 3000);
       return () => clearTimeout(timeout);
     }
   }, [isOpen]);
@@ -50,8 +59,12 @@ const SuccessModal = ({ isOpen, toggle, topElement, bottomElement, onSuccess, mu
             paddingTop: Platform.OS === "ios" ? 30 : null,
           }}
         >
-          {topElement}
-          {bottomElement}
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: renderColor(), fontSize: 16, fontWeight: "500" }}>{words[0]}</Text>
+            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>{" " + words.slice(1).join(" ")}</Text>
+          </View>
+
+          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>{description}</Text>
         </View>
         <MaterialCommunityIcons onPress={() => toggle()} name="chevron-up" color="#FFFFFF" size={20} />
       </Modal>
