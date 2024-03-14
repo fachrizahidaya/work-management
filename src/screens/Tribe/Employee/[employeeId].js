@@ -29,9 +29,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [reloadComment, setReloadComment] = useState(false);
   const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
   const [currentOffsetComment, setCurrentOffsetComment] = useState(0);
-  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [postId, setPostId] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
   const [latestExpandedReply, setLatestExpandedReply] = useState(null);
@@ -47,6 +45,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const [imagePreview, setImagePreview] = useState("");
   const [deletePostSuccess, setDeletePostSuccess] = useState(false);
   const [imageToShare, setImageToShare] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -62,7 +61,7 @@ const EmployeeProfileScreen = ({ route }) => {
   const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
   const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
 
-  const userSelector = useSelector((state) => state.auth); // User redux to fetch id, name
+  const userSelector = useSelector((state) => state.auth);
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
   const checkAccess = menuSelector[1].sub[2]?.actions.create_announcement;
@@ -161,7 +160,6 @@ const EmployeeProfileScreen = ({ route }) => {
     commentsScreenSheetRef.current?.show();
     setPostId(post_id);
     const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
   };
 
   /**
@@ -194,9 +192,6 @@ const EmployeeProfileScreen = ({ route }) => {
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     setForceRerender(!forceRerender);
@@ -271,6 +266,7 @@ const EmployeeProfileScreen = ({ route }) => {
       postRefetchHandler();
       setIsLoading(false);
       toggleUpdatePostModal();
+      setRequestType("success");
       // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -362,7 +358,7 @@ const EmployeeProfileScreen = ({ route }) => {
         {isReady ? (
           <>
             <>
-              <View style={isHeaderSticky ? styles.stickyHeader : styles.header}>
+              <View style={styles.header}>
                 <PageHeader
                   title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
                   onPress={() => {
@@ -455,6 +451,7 @@ const EmployeeProfileScreen = ({ route }) => {
         setImagePreview={setImagePreview}
         updatePostModalIsOpen={updatePostModalIsOpen}
         toggleUpdatePostModal={toggleUpdatePostModal}
+        requestType={requestType}
       />
       <ConfirmationModal
         isOpen={deleteModalIsOpen}
@@ -465,6 +462,7 @@ const EmployeeProfileScreen = ({ route }) => {
         onSuccess={() => {
           setDeletePostSuccess(true);
           setPosts([]);
+          setRequestType("danger");
           postRefetchHandler();
         }}
         description="Are you sure to delete this post?"
@@ -487,17 +485,9 @@ const EmployeeProfileScreen = ({ route }) => {
       <SuccessModal
         isOpen={deletePostModalIsOpen}
         toggle={toggleDeletePostModal}
-        onSuccess={setDeletePostSuccess}
-        multipleModal={true}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully deleted"
       />
     </>
   );

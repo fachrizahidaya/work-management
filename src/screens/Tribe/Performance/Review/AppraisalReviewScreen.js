@@ -23,12 +23,13 @@ import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const ReviewAppraisalScreen = () => {
+const AppraisalReviewScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -45,11 +46,7 @@ const ReviewAppraisalScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const {
-    data: appraisalList,
-    isFetching: appraisalListIsFetching,
-    refetch: refetchAppraisalList,
-  } = useFetch(`/hr/employee-review/appraisal/${id}`);
+  const { data: appraisalList, refetch: refetchAppraisalList } = useFetch(`/hr/employee-review/appraisal/${id}`);
 
   /**
    * Handle selected Appraisal item
@@ -77,6 +74,8 @@ const ReviewAppraisalScreen = () => {
             performance_appraisal_value_id: val?.performance_appraisal_value_id,
             supervisor_choice: val?.supervisor_choice,
             employee_choice: val?.choice,
+            supervisor_notes: val?.supervisor_notes,
+            employee_notes: val?.notes,
           },
         ];
       });
@@ -97,6 +96,7 @@ const ReviewAppraisalScreen = () => {
       );
       if (index > -1) {
         currentData[index].supervisor_choice = data?.supervisor_choice;
+        currentData[index].supervisor_notes = data?.supervisor_notes;
       } else {
         currentData = [...currentData, data];
       }
@@ -124,7 +124,7 @@ const ReviewAppraisalScreen = () => {
    * @param {*} employeeAppraisalValue
    * @returns
    */
-  const compareActualChoice = (appraisalValues, employeeAppraisalValue) => {
+  const compareActualChoiceAndNotes = (appraisalValues, employeeAppraisalValue) => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
@@ -136,12 +136,18 @@ const ReviewAppraisalScreen = () => {
           difference: [empAppraisal.supervisor_choice, appraisalValue.supervisor_choice],
         });
       }
+      if (appraisalValue && appraisalValue.supervisor_notes !== empAppraisal.supervisor_notes) {
+        differences.push({
+          id: empAppraisal.id,
+          difference: [empAppraisal.supervisor_notes, appraisalValue.supervisor_notes],
+        });
+      }
     }
 
     return differences;
   };
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoiceAndNotes(appraisalValues, employeeAppraisalValue);
 
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
@@ -160,6 +166,7 @@ const ReviewAppraisalScreen = () => {
         appraisal_value: employeeAppraisalValue,
       });
       toggleSaveModal();
+      setRequestType("info");
       // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
@@ -178,6 +185,7 @@ const ReviewAppraisalScreen = () => {
     initialValues: {
       performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
       supervisor_choice: appraisal?.supervisor_choice || "",
+      supervisor_notes: appraisal?.supervisor_notes || "",
     },
     onSubmit: (values) => {
       if (formik.isValid) {
@@ -314,6 +322,7 @@ const ReviewAppraisalScreen = () => {
         choice={appraisal?.supervisor_choice}
         choiceValue={employeeAppraisal?.supervisor_choice}
         employee_choice={appraisal?.employee_choice}
+        employee_notes={appraisal?.employee_notes}
       />
       <ConfirmationModal
         isOpen={confirmationModalIsOpen}
@@ -326,6 +335,7 @@ const ReviewAppraisalScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           toggleConfirmedModal();
+          setRequestType("info");
           navigation.goBack();
         }}
         description="Are you sure want to confirm this review?"
@@ -334,32 +344,38 @@ const ReviewAppraisalScreen = () => {
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
+        // topElement={
+        //   <View style={{ flexDirection: "row" }}>
+        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
+        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
+        //   </View>
+        // }
+        // bottomElement={
+        //   <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
+        // }
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
         toggle={toggleConfirmedModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted!"
+        description="Your report is logged"
+        // topElement={
+        //   <View style={{ flexDirection: "row" }}>
+        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
+        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
+        //   </View>
+        // }
+        // bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );
 };
 
-export default ReviewAppraisalScreen;
+export default AppraisalReviewScreen;
 
 const styles = StyleSheet.create({
   container: {

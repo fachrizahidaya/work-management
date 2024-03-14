@@ -24,12 +24,13 @@ import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 
-const ReviewKPIScreen = () => {
+const KPIReviewScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeKpi, setEmployeeKpi] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -168,8 +169,11 @@ const ReviewKPIScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-review/kpi/${kpiList?.data?.id}`, {
         kpi_value: employeeKpiValue,
       });
-      // Toast.show("Data saved!", SuccessToastProps);
+
       toggleSaveModal();
+      setRequestType("info");
+      // Toast.show("Data saved!", SuccessToastProps);
+
       refetchKpiList();
     } catch (err) {
       console.log(err);
@@ -340,6 +344,7 @@ const ReviewKPIScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           toggleConfirmedModal();
+          setRequestType("info");
           navigation.goBack();
         }}
         description="Are you sure want to confirm this review?"
@@ -348,32 +353,22 @@ const ReviewKPIScreen = () => {
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
         toggle={toggleConfirmedModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted!"
+        description="Your report is logged"
       />
     </>
   );
 };
 
-export default ReviewKPIScreen;
+export default KPIReviewScreen;
 
 const styles = StyleSheet.create({
   container: {

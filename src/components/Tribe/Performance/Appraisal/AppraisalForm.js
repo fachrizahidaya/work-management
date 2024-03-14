@@ -2,6 +2,7 @@ import React from "react";
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import Select from "../../../shared/Forms/Select";
+import Input from "../../../shared/Forms/Input";
 
 const AppraisalForm = ({
   reference,
@@ -15,12 +16,14 @@ const AppraisalForm = ({
   formik,
   choice,
   choiceValue,
+  notes,
+  noteValue,
 }) => {
   return (
     <ActionSheet
       ref={reference}
       closeOnPressBack={false}
-      closeOnTouchBackdrop={choiceValue == formik.values.choice ? true : false}
+      closeOnTouchBackdrop={choiceValue == formik.values.choice && noteValue == formik.values.notes ? true : false}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
@@ -42,7 +45,7 @@ const AppraisalForm = ({
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={() => {
-                if (choice === formik.values.choice) {
+                if (choice === formik.values.choice && notes === formik.values.notes) {
                   null;
                 } else {
                   formik.handleSubmit();
@@ -50,7 +53,9 @@ const AppraisalForm = ({
                 }
               }}
             >
-              <Text style={{ opacity: choice == formik.values.choice ? 0.5 : 1 }}>Save</Text>
+              <Text style={{ opacity: choice == formik.values.choice && notes === formik.values.notes ? 0.5 : 1 }}>
+                Save
+              </Text>
             </TouchableOpacity>
           </View>
           <Text>{description}</Text>
@@ -66,6 +71,18 @@ const AppraisalForm = ({
             ]}
             onChange={(value) => {
               formik.setFieldValue("choice", value);
+            }}
+          />
+
+          <Input
+            formik={formik}
+            title="Notes"
+            multiline={true}
+            fieldName="notes"
+            value={formik.values.notes}
+            placeHolder="Input Notes"
+            onChangeText={(value) => {
+              formik.setFieldValue("notes", value);
             }}
           />
         </View>

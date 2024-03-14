@@ -23,7 +23,6 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  onCommentToggle,
   forceRerender,
   setForceRerender,
   toggleFullScreen,
@@ -128,15 +127,14 @@ const FeedCardItemPost = ({
 
   return (
     <View style={styles.container}>
-      <Pressable
+      <View
         style={{
           padding: 16,
           gap: 20,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
           backgroundColor: "#FFFFFF",
         }}
-        onPress={() => navigation.navigate("Post Screen", { id: id })}
       >
         <View style={styles.cardHeader}>
           <TouchableOpacity
@@ -226,15 +224,15 @@ const FeedCardItemPost = ({
 
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
           </View>
-          <View style={styles.iconAction}>
+          {/* <View style={styles.iconAction}>
             <TouchableOpacity onPress={() => reference.current?.show()}>
               <MaterialCommunityIcons name="share-variant" size={20} color="#3F434A" />
             </TouchableOpacity>
 
             <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}> Share</Text>
-          </View>
+          </View> */}
         </View>
-      </Pressable>
+      </View>
     </View>
   );
 };

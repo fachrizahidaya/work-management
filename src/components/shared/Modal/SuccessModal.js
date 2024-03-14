@@ -5,19 +5,23 @@ import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SuccessModal = ({ isOpen, toggle, title = "", description = "", type }) => {
+const SuccessModal = ({ isOpen, toggle, title = "", description = "", type, color }) => {
   const deviceWidth = Dimensions.get("window").width;
 
   const renderColor = () => {
-    if (type === "info") {
-      return "#CFCFCF";
-    } else if (type === "success") {
-      return "#46D590";
-    } else if (type === "danger") {
-      return "#FF7272";
-    } else if (type === "warning") {
-      return "#FFA800";
-    } else return "#92C4FF";
+    if (color) {
+      return color;
+    } else {
+      if (type === "info") {
+        return "#CFCFCF";
+      } else if (type === "success") {
+        return "#46D590";
+      } else if (type === "danger") {
+        return "#FF7272";
+      } else if (type === "warning") {
+        return "#FFA800";
+      } else return "#92C4FF";
+    }
   };
 
   const words = title.split(" ");

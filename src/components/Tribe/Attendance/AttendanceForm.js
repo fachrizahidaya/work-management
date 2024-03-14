@@ -31,16 +31,24 @@ const AttendanceForm = ({
   reference,
   attendanceReportModalIsOpen,
   toggleAttendanceReportModal,
+  requestType,
 }) => {
   const [tabValue, setTabValue] = useState("late");
   /**
    * Handle for Late type
    */
-  const lateType = [
-    { label: "Late", value: "Late" },
-    { label: "Permit", value: "Permit" },
-    { label: "Other", value: "Other" },
-  ];
+  const lateType = date?.available_day_off
+    ? [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+        { label: "Day Off", value: "Day Off" },
+      ]
+    : [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+      ];
 
   /**
    * Handle for Early type
@@ -399,13 +407,9 @@ const AttendanceForm = ({
       <SuccessModal
         isOpen={attendanceReportModalIsOpen}
         toggle={toggleAttendanceReportModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted!"
+        description="Your report is logged"
       />
     </ActionSheet>
   );

@@ -49,7 +49,7 @@ const NewFeedScreen = () => {
     Keyboard.dismiss();
   };
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
   const { data: employees } = useFetch("/hr/employees");
 
   /**
@@ -69,6 +69,7 @@ const NewFeedScreen = () => {
       setStatus("success");
       postRefetchHandler();
       toggleSuccess();
+      setRequestType("post");
       // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);

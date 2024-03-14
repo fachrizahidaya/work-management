@@ -27,6 +27,7 @@ const AppraisalScreen = () => {
   const [appraisal, setAppraisal] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -72,6 +73,7 @@ const AppraisalScreen = () => {
             id: val?.id,
             performance_appraisal_value_id: val?.performance_appraisal_value_id,
             choice: val?.choice,
+            notes: val?.notes,
           },
         ];
       });
@@ -92,6 +94,7 @@ const AppraisalScreen = () => {
       );
       if (index > -1) {
         currentData[index].choice = data?.choice;
+        currentData[index].notes = data?.notes;
       } else {
         currentData = [...currentData, data];
       }
@@ -116,7 +119,7 @@ const AppraisalScreen = () => {
    * @param {*} employeeAppraisalValue
    * @returns
    */
-  const compareActualChoice = (appraisalValues, employeeAppraisalValue) => {
+  const compareActualChoiceAndNote = (appraisalValues, employeeAppraisalValue) => {
     let differences = [];
 
     for (let empAppraisal of employeeAppraisalValue) {
@@ -128,12 +131,18 @@ const AppraisalScreen = () => {
           difference: [empAppraisal.choice, appraisalValue.choice],
         });
       }
+      if (appraisalValue && appraisalValue.notes !== empAppraisal.notes) {
+        differences.push({
+          id: empAppraisal.id,
+          difference: [empAppraisal.notes, appraisalValue.notes],
+        });
+      }
     }
 
     return differences;
   };
 
-  let differences = compareActualChoice(appraisalValues, employeeAppraisalValue);
+  let differences = compareActualChoiceAndNote(appraisalValues, employeeAppraisalValue);
 
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
@@ -152,6 +161,7 @@ const AppraisalScreen = () => {
         appraisal_value: employeeAppraisalValue,
       });
       toggleSaveModal();
+      setRequestType("info");
       // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
@@ -170,6 +180,7 @@ const AppraisalScreen = () => {
     initialValues: {
       performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
       choice: appraisal?.choice || "",
+      notes: appraisal?.notes || "",
     },
     onSubmit: (values) => {
       if (formik.isValid) {
@@ -302,19 +313,15 @@ const AppraisalScreen = () => {
         formik={formik}
         choice={appraisal?.choice}
         choiceValue={employeeAppraisal?.choice}
+        notes={appraisal?.notes}
+        noteValue={employeeAppraisal?.notes}
       />
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
       />
     </>
   );

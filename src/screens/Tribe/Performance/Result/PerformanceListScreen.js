@@ -54,39 +54,38 @@ const PerformanceListScreen = () => {
     // fetchMyTeamParameters
   );
 
-  if (teamCommentList?.data.length > 0) {
-    var tabs = useMemo(() => {
+  var tabs = useMemo(() => {
+    if (teamCommentList?.data?.length > 0) {
       return [
         {
-          title: `Personal (${personalCommentList?.data.length || 0})`,
+          title: `Personal`,
           value: "Personal",
         },
         {
-          title: `My Team (${teamCommentList?.data.length || 0})`,
+          title: `My Team`,
           value: "My Team",
         },
       ];
-    }, [teamCommentList, personalCommentList]);
-  } else {
-    var tabs = useMemo(() => {
+    } else {
       return [
         {
-          title: `Personal (${personalCommentList?.data.length || 0})`,
+          title: `Personal`,
           value: "Personal",
         },
       ];
-    }, [personalCommentList]);
-  }
+    }
+  }, [teamCommentList, personalCommentList]);
 
-  const [tabValue, setTabValue] = useState(personalCommentList?.data.length > 0 ? "Personal" : "My Team");
+  const [tabValue, setTabValue] = useState(teamCommentList?.data?.length > 0 ? "My Team" : "Personal");
 
-  const onChangeTab = useCallback((value) => {
+  const onChangeTab = (value) => {
     setTabValue(value);
-    setPersonalList([]);
-    setTeamList([]);
-    // setCurrentPagePersonal(1);
-    // setCurrentPageMyTeam(1);
-  }, []);
+    if (tabValue === "My Team") {
+      setPersonalList([]);
+    } else {
+      setTeamList([]);
+    }
+  };
 
   // const fetchMorePersonal = () => {
   //   if (currentPagePersonal < personalCommentList?.data?.last_page) {
@@ -117,7 +116,7 @@ const PerformanceListScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Performance Result" backButton={false} />
+        <PageHeader width={200} title="Performance Result" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

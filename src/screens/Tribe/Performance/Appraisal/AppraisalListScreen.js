@@ -19,13 +19,10 @@ import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePi
 const AppraisalListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
   const [ongoingList, setOngoingList] = useState([]);
-  const [archivedList, setArchivedList] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const navigation = useNavigation();
-
-  const currentDate = dayjs().format("YYYY-MM-DD");
 
   const fetchArchivedParameters = {
     begin_date: startDate,
@@ -46,45 +43,25 @@ const AppraisalListScreen = () => {
 
   const { data: ongoingData } = useFetch("/hr/employee-appraisal/ongoing");
 
-  /**
-   * Handle separate ongoing and archived Appraisal
-   */
-  const filteredData = appraisalList?.data
-    .map((item) => {
-      if (item?.review?.end_date >= currentDate) {
-        return item;
-      }
-    })
-    .filter(Boolean);
-
-  const archivedData = appraisalList?.data
-    .map((item) => {
-      if (item?.review?.end_date <= currentDate) {
-        return item;
-      }
-    })
-    .filter(Boolean);
-
   const tabs = useMemo(() => {
     return [
       {
-        title: `Ongoing (${ongoingData?.data?.length || 0})`,
+        title: `Ongoing`,
         value: "Ongoing",
       },
       { title: `Archived`, value: "Archived" },
     ];
   }, [appraisalList, archived]);
 
-  const onChangeTab = useCallback(
-    (value) => {
-      setTabValue(value);
-      setOngoingList([]);
-      setArchivedList([]);
+  const onChangeTab = (value) => {
+    setTabValue(value);
+    if (tabValue === "Ongoing") {
       setStartDate(null);
       setEndDate(null);
-    },
-    [appraisalList, archived]
-  );
+    } else {
+      setOngoingList([]);
+    }
+  };
 
   /**
    * Handle start and end date archived
@@ -104,16 +81,10 @@ const AppraisalListScreen = () => {
     }
   }, [appraisalList?.data?.length, tabValue]);
 
-  useEffect(() => {
-    if (archived?.data?.length) {
-      setArchivedList((prevData) => [...prevData, ...archived?.data]);
-    }
-  }, [archived?.data?.length, tabValue]);
-
   return (
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Employee Appraisal" backButton={false} />
+        <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => navigation.goBack()} />
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>

@@ -28,7 +28,6 @@ const ChatListScreen = () => {
   const { laravelEcho } = useWebsocketContext();
   const [globalKeyword, setGlobalKeyword] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
-  const [selectedContact, setSelectedContact] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -148,7 +147,6 @@ const ChatListScreen = () => {
    * @param {*} contact
    */
   const contactMenuHandler = (contact) => {
-    setSelectedContact(contact);
     SheetManager.show("form-sheet", {
       payload: {
         children: (
@@ -296,7 +294,6 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
-                scrollRef={scrollRef}
               />
 
               <PersonalSection
@@ -307,7 +304,6 @@ const ChatListScreen = () => {
                 onPinControl={chatPinUpdateHandler}
                 navigation={navigation}
                 userSelector={userSelector}
-                scrollRef={scrollRef}
               />
 
               {searchResult?.message?.length > 0 && (

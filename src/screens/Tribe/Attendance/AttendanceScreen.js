@@ -31,6 +31,7 @@ const AttendanceScreen = () => {
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
   const [deleteAttendanceAttachment, setDeleteAttendanceAttachment] = useState(false);
+  const [requestType, setRequestType] = useState("");
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
@@ -55,7 +56,6 @@ const AttendanceScreen = () => {
   const {
     data: attachment,
     isFetching: attachmentIsFetching,
-    isLoading: attachmentIsLoading,
     refetch: refetchAttachment,
   } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
 
@@ -244,11 +244,11 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      // attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
       toggleAttendanceReportModal();
+      setRequestType("info");
       // Toast.show("Report submitted", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -272,6 +272,7 @@ const AttendanceScreen = () => {
       });
       refetchAttachment();
       toggleAttendanceAttachmentModal();
+      setRequestType("info");
       // Toast.show("Attachment submitted", SuccessToastProps);
       setStatus("success");
       setSubmitting(false);
@@ -446,6 +447,7 @@ const AttendanceScreen = () => {
         reference={attendanceScreenSheetRef}
         attendanceReportModalIsOpen={attendanceReportModalIsOpen}
         toggleAttendanceReportModal={toggleAttendanceReportModal}
+        requestType={requestType}
       />
 
       <AddAttendanceAttachment
@@ -456,6 +458,7 @@ const AttendanceScreen = () => {
         reference={attachmentScreenSheetRef}
         attendanceAttachmentModalIsOpen={attendanceAttachmentModalIsOpen}
         toggleAttendanceAttachmentModal={toggleAttendanceAttachmentModal}
+        requestType={requestType}
       />
 
       <ConfirmationModal
@@ -468,6 +471,7 @@ const AttendanceScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           setDeleteAttendanceAttachment(true);
+          setRequestType("danger");
           refetchAttachment();
         }}
         otherModal={true}
@@ -479,17 +483,9 @@ const AttendanceScreen = () => {
       <SuccessModal
         isOpen={successDeleteModalIsOpen}
         toggle={toggleSuccessDeleteModal}
-        onSuccess={setDeleteAttendanceAttachment}
-        multipleModal={true}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully deleted"
       />
     </>
   );

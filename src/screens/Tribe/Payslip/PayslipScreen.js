@@ -21,12 +21,11 @@ const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
   const [hideOldPassword, setHideOldPassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const [passwordError, setPasswordError] = useState("");
   const [selectedPayslip, setSelectedPayslip] = useState(null);
-  const [passwordDownloadError, setPasswordDownloadError] = useState("");
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [payslips, setPayslips] = useState([]);
+  const [requestType, setRequestType] = useState("");
 
   const payslipDownloadScreenSheetRef = useRef(null);
   const payslipPasswordEditScreenSheetRef = useRef(null);
@@ -45,7 +44,6 @@ const PayslipScreen = () => {
     data: payslip,
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
-    isLoading: payslipIsLoading,
   } = useFetch("/hr/payslip", [currentPage], fetchPayslipParameters);
 
   const fetchMorePayslip = () => {
@@ -82,12 +80,12 @@ const PayslipScreen = () => {
       setStatus("success");
       refetchPayslip();
       togglePinUpdateModal();
+      setRequestType("info");
       // Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      setPasswordError(err.response.data.message);
       Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
@@ -111,7 +109,6 @@ const PayslipScreen = () => {
       setSubmitting(false);
       setStatus("error");
       Toast.show(err.response.data.message, ErrorToastProps);
-      setPasswordDownloadError(err.response.data.message);
     }
   };
 
@@ -123,7 +120,7 @@ const PayslipScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={payslip?.data?.data?.length > 0 ? styles.container : styles.containerEmpty}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
           <Button
@@ -134,7 +131,6 @@ const PayslipScreen = () => {
           />
           <PayslipPasswordEdit
             reference={payslipPasswordEditScreenSheetRef}
-            setPasswordError={setPasswordError}
             hideNewPassword={hideNewPassword}
             setHideNewPassword={setHideNewPassword}
             hideOldPassword={hideOldPassword}
@@ -144,6 +140,7 @@ const PayslipScreen = () => {
             onUpdatePassword={payslipPasswordUpdateHandler}
             isOpen={pinUpdateModalIsOpen}
             toggle={togglePinUpdateModal}
+            requestType={requestType}
           />
         </View>
 
@@ -191,7 +188,6 @@ const PayslipScreen = () => {
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
-        setPasswordError={setPasswordDownloadError}
         downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
       />
@@ -202,14 +198,9 @@ const PayslipScreen = () => {
 export default PayslipScreen;
 
 const styles = StyleSheet.create({
-  containerEmpty: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    position: "relative",
-  },
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   header: {

@@ -12,7 +12,6 @@ const PersonalSection = ({
   onPinControl,
   navigation,
   userSelector,
-  scrollRef,
 }) => {
   const menuOptions = [
     {
@@ -121,7 +120,6 @@ const PersonalSection = ({
               onPin={onPinControl}
               navigation={navigation}
               userSelector={userSelector}
-              simultaneousHandlers={scrollRef}
             />
           );
         })}
@@ -166,7 +164,6 @@ const PersonalSection = ({
                 searchKeyword={searchKeyword}
                 navigation={navigation}
                 userSelector={userSelector}
-                simultaneousHandlers={scrollRef}
               />
             );
           })}

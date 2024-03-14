@@ -16,6 +16,7 @@ const PersonalNestButton = ({ height, width, email, user_id, user_name, user_typ
           email: email,
           position: user_type,
           active_member: null,
+          forwardedMessage: null,
         })
       }
     >

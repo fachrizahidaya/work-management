@@ -64,7 +64,7 @@ const FeedCardItem = ({
     const hasTag = item.includes("<a");
     const hasHref = item.includes("href");
 
-    if (item.includes("https")) {
+    if (item.includes("https" || "http")) {
       textStyle = styles.highlightedText;
       return (
         <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
@@ -127,10 +127,36 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <View style={styles.container}>
-      <Pressable style={{ ...card.card, gap: 20 }} onPress={() => navigation.navigate("Post Screen", { id: id })}>
-        <View style={styles.cardHeader}>
+    <TouchableOpacity
+      style={{
+        ...card.card,
+        gap: 20,
+        flexDirection: "column",
+        marginVertical: 8,
+        elevation: 4,
+        shadowColor: "rgba(0, 0, 0, 1)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+      }}
+      onPress={() => navigation.navigate("Post Screen", { id: id })}
+    >
+      <View style={styles.cardHeader}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Employee Profile", {
+              employeeId: employeeId,
+              loggedEmployeeId: loggedEmployeeId,
+              loggedEmployeeImage: loggedEmployeeImage,
+            })
+          }
+        >
+          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
+        </TouchableOpacity>
+
+        <View style={{ flex: 1, gap: 5 }}>
           <TouchableOpacity
+            style={styles.dockName}
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
@@ -139,94 +165,74 @@ const FeedCardItem = ({
               })
             }
           >
-            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
+            <Text style={[{ fontSize: 14 }, TextProps]}>
+              {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+            </Text>
+            {type === "Announcement" ? (
+              <View
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#ADD7FF",
+                  padding: 5,
+                }}
+              >
+                <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+              </View>
+            ) : null}
           </TouchableOpacity>
-
-          <View style={{ flex: 1, gap: 5 }}>
-            <TouchableOpacity
-              style={styles.dockName}
-              onPress={() =>
-                navigation.navigate("Employee Profile", {
-                  employeeId: employeeId,
-                  loggedEmployeeId: loggedEmployeeId,
-                  loggedEmployeeImage: loggedEmployeeImage,
-                })
-              }
-            >
-              <Text style={[{ fontSize: 14 }, TextProps]}>
-                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-              </Text>
-              {type === "Announcement" ? (
-                <View
-                  style={{
-                    borderRadius: 10,
-                    backgroundColor: "#ADD7FF",
-                    padding: 5,
-                  }}
-                >
-                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
-                </View>
-              ) : null}
-            </TouchableOpacity>
-            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
-          </View>
+          <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
         </View>
+      </View>
 
-        <Text style={[{ fontSize: 14 }, TextProps]}>{contentStyledTextHandler}</Text>
+      <Text style={[{ fontSize: 14 }, TextProps]}>{contentStyledTextHandler}</Text>
 
-        {attachment ? (
-          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
-              }}
-              alt="Feed Image"
-              resizeMethod="auto"
-              fadeDuration={0}
-            />
-          </TouchableOpacity>
-        ) : null}
+      {attachment ? (
+        <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+          <Image
+            style={styles.image}
+            source={{
+              uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
+            }}
+            alt="Feed Image"
+            resizeMethod="auto"
+            fadeDuration={0}
+          />
+        </TouchableOpacity>
+      ) : null}
 
-        <View style={styles.dockAction}>
-          <View style={styles.iconAction}>
-            <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
+      <View style={styles.dockAction}>
+        <View style={styles.iconAction}>
+          <Pressable
+            onPress={() => {
+              onCommentToggle(id);
+            }}
+          >
+            <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
+          </Pressable>
+          <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
+        </View>
+        <View style={styles.iconAction}>
+          {likeAction === "dislike" && (
+            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
+              <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
             </Pressable>
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
-          </View>
-          <View style={styles.iconAction}>
-            {likeAction === "dislike" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
-              </Pressable>
-            )}
-            {likeAction === "like" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
-              </Pressable>
-            )}
+          )}
+          {likeAction === "like" && (
+            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
+              <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
+            </Pressable>
+          )}
 
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
-          </View>
+          <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
         </View>
-      </Pressable>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    marginVertical: 14,
-    marginBottom: 2,
-  },
   defaultText: {
     color: "#000000",
   },

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
 import { Linking, Clipboard, StyleSheet, View, Text, Image, FlatList, ActivityIndicator, Platform } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -56,9 +56,33 @@ const FeedCard = ({
   /**
    * Handle press link
    */
-  const linkPressHandler = (url) => {
-    Linking.openURL(url);
-  };
+  const linkPressHandler = useCallback((url) => {
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
+    }
+
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
+    try {
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
+      } else {
+        Linking.openURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  }, []);
 
   /**
    * Handle press email
@@ -179,7 +203,6 @@ const FeedCard = ({
 export default memo(FeedCard);
 
 const styles = StyleSheet.create({
-  container: {},
   information: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",

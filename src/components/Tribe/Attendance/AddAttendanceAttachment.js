@@ -23,6 +23,7 @@ const AddAttendanceAttachment = ({
   month,
   attendanceAttachmentModalIsOpen,
   toggleAttendanceAttachmentModal,
+  requestType,
 }) => {
   /**
    * Handle create attendance attachment
@@ -36,13 +37,11 @@ const AddAttendanceAttachment = ({
       attachment: fileAttachment?.name || "",
     },
     validationSchema: yup.object().shape({
-      // title: yup.string().required("Title is required"),
       begin_date: yup.date().required("Start date is required"),
       end_date: yup
         .date()
         .required("End date is required")
         .min(yup.ref("begin_date"), "End date can't be less than start date"),
-      // attachment: yup.mixed().required("Attachment file is required"),
     }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
@@ -234,13 +233,9 @@ const AddAttendanceAttachment = ({
       <SuccessModal
         isOpen={attendanceAttachmentModalIsOpen}
         toggle={toggleAttendanceAttachmentModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        type={requestType}
+        title="Report submitted"
+        description="Your report is logged"
       />
     </ActionSheet>
   );

@@ -89,7 +89,7 @@ const ProjectDetail = () => {
                   TextProps,
                 ]}
               >
-                {task?.data?.title.length > 20 ? task?.data?.title.slice(0, 20) + "..." : task?.data?.title}
+                {project?.data?.title.length > 20 ? project?.data?.title.slice(0, 20) + "..." : project?.data?.title}
               </Text>
               <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
                 Due {dayjs(project?.data?.deadline).format("DD MMMM YYYY")}
@@ -299,6 +299,7 @@ const ProjectDetail = () => {
               type: type,
               active_member: active_member,
               isPinned: isPinned,
+              forwardedMessage: null,
             });
           }}
         >

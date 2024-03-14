@@ -18,9 +18,9 @@ const PayslipPasswordEdit = ({
   setHideConfirmPassword,
   onUpdatePassword,
   reference,
-  setPasswordError,
   isOpen,
   toggle,
+  requestType,
 }) => {
   /**
    * Handle change password
@@ -57,7 +57,6 @@ const PayslipPasswordEdit = ({
       ref={reference}
       onClose={() => {
         formik.resetForm();
-        setPasswordError("");
         reference.current?.hide();
       }}
     >
@@ -123,15 +122,9 @@ const PayslipPasswordEdit = ({
       <SuccessModal
         isOpen={isOpen}
         toggle={toggle}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
       />
     </ActionSheet>
   );

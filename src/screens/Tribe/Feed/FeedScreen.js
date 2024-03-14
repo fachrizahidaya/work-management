@@ -25,16 +25,12 @@ const FeedScreen = () => {
   const [reloadPost, setReloadPost] = useState(false);
   const [reloadComment, setReloadComment] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [scrollNewMessage, setScrollNewMessage] = useState(false);
-  const [commentsOpen, setCommentsOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [commentParentId, setCommentParentId] = useState(null);
-  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [forceRerender, setForceRerender] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [imageToShare, setImageToShare] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
@@ -138,7 +134,6 @@ const FeedScreen = () => {
     commentScreenSheetRef.current?.show();
     setPostId(post_id);
     const togglePostComment = posts.find((post) => post.id === post_id);
-    setPostTotalComment(togglePostComment.total_comment);
   };
 
   /**
@@ -148,16 +143,12 @@ const FeedScreen = () => {
     commentScreenSheetRef.current?.hide();
     setPostId(null);
     setCommentParentId(null);
-    setLatestExpandedReply(null);
   };
 
   /**
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postId);
     posts[referenceIndex]["total_comment"] += 1;
     setForceRerender(!forceRerender);
@@ -190,7 +181,6 @@ const FeedScreen = () => {
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
   };
 
   /**
@@ -247,6 +237,7 @@ const FeedScreen = () => {
               loggedEmployeeName: userSelector?.name,
               loggedEmployeeDivision: profile?.data?.position_id,
               toggleSuccess: togglePostSuccess,
+              setRequestType: setRequestType,
             });
           }}
         >
@@ -311,21 +302,15 @@ const FeedScreen = () => {
         loggedEmployeeDivision={profile?.data?.position_id}
         toggleSuccess={togglePostSuccess}
         setSelectedPicture={setSelectedPicture}
+        type="Feed"
       />
       <SuccessModal
         isOpen={postSuccessIsOpen}
         toggle={togglePostSuccess}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#7EB4FF", fontSize: 16, fontWeight: "500" }}>Post </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>shared!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Thank you for contributing to the community
-          </Text>
-        }
+        type={requestType}
+        color="#7EB4FF"
+        title="Post shared!"
+        description="Thank you for contributing to the community"
       />
     </>
   );
