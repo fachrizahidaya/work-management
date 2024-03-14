@@ -32,7 +32,7 @@ const BandTab = () => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
-          tabBarHideOnKeyboard: false,
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
           tabBarButton: ["Projects", "Tasks", "My Team", "Notes", "Calendar Band"].includes(route.name)
             ? () => {
