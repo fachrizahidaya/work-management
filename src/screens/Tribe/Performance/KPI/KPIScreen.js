@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as DocumentPicker from "expo-document-picker";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
@@ -21,6 +23,8 @@ import KPIForm from "../../../../components/Tribe/Performance/KPI/KPIForm";
 import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import Tabs from "../../../../components/shared/Tabs";
+import AttachmentForm from "../../../../components/Tribe/Performance/KPI/AttachmentForm";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -30,12 +34,14 @@ const KPIScreen = () => {
   const [employeeKpi, setEmployeeKpi] = useState(null);
   const [fileAttachment, setFileAttachment] = useState(null);
   const [requestType, setRequestType] = useState("");
+  const [tabValue, setTabValue] = useState("KPI");
 
   const navigation = useNavigation();
 
   const route = useRoute();
 
   const formScreenSheetRef = useRef(null);
+  const formAttachmentScreenSheetRef = useRef(null);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: saveModalIsOpen, toggle: toggleSaveModal } = useDisclosure(false);
@@ -64,6 +70,20 @@ const KPIScreen = () => {
     formScreenSheetRef.current?.hide();
   };
 
+  const tabs = useMemo(() => {
+    return [
+      {
+        title: `KPI`,
+        value: "KPI",
+      },
+      { title: `Attachment`, value: "Attachment" },
+    ];
+  }, []);
+
+  const onChangeTab = useCallback((value) => {
+    setTabValue(value);
+  }, []);
+
   const getEmployeeKpiValue = (employee_kpi_value) => {
     let employeeKpiValArr = [];
     if (Array.isArray(employee_kpi_value)) {
@@ -75,7 +95,7 @@ const KPIScreen = () => {
             id: val?.id,
             performance_kpi_value_id: val?.performance_kpi_value_id,
             actual_achievement: val?.actual_achievement,
-            // attachment: val?.attachment,
+            attachment: val?.attachment,
           },
         ];
       });
@@ -91,16 +111,51 @@ const KPIScreen = () => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
       const index = currentData.findIndex(
-        (employee_kpi_val) => employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
+        (employee_kpi_val) =>
+          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
+          employee_kpi_val?.id === data?.id
       );
       if (index > -1) {
         currentData[index].actual_achievement = data?.actual_achievement;
-        // currentData[index].attachment = data?.attachment;
       } else {
         currentData = [...currentData, data];
       }
       return [...currentData];
     });
+  };
+
+  const employeeKpiAttachmentUpdateHandler = (data, setStatus, setSubmitting) => {
+    setEmployeeKpiValue((prevState) => {
+      let currentData = [...prevState];
+      const index = currentData.findIndex(
+        (employee_kpi_val) =>
+          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
+          employee_kpi_val?.id === data?.id
+      );
+      if (index > -1) {
+        currentData[index].attachment = [...currentData[index].attachment, data?.file];
+      }
+      return [...currentData];
+    });
+    setStatus("success");
+    setSubmitting(false);
+  };
+
+  const employeeKpiAttachmentDeleteHandler = (employee_kpi_id, id, att_index) => {
+    if (att_index > -1) {
+      setEmployeeKpiValue((prevState) => {
+        let currentData = [...prevState];
+        const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === employee_kpi_id);
+        if (index > -1) {
+          currentData[index].attachment.splice(att_index, 1);
+          if (id) {
+            currentData[index].deleted_attachment = [];
+            currentData[index].deleted_attachment = [...currentData[index].deleted_attachment, id];
+          }
+        }
+        return [...currentData];
+      });
+    }
   };
 
   /**
@@ -139,12 +194,6 @@ const KPIScreen = () => {
           difference: empKpi.actual_achievement - kpiValue.actual_achievement,
         });
       }
-      // if (kpiValue && kpiValue.attachment !== empKpi.attachment) {
-      //   differences.push({
-      //     id: empKpi.id,
-      //     difference: [empKpi.attachment, kpiValue.attachment],
-      //   });
-      // }
     }
 
     return differences;
@@ -220,7 +269,6 @@ const KPIScreen = () => {
       actual_achievement:
         // achievement || 0,
         actualString || 0,
-      // attachment: fileAttachment?.name || "",
     },
     validationSchema: yup.object().shape({
       actual_achievement: yup
@@ -238,6 +286,20 @@ const KPIScreen = () => {
         }
         employeeKpiValueUpdateHandler(values);
       }
+    },
+    enableReinitialize: true,
+  });
+
+  const formikAttachment = useFormik({
+    initialValues: {
+      performance_kpi_value_id: "",
+      file: "",
+    },
+    // validationSchema: yup.object().shape({
+    //   file
+    // }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      setSubmitting("processing");
     },
     enableReinitialize: true,
   });
@@ -312,33 +374,49 @@ const KPIScreen = () => {
           target_level={kpiList?.data?.performance_kpi?.target_level}
         />
 
+        <View style={{ paddingTop: 12, paddingHorizontal: 16 }}>
+          <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+        </View>
+
         <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {kpiValues && kpiValues.length > 0 ? (
-              kpiValues.map((item, index) => {
-                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                return (
-                  <KPIDetailItem
-                    key={index}
-                    description={item?.description}
-                    target={item?.target}
-                    weight={item?.weight}
-                    threshold={item?.threshold}
-                    measurement={item?.measurement}
-                    achievement={item?.actual_achievement}
-                    item={item}
-                    handleOpen={status === "ongoing" ? openSelectedKpi : null}
-                    employeeKpiValue={correspondingEmployeeKpi}
-                    status={status}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )}
-          </ScrollView>
+          {tabValue === "KPI" ? (
+            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+              {kpiValues && kpiValues.length > 0 ? (
+                kpiValues.map((item, index) => {
+                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                  return (
+                    <KPIDetailItem
+                      key={index}
+                      description={item?.description}
+                      target={item?.target}
+                      weight={item?.weight}
+                      threshold={item?.threshold}
+                      measurement={item?.measurement}
+                      achievement={item?.actual_achievement}
+                      item={item}
+                      handleOpen={status === "ongoing" ? openSelectedKpi : null}
+                      employeeKpiValue={correspondingEmployeeKpi}
+                      status={status}
+                    />
+                  );
+                })
+              ) : (
+                <View style={styles.content}>
+                  <EmptyPlaceholder height={250} width={250} text="No Data" />
+                </View>
+              )}
+            </ScrollView>
+          ) : (
+            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+              <TouchableOpacity
+                onPress={() => formAttachmentScreenSheetRef.current?.show()}
+                style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
+              >
+                <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
+                <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          )}
         </View>
       </SafeAreaView>
       <ReturnConfirmationModal
@@ -362,6 +440,7 @@ const KPIScreen = () => {
         fileAttachment={fileAttachment}
         attachment={kpi?.attachment}
       />
+      <AttachmentForm reference={formAttachmentScreenSheetRef} onSelectFile={selectFileHandler} kpiValues={kpiValues} />
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
