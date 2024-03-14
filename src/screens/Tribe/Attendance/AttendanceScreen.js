@@ -474,7 +474,6 @@ const AttendanceScreen = () => {
           setRequestType("danger");
           refetchAttachment();
         }}
-        otherModal={true}
         toggleOtherModal={toggleSuccessDeleteModal}
         successStatus={deleteAttendanceAttachment}
         showSuccessToast={false}

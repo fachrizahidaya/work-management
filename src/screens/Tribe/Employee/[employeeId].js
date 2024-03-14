@@ -469,7 +469,6 @@ const EmployeeProfileScreen = ({ route }) => {
         successMessage={"Post deleted"}
         isDelete={true}
         isPatch={false}
-        otherModal={true}
         toggleOtherModal={toggleDeletePostModal}
         successStatus={deletePostSuccess}
         showSuccessToast={false}

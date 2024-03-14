@@ -21,7 +21,6 @@ import ConfirmationModal from "../ConfirmationModal";
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState();
   const [status, setStatus] = useState(null);
-  const [appState, setAppState] = useState(AppState.currentState);
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
@@ -154,6 +153,18 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
+  const leaveCondition =
+    attendance?.data?.att_type === "Leave" &&
+    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
+
+  const holidayCondition =
+    attendance?.data?.att_type === "Holiday" &&
+    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
+
+  const weekend = attendance?.data?.day_type === "Weekend";
+
+  const dayoff = attendance?.data?.day_type === "Day Off";
+
   /**
    * Handle change for the location permission status
    */
@@ -234,28 +245,23 @@ const TribeAddNewSheet = (props) => {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                ) : (
-                  attendance?.data &&
-                    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off") &&
-                    attendance?.date?.att_type !== "Leave" &&
-                    attendance?.data?.att_type !== "Holiday" && (
-                      <Pressable
-                        key={idx}
-                        style={{
-                          ...styles.wrapper,
-                          borderBottomWidth: 1,
-                          borderColor: "#E8E9EB",
-                        }}
-                      >
-                        <ClockAttendance
-                          attendance={attendance?.data}
-                          onClock={attendanceCheckHandler}
-                          location={location}
-                          locationOn={locationOn}
-                          modalIsOpen={attendanceModalIsopen}
-                        />
-                      </Pressable>
-                    )
+                ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
+                  <Pressable
+                    key={idx}
+                    style={{
+                      ...styles.wrapper,
+                      borderBottomWidth: 1,
+                      borderColor: "#E8E9EB",
+                    }}
+                  >
+                    <ClockAttendance
+                      attendance={attendance?.data}
+                      onClock={attendanceCheckHandler}
+                      location={location}
+                      locationOn={locationOn}
+                      modalIsOpen={attendanceModalIsopen}
+                    />
+                  </Pressable>
                 );
               })
             : items.slice(1, 2).map((item, idx) => {
@@ -292,28 +298,23 @@ const TribeAddNewSheet = (props) => {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                ) : (
-                  attendance?.data &&
-                    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off") &&
-                    attendance?.date?.att_type !== "Leave" &&
-                    attendance?.data?.att_type !== "Holiday" && (
-                      <Pressable
-                        key={idx}
-                        style={{
-                          ...styles.wrapper,
-                          borderBottomWidth: 1,
-                          borderColor: "#E8E9EB",
-                        }}
-                      >
-                        <ClockAttendance
-                          attendance={attendance?.data}
-                          onClock={attendanceCheckHandler}
-                          location={location}
-                          locationOn={locationOn}
-                          modalIsOpen={attendanceModalIsopen}
-                        />
-                      </Pressable>
-                    )
+                ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
+                  <Pressable
+                    key={idx}
+                    style={{
+                      ...styles.wrapper,
+                      borderBottomWidth: 1,
+                      borderColor: "#E8E9EB",
+                    }}
+                  >
+                    <ClockAttendance
+                      attendance={attendance?.data}
+                      onClock={attendanceCheckHandler}
+                      location={location}
+                      locationOn={locationOn}
+                      modalIsOpen={attendanceModalIsopen}
+                    />
+                  </Pressable>
                 );
               })}
         </View>
@@ -339,7 +340,6 @@ const TribeAddNewSheet = (props) => {
           isDelete={false}
           isGet={false}
           isPatch={false}
-          otherModal={true}
           toggleOtherModal={toggleClockModal}
           successStatus={success}
           showSuccessToast={false}

@@ -134,6 +134,7 @@ const FeedCardItemPost = ({
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
           backgroundColor: "#FFFFFF",
+          elevation: 1,
         }}
       >
         <View style={styles.cardHeader}>
