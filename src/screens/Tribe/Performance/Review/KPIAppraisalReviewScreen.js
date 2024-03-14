@@ -82,13 +82,13 @@ const KPIAppraisalReviewScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: `KPI (${kpiData?.data?.length || 0})`, value: "KPI" },
+      { title: `KPI`, value: "KPI" },
       {
-        title: `Appraisal (${appraisalData?.data?.length || 0})`,
+        title: `Appraisal`,
         value: "Appraisal",
       },
       {
-        title: `Comment (${commentData?.data?.length || 0})`,
+        title: `Comment`,
         value: "Comment",
       },
     ];
@@ -116,18 +116,22 @@ const KPIAppraisalReviewScreen = () => {
     }
   };
 
-  const onChangeTab = useCallback(
-    (value) => {
-      setTabValue(value);
-      setKpiList([]);
+  const onChangeTab = (value) => {
+    setTabValue(value);
+    if (tabValue === "KPI") {
       setAppraisalList([]);
       setCommentList([]);
       setCurrentPageKPI(1);
+    } else if (tabValue === "Appraisal") {
+      setKpiList([]);
+      setCommentList([]);
       setCurrentPageAppraisal(1);
+    } else {
+      setAppraisalList([]);
+      setCommentList([]);
       setCurrentPageComment(1);
-    },
-    [kpiData, appraisalData, commentData, kpi, appraisal, comment]
-  );
+    }
+  };
 
   useEffect(() => {
     if (kpi?.data?.data.length) {

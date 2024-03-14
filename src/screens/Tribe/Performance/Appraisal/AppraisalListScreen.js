@@ -46,22 +46,22 @@ const AppraisalListScreen = () => {
   const tabs = useMemo(() => {
     return [
       {
-        title: `Ongoing (${ongoingData?.data?.length || 0})`,
+        title: `Ongoing`,
         value: "Ongoing",
       },
       { title: `Archived`, value: "Archived" },
     ];
   }, [appraisalList, archived]);
 
-  const onChangeTab = useCallback(
-    (value) => {
-      setTabValue(value);
-      setOngoingList([]);
+  const onChangeTab = (value) => {
+    setTabValue(value);
+    if (tabValue === "Ongoing") {
       setStartDate(null);
       setEndDate(null);
-    },
-    [appraisalList, archived]
-  );
+    } else {
+      setOngoingList([]);
+    }
+  };
 
   /**
    * Handle start and end date archived

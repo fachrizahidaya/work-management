@@ -104,21 +104,28 @@ const MyTeamLeaveScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: `Waiting Approval (${pending?.length})`, value: "Pending" },
-      { title: `Approved (${approved?.length})`, value: "Approved" },
-      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
+      { title: `Waiting Approval`, value: "Pending" },
+      { title: `Approved`, value: "Approved" },
+      { title: `Rejected`, value: "Rejected" },
     ];
   }, [teamLeaveRequest, pending, approved, rejected]);
 
-  const onChangeTab = useCallback((value) => {
+  const onChangeTab = (value) => {
     setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPageRejected(1);
-  }, []);
+    if (tabValue === "Pending") {
+      setApprovedList([]);
+      setRejectedList([]);
+      setCurrentPagePending(1);
+    } else if (tabValue === "Approved") {
+      setPendingList([]);
+      setRejectedList([]);
+      setCurrentPageApproved(1);
+    } else {
+      setPendingList([]);
+      setApprovedList([]);
+      setCurrentPageRejected(1);
+    }
+  };
 
   /**
    * Handle fetch more leave by status

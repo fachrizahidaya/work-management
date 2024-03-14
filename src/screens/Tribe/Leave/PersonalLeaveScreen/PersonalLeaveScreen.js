@@ -15,6 +15,7 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
 import { SheetManager } from "react-native-actions-sheet";
 import Select from "../../../../components/shared/Forms/Select";
+import LeaveSkeleton from "../../../../components/Tribe/Leave/LeaveSkeleton";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -140,10 +141,10 @@ const PersonalLeaveScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: `Pending (${pending?.length})`, value: "Pending" },
-      { title: `Canceled (${canceled?.length})`, value: "Canceled" },
-      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
-      { title: `Approved (${approved?.length})`, value: "Approved" },
+      { title: `Pending`, value: "Pending" },
+      { title: `Canceled`, value: "Canceled" },
+      { title: `Rejected`, value: "Rejected" },
+      { title: `Approved`, value: "Approved" },
     ];
   }, [personalLeaveRequest, pending, canceled, rejected, approved]);
 
@@ -188,17 +189,38 @@ const PersonalLeaveScreen = () => {
     cancleScreenSheetRef.current?.hide();
   };
 
-  const onChangeTab = useCallback((value) => {
+  const onChangeTab = (value) => {
     setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCanceledList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPageRejected(1);
-    setCurrentPageCanceled(1);
-  }, []);
+    if (tabValue === "Pending") {
+      setApprovedList([]);
+      setRejectedList([]);
+      setCanceledList([]);
+      setCurrentPagePending(1);
+    } else if (tabValue === "Canceled") {
+      setPendingList([]);
+      setApprovedList([]);
+      setRejectedList([]);
+      setCurrentPageCanceled(1);
+    } else if (tabValue === "Approved") {
+      setPendingList([]);
+      setRejectedList([]);
+      setCanceledList([]);
+      setCurrentPageApproved(1);
+    } else {
+      setPendingList([]);
+      setApprovedList([]);
+      setCanceledList([]);
+      setCurrentPageRejected(1);
+    }
+  };
+
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i > 2; i++) {
+      skeletons.push(<LeaveSkeleton key={i} />);
+    }
+    return skeletons;
+  };
 
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data.length >= 0) {
@@ -338,6 +360,7 @@ const PersonalLeaveScreen = () => {
             onChangeTab={onChangeTab}
             refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
             teamLeaveRequestData={teamLeaveRequestData?.data.length}
+            renderSkeletons={renderSkeletons}
           />
         </>
       </SafeAreaView>

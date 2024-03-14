@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { StyleSheet, View, ActivityIndicator, Platform } from "react-native";
@@ -43,7 +43,15 @@ const LeaveRequestList = ({
   setHasBeenScrolledCanceled,
   refetchPersonalLeaveRequest,
   teamLeaveRequestData,
+  renderSkeletons,
 }) => {
+  const [routes] = useState([
+    { key: "pending", title: "Pending" },
+    { key: "canceled", title: "Canceled" },
+    { key: "rejected", title: "Rejected" },
+    { key: "approved", title: "Approved" },
+  ]);
+
   return (
     <>
       <View style={{ paddingHorizontal: 14 }}>
