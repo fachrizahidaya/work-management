@@ -60,7 +60,7 @@ const SettingScreen = () => {
     {
       icons: "forum",
       title: "FAQs",
-      color: "#000000",
+      color: "#176688",
       screen: "FAQ",
     },
   ];
