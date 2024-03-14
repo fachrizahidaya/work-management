@@ -44,7 +44,7 @@ const TribeTab = () => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { height: 80 },
-          tabBarHideOnKeyboard: false,
+          tabBarHideOnKeyboard: true,
           // Hide these certain screens from bottom tab navigation
           tabBarButton: [
             "My Information",
