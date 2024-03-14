@@ -89,7 +89,9 @@ const MenuSection = ({ selectedTask, openEditForm, disabled, onTakeTask }) => {
         header="Delete Task"
         description={`Are you sure to delete ${selectedTask?.title}?`}
         hasSuccessFunc
-        onSuccess={() => navigation.goBack()}
+        onSuccess={() => {
+          setTimeout(() => navigation.goBack(), 1000);
+        }}
         showSuccessToast={false}
         otherModal={true}
         toggleOtherModal={toggleSuccess}

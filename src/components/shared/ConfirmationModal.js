@@ -56,9 +56,7 @@ const ConfirmationModal = ({
 
       // If hasSuccessFunc passed then run the available onSuccess function
       if (hasSuccessFunc) {
-        setTimeout(() => {
-          onSuccess();
-        }, 1000);
+        onSuccess();
       }
     } catch (error) {
       console.log(error);
