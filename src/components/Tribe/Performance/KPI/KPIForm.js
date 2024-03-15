@@ -16,9 +16,6 @@ const KPIForm = ({
   achievement,
   target,
   achievementValue,
-  onSelectFile,
-  fileAttachment,
-  attachment,
 }) => {
   return (
     <ActionSheet

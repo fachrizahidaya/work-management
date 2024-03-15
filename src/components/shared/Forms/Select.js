@@ -22,7 +22,9 @@ const Select = ({ placeHolder, items = [], value, onChange, title, formik, field
         {title && <Text style={[{ marginBottom: 9 }, TextProps]}>{title}</Text>}
 
         <TouchableOpacity style={styles.select} onPress={() => selectSheetRef.current?.show()}>
-          <Text style={TextProps}>{valueToPrint?.label || placeHolder}</Text>
+          <Text style={[TextProps, { overflow: "hidden", width: "80%" }]} ellipsizeMode="tail" numberOfLines={1}>
+            {valueToPrint?.label || placeHolder}
+          </Text>
 
           <MaterialCommunityIcons name="chevron-down" style={styles.dropdownIcon} size={20} color="#3F434A" />
         </TouchableOpacity>

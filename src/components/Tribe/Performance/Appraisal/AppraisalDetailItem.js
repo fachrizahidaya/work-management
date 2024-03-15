@@ -32,11 +32,11 @@ const AppraisalDetailItem = ({
         gap: 10,
       }}
       onPress={() => {
-        if (status === "ongoing") {
-          handleOpen(item, employeeAppraisalValue);
-        } else {
-          null;
-        }
+        handleOpen(item, employeeAppraisalValue);
+        // if (status === "ongoing") {
+        // } else {
+        // null;
+        // }
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

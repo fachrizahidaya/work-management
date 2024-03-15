@@ -222,7 +222,7 @@ const AppraisalScreen = () => {
               }
             }}
           />
-          {isExpired || appraisalValues.length === 0 ? null : (
+          {appraisalList?.data?.confirm || !appraisalValues ? null : (
             <Button
               height={35}
               padding={10}
@@ -315,6 +315,7 @@ const AppraisalScreen = () => {
         choiceValue={employeeAppraisal?.choice}
         notes={appraisal?.notes}
         noteValue={employeeAppraisal?.notes}
+        confirmed={appraisalList?.data?.confirm}
       />
       <SuccessModal
         isOpen={saveModalIsOpen}
