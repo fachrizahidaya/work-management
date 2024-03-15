@@ -20,7 +20,7 @@ const FeedSection = ({ feed, employeeUsername }) => {
         style={{
           paddingHorizontal: 14,
           backgroundColor: "#f8f8f8",
-          borderRadius: 15,
+          borderRadius: 10,
           paddingBottom: 14,
         }}
       >
@@ -176,11 +176,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 8,
     marginBottom: 4,
-    elevation: 4,
-    shadowColor: "rgba(0, 0, 0, 1)",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    elevation: 1,
+    // shadowColor: "rgba(0, 0, 0, 1)",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 5,
   },
   cardHeader: {
     flexDirection: "row",

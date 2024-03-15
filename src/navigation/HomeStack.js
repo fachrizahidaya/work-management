@@ -52,6 +52,7 @@ import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
+import FrequentlyAskedQuestions from "../screens/Setting/FrequentlyAskedQuestions";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -256,6 +257,8 @@ const HomeStack = () => {
       <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="FAQ" component={FrequentlyAskedQuestions} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

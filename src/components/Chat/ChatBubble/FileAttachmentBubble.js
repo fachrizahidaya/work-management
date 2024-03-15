@@ -24,8 +24,8 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
   ];
 
   const getFileExt = () => {
-    const typeArr = file_type.split("/");
-    return typeArr.pop();
+    const typeArr = file_type?.split("/");
+    return typeArr?.pop();
   };
 
   let extension = getFileExt();
@@ -63,16 +63,16 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     >
       <Image
         source={
-          getFileExt() === "doc" || getFileExt() === "docx" || extension.includes("word")
+          getFileExt() === "doc" || getFileExt() === "docx" || extension?.includes("word")
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension.includes("spreadsheet")
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension?.includes("spreadsheet")
             ? require(xls)
             : getFileExt() === "ppt" ||
               getFileExt() === "pptx" ||
-              extension.includes("powerpoint") ||
-              extension.includes("presentation")
+              extension?.includes("powerpoint") ||
+              extension?.includes("presentation")
             ? require(ppt)
             : require(txt)
         }

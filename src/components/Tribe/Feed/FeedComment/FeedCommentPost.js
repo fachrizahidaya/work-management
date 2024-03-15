@@ -29,6 +29,7 @@ const FeedCommentPost = ({
           flexDirection: "column",
           justifyContent: "center",
           marginBottom: 14,
+          elevation: 1,
         }}
       >
         <FeedCommentListPost
