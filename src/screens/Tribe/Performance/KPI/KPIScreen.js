@@ -374,40 +374,40 @@ const KPIScreen = () => {
           target_level={kpiList?.data?.performance_kpi?.target_level}
         />
 
-        <View style={{ paddingTop: 12, paddingHorizontal: 16 }}>
+        {/* <View style={{ paddingTop: 12, paddingHorizontal: 16 }}>
           <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
-        </View>
+        </View> */}
 
         <View style={styles.container}>
-          {tabValue === "KPI" ? (
-            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-              {kpiValues && kpiValues.length > 0 ? (
-                kpiValues.map((item, index) => {
-                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                  return (
-                    <KPIDetailItem
-                      key={index}
-                      description={item?.description}
-                      target={item?.target}
-                      weight={item?.weight}
-                      threshold={item?.threshold}
-                      measurement={item?.measurement}
-                      achievement={item?.actual_achievement}
-                      item={item}
-                      handleOpen={status === "ongoing" ? openSelectedKpi : null}
-                      employeeKpiValue={correspondingEmployeeKpi}
-                      status={status}
-                    />
-                  );
-                })
-              ) : (
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              )}
-            </ScrollView>
-          ) : (
-            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {/* {tabValue === "KPI" ? ( */}
+          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+            {kpiValues && kpiValues.length > 0 ? (
+              kpiValues.map((item, index) => {
+                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                return (
+                  <KPIDetailItem
+                    key={index}
+                    description={item?.description}
+                    target={item?.target}
+                    weight={item?.weight}
+                    threshold={item?.threshold}
+                    measurement={item?.measurement}
+                    achievement={item?.actual_achievement}
+                    item={item}
+                    handleOpen={status === "ongoing" ? openSelectedKpi : null}
+                    employeeKpiValue={correspondingEmployeeKpi}
+                    status={status}
+                  />
+                );
+              })
+            ) : (
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            )}
+          </ScrollView>
+          {/* ) : ( */}
+          {/* <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
               <TouchableOpacity
                 onPress={() => formAttachmentScreenSheetRef.current?.show()}
                 style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
@@ -415,8 +415,8 @@ const KPIScreen = () => {
                 <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
                 <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
               </TouchableOpacity>
-            </ScrollView>
-          )}
+            </ScrollView> */}
+          {/* )} */}
         </View>
       </SafeAreaView>
       <ReturnConfirmationModal
