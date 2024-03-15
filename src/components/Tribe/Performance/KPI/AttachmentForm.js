@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Select from "../../../shared/Forms/Select";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, handleClose }) => {
+const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, handleClose, fileAttachment }) => {
   const kpi = kpiValues.map((item, index) => {
     return {
       value: item.id,
@@ -16,11 +16,7 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
   });
 
   return (
-    <ActionSheet
-      ref={reference}
-      closeOnPressBack={false}
-      //   closeOnTouchBackdrop={choiceValue == formik.values.choice && noteValue == formik.values.notes ? true : false}
-    >
+    <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
@@ -41,20 +37,14 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Attachment</Text>
             <TouchableOpacity
               onPress={() => {
-                // if (choice === formik.values.choice && notes === formik.values.notes) {
-                null;
-                // } else {
                 formik.handleSubmit();
                 handleClose();
-                // }
               }}
             >
               <Text
-                style={
-                  {
-                    // opacity: choice == formik.values.choice && notes === formik.values.notes ? 0.5 : 1
-                  }
-                }
+                style={{
+                  opacity: formik.values.id && formik.values.file ? 1 : 0.5,
+                }}
               >
                 Save
               </Text>
@@ -62,12 +52,12 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
           </View>
           <Select
             title="KPI"
-            // value={formik.values.choice}
+            value={formik.values.id}
             placeHolder="Select your KPI"
             items={kpi}
-            // onChange={(value) => {
-            //   formik.setFieldValue("choice", value);
-            // }}
+            onChange={(value) => {
+              formik.setFieldValue("id", value);
+            }}
           />
 
           <View style={{ gap: 5 }}>
@@ -81,14 +71,14 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
                     fontSize: 12,
                     opacity: 0.5,
                     overflow: "hidden",
-                    width: 300,
+                    width: "80%",
                   },
                   TextProps,
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {/* {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name} */}
+                {!fileAttachment ? "Upload image or .pdf" : fileAttachment?.name}
               </Text>
               <MaterialCommunityIcons
                 name="attachment"
@@ -97,9 +87,6 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
                 color="#3F434A"
               />
             </Pressable>
-            {/* {!formik.errors.attachment ? null : (
-              <Text style={{ fontSize: 14, color: "red" }}>{formik.errors.attachment}</Text>
-            )} */}
           </View>
         </View>
       </TouchableWithoutFeedback>

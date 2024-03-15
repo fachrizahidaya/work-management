@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue, status }) => {
+const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue, status, confirmed }) => {
   return (
     <Pressable
       style={{
@@ -20,7 +20,7 @@ const KPIDetailItem = ({ target, achievement, description, handleOpen, item, emp
         gap: 10,
       }}
       onPress={() => {
-        if (status === "ongoing") {
+        if (!confirmed) {
           handleOpen(item, employeeKpiValue);
         } else {
           null;
