@@ -23,8 +23,8 @@ const FrequentlyAskedQuestions = () => {
 
   const array = [
     { question: "test question 1", answer: [{ title: "test answer 1" }], icon: "chevron-right" },
-    { question: "test question 1", answer: [{ title: "test answer 1" }], icon: "chevron-right" },
-    { question: "test question 1", answer: [{ title: "test answer 1" }], icon: "chevron-right" },
+    { question: "test question 2", answer: [{ title: "test answer 2" }], icon: "chevron-right" },
+    { question: "test question 3", answer: [{ title: "test answer 3" }], icon: "chevron-right" },
   ];
 
   return (
@@ -54,7 +54,12 @@ const FrequentlyAskedQuestions = () => {
                   }}
                 >
                   <Text style={[TextProps, { color: "#ffffff" }]}>{item.question}</Text>
-                  <MaterialCommunityIcons name={item.icon} size={20} color="#ffffff" />
+                  <MaterialCommunityIcons
+                    name={item.icon}
+                    size={20}
+                    color="#ffffff"
+                    style={{ transform: [{ rotate: menuIndex === index ? "90deg" : "0deg" }] }}
+                  />
                 </View>
                 {menuIndex === index && (
                   <View

@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Select from "../../../shared/Forms/Select";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const AttachmentForm = ({ reference, onSelectFile, kpiValues }) => {
+const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, handleClose }) => {
   const kpi = kpiValues.map((item, index) => {
     return {
       value: item.id,
@@ -42,10 +42,10 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues }) => {
             <TouchableOpacity
               onPress={() => {
                 // if (choice === formik.values.choice && notes === formik.values.notes) {
-                //   null;
+                null;
                 // } else {
-                //   formik.handleSubmit();
-                //   handleClose();
+                formik.handleSubmit();
+                handleClose();
                 // }
               }}
             >

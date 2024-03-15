@@ -30,8 +30,10 @@ const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
+  const [attachmentKpi, setAttachmentKpi] = useState(null);
   const [formValue, setFormValue] = useState(null);
   const [employeeKpi, setEmployeeKpi] = useState(null);
+  const [employeeAttachmentKpi, setEmployeeAttachmentKpi] = useState(null);
   const [fileAttachment, setFileAttachment] = useState(null);
   const [requestType, setRequestType] = useState("");
   const [tabValue, setTabValue] = useState("KPI");
@@ -68,6 +70,15 @@ const KPIScreen = () => {
   };
   const closeSelectedKpi = () => {
     formScreenSheetRef.current?.hide();
+  };
+
+  const openSelectedAttachmentKpi = (data, value) => {
+    setAttachmentKpi(data);
+    setEmployeeAttachmentKpi(value);
+    formAttachmentScreenSheetRef.current?.show();
+  };
+  const closeSelectedAttachmentKpi = () => {
+    formAttachmentScreenSheetRef.current?.hide();
   };
 
   const tabs = useMemo(() => {
@@ -260,6 +271,12 @@ const KPIScreen = () => {
     }
   };
 
+  const fileChangeHandler = () => {
+    if (fileAttachment) {
+      formikAttachment.setFieldValue("file", fileAttachment);
+    }
+  };
+
   /**
    * Handle create kpi value
    */
@@ -300,6 +317,7 @@ const KPIScreen = () => {
     // }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setSubmitting("processing");
+      employeeKpiAttachmentUpdateHandler(values, setStatus, setSubmitting);
     },
     enableReinitialize: true,
   });
@@ -319,6 +337,12 @@ const KPIScreen = () => {
       });
     }
   }, [kpiList?.data]);
+
+  useEffect(() => {
+    if (!formikAttachment.isSubmitting && formikAttachment.status === "success") {
+      onClose(formikAttachment.resetForm);
+    }
+  }, [formikAttachment.isSubmitting, formikAttachment.status]);
 
   return (
     <>
@@ -440,7 +464,13 @@ const KPIScreen = () => {
         fileAttachment={fileAttachment}
         attachment={kpi?.attachment}
       />
-      <AttachmentForm reference={formAttachmentScreenSheetRef} onSelectFile={selectFileHandler} kpiValues={kpiValues} />
+      <AttachmentForm
+        reference={formAttachmentScreenSheetRef}
+        onSelectFile={selectFileHandler}
+        kpiValues={kpiValues}
+        formik={formikAttachment}
+        onChange={fileChangeHandler}
+      />
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
