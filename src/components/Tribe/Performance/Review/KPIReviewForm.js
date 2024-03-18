@@ -1,9 +1,12 @@
 import React from "react";
 
-import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import Input from "../../../shared/Forms/Input";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const KPIReviewForm = ({
   reference,
@@ -17,6 +20,7 @@ const KPIReviewForm = ({
   target,
   achievementValue,
   employee_achievement,
+  attachment,
 }) => {
   return (
     <ActionSheet
@@ -82,6 +86,37 @@ const KPIReviewForm = ({
             <Text style={{ fontSize: 12, opacity: 0.5 }}>Employee Actual Achievement</Text>
             <Text>{employee_achievement}</Text>
           </View>
+          <View style={{ gap: 3 }}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={[{ fontSize: 12, opacity: 0.5 }]}>Attachment</Text>
+            </View>
+            <View style={styles.attachment}>
+              {attachment?.length > 0 ? (
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+                  {attachment?.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => onDownload(item?.file_path)}
+                        style={{
+                          gap: 5,
+                          backgroundColor: "#f8f8f8",
+                          padding: 8,
+                          borderRadius: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={[TextProps, { fontSize: 10, color: "#176688" }]}>{item?.file_name}</Text>
+                        <MaterialCommunityIcons name="tray-arrow-down" size={15} color="#176688" />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ) : (
+                <Text style={[TextProps]}>No Attachment</Text>
+              )}
+            </View>
+          </View>
           <Input
             formik={formik}
             title="Supervisor Actual Achievement"
@@ -100,3 +135,15 @@ const KPIReviewForm = ({
 };
 
 export default KPIReviewForm;
+
+const styles = StyleSheet.create({
+  attachment: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    borderColor: "#E8E9EB",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});

@@ -5,7 +5,16 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import * as DocumentPicker from "expo-document-picker";
 
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -37,6 +46,7 @@ const KPIScreen = () => {
   const [requestType, setRequestType] = useState("");
   const [tabValue, setTabValue] = useState("KPI");
   const [attachments, setAttachments] = useState([]);
+  const [currentAttachments, setCurrentAttachments] = useState([]);
 
   const navigation = useNavigation();
 
@@ -79,6 +89,14 @@ const KPIScreen = () => {
   };
   const closeSelectedAttachmentKpi = () => {
     formAttachmentScreenSheetRef.current?.hide();
+  };
+
+  const attachmentDownloadHandler = async (file_path) => {
+    try {
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const tabs = useMemo(() => {
@@ -219,6 +237,29 @@ const KPIScreen = () => {
     });
   };
 
+  const sumCurrentAttachments = () => {
+    setCurrentAttachments(() => {
+      let attachmentArr = [];
+      kpiValues.map((kpiVal) => {
+        kpiVal?.attachment?.map((attVal, index) => {
+          attachmentArr = [
+            ...attachmentArr,
+            {
+              employee_kpi_id: kpiVal?.id,
+              attachment_id: attVal?.id || null,
+              index: index,
+              description: !reviewMode ? kpiVal?.description : kpiVal?.performance_kpi_value?.description,
+              file_name: attVal?.file_name || null,
+              file_path: attVal?.file_path || null,
+              attachment: !attVal?.file_name ? attVal : null,
+            },
+          ];
+        });
+      });
+      return [...attachmentArr];
+    });
+  };
+
   const formikChangeHandler = (e, submitWithoutChange = false) => {
     if (!submitWithoutChange) {
       formik.handleChange("actual_achievement", e);
@@ -282,9 +323,7 @@ const KPIScreen = () => {
       const res = await axiosInstance.post(
         `/hr/employee-kpi/${kpiList?.data?.id}`,
         formData,
-        // {
-        //   kpi_value: employeeKpiValue,
-        // }
+
         {
           headers: {
             "content-type": "multipart/form-data",
@@ -402,6 +441,10 @@ const KPIScreen = () => {
   }, [employeeKpiValue]);
 
   useEffect(() => {
+    sumCurrentAttachments();
+  }, [employeeKpiValue]);
+
+  useEffect(() => {
     if (!formikAttachment.isSubmitting && formikAttachment.status === "success") {
       formikAttachment.resetForm();
       setFileAttachment(null);
@@ -417,14 +460,14 @@ const KPIScreen = () => {
             title={kpiList?.data?.performance_kpi?.review?.description}
             backButton={true}
             onPress={() => {
-              if (differences.length === 0 && attachments.length === 0) {
+              if (differences.length === 0 && attachments.length === currentAttachments.length) {
                 navigation.goBack();
               } else {
                 toggleReturnModal();
               }
             }}
           />
-          {kpiList?.data?.confirm || !kpiValues ? null : (
+          {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
             <Button
               height={35}
               padding={10}
@@ -444,13 +487,15 @@ const KPIScreen = () => {
                 )
               }
               onPress={() => {
-                if (submitIsLoading || (differences.length === 0 && attachments.length === 0)) {
+                if (submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)) {
                   null;
                 } else {
                   submitHandler();
                 }
               }}
-              disabled={submitIsLoading || (differences.length === 0 && attachments.length === 0)}
+              disabled={
+                submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)
+              }
             />
           )}
         </View>
@@ -506,7 +551,7 @@ const KPIScreen = () => {
                   <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
                 </TouchableOpacity>
               )}
-              {attachments && attachments.length > 0 ? (
+              {!kpiList?.data?.confirm && attachments && attachments.length > 0 ? (
                 attachments.map((item, index) => {
                   return (
                     <AttachmentItem
@@ -546,6 +591,9 @@ const KPIScreen = () => {
         achievement={kpi?.actual_achievement}
         target={kpi?.target}
         achievementValue={employeeKpi?.actual_achievement}
+        confirmed={kpiList?.data?.confirm}
+        attachment={kpi?.attachment}
+        onDownload={attachmentDownloadHandler}
       />
       <AttachmentForm
         reference={formAttachmentScreenSheetRef}

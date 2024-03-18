@@ -20,11 +20,7 @@ const KPIDetailItem = ({ target, achievement, description, handleOpen, item, emp
         gap: 10,
       }}
       onPress={() => {
-        if (!confirmed) {
-          handleOpen(item, employeeKpiValue);
-        } else {
-          null;
-        }
+        handleOpen(item, employeeKpiValue);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

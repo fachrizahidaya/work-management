@@ -21,7 +21,7 @@ const AttachmentItem = ({ description, file_name, onDelete, reviewMode, employee
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[TextProps]}>{description}</Text>
-        <View style={{ backgroundColor: "#f8f8f8", padding: 5, borderRadius: 10 }}>
+        <View style={{ backgroundColor: "#f8f8f8", padding: 5, borderRadius: 10, flexWrap: "wrap" }}>
           <Text style={[TextProps, { fontSize: 10, color: "#176688" }]}>{file_name}</Text>
         </View>
       </View>

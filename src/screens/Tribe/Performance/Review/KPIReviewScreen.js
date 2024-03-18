@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, Linking } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -67,6 +67,14 @@ const KPIReviewScreen = () => {
     formScreenSheetRef.current?.hide();
   };
 
+  const attachmentDownloadHandler = async (file_path) => {
+    try {
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const getEmployeeKpiValue = (employee_kpi_value) => {
     let employeeKpiValArr = [];
     if (Array.isArray(employee_kpi_value)) {
@@ -79,6 +87,7 @@ const KPIReviewScreen = () => {
             performance_kpi_value_id: val?.performance_kpi_value_id,
             supervisor_actual_achievement: val?.supervisor_actual_achievement,
             employee_actual_achievement: val?.actual_achievement,
+            attachment: val?.attachment,
           },
         ];
       });
@@ -303,6 +312,8 @@ const KPIReviewScreen = () => {
                     achievement={item?.supervisor_actual_achievement}
                     handleOpen={openSelectedKpi}
                     employeeKpiValue={correspondingEmployeeKpi}
+                    attachment={item?.attachment}
+                    onDownload={attachmentDownloadHandler}
                   />
                 );
               })
@@ -332,6 +343,7 @@ const KPIReviewScreen = () => {
         target={kpi?.target}
         achievementValue={employeeKpi?.supervisor_actual_achievement}
         employee_achievement={employeeKpi?.employee_actual_achievement}
+        attachment={kpi?.attachment}
       />
       <ConfirmationModal
         isOpen={confirmationModalIsOpen}
