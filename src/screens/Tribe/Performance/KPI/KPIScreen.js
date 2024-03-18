@@ -551,7 +551,7 @@ const KPIScreen = () => {
                   <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
                 </TouchableOpacity>
               )}
-              {!kpiList?.data?.confirm && attachments && attachments.length > 0 ? (
+              {attachments && attachments.length > 0 ? (
                 attachments.map((item, index) => {
                   return (
                     <AttachmentItem
@@ -562,6 +562,9 @@ const KPIScreen = () => {
                       employee_kpi_id={item?.employee_kpi_id}
                       attachment_id={item?.attachment_id}
                       index={item?.index}
+                      confirmed={kpiList?.data?.confirm}
+                      file_path={item?.file_path}
+                      onDownload={attachmentDownloadHandler}
                     />
                   );
                 })

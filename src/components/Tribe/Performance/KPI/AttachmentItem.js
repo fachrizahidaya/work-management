@@ -5,7 +5,18 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const AttachmentItem = ({ description, file_name, onDelete, reviewMode, employee_kpi_id, attachment_id, index }) => {
+const AttachmentItem = ({
+  description,
+  file_name,
+  file_path,
+  onDelete,
+  reviewMode,
+  employee_kpi_id,
+  attachment_id,
+  index,
+  confirmed,
+  onDownload,
+}) => {
   return (
     <View
       style={{
@@ -26,8 +37,13 @@ const AttachmentItem = ({ description, file_name, onDelete, reviewMode, employee
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-        {reviewMode ? (
-          <MaterialCommunityIcons name="tray-arrow-down" size={20} color="#3F434A" />
+        {confirmed ? (
+          <MaterialCommunityIcons
+            name="tray-arrow-down"
+            size={20}
+            color="#3F434A"
+            onPress={() => onDownload(file_path)}
+          />
         ) : (
           <MaterialCommunityIcons
             name="trash-can-outline"
