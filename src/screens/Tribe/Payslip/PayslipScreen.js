@@ -156,19 +156,7 @@ const PayslipScreen = () => {
               refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
               ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
               renderItem={({ item, index }) => (
-                <PayslipList
-                  key={index}
-                  id={item?.id}
-                  month={item?.pay_month}
-                  year={item?.pay_year}
-                  downloadPayslipCheckAccess={downloadPayslipCheckAccess}
-                  onDownloadPayslip={payslipDownloadHandler}
-                  downloadDialogIsOpen={downloadDialogIsOpen}
-                  toggleDownloadDialog={toggleDownloadDialog}
-                  openSelectedPayslip={openSelectedPayslip}
-                  closeSelectedPayslip={closeSelectedPayslip}
-                  reference={payslipDownloadScreenSheetRef}
-                />
+                <PayslipList key={index} id={item?.id} month={item?.pay_month} year={item?.pay_year} />
               )}
             />
           </View>

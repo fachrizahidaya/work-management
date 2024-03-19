@@ -43,7 +43,7 @@ const ConclusionScreen = () => {
             paddingVertical: 14,
           }}
         >
-          <View style={{}}>
+          <View>
             <View
               style={{
                 flexDirection: "row",
@@ -70,7 +70,7 @@ const ConclusionScreen = () => {
                   <View style={{ gap: 5 }}>
                     <Text style={[TextProps]}>Actual Score: {item?.score?.toFixed(1)}</Text>
                     <Text style={[TextProps]}>Weight: {item?.weight}%</Text>
-                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight?.toFixed(1)}</Text>
                   </View>
                 </View>
               );
@@ -122,9 +122,9 @@ const ConclusionScreen = () => {
                 >
                   <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>{item?.item}</Text>
                   <View style={{ gap: 5 }}>
-                    <Text style={[TextProps]}>Actual Score: {item?.score.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Actual Score: {item?.score?.toFixed(1)}</Text>
                     <Text style={[TextProps]}>Weight: {item?.weight}%</Text>
-                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight?.toFixed(1)}</Text>
                   </View>
                 </View>
               );
