@@ -51,7 +51,7 @@ const ChatRoom = () => {
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+  const { keyboardHeight } = useKeyboardChecker();
 
   const userSelector = useSelector((state) => state.auth);
 
