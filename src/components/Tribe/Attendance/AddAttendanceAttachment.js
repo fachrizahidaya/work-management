@@ -195,10 +195,8 @@ const AddAttendanceAttachment = ({
             !formik.values.title ||
             !formik.values.begin_date ||
             !formik.values.end_date ? (
-              <FormButton
-                opacity={0.5}
-                disabled={true}
-                children={
+              <FormButton opacity={0.5} disabled={true}>
+                {
                   <Text
                     style={{
                       fontSize: 12,
@@ -209,12 +207,10 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-              />
+              </FormButton>
             ) : (
-              <FormButton
-                isSubmitting={formik.isSubmitting}
-                onPress={formik.handleSubmit}
-                children={
+              <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+                {
                   <Text
                     style={{
                       fontSize: 12,
@@ -225,7 +221,7 @@ const AddAttendanceAttachment = ({
                     Submit
                   </Text>
                 }
-              />
+              </FormButton>
             )}
           </View>
         </View>
