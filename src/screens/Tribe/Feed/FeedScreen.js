@@ -33,9 +33,7 @@ const FeedScreen = () => {
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
-
   const commentScreenSheetRef = useRef(null);
-
   const flashListRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);

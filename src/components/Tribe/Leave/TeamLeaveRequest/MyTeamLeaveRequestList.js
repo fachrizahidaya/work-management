@@ -86,7 +86,6 @@ const MyTeamLeaveRequestList = ({
             <View
               style={{
                 height: "100%",
-                // marginTop: 12,
               }}
             >
               <FlashList
@@ -150,7 +149,6 @@ const MyTeamLeaveRequestList = ({
             <View
               style={{
                 height: "100%",
-                // marginTop: 12,
               }}
             >
               <FlashList
@@ -210,7 +208,6 @@ const MyTeamLeaveRequestList = ({
           <View
             style={{
               height: "100%",
-              // marginTop: 12
             }}
           >
             <FlashList

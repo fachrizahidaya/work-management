@@ -203,13 +203,6 @@ const FeedCardItemPost = ({
               {" "}
               {totalComment > 1 ? "Comments" : "Comment"}
             </Text>
-            {/* <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-            </Pressable> */}
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (

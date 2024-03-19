@@ -1,13 +1,6 @@
 import dayjs from "dayjs";
 
-import {
-  View,
-  Text,
-  Platform,
-  ActivityIndicator,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Platform, ActivityIndicator, Dimensions, StyleSheet } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -24,25 +17,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const ClockAttendance = ({
-  attendance,
-  onClock,
-  location,
-  locationOn,
-  modalIsOpen,
-}) => {
+const ClockAttendance = ({ attendance, onClock, location, locationOn, modalIsOpen }) => {
   const translateX = useSharedValue(0);
-
   const screenWidth = Dimensions.get("screen");
-
   const minimumTranslation = Platform.OS === "ios" ? 270 : 280;
-
   const MIN_TRANSLATE_X = screenWidth.width - minimumTranslation;
-  if (Platform.OS === "ios") {
-    var parentWidth = screenWidth.width;
-  } else {
-    var parentWidth = screenWidth.width;
-  }
 
   /**
    * Handle animation for slide button
@@ -51,10 +30,7 @@ const ClockAttendance = ({
     onActive: (event) => {
       // while slide the button
       if (event.translationX > 0) {
-        translateX.value = Math.min(
-          event.translationX,
-          parentWidth - MIN_TRANSLATE_X
-        );
+        translateX.value = Math.min(event.translationX, screenWidth.width - MIN_TRANSLATE_X);
       }
     },
     onEnd: (event) => {
@@ -68,18 +44,7 @@ const ClockAttendance = ({
     },
   });
 
-  const limitedTranslateX = useDerivedValue(() =>
-    Math.max(translateX.value, 0)
-  );
-
-  const textOpacity = useDerivedValue(() => {
-    const threshold = 50;
-    const fadeOutRange = 100;
-    return Math.max(
-      0,
-      1 - (limitedTranslateX.value - threshold) / fadeOutRange
-    );
-  });
+  const limitedTranslateX = useDerivedValue(() => Math.max(translateX.value, 0));
 
   /**
    * Handle animation for background
@@ -87,7 +52,7 @@ const ClockAttendance = ({
   const rContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
+      [0, screenWidth.width - MIN_TRANSLATE_X],
       ["#87878721", "#186688"]
     );
     return {
@@ -102,7 +67,7 @@ const ClockAttendance = ({
   const rTaskContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
+      [0, screenWidth.width - MIN_TRANSLATE_X],
       ["#186688", "#FFFFFF"]
     );
     return {
@@ -115,24 +80,13 @@ const ClockAttendance = ({
     };
   });
 
-  const animatedIconStyle = useAnimatedStyle(() => {
-    const iconColor = interpolateColor(
-      limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
-      ["#FFFFFF", modalIsOpen ? "#FFFFFF" : "#186688"]
-    );
-    return {
-      color: iconColor,
-    };
-  });
-
   /**
    * Handle animation for text color
    */
   const textContainerStyle = useAnimatedStyle(() => {
     const textColor = interpolateColor(
       limitedTranslateX.value,
-      [0, parentWidth - MIN_TRANSLATE_X],
+      [0, screenWidth.width - MIN_TRANSLATE_X],
       ["#186688", "#FFFFFF"]
     );
     return {
@@ -143,26 +97,14 @@ const ClockAttendance = ({
   return (
     <>
       <View style={{ gap: 20 }}>
-        <View
-          style={{
-            ...styles.container,
-          }}
-        >
+        <View style={styles.container}>
           <View
             style={{
-              gap: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 20,
+              ...styles.clockData,
               backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
-              borderRadius: 10,
-              width: "40%",
             }}
           >
-            <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>
-              Clock-in
-            </Text>
+            <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
             <Text
               style={{
                 fontWeight: "500",
@@ -170,27 +112,16 @@ const ClockAttendance = ({
                 textAlign: "center",
               }}
             >
-              {attendance?.time_in
-                ? dayjs(attendance?.time_in).format("HH:mm") ||
-                  attendance?.time_in
-                : "-:-"}
+              {attendance?.time_in ? dayjs(attendance?.time_in).format("HH:mm") || attendance?.time_in : "-:-"}
             </Text>
           </View>
           <View
             style={{
-              gap: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 20,
+              ...styles.clockData,
               backgroundColor: attendance?.early ? "#feedaf" : "#daecfc",
-              borderRadius: 10,
-              width: "40%",
             }}
           >
-            <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>
-              Clock-out
-            </Text>
+            <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
             <Text
               style={{
                 fontWeight: "500",
@@ -198,10 +129,7 @@ const ClockAttendance = ({
                 textAlign: "center",
               }}
             >
-              {attendance?.time_out
-                ? dayjs(attendance?.time_out).format("HH:mm") ||
-                  attendance?.time_out
-                : "-:-"}
+              {attendance?.time_out ? dayjs(attendance?.time_out).format("HH:mm") || attendance?.time_out : "-:-"}
             </Text>
           </View>
         </View>
@@ -209,13 +137,8 @@ const ClockAttendance = ({
         <Animated.View
           style={[
             {
+              ...styles.slideTrack,
               backgroundColor: modalIsOpen ? "#186688" : "#87878721",
-              borderRadius: 60,
-              paddingVertical: 15,
-              paddingHorizontal: 10,
-              position: "relative",
-              flexDirection: "row",
-              alignItems: "center",
             },
             rContainerStyle,
           ]}
@@ -225,32 +148,16 @@ const ClockAttendance = ({
               style={[
                 rTaskContainerStyle,
                 {
-                  zIndex: 3,
+                  ...styles.slideArrow,
                   backgroundColor: modalIsOpen ? "#FFFFFF" : "#186688",
-                  borderRadius: 50,
-                  padding: 6,
                 },
               ]}
             >
-              <AnimatedIcon
-                name="chevron-right"
-                size={50}
-                color={modalIsOpen ? "#186688" : "#FFFFFF"}
-              />
+              <AnimatedIcon name="chevron-right" size={50} color={modalIsOpen ? "#186688" : "#FFFFFF"} />
             </Animated.View>
           </PanGestureHandler>
 
-          <View
-            style={[
-              {
-                padding: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                marginLeft: 30,
-                zIndex: 0,
-              },
-            ]}
-          >
+          <View style={styles.slideWording}>
             {modalIsOpen ? (
               <View
                 style={{
@@ -261,11 +168,7 @@ const ClockAttendance = ({
                 }}
               >
                 <ActivityIndicator color="#FFFFFF" />
-                <Text
-                  style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}
-                >
-                  Processing
-                </Text>
+                <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>Processing</Text>
               </View>
             ) : (
               <AnimatedText
@@ -279,12 +182,8 @@ const ClockAttendance = ({
                 ]}
               >
                 {(modalIsOpen && !location) || (modalIsOpen && !locationOn)
-                  ? `${
-                      !attendance?.time_out ? "Clock-in" : "Clock-out"
-                    } failed!`
-                  : `Slide to ${
-                      !attendance?.time_in ? "Clock-in" : "Clock-out"
-                    }`}
+                  ? `${!attendance?.time_out ? "Clock-in" : "Clock-out"} failed!`
+                  : `Slide to ${!attendance?.time_in ? "Clock-in" : "Clock-out"}`}
               </AnimatedText>
             )}
           </View>
@@ -302,5 +201,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 1,
+  },
+  clockData: {
+    gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    borderRadius: 10,
+    width: "40%",
+  },
+  slideArrow: {
+    zIndex: 3,
+    borderRadius: 50,
+    padding: 6,
+  },
+  slideTrack: {
+    borderRadius: 60,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  slideWording: {
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 30,
+    zIndex: 0,
   },
 });

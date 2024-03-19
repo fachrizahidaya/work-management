@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -19,23 +19,43 @@ const LeaveRequestItem = ({
   onSelect,
   approval_by,
 }) => {
+  const renderStatus = () => {
+    if (status === "Pending") {
+      return (
+        <Pressable
+          style={{ marginRight: 1 }}
+          onPress={() => {
+            SheetManager.show("form-sheet", {
+              payload: {
+                children: (
+                  <View style={styles.content}>
+                    <Text style={styles.cancelText}>Cancel Request</Text>
+                    <MaterialCommunityIcons name="close-circle-outline" size={20} color="#EB0E29" />
+                  </View>
+                ),
+              },
+            });
+            onSelect(item);
+          }}
+        >
+          <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" style={{ borderRadius: 20 }} />
+        </Pressable>
+      );
+    } else if (status === "Approved" || status === "Rejected") {
+      return (
+        <Text style={styles.statusText}>
+          {status} by {approval_by}
+        </Text>
+      );
+    }
+    return null;
+  };
+
   return (
     <View
       key={id}
       style={{
-        flexDirection: "column",
-        backgroundColor: "#ffffff",
-        gap: 10,
-        borderRadius: 10,
-        paddingVertical: 16,
-        paddingHorizontal: 14,
-        marginVertical: 8,
-        marginHorizontal: 2,
-        elevation: 4,
-        shadowColor: "rgba(0, 0, 0, 1)",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
+        ...styles.container,
       }}
     >
       <View
@@ -46,53 +66,7 @@ const LeaveRequestItem = ({
         }}
       >
         <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>{leave_name}</Text>
-        {status === "Pending" ? (
-          <Pressable
-            style={{ marginRight: 1 }}
-            onPress={() =>
-              SheetManager.show("form-sheet", {
-                payload: {
-                  children: (
-                    <View
-                      style={{
-                        display: "flex",
-                        gap: 21,
-                        paddingHorizontal: 20,
-                        paddingVertical: 16,
-                        paddingBottom: -20,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={async () => {
-                          await SheetManager.hide("form-sheet");
-                          onSelect(item);
-                        }}
-                        style={{
-                          ...styles.container,
-                        }}
-                      >
-                        <Text
-                          style={[
-                            {
-                              fontSize: 16,
-                              fontWeight: "700",
-                              color: "#D64B4B",
-                            },
-                          ]}
-                        >
-                          Cancel Request
-                        </Text>
-                        <MaterialCommunityIcons name={"close-circle-outline"} size={20} color="#EB0E29" />
-                      </TouchableOpacity>
-                    </View>
-                  ),
-                },
-              })
-            }
-          >
-            <MaterialCommunityIcons name="dots-vertical" size={20} color="#3F434A" style={{ borderRadius: 20 }} />
-          </Pressable>
-        ) : null}
+        {renderStatus()}
       </View>
       <View
         style={{
@@ -111,14 +85,7 @@ const LeaveRequestItem = ({
       >
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 5,
-            padding: 5,
-            borderRadius: 10,
-            backgroundColor: "#F8F8F8",
-            // flex: 0.5,
+            ...styles.time,
           }}
         >
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
@@ -169,7 +136,7 @@ const LeaveRequestItem = ({
 export default LeaveRequestItem;
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -177,5 +144,29 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+  },
+  container: {
+    flexDirection: "column",
+    backgroundColor: "#ffffff",
+    gap: 10,
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginVertical: 8,
+    marginHorizontal: 2,
+    elevation: 4,
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  time: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 5,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: "#F8F8F8",
   },
 });

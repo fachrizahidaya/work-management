@@ -20,6 +20,22 @@ const MyTeamLeaveRequestItem = ({
   item,
   status,
 }) => {
+  const approvalHandler = async (response) => {
+    await SheetManager.hide("form-sheet");
+    responseHandler(response, item);
+  };
+
+  const renderApprovalOptions = () => (
+    <View style={styles.approvalOptions}>
+      <TouchableOpacity onPress={() => approvalHandler("Approved")} style={styles.approveButton}>
+        <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Approve</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => approvalHandler("Rejected")} style={styles.rejectButton}>
+        <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Decline</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View
       key={id}
@@ -59,66 +75,7 @@ const MyTeamLeaveRequestItem = ({
             style={{ marginRight: 1 }}
             onPress={() =>
               SheetManager.show("form-sheet", {
-                payload: {
-                  children: (
-                    <View
-                      style={{
-                        display: "flex",
-                        gap: 21,
-                        paddingHorizontal: 20,
-                        paddingVertical: 16,
-                        paddingBottom: -20,
-                      }}
-                    >
-                      <View
-                        style={{
-                          gap: 1,
-                          backgroundColor: "#F5F5F5",
-                          borderRadius: 10,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={async () => {
-                            await SheetManager.hide("form-sheet");
-                            responseHandler("Approved", item);
-                          }}
-                          style={{
-                            ...styles.containerApproval,
-                            justifyContent: "space-between",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "#FFFFFF",
-                          }}
-                        >
-                          <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Approve</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={async () => {
-                            await SheetManager.hide("form-sheet");
-                            responseHandler("Rejected", item);
-                          }}
-                          style={{
-                            ...styles.containerApproval,
-                            justifyContent: "space-between",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "#FFFFFF",
-                          }}
-                        >
-                          <Text
-                            style={[
-                              {
-                                fontSize: 16,
-                                fontWeight: "400",
-                                color: "#D64B4B",
-                              },
-                            ]}
-                          >
-                            Decline
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ),
-                },
+                payload: renderApprovalOptions(),
               })
             }
           >
@@ -157,7 +114,6 @@ const MyTeamLeaveRequestItem = ({
           }}
         >
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
-          {/* <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text> */}
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
             {days < 2 ? "day" : "days"}

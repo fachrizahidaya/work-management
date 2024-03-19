@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const ShareImage = ({ reference, navigation, type, sharePost, setIsFullScreen }) => {
+const ShareImage = ({ reference, type, sharePost }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
       <View
@@ -41,38 +41,6 @@ const ShareImage = ({ reference, navigation, type, sharePost, setIsFullScreen })
             >
               <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Share via Whatsapp</Text>
               <MaterialCommunityIcons name="whatsapp" color="#EB0E29" size={20} />
-            </TouchableOpacity>
-          )}
-          {type === "Chat" && (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Forward Screen");
-                setIsFullScreen(false);
-                reference.current?.hide();
-              }}
-              style={{
-                ...styles.containerApproval,
-                justifyContent: "space-between",
-                borderBottomWidth: 1,
-                borderBottomColor: "#FFFFFF",
-              }}
-            >
-              <Text
-                style={[
-                  {
-                    fontSize: 16,
-                    fontWeight: "400",
-                  },
-                  TextProps,
-                ]}
-              >
-                Share from Nest
-              </Text>
-              <Image
-                source={require("../../../assets/icons/nest_logo.png")}
-                alt="nest"
-                style={{ height: 25, width: 25 }}
-              />
             </TouchableOpacity>
           )}
         </View>

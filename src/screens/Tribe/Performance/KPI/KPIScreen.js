@@ -124,20 +124,6 @@ const KPIScreen = () => {
         },
       ];
     });
-    // if (Array.isArray(employee_kpi_value)) {
-    //   employee_kpi_value.forEach((val) => {
-    //     employeeKpiValArr = [
-    //       ...employeeKpiValArr,
-    //       {
-    //         ...val?.performance_kpi_value,
-    //         id: val?.id,
-    //         performance_kpi_value_id: val?.performance_kpi_value_id,
-    //         actual_achievement: val?.actual_achievement,
-    //         attachment: val?.attachment,
-    //       },
-    //     ];
-    //   });
-    // }
     return [...employeeKpiValArr];
   };
 
@@ -148,11 +134,7 @@ const KPIScreen = () => {
   const employeeKpiValueUpdateHandler = (data) => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
-      const index = currentData.findIndex(
-        (employee_kpi_val) =>
-          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
-          employee_kpi_val?.id === data?.id
-      );
+      const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === data?.id);
       if (index > -1) {
         currentData[index].actual_achievement = data?.actual_achievement;
       } else {
@@ -165,11 +147,7 @@ const KPIScreen = () => {
   const employeeKpiAttachmentUpdateHandler = (data, setStatus, setSubmitting) => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
-      const index = currentData.findIndex(
-        (employee_kpi_val) =>
-          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
-          employee_kpi_val?.id === data?.id
-      );
+      const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === data?.id);
       if (index > -1) {
         currentData[index].attachment = [...currentData[index].attachment, data.file];
       }
@@ -183,11 +161,7 @@ const KPIScreen = () => {
     if (att_index > -1) {
       setEmployeeKpiValue((prevState) => {
         let currentData = [...prevState];
-        const index = currentData.findIndex(
-          (employee_kpi_val) =>
-            // employee_kpi_val?.id === employee_kpi_id
-            employee_kpi_val?.id === employee_kpi_id
-        );
+        const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === employee_kpi_id);
         if (index > -1) {
           currentData[index].attachment.splice(att_index, 1);
           if (id) {

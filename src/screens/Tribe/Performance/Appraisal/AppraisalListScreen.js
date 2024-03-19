@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import dayjs from "dayjs";
 
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -40,8 +39,6 @@ const AppraisalListScreen = () => {
     [startDate, endDate],
     fetchArchivedParameters
   );
-
-  const { data: ongoingData } = useFetch("/hr/employee-appraisal/ongoing");
 
   const tabs = useMemo(() => {
     return [

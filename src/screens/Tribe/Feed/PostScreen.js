@@ -27,7 +27,6 @@ const PostScreen = () => {
   const [comments, setComments] = useState([]);
   const [reloadComment, setReloadComment] = useState(false);
   const [forceRerender, setForceRerender] = useState(false);
-  const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
   const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
   const [isReady, setIsReady] = useState(false);
 

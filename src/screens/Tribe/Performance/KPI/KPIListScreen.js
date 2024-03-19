@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 import { SheetManager } from "react-native-actions-sheet";
@@ -39,8 +39,6 @@ const KPIListScreen = () => {
     [startDate, endDate],
     fetchArchivedParameters
   );
-
-  const { data: ongoingData } = useFetch("/hr/employee-kpi/ongoing");
 
   const tabs = useMemo(() => {
     return [

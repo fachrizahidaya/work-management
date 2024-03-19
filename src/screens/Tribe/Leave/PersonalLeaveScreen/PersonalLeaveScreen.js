@@ -15,7 +15,6 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
 import { SheetManager } from "react-native-actions-sheet";
 import Select from "../../../../components/shared/Forms/Select";
-import LeaveSkeleton from "../../../../components/Tribe/Leave/LeaveSkeleton";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -214,14 +213,6 @@ const PersonalLeaveScreen = () => {
     }
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i > 2; i++) {
-      skeletons.push(<LeaveSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data.length >= 0) {
       setPendingList(() => [...pendingLeaveRequest?.data?.data]);
@@ -360,7 +351,6 @@ const PersonalLeaveScreen = () => {
             onChangeTab={onChangeTab}
             refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
             teamLeaveRequestData={teamLeaveRequestData?.data.length}
-            renderSkeletons={renderSkeletons}
           />
         </>
       </SafeAreaView>

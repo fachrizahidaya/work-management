@@ -43,15 +43,7 @@ const LeaveRequestList = ({
   setHasBeenScrolledCanceled,
   refetchPersonalLeaveRequest,
   teamLeaveRequestData,
-  renderSkeletons,
 }) => {
-  const [routes] = useState([
-    { key: "pending", title: "Pending" },
-    { key: "canceled", title: "Canceled" },
-    { key: "rejected", title: "Rejected" },
-    { key: "approved", title: "Approved" },
-  ]);
-
   return (
     <>
       <View style={{ paddingHorizontal: 14 }}>
@@ -70,7 +62,6 @@ const LeaveRequestList = ({
                     : Platform.OS === "android" && teamLeaveRequestData === 0
                     ? "100%"
                     : 575,
-                // marginTop: 12,
               }}
             >
               <FlashList
@@ -138,7 +129,6 @@ const LeaveRequestList = ({
                     : Platform.OS === "android" && teamLeaveRequestData === 0
                     ? "100%"
                     : 575,
-                // marginTop: 12,
               }}
             >
               <FlashList
@@ -206,7 +196,6 @@ const LeaveRequestList = ({
                     : Platform.OS === "android" && teamLeaveRequestData === 0
                     ? "100%"
                     : 575,
-                // marginTop: 12,
               }}
             >
               <FlashList
@@ -272,7 +261,6 @@ const LeaveRequestList = ({
                   : Platform.OS === "android" && teamLeaveRequestData === 0
                   ? "100%"
                   : 575,
-              // marginTop: 12,
             }}
           >
             <FlashList

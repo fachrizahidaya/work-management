@@ -26,25 +26,23 @@ const ContactList = ({
   navigation,
   leave_status,
 }) => {
+  const navigateToNestHandler = () => {
+    navigation.navigate("Employee Profile", {
+      employeeId: id,
+      returnPage: "Contact",
+      loggedEmployeeId: loggedEmployeeId,
+    });
+  };
+
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("Employee Profile", {
-          employeeId: id,
-          returnPage: "Contact",
-          loggedEmployeeId: loggedEmployeeId,
-        })
-      }
+      onPress={() => navigateToNestHandler()}
       style={{
         ...card.card,
         flexDirection: "column",
         marginVertical: 5,
         gap: 20,
         elevation: 1,
-        // shadowColor: "rgba(0, 0, 0, 1)",
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.1,
-        // shadowRadius: 5,
       }}
     >
       <View style={styles.content}>
@@ -123,7 +121,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
-
     width: 20,
     height: 20,
     position: "absolute",
