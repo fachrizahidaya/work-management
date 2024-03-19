@@ -22,8 +22,6 @@ const ForwardScreen = () => {
   const [inputToShow, setInputToShow] = useState("");
   const [cumulativeData, setCumulativeData] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
-  const [personalChats, setPersonalChats] = useState([]);
-  const [groupChats, setGroupChats] = useState([]);
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
@@ -45,32 +43,6 @@ const ForwardScreen = () => {
     [currentPage, searchKeyword],
     userFetchParameters
   );
-
-  /**
-   * Fetch all personal chats
-   */
-  const fetchPersonalChats = async () => {
-    try {
-      const res = await axiosInstance.get("/chat/personal");
-      setPersonalChats(res.data.data);
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Fetch all personal chats
-   */
-  const fetchGroupChats = async () => {
-    try {
-      const res = await axiosInstance.get("/chat/group");
-      setGroupChats(res.data.data);
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
 
   /**
    * Function that runs when user scrolled to the bottom of FlastList
