@@ -40,7 +40,6 @@ const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
-  const [formValue, setFormValue] = useState(null);
   const [employeeKpi, setEmployeeKpi] = useState(null);
   const [fileAttachment, setFileAttachment] = useState(null);
   const [requestType, setRequestType] = useState("");
@@ -52,8 +51,6 @@ const KPIScreen = () => {
 
   const route = useRoute();
 
-  const reviewMode = false;
-
   const formScreenSheetRef = useRef(null);
   const formAttachmentScreenSheetRef = useRef(null);
 
@@ -62,7 +59,7 @@ const KPIScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const { id, isExpired, status } = route.params;
+  const { id, status } = route.params;
 
   const { data: kpiSelected } = useFetch(`/hr/employee-kpi/${id}/start`);
 
@@ -225,7 +222,7 @@ const KPIScreen = () => {
               employee_kpi_id: kpiVal?.id,
               attachment_id: attVal?.id || null,
               index: index,
-              description: !reviewMode ? kpiVal?.description : kpiVal?.performance_kpi_value?.description,
+              description: kpiVal?.description || kpiVal?.performance_kpi_value?.description,
               file_name: attVal?.file_name || null,
               file_path: attVal?.file_path || null,
               attachment: !attVal?.file_name ? attVal : null,
@@ -248,7 +245,7 @@ const KPIScreen = () => {
               employee_kpi_id: kpiVal?.id,
               attachment_id: attVal?.id || null,
               index: index,
-              description: !reviewMode ? kpiVal?.description : kpiVal?.performance_kpi_value?.description,
+              description: kpiVal?.description || kpiVal?.performance_kpi_value?.description,
               file_name: attVal?.file_name || null,
               file_path: attVal?.file_path || null,
               attachment: !attVal?.file_name ? attVal : null,
@@ -258,13 +255,6 @@ const KPIScreen = () => {
       });
       return [...attachmentArr];
     });
-  };
-
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("actual_achievement", e);
-    }
-    setFormValue(formik.values);
   };
 
   /**
@@ -421,12 +411,6 @@ const KPIScreen = () => {
   });
 
   useEffect(() => {
-    if (formValue) {
-      formik.handleSubmit();
-    }
-  }, [formValue]);
-
-  useEffect(() => {
     if (kpiList?.data) {
       sumUpKpiValue();
       setEmployeeKpiValue(() => {
@@ -467,7 +451,7 @@ const KPIScreen = () => {
               }
             }}
           />
-          {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
+          {!kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
             <Button
               height={35}
               padding={10}
@@ -542,7 +526,7 @@ const KPIScreen = () => {
             </ScrollView>
           ) : (
             <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-              {!kpiList?.data?.confirm && (
+              {kpiList?.data?.confirm && (
                 <TouchableOpacity
                   onPress={() => openSelectedAttachmentKpi()}
                   style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
@@ -558,7 +542,6 @@ const KPIScreen = () => {
                       description={item?.description}
                       file_name={item?.attachment ? item?.attachment?.name : item?.file_name}
                       onDelete={employeeKpiAttachmentDeleteHandler}
-                      reviewMode={reviewMode}
                       employee_kpi_id={item?.employee_kpi_id}
                       attachment_id={item?.attachment_id}
                       index={item?.index}

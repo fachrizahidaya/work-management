@@ -40,7 +40,7 @@ const AppraisalScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const { id, isExpired, status } = route.params;
+  const { id, status } = route.params;
 
   const { data: appraisalSelected } = useFetch(`/hr/employee-appraisal/${id}/start`);
 

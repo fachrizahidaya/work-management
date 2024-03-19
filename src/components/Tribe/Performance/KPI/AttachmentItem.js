@@ -10,7 +10,6 @@ const AttachmentItem = ({
   file_name,
   file_path,
   onDelete,
-  reviewMode,
   employee_kpi_id,
   attachment_id,
   index,
@@ -37,20 +36,11 @@ const AttachmentItem = ({
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-        {confirmed ? (
-          <MaterialCommunityIcons
-            name="tray-arrow-down"
-            size={20}
-            color="#3F434A"
-            onPress={() => onDownload(file_path)}
-          />
-        ) : (
-          <MaterialCommunityIcons
-            name="trash-can-outline"
-            size={20}
-            onPress={() => onDelete(employee_kpi_id, attachment_id, index)}
-          />
-        )}
+        <MaterialCommunityIcons
+          name="trash-can-outline"
+          size={20}
+          onPress={() => onDelete(employee_kpi_id, attachment_id, index)}
+        />
       </View>
     </View>
   );
