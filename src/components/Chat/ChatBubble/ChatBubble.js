@@ -48,6 +48,7 @@ const ChatBubble = ({
 }) => {
   const myMessage = userSelector?.id === fromUserId;
   const imgTypes = ["jpg", "jpeg", "png"];
+
   /**
    * Handle showing mention chat
    */

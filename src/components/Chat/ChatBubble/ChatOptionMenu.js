@@ -21,6 +21,7 @@ const ChatOptionMenu = ({
     Platform.OS === "ios"
       ? Dimensions.get("window").height
       : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
+
   const options = [
     {
       name: "Reply",
