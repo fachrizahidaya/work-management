@@ -235,13 +235,12 @@ const NewFeedScreen = () => {
                     onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
                     borderRadius={15}
                     variant="outline"
-                    children={
-                      <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
-                        {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
-                      </View>
-                    }
-                  />
+                  >
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
+                    </View>
+                  </Button>
                   {formik.values.type === "Public" ? (
                     ""
                   ) : (

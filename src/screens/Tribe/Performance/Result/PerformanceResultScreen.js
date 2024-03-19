@@ -59,27 +59,21 @@ const PerformanceResultScreen = () => {
               navigation.goBack();
             }}
           />
-          <Button
-            height={35}
-            padding={10}
-            children={
-              !isLoading ? (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Download as PDF
-                </Text>
-              ) : (
-                <ActivityIndicator />
-              )
-            }
-            onPress={() => exportPdfHandler()}
-            disabled={isLoading}
-          />
+          <Button height={35} padding={10} onPress={() => exportPdfHandler()} disabled={isLoading}>
+            {!isLoading ? (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: "#FFFFFF",
+                }}
+              >
+                Download as PDF
+              </Text>
+            ) : (
+              <ActivityIndicator />
+            )}
+          </Button>
         </View>
 
         <PerformanceResultDetailList

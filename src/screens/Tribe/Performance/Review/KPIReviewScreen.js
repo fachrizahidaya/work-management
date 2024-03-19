@@ -255,21 +255,6 @@ const KPIReviewScreen = () => {
             <Button
               height={35}
               padding={10}
-              children={
-                submitIsLoading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    Save
-                  </Text>
-                )
-              }
               onPress={() => {
                 if (submitIsLoading || differences.length === 0) {
                   null;
@@ -278,7 +263,21 @@ const KPIReviewScreen = () => {
                 }
               }}
               disabled={differences.length === 0 || submitIsLoading}
-            />
+            >
+              {submitIsLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "500",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  Save
+                </Text>
+              )}
+            </Button>
           )}
         </View>
         {kpiValues.length > 0 ? (

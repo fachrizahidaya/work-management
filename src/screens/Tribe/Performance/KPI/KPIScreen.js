@@ -429,21 +429,6 @@ const KPIScreen = () => {
             <Button
               height={35}
               padding={10}
-              children={
-                submitIsLoading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    Save
-                  </Text>
-                )
-              }
               onPress={() => {
                 if (submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)) {
                   null;
@@ -454,7 +439,21 @@ const KPIScreen = () => {
               disabled={
                 submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)
               }
-            />
+            >
+              {submitIsLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "500",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  Save
+                </Text>
+              )}
+            </Button>
           )}
         </View>
         <KPIDetailList

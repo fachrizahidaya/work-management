@@ -292,23 +292,17 @@ const PersonalLeaveScreen = () => {
           </Pressable> */}
 
           {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
-            <Button
-              height={35}
-              onPress={() => navigation.navigate("Team Leave Request")}
-              padding={5}
-              children={
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  {" "}
-                  My Team
-                </Text>
-              }
-            />
+            <Button height={35} onPress={() => navigation.navigate("Team Leave Request")} padding={5}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: "#FFFFFF",
+                }}
+              >
+                My Team
+              </Text>
+            </Button>
           )}
         </View>
 
