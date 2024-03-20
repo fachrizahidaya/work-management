@@ -1,7 +1,9 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { Clock, Options, Reason } from "../AttendanceForm";
-import FormButton from "../../../shared/FormButton";
+import Clock from "../Clock";
+import Options from "../Options";
+import Reason from "../Reason";
+import FormButton from "../../../../shared/FormButton";
 
 const SubmittedReport = ({
   date,

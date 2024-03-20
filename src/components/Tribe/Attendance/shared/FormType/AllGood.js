@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { TextProps } from "../../../shared/CustomStylings";
+import { TextProps } from "../../../../shared/CustomStylings";
 
 const AllGood = ({ date }) => {
   return (

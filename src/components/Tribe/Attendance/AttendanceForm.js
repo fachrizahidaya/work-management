@@ -4,15 +4,13 @@ import { useFormik } from "formik";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
-import Input from "../../shared/Forms/Input";
-import Select from "../../shared/Forms/Select";
 import { TextProps } from "../../shared/CustomStylings";
 import SuccessModal from "../../shared/Modal/SuccessModal";
-import LateOrEarly from "./FormType/LateOrEarly";
-import LateAndEarly from "./FormType/LateAndEarly";
-import LeaveOrPermit from "./FormType/LeaveOrPermit";
-import SubmittedReport from "./FormType/SubmittedReport";
-import AllGood from "./FormType/AllGood";
+import LateOrEarly from "./shared/FormType/LateOrEarly";
+import LateAndEarly from "./shared/FormType/LateAndEarly";
+import LeaveOrPermit from "./shared/FormType/LeaveOrPermit";
+import SubmittedReport from "./shared/FormType/SubmittedReport";
+import AllGood from "./shared/FormType/AllGood";
 
 const AttendanceForm = ({
   toggleReport,
@@ -337,11 +335,6 @@ const AttendanceForm = ({
 export default AttendanceForm;
 
 const styles = StyleSheet.create({
-  clock: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
@@ -357,53 +350,3 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-
-export const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }) => {
-  return (
-    <View style={styles.clock}>
-      <View>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{titleDuty}</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{timeDuty}</Text>
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <View>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{titleClock}</Text>
-          <Text style={[{ fontSize: 12 }, TextProps]}>
-            {timeInOrTimeOut} ({lateOrEarly})
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-export const Options = ({ formik, title, field, types, valueChange, placeholder, value }) => {
-  return (
-    <View>
-      <Select
-        formik={formik}
-        value={value}
-        title={title}
-        fieldName={field}
-        onChange={valueChange ? valueChange : (value) => formik.setFieldValue(field, value)}
-        items={types}
-        placeHolder={placeholder}
-      />
-    </View>
-  );
-};
-
-export const Reason = ({ formik, value, fieldName, onChangeText }) => {
-  return (
-    <View>
-      <Input
-        formik={formik}
-        title="Reason"
-        fieldName={fieldName}
-        placeHolder="Enter your reason"
-        value={value}
-        onChangeText={onChangeText}
-      />
-    </View>
-  );
-};
