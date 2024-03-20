@@ -75,12 +75,13 @@ const AttendanceScreen = () => {
    * Handle attendance for form report by day
    */
   const isWorkDay = date?.dayType === "Work Day";
+  const attendanceType = date?.attendanceType;
   const hasClockInAndOut =
     isWorkDay &&
     !date?.lateType &&
     !date?.earlyType &&
     date?.timeIn &&
-    !["Permit", "Leave", "Alpa"].includes(date?.attendanceType);
+    !["Permit", "Leave", "Alpa"].includes(attendanceType);
   const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
   const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
@@ -92,10 +93,9 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    ["Alpa", "Permit", "Sick", "Other"].includes(date?.attendanceType) && date?.attendanceReason && isWorkDay;
-  const notAttend =
-    date?.attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
-  const isLeave = date?.attendanceType === "Leave" || date?.attendanceType === "Permit";
+    ["Alpa", "Permit", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
+  const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
+  const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 
   /**
    *  Handle switch month on calendar
@@ -266,57 +266,53 @@ const AttendanceScreen = () => {
         events.forEach((event) => {
           let backgroundColor = "";
           let textColor = "";
+          const {
+            attendanceType,
+            dayType,
+            early,
+            late,
+            confirmation,
+            earlyReason,
+            lateReason,
+            earlyType,
+            lateType,
+            earlyStatus,
+            lateStatus,
+            attendanceReason,
+            timeIn,
+            timeOut,
+          } = event;
 
-          if (
-            event.attendanceType === "Leave" ||
-            event.dayType === "Weekend" ||
-            event.dayType === "Holiday" ||
-            event.dayType === "Day Off"
-          ) {
+          if (attendanceType === "Leave" || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off") {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
-            (event.early && !event.earlyReason && !event.confirmation) ||
-            (event.late && !event.lateReason && !event.confirmation) ||
-            (event.attendanceType === "Alpa" && !event.attendanceReason && event.date !== currentDate)
+            (early && !earlyReason && !confirmation) ||
+            (late && !lateReason && !confirmation) ||
+            (attendanceType === "Alpa" && !attendanceReason && date !== currentDate)
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;
           } else if (
-            (((event.early && event.earlyReason) || (event.late && event.lateReason)) && !event.confirmation) ||
-            (event.late && event.lateReason && event.earlyType && !event.earlyReason && !event.earlyStatus) ||
-            (event.early && event.earlyReason && event.lateType && !event.lateReason && !event.lateStatus) ||
-            (event.attendanceType === "Permit" && event.attendanceReason) ||
-            (event.attendanceType === "Alpa" && event.attendanceReason) ||
-            (event.attendanceType === "Other" &&
-              event.attendanceReason &&
-              !event.confirmation &&
-              event.date !== currentDate)
+            (((early && earlyReason) || (late && lateReason)) && !confirmation) ||
+            (late && lateReason && earlyType && !earlyReason && !earlyStatus) ||
+            (early && earlyReason && lateType && !lateReason && !lateStatus) ||
+            (attendanceType === "Permit" && attendanceReason) ||
+            (attendanceType === "Alpa" && attendanceReason) ||
+            (attendanceType === "Other" && attendanceReason && !confirmation && date !== currentDate)
           ) {
             backgroundColor = submittedReport.color;
             textColor = submittedReport.textColor;
-          } else if (event.attendanceType === "Sick" && event.attendanceReason) {
+          } else if (attendanceType === "Sick" && attendanceReason) {
             backgroundColor = sick.color;
             textColor = sick.textColor;
           } else if (
-            event.confirmation ||
-            event.dayType === "Work Day" ||
-            (!event.confirmation && event.dayType === "Work Day" && event.attendanceType === "Alpa" && !event.timeIn) ||
-            (!event.confirmation &&
-              event.dayType === "Work Day" &&
-              event.attendanceType === "Attend" &&
-              event.timeIn &&
-              event.timeOut) ||
-            (!event.confirmation &&
-              event.dayType === "Work Day" &&
-              event.attendanceType === "Attend" &&
-              event.timeIn &&
-              !event.timeOut) ||
-            (!event.confirmation &&
-              event.dayType === "Work Day" &&
-              event.attendanceType === "Alpa" &&
-              !event.timeIn &&
-              !event.timeOut)
+            confirmation ||
+            dayType === "Work Day" ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Alpa" && !timeIn) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Attend" && timeIn && timeOut) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Attend" && timeIn && !timeOut) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Alpa" && !timeIn && !timeOut)
           ) {
             backgroundColor = allGood.color;
             textColor = allGood.textColor;
