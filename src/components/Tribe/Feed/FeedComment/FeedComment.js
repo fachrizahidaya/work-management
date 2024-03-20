@@ -171,6 +171,7 @@ const FeedComment = ({
           <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
         </View>
       </View>
+
       <View
         style={{
           gap: 21,
