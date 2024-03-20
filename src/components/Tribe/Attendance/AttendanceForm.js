@@ -4,12 +4,15 @@ import { useFormik } from "formik";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
-import FormButton from "../../shared/FormButton";
-import Tabs from "../../shared/Tabs";
 import Input from "../../shared/Forms/Input";
 import Select from "../../shared/Forms/Select";
 import { TextProps } from "../../shared/CustomStylings";
 import SuccessModal from "../../shared/Modal/SuccessModal";
+import LateOrEarly from "./FormType/LateOrEarly";
+import LateAndEarly from "./FormType/LateAndEarly";
+import LeaveOrPermit from "./FormType/LeaveOrPermit";
+import SubmittedReport from "./FormType/SubmittedReport";
+import AllGood from "./FormType/AllGood";
 
 const AttendanceForm = ({
   toggleReport,
@@ -115,46 +118,11 @@ const AttendanceForm = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.wrapper}>
           {/* If employee ontime for Clock in and Clock out */}
-          {hasClockInAndOut && (
-            <View style={{ gap: 10 }}>
-              <View
-                style={{
-                  gap: 1,
-                  backgroundColor: "#F5F5F5",
-                  borderRadius: 10,
-                }}
-              >
-                <View
-                  style={{
-                    ...styles.content,
-                    justifyContent: "space-between",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#FFFFFF",
-                  }}
-                >
-                  <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                  <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeIn}</Text>
-                </View>
-                {!date?.timeOut ? null : (
-                  <View
-                    style={{
-                      ...styles.content,
-                      justifyContent: "space-between",
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#FFFFFF",
-                    }}
-                  >
-                    <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                    <Text style={[{ fontSize: 12 }, TextProps]}>{date?.timeOut}</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-          )}
+          {hasClockInAndOut && <AllGood date={date} />}
 
           {/* If employee Clock in late, require Late Report */}
           {hasLateWithoutReason && (
-            <LateOrEarlyTime
+            <LateOrEarly
               formik={formik}
               arrayList={lateType}
               titleTime="Clock-in Time"
@@ -175,7 +143,7 @@ const AttendanceForm = ({
 
           {/* If employee Clock out early, require Early Report */}
           {hasEarlyWithoutReason && (
-            <LateOrEarlyTime
+            <LateOrEarly
               formik={formik}
               arrayList={earlyType}
               titleTime="Clock-out Time"
@@ -196,94 +164,54 @@ const AttendanceForm = ({
 
           {/* If report submitted for Late */}
           {hasSubmittedLateReport && (
-            <View style={{ gap: 10 }}>
-              <Clock
-                titleDuty="On Duty"
-                timeDuty={date?.onDuty}
-                titleClock="Clock-in Time"
-                timeInOrTimeOut={date?.timeIn}
-                lateOrEarly={date?.late}
-              />
-              <Options
-                formik={formik}
-                value={formik.values.late_type}
-                title="Late Type"
-                field="late_type"
-                types={lateType}
-                valueChange={(value) => formik.setFieldValue("late_type", value)}
-              />
-              <Reason formik={formik} value={formik.values.late_reason} fieldName="late_reason" />
-              <FormButton
-                width="full"
-                size="sm"
-                variant="solid"
-                fontSize={12}
-                isSubmitting={formik.isSubmitting}
-                onPress={formik.handleSubmit}
-              >
-                <Text style={{ color: "#FFFFFF" }}>Save</Text>
-              </FormButton>
-            </View>
+            <SubmittedReport
+              date={date}
+              formik={formik}
+              titleDuty="On Duty"
+              titleClock="Clock-in Time"
+              title="Late Type"
+              field="late_type"
+              types={lateType}
+              fieldName="late_reason"
+              reasonValue={formik.values.late_reason}
+              typeValue={formik.values.late_type}
+            />
           )}
 
           {/* If report submitted for Early */}
           {hasSubmittedEarlyReport && (
-            <View style={{ gap: 10 }}>
-              <Clock
-                titleDuty="Off Duty"
-                timeDuty={date?.offDuty}
-                titleClock="Clock-out Time"
-                timeInOrTimeOut={date?.timeOut}
-                lateOrEarly={date?.early}
-              />
-              <Options
-                formik={formik}
-                value={formik.values.early_type}
-                title="Early Type"
-                field="early_type"
-                types={earlyType}
-                valueChange={(value) => formik.setFieldValue("early_type", value)}
-              />
-              <Reason formik={formik} value={formik.values.early_reason} fieldName="early_reason" />
-              <FormButton
-                size="sm"
-                variant="solid"
-                fontSize={12}
-                isSubmitting={formik.isSubmitting}
-                onPress={formik.handleSubmit}
-              >
-                <Text style={{ color: "#FFFFFF" }}>Save</Text>
-              </FormButton>
-            </View>
+            <SubmittedReport
+              date={date}
+              formik={formik}
+              titleDuty="Off Duty"
+              titleClock="Clock-out Time"
+              title="Early Type"
+              field="early_type"
+              types={earlyType}
+              fieldName="early_reason"
+              reasonValue={formik.values.early_reason}
+              typeValue={formik.values.early_type}
+            />
           )}
 
           {/* If report submitted for Alpa */}
           {hasSubmittedReportAlpa && (
-            <View style={{ gap: 10 }}>
-              <Options
-                formik={formik}
-                title="Unattendance Type"
-                field="att_type"
-                types={alpaType}
-                value={formik.values.att_type}
-                valueChange={(value) => formik.setFieldValue("att_type", value)}
-              />
-              <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
-              <FormButton
-                size="sm"
-                variant="solid"
-                fontSize={12}
-                isSubmitting={formik.isSubmitting}
-                onPress={formik.handleSubmit}
-              >
-                <Text style={{ color: "#FFFFFF" }}>Save</Text>
-              </FormButton>
-            </View>
+            <SubmittedReport
+              date={date}
+              formik={formik}
+              title="Unattendance Type"
+              field="att_type"
+              types={alpaType}
+              fieldName="att_reason"
+              alpa={true}
+              reasonValue={formik.values.att_reason}
+              typeValue={formik.values.att_type}
+            />
           )}
 
           {/* If not yet submit report for Late and Early */}
           {hasLateAndEarlyWithoutReason && (
-            <LateAndEarlyTime
+            <LateAndEarly
               tabs={tabs}
               tabValue={tabValue}
               onChangeTab={onChangeTab}
@@ -300,7 +228,7 @@ const AttendanceForm = ({
           )}
 
           {hasSubmittedLateNotEarly && (
-            <LateAndEarlyTime
+            <LateAndEarly
               tabs={tabs}
               tabValue={tabValue}
               onChangeTab={onChangeTab}
@@ -317,7 +245,7 @@ const AttendanceForm = ({
           )}
 
           {hasSubmittedEarlyNotLate && (
-            <LateAndEarlyTime
+            <LateAndEarly
               tabs={tabs}
               tabValue={tabValue}
               onChangeTab={onChangeTab}
@@ -335,7 +263,7 @@ const AttendanceForm = ({
 
           {/* If report submitted Late and Early */}
           {hasSubmittedBothReports && (
-            <LateAndEarlyTime
+            <LateAndEarly
               tabs={tabs}
               tabValue={tabValue}
               onChangeTab={onChangeTab}
@@ -353,27 +281,18 @@ const AttendanceForm = ({
 
           {/* If Alpa */}
           {notAttend && (
-            <View style={{ gap: 10 }}>
-              <Options
-                placeholder="Select Alpa Type"
-                formik={formik}
-                title="Unattendance Type"
-                field="att_type"
-                types={alpaType}
-                valueChange={(value) => formik.setFieldValue("att_type", value)}
-                value={formik.values.att_type}
-              />
-              <Reason formik={formik} value={formik.values.att_reason} fieldName="att_reason" />
-              <FormButton
-                size="sm"
-                variant="solid"
-                fontSize={12}
-                isSubmitting={formik.isSubmitting}
-                onPress={formik.handleSubmit}
-              >
-                <Text style={{ color: "#FFFFFF" }}>Save</Text>
-              </FormButton>
-            </View>
+            <SubmittedReport
+              date={date}
+              formik={formik}
+              title="Unattendance Type"
+              field="att_type"
+              types={alpaType}
+              fieldName="att_reason"
+              placeholder="Select Alpa Type"
+              alpa={true}
+              reasonValue={formik.values.att_reason}
+              typeValue={formik.values.att_type}
+            />
           )}
 
           {/* If attendance type is Leave */}
@@ -439,7 +358,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }) => {
+export const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }) => {
   return (
     <View style={styles.clock}>
       <View>
@@ -458,7 +377,7 @@ const Clock = ({ titleDuty, timeDuty, titleClock, timeInOrTimeOut, lateOrEarly }
   );
 };
 
-const Options = ({ formik, title, field, types, valueChange, placeholder, value }) => {
+export const Options = ({ formik, title, field, types, valueChange, placeholder, value }) => {
   return (
     <View>
       <Select
@@ -474,7 +393,7 @@ const Options = ({ formik, title, field, types, valueChange, placeholder, value 
   );
 };
 
-const Reason = ({ formik, value, fieldName, onChangeText }) => {
+export const Reason = ({ formik, value, fieldName, onChangeText }) => {
   return (
     <View>
       <Input
@@ -485,174 +404,6 @@ const Reason = ({ formik, value, fieldName, onChangeText }) => {
         value={value}
         onChangeText={onChangeText}
       />
-    </View>
-  );
-};
-
-const LateOrEarlyTime = ({
-  formik,
-  arrayList,
-  titleTime,
-  time,
-  title,
-  inputValue,
-  inputOnChangeText,
-  selectOnValueChange,
-  titleDuty,
-  timeDuty,
-  timeLateOrEarly,
-  placeholder,
-  fieldOption,
-  inputType,
-}) => {
-  return (
-    <View style={{ gap: 10 }}>
-      <Clock
-        titleDuty={titleDuty}
-        timeDuty={timeDuty}
-        titleClock={titleTime}
-        timeInOrTimeOut={time}
-        lateOrEarly={timeLateOrEarly}
-      />
-      <Options
-        formik={formik}
-        title={title}
-        value={inputType}
-        valueChange={selectOnValueChange}
-        types={arrayList}
-        placeholder={placeholder}
-        field={fieldOption}
-      />
-      <Reason formik={formik} value={inputValue} onChangeText={inputOnChangeText} />
-      <FormButton
-        size="sm"
-        variant="solid"
-        fontSize={12}
-        isSubmitting={formik.isSubmitting}
-        onPress={formik.handleSubmit}
-      >
-        <Text style={{ color: "#FFFFFF" }}>Save</Text>
-      </FormButton>
-    </View>
-  );
-};
-
-const LateAndEarlyTime = ({
-  tabs,
-  tabValue,
-  onChangeTab,
-  onDuty,
-  timeIn,
-  late,
-  formik,
-  lateTypes,
-  offDuty,
-  timeOut,
-  early,
-  earlyTypes,
-}) => {
-  return (
-    <View style={{ gap: 10 }}>
-      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" />
-      {tabValue === "late" ? (
-        <>
-          <View style={styles.clock}>
-            <View>
-              <Text style={[{ fontSize: 12 }, TextProps]}>On Duty</Text>
-              <Text style={[{ fontSize: 12 }, TextProps]}>{onDuty}</Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <View>
-                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-in Time</Text>
-                <Text style={[{ fontSize: 12 }, TextProps]}>
-                  {timeIn} ({late})
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View>
-            <Select
-              formik={formik}
-              value={formik.values.late_type}
-              fieldName="late_type"
-              title="Late Type"
-              items={lateTypes}
-              placeHolder="Select Late Type"
-              onChange={(value) => formik.setFieldValue("late_type", value)}
-            />
-          </View>
-          <View>
-            <Input
-              formik={formik}
-              title="Reason"
-              fieldName="late_reason"
-              placeHolder="Enter your reason"
-              value={formik.values.late_reason}
-            />
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={styles.clock}>
-            <View>
-              <Text style={[{ fontSize: 12 }, TextProps]}>Off Duty</Text>
-              <Text style={[{ fontSize: 12 }, TextProps]}>{offDuty}</Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <View>
-                <Text style={[{ fontSize: 12 }, TextProps]}>Clock-out Time</Text>
-                <Text style={[{ fontSize: 12 }, TextProps]}>
-                  {timeOut} ({early})
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View>
-            <Select
-              formik={formik}
-              value={formik.values.early_type}
-              fieldName="early_type"
-              items={earlyTypes}
-              title="Early Type"
-              placeHolder="Select Early Type"
-              onChange={(value) => formik.setFieldValue("early_type", value)}
-            />
-          </View>
-          <View>
-            <Input
-              formik={formik}
-              title="Reason"
-              fieldName="early_reason"
-              placeHolder="Enter your reason"
-              value={formik.values.early_reason}
-            />
-          </View>
-        </>
-      )}
-      <FormButton
-        size="sm"
-        variant="solid"
-        fontSize={12}
-        isSubmitting={formik.isSubmitting}
-        onPress={formik.handleSubmit}
-      >
-        <Text style={{ color: "#FFFFFF" }}>Save</Text>
-      </FormButton>
-    </View>
-  );
-};
-
-const LeaveOrPermit = ({ type, reason }) => {
-  return (
-    <View style={{ gap: 10 }}>
-      <View>
-        <Text style={[{ fontSize: 12 }, TextProps]}>Attendance Type</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{type}</Text>
-      </View>
-      <View>
-        <Text style={[{ fontSize: 12 }, TextProps]}>Reason</Text>
-        <Text style={[{ fontSize: 12 }, TextProps]}>{reason}</Text>
-      </View>
     </View>
   );
 };

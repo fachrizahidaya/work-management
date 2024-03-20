@@ -369,8 +369,8 @@ const AttendanceScreen = () => {
             <RefreshControl
               refreshing={attendanceDataIsFetching && attachmentIsFetching}
               onRefresh={() => {
-                refetchAttendanceData;
-                refetchAttachment;
+                refetchAttendanceData();
+                refetchAttachment();
               }}
             />
           }

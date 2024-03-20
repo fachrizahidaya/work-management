@@ -26,13 +26,37 @@ const MyTeamLeaveRequestItem = ({
   };
 
   const renderApprovalOptions = () => (
-    <View style={styles.approvalOptions}>
-      <TouchableOpacity onPress={() => approvalHandler("Approved")} style={styles.approveButton}>
-        <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Approve</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => approvalHandler("Rejected")} style={styles.rejectButton}>
-        <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Decline</Text>
-      </TouchableOpacity>
+    <View style={styles.approvalOption}>
+      <View
+        style={{
+          gap: 1,
+          backgroundColor: "#F5F5F5",
+          borderRadius: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => approvalHandler("Approved")}
+          style={{
+            ...styles.containerApproval,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => approvalHandler("Rejected")}
+          style={{
+            ...styles.containerApproval,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Decline</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -75,7 +99,9 @@ const MyTeamLeaveRequestItem = ({
             style={{ marginRight: 1 }}
             onPress={() =>
               SheetManager.show("form-sheet", {
-                payload: renderApprovalOptions(),
+                payload: {
+                  children: renderApprovalOptions(),
+                },
               })
             }
           >
@@ -144,5 +170,12 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+  },
+  approvalOption: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
   },
 });
