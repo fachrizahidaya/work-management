@@ -5,14 +5,11 @@ import _ from "lodash";
 
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Input from "../../../components/shared/Forms/Input";
 import { useFetch } from "../../../hooks/useFetch";
 import UserListItem from "../../../components/Chat/Forward/UserListItem";
-import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
-import axiosInstance from "../../../config/api";
 import PersonalSection from "../../../components/Chat/Forward/PersonalSection";
 import GroupSection from "../../../components/Chat/Forward/GroupSection";
 
@@ -61,11 +58,6 @@ const ForwardScreen = () => {
     }, 300),
     []
   );
-
-  useEffect(() => {
-    fetchPersonalChats();
-    fetchGroupChats();
-  }, []);
 
   useEffect(() => {
     setFilteredDataArray([]);

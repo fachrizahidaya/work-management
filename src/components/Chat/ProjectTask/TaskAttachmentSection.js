@@ -1,19 +1,24 @@
-import { View, Text, Image } from "react-native";
+import React from "react";
+import { Image, Text, View } from "react-native";
 import { TextProps } from "../../shared/CustomStylings";
 
-const AttachmentSection = () => {
+const TaskAttachmentSection = () => {
   return (
     <View
       style={{
         flex: 1,
+        display: "flex",
+        justifyContent: "center",
         backgroundColor: "#FFFFFF",
-        borderRadius: 10,
         padding: 10,
+        marginVertical: 10,
+        marginHorizontal: 16,
         gap: 5,
+        borderRadius: 10,
       }}
     >
       <Text style={[TextProps]}>Attachment</Text>
-      <View style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
+      <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
         <Image
           source={require("../../../assets/vectors/empty.png")}
           alt="attachment"
@@ -31,4 +36,4 @@ const AttachmentSection = () => {
   );
 };
 
-export default AttachmentSection;
+export default TaskAttachmentSection;
