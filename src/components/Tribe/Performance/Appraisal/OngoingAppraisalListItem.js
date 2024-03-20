@@ -7,17 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingAppraisalListItem = ({
-  id,
-  start_date,
-  end_date,
-  navigation,
-  target,
-  isExpired,
-  target_level,
-  status,
-  name,
-}) => {
+const OngoingAppraisalListItem = ({ id, start_date, end_date, navigation, target, isExpired, target_level, name }) => {
   return (
     <Pressable
       style={{
@@ -33,7 +23,6 @@ const OngoingAppraisalListItem = ({
         navigation.navigate("Appraisal Detail", {
           id: id,
           isExpired: isExpired,
-          status: status,
         })
       }
     >

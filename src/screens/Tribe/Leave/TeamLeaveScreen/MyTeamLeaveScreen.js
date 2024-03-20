@@ -8,7 +8,7 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
 import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 
@@ -168,7 +168,6 @@ const MyTeamLeaveScreen = () => {
       } else {
         setRequestType("danger");
       }
-      // Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

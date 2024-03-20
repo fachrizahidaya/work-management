@@ -28,14 +28,11 @@ const KPIReviewScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
   const [employeeKpiValue, setEmployeeKpiValue] = useState([]);
   const [kpi, setKpi] = useState(null);
-  const [formValue, setFormValue] = useState(null);
   const [employeeKpi, setEmployeeKpi] = useState(null);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const formScreenSheetRef = useRef(null);
 
   const { id } = route.params;
@@ -47,11 +44,7 @@ const KPIReviewScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const {
-    data: kpiList,
-    isFetching: kpiListIsFetching,
-    refetch: refetchKpiList,
-  } = useFetch(`/hr/employee-review/kpi/${id}`);
+  const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-review/kpi/${id}`);
 
   /**
    * Handle selected KPI item
@@ -119,12 +112,8 @@ const KPIReviewScreen = () => {
    */
   const sumUpKpiValue = () => {
     setKpiValues(() => {
-      // const performanceKpiValue = kpiList?.data?.performance_kpi?.value;
       const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
-      return [
-        ...employeeKpiValue,
-        // ...performanceKpiValue,
-      ];
+      return [...employeeKpiValue];
     });
   };
 
@@ -162,13 +151,6 @@ const KPIReviewScreen = () => {
     var actualString = kpi?.supervisor_actual_achievement.toString();
   }
 
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("supervisor_actual_achievement", e);
-    }
-    setFormValue(formik.values);
-  };
-
   /**
    * Handle save filled or updated KPI
    */
@@ -178,11 +160,8 @@ const KPIReviewScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-review/kpi/${kpiList?.data?.id}`, {
         kpi_value: employeeKpiValue,
       });
-
       toggleSaveModal();
       setRequestType("info");
-      // Toast.show("Data saved!", SuccessToastProps);
-
       refetchKpiList();
     } catch (err) {
       console.log(err);
@@ -218,12 +197,6 @@ const KPIReviewScreen = () => {
     },
     enableReinitialize: true,
   });
-
-  useEffect(() => {
-    if (formValue) {
-      formik.handleSubmit();
-    }
-  }, [formValue]);
 
   useEffect(() => {
     if (kpiList?.data) {

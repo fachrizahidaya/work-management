@@ -16,7 +16,7 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
@@ -267,7 +267,6 @@ const EmployeeProfileScreen = ({ route }) => {
       setIsLoading(false);
       toggleUpdatePostModal();
       setRequestType("success");
-      // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

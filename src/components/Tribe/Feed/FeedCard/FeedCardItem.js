@@ -134,10 +134,6 @@ const FeedCardItem = ({
         flexDirection: "column",
         marginVertical: 8,
         elevation: 1,
-        // shadowColor: "rgba(0, 0, 0, 1)",
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.1,
-        // shadowRadius: 5,
       }}
       onPress={() => navigation.navigate("Post Screen", { id: id })}
     >

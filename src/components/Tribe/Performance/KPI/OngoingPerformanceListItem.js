@@ -17,7 +17,6 @@ const OngoingPerformanceListItem = ({
   target,
   isExpired,
   target_level,
-  status,
 }) => {
   return (
     <Pressable
@@ -34,7 +33,6 @@ const OngoingPerformanceListItem = ({
         navigation.navigate("KPI Detail", {
           id: id,
           isExpired: isExpired,
-          status: status,
         })
       }
     >

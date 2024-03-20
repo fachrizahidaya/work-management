@@ -23,8 +23,6 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  forceRerender,
-  setForceRerender,
   toggleFullScreen,
   handleLinkPress,
   handleEmailPress,
@@ -48,7 +46,6 @@ const FeedCardItemPost = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
-    setForceRerender(!forceRerender);
   };
 
   const words = content?.split(" ");

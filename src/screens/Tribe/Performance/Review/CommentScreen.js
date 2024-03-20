@@ -28,13 +28,10 @@ const CommentScreen = () => {
   const [commentValues, setCommentValues] = useState([]);
   const [employeeCommentValue, setEmployeeCommentValue] = useState([]);
   const [comment, setComment] = useState(null);
-  const [formValue, setFormValue] = useState(null);
-  const [employeeComment, setEmployeeComment] = useState(null);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const formScreenSheetRef = useRef(null);
 
   const { id } = route.params;
@@ -46,11 +43,7 @@ const CommentScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const {
-    data: commentList,
-    isFetching: commentListIsFetching,
-    refetch: refetchCommentList,
-  } = useFetch(`/hr/employee-review/comment/${id}`);
+  const { data: commentList, refetch: refetchCommentList } = useFetch(`/hr/employee-review/comment/${id}`);
 
   /**
    * Handle selected comment
@@ -59,7 +52,6 @@ const CommentScreen = () => {
    */
   const openSelectedComment = (data, value) => {
     setComment(data);
-    setEmployeeComment(value);
     formScreenSheetRef.current?.show();
   };
   const closeSelectedComment = () => {
@@ -70,18 +62,15 @@ const CommentScreen = () => {
     let employeeCommentValArr = [];
     if (Array.isArray(employee_comment_value)) {
       employee_comment_value.forEach((val) => {
-        employeeCommentValArr = [
-          ...employeeCommentValArr,
-          {
-            ...val?.performance_review_comment,
-            id: val?.id,
-            performance_review_comment_id: val?.performance_review_comment_id,
-            comment: val?.comment,
-          },
-        ];
+        employeeCommentValArr.push({
+          ...val?.performance_review_comment,
+          id: val?.id,
+          performance_review_comment_id: val?.performance_review_comment_id,
+          comment: val?.comment,
+        });
       });
     }
-    return [...employeeCommentValArr];
+    return employeeCommentValArr;
   };
 
   /**
@@ -90,17 +79,17 @@ const CommentScreen = () => {
    */
   const employeeCommentValueUpdateHandler = (data) => {
     setEmployeeCommentValue((prevState) => {
-      let currentData = [...prevState];
-      const index = currentData.findIndex(
+      const index = prevState.findIndex(
         (employee_comment_val) =>
           employee_comment_val?.performance_review_comment_id === data?.performance_review_comment_id
       );
+      const currentData = [...prevState];
       if (index > -1) {
         currentData[index].comment = data?.comment;
       } else {
-        currentData = [...currentData, data];
+        currentData.push(data);
       }
-      return [...currentData];
+      return currentData;
     });
   };
 
@@ -109,12 +98,8 @@ const CommentScreen = () => {
    */
   const sumUpCommentValue = () => {
     setCommentValues(() => {
-      // const performanceCommentValue = commentList?.data?.performance_review?.comment;
       const employeeCommentValue = getEmployeeCommentValue(commentList?.data?.employee_review_comment_value);
-      return [
-        ...employeeCommentValue,
-        // ...performanceCommentValue,
-      ];
+      return [...employeeCommentValue];
     });
   };
 
@@ -142,13 +127,6 @@ const CommentScreen = () => {
 
   let differences = compareCommentExisting(commentValues, employeeCommentValue);
 
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("comment", e);
-    }
-    setFormValue(formik.values);
-  };
-
   /**
    * Handle save filled or updated Comment
    */
@@ -158,7 +136,8 @@ const CommentScreen = () => {
       const res = await axiosInstance.patch(`/hr/employee-review/comment/${commentList?.data?.id}`, {
         comment_value: employeeCommentValue,
       });
-      Toast.show("Data saved!", SuccessToastProps);
+      toggleSaveModal();
+      setRequestType("info");
       refetchCommentList();
     } catch (err) {
       console.log(err);
@@ -187,12 +166,6 @@ const CommentScreen = () => {
     },
     enableReinitialize: true,
   });
-
-  useEffect(() => {
-    if (formValue) {
-      formik.handleSubmit();
-    }
-  }, [formValue]);
 
   useEffect(() => {
     if (commentList?.data) {
@@ -312,6 +285,7 @@ const CommentScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           toggleConfirmedModal();
+          setRequestType("info");
           navigation.goBack();
         }}
         description="Are you sure want to confirm this review?"
@@ -320,26 +294,16 @@ const CommentScreen = () => {
       <SuccessModal
         isOpen={saveModalIsOpen}
         toggle={toggleSaveModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        }
+        title="Changes saved!"
+        description="Data has successfully updated"
+        type={requestType}
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
         toggle={toggleConfirmedModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-          </View>
-        }
-        bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
+        title="Report submitted!"
+        description="Your report is logged"
+        type={requestType}
       />
     </>
   );

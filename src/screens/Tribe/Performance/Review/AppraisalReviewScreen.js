@@ -27,14 +27,11 @@ const AppraisalReviewScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
-  const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const formScreenSheetRef = useRef(null);
 
   const { id } = route.params;
@@ -66,21 +63,18 @@ const AppraisalReviewScreen = () => {
     let employeeAppraisalValArr = [];
     if (Array.isArray(employee_appraisal_value)) {
       employee_appraisal_value.forEach((val) => {
-        employeeAppraisalValArr = [
-          ...employeeAppraisalValArr,
-          {
-            ...val?.performance_appraisal_value,
-            id: val?.id,
-            performance_appraisal_value_id: val?.performance_appraisal_value_id,
-            supervisor_choice: val?.supervisor_choice,
-            employee_choice: val?.choice,
-            supervisor_notes: val?.supervisor_notes,
-            employee_notes: val?.notes,
-          },
-        ];
+        employeeAppraisalValArr.push({
+          ...val?.performance_appraisal_value,
+          id: val?.id,
+          performance_appraisal_value_id: val?.performance_appraisal_value_id,
+          supervisor_choice: val?.supervisor_choice,
+          employee_choice: val?.choice,
+          supervisor_notes: val?.supervisor_notes,
+          employee_notes: val?.notes,
+        });
       });
     }
-    return [...employeeAppraisalValArr];
+    return employeeAppraisalValArr;
   };
 
   /**
@@ -89,18 +83,18 @@ const AppraisalReviewScreen = () => {
    */
   const employeeAppraisalValueUpdateHandler = (data) => {
     setEmployeeAppraisalValue((prevState) => {
-      let currentData = [...prevState];
-      const index = currentData.findIndex(
+      const index = prevState.findIndex(
         (employee_appraisal_val) =>
           employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
       );
+      const currentData = [...prevState];
       if (index > -1) {
         currentData[index].supervisor_choice = data?.supervisor_choice;
         currentData[index].supervisor_notes = data?.supervisor_notes;
       } else {
-        currentData = [...currentData, data];
+        currentData.push(data);
       }
-      return [...currentData];
+      return currentData;
     });
   };
 
@@ -109,12 +103,8 @@ const AppraisalReviewScreen = () => {
    */
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
-      // const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
       const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
-      return [
-        ...employeeAppraisalValue,
-        // ...performanceAppraisalValue
-      ];
+      return [...employeeAppraisalValue];
     });
   };
 
@@ -149,13 +139,6 @@ const AppraisalReviewScreen = () => {
 
   let differences = compareActualChoiceAndNotes(appraisalValues, employeeAppraisalValue);
 
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("supervisor_choice", e);
-    }
-    setFormValue(formik.values);
-  };
-
   /**
    * Handle save filled or updated Appraisal
    */
@@ -167,7 +150,6 @@ const AppraisalReviewScreen = () => {
       });
       toggleSaveModal();
       setRequestType("info");
-      // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
       console.log(err);
@@ -194,12 +176,6 @@ const AppraisalReviewScreen = () => {
     },
     enableReinitialize: true,
   });
-
-  useEffect(() => {
-    if (formValue) {
-      formik.handleSubmit();
-    }
-  }, [formValue]);
 
   useEffect(() => {
     if (appraisalList?.data) {
@@ -346,15 +322,6 @@ const AppraisalReviewScreen = () => {
         type={requestType}
         title="Changes saved!"
         description="Data has successfully updated"
-        // topElement={
-        //   <View style={{ flexDirection: "row" }}>
-        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-        //   </View>
-        // }
-        // bottomElement={
-        //   <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        // }
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
@@ -362,13 +329,6 @@ const AppraisalReviewScreen = () => {
         type={requestType}
         title="Report submitted!"
         description="Your report is logged"
-        // topElement={
-        //   <View style={{ flexDirection: "row" }}>
-        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-        //   </View>
-        // }
-        // bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );

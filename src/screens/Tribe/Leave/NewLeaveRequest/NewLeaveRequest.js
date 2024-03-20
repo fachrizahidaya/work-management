@@ -13,8 +13,8 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";

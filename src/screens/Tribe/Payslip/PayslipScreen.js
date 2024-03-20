@@ -15,7 +15,7 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -81,7 +81,6 @@ const PayslipScreen = () => {
       refetchPayslip();
       togglePinUpdateModal();
       setRequestType("info");
-      // Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);

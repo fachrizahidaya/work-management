@@ -95,7 +95,7 @@ const AttendanceScreen = () => {
     ["Alpa", "Permit", "Sick", "Other"].includes(date?.attendanceType) && date?.attendanceReason && isWorkDay;
   const notAttend =
     date?.attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
-  const isLeave = date?.attendanceType === "Leave";
+  const isLeave = date?.attendanceType === "Leave" || date?.attendanceType === "Permit";
 
   /**
    *  Handle switch month on calendar
@@ -219,7 +219,6 @@ const AttendanceScreen = () => {
       setStatus("success");
       toggleAttendanceReportModal();
       setRequestType("info");
-      // Toast.show("Report submitted", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -243,7 +242,6 @@ const AttendanceScreen = () => {
       refetchAttachment();
       toggleAttendanceAttachmentModal();
       setRequestType("info");
-      // Toast.show("Attachment submitted", SuccessToastProps);
       setStatus("success");
       setSubmitting(false);
     } catch (err) {

@@ -3,11 +3,10 @@ import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, ScrollView } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard } from "react-native";
 import Toast from "react-native-root-toast";
-import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
@@ -26,14 +25,11 @@ const PostScreen = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [reloadComment, setReloadComment] = useState(false);
-  const [forceRerender, setForceRerender] = useState(false);
   const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   const route = useRoute();
-
   const navigation = useNavigation();
-
   const sharePostScreenSheetRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
@@ -108,7 +104,7 @@ const PostScreen = () => {
   const postLikeToggleHandler = async (post_id, action) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
+      refetchPostData();
       console.log("Process success");
     } catch (err) {
       console.log(err);
@@ -240,7 +236,7 @@ const PostScreen = () => {
 
   /**
    * Handle show suggestion username
-   * @param {*} param0
+   * @param {*} param
    * @returns
    */
   const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
@@ -258,7 +254,7 @@ const PostScreen = () => {
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={[{}, TextProps]}>{item.name}</Text>
+              <Text style={[TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />
@@ -272,8 +268,6 @@ const PostScreen = () => {
    */
   const commentContainUsernameHandler = (value) => {
     formik.handleChange("comments")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue?.split(" ").pop();
   };
 
   /**
@@ -300,12 +294,7 @@ const PostScreen = () => {
 
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
-      // if (currentOffsetPost === 0) {
-      //   setPosts(post?.data);
-      // }
-      // else {
       setPosts((prevData) => [...prevData, ...post?.data]);
-      // }
     }
   }, [postIsFetching]);
 
@@ -366,8 +355,6 @@ const PostScreen = () => {
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
                   onToggleLike={postLikeToggleHandler}
-                  forceRerender={forceRerender}
-                  setForceRerender={setForceRerender}
                   toggleFullScreen={toggleFullScreenHandler}
                   handleLinkPress={linkPressHandler}
                   handleEmailPress={emailPressHandler}
@@ -434,7 +421,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   image: {
-    // flex: 1,
     width: 500,
     height: 350,
     backgroundColor: "white",
