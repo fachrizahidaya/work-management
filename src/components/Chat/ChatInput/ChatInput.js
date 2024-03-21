@@ -95,7 +95,7 @@ const ChatInput = ({
     size: forwarded_file_size,
     type: forwarded_mime_type,
     webkitRelativePath: "",
-    uri: forwarded_file_path,
+    uri: `${process.env.EXPO_PUBLIC_API}/image/${forwarded_file_path}`,
   };
 
   const formik = useFormik({
@@ -167,7 +167,6 @@ const ChatInput = ({
           formData.append(key, values[key]);
         }
         formData.append("message", values.message.replace(/(<([^>]+)>)/gi, ""));
-        formData.append("file", forwardedAttachment);
         setStatus("processing");
         onSendMessage(formData, setSubmitting, setStatus);
       }

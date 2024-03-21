@@ -33,8 +33,8 @@ const ForwardScreen = () => {
     limit: 20,
   };
 
-  const { data: personalChat, isLoading: personalChatIsLoading } = useFetch("/chat/personal");
-  const { data: groupChat, isLoading: groupChatIsLoading } = useFetch("/chat/group");
+  const { data: personalChat } = useFetch("/chat/personal");
+  const { data: groupChat } = useFetch("/chat/group");
   const { data: contact, isLoading: contactIsLoading } = useFetch(
     "/chat/user",
     [currentPage, searchKeyword],
