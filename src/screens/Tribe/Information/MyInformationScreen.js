@@ -15,6 +15,39 @@ const MyInformationScreen = () => {
 
   const { data: profile, isFetching: profileIsFetching, refetch: refetchProfile } = useFetch("/hr/my-profile");
 
+  const leaveStatusArr = [
+    {
+      id: 1,
+      name: "Available Leave",
+      icon: "clipboard-outline",
+      qty: profile?.data?.leave_quota,
+      backgroundColor: "#E8E9EB",
+      iconColor: "#377893",
+      onPress: () =>
+        navigation.navigate("New Leave Request", {
+          employeeId: profile?.data?.id,
+        }),
+    },
+    {
+      id: 2,
+      name: "Pending Approval",
+      icon: "clipboard-pulse-outline",
+      qty: profile?.data?.pending_leave_request,
+      backgroundColor: "#FAF6E8",
+      iconColor: "#FFD240",
+      onPress: () => navigation.navigate("Leave Requests"),
+    },
+    {
+      id: 3,
+      name: "Approved",
+      icon: "clipboard-check-outline",
+      qty: profile?.data?.approved_leave_request,
+      backgroundColor: "#E9F5EC",
+      iconColor: "#49C96D",
+      onPress: () => navigation.navigate("Leave Requests"),
+    },
+  ];
+
   /**
    * Handle press icon call
    * @param {*} phone
@@ -50,13 +83,7 @@ const MyInformationScreen = () => {
               </View>
             ) : (
               <>
-                <EmployeeLeaveDashboard
-                  id={profile?.data?.id}
-                  name={profile?.data?.name}
-                  availableLeave={profile?.data?.leave_quota}
-                  pendingApproval={profile?.data?.pending_leave_request}
-                  approved={profile?.data?.approved_leave_request}
-                />
+                <EmployeeLeaveDashboard leaveStatus={leaveStatusArr} />
                 <EmployeeInformation
                   id={profile?.data?.id}
                   name={profile?.data?.name}

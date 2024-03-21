@@ -5,7 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewAppraisalDetailItem = ({
+const AppraisalReviewDetailItem = ({
   choice,
   description,
   item,
@@ -55,4 +55,4 @@ const ReviewAppraisalDetailItem = ({
   );
 };
 
-export default ReviewAppraisalDetailItem;
+export default AppraisalReviewDetailItem;

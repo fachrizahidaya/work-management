@@ -1,19 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
-import { SheetManager } from "react-native-actions-sheet";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
 import PageHeader from "../../../../components/shared/PageHeader";
-import OngoingPerformanceListItem from "../../../../components/Tribe/Performance/KPI/OngoingPerformanceListItem";
+import KPIListItem from "../../../../components/Tribe/Performance/KPI/KPIListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import CustomDateTimePicker from "../../../../components/shared/CustomDateTimePicker";
+import ArchivedKPIFilter from "../../../../components/Tribe/Performance/KPI/ArchivedKPIFilter";
 
 const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -96,7 +93,7 @@ const KPIListScreen = () => {
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index}
                 renderItem={({ item, index }) => (
-                  <OngoingPerformanceListItem
+                  <KPIListItem
                     key={index}
                     id={item?.id}
                     start_date={item?.review?.begin_date}
@@ -121,64 +118,12 @@ const KPIListScreen = () => {
             <View style={{ marginTop: 5, flex: 1 }}>
               {archived?.data?.length > 0 ? (
                 <>
-                  <View style={{ alignItems: "flex-end" }}>
-                    <Pressable
-                      style={{
-                        padding: 5,
-                        borderWidth: 1,
-                        borderRadius: 10,
-                        borderColor: "#E8E9EB",
-                        backgroundColor: "#FFFFFF",
-                        width: "10%",
-                      }}
-                      onPress={() =>
-                        SheetManager.show("form-sheet", {
-                          payload: {
-                            children: (
-                              <View
-                                style={{
-                                  display: "flex",
-                                  gap: 21,
-                                  paddingHorizontal: 20,
-                                  paddingVertical: 16,
-                                  paddingBottom: -20,
-                                }}
-                              >
-                                <View style={{ gap: 5 }}>
-                                  <CustomDateTimePicker
-                                    unlimitStartDate={true}
-                                    width="100%"
-                                    defaultValue={startDate ? startDate : null}
-                                    onChange={startDateChangeHandler}
-                                    title="Begin Date"
-                                  />
-                                </View>
-                                <View style={{ gap: 5 }}>
-                                  <CustomDateTimePicker
-                                    unlimitStartDate={true}
-                                    width="100%"
-                                    defaultValue={endDate ? endDate : null}
-                                    onChange={endDateChangeHandler}
-                                    title="End Date"
-                                  />
-                                </View>
-                              </View>
-                            ),
-                          },
-                        })
-                      }
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                        }}
-                      >
-                        <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
-                      </View>
-                    </Pressable>
-                  </View>
+                  <ArchivedKPIFilter
+                    startDate={startDate}
+                    startDateChangeHandler={startDateChangeHandler}
+                    endDate={endDate}
+                    endDateChangeHandler={endDateChangeHandler}
+                  />
                   <FlashList
                     data={archived?.data}
                     estimatedItemSize={50}

@@ -17,8 +17,6 @@ const FeedCommentList = ({
   hasBeenScrolled,
   setHasBeenScrolled,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   employeeUsername,
 }) => {
   return (
@@ -53,8 +51,6 @@ const FeedCommentList = ({
                 comments={item?.comments}
                 onReply={onReply}
                 handleLinkPress={handleLinkPress}
-                handleEmailPress={handleEmailPress}
-                copyToClipboard={copyToClipboard}
                 employeeUsername={employeeUsername}
               />
             )}

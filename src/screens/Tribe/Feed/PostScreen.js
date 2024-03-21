@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking } from "react-native";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -36,14 +36,15 @@ const PostScreen = () => {
 
   const { id } = route.params;
 
+  const { data: post, isFetching: postIsFetching } = useFetch("/hr/posts");
+  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
+  const { data: profile } = useFetch("/hr/my-profile");
+  const { data: employees } = useFetch("/hr/employees");
+
   const commentsFetchParameters = {
     offset: currentOffsetComments,
     limit: 10,
   };
-
-  const { data: post, refetch: refetchPost, isFetching: postIsFetching } = useFetch("/hr/posts");
-
-  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
 
   const {
     data: comment,
@@ -56,36 +57,24 @@ const PostScreen = () => {
     commentsFetchParameters
   );
 
-  const { data: profile } = useFetch("/hr/my-profile");
-
-  const { data: employees } = useFetch("/hr/employees");
+  /**
+   * Handle fetch more Comments
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + comment?.data.length) {
+      setCurrentOffsetComments(currentOffsetComments + 10);
+    }
+  };
 
   /**
-   * Handle show username in post
+   * Handle fetch comment from first offset
+   * After create a new comment, it will return to the first offset
    */
-  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  /**
-   * Handle show username suggestion option
-   */
-  const employeeData = employees?.data.map(({ id, username }) => ({
-    id,
-    name: username,
-  }));
-
-  /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreenHandler = useCallback((post) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(post);
-  }, []);
+  const commentRefetchHandler = () => {
+    setCurrentOffsetComments(0);
+    setReloadComment(!reloadComment);
+  };
 
   /**
    * Handle add comment
@@ -94,22 +83,6 @@ const PostScreen = () => {
     const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPostData();
-  };
-
-  /**
-   * Handle like a post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPostData();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
   };
 
   /**
@@ -136,12 +109,47 @@ const PostScreen = () => {
   };
 
   /**
+   * Handle like a post
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchPostData();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
    * Handle toggle reply a comment
    * @param {*} comment_parent_id
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
   };
+
+  /**
+   * Handle show username in post
+   */
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
+
+  /**
+   * Handle toggle fullscreen image
+   */
+  const toggleFullScreenHandler = useCallback((post) => {
+    setIsFullScreen(!isFullScreen);
+    setSelectedPicture(post);
+  }, []);
 
   /**
    * Handle press link
@@ -175,33 +183,12 @@ const PostScreen = () => {
   }, []);
 
   /**
-   * Handle press email
+   * Handle show username suggestion option
    */
-  const emailPressHandler = useCallback((email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  /**
-   * Handle copy to clipboard
-   * @param {*} text
-   */
-  const copyToClipboard = (text) => {
-    try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
-      } else {
-        Clipboard.setString(text);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const employeeData = employees?.data.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
 
   const sharePostToWhatsappHandler = async (message, url) => {
     let messageBody = `${message}\n${url}`;
@@ -212,25 +199,6 @@ const PostScreen = () => {
       await Linking.openURL(whatsappUrl);
     } catch (err) {
       console.log(err);
-    }
-  };
-
-  /**
-   * Handle fetch comment from first offset
-   * After create a new comment, it will return to the first offset
-   */
-  const commentRefetchHandler = () => {
-    setCurrentOffsetComments(0);
-    setReloadComment(!reloadComment);
-  };
-
-  /**
-   * Handle fetch more Comments
-   * After end of scroll reached, it will added other earlier comments
-   */
-  const commentEndReachedHandler = () => {
-    if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffsetComments(currentOffsetComments + 10);
     }
   };
 
@@ -280,10 +248,7 @@ const PostScreen = () => {
       comments: "",
       parent_id: commentParentId || "",
     },
-    // validationSchema: yup.object().shape({
-    //   comments: yup.string().required("Comments is required"),
-    // }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+    onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
       const modifiedContent = values.comments.replace(mentionRegex, "@$1");
@@ -357,8 +322,6 @@ const PostScreen = () => {
                   onToggleLike={postLikeToggleHandler}
                   toggleFullScreen={toggleFullScreenHandler}
                   handleLinkPress={linkPressHandler}
-                  handleEmailPress={emailPressHandler}
-                  copyToClipboard={copyToClipboard}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                   reference={sharePostScreenSheetRef}
@@ -370,8 +333,6 @@ const PostScreen = () => {
                   onReply={replyHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   linkPressHandler={linkPressHandler}
-                  emailPressHandler={emailPressHandler}
-                  copyToClipboardHandler={copyToClipboard}
                 />
               </View>
             </ScrollView>
@@ -385,9 +346,7 @@ const PostScreen = () => {
             />
           </SafeAreaView>
         </>
-      ) : (
-        <></>
-      )}
+      ) : null}
       <ShareImage
         reference={sharePostScreenSheetRef}
         navigation={navigation}

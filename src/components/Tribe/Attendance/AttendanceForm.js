@@ -6,11 +6,11 @@ import ActionSheet from "react-native-actions-sheet";
 
 import { TextProps } from "../../shared/CustomStylings";
 import SuccessModal from "../../shared/Modal/SuccessModal";
-import LateOrEarly from "./shared/FormType/LateOrEarly";
-import LateAndEarly from "./shared/FormType/LateAndEarly";
-import LeaveOrPermit from "./shared/FormType/LeaveOrPermit";
-import SubmittedReport from "./shared/FormType/SubmittedReport";
-import AllGood from "./shared/FormType/AllGood";
+import LateOrEarly from "./FormType/LateOrEarly";
+import LateAndEarly from "./FormType/LateAndEarly";
+import LeaveOrPermit from "./FormType/LeaveOrPermit";
+import SubmittedReport from "./FormType/SubmittedReport";
+import AllGood from "./FormType/AllGood";
 
 const AttendanceForm = ({
   toggleReport,

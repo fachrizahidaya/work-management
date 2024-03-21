@@ -2,22 +2,12 @@ import React from "react";
 import dayjs from "dayjs";
 
 import { Pressable, Text, View } from "react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingPerformanceListItem = ({
-  id,
-  start_date,
-  end_date,
-  navigation,
-  name,
-  target,
-  isExpired,
-  target_level,
-}) => {
+const AppraisalListItem = ({ id, start_date, end_date, navigation, target, isExpired, target_level, name }) => {
   return (
     <Pressable
       style={{
@@ -30,13 +20,14 @@ const OngoingPerformanceListItem = ({
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("KPI Detail", {
+        navigation.navigate("Appraisal Detail", {
           id: id,
           isExpired: isExpired,
         })
       }
     >
       <Text style={[TextProps]}>{name}</Text>
+
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>
@@ -50,4 +41,4 @@ const OngoingPerformanceListItem = ({
   );
 };
 
-export default OngoingPerformanceListItem;
+export default AppraisalListItem;

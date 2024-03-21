@@ -3,14 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
 import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import LeaveRequestList from "../../../../components/Tribe/Leave/PersonalLeaveRequest/LeaveRequestList";
+import PersonalLeaveRequest from "../../../../components/Tribe/Leave/PersonalLeaveRequest/PersonalLeaveRequest";
 import FilterLeave from "../../../../components/Tribe/Leave/PersonalLeaveRequest/FilterLeave";
 
 const PersonalLeaveScreen = () => {
@@ -112,28 +112,7 @@ const PersonalLeaveScreen = () => {
   );
 
   const { data: personalLeaveRequest, refetch: refetchPersonalLeaveRequest } = useFetch("/hr/leave-requests/personal");
-
   const { data: teamLeaveRequestData } = useFetch("/hr/leave-requests/waiting-approval");
-
-  /**
-   * Handle total of leave status
-   */
-  const pending =
-    personalLeaveRequest?.data?.filter((item) => {
-      return item?.status === "Pending";
-    }) || [];
-  const approved =
-    personalLeaveRequest?.data?.filter((item) => {
-      return item?.status === "Approved";
-    }) || [];
-  const rejected =
-    personalLeaveRequest?.data?.filter((item) => {
-      return item?.status === "Rejected";
-    }) || [];
-  const canceled =
-    personalLeaveRequest?.data?.filter((item) => {
-      return item?.status === "Canceled";
-    }) || [];
 
   const tabs = useMemo(() => {
     return [
@@ -142,7 +121,7 @@ const PersonalLeaveScreen = () => {
       { title: `Rejected`, value: "Rejected" },
       { title: `Approved`, value: "Approved" },
     ];
-  }, [personalLeaveRequest, pending, canceled, rejected, approved]);
+  }, [personalLeaveRequest]);
 
   /**
    * Handle fetch more leave by status
@@ -266,7 +245,7 @@ const PersonalLeaveScreen = () => {
 
         <>
           {/* Content here */}
-          <LeaveRequestList
+          <PersonalLeaveRequest
             onSelect={openSelectedLeaveHandler}
             onDeselect={closeSelectedLeaveHandler}
             pendingList={pendingList}

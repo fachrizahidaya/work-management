@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View } from "react-native";
-import Clock from "../Clock";
-import Options from "../Options";
-import Reason from "../Reason";
-import FormButton from "../../../../shared/FormButton";
+import Clock from "./shared/Clock";
+import Options from "./shared/Options";
+import Reason from "./shared/Reason";
+import FormButton from "../../../shared/FormButton";
 
 const LateOrEarly = ({
   formik,

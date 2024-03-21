@@ -5,16 +5,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import * as DocumentPicker from "expo-document-picker";
 
-import {
-  ActivityIndicator,
-  Linking,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Linking, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -29,12 +20,12 @@ import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirm
 import KPIDetailItem from "../../../../components/Tribe/Performance/KPI/KPIDetailItem";
 import KPIDetailList from "../../../../components/Tribe/Performance/KPI/KPIDetailList";
 import KPIForm from "../../../../components/Tribe/Performance/KPI/KPIForm";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import Tabs from "../../../../components/shared/Tabs";
 import AttachmentForm from "../../../../components/Tribe/Performance/KPI/AttachmentForm";
 import AttachmentItem from "../../../../components/Tribe/Performance/KPI/AttachmentItem";
+import SaveButton from "../../../../components/Tribe/Performance/KPI/SaveButton";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -78,7 +69,7 @@ const KPIScreen = () => {
     formScreenSheetRef.current?.hide();
   };
 
-  const openSelectedAttachmentKpi = (data, value) => {
+  const openSelectedAttachmentKpi = () => {
     formAttachmentScreenSheetRef.current?.show();
   };
   const closeSelectedAttachmentKpi = () => {
@@ -281,16 +272,11 @@ const KPIScreen = () => {
         });
       });
       formData.append("_method", "PATCH");
-      const res = await axiosInstance.post(
-        `/hr/employee-kpi/${kpiList?.data?.id}`,
-        formData,
-
-        {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await axiosInstance.post(`/hr/employee-kpi/${kpiList?.data?.id}`, formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
       toggleSaveModal();
       setRequestType("info");
       refetchKpiList();
@@ -372,7 +358,6 @@ const KPIScreen = () => {
       id: "",
       file: fileAttachment || "",
     },
-
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setSubmitting("processing");
       employeeKpiAttachmentUpdateHandler(values, setStatus, setSubmitting);
@@ -422,34 +407,7 @@ const KPIScreen = () => {
             }}
           />
           {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
-            <Button
-              height={35}
-              padding={10}
-              onPress={() => {
-                if (submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={
-                submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)
-              }
-            >
-              {submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Save
-                </Text>
-              )}
-            </Button>
+            <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
         <KPIDetailList
@@ -527,6 +485,7 @@ const KPIScreen = () => {
           )}
         </View>
       </SafeAreaView>
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}

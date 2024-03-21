@@ -1,13 +1,10 @@
-import { memo, useCallback, useState } from "react";
+import { memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, ActivityIndicator } from "react-native";
-import Toast from "react-native-root-toast";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
-import axiosInstance from "../../../../config/api";
 import FeedCardItem from "./FeedCardItem";
-import { ErrorToastProps, SuccessToastProps } from "../../../shared/CustomStylings";
 
 const FeedCard = ({
   posts,
@@ -26,84 +23,9 @@ const FeedCard = ({
   toggleFullScreen,
   employeeUsername,
   navigation,
+  onPressLink,
+  onToggleLike,
 }) => {
-  /**
-   * Handle like a Post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle press link
-   */
-  const linkPressHandler = useCallback((url) => {
-    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
-    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
-    let trimmedPlayStoreUrl;
-    let trimmedAppStoreUrl;
-    if (playStoreUrl) {
-      trimmedPlayStoreUrl = url?.slice(37);
-    } else if (appStoreUrl) {
-      trimmedAppStoreUrl = url?.slice(7);
-    }
-
-    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
-    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
-
-    try {
-      if (playStoreUrl) {
-        Linking.openURL(modifiedPlayStoreUrl);
-      } else if (appStoreUrl) {
-        Linking.openURL(modifiedAppStoreUrl);
-      } else {
-        Linking.openURL(url);
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  }, []);
-
-  /**
-   * Handle press email
-   */
-  const emailPressHandler = useCallback((email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  /**
-   * Handle copy to clipboard
-   * @param {*} text
-   */
-  const copyToClipboardHandler = (text) => {
-    try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
-      } else {
-        Clipboard.setString(text);
-      }
-      Toast.show("Copy to clipboard", SuccessToastProps);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <FlashList
@@ -145,14 +67,12 @@ const FeedCard = ({
             type={item?.type}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            onToggleLike={postLikeToggleHandler}
+            onToggleLike={onToggleLike}
             onCommentToggle={onCommentToggle}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreen}
-            handleLinkPress={linkPressHandler}
-            handleEmailPress={emailPressHandler}
-            copyToClipboard={copyToClipboardHandler}
+            handleLinkPress={onPressLink}
             employeeUsername={employeeUsername}
             navigation={navigation}
           />

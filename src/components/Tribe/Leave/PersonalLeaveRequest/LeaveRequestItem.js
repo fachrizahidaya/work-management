@@ -18,6 +18,7 @@ const LeaveRequestItem = ({
   item,
   onSelect,
   approval_by,
+  supervisor_name,
 }) => {
   return (
     <View
@@ -139,7 +140,7 @@ const LeaveRequestItem = ({
             }}
             numberOfLines={2}
           >
-            {status} by {approval_by}
+            {status} by {approval_by || supervisor_name}
           </Text>
         ) : null}
       </View>

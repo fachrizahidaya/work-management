@@ -105,8 +105,6 @@ const PostTypeOptions = ({
                         <CustomDateTimePicker
                           defaultValue={formik.values.end_date}
                           onChange={endDateAnnouncementHandler}
-                          // withText={true}
-                          // textLabel="Adjust date"
                           fontSize={12}
                           marginLeft={-15}
                         />

@@ -1,13 +1,13 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
+import MyTeamLeaveRequest from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequest";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
@@ -86,29 +86,13 @@ const MyTeamLeaveScreen = () => {
 
   const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
 
-  /**
-   * Handle total of leave status
-   */
-  const pending =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Pending";
-    }) || [];
-  const approved =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Approved";
-    }) || [];
-  const rejected =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Rejected";
-    }) || [];
-
   const tabs = useMemo(() => {
     return [
       { title: `Waiting Approval`, value: "Pending" },
       { title: `Approved`, value: "Approved" },
       { title: `Rejected`, value: "Rejected" },
     ];
-  }, [teamLeaveRequest, pending, approved, rejected]);
+  }, [teamLeaveRequest]);
 
   const onChangeTab = (value) => {
     setTabValue(value);
@@ -209,7 +193,7 @@ const MyTeamLeaveScreen = () => {
               <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
-            <MyTeamLeaveRequestList
+            <MyTeamLeaveRequest
               pendingLeaveRequests={pendingList}
               approvedLeaveRequests={approvedList}
               rejectedLeaveRequests={rejectedList}

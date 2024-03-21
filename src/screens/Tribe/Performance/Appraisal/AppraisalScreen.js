@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -17,9 +17,9 @@ import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import AppraisalDetailList from "../../../../components/Tribe/Performance/Appraisal/AppraisalDetailList";
 import AppraisalDetailItem from "../../../../components/Tribe/Performance/Appraisal/AppraisalDetailItem";
 import AppraisalForm from "../../../../components/Tribe/Performance/Appraisal/AppraisalForm";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import SaveButton from "../../../../components/Tribe/Performance/Appraisal/SaveButton";
 
 const AppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
@@ -202,34 +202,10 @@ const AppraisalScreen = () => {
             }}
           />
           {appraisalList?.data?.confirm || !appraisalValues ? null : (
-            <Button
-              height={35}
-              padding={10}
-              onPress={() => {
-                if (submitIsLoading || differences.length === 0) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={differences.length === 0 || submitIsLoading}
-            >
-              {submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Save
-                </Text>
-              )}
-            </Button>
+            <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
+
         <AppraisalDetailList
           dayjs={dayjs}
           begin_date={appraisalList?.data?.begin_date}
@@ -272,6 +248,7 @@ const AppraisalScreen = () => {
           </ScrollView>
         </View>
       </SafeAreaView>
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}

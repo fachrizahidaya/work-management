@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, dayjs, description }) => {
+const CommentListItem = ({ id, start_date, end_date, navigation, name, dayjs, description }) => {
   return (
     <Pressable
       style={{
@@ -25,7 +25,7 @@ const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, da
         })
       }
     >
-      <Text style={[{}, TextProps]}>{name}</Text>
+      <Text style={[TextProps]}>{name}</Text>
       <View>
         <Text style={[TextProps]}>{description}</Text>
       </View>
@@ -38,4 +38,4 @@ const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, da
   );
 };
 
-export default OngoingCommentListItem;
+export default CommentListItem;

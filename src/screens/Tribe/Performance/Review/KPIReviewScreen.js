@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, Linking } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, View, Linking } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,16 +13,16 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import ReviewDetailList from "../../../../components/Tribe/Performance/Review/ReviewDetailList";
-import ReviewDetailItem from "../../../../components/Tribe/Performance/Review/ReviewDetailItem";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import KPIReviewDetailList from "../../../../components/Tribe/Performance/Review/KPIReviewDetailList";
+import KPIReviewDetailItem from "../../../../components/Tribe/Performance/Review/KPIReviewDetailItem";
 import PageHeader from "../../../../components/shared/PageHeader";
 import KPIReviewForm from "../../../../components/Tribe/Performance/Review/KPIReviewForm";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import KPIReviewSaveButton from "../../../../components/Tribe/Performance/Review/KPIReviewSaveButton";
 
 const KPIReviewScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -225,40 +225,11 @@ const KPIReviewScreen = () => {
             }}
           />
           {kpiValues.length === 0 || kpiList?.data?.confirm ? null : (
-            <Button
-              height={35}
-              padding={10}
-              onPress={() => {
-                if (submitIsLoading || differences.length === 0) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={differences.length === 0 || submitIsLoading}
-            >
-              {submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Save
-                </Text>
-              )}
-            </Button>
+            <KPIReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
-        {kpiValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-        <ReviewDetailList
+
+        <KPIReviewDetailList
           dayjs={dayjs}
           begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
           end_date={kpiList?.data?.performance_kpi?.review?.end_date}
@@ -272,7 +243,7 @@ const KPIReviewScreen = () => {
               kpiValues.map((item, index) => {
                 const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
                 return (
-                  <ReviewDetailItem
+                  <KPIReviewDetailItem
                     key={index}
                     item={item}
                     id={item?.id}
@@ -296,6 +267,11 @@ const KPIReviewScreen = () => {
             )}
           </ScrollView>
         </View>
+        {kpiValues.length > 0 ? (
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+          </Pressable>
+        ) : null}
       </SafeAreaView>
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}

@@ -1,21 +1,15 @@
 NewFeedScreen;
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
-import * as yup from "yup";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import { useRoute } from "@react-navigation/native";
 
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, Text, ScrollView } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
-import Button from "../../../../components/shared/Forms/Button";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
@@ -23,7 +17,8 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import PostOptions from "./PostOptions";
 
 const NewFeedScreen = () => {
   const [image, setImage] = useState(null);
@@ -32,24 +27,22 @@ const NewFeedScreen = () => {
   const [isReady, setIsReady] = useState(false);
   const [dateShown, setDateShown] = useState(false);
 
-  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
-
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const postActionScreenSheetRef = useRef(null);
 
-  const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
+  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
 
+  const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
+
+  const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   // Handle close keyboard after input
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
   const { data: employees } = useFetch("/hr/employees");
 
   /**
@@ -70,7 +63,6 @@ const NewFeedScreen = () => {
       postRefetchHandler();
       toggleSuccess();
       setRequestType("post");
-      // Toast.show("Posted successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -118,9 +110,6 @@ const NewFeedScreen = () => {
       type: selectedOption || "Public",
       end_date: "",
     },
-    // validationSchema: yup.object().shape({
-    //   content: yup.string().required("Content is required"),
-    // }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       const formData = new FormData();
@@ -208,57 +197,26 @@ const NewFeedScreen = () => {
                 }
               />
             </View>
-            <ReturnConfirmationModal
-              isOpen={returnModalIsOpen}
-              toggle={toggleReturnModal}
-              onPress={() => {
-                toggleReturnModal();
-                navigation.goBack();
-                setImage(null);
-              }}
-              description="Are you sure want to exit? It will be deleted."
-            />
+
             <View style={styles.container}>
-              <View
-                style={{
-                  ...styles.inputHeader,
-                  alignItems: formik.values.type === "Public" ? "center" : "center",
+              <PostOptions
+                formik={formik}
+                loggedEmployeeImage={loggedEmployeeImage}
+                loggedEmployeeName={loggedEmployeeName}
+                reference={postActionScreenSheetRef}
+                checkAccess={checkAccess}
+              />
+
+              <ReturnConfirmationModal
+                isOpen={returnModalIsOpen}
+                toggle={toggleReturnModal}
+                onPress={() => {
+                  toggleReturnModal();
+                  navigation.goBack();
+                  setImage(null);
                 }}
-              >
-                <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="lg" isThumb={false} />
-                <View style={{ gap: 5 }}>
-                  <Button
-                    disabled={checkAccess ? false : true}
-                    padding={8}
-                    height={32}
-                    backgroundColor="#FFFFFF"
-                    onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
-                    borderRadius={15}
-                    variant="outline"
-                  >
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
-                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
-                    </View>
-                  </Button>
-                  {formik.values.type === "Public" ? (
-                    ""
-                  ) : (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 2,
-                      }}
-                    >
-                      <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              </View>
+                description="Are you sure want to exit? It will be deleted."
+              />
 
               <NewFeedForm
                 formik={formik}

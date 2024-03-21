@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { Pressable, Text, View } from "react-native";
 
@@ -7,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingReviewKPIListItem = ({
+const AppraisalReviewListItem = ({
   id,
   start_date,
   end_date,
@@ -30,13 +31,13 @@ const OngoingReviewKPIListItem = ({
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("Review KPI Detail", {
+        navigation.navigate("Review Appraisal Detail", {
           id: id,
         })
       }
     >
       <Text style={[TextProps]}>{description}</Text>
-      <Text style={[TextProps]}>{name}</Text>
+      {target_level === "Employee" ? null : <Text style={[TextProps]}>{name}</Text>}
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>
@@ -50,4 +51,4 @@ const OngoingReviewKPIListItem = ({
   );
 };
 
-export default OngoingReviewKPIListItem;
+export default AppraisalReviewListItem;

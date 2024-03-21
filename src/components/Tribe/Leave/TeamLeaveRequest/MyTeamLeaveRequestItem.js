@@ -61,24 +61,7 @@ const MyTeamLeaveRequestItem = ({
   );
 
   return (
-    <View
-      key={id}
-      style={{
-        flexDirection: "column",
-        backgroundColor: "#ffffff",
-        gap: 10,
-        borderRadius: 10,
-        paddingVertical: 16,
-        paddingHorizontal: 14,
-        marginVertical: 8,
-        marginHorizontal: 2,
-        elevation: 4,
-        shadowColor: "rgba(0, 0, 0, 1)",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-      }}
-    >
+    <View key={id} style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View
           style={{
@@ -129,16 +112,7 @@ const MyTeamLeaveRequestItem = ({
           justifyContent: "space-between",
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 5,
-            padding: 5,
-            alignItems: "center",
-            borderRadius: 10,
-            backgroundColor: "#F8F8F8",
-          }}
-        >
+        <View style={styles.leaveTime}>
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
@@ -154,13 +128,19 @@ export default MyTeamLeaveRequestItem;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#F5F5F5",
-    height: 50,
-    padding: 10,
+    flexDirection: "column",
+    backgroundColor: "#ffffff",
+    gap: 10,
     borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginVertical: 8,
+    marginHorizontal: 2,
+    elevation: 4,
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   containerApproval: {
     flexDirection: "row",
@@ -177,5 +157,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingBottom: -20,
+  },
+  leaveTime: {
+    flexDirection: "row",
+    gap: 5,
+    padding: 5,
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "#F8F8F8",
   },
 });

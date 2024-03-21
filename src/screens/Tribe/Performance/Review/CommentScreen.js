@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,8 +14,7 @@ import { useLoading } from "../../../../hooks/useLoading";
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import Button from "../../../../components/shared/Forms/Button";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import CommentDetailList from "../../../../components/Tribe/Performance/Review/CommentDetailList";
 import CommentDetailItem from "../../../../components/Tribe/Performance/Review/CommentDetailItem";
@@ -23,6 +22,7 @@ import CommentForm from "../../../../components/Tribe/Performance/Review/Comment
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import CommentSaveButton from "../../../../components/Tribe/Performance/Review/CommentSaveButton";
 
 const CommentScreen = () => {
   const [commentValues, setCommentValues] = useState([]);
@@ -194,39 +194,10 @@ const CommentScreen = () => {
             }}
           />
           {commentValues.length > 0 ? (
-            <Button
-              height={35}
-              padding={10}
-              onPress={() => {
-                if (submitIsLoading || differences.length === 0) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={differences.length === 0 || submitIsLoading}
-            >
-              {submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Save
-                </Text>
-              )}
-            </Button>
+            <CommentSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           ) : null}
         </View>
-        {commentValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
+
         <CommentDetailList
           dayjs={dayjs}
           begin_date={commentList?.data?.performance_review?.begin_date}
@@ -260,6 +231,11 @@ const CommentScreen = () => {
             )}
           </ScrollView>
         </View>
+        {commentValues.length > 0 ? (
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+          </Pressable>
+        ) : null}
       </SafeAreaView>
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}

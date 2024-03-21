@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
@@ -55,7 +54,7 @@ const ContactScreen = () => {
   /**
    * Handle search contact
    */
-  const handleSearch = useCallback(
+  const searchContactHandler = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
       setCurrentPage(1);
@@ -100,7 +99,7 @@ const ContactScreen = () => {
                 setSearchInput("");
               }}
               onChangeText={(value) => {
-                handleSearch(value);
+                searchContactHandler(value);
                 setInputToShow(value);
               }}
               placeHolder="Search contact"
@@ -109,37 +108,16 @@ const ContactScreen = () => {
           </View>
 
           {/* Content here */}
-          <View style={{ flex: 1, paddingHorizontal: 14 }}>
-            <FlashList
-              data={contacts.length ? contacts : filteredDataArray}
-              onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-              keyExtractor={(item, index) => index}
-              onEndReachedThreshold={0.1}
-              estimatedItemSize={60}
-              onEndReached={hasBeenScrolled ? fetchMoreEmployeeContact : null}
-              ListFooterComponent={() => employeeDataIsFetching && hasBeenScrolled && <ActivityIndicator />}
-              renderItem={({ item, index }) => (
-                <ContactList
-                  key={index}
-                  id={item?.id}
-                  name={item?.name}
-                  position={item?.position_name}
-                  image={item?.image}
-                  phone={item?.phone_number}
-                  email={item?.email}
-                  user={item?.user}
-                  user_id={item?.user?.id}
-                  room_id={item?.chat_personal_id}
-                  user_name={item?.user?.name}
-                  user_type={item?.user?.user_type}
-                  user_image={item?.user?.image}
-                  loggedEmployeeId={userSelector?.user_role_id}
-                  navigation={navigation}
-                  leave_status={item?.is_leave_today}
-                />
-              )}
-            />
-          </View>
+          <ContactList
+            data={contacts}
+            filteredData={filteredDataArray}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            fetchMore={fetchMoreEmployeeContact}
+            isFetching={employeeDataIsFetching}
+            navigation={navigation}
+            userSelector={userSelector}
+          />
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </>

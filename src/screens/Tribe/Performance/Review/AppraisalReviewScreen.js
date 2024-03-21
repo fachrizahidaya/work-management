@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,15 +13,15 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import ReviewAppraisalDetailList from "../../../../components/Tribe/Performance/Review/ReviewAppraisalDetailList";
-import ReviewAppraisalDetailItem from "../../../../components/Tribe/Performance/Review/ReviewAppraisalDetailItem";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import AppraisalReviewDetailList from "../../../../components/Tribe/Performance/Review/AppraisalReviewDetailList";
+import AppraisalReviewDetailItem from "../../../../components/Tribe/Performance/Review/AppraisalReviewDetailItem";
 import PageHeader from "../../../../components/shared/PageHeader";
 import AppraisalReviewForm from "../../../../components/Tribe/Performance/Review/AppraisalReviewForm";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import AppraisalReviewSaveButton from "../../../../components/Tribe/Performance/Review/AppraisalReviewSaveButton";
 
 const AppraisalReviewScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
@@ -204,40 +204,11 @@ const AppraisalReviewScreen = () => {
             }}
           />
           {appraisalValues.length === 0 || appraisalList?.data?.confirm ? null : (
-            <Button
-              height={35}
-              padding={10}
-              onPress={() => {
-                if (submitIsLoading || differences.length === 0) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={differences.length === 0 || submitIsLoading}
-            >
-              {submitIsLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Save
-                </Text>
-              )}
-            </Button>
+            <AppraisalReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
-        {appraisalValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-        <ReviewAppraisalDetailList
+
+        <AppraisalReviewDetailList
           dayjs={dayjs}
           begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
           end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
@@ -253,7 +224,7 @@ const AppraisalReviewScreen = () => {
                   (empAppraisal) => empAppraisal.id === item.id
                 );
                 return (
-                  <ReviewAppraisalDetailItem
+                  <AppraisalReviewDetailItem
                     key={index}
                     item={item}
                     id={item?.id}
@@ -277,7 +248,13 @@ const AppraisalReviewScreen = () => {
             )}
           </ScrollView>
         </View>
+        {appraisalValues.length > 0 ? (
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+          </Pressable>
+        ) : null}
       </SafeAreaView>
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}

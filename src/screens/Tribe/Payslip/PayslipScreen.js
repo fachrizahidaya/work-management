@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../hooks/useFetch";
@@ -58,7 +57,6 @@ const PayslipScreen = () => {
     setSelectedPayslip(data);
     payslipDownloadScreenSheetRef.current?.show();
   };
-
   const closeSelectedPayslip = () => {
     setSelectedPayslip(null);
     payslipDownloadScreenSheetRef.current?.hide();

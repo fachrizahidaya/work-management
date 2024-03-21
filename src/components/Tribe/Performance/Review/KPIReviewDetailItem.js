@@ -1,22 +1,13 @@
 import React from "react";
 
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewDetailItem = ({
-  target,
-  achievement,
-  description,
-  handleOpen,
-  item,
-  employeeKpiValue,
-  attachment,
-  onDownload,
-}) => {
+const KPIReviewDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
   return (
     <Pressable
       style={{
@@ -44,4 +35,4 @@ const ReviewDetailItem = ({
   );
 };
 
-export default ReviewDetailItem;
+export default KPIReviewDetailItem;

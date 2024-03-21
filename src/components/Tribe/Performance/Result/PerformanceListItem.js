@@ -26,7 +26,7 @@ const PerformanceListItem = ({ id, start_date, end_date, navigation, name, dayjs
         })
       }
     >
-      {type === "personal" ? null : <Text style={[{}, TextProps]}>{name}</Text>}
+      {type === "personal" ? null : <Text style={[TextProps]}>{name}</Text>}
       <View>
         <Text style={[TextProps]}>{description}</Text>
       </View>
