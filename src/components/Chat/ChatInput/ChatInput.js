@@ -170,7 +170,6 @@ const ChatInput = ({
         setStatus("processing");
         onSendMessage(formData, setSubmitting, setStatus);
       }
-      resetForwardedBandAttachment();
       resetForm();
       setFileAttachment(null);
       setForwardedBandAttachment(null);
