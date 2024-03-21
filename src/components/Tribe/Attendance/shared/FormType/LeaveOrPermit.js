@@ -11,12 +11,14 @@ const LeaveOrPermit = ({ type, reason }) => {
           <Text style={[{ fontSize: 14 }, TextProps]}>{type}</Text>
         </View>
       </View>
-      <View style={{ gap: 10 }}>
-        <Text style={[{ fontSize: 14 }, TextProps]}>Reason</Text>
-        <View style={{ borderWidth: 1, padding: 10, borderRadius: 10, borderColor: "#E8E9EB" }}>
-          <Text style={[{ fontSize: 14 }, TextProps]}>{reason}</Text>
+      {type === "Leave" ? null : (
+        <View style={{ gap: 10 }}>
+          <Text style={[{ fontSize: 14 }, TextProps]}>Reason</Text>
+          <View style={{ borderWidth: 1, padding: 10, borderRadius: 10, borderColor: "#E8E9EB" }}>
+            <Text style={[{ fontSize: 14 }, TextProps]}>{reason}</Text>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };

@@ -297,28 +297,32 @@ const AttendanceForm = ({
           {isLeave && <LeaveOrPermit type={date?.attendanceType} reason={date?.attendanceReason} />}
 
           {/* If did not clock-in */}
-          {date?.dayType === "Work Day" && !date?.timeIn && date?.date === CURRENT_DATE && (
-            <View style={{ gap: 10 }}>
-              <View
-                style={{
-                  gap: 1,
-                  backgroundColor: "#F5F5F5",
-                  borderRadius: 10,
-                }}
-              >
+          {date?.attendanceType !== "Leave" &&
+            date?.attendanceType !== "Permit" &&
+            date?.dayType === "Work Day" &&
+            !date?.timeIn &&
+            date?.date === CURRENT_DATE && (
+              <View style={{ gap: 10 }}>
                 <View
                   style={{
-                    ...styles.content,
-                    justifyContent: "space-between",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#FFFFFF",
+                    gap: 1,
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: 10,
                   }}
                 >
-                  <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
+                  <View
+                    style={{
+                      ...styles.content,
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#FFFFFF",
+                    }}
+                  >
+                    <Text style={[{ fontSize: 16 }, TextProps]}>Clock-in required</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
+            )}
         </View>
       </TouchableWithoutFeedback>
       <SuccessModal
