@@ -154,7 +154,6 @@ const ChatInput = ({
       task_no: "",
       task_title: "",
     },
-
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       const messageToForward = forwardedMessage ? forwardedMessage : forwardedMessageFormik.values.message;
       const attachmentToForward = forwardedAttachment ? forwardedAttachment : forwardedMessageFormik.values.file;
@@ -219,7 +218,7 @@ const ChatInput = ({
     forwardedMessageFormik.setFieldValue(`project_title`, "");
   };
 
-  const handleChange = (value) => {
+  const chatMessageHandler = (value) => {
     formik.handleChange("message")(value);
   };
 
@@ -400,7 +399,7 @@ const ChatInput = ({
                 {type === "group" ? (
                   <MentionInput
                     value={formik.values.message}
-                    onChange={handleChange}
+                    onChange={chatMessageHandler}
                     partTypes={[
                       {
                         pattern:

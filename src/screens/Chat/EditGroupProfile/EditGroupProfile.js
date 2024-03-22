@@ -11,7 +11,6 @@ import {
   View,
   Text,
   Pressable,
-  Image,
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
@@ -19,20 +18,16 @@ import {
 import Toast from "react-native-root-toast";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import axiosInstance from "../../../config/api";
-import FormButton from "../../../components/shared/FormButton";
-import Input from "../../../components/shared/Forms/Input";
 import { SuccessToastProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
+import EditGroupProfileForm from "../../../components/Chat/EditGroupProfile/EditGroupProfileForm";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
   const [editName, setEditName] = useState(false);
 
   const navigation = useNavigation();
-
   const route = useRoute();
 
   const { name, image, roomId } = route.params;
@@ -134,11 +129,7 @@ const EditGroupProfile = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <View
-          style={{
-            ...styles.header,
-          }}
-        >
+        <View style={styles.header}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Pressable onPress={() => !formik.isSubmitting && formik.status !== "processing" && navigation.goBack()}>
               <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
@@ -146,78 +137,17 @@ const EditGroupProfile = () => {
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Edit Profile</Text>
           </View>
         </View>
-        <View
-          style={{
-            ...styles.content,
-          }}
-        >
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {!imageAttachment ? (
-                <AvatarPlaceholder size="xl" name={name} image={!imageAttachment ? image : imageAttachment.uri} />
-              ) : (
-                <Image
-                  source={{
-                    uri: `${imageAttachment?.uri}`,
-                  }}
-                  alt="profile picture"
-                  style={{
-                    width: 80,
-                    height: 80,
-                    resizeMode: "contain",
-                    borderRadius: 40,
-                  }}
-                />
-              )}
-              <Pressable
-                style={styles.editPicture}
-                onPress={!imageAttachment ? pickImageHandler : () => setImageAttachment(null)}
-              >
-                <MaterialCommunityIcons
-                  name={!imageAttachment ? "camera-outline" : "close"}
-                  size={20}
-                  color="#3F434A"
-                />
-              </Pressable>
-            </View>
 
-            {editName ? (
-              <Input
-                numberOfLines={2}
-                value={formik.values.name}
-                onChangeText={(value) => formik.setFieldValue("name", value)}
-                defaultValue={name}
-                endIcon="close"
-                onPressEndIcon={() => {
-                  editGroupNameHandler();
-                  formik.setFieldValue("name", name);
-                }}
-              />
-            ) : (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Text style={{ fontSize: 16, fontWeight: "500" }} numberOfLines={2}>
-                  {name}
-                </Text>
-                <MaterialCommunityIcons name="pencil" size={20} color="#3F434A" onPress={editGroupNameHandler} />
-              </View>
-            )}
-          </View>
-          {imageAttachment || formik.values.name !== name ? (
-            <FormButton onPress={formik.handleSubmit}>
-              <Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          ) : (
-            <FormButton opacity={0.5} onPress={null}>
-              <Text style={{ fontSize: 14, fontWeight: "400", color: "#FFFFFF" }}>Save</Text>
-            </FormButton>
-          )}
-        </View>
+        <EditGroupProfileForm
+          imageAttachment={imageAttachment}
+          setImageAttachment={setImageAttachment}
+          name={name}
+          image={image}
+          formik={formik}
+          onEdit={editGroupNameHandler}
+          pickImageHandler={pickImageHandler}
+          editName={editName}
+        />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -236,27 +166,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingVertical: 14,
     paddingHorizontal: 16,
-  },
-  editPicture: {
-    backgroundColor: "#FFFFFF",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 30,
-    height: 30,
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    zIndex: 2,
-    borderWidth: 1,
-    borderRadius: 20,
-    borderColor: "#C6C9CC",
-    shadowOffset: 0,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 10,
   },
 });

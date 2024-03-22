@@ -96,7 +96,6 @@ const ChatListScreen = () => {
   };
 
   const { data: searchResult } = useFetch("/chat/global-search", [globalKeyword], { search: globalKeyword });
-
   const { data: user } = useFetch("/chat/user", [currentPage], userFetchParameters);
 
   /**
@@ -193,7 +192,7 @@ const ChatListScreen = () => {
    * Handle Delete group after exit group
    * @param {*} group_id
    */
-  const groupDeleteHandler = async (group_id) => {
+  const deleteGroupHandler = async (group_id) => {
     try {
       toggleChatRoom();
       await axiosInstance.delete(`/chat/group/${group_id}`);
@@ -233,7 +232,7 @@ const ChatListScreen = () => {
    * @param {*} id - Personal chat id / Group chat id
    * @param {*} action - either pin/unpin
    */
-  const chatPinUpdateHandler = async (chatType, id, action) => {
+  const pinChatHandler = async (chatType, id, action) => {
     try {
       const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
     } catch (err) {
@@ -291,7 +290,7 @@ const ChatListScreen = () => {
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.group}
                 clickMoreHandler={contactMenuHandler}
-                onPinControl={chatPinUpdateHandler}
+                onPinControl={pinChatHandler}
                 navigation={navigation}
                 userSelector={userSelector}
               />
@@ -301,7 +300,7 @@ const ChatListScreen = () => {
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.personal}
                 clickMoreHandler={contactMenuHandler}
-                onPinControl={chatPinUpdateHandler}
+                onPinControl={pinChatHandler}
                 navigation={navigation}
                 userSelector={userSelector}
               />
@@ -330,7 +329,7 @@ const ChatListScreen = () => {
               isLoading={chatRoomIsLoading}
               isOpen={deleteGroupModalIsOpen}
               toggle={closeSelectedGroupChatHandler}
-              onPress={() => groupDeleteHandler(selectedChat?.id)}
+              onPress={() => deleteGroupHandler(selectedChat?.id)}
               description="Are you sure want to delete this group?"
             />
           ) : null}

@@ -5,9 +5,9 @@ import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
 import SearchBox from "./SearchBox";
 import { TextProps } from "../../shared/CustomStylings";
+import ContactDescription from "./ContactDescription";
 
 const ChatHeader = ({
   name,
@@ -22,12 +22,9 @@ const ChatHeader = ({
   loggedInUser,
   toggleDeleteModal,
   deleteModalIsOpen,
-  exitModalIsOpen,
-  deleteGroupModalIsOpen,
   deleteChatPersonal,
   roomId,
   deleteChatMessageIsLoading,
-  chatRoomIsLoading,
   isLoading,
   toggleDeleteChatMessage,
   onUpdatePinHandler,
@@ -67,16 +64,106 @@ const ChatHeader = ({
     loggedInUser: loggedInUser,
     active_member: active_member,
     toggleDeleteModal: toggleDeleteModal,
-    toggleExitModal: toggleExitModal,
-    toggleDeleteGroupModal: toggleDeleteGroupModal,
     deleteModalIsOpen: deleteModalIsOpen,
-    exitModalIsOpen: exitModalIsOpen,
-    deleteGroupModalIsOpen: deleteGroupModalIsOpen,
     deleteChatPersonal: deleteChatPersonal,
     deleteChatMessageIsLoading: deleteChatMessageIsLoading,
-    chatRoomIsLoading: chatRoomIsLoading,
     toggleDeleteChatMessage: toggleDeleteChatMessage,
   };
+
+  const renderHeaderOptions = () => (
+    <View
+      style={{
+        display: "flex",
+        gap: 21,
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        paddingBottom: -20,
+      }}
+    >
+      <View
+        style={{
+          gap: 1,
+          backgroundColor: "#F5F5F5",
+          borderRadius: 10,
+        }}
+      >
+        {/* <TouchableOpacity
+                      onPress={() => {
+                        toggleSearch();
+                        SheetManager.hide("form-sheet");
+                      }}
+                    >
+                      <Text style={[{ fontSize: 16 }, TextProps]}>Search</Text>
+                    </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => {
+            onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+            SheetManager.hide("form-sheet");
+          }}
+          style={{
+            ...styles.content,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[{ fontSize: 16 }, TextProps]}>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
+        </TouchableOpacity>
+        {type === "group" ? (
+          <>
+            {active_member === 1 ? (
+              <TouchableOpacity
+                onPress={async () => {
+                  await SheetManager.hide("form-sheet");
+                  toggleExitModal();
+                }}
+                style={{
+                  ...styles.content,
+                  justifyContent: "space-between",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#FFFFFF",
+                }}
+              >
+                <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={async () => {
+                  await SheetManager.hide("form-sheet");
+                  toggleDeleteGroupModal();
+                }}
+                style={{
+                  ...styles.content,
+                  justifyContent: "space-between",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#FFFFFF",
+                }}
+              >
+                <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
+              </TouchableOpacity>
+            )}
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              onPress={async () => {
+                await SheetManager.hide("form-sheet");
+                toggleDeleteModal();
+              }}
+              style={{
+                ...styles.content,
+                justifyContent: "space-between",
+                borderBottomWidth: 1,
+                borderBottomColor: "#FFFFFF",
+              }}
+            >
+              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </View>
+  );
 
   return (
     <>
@@ -85,146 +172,22 @@ const ChatHeader = ({
           ...styles.container,
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Pressable onPress={() => !isLoading && navigation.navigate("Chat List")}>
-            <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
-          </Pressable>
-
-          <Pressable
-            onPress={() => navigation.navigate("User Detail", params)}
-            style={{ display: "flex", flexDirection: "row", gap: 10 }}
-          >
-            <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
-
-            <View>
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>{name?.length > 30 ? name?.split(" ")[0] : name}</Text>
-              {type === "personal" ? (
-                <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{email}</Text>
-              ) : (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text
-                      style={[
-                        {
-                          fontSize: 10,
-                          width: 200,
-                          overflow: "hidden",
-                        },
-                        TextProps,
-                      ]}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {concatenatedNames}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            </View>
-          </Pressable>
-        </View>
-
+        <ContactDescription
+          name={name}
+          image={image}
+          email={email}
+          isLoading={isLoading}
+          navigation={navigation}
+          params={params}
+          concatenatedNames={concatenatedNames}
+          type={type}
+        />
         <Pressable
           style={{ marginRight: 1 }}
           onPress={() =>
             SheetManager.show("form-sheet", {
               payload: {
-                children: (
-                  <View
-                    style={{
-                      display: "flex",
-                      gap: 21,
-                      paddingHorizontal: 20,
-                      paddingVertical: 16,
-                      paddingBottom: -20,
-                    }}
-                  >
-                    <View
-                      style={{
-                        gap: 1,
-                        backgroundColor: "#F5F5F5",
-                        borderRadius: 10,
-                      }}
-                    >
-                      {/* <TouchableOpacity
-                      onPress={() => {
-                        toggleSearch();
-                        SheetManager.hide("form-sheet");
-                      }}
-                    >
-                      <Text style={[{ fontSize: 16 }, TextProps]}>Search</Text>
-                    </TouchableOpacity> */}
-                      <TouchableOpacity
-                        onPress={() => {
-                          onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
-                          SheetManager.hide("form-sheet");
-                        }}
-                        style={{
-                          ...styles.content,
-                          justifyContent: "space-between",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "#FFFFFF",
-                        }}
-                      >
-                        <Text style={[{ fontSize: 16 }, TextProps]}>
-                          {isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}
-                        </Text>
-                      </TouchableOpacity>
-                      {type === "group" ? (
-                        <>
-                          {active_member === 1 ? (
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleExitModal();
-                              }}
-                              style={{
-                                ...styles.content,
-                                justifyContent: "space-between",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "#FFFFFF",
-                              }}
-                            >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
-                            </TouchableOpacity>
-                          ) : (
-                            <TouchableOpacity
-                              onPress={async () => {
-                                await SheetManager.hide("form-sheet");
-                                toggleDeleteGroupModal();
-                              }}
-                              style={{
-                                ...styles.content,
-                                justifyContent: "space-between",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "#FFFFFF",
-                              }}
-                            >
-                              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
-                            </TouchableOpacity>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await SheetManager.hide("form-sheet");
-                              toggleDeleteModal();
-                            }}
-                            style={{
-                              ...styles.content,
-                              justifyContent: "space-between",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "#FFFFFF",
-                            }}
-                          >
-                            <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
-                          </TouchableOpacity>
-                        </>
-                      )}
-                    </View>
-                  </View>
-                ),
+                children: renderHeaderOptions(),
               },
             })
           }
@@ -267,11 +230,5 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
-  },
-  wrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    gap: 21,
-    paddingBottom: -20,
   },
 });

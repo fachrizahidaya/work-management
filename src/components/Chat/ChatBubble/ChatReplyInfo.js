@@ -55,27 +55,4 @@ const styles = StyleSheet.create({
     padding: 10,
     gap: 5,
   },
-  defaultText: {},
-  highlightedText: {
-    textDecorationLine: "underline",
-  },
-  coloredText: {
-    color: "#72acdc",
-  },
-
-  taskContainer: {
-    width: "100%",
-    alignItems: "center",
-  },
-
-  taskTitle: {
-    fontSize: 16,
-  },
-  iconContainer: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 50,
-    padding: 5,
-  },
 });

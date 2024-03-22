@@ -1,16 +1,10 @@
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const ContactAction = ({
-  type,
-  active_member,
-  toggleClearChatMessage,
-  toggleExitModal,
-  toggleDeleteGroupModal,
-}) => {
+const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
   return (
     <View
       style={{
@@ -44,14 +38,8 @@ const ContactAction = ({
           }}
           onPress={toggleClearChatMessage}
         >
-          <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>
-            Clear Messages
-          </Text>
-          <MaterialCommunityIcons
-            name={"close-circle-outline"}
-            size={15}
-            color="#EB0E29"
-          />
+          <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Clear Messages</Text>
+          <MaterialCommunityIcons name={"close-circle-outline"} size={15} color="#EB0E29" />
         </TouchableOpacity>
 
         {type === "group" && active_member === 1 && (
@@ -92,15 +80,9 @@ const ContactAction = ({
             }}
             onPress={toggleDeleteGroupModal}
           >
-            <Text
-              style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}
-            >
-              Delete Group
-            </Text>
+            <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Delete Group</Text>
             <MaterialCommunityIcons
-              name={
-                type === "personal" ? "not-interested" : "trash-can-outline"
-              }
+              name={type === "personal" ? "not-interested" : "trash-can-outline"}
               size={15}
               color="#EB0E29"
             />
