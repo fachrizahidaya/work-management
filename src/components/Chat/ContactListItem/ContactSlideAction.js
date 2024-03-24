@@ -1,4 +1,3 @@
-import React from "react";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import Animated, { withTiming } from "react-native-reanimated";
 

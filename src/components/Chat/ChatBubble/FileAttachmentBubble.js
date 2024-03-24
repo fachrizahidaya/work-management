@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image, Linking } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -8,25 +8,19 @@ const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
 const txt = "../../../assets/doc-icons/other-format.png";
 
-const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
-  const getFileExt = () => {
-    const typeArr = file_type?.split("/");
-    return typeArr?.pop();
-  };
-
-  let extension = getFileExt();
-
-  const attachmentDownloadHandler = async (file_path) => {
-    try {
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+const FileAttachmentBubble = ({
+  file_type,
+  file_name,
+  file_path,
+  file_size,
+  myMessage,
+  getFileExt,
+  extension,
+  onDownload,
+}) => {
   return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
-      onPress={() => attachmentDownloadHandler(file_path)}
+      onPress={() => onDownload(file_path)}
       style={{
         flexDirection: "row",
         alignItems: "center",

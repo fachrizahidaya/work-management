@@ -1,5 +1,5 @@
-import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FormButton from "../../shared/FormButton";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";

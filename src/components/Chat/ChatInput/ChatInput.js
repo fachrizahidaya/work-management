@@ -290,12 +290,7 @@ const ChatInput = ({
 
   return (
     <View>
-      <ChatReplyPreview
-        messageToReply={messageToReply}
-        setMessageToReply={setMessageToReply}
-        type={type}
-        memberName={memberName}
-      />
+      <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} memberName={memberName} />
 
       <View
         style={{

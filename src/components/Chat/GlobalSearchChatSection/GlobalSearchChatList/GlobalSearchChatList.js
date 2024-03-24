@@ -1,8 +1,7 @@
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-
 import RenderHtml from "react-native-render-html";
+
 import { Dimensions, TouchableOpacity, View, Text } from "react-native";
 
 import ChatTimeStamp from "../../ChatTimeStamp/ChatTimeStamp";

@@ -24,7 +24,7 @@ import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
-import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
+import ChatRoomAction from "../../../components/Chat/ChatList/ChatRoomAction";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatRoom = () => {
@@ -47,6 +47,8 @@ const ChatRoom = () => {
   const [filteredSearch, setFilteredSearch] = useState([]);
   const [deleteMessageSelected, setDeleteMessageSelected] = useState(false);
   const [imageToShare, setImageToShare] = useState(null);
+  const [searchChatVisible, setSearchChatVisible] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -161,6 +163,25 @@ const ChatRoom = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  /**
+   * Handle for member name in chatHeader
+   */
+  const membersName = selectedGroupMembers.map((item) => {
+    const name = !item?.user
+      ? userSelector?.id === item?.id
+        ? "You"
+        : item?.name
+      : userSelector?.id === item?.user?.id
+      ? "You"
+      : item?.user?.name;
+    return `${name}`;
+  });
+  const concatenatedNames = membersName.join(", ");
+
+  const toggleChatSearch = () => {
+    setSearchChatVisible(!searchChatVisible);
   };
 
   /**
@@ -637,6 +658,9 @@ const ChatRoom = () => {
             searchFormRef={searchFormRef}
             toggleExitModal={toggleExitModal}
             toggleDeleteGroupModal={toggleDeleteGroupModal}
+            toggleSearch={toggleChatSearch}
+            searchVisible={searchChatVisible}
+            groupName={concatenatedNames}
           />
 
           <ChatList
@@ -657,6 +681,8 @@ const ChatRoom = () => {
             userSelector={userSelector}
             navigation={navigation}
             filteredSearch={filteredSearch}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
           />
 
           <ChatInput
@@ -702,7 +728,7 @@ const ChatRoom = () => {
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
 
-          <ClearChatAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
+          <ChatRoomAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
 
           <ImageFullScreenModal
             isFullScreen={isFullScreen}

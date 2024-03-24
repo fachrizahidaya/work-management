@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
 

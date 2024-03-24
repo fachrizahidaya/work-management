@@ -1,4 +1,5 @@
 import { View, Text, Image } from "react-native";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const AttachmentSection = () => {

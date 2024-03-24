@@ -1,4 +1,5 @@
 import { View, Pressable, Text } from "react-native";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 

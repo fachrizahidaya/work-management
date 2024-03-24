@@ -1,4 +1,3 @@
-import React from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
@@ -33,11 +32,17 @@ const ChatBubbleItem = ({
   band_attachment_title,
   band_attachment_no,
   band_attachment_type,
-  navigation,
   styledTexts,
   time,
   file_size,
   openChatBubbleHandler,
+  mimeTyeInfo,
+  setMimeTypeInfo,
+  getFileExt,
+  extension,
+  onDownload,
+  onRedirect,
+  renderMessage,
 }) => {
   return (
     <PanGestureHandler failOffsetY={[-5, 5]} activeOffsetX={[-5, 5]} onGestureEvent={!isDeleted && panGesture}>
@@ -83,6 +88,9 @@ const ChatBubbleItem = ({
                   memberName={memberName}
                   content={content}
                   allWord={allWords}
+                  mimeTypeInfo={mimeTyeInfo}
+                  setMimeTypeInfo={setMimeTypeInfo}
+                  renderMessage={renderMessage}
                 />
               )}
               {file_path && (
@@ -117,6 +125,9 @@ const ChatBubbleItem = ({
                       file_path={file_path}
                       file_size={file_size}
                       myMessage={myMessage}
+                      getFileExt={getFileExt}
+                      extension={extension}
+                      onDownload={onDownload}
                     />
                   }
                 </>
@@ -128,7 +139,7 @@ const ChatBubbleItem = ({
                   number_id={band_attachment_no}
                   type={band_attachment_type}
                   myMessage={myMessage}
-                  navigation={navigation}
+                  onRedirect={onRedirect}
                 />
               )}
             </>

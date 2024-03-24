@@ -1,6 +1,6 @@
-import React from "react";
 import { Image, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
 import ChecklistItem from "./ChecklistItem";
 import { TextProps } from "../../shared/CustomStylings";
 

@@ -1,7 +1,7 @@
-import React from "react";
 import { Text, View } from "react-native";
-import MemberItem from "./MemberItem";
 import { FlashList } from "@shopify/flash-list";
+
+import MemberItem from "./MemberItem";
 import { TextProps } from "../../shared/CustomStylings";
 
 const MemberSection = ({ member }) => {

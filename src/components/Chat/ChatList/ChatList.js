@@ -1,4 +1,4 @@
-import { useCallback, useState, memo } from "react";
+import { useCallback, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
@@ -27,9 +27,9 @@ const ChatList = ({
   userSelector,
   navigation,
   filteredSearch,
+  hasBeenScrolled,
+  setHasBeenScrolled,
 }) => {
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-
   /**
    * Decide when username should be rendered at
    */

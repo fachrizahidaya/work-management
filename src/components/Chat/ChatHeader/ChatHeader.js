@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -18,7 +16,6 @@ const ChatHeader = ({
   active_member,
   toggleExitModal,
   toggleDeleteGroupModal,
-  selectedGroupMembers,
   loggedInUser,
   toggleDeleteModal,
   deleteModalIsOpen,
@@ -33,27 +30,66 @@ const ChatHeader = ({
   searchMessage,
   setSearchMessage,
   searchFormRef,
+  searchVisible,
+  groupName,
+  toggleSearch,
 }) => {
-  const [searchVisible, setSearchVisible] = useState(false);
-
-  /**
-   * Handle for member name in chatHeader
-   */
-  const membersName = selectedGroupMembers.map((item) => {
-    const name = !item?.user
-      ? loggedInUser === item?.id
-        ? "You"
-        : item?.name
-      : loggedInUser === item?.user?.id
-      ? "You"
-      : item?.user?.name;
-    return `${name}`;
-  });
-  const concatenatedNames = membersName.join(", ");
-
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
+  const optionsArr =
+    type === "personal"
+      ? [
+          // {
+          //   name: "Search",
+          //   onPress: () => {
+          //     toggleSearch();
+          //     SheetManager.hide("form-sheet");
+          //   },
+          // },
+          {
+            name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
+            onPress: () => {
+              onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+              SheetManager.hide("form-sheet");
+            },
+          },
+          {
+            name: "Delete Chat",
+            onPress: async () => {
+              await SheetManager.hide("form-sheet");
+              toggleDeleteModal();
+            },
+          },
+        ]
+      : [
+          // {
+          //   name: "Search",
+          //   onPress: () => {
+          //     toggleSearch();
+          //     SheetManager.hide("form-sheet");
+          //   },
+          // },
+          {
+            name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
+            onPress: () => {
+              onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+              SheetManager.hide("form-sheet");
+            },
+          },
+          type === "group" && active_member === 1
+            ? {
+                name: "Exit Group",
+                onPress: async () => {
+                  await SheetManager.hide("form-sheet");
+                  toggleExitModal();
+                },
+              }
+            : {
+                name: "Delete Group",
+                onPress: async () => {
+                  await SheetManager.hide("form-sheet");
+                  toggleDeleteGroupModal();
+                },
+              },
+        ];
 
   const params = {
     name: name,
@@ -71,15 +107,7 @@ const ChatHeader = ({
   };
 
   const renderHeaderOptions = () => (
-    <View
-      style={{
-        display: "flex",
-        gap: 21,
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        paddingBottom: -20,
-      }}
-    >
+    <View style={styles.wrapper}>
       <View
         style={{
           gap: 1,
@@ -87,91 +115,20 @@ const ChatHeader = ({
           borderRadius: 10,
         }}
       >
-        {/* <TouchableOpacity
-                      onPress={() => {
-                        toggleSearch();
-                        SheetManager.hide("form-sheet");
-                      }}
-                    >
-                      <Text style={[{ fontSize: 16 }, TextProps]}>Search</Text>
-                    </TouchableOpacity> */}
-        <TouchableOpacity
-          onPress={() => {
-            onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
-            SheetManager.hide("form-sheet");
-          }}
-          style={{
-            ...styles.content,
-            justifyContent: "space-between",
-            borderBottomWidth: 1,
-            borderBottomColor: "#FFFFFF",
-          }}
-        >
-          <Text style={[{ fontSize: 16 }, TextProps]}>{isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}</Text>
-        </TouchableOpacity>
-        {type === "group" ? (
-          <>
-            {active_member === 1 ? (
-              <TouchableOpacity
-                onPress={async () => {
-                  await SheetManager.hide("form-sheet");
-                  toggleExitModal();
-                }}
-                style={{
-                  ...styles.content,
-                  justifyContent: "space-between",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#FFFFFF",
-                }}
-              >
-                <Text style={[{ fontSize: 16 }, TextProps]}>Exit Group</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={async () => {
-                  await SheetManager.hide("form-sheet");
-                  toggleDeleteGroupModal();
-                }}
-                style={{
-                  ...styles.content,
-                  justifyContent: "space-between",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#FFFFFF",
-                }}
-              >
-                <Text style={[{ fontSize: 16 }, TextProps]}>Delete Group</Text>
-              </TouchableOpacity>
-            )}
-          </>
-        ) : (
-          <>
-            <TouchableOpacity
-              onPress={async () => {
-                await SheetManager.hide("form-sheet");
-                toggleDeleteModal();
-              }}
-              style={{
-                ...styles.content,
-                justifyContent: "space-between",
-                borderBottomWidth: 1,
-                borderBottomColor: "#FFFFFF",
-              }}
-            >
-              <Text style={[{ fontSize: 16 }, TextProps]}>Delete Chat</Text>
+        {optionsArr.map((item, index) => {
+          return (
+            <TouchableOpacity key={index} style={styles.content} onPress={item.onPress}>
+              <Text style={[{ fontSize: 16 }, TextProps]}>{item.name}</Text>
             </TouchableOpacity>
-          </>
-        )}
+          );
+        })}
       </View>
     </View>
   );
 
   return (
     <>
-      <View
-        style={{
-          ...styles.container,
-        }}
-      >
+      <View style={styles.container}>
         <ContactDescription
           name={name}
           image={image}
@@ -179,7 +136,7 @@ const ChatHeader = ({
           isLoading={isLoading}
           navigation={navigation}
           params={params}
-          concatenatedNames={concatenatedNames}
+          concatenatedNames={groupName}
           type={type}
         />
         <Pressable
@@ -230,5 +187,13 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#FFFFFF",
+  },
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
   },
 });

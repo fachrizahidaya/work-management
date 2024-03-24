@@ -1,4 +1,3 @@
-import React from "react";
 import RenderHtml from "react-native-render-html";
 
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";

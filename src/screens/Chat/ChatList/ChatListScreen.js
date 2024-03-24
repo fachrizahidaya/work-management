@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 
 import { useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
+import { SheetManager } from "react-native-actions-sheet";
 
 import { useWebsocketContext } from "../../../HOC/WebsocketContextProvider";
 import { useFetch } from "../../../hooks/useFetch";
@@ -18,7 +19,6 @@ import GroupSection from "../../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSection";
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
-import { SheetManager } from "react-native-actions-sheet";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
 

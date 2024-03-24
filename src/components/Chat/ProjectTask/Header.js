@@ -1,7 +1,7 @@
-import React from "react";
 import dayjs from "dayjs";
 
 import { Pressable, Text, View } from "react-native";
+
 import MateriaCommunitylIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { TextProps } from "../../shared/CustomStylings";

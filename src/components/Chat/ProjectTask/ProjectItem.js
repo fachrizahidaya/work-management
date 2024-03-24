@@ -1,5 +1,5 @@
-import React from "react";
 import dayjs from "dayjs";
+
 import { Pressable, Text, View } from "react-native";
 
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";

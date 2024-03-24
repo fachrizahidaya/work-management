@@ -1,5 +1,5 @@
-import React from "react";
 import { Text, View } from "react-native";
+
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 

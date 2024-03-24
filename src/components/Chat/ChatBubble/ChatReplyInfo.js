@@ -1,21 +1,8 @@
-import { useEffect, useState } from "react";
-
 import { View, Text, Image, StyleSheet } from "react-native";
 
-import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatMessageText from "../ChatMessageText/ChatMessageText";
 
-const ChatReplyInfo = ({ message, myMessage, type, loggedInUser, memberName, allWord }) => {
-  const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
-
-  useEffect(() => {
-    if (message) {
-      setMimeTypeInfo(MimeTypeInfo(message.mime_type));
-    } else {
-      setMimeTypeInfo(null);
-    }
-  }, [message]);
-
+const ChatReplyInfo = ({ message, myMessage, loggedInUser, mimeTypeInfo, renderMessage }) => {
   return (
     <View style={{ ...styles.container, backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }}>
       <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : null }}>
@@ -25,9 +12,8 @@ const ChatReplyInfo = ({ message, myMessage, type, loggedInUser, memberName, all
         <ChatMessageText
           message={message}
           myMessage={myMessage}
-          type={type}
-          memberName={memberName}
-          allWord={allWord}
+          renderMessage={renderMessage}
+          mimeTypeInfo={mimeTypeInfo}
         />
       </View>
       {mimeTypeInfo?.file_type === "image" && (
@@ -54,5 +40,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     gap: 5,
+  },
+  defaultText: {},
+  highlightedText: {
+    textDecorationLine: "underline",
+  },
+  coloredText: {
+    color: "#72acdc",
   },
 });

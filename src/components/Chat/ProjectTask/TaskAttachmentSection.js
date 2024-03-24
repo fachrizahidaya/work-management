@@ -1,5 +1,5 @@
-import React from "react";
 import { Image, Text, View } from "react-native";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const TaskAttachmentSection = () => {

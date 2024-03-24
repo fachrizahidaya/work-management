@@ -1,6 +1,6 @@
-import React from "react";
 import { Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
 import { TextProps } from "../../shared/CustomStylings";
 import ObserverItem from "./ObserverItem";
 
