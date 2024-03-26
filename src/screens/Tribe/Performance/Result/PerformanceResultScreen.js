@@ -33,7 +33,7 @@ const PerformanceResultScreen = () => {
   const exportPdfHandler = async (setSubmitting, setStatus) => {
     toggle();
     try {
-      const res = await axiosInstance.get(`/hr/performance-result/${`9b4694be-487b-410a-a4ae-49f3264ceee4`}/download`);
+      const res = await axiosInstance.get(`/hr/performance-result/${id}/download`);
       Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${res.data?.data}`);
       toggle();
     } catch (err) {
@@ -59,27 +59,21 @@ const PerformanceResultScreen = () => {
               navigation.goBack();
             }}
           />
-          <Button
-            height={35}
-            padding={10}
-            children={
-              !isLoading ? (
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Download as PDF
-                </Text>
-              ) : (
-                <ActivityIndicator />
-              )
-            }
-            onPress={() => exportPdfHandler()}
-            disabled={isLoading}
-          />
+          <Button height={35} padding={10} onPress={() => exportPdfHandler()} disabled={isLoading}>
+            {!isLoading ? (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: "#FFFFFF",
+                }}
+              >
+                Download as PDF
+              </Text>
+            ) : (
+              <ActivityIndicator />
+            )}
+          </Button>
         </View>
 
         <PerformanceResultDetailList

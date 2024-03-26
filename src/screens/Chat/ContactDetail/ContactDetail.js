@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import _ from "lodash";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 
 import { SafeAreaView, View, Text, Pressable, StyleSheet } from "react-native";
 import Toast from "react-native-root-toast";
@@ -15,13 +13,13 @@ import { useFetch } from "../../../hooks/useFetch";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
-import UserListModal from "../../../components/Chat/UserDetail/UserListModal";
-import MemberListActionModal from "../../../components/Chat/UserDetail/MemberListActionModal";
-import ContactAvatar from "../../../components/Chat/UserDetail/ContactAvatar";
-import ContactInformation from "../../../components/Chat/UserDetail/ContactInformation";
-import ContactAction from "../../../components/Chat/UserDetail/ContactAction";
-import ContactMedia from "../../../components/Chat/UserDetail/ContactMedia";
-import ContactPersonalized from "../../../components/Chat/UserDetail/ContactPersonalized";
+import UserListModal from "../../../components/Chat/ContactDetail/UserListModal";
+import MemberListActionModal from "../../../components/Chat/ContactDetail/MemberListActionModal";
+import ContactAvatar from "../../../components/Chat/ContactDetail/ContactAvatar";
+import ContactInformation from "../../../components/Chat/ContactDetail/ContactInformation";
+import ContactAction from "../../../components/Chat/ContactDetail/ContactAction";
+import ContactMedia from "../../../components/Chat/ContactDetail/ContactMedia";
+import ContactPersonalized from "../../../components/Chat/ContactDetail/ContactPersonalized";
 
 const ContactDetail = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -36,8 +34,6 @@ const ContactDetail = () => {
   const [cumulativeData, setCumulativeData] = useState([]);
   const [inputToShow, setInputToShow] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [imageAttachment, setImageAttachment] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
   const navigation = useNavigation();
@@ -50,15 +46,10 @@ const ContactDetail = () => {
     loggedInUser,
     active_member,
     toggleDeleteModal,
-    toggleExitModal,
-    toggleDeleteGroupModal,
     deleteModalIsOpen,
-    exitModalIsOpen,
-    deleteGroupModalIsOpen,
     deleteChatPersonal,
     roomId,
     deleteChatMessageIsLoading,
-    chatRoomIsLoading,
     toggleDeleteChatMessage,
   } = route.params;
 
@@ -66,10 +57,13 @@ const ContactDetail = () => {
   const { isOpen: memberListActionIsopen, toggle: toggleMemberListAction } = useDisclosure(false);
   const { isOpen: removeMemberActionIsopen, toggle: toggleRemoveMemberAction } = useDisclosure(false);
   const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
+  const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
 
   const { isLoading: removeMemberIsLoading, toggle: toggleRemoveMember } = useLoading(false);
   const { isLoading: addMemberIsLoading, toggle: toggleAddMember } = useLoading(false);
   const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
 
   const fetchUserParameters = {
     page: currentPage,
@@ -197,6 +191,44 @@ const ContactDetail = () => {
   };
 
   /**
+   * Handle Exit group
+   * @param {*} group_id
+   */
+  const groupExitHandler = async (group_id) => {
+    try {
+      toggleChatRoom();
+      await axiosInstance.post(`/chat/group/exit`, { group_id: group_id });
+      toggleChatRoom();
+      toggleExitModal();
+      navigation.navigate("Chat List");
+      Toast.show("Group exited", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+      toggleChatRoom();
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
+   * Handle Delete group after exit group
+   * @param {*} group_id
+   */
+  const groupDeleteHandler = async (group_id) => {
+    try {
+      toggleChatRoom();
+      await axiosInstance.delete(`/chat/group/${group_id}`);
+      toggleChatRoom();
+      toggleDeleteGroupModal();
+      navigation.navigate("Chat List");
+      Toast.show("Group deleted", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+      toggleChatRoom(false);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
    * Handle filter from member registered for add new member to group
    * @param {*} users
    * @returns
@@ -244,6 +276,30 @@ const ContactDetail = () => {
     setSelectedUsers(newUserArray);
     setForceRerender((prev) => !prev);
   };
+
+  /**
+   * Handle confirmation modal for exit group and delete group
+   */
+  let modalIsOpen, toggleModal, modalDescription, onPressHandler;
+
+  if (type === "personal") {
+    modalIsOpen = deleteModalIsOpen;
+    toggleModal = toggleDeleteModal;
+    modalDescription = "Are you sure want to delete this chat?";
+    onPressHandler = () => deleteChatPersonal(roomId, toggleDeleteChatMessage);
+  } else if (type === "group") {
+    if (active_member === 1) {
+      modalIsOpen = exitModalIsOpen;
+      toggleModal = toggleExitModal;
+      modalDescription = "Are you sure want to exit this group?";
+      onPressHandler = () => groupExitHandler(roomId, toggleChatRoom);
+    } else if (active_member === 0) {
+      modalIsOpen = deleteGroupModalIsOpen;
+      toggleModal = toggleDeleteGroupModal;
+      modalDescription = "Are you sure want to delete this group?";
+      onPressHandler = () => groupDeleteHandler(roomId, toggleChatRoom);
+    }
+  }
 
   useEffect(() => {
     const myMemberObj = selectedGroupMembers?.find((groupMember) => groupMember.user_id === loggedInUser);
@@ -342,22 +398,10 @@ const ContactDetail = () => {
 
           {/* Confirmation modal to delete personal chat or exit group */}
           <RemoveConfirmationModal
-            isOpen={
-              type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
-            }
-            toggle={
-              type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
-            }
-            description={
-              type === "personal"
-                ? "Are you sure want to delete this chat?"
-                : type === "group" && active_member === 1
-                ? "Are you sure want to exit this group?"
-                : type === "group" && active_member === 0
-                ? "Are you sure want to delete this group?"
-                : null
-            }
-            onPress={() => (type === "personal" ? deleteChatPersonal(roomId, toggleDeleteChatMessage) : null)}
+            isOpen={modalIsOpen}
+            toggle={toggleModal}
+            description={modalDescription}
+            onPress={() => onPressHandler()}
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
 

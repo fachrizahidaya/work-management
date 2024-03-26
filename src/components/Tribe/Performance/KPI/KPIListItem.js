@@ -8,17 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingPerformanceListItem = ({
-  id,
-  start_date,
-  end_date,
-  navigation,
-  name,
-  target,
-  isExpired,
-  target_level,
-  status,
-}) => {
+const KPIListItem = ({ id, start_date, end_date, navigation, name, target, isExpired, target_level }) => {
   return (
     <Pressable
       style={{
@@ -34,7 +24,6 @@ const OngoingPerformanceListItem = ({
         navigation.navigate("KPI Detail", {
           id: id,
           isExpired: isExpired,
-          status: status,
         })
       }
     >
@@ -52,4 +41,4 @@ const OngoingPerformanceListItem = ({
   );
 };
 
-export default OngoingPerformanceListItem;
+export default KPIListItem;

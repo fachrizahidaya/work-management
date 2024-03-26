@@ -1,7 +1,6 @@
-import { memo, useCallback } from "react";
-import { Linking, StyleSheet, TouchableOpacity, View, Text, Pressable, Image } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import Animated, {
+import { memo, useCallback, useEffect, useState } from "react";
+import { Linking, StyleSheet, View, Text, Pressable } from "react-native";
+import {
   useAnimatedStyle,
   useAnimatedGestureHandler,
   useSharedValue,
@@ -10,15 +9,13 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-root-toast";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { CopyToClipboard } from "../../shared/CopyToClipboard";
-import FileAttachmentBubble from "./FileAttachmentBubble";
-import BandAttachmentBubble from "./BandAttachmentBubble";
-import ChatReplyInfo from "./ChatReplyInfo";
 import { ErrorToastProps } from "../../shared/CustomStylings";
-
-const LIST_ITEM_HEIGHT = 70;
+import { EmailRedirect } from "../../shared/EmailRedirect";
+import ChatBubbleItem from "./ChatBubbleItem";
+import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 
 const ChatBubble = ({
   chat,
@@ -45,7 +42,10 @@ const ChatBubble = ({
   memberName,
   userSelector,
   navigation,
+  keyword = "",
 }) => {
+  const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
+
   const myMessage = userSelector?.id === fromUserId;
   const imgTypes = ["jpg", "jpeg", "png"];
 
@@ -98,7 +98,7 @@ const ChatBubble = ({
       } else if (item.includes("@gmail.com")) {
         textStyle = styles.highlightedText;
         return (
-          <Text key={index} style={textStyle} onPress={() => emailPressHandler(item)}>
+          <Text key={index} style={textStyle} onPress={() => EmailRedirect(item)}>
             {item}{" "}
           </Text>
         );
@@ -138,15 +138,6 @@ const ChatBubble = ({
       Toast.show(err.response.data.message, ErrorToastProps);
     }
   }, []);
-
-  const emailPressHandler = (email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const formatMimeType = (type = "") => {
     if (!type) return "Undefined";
@@ -199,13 +190,180 @@ const ChatBubble = ({
     };
   });
 
+  const redirectPage = (id, type) => {
+    if (type === "Project") {
+      return navigation.navigate("Project Detail", { projectId: id });
+    } else {
+      return navigation.navigate("Task Detail", { taskId: id });
+    }
+  };
+
+  const attachmentDownloadHandler = async (file_path) => {
+    try {
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getFileExt = () => {
+    const typeArr = file_type?.split("/");
+    return typeArr?.pop();
+  };
+
+  let extension = getFileExt();
+
+  const boldMatchCharacters = (sentence = "", characters = "") => {
+    const regex = new RegExp(characters, "gi");
+    return sentence.replace(regex, `<strong class='text-primary'>$&</strong>`);
+  };
+
+  const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
+    for (let i = 0; i < memberName.length; i++) {
+      let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+      message = message?.replace(placeholder, `@${memberName[i]}`);
+    }
+    let styledTexts = null;
+    if (message?.length !== 0) {
+      let words;
+
+      if (typeof message === "number" || typeof message === "bigint") {
+        words = message.toString().split(" ");
+      } else {
+        words = message?.split(" ");
+      }
+
+      styledTexts = words?.map((item, index) => {
+        let textStyle = styles.defaultText;
+
+        if (item.includes("https")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (item.includes("08") || item.includes("62")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (type === "group" && allWords.some((word) => item.includes(word))) {
+          textStyle = styles.coloredText;
+          return (
+            <Text key={index} style={textStyle}>
+              {item}{" "}
+            </Text>
+          );
+        } else if (item.includes("@gmail.com")) {
+          textStyle = styles.highlightedText;
+          return (
+            <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+              {item}{" "}
+            </Text>
+          );
+        }
+        return (
+          <Text key={index} style={textStyle}>
+            {item}{" "}
+          </Text>
+        );
+      });
+    }
+    if (message) {
+      if (keyword) {
+        return boldMatchCharacters(message, keyword);
+      }
+      return message;
+    }
+    return alt_message;
+  };
+
+  const renderMessage = (attachment_type) => {
+    if (attachment_type === "image") {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
+            <MaterialCommunityIcons
+              name="image"
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
+            />
+
+            {renderDangerouslyInnerHTMLContent(reply_to?.message, "Image")}
+          </Text>
+        </View>
+      );
+    } else if (attachment_type === "document") {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
+            <MaterialCommunityIcons
+              name="file-outline"
+              color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
+            />
+
+            {renderDangerouslyInnerHTMLContent(reply_to?.message, reply_to?.file_name)}
+          </Text>
+        </View>
+      );
+    } else {
+      if (reply_to?.project_id) {
+        return (
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
+              <MaterialCommunityIcons
+                name="lightning-bolt"
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
+              />
+
+              {renderDangerouslyInnerHTMLContent(reply_to?.message, reply_to?.project_title)}
+            </Text>
+          </View>
+        );
+      } else if (reply_to?.task_id) {
+        return (
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ fontSize: 12, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}>
+              <MaterialCommunityIcons
+                name="checkbox-marked-circle-outline"
+                color={!myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF"}
+              />
+
+              {renderDangerouslyInnerHTMLContent(reply_to?.message, reply_to?.task_title)}
+            </Text>
+          </View>
+        );
+      } else {
+        return (
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: !myMessage ? "#3F434A" : type === "group" && !myMessage ? "#3F434A" : "#FFFFFF",
+            }}
+          >
+            {renderDangerouslyInnerHTMLContent(reply_to?.message)}
+          </Text>
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (reply_to) {
+      setMimeTypeInfo(MimeTypeInfo(reply_to?.mime_type));
+    } else {
+      setMimeTypeInfo(null);
+    }
+  }, [reply_to]);
+
   return (
     <View
       style={{
+        ...styles.container,
         flexDirection: !myMessage ? "row" : "row-reverse",
-        alignItems: "flex-end",
-        gap: 5,
-        paddingHorizontal: 16,
         marginBottom: isGrouped ? 3 : 5,
       }}
     >
@@ -217,196 +375,57 @@ const ChatBubble = ({
             alignSelf: "center",
           }}
         >
-          <MaterialIcons name="reply" size={15} />
+          <MaterialCommunityIcons name="reply" size={15} />
         </Pressable>
       )}
-      {/* {type === "group" && !myMessage && image ? (
-          <AvatarPlaceholder name={name} image={image} size="sm" isThumb={false} />
-          ) : type === "group" && !myMessage ? (
-            <Box ml={8}></Box>
-          ) : null} */}
-      <PanGestureHandler failOffsetY={[-5, 5]} activeOffsetX={[-5, 5]} onGestureEvent={!isDeleted && panGesture}>
-        <Animated.View style={[rTaskContainerStyle]}>
-          <Pressable
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              maxWidth: 300,
-              borderRadius: 10,
-              padding: 8,
-              backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
-              gap: 5,
-            }}
-            onLongPress={() => {
-              !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
-            }}
-            delayLongPress={200}
-          >
-            {type === "group" && name && !myMessage && (
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "700",
-                  color: !myMessage ? "#176688" : "#FFFFFF",
-                }}
-                fontSize={12}
-                fontWeight={700}
-                color={!myMessage ? "#377893" : "#FFFFFF"}
-              >
-                {name}
-              </Text>
-            )}
-            {!isDeleted ? (
-              <>
-                {reply_to && (
-                  <ChatReplyInfo
-                    message={reply_to}
-                    chatBubbleView={true}
-                    myMessage={myMessage}
-                    type={type}
-                    loggedInUser={userSelector}
-                    memberName={memberName}
-                    content={content}
-                    allWord={allWords}
-                  />
-                )}
-                {file_path && (
-                  <>
-                    {imgTypes.includes(formatMimeType(file_type)) && (
-                      <>
-                        <TouchableOpacity
-                          style={{ borderRadius: 5 }}
-                          onPress={() => file_path && toggleFullScreen(file_path)}
-                        >
-                          <Image
-                            style={{
-                              flex: 1,
-                              width: 280,
-                              height: 350,
-                              resizeMode: "cover",
-                              backgroundColor: "gray",
-                            }}
-                            source={{
-                              uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
-                            }}
-                            alt="Chat Image"
-                            resizeMethod="auto"
-                          />
-                        </TouchableOpacity>
-                      </>
-                    )}
-                    {
-                      // docTypes.includes(formatMimeType(file_type)) &&
-                      <FileAttachmentBubble
-                        file_type={file_type}
-                        file_name={file_name}
-                        file_path={file_path}
-                        file_size={file_size}
-                        myMessage={myMessage}
-                      />
-                    }
-                  </>
-                )}
-                {band_attachment_id && (
-                  <BandAttachmentBubble
-                    id={band_attachment_id}
-                    title={band_attachment_title}
-                    number_id={band_attachment_no}
-                    type={band_attachment_type}
-                    myMessage={myMessage}
-                    navigation={navigation}
-                  />
-                )}
-              </>
-            ) : null}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 5,
-              }}
-            >
-              {!isDeleted ? (
-                <Text
-                  style={{
-                    flexShrink: 1,
-                    fontSize: 14,
-                    fontWeight: "400",
-                    color: !myMessage ? "#3F434A" : "#FFFFFF",
-                  }}
-                >
-                  {styledTexts}
-                </Text>
-              ) : myMessage && isDeleted ? (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" style={{ opacity: 0.5 }} />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "400",
-                      fontStyle: "italic",
-                      color: "#F1F1F1",
-                      opacity: 0.5,
-                    }}
-                  >
-                    You deleted this message
-                  </Text>
-                </View>
-              ) : !myMessage && isDeleted ? (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                  <MaterialIcons name="block-flipped" size={15} color="#3F434A" style={{ opacity: 0.5 }} />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "400",
-                      fontStyle: "italic",
-                      color: "#3F434A",
-                      opacity: 0.5,
-                    }}
-                  >
-                    This message was deleted
-                  </Text>
-                </View>
-              ) : null}
-              <Text
-                style={{
-                  fontSize: 8,
-                  color: !myMessage ? "#8A9099" : "#FFFFFF",
-                  alignSelf: "flex-end",
-                }}
-              >
-                {time}
-              </Text>
-            </View>
-          </Pressable>
-        </Animated.View>
-      </PanGestureHandler>
-      {/* {!isGrouped && (
-          <Box
-            position="absolute"
-            bottom={1}
-            left={type === "group" && myMessage ? 10 : type === "personal" && myMessage ? 10 : null}
-            right={0}
-            width={15}
-            height={5}
-            backgroundColor={!myMessage ? "#FFFFFF" : "primary.600"}
-            borderBottomRadius={50}
-            style={{
-              transform: [
-                {
-                  rotate: "180deg",
-                },
-              ],
-            }}
-            zIndex={-1}
-          ></Box>
-        )} */}
+
+      <ChatBubbleItem
+        isDeleted={isDeleted}
+        panGesture={panGesture}
+        rTaskContainerStyle={rTaskContainerStyle}
+        isOptimistic={isOptimistic}
+        myMessage={myMessage}
+        chat={chat}
+        type={type}
+        name={name}
+        reply_to={reply_to}
+        userSelector={userSelector}
+        memberName={memberName}
+        content={content}
+        allWords={allWords}
+        file_name={file_name}
+        file_path={file_path}
+        imgTypes={imgTypes}
+        formatMimeType={formatMimeType}
+        file_type={file_type}
+        toggleFullScreen={toggleFullScreen}
+        band_attachment_id={band_attachment_id}
+        band_attachment_title={band_attachment_title}
+        band_attachment_no={band_attachment_no}
+        band_attachment_type={band_attachment_type}
+        styledTexts={styledTexts}
+        time={time}
+        file_size={file_size}
+        openChatBubbleHandler={openChatBubbleHandler}
+        mimeTyeInfo={mimeTypeInfo}
+        setMimeTypeInfo={setMimeTypeInfo}
+        getFileExt={getFileExt}
+        extension={extension}
+        onDownload={attachmentDownloadHandler}
+        onRedirect={redirectPage}
+        renderMessage={renderMessage}
+      />
     </View>
   );
 };
 export default memo(ChatBubble);
+
 const styles = StyleSheet.create({
+  container: {
+    alignItems: "flex-end",
+    gap: 5,
+    paddingHorizontal: 16,
+  },
   defaultText: {},
   highlightedText: {
     textDecorationLine: "underline",
@@ -414,31 +433,6 @@ const styles = StyleSheet.create({
   },
   coloredText: {
     color: "#72acdc",
-  },
-  mentionText: {
-    fontWeight: "600",
-  },
-  taskContainer: {
-    width: "100%",
-    alignItems: "center",
-  },
-  task: {
-    width: "90%",
-    height: LIST_ITEM_HEIGHT,
-    justifyContent: "center",
-    paddingLeft: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    shadowOpacity: 0.08,
-    shadowOffset: {
-      width: 0,
-      height: 20,
-    },
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  taskTitle: {
-    fontSize: 16,
   },
   iconContainer: {
     position: "absolute",

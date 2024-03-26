@@ -5,7 +5,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import _ from "lodash";
 
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -16,10 +16,12 @@ import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
+import { FlashList } from "@shopify/flash-list";
+import { useFormik } from "formik";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -32,7 +34,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const [postId, setPostId] = useState(null);
   const [forceRerender, setForceRerender] = useState(false);
   const [commentParentId, setCommentParentId] = useState(null);
-  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -44,8 +45,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const [teammatesData, setTeammatesData] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
   const [deletePostSuccess, setDeletePostSuccess] = useState(false);
-  const [imageToShare, setImageToShare] = useState(null);
   const [requestType, setRequestType] = useState("");
+  const [selectedPicture, setSelectedPicture] = useState(null);
 
   const navigation = useNavigation();
 
@@ -70,17 +71,12 @@ const EmployeeProfileScreen = ({ route }) => {
     search: searchInput,
   };
 
+  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
+
   const postFetchParameters = {
     offset: currentOffsetPost,
     limit: 10,
   };
-
-  const commentsFetchParameters = {
-    offset: currentOffsetComment,
-    limit: 10,
-  };
-
-  const { data: employee } = useFetch(`/hr/employees/${employeeId}`);
 
   const {
     data: personalPost,
@@ -89,50 +85,22 @@ const EmployeeProfileScreen = ({ route }) => {
     isLoading: personalPostIsLoading,
   } = useFetch(`/hr/posts/personal/${employee?.data?.id}`, [reloadPost, currentOffsetPost], postFetchParameters);
 
+  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
+  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
+  const { data: profile } = useFetch("/hr/my-profile");
+  const { data: employees } = useFetch("/hr/employees");
+
+  const commentsFetchParameters = {
+    offset: currentOffsetComment,
+    limit: 10,
+  };
+
   const {
     data: comment,
     isFetching: commentIsFetching,
     isLoading: commentIsLoading,
     refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComment], commentsFetchParameters);
-
-  const { data: singlePost } = useFetch(`/hr/posts/${selectedPost}`);
-
-  const { data: teammates } = useFetch(`/hr/employees/${employeeId}/team`, [searchInput], fetchTeammatesParameters);
-
-  const { data: profile } = useFetch("/hr/my-profile");
-
-  const { data: employees } = useFetch("/hr/employees");
-
-  /**
-   * Handle show username in post
-   */
-  const objectContainEmployeeUsernameHandler = employees?.data?.map((item, index) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  /**
-   * Handle Fetch more Posts
-   * After end of scroll reached, it will added other earlier posts
-   */
-  const postEndReachedHandler = () => {
-    if (posts.length !== posts.length + personalPost?.data.length) {
-      setCurrentOffsetPost(currentOffsetPost + 10);
-    }
-  };
-
-  /**
-   * Handle fetch post from first offset
-   * After create a new post or comment, it will return to the first offset
-   */
-  const postRefetchHandler = () => {
-    setCurrentOffsetPost(0);
-    setReloadPost(!reloadPost);
-  };
 
   /**
    * Handle fetch more Comments
@@ -159,7 +127,6 @@ const EmployeeProfileScreen = ({ route }) => {
   const commentsOpenHandler = (post_id) => {
     commentsScreenSheetRef.current?.show();
     setPostId(post_id);
-    const togglePostComment = posts.find((post) => post.id === post_id);
   };
 
   /**
@@ -169,23 +136,6 @@ const EmployeeProfileScreen = ({ route }) => {
     commentsScreenSheetRef.current?.hide();
     setPostId(null);
     setCommentParentId(null);
-    setLatestExpandedReply(null);
-  };
-
-  /**
-   * Handle open option selected post
-   */
-  const openSelectedPersonalPostHandler = useCallback((post) => {
-    setSelectedPost(post);
-  }, []);
-
-  /**
-   * Handle close option selected post
-   */
-  const closeSelectedPersonalPostHandler = () => {
-    setSelectedPost(null);
-    setImagePreview(null);
-    toggleEditModal();
   };
 
   /**
@@ -196,33 +146,6 @@ const EmployeeProfileScreen = ({ route }) => {
     posts[referenceIndex]["total_comment"] += 1;
     setForceRerender(!forceRerender);
   };
-
-  /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreenHandler = useCallback((image) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPost(image);
-    setImageToShare(image);
-  }, []);
-
-  /**
-   * Handle toggle reply comment
-   */
-  const replyHandler = useCallback((comment_parent_id) => {
-    setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
-  }, []);
-
-  /**
-   * Handle search teammates
-   */
-  const teammatesSearchHandler = useCallback(
-    _.debounce((value) => {
-      setSearchInput(value);
-    }, 300),
-    []
-  );
 
   /**
    * Handle Submit a comment
@@ -247,6 +170,124 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
+   * Handle like a Post
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchPersonalPost();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
+   * Handle toggle reply comment
+   */
+  const replyHandler = (comment_parent_id) => {
+    setCommentParentId(comment_parent_id);
+  };
+
+  /**
+   * Handle show username in post
+   */
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item, index) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
+
+  /**
+   * Handle toggle fullscreen image
+   */
+  const toggleFullScreenHandler = useCallback((image) => {
+    setIsFullScreen(!isFullScreen);
+    setSelectedPicture(image);
+  }, []);
+
+  /**
+   * Handle press link
+   */
+  const linkPressHandler = useCallback((url) => {
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
+    }
+
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
+    try {
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
+      } else {
+        Linking.openURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  }, []);
+
+  /**
+   * Handle Fetch more Posts
+   * After end of scroll reached, it will added other earlier posts
+   */
+  const postEndReachedHandler = () => {
+    if (posts.length !== posts.length + personalPost?.data.length) {
+      setCurrentOffsetPost(currentOffsetPost + 10);
+    }
+  };
+
+  /**
+   * Handle fetch post from first offset
+   * After create a new post or comment, it will return to the first offset
+   */
+  const postRefetchHandler = () => {
+    setCurrentOffsetPost(0);
+    setReloadPost(!reloadPost);
+  };
+
+  /**
+   * Handle open option selected post
+   */
+  const openSelectedPersonalPostHandler = useCallback((post) => {
+    setSelectedPost(post);
+  }, []);
+
+  /**
+   * Handle close option selected post
+   */
+  const closeSelectedPersonalPostHandler = () => {
+    setSelectedPost(null);
+    setImagePreview(null);
+    toggleEditModal();
+  };
+
+  /**
+   * Handle search teammates
+   */
+  const teammatesSearchHandler = useCallback(
+    _.debounce((value) => {
+      setSearchInput(value);
+    }, 300),
+    []
+  );
+
+  /**
    * Handle edit a post
    * @param {*} form
    * @param {*} setSubmitting
@@ -267,7 +308,6 @@ const EmployeeProfileScreen = ({ route }) => {
       setIsLoading(false);
       toggleUpdatePostModal();
       setRequestType("success");
-      // Toast.show("Edited successfully!", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -305,6 +345,69 @@ const EmployeeProfileScreen = ({ route }) => {
       });
     }
   };
+
+  /**
+   * Handle show username suggestion option
+   */
+  const employeeData = employees?.data?.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
+
+  /**
+   * Handle show suggestion username
+   * @param {*} param
+   * @returns
+   */
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
+    if (keyword == null || keyword === "@@" || keyword === "@#") {
+      return null;
+    }
+    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
+
+    return (
+      <View style={{ height: 100 }}>
+        <FlashList
+          data={data}
+          onEndReachedThreshold={0.1}
+          keyExtractor={(item, index) => index}
+          estimatedItemSize={200}
+          renderItem={({ item, index }) => (
+            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
+              <Text style={{ fontSize: 12, fontWeight: "500" }}>{item.name}</Text>
+            </Pressable>
+          )}
+        />
+      </View>
+    );
+  };
+
+  /**
+   * Handle adjust the content if there is username
+   * @param {*} value
+   */
+  const commentContainUsernameHandler = (value) => {
+    formik.handleChange("comments")(value);
+  };
+
+  /**
+   * Handle create a new comment
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      post_id: postId || "",
+      comments: "",
+      parent_id: commentParentId || "",
+    },
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
+      const modifiedContent = values.comments.replace(mentionRegex, "@$1");
+      values.comments = modifiedContent;
+      commentSubmitHandler(values, setSubmitting, setStatus);
+    },
+  });
 
   useEffect(() => {
     setFilteredType([]);
@@ -392,6 +495,8 @@ const EmployeeProfileScreen = ({ route }) => {
                   reference={teammatesScreenSheetRef}
                   navigation={navigation}
                   postRefetchHandler={postRefetchHandler}
+                  onPressLink={linkPressHandler}
+                  onToggleLike={postLikeToggleHandler}
                 />
 
                 <FeedComment
@@ -402,17 +507,19 @@ const EmployeeProfileScreen = ({ route }) => {
                   commentIsFetching={commentIsFetching}
                   commentIsLoading={commentIsLoading}
                   refetchComment={refetchComment}
-                  handleOpen={commentsOpenHandler}
                   handleClose={commentsCloseHandler}
                   onEndReached={commentEndReachedHandler}
                   commentRefetchHandler={commentRefetchHandler}
                   parentId={commentParentId}
                   onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
-                  latestExpandedReply={latestExpandedReply}
                   employees={employees?.data}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   reference={commentsScreenSheetRef}
+                  onPressLink={linkPressHandler}
+                  formik={formik}
+                  commentContainUsernameHandler={commentContainUsernameHandler}
+                  onSuggestions={renderSuggestionsHandler}
                 />
               </View>
             </>
@@ -422,17 +529,8 @@ const EmployeeProfileScreen = ({ route }) => {
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
-        file_path={selectedPost}
-        image={imageToShare}
-        setImage={setImageToShare}
-        setSelectedPicture={setSelectedPost}
-        toggleSuccess={null}
-        navigation={navigation}
-        postRefetch={postRefetchHandler}
-        loggedEmployeeId={profile?.data?.id}
-        loggedEmployeeImage={profile?.data?.image}
-        loggedEmployeeName={userSelector?.name}
-        loggedEmployeeDivision={profile?.data?.position_id}
+        file_path={selectedPicture}
+        setSelectedPicture={setSelectedPicture}
         type="Feed"
       />
       <EditPersonalPost

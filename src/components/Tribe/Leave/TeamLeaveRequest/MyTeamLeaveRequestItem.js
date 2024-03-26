@@ -20,25 +20,48 @@ const MyTeamLeaveRequestItem = ({
   item,
   status,
 }) => {
+  const approvalHandler = async (response) => {
+    await SheetManager.hide("form-sheet");
+    responseHandler(response, item);
+  };
+
+  const renderApprovalOptions = () => (
+    <View style={styles.approvalOption}>
+      <View
+        style={{
+          gap: 1,
+          backgroundColor: "#F5F5F5",
+          borderRadius: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => approvalHandler("Approved")}
+          style={{
+            ...styles.containerApproval,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => approvalHandler("Rejected")}
+          style={{
+            ...styles.containerApproval,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[TextProps, { fontSize: 16, fontWeight: "400" }]}>Decline</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
-    <View
-      key={id}
-      style={{
-        flexDirection: "column",
-        backgroundColor: "#ffffff",
-        gap: 10,
-        borderRadius: 10,
-        paddingVertical: 16,
-        paddingHorizontal: 14,
-        marginVertical: 8,
-        marginHorizontal: 2,
-        elevation: 4,
-        shadowColor: "rgba(0, 0, 0, 1)",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-      }}
-    >
+    <View key={id} style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View
           style={{
@@ -60,64 +83,7 @@ const MyTeamLeaveRequestItem = ({
             onPress={() =>
               SheetManager.show("form-sheet", {
                 payload: {
-                  children: (
-                    <View
-                      style={{
-                        display: "flex",
-                        gap: 21,
-                        paddingHorizontal: 20,
-                        paddingVertical: 16,
-                        paddingBottom: -20,
-                      }}
-                    >
-                      <View
-                        style={{
-                          gap: 1,
-                          backgroundColor: "#F5F5F5",
-                          borderRadius: 10,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={async () => {
-                            await SheetManager.hide("form-sheet");
-                            responseHandler("Approved", item);
-                          }}
-                          style={{
-                            ...styles.containerApproval,
-                            justifyContent: "space-between",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "#FFFFFF",
-                          }}
-                        >
-                          <Text style={[{ fontSize: 16, fontWeight: "400" }, TextProps]}>Approve</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={async () => {
-                            await SheetManager.hide("form-sheet");
-                            responseHandler("Rejected", item);
-                          }}
-                          style={{
-                            ...styles.containerApproval,
-                            justifyContent: "space-between",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "#FFFFFF",
-                          }}
-                        >
-                          <Text
-                            style={[
-                              {
-                                fontSize: 16,
-                                fontWeight: "400",
-                                color: "#D64B4B",
-                              },
-                            ]}
-                          >
-                            Decline
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ),
+                  children: renderApprovalOptions(),
                 },
               })
             }
@@ -146,18 +112,8 @@ const MyTeamLeaveRequestItem = ({
           justifyContent: "space-between",
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 5,
-            padding: 5,
-            alignItems: "center",
-            borderRadius: 10,
-            backgroundColor: "#F8F8F8",
-          }}
-        >
+        <View style={styles.leaveTime}>
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
-          {/* <Text style={[{ fontSize: 12 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text> */}
           <Text style={{ fontSize: 12, fontWeight: "400", color: "#595F69" }}>
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} • {days}{" "}
             {days < 2 ? "day" : "days"}
@@ -172,13 +128,19 @@ export default MyTeamLeaveRequestItem;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#F5F5F5",
-    height: 50,
-    padding: 10,
+    flexDirection: "column",
+    backgroundColor: "#ffffff",
+    gap: 10,
     borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginVertical: 8,
+    marginHorizontal: 2,
+    elevation: 4,
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   containerApproval: {
     flexDirection: "row",
@@ -188,5 +150,20 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+  },
+  approvalOption: {
+    display: "flex",
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  leaveTime: {
+    flexDirection: "row",
+    gap: 5,
+    padding: 5,
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "#F8F8F8",
   },
 });

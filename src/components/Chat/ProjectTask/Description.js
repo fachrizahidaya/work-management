@@ -1,5 +1,4 @@
 import { View, ScrollView, Text } from "react-native";
-import { TextProps } from "../../shared/CustomStylings";
 import HTMLtoTextConverter from "./HTMLtoTextConverter";
 
 const Description = ({ description }) => {
@@ -15,7 +14,6 @@ const Description = ({ description }) => {
       }}
     >
       <ScrollView>
-        {/* <Text style={[{ fontSize: 14 }, TextProps]}>{description}</Text> */}
         <HTMLtoTextConverter htmlString={description} />
       </ScrollView>
     </View>

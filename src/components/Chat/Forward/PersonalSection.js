@@ -1,7 +1,7 @@
-import React from "react";
-import PersonalListItem from "./PersonalListItem";
 import { StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
+import PersonalListItem from "./PersonalListItem";
 
 const PersonalSection = ({
   personalChats,

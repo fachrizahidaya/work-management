@@ -53,6 +53,7 @@ const ConclusionScreen = () => {
             >
               <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>Employee</Text>
             </View>
+
             {data?.data?.conclusion?.employee?.item.map((item, index) => {
               return (
                 <View
@@ -75,28 +76,28 @@ const ConclusionScreen = () => {
                 </View>
               );
             })}
-            <View style={{}}>
-              <View
-                style={{
-                  ...card.card,
-                  marginVertical: 14,
-                  marginBottom: 2,
-                  elevation: 1,
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <View style={{ gap: 5 }}>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Total Score: {data?.data?.conclusion?.employee?.total_score?.toFixed(1)}
-                  </Text>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Grade: {data?.data?.conclusion?.employee?.grade}
-                  </Text>
-                </View>
+
+            <View
+              style={{
+                ...card.card,
+                marginVertical: 14,
+                marginBottom: 2,
+                elevation: 1,
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View style={{ gap: 5 }}>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Total Score: {data?.data?.conclusion?.employee?.total_score?.toFixed(1)}
+                </Text>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Grade: {data?.data?.conclusion?.employee?.grade}
+                </Text>
               </View>
             </View>
           </View>
+
           <View style={{ paddingTop: 8 }}>
             <View
               style={{
@@ -107,6 +108,7 @@ const ConclusionScreen = () => {
             >
               <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>Supervisor</Text>
             </View>
+
             {data?.data?.conclusion?.supervisor?.item.map((item, index) => {
               return (
                 <View
@@ -129,25 +131,24 @@ const ConclusionScreen = () => {
                 </View>
               );
             })}
-            <View style={{}}>
-              <View
-                style={{
-                  ...card.card,
-                  marginVertical: 14,
-                  marginBottom: 2,
-                  elevation: 1,
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <View style={{ gap: 5 }}>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Total Score: {data?.data?.conclusion?.supervisor?.total_score?.toFixed(1)}
-                  </Text>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Grade: {data?.data?.conclusion?.supervisor?.grade}
-                  </Text>
-                </View>
+
+            <View
+              style={{
+                ...card.card,
+                marginVertical: 14,
+                marginBottom: 2,
+                elevation: 1,
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View style={{ gap: 5 }}>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Total Score: {data?.data?.conclusion?.supervisor?.total_score?.toFixed(1)}
+                </Text>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Grade: {data?.data?.conclusion?.supervisor?.grade}
+                </Text>
               </View>
             </View>
           </View>

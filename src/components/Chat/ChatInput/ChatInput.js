@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
 import { View, Text, Pressable, TouchableOpacity, StyleSheet, ScrollView, Platform } from "react-native";
-import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
+import { MentionInput } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -154,7 +154,6 @@ const ChatInput = ({
       task_no: "",
       task_title: "",
     },
-
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       const messageToForward = forwardedMessage ? forwardedMessage : forwardedMessageFormik.values.message;
       const attachmentToForward = forwardedAttachment ? forwardedAttachment : forwardedMessageFormik.values.file;
@@ -170,7 +169,6 @@ const ChatInput = ({
         setStatus("processing");
         onSendMessage(formData, setSubmitting, setStatus);
       }
-      resetForwardedBandAttachment();
       resetForm();
       setFileAttachment(null);
       setForwardedBandAttachment(null);
@@ -220,7 +218,7 @@ const ChatInput = ({
     forwardedMessageFormik.setFieldValue(`project_title`, "");
   };
 
-  const handleChange = (value) => {
+  const chatMessageHandler = (value) => {
     formik.handleChange("message")(value);
   };
 
@@ -292,12 +290,7 @@ const ChatInput = ({
 
   return (
     <View>
-      <ChatReplyPreview
-        messageToReply={messageToReply}
-        setMessageToReply={setMessageToReply}
-        type={type}
-        memberName={memberName}
-      />
+      <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} memberName={memberName} />
 
       <View
         style={{
@@ -401,7 +394,7 @@ const ChatInput = ({
                 {type === "group" ? (
                   <MentionInput
                     value={formik.values.message}
-                    onChange={handleChange}
+                    onChange={chatMessageHandler}
                     partTypes={[
                       {
                         pattern:

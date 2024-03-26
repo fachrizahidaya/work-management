@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
-import { Linking, SafeAreaView, StyleSheet, View, Text, Image, ActivityIndicator } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
+import { Linking, SafeAreaView, StyleSheet, View, Text } from "react-native";
 import Toast from "react-native-root-toast";
-import { FlashList } from "@shopify/flash-list";
 
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
@@ -12,10 +10,10 @@ import PageHeader from "../../../components/shared/PageHeader";
 import Button from "../../../components/shared/Forms/Button";
 import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
-import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
 import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
+import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -32,7 +30,6 @@ const PayslipScreen = () => {
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
-  const { isOpen: downloadDialogIsOpen, toggle: toggleDownloadDialog } = useDisclosure(false);
   const { isOpen: pinUpdateModalIsOpen, toggle: togglePinUpdateModal } = useDisclosure(false);
 
   const fetchPayslipParameters = {
@@ -60,7 +57,6 @@ const PayslipScreen = () => {
     setSelectedPayslip(data);
     payslipDownloadScreenSheetRef.current?.show();
   };
-
   const closeSelectedPayslip = () => {
     setSelectedPayslip(null);
     payslipDownloadScreenSheetRef.current?.hide();
@@ -81,7 +77,6 @@ const PayslipScreen = () => {
       refetchPayslip();
       togglePinUpdateModal();
       setRequestType("info");
-      // Toast.show("Password updated", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -123,12 +118,9 @@ const PayslipScreen = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <PageHeader title="My Payslip" backButton={false} />
-          <Button
-            height={35}
-            padding={5}
-            children={<Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>}
-            onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}
-          />
+          <Button height={35} padding={5} onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}>
+            <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>
+          </Button>
           <PayslipPasswordEdit
             reference={payslipPasswordEditScreenSheetRef}
             hideNewPassword={hideNewPassword}
@@ -144,34 +136,15 @@ const PayslipScreen = () => {
           />
         </View>
 
-        {payslip?.data?.data.length > 0 ? (
-          <View style={{ paddingHorizontal: 14, flex: 1 }}>
-            <FlashList
-              data={payslips}
-              keyExtractor={(item, index) => index}
-              onScrollBeginDrag={() => setHasBeenScrolled(true)}
-              onEndReachedThreshold={0.1}
-              onEndReached={hasBeenScrolled ? fetchMorePayslip : null}
-              estimatedItemSize={50}
-              refreshControl={<RefreshControl refreshing={payslipIsFetching} onRefresh={refetchPayslip} />}
-              ListFooterComponent={() => payslipIsFetching && <ActivityIndicator />}
-              renderItem={({ item, index }) => (
-                <PayslipList key={index} id={item?.id} month={item?.pay_month} year={item?.pay_year} />
-              )}
-            />
-          </View>
-        ) : (
-          <>
-            <View style={styles.imageContainer}>
-              <Image
-                source={require("../../../assets/vectors/empty.png")}
-                alt="empty"
-                style={{ resizeMode: "contain", height: 300, width: 300 }}
-              />
-              <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
-            </View>
-          </>
-        )}
+        <PayslipList
+          data={payslips}
+          openSelectedPayslip={openSelectedPayslip}
+          hasBeenScrolled={hasBeenScrolled}
+          setHasBeenScrolled={setHasBeenScrolled}
+          fetchMore={fetchMorePayslip}
+          isFetching={payslipIsFetching}
+          refetch={refetchPayslip}
+        />
       </SafeAreaView>
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
@@ -198,11 +171,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 14,
     paddingVertical: 16,
-  },
-  imageContainer: {
-    marginTop: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
   },
 });

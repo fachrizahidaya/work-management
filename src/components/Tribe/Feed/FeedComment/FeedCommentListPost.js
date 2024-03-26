@@ -2,7 +2,6 @@ import React from "react";
 
 import { FlashList } from "@shopify/flash-list";
 import { ActivityIndicator, Text, View } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
 
 import FeedCommentItem from "./FeedCommentItem";
 
@@ -14,8 +13,6 @@ const FeedCommentListPost = ({
   hasBeenScrolled,
   setHasBeenScrolled,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   employeeUsername,
 }) => {
   return (
@@ -47,8 +44,6 @@ const FeedCommentListPost = ({
               comments={item?.comments}
               onReply={onReply}
               handleLinkPress={handleLinkPress}
-              handleEmailPress={handleEmailPress}
-              copyToClipboard={copyToClipboard}
               employeeUsername={employeeUsername}
             />
           );

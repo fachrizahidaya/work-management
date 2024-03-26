@@ -1,135 +1,51 @@
-import { TouchableOpacity, Text, View, StyleSheet, Platform } from "react-native";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
-import { card } from "../../../styles/Card";
-import EmailButton from "../../shared/EmailButton";
-import PhoneButton from "../../shared/PhoneButton";
-import WhatsappButton from "../../shared/WhatsappButton";
-import PersonalNestButton from "../../shared/PersonalNestButton";
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import ContactItem from "./ContactItem";
 
 const ContactList = ({
-  id,
-  name,
-  position,
-  image,
-  phone,
-  email,
-  loggedEmployeeId,
-  user,
-  user_id,
-  user_name,
-  user_type,
-  user_image,
-  room_id,
+  data,
+  filteredData,
+  hasBeenScrolled,
+  setHasBeenScrolled,
+  fetchMore,
+  isFetching,
   navigation,
-  leave_status,
+  userSelector,
 }) => {
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("Employee Profile", {
-          employeeId: id,
-          returnPage: "Contact",
-          loggedEmployeeId: loggedEmployeeId,
-        })
-      }
-      style={{
-        ...card.card,
-        flexDirection: "column",
-        marginVertical: 5,
-        gap: 20,
-        elevation: 1,
-        // shadowColor: "rgba(0, 0, 0, 1)",
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.1,
-        // shadowRadius: 5,
-      }}
-    >
-      <View style={styles.content}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <View>
-            <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
-            {leave_status ? (
-              <View style={styles.editPicture}>
-                <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
-              </View>
-            ) : null}
-          </View>
-          <View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: "#3F434A",
-                  width: Platform.OS === "android" ? 160 : 150,
-                  overflow: "hidden",
-                }}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {name}
-              </Text>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "400",
-                color: "#20A144",
-                width: 140,
-                overflow: "hidden",
-              }}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {position}
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <WhatsappButton phone={phone} size={20} />
-            <EmailButton email={email} size={20} />
-            <PhoneButton phone={phone} size={20} />
-            {user && (
-              <PersonalNestButton
-                email={email}
-                user_id={user_id}
-                user_name={user_name}
-                user_type={user_type}
-                user_image={user_image}
-                room_id={room_id}
-              />
-            )}
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <View style={{ flex: 1, paddingHorizontal: 14 }}>
+      <FlashList
+        data={data.length ? data : filteredData}
+        onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+        keyExtractor={(item, index) => index}
+        onEndReachedThreshold={0.1}
+        estimatedItemSize={60}
+        onEndReached={hasBeenScrolled ? fetchMore : null}
+        ListFooterComponent={() => isFetching && hasBeenScrolled && <ActivityIndicator />}
+        renderItem={({ item, index }) => (
+          <ContactItem
+            key={index}
+            id={item?.id}
+            name={item?.name}
+            position={item?.position_name}
+            image={item?.image}
+            phone={item?.phone_number}
+            email={item?.email}
+            user={item?.user}
+            user_id={item?.user?.id}
+            room_id={item?.chat_personal_id}
+            user_name={item?.user?.name}
+            user_type={item?.user?.user_type}
+            user_image={item?.user?.image}
+            loggedEmployeeId={userSelector?.user_role_id}
+            navigation={navigation}
+            leave_status={item?.is_leave_today}
+          />
+        )}
+      />
+    </View>
   );
 };
 
 export default ContactList;
-
-const styles = StyleSheet.create({
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 3,
-  },
-  editPicture: {
-    backgroundColor: "#FFFFFF",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
-
-    width: 20,
-    height: 20,
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    zIndex: 2,
-    shadowOffset: 0,
-  },
-});

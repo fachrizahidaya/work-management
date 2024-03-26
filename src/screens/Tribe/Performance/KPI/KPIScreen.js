@@ -5,16 +5,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import * as DocumentPicker from "expo-document-picker";
 
-import {
-  ActivityIndicator,
-  Linking,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Linking, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -23,18 +14,18 @@ import { useFetch } from "../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import axiosInstance from "../../../../config/api";
 import { useLoading } from "../../../../hooks/useLoading";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import KPIDetailItem from "../../../../components/Tribe/Performance/KPI/KPIDetailItem";
 import KPIDetailList from "../../../../components/Tribe/Performance/KPI/KPIDetailList";
 import KPIForm from "../../../../components/Tribe/Performance/KPI/KPIForm";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import Tabs from "../../../../components/shared/Tabs";
 import AttachmentForm from "../../../../components/Tribe/Performance/KPI/AttachmentForm";
 import AttachmentItem from "../../../../components/Tribe/Performance/KPI/AttachmentItem";
+import SaveButton from "../../../../components/Tribe/Performance/KPI/SaveButton";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -48,9 +39,7 @@ const KPIScreen = () => {
   const [currentAttachments, setCurrentAttachments] = useState([]);
 
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const formScreenSheetRef = useRef(null);
   const formAttachmentScreenSheetRef = useRef(null);
 
@@ -59,10 +48,9 @@ const KPIScreen = () => {
 
   const { isLoading: submitIsLoading, toggle: toggleSubmit } = useLoading(false);
 
-  const { id, status } = route.params;
+  const { id } = route.params;
 
   const { data: kpiSelected } = useFetch(`/hr/employee-kpi/${id}/start`);
-
   const kpiId = kpiSelected?.data?.id;
 
   const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
@@ -81,7 +69,7 @@ const KPIScreen = () => {
     formScreenSheetRef.current?.hide();
   };
 
-  const openSelectedAttachmentKpi = (data, value) => {
+  const openSelectedAttachmentKpi = () => {
     formAttachmentScreenSheetRef.current?.show();
   };
   const closeSelectedAttachmentKpi = () => {
@@ -124,20 +112,6 @@ const KPIScreen = () => {
         },
       ];
     });
-    // if (Array.isArray(employee_kpi_value)) {
-    //   employee_kpi_value.forEach((val) => {
-    //     employeeKpiValArr = [
-    //       ...employeeKpiValArr,
-    //       {
-    //         ...val?.performance_kpi_value,
-    //         id: val?.id,
-    //         performance_kpi_value_id: val?.performance_kpi_value_id,
-    //         actual_achievement: val?.actual_achievement,
-    //         attachment: val?.attachment,
-    //       },
-    //     ];
-    //   });
-    // }
     return [...employeeKpiValArr];
   };
 
@@ -148,11 +122,7 @@ const KPIScreen = () => {
   const employeeKpiValueUpdateHandler = (data) => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
-      const index = currentData.findIndex(
-        (employee_kpi_val) =>
-          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
-          employee_kpi_val?.id === data?.id
-      );
+      const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === data?.id);
       if (index > -1) {
         currentData[index].actual_achievement = data?.actual_achievement;
       } else {
@@ -165,11 +135,7 @@ const KPIScreen = () => {
   const employeeKpiAttachmentUpdateHandler = (data, setStatus, setSubmitting) => {
     setEmployeeKpiValue((prevState) => {
       let currentData = [...prevState];
-      const index = currentData.findIndex(
-        (employee_kpi_val) =>
-          // employee_kpi_val?.performance_kpi_value_id === data?.performance_kpi_value_id
-          employee_kpi_val?.id === data?.id
-      );
+      const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === data?.id);
       if (index > -1) {
         currentData[index].attachment = [...currentData[index].attachment, data.file];
       }
@@ -183,11 +149,7 @@ const KPIScreen = () => {
     if (att_index > -1) {
       setEmployeeKpiValue((prevState) => {
         let currentData = [...prevState];
-        const index = currentData.findIndex(
-          (employee_kpi_val) =>
-            // employee_kpi_val?.id === employee_kpi_id
-            employee_kpi_val?.id === employee_kpi_id
-        );
+        const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === employee_kpi_id);
         if (index > -1) {
           currentData[index].attachment.splice(att_index, 1);
           if (id) {
@@ -310,19 +272,13 @@ const KPIScreen = () => {
         });
       });
       formData.append("_method", "PATCH");
-      const res = await axiosInstance.post(
-        `/hr/employee-kpi/${kpiList?.data?.id}`,
-        formData,
-
-        {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await axiosInstance.post(`/hr/employee-kpi/${kpiList?.data?.id}`, formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
       toggleSaveModal();
       setRequestType("info");
-      // Toast.show("Data saved!", SuccessToastProps);
       refetchKpiList();
     } catch (err) {
       console.log(err);
@@ -402,7 +358,6 @@ const KPIScreen = () => {
       id: "",
       file: fileAttachment || "",
     },
-
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setSubmitting("processing");
       employeeKpiAttachmentUpdateHandler(values, setStatus, setSubmitting);
@@ -451,36 +406,8 @@ const KPIScreen = () => {
               }
             }}
           />
-          {!kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
-            <Button
-              height={35}
-              padding={10}
-              children={
-                submitIsLoading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    Save
-                  </Text>
-                )
-              }
-              onPress={() => {
-                if (submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={
-                submitIsLoading || (differences.length === 0 && attachments.length === currentAttachments.length)
-              }
-            />
+          {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
+            <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
         <KPIDetailList
@@ -511,10 +438,8 @@ const KPIScreen = () => {
                       measurement={item?.measurement}
                       achievement={item?.actual_achievement}
                       item={item}
-                      handleOpen={status === "ongoing" ? openSelectedKpi : null}
+                      handleOpen={openSelectedKpi}
                       employeeKpiValue={correspondingEmployeeKpi}
-                      status={status}
-                      confirmed={kpiList?.data?.confirm}
                     />
                   );
                 })
@@ -526,7 +451,7 @@ const KPIScreen = () => {
             </ScrollView>
           ) : (
             <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-              {kpiList?.data?.confirm && (
+              {!kpiList?.data?.confirm && (
                 <TouchableOpacity
                   onPress={() => openSelectedAttachmentKpi()}
                   style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
@@ -560,6 +485,7 @@ const KPIScreen = () => {
           )}
         </View>
       </SafeAreaView>
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}

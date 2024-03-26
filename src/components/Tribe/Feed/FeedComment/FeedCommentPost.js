@@ -4,16 +4,7 @@ import { View } from "react-native";
 
 import FeedCommentListPost from "./FeedCommentListPost";
 
-const FeedCommentPost = ({
-  commentIsLoading,
-  comments,
-  onEndReached,
-  onReply,
-  employeeUsername,
-  linkPressHandler,
-  emailPressHandler,
-  copyToClipboardHandler,
-}) => {
+const FeedCommentPost = ({ commentIsLoading, comments, onEndReached, onReply, employeeUsername, linkPressHandler }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   return (
@@ -41,8 +32,6 @@ const FeedCommentPost = ({
           hasBeenScrolled={hasBeenScrolled}
           setHasBeenScrolled={setHasBeenScrolled}
           handleLinkPress={linkPressHandler}
-          handleEmailPress={emailPressHandler}
-          copyToClipboard={copyToClipboardHandler}
         />
       </View>
     </>

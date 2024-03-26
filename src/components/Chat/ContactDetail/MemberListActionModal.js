@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 
@@ -13,13 +15,13 @@ const MemberListActionModal = ({
   onUpdateAdminStatus = () => {},
   toggleRemoveMemberAction,
 }) => {
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
       ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get(
-          "REAL_WINDOW_HEIGHT"
-        );
+      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
 
   return (
     <Modal
@@ -27,6 +29,11 @@ const MemberListActionModal = ({
       onBackdropPress={toggleMemberListAction}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
+      hideModalContentWhileAnimating={true}
+      useNativeDriver={false}
+      onModalHide={() => {
+        showConfirmationModal && toggleRemoveMemberAction();
+      }}
     >
       <View style={{ ...styles.container }}>
         <Text style={[{ fontSize: 12 }, TextProps]}>{memberName}</Text>
@@ -54,7 +61,8 @@ const MemberListActionModal = ({
         <Button
           onPress={() => {
             toggleMemberListAction();
-            toggleRemoveMemberAction();
+            // toggleRemoveMemberAction();
+            setShowConfirmationModal(true);
           }}
           variant="outline"
         >

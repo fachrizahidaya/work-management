@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const ReviewAppraisalDetailList = ({ dayjs, begin_date, end_date, target, name }) => {
+const KPIReviewDetailList = ({ dayjs, begin_date, end_date, target, name }) => {
   return (
     <View
       style={{
@@ -10,11 +10,12 @@ const ReviewAppraisalDetailList = ({ dayjs, begin_date, end_date, target, name }
         paddingHorizontal: 16,
         borderWidth: 1,
         borderColor: "#E2E2E2",
+        backgroundColor: "#ffffff",
       }}
     >
       <View style={{ gap: 10 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={[TextProps]}>{name}</Text>
+          <Text style={[{}, TextProps]}>{name}</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
               {begin_date ? dayjs(begin_date).format("DD MMM YYYY") : "-"} to
@@ -31,4 +32,4 @@ const ReviewAppraisalDetailList = ({ dayjs, begin_date, end_date, target, name }
   );
 };
 
-export default ReviewAppraisalDetailList;
+export default KPIReviewDetailList;

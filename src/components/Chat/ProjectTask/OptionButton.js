@@ -1,4 +1,5 @@
 import { View, Text, Pressable, Platform } from "react-native";
+
 import { TextProps } from "../../shared/CustomStylings";
 
 const OptionButton = ({ tabValue, setTabValue, setSearchInput, setInputToShow, setProjects, setTasks }) => {

@@ -1,11 +1,7 @@
-import dayjs from "dayjs";
-
-import { View, Text, Pressable, StyleSheet, Linking, TouchableOpacity } from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { TextProps } from "../../shared/CustomStylings";
+import AttendanceAttachmentList from "./AttendanceAttachmentList";
 
 const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
@@ -28,36 +24,12 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
         )}
       </View>
 
-      <View style={{ height: "100%" }}>
-        <FlashList
-          data={attachment?.data}
-          keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0.1}
-          estimatedItemSize={30}
-          refreshControl={<RefreshControl refreshing={attachmentIsFetching} onRefresh={() => refetchAttachment()} />}
-          renderItem={({ item, index }) => (
-            <View key={index} style={styles.card}>
-              <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <MaterialCommunityIcons
-                  onPress={() =>
-                    Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${item?.file_path}`, "_blank")
-                  }
-                  name="file-outline"
-                  size={20}
-                />
-                <View style={{ gap: 3 }}>
-                  <Text style={[{ fontSize: 14 }, TextProps]}>{item?.title}</Text>
-                  <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>
-                    {dayjs(item?.begin_date).format("DD MMM YYYY")} - {dayjs(item?.end_date).format("DD MMM YYYY")}
-                  </Text>
-                </View>
-              </Pressable>
-
-              <MaterialCommunityIcons name="trash-can-outline" size={20} onPress={() => setAttachmentId(item?.id)} />
-            </View>
-          )}
-        />
-      </View>
+      <AttendanceAttachmentList
+        data={attachment?.data}
+        isFetching={attachmentIsFetching}
+        refetch={refetchAttachment}
+        setAttachmentId={setAttachmentId}
+      />
     </View>
   );
 };

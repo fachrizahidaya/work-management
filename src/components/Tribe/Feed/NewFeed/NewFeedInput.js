@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
-import { Pressable, Text, ScrollView, Platform, View } from "react-native";
-import { MentionInput, replaceMentionValues } from "react-native-controlled-mentions";
+import { Pressable, Text, ScrollView, Platform } from "react-native";
+import { MentionInput } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
@@ -56,8 +56,6 @@ const NewFeedInput = ({ employees, formik }) => {
    */
   const contentUsernameChangeHandler = (value) => {
     formik.handleChange("content")(value);
-    // const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    // const lastWord = replacedValue.split(" ").pop();
   };
 
   return (

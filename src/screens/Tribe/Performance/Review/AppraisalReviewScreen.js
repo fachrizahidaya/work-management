@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,28 +13,25 @@ import { useDisclosure } from "../../../../hooks/useDisclosure";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
-import ReviewAppraisalDetailList from "../../../../components/Tribe/Performance/Review/ReviewAppraisalDetailList";
-import ReviewAppraisalDetailItem from "../../../../components/Tribe/Performance/Review/ReviewAppraisalDetailItem";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import AppraisalReviewDetailList from "../../../../components/Tribe/Performance/Review/AppraisalReviewDetailList";
+import AppraisalReviewDetailItem from "../../../../components/Tribe/Performance/Review/AppraisalReviewDetailItem";
 import PageHeader from "../../../../components/shared/PageHeader";
 import AppraisalReviewForm from "../../../../components/Tribe/Performance/Review/AppraisalReviewForm";
-import Button from "../../../../components/shared/Forms/Button";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
+import AppraisalReviewSaveButton from "../../../../components/Tribe/Performance/Review/AppraisalReviewSaveButton";
 
 const AppraisalReviewScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
   const [employeeAppraisalValue, setEmployeeAppraisalValue] = useState([]);
   const [appraisal, setAppraisal] = useState(null);
-  const [formValue, setFormValue] = useState(null);
   const [employeeAppraisal, setEmployeeAppraisal] = useState(null);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
-
   const route = useRoute();
-
   const formScreenSheetRef = useRef(null);
 
   const { id } = route.params;
@@ -66,21 +63,18 @@ const AppraisalReviewScreen = () => {
     let employeeAppraisalValArr = [];
     if (Array.isArray(employee_appraisal_value)) {
       employee_appraisal_value.forEach((val) => {
-        employeeAppraisalValArr = [
-          ...employeeAppraisalValArr,
-          {
-            ...val?.performance_appraisal_value,
-            id: val?.id,
-            performance_appraisal_value_id: val?.performance_appraisal_value_id,
-            supervisor_choice: val?.supervisor_choice,
-            employee_choice: val?.choice,
-            supervisor_notes: val?.supervisor_notes,
-            employee_notes: val?.notes,
-          },
-        ];
+        employeeAppraisalValArr.push({
+          ...val?.performance_appraisal_value,
+          id: val?.id,
+          performance_appraisal_value_id: val?.performance_appraisal_value_id,
+          supervisor_choice: val?.supervisor_choice,
+          employee_choice: val?.choice,
+          supervisor_notes: val?.supervisor_notes,
+          employee_notes: val?.notes,
+        });
       });
     }
-    return [...employeeAppraisalValArr];
+    return employeeAppraisalValArr;
   };
 
   /**
@@ -89,18 +83,18 @@ const AppraisalReviewScreen = () => {
    */
   const employeeAppraisalValueUpdateHandler = (data) => {
     setEmployeeAppraisalValue((prevState) => {
-      let currentData = [...prevState];
-      const index = currentData.findIndex(
+      const index = prevState.findIndex(
         (employee_appraisal_val) =>
           employee_appraisal_val?.performance_appraisal_value_id === data?.performance_appraisal_value_id
       );
+      const currentData = [...prevState];
       if (index > -1) {
         currentData[index].supervisor_choice = data?.supervisor_choice;
         currentData[index].supervisor_notes = data?.supervisor_notes;
       } else {
-        currentData = [...currentData, data];
+        currentData.push(data);
       }
-      return [...currentData];
+      return currentData;
     });
   };
 
@@ -109,12 +103,8 @@ const AppraisalReviewScreen = () => {
    */
   const sumUpAppraisalValue = () => {
     setAppraisalValues(() => {
-      // const performanceAppraisalValue = appraisalList?.data?.performance_appraisal?.value;
       const employeeAppraisalValue = getEmployeeAppraisalValue(appraisalList?.data?.employee_appraisal_value);
-      return [
-        ...employeeAppraisalValue,
-        // ...performanceAppraisalValue
-      ];
+      return [...employeeAppraisalValue];
     });
   };
 
@@ -149,13 +139,6 @@ const AppraisalReviewScreen = () => {
 
   let differences = compareActualChoiceAndNotes(appraisalValues, employeeAppraisalValue);
 
-  const formikChangeHandler = (e, submitWithoutChange = false) => {
-    if (!submitWithoutChange) {
-      formik.handleChange("supervisor_choice", e);
-    }
-    setFormValue(formik.values);
-  };
-
   /**
    * Handle save filled or updated Appraisal
    */
@@ -167,7 +150,6 @@ const AppraisalReviewScreen = () => {
       });
       toggleSaveModal();
       setRequestType("info");
-      // Toast.show("Data saved!", SuccessToastProps);
       refetchAppraisalList();
     } catch (err) {
       console.log(err);
@@ -196,12 +178,6 @@ const AppraisalReviewScreen = () => {
   });
 
   useEffect(() => {
-    if (formValue) {
-      formik.handleSubmit();
-    }
-  }, [formValue]);
-
-  useEffect(() => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
       setEmployeeAppraisalValue(() => {
@@ -228,41 +204,11 @@ const AppraisalReviewScreen = () => {
             }}
           />
           {appraisalValues.length === 0 || appraisalList?.data?.confirm ? null : (
-            <Button
-              height={35}
-              padding={10}
-              children={
-                submitIsLoading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    Save
-                  </Text>
-                )
-              }
-              onPress={() => {
-                if (submitIsLoading || differences.length === 0) {
-                  null;
-                } else {
-                  submitHandler();
-                }
-              }}
-              disabled={differences.length === 0 || submitIsLoading}
-            />
+            <AppraisalReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
           )}
         </View>
-        {appraisalValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-        <ReviewAppraisalDetailList
+
+        <AppraisalReviewDetailList
           dayjs={dayjs}
           begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
           end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
@@ -278,7 +224,7 @@ const AppraisalReviewScreen = () => {
                   (empAppraisal) => empAppraisal.id === item.id
                 );
                 return (
-                  <ReviewAppraisalDetailItem
+                  <AppraisalReviewDetailItem
                     key={index}
                     item={item}
                     id={item?.id}
@@ -302,7 +248,13 @@ const AppraisalReviewScreen = () => {
             )}
           </ScrollView>
         </View>
+        {appraisalValues.length > 0 ? (
+          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+          </Pressable>
+        ) : null}
       </SafeAreaView>
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
@@ -347,15 +299,6 @@ const AppraisalReviewScreen = () => {
         type={requestType}
         title="Changes saved!"
         description="Data has successfully updated"
-        // topElement={
-        //   <View style={{ flexDirection: "row" }}>
-        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-        //   </View>
-        // }
-        // bottomElement={
-        //   <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-        // }
       />
       <SuccessModal
         isOpen={confirmedModalIsOpen}
@@ -363,13 +306,6 @@ const AppraisalReviewScreen = () => {
         type={requestType}
         title="Report submitted!"
         description="Your report is logged"
-        // topElement={
-        //   <View style={{ flexDirection: "row" }}>
-        //     <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Report </Text>
-        //     <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>submitted!</Text>
-        //   </View>
-        // }
-        // bottomElement={<Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Your report is logged</Text>}
       />
     </>
   );

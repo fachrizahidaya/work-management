@@ -6,6 +6,15 @@ import { card } from "../../../styles/Card";
 import { TextProps } from "../../shared/CustomStylings";
 
 const EmployeeInformation = ({ id, name, position, email, phone, image, navigation }) => {
+  const navigateToProfileHandler = () => {
+    navigation.navigate("Employee Profile", {
+      employeeId: id,
+      returnPage: "My Information",
+      loggedEmployeeImage: image,
+      loggedEmployeeId: id,
+    });
+  };
+
   return (
     <View style={{ ...card.card, marginTop: 5, gap: 20 }}>
       <View
@@ -16,16 +25,7 @@ const EmployeeInformation = ({ id, name, position, email, phone, image, navigati
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: id,
-                returnPage: "My Information",
-                loggedEmployeeImage: image,
-                loggedEmployeeId: id,
-              })
-            }
-          >
+          <TouchableOpacity onPress={() => navigateToProfileHandler()}>
             <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
           </TouchableOpacity>
           <View>

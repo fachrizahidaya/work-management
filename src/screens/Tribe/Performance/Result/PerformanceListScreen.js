@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
-import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import PerformanceListItem from "../../../../components/Tribe/Performance/Result/PerformanceListItem";
+import PerformanceList from "../../../../components/Tribe/Performance/Result/PerformanceList";
 
 const PerformanceListScreen = () => {
   const [personalList, setPersonalList] = useState([]);
@@ -125,86 +122,21 @@ const PerformanceListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1, paddingHorizontal: 16 }}>
           {tabValue === "My Team" ? (
-            teamList.length > 0 ? (
-              <FlashList
-                data={teamList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                // onScrollBeginDrag={() =>
-                //   setPersonalHasBeenScrolled(!personalHasBeenScrolled)
-                // }
-                // onEndReached={
-                //   personalHasBeenScrolled === true ? fetchMorePersonal : null
-                // }
-                renderItem={({ item, index }) => (
-                  <PerformanceListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.performance_review?.begin_date}
-                    end_date={item?.performance_review?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    target={null}
-                    dayjs={dayjs}
-                    description={item?.performance_review?.description}
-                    type="my-team"
-                  />
-                )}
-                refreshControl={
-                  <RefreshControl refreshing={teamCommentListIsFetching} onRefresh={refetchTeamCommentList} />
-                }
-              />
-            ) : (
-              <ScrollView
-                refreshControl={
-                  <RefreshControl refreshing={teamCommentListIsFetching} onRefresh={refetchTeamCommentList} />
-                }
-              >
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              </ScrollView>
-            )
-          ) : personalList.length > 0 ? (
-            <FlashList
-              data={personalList}
-              estimatedItemSize={50}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              // onScrollBeginDrag={() =>
-              //   setMyTeamHasBeenScrolled(!myTeamHasBeenScrolled)
-              // }
-              // onEndReached={
-              //   myTeamHasBeenScrolled === true ? fetchMoreMyTeam : null
-              // }
-              renderItem={({ item, index }) => (
-                <PerformanceListItem
-                  key={index}
-                  id={item?.id}
-                  start_date={item?.performance_review?.begin_date}
-                  end_date={item?.performance_review?.end_date}
-                  navigation={navigation}
-                  name={item?.employee?.name}
-                  dayjs={dayjs}
-                  description={item?.performance_review?.description}
-                  type="personal"
-                />
-              )}
-              refreshControl={
-                <RefreshControl refreshing={personalCommentListIsFetching} onRefresh={refetchPersonalCommentList} />
-              }
+            <PerformanceList
+              data={teamList}
+              isFetching={teamCommentListIsFetching}
+              refetch={refetchTeamCommentList}
+              navigation={navigation}
+              dayjs={dayjs}
             />
           ) : (
-            <ScrollView
-              refreshControl={
-                <RefreshControl refreshing={personalCommentListIsFetching} onRefresh={refetchPersonalCommentList} />
-              }
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
+            <PerformanceList
+              data={personalList}
+              isFetching={personalCommentListIsFetching}
+              refetch={refetchPersonalCommentList}
+              navigation={navigation}
+              dayjs={dayjs}
+            />
           )}
         </View>
       </View>

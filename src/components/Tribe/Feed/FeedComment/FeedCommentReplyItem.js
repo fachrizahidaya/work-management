@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { TextProps } from "../../../shared/CustomStylings";
+import { CopyToClipboard } from "../../../shared/CopyToClipboard";
+import { EmailRedirect } from "../../../shared/EmailRedirect";
 
 const FeedCommentReplyItem = ({
   authorName,
@@ -12,8 +14,6 @@ const FeedCommentReplyItem = ({
   parentId,
   authorImage,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   employeeUsername,
 }) => {
   const words = comments.split(" ");
@@ -51,14 +51,14 @@ const FeedCommentReplyItem = ({
     } else if (item.includes("08") || item.includes("62")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
+        <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
           {item}{" "}
         </Text>
       );
     } else if (item.includes("@") && item.includes(".com")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
+        <Text key={index} style={textStyle} onPress={() => EmailRedirect(item)}>
           {item}{" "}
         </Text>
       );

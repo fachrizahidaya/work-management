@@ -1,34 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {
-  Keyboard,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
-  Pressable,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Keyboard, SafeAreaView, StyleSheet, View, Text, Pressable, Alert } from "react-native";
 import Toast from "react-native-root-toast";
 
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
-import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import SelectedUserList from "../../../components/Chat/UserSelection/SelectedUserList";
+import GroupData from "../../../components/Chat/UserSelection/GroupData";
 
 const GroupFormScreen = ({ route }) => {
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
   const [image, setImage] = useState(null);
 
   const navigation = useNavigation();
@@ -42,8 +28,6 @@ const GroupFormScreen = ({ route }) => {
           "content-type": "multipart/form-data",
         },
       });
-
-      setSelectedGroupMembers(userArray);
 
       navigation.navigate("Chat Room", {
         name: res.data.data.name,
@@ -155,76 +139,12 @@ const GroupFormScreen = ({ route }) => {
           }}
         >
           {userArray?.length > 0 &&
-            userArray.map((user) => {
-              return (
-                <View
-                  key={user.id}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 5,
-                    backgroundColor: "#F5F5F5",
-                    borderRadius: 15,
-                    gap: 5,
-                  }}
-                >
-                  <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
-                  <Text style={[{ fontSize: 12 }, TextProps]}>
-                    {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
-                  </Text>
-                </View>
-              );
+            userArray.map((user, index) => {
+              return <SelectedUserList key={index} name={user?.name} id={user?.id} image={user?.image} />;
             })}
         </View>
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 20,
-            paddingHorizontal: 16,
-          }}
-        >
-          <TouchableOpacity style={styles.groupImage} onPress={pickImageHandler}>
-            {image ? (
-              <Image
-                style={{ height: 150, width: 150, borderRadius: 80 }}
-                alt="group-image"
-                source={{ uri: image.uri }}
-              />
-            ) : (
-              <View style={{ alignItems: "center", gap: 5 }}>
-                <MaterialCommunityIcons name="camera" size={20} color="#FFFFFF" />
-                <Text style={{ color: "#FFFFFF" }}>Add group icon</Text>
-              </View>
-            )}
-          </TouchableOpacity>
 
-          <Input
-            placeHolder="Group name"
-            value={formik.values.name}
-            onChangeText={(value) => formik.setFieldValue("name", value)}
-          />
-          {formik.errors.name && <Text style={{ fontSize: 12, color: "#F44336" }}>{formik.errors.name}</Text>}
-          <Pressable
-            style={{
-              backgroundColor: formik.isSubmitting ? "#757575" : "#176688",
-              padding: 20,
-              shadowOffset: 0,
-              borderWidth: 5,
-              borderColor: "#FFFFFF",
-              borderRadius: 40,
-            }}
-            onPress={formik.handleSubmit}
-            disabled={formik.isSubmitting}
-          >
-            {formik.isSubmitting ? (
-              <ActivityIndicator />
-            ) : (
-              <MaterialCommunityIcons name="check" size={25} color="#FFFFFF" />
-            )}
-          </Pressable>
-        </View>
+        <GroupData pickImageHandler={pickImageHandler} image={image} formik={formik} />
       </View>
     </SafeAreaView>
   );
@@ -244,5 +164,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#176688",
+  },
+  groupData: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
+    paddingHorizontal: 16,
   },
 });

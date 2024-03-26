@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { Linking, StyleSheet, TouchableOpacity, View, Image, Dimensions, Platform, ScrollView } from "react-native";
 import Modal from "react-native-modal";
@@ -13,7 +13,6 @@ const ImageFullScreenModal = ({
   file_path,
   media,
   images,
-  navigation,
   type,
   setSelectedPicture,
 }) => {
@@ -72,15 +71,9 @@ const ImageFullScreenModal = ({
                         width,
                         height,
                         resizeMode: "contain",
-                        // transform: [{ scale }, { translateX }],
                       }}
                     />
-                    {/* <Image
-                  key={index}
-                  source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item}` }}
-                  alt="Feed Image"
-                  style={{ ...styles.image, width, height, resizeMode: "contain" }}
-                /> */}
+
                     <View style={styles.actionGroupMedia}>
                       <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(item)}>
                         <MaterialCommunityIcons name="download" size={20} color="#FFFFFF" />
@@ -93,25 +86,6 @@ const ImageFullScreenModal = ({
                 </>
               ))}
             </ScrollView>
-
-            {/* <ScrollView
-            pagingEnabled
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 10 }}
-            style={{ width, height: 40 }}
-          >
-            {images.map((item, index) => (
-              <View>
-                <Image
-                  key={index}
-                  source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${item}` }}
-                  alt="Feed Image"
-                  style={{ width: 80, height: 80, resizeMode: "contain" }}
-                />
-              </View>
-            ))}
-          </ScrollView> */}
           </View>
         ) : (
           <>
@@ -160,13 +134,7 @@ const ImageFullScreenModal = ({
           </>
         )}
         {shareImageScreenSheetRef && (
-          <ShareImage
-            reference={shareImageScreenSheetRef}
-            navigation={navigation}
-            toggleFullScreen={setIsFullScreen}
-            type={type}
-            setIsFullScreen={setIsFullScreen}
-          />
+          <ShareImage reference={shareImageScreenSheetRef} toggleFullScreen={setIsFullScreen} type={type} />
         )}
       </Modal>
     </>

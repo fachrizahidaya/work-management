@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { TextProps } from "../../../shared/CustomStylings";
+import FeedContentStyle from "../../../shared/FeedContentStyle";
 
 const FeedCardItemPost = ({
   id,
@@ -23,18 +24,16 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  forceRerender,
-  setForceRerender,
   toggleFullScreen,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   employeeUsername,
   navigation,
   reference,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
+
+  const words = content?.split(" ");
 
   /**
    * Handle toggle like post
@@ -48,74 +47,7 @@ const FeedCardItemPost = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
-    setForceRerender(!forceRerender);
   };
-
-  const words = content?.split(" ");
-
-  /**
-   * Handle styled for content
-   */
-  const contentStyledTextHandler = words?.map((item, index) => {
-    let textStyle = styles.defaultText;
-    let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
-    const hasTag = item.includes("<a");
-    const hasHref = item.includes("href");
-
-    if (item.includes("https")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (hasHref && specificEmployee) {
-      const specificEmployeeId = specificEmployee.id;
-      item = specificEmployee.username;
-      textStyle = styles.highlightedText;
-      return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: specificEmployeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-            })
-          }
-        >
-          @{item}{" "}
-        </Text>
-      );
-    } else if (hasTag) {
-      item = item.replace(`<a`, "");
-      textStyle = styles.defaultText;
-      return <Text key={index}>{item}</Text>;
-    } else if (item.includes("08") || item.includes("62")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (item.includes("@") && item.includes(".com")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else {
-      textStyle = styles.defaultText;
-      return (
-        <Text key={index} style={textStyle}>
-          {item}{" "}
-        </Text>
-      );
-    }
-  });
 
   useEffect(() => {
     if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
@@ -161,9 +93,7 @@ const FeedCardItemPost = ({
                 })
               }
             >
-              <Text style={[{}, TextProps]}>
-                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-              </Text>
+              <Text style={[TextProps]}>{employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}</Text>
               {type === "Announcement" ? (
                 <View
                   style={{
@@ -180,7 +110,18 @@ const FeedCardItemPost = ({
           </View>
         </View>
 
-        <Text style={[{ fontSize: 14 }, TextProps]}>{contentStyledTextHandler}</Text>
+        <Text style={[{ fontSize: 14 }, TextProps]}>
+          {
+            <FeedContentStyle
+              words={words}
+              employeeUsername={employeeUsername}
+              navigation={navigation}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              handleLinkPress={handleLinkPress}
+            />
+          }
+        </Text>
 
         {attachment ? (
           <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
@@ -203,13 +144,6 @@ const FeedCardItemPost = ({
               {" "}
               {totalComment > 1 ? "Comments" : "Comment"}
             </Text>
-            {/* <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-            </Pressable> */}
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (

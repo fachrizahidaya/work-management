@@ -1,22 +1,22 @@
 import React from "react";
-import dayjs from "dayjs";
 
 import { Pressable, Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingAppraisalListItem = ({
+const KPIReviewListItem = ({
   id,
   start_date,
   end_date,
   navigation,
-  target,
-  isExpired,
-  target_level,
-  status,
   name,
+  target,
+  dayjs,
+  target_level,
+  description,
 }) => {
   return (
     <Pressable
@@ -30,15 +30,13 @@ const OngoingAppraisalListItem = ({
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("Appraisal Detail", {
+        navigation.navigate("Review KPI Detail", {
           id: id,
-          isExpired: isExpired,
-          status: status,
         })
       }
     >
+      <Text style={[TextProps]}>{description}</Text>
       <Text style={[TextProps]}>{name}</Text>
-
       <View>
         <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
         <Text style={[TextProps]}>{target}</Text>
@@ -52,4 +50,4 @@ const OngoingAppraisalListItem = ({
   );
 };
 
-export default OngoingAppraisalListItem;
+export default KPIReviewListItem;

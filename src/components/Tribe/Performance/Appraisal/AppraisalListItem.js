@@ -1,13 +1,13 @@
 import React from "react";
+import dayjs from "dayjs";
 
 import { Pressable, Text, View } from "react-native";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, dayjs, description }) => {
+const AppraisalListItem = ({ id, start_date, end_date, navigation, target, isExpired, target_level, name }) => {
   return (
     <Pressable
       style={{
@@ -20,14 +20,17 @@ const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, da
         gap: 10,
       }}
       onPress={() =>
-        navigation.navigate("Comment Detail", {
+        navigation.navigate("Appraisal Detail", {
           id: id,
+          isExpired: isExpired,
         })
       }
     >
-      <Text style={[{}, TextProps]}>{name}</Text>
+      <Text style={[TextProps]}>{name}</Text>
+
       <View>
-        <Text style={[TextProps]}>{description}</Text>
+        <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
+        <Text style={[TextProps]}>{target}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialCommunityIcons name="calendar-month" size={15} style={{ opacity: 0.5 }} />
@@ -38,4 +41,4 @@ const OngoingCommentListItem = ({ id, start_date, end_date, navigation, name, da
   );
 };
 
-export default OngoingCommentListItem;
+export default AppraisalListItem;

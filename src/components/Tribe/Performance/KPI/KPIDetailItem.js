@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue, status, confirmed }) => {
+const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
   return (
     <Pressable
       style={{

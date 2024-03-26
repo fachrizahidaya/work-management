@@ -4,7 +4,7 @@ import ActionSheet from "react-native-actions-sheet";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
-const ClearChatAction = ({ name, isLoading, reference }) => {
+const ChatRoomAction = ({ name, isLoading, reference }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -28,4 +28,4 @@ const ClearChatAction = ({ name, isLoading, reference }) => {
   );
 };
 
-export default ClearChatAction;
+export default ChatRoomAction;

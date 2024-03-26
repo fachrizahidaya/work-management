@@ -1,6 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import RenderHTML from "react-native-render-html";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 
