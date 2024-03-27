@@ -5,10 +5,5 @@ export const card = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     padding: 16,
-    // shadowColor: "rgba(0, 0, 0, 0.3)",
-    // shadowOffset: { width: 0, height: 4 },
-    // shadowOpacity: 0.8,
-    // shadowRadius: 4,
-    // elevation: 4,
   },
 });
