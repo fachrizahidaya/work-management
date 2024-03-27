@@ -21,7 +21,7 @@ const NewLeaveRequestForm = ({
   startDateMore,
 }) => {
   return (
-    <View style={{ gap: 20 }}>
+    <View style={{ marginTop: 20, gap: 20 }}>
       <SelectWithSearch
         reference={reference}
         placeHolder="Select Leave Type"

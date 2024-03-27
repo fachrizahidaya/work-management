@@ -1,10 +1,12 @@
-import React from "react";
 import dayjs from "dayjs";
+
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { TextProps } from "../../shared/CustomStylings";
 
-const AttendanceAttachmentItem = ({ file_path, title, begin_date, end_date, setAttachmentId }) => {
+const AttendanceAttachmentItem = ({ file_path, title, begin_date, end_date, setAttachmentId, id }) => {
   return (
     <View style={styles.card}>
       <Pressable
