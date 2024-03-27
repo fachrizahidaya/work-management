@@ -23,7 +23,7 @@ const ConfirmationModal = ({
   isDelete = true,
   isPatch = false,
   isGet = false,
-  toggleOtherModal,
+  toggleOtherModal = null,
   showSuccessToast = true,
 }) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -117,7 +117,7 @@ const ConfirmationModal = ({
             bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
             onPress={() => {
               onPressHandler();
-              setShowSuccessModal(true);
+              toggleOtherModal && setShowSuccessModal(true);
             }}
             startIcon={isDeleting && <ActivityIndicator />}
             flex={1}
