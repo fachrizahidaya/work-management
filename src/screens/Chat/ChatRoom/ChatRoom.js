@@ -8,7 +8,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import Pusher from "pusher-js/react-native";
 
-import { SafeAreaView, StyleSheet, Keyboard, Alert, Platform } from "react-native";
+import { SafeAreaView, StyleSheet, Alert, Platform, Clipboard } from "react-native";
 import Toast from "react-native-root-toast";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -24,7 +24,7 @@ import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
-import ClearChatAction from "../../../components/Chat/ChatList/ClearChatAction";
+import ChatRoomAction from "../../../components/Chat/ChatList/ChatRoomAction";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 
 const ChatRoom = () => {
@@ -46,17 +46,37 @@ const ChatRoom = () => {
   const [searchMessage, setSearchMessage] = useState("");
   const [filteredSearch, setFilteredSearch] = useState([]);
   const [deleteMessageSelected, setDeleteMessageSelected] = useState(false);
+  const [imageToShare, setImageToShare] = useState(null);
+  const [searchChatVisible, setSearchChatVisible] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
 
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardChecker();
+  const { keyboardHeight } = useKeyboardChecker();
 
   const userSelector = useSelector((state) => state.auth);
 
   const route = useRoute();
 
-  const { userId, name, roomId, image, position, email, type, active_member, isPinned } = route.params;
+  const {
+    userId,
+    name,
+    roomId,
+    image,
+    position,
+    email,
+    type,
+    active_member,
+    isPinned,
+    forwardedMessage,
+    forwardedProject,
+    forwardedTask,
+    forwarded_file_path,
+    forwarded_file_name,
+    forwarded_file_size,
+    forwarded_mime_type,
+  } = route.params;
 
   const navigation = useNavigation();
 
@@ -125,6 +145,43 @@ const ChatRoom = () => {
    */
   const swipeToReply = (message) => {
     setMessageToReply(message);
+  };
+
+  /**
+   * Handle copy to clipboard
+   * @param {*} text
+   */
+  const copyToClipboardHandler = (text) => {
+    try {
+      if (typeof text !== String) {
+        var textToCopy = text.toString();
+        Clipboard.setString(textToCopy);
+      } else {
+        Clipboard.setString(text);
+      }
+      Toast.show("Copy to Clipboard", SuccessToastProps);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /**
+   * Handle for member name in chatHeader
+   */
+  const membersName = selectedGroupMembers.map((item) => {
+    const name = !item?.user
+      ? userSelector?.id === item?.id
+        ? "You"
+        : item?.name
+      : userSelector?.id === item?.user?.id
+      ? "You"
+      : item?.user?.name;
+    return `${name}`;
+  });
+  const concatenatedNames = membersName.join(", ");
+
+  const toggleChatSearch = () => {
+    setSearchChatVisible(!searchChatVisible);
   };
 
   /**
@@ -226,11 +283,7 @@ const ChatRoom = () => {
   const deleteChatFromChatMessages = (chatMessageObj) => {
     setChatList((prevState) => {
       const index = prevState.findIndex((obj) => obj.id === chatMessageObj.id);
-      //   prevState.splice(index, 1);
-      //   prevState[index].delete_for_everyone = 1;
       if (chatMessageObj.type === "Delete For Me") {
-        // const updatedState = prevState.slice(0, index).concat(prevState.slice(index + 1));
-        // return updatedState;
         prevState.splice(index, 1);
       } else if (chatMessageObj.type === "Delete For Everyone") {
         const updatedState = [...prevState];
@@ -491,6 +544,30 @@ const ChatRoom = () => {
     }
   };
 
+  /**
+   * Handle confirmation modal for exit group and delete group
+   */
+  let modalIsOpen, toggleModal, modalDescription, onPressHandler;
+
+  if (type === "personal") {
+    modalIsOpen = deleteModalIsOpen;
+    toggleModal = toggleDeleteModal;
+    modalDescription = "Are you sure want to delete this chat?";
+    onPressHandler = () => deleteChatPersonal(roomId, toggleDeleteChatMessage);
+  } else if (type === "group") {
+    if (active_member === 1) {
+      modalIsOpen = exitModalIsOpen;
+      toggleModal = toggleExitModal;
+      modalDescription = "Are you sure want to exit this group?";
+      onPressHandler = () => groupExitHandler(roomId, toggleChatRoom);
+    } else if (active_member === 0) {
+      modalIsOpen = deleteGroupModalIsOpen;
+      toggleModal = toggleDeleteGroupModal;
+      modalDescription = "Are you sure want to delete this group?";
+      onPressHandler = () => groupDeleteHandler(roomId, toggleChatRoom);
+    }
+  }
+
   useEffect(() => {
     if (currentUser) {
       fetchChatMessageHandler(true);
@@ -568,22 +645,22 @@ const ChatRoom = () => {
             isPinned={isPinned}
             isLoading={isLoading}
             loggedInUser={userSelector?.id}
-            toggleExitModal={toggleExitModal}
-            toggleDeleteGroupModal={toggleDeleteGroupModal}
             toggleDeleteModal={toggleDeleteModal}
             toggleDeleteChatMessage={toggleDeleteChatMessage}
             selectedGroupMembers={selectedGroupMembers}
             deleteModalIsOpen={deleteModalIsOpen}
-            exitModalIsOpen={exitModalIsOpen}
-            deleteGroupModalIsOpen={deleteGroupModalIsOpen}
             deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-            chatRoomIsLoading={chatRoomIsLoading}
             deleteChatPersonal={deleteChatPersonal}
             onUpdatePinHandler={chatPinUpdateHandler}
             navigation={navigation}
             searchMessage={searchMessage}
             setSearchMessage={setSearchMessage}
             searchFormRef={searchFormRef}
+            toggleExitModal={toggleExitModal}
+            toggleDeleteGroupModal={toggleDeleteGroupModal}
+            toggleSearch={toggleChatSearch}
+            searchVisible={searchChatVisible}
+            groupName={concatenatedNames}
           />
 
           <ChatList
@@ -604,6 +681,8 @@ const ChatRoom = () => {
             userSelector={userSelector}
             navigation={navigation}
             filteredSearch={filteredSearch}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
           />
 
           <ChatInput
@@ -630,42 +709,36 @@ const ChatRoom = () => {
             email={email}
             isPinned={isPinned}
             memberName={memberName}
+            forwardedMessage={forwardedMessage}
+            forwardedProject={forwardedProject}
+            forwardedTask={forwardedTask}
+            forwarded_file_path={forwarded_file_path}
+            forwarded_file_name={forwarded_file_name}
+            forwarded_file_size={forwarded_file_size}
+            forwarded_mime_type={forwarded_mime_type}
           />
 
           <RemoveConfirmationModal
-            isOpen={
-              type === "personal" ? deleteModalIsOpen : active_member === 1 ? exitModalIsOpen : deleteGroupModalIsOpen
-            }
-            toggle={
-              type === "personal" ? toggleDeleteModal : active_member === 1 ? toggleExitModal : toggleDeleteGroupModal
-            }
-            description={
-              type === "personal"
-                ? "Are you sure want to delete this chat?"
-                : type === "group" && active_member === 1
-                ? "Are you sure want to exit this group?"
-                : type === "group" && active_member === 0
-                ? "Are you sure want to delete this group?"
-                : null
-            }
-            onPress={() =>
-              type === "personal"
-                ? deleteChatPersonal(roomId, toggleDeleteChatMessage)
-                : type === "group" && active_member === 1
-                ? groupExitHandler(roomId, toggleChatRoom)
-                : type === "group" && active_member === 0
-                ? groupDeleteHandler(roomId, toggleChatRoom)
-                : null
-            }
+            isOpen={modalIsOpen}
+            toggle={toggleModal}
+            description={modalDescription}
+            onPress={() => {
+              onPressHandler();
+            }}
             isLoading={type === "group" ? chatRoomIsLoading : deleteChatMessageIsLoading}
           />
 
-          <ClearChatAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
+          <ChatRoomAction name={name} isLoading={clearMessageIsLoading} reference={clearChatScreenSheetRef} />
 
           <ImageFullScreenModal
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             file_path={selectedChatBubble}
+            setSelectedPicture={setSelectedChatBubble}
+            type="Chat"
+            image={imageToShare}
+            setImage={setImageToShare}
+            navigation={navigation}
           />
 
           <ChatOptionMenu
@@ -678,6 +751,8 @@ const ChatRoom = () => {
             toggleDeleteChatModal={toggleDeleteModalChat}
             deleteSelected={deleteMessageSelected}
             setDeleteSelected={setDeleteMessageSelected}
+            copyToClipboard={copyToClipboardHandler}
+            navigation={navigation}
           />
 
           <ChatMessageDeleteModal

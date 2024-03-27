@@ -29,16 +29,20 @@ import MyTeamLeaveScreen from "../screens/Tribe/Leave/TeamLeaveScreen/MyTeamLeav
 import NewReimbursement from "../screens/Tribe/Reimbursement/NewReimbursement/NewReimbursement";
 import KPIScreen from "../screens/Tribe/Performance/KPI/KPIScreen";
 import AppraisalScreen from "../screens/Tribe/Performance/Appraisal/AppraisalScreen";
-import ReviewKPIScreen from "../screens/Tribe/Performance/Review/ReviewKPIScreen";
+import KPIReviewScreen from "../screens/Tribe/Performance/Review/KPIReviewScreen";
 import GlobalSearchTribe from "../screens/Tribe/GlobalSearch";
 import PostScreen from "../screens/Tribe/Feed/PostScreen";
-import ReviewAppraisalScreen from "../screens/Tribe/Performance/Review/ReviewAppraisalScreen";
+import AppraisalReviewScreen from "../screens/Tribe/Performance/Review/AppraisalReviewScreen";
 import CommentScreen from "../screens/Tribe/Performance/Review/CommentScreen";
 import PerformanceResultScreen from "../screens/Tribe/Performance/Result/PerformanceResultScreen";
 import AppraisalResultScreen from "../screens/Tribe/Performance/Result/AppraisalResultScreen";
 import KPIResultScreen from "../screens/Tribe/Performance/Result/KPIResultScreen";
 import CommentResultScreen from "../screens/Tribe/Performance/Result/CommentResultScreen";
 import ConclusionScreen from "../screens/Tribe/Performance/Result/ConclusionScreen";
+import KPIListScreen from "../screens/Tribe/Performance/KPI/KPIListScreen";
+import AppraisalListScreen from "../screens/Tribe/Performance/Appraisal/AppraisalListScreen";
+import KPIAppraisalReviewScreen from "../screens/Tribe/Performance/Review/KPIAppraisalReviewScreen";
+import PerformanceListScreen from "../screens/Tribe/Performance/Result/PerformanceListScreen";
 
 // Settings Screens
 import SettingScreen from "../screens/Setting/SettingScreen";
@@ -48,6 +52,7 @@ import CompanyScreen from "../screens/Setting/Account/CompanyScreen";
 import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
+import FrequentlyAskedQuestions from "../screens/Setting/FrequentlyAskedQuestions";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -62,6 +67,7 @@ import NoteForm from "../screens/Band/NoteForm";
 import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTaskScreen";
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
+import ForwardScreen from "../screens/Chat/ForwardScreen/ForwardScreen";
 
 const Stack = createStackNavigator();
 
@@ -88,6 +94,7 @@ const HomeStack = () => {
               email: parsedUserObj?.email,
               active_member: message.data.active_member,
               isPinned: parsedIsPinnedObj,
+              forwardedMessage: null,
             });
           }
         }
@@ -152,6 +159,8 @@ const HomeStack = () => {
 
       <Stack.Screen name="Task Detail Screen" component={TaskDetail} options={{ headerShown: false }} />
 
+      <Stack.Screen name="Forward Screen" component={ForwardScreen} options={{ headerShown: false }} />
+
       {/* Band Screens */}
       <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ header: () => <Header /> }} />
 
@@ -182,15 +191,31 @@ const HomeStack = () => {
 
       <Stack.Screen name="New Reimbursement" component={NewReimbursement} options={{ header: () => <Header /> }} />
 
+      <Stack.Screen name="Employee KPI" component={KPIListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Employee Appraisal" component={AppraisalListScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Employee Review"
+        component={KPIAppraisalReviewScreen}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen
+        name="Performance Result"
+        component={PerformanceListScreen}
+        options={{ header: () => <Header /> }}
+      />
+
       <Stack.Screen name="KPI Detail" component={KPIScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Appraisal Detail" component={AppraisalScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="Review KPI Detail" component={ReviewKPIScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Review KPI Detail" component={KPIReviewScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen
         name="Review Appraisal Detail"
-        component={ReviewAppraisalScreen}
+        component={AppraisalReviewScreen}
         options={{ header: () => <Header /> }}
       />
 
@@ -232,6 +257,8 @@ const HomeStack = () => {
       <Stack.Screen name="Payment Screen" component={PaymentScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="FAQ" component={FrequentlyAskedQuestions} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

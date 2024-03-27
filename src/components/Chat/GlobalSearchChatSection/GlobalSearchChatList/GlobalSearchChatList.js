@@ -1,20 +1,13 @@
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-
 import RenderHtml from "react-native-render-html";
+
 import { Dimensions, TouchableOpacity, View, Text } from "react-native";
 
 import ChatTimeStamp from "../../ChatTimeStamp/ChatTimeStamp";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const GlobalSearchChatList = ({
-  chat,
-  message,
-  searchKeyword,
-  group,
-  memberName,
-}) => {
+const GlobalSearchChatList = ({ chat, message, searchKeyword, group, memberName }) => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("screen");
   const userSelector = useSelector((state) => state.auth);
@@ -57,10 +50,7 @@ const GlobalSearchChatList = ({
 
   const boldMatchCharacters = (sentence = "", characters = "") => {
     const regex = new RegExp(characters, "gi");
-    return sentence.replace(
-      regex,
-      `<strong style="color: #176688;">$&</strong>`
-    );
+    return sentence.replace(regex, `<strong style="color: #176688;">$&</strong>`);
   };
 
   const renderChat = () => {
@@ -76,6 +66,7 @@ const GlobalSearchChatList = ({
             userId: chat.group.id,
             image: chat.group.image,
             type: "group",
+            forwardedMessage: null,
           });
         } else {
           navigation.navigate("Chat Room", {
@@ -83,6 +74,7 @@ const GlobalSearchChatList = ({
             userId: chat.user.id,
             image: chat.user.image,
             type: "personal",
+            forwardedMessage: null,
           });
         }
       }}
@@ -104,20 +96,13 @@ const GlobalSearchChatList = ({
                 justifyContent: "space-between",
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "600" }}>
-                {group.name}
-              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>{group.name}</Text>
 
-              <ChatTimeStamp
-                time={chat.created_time}
-                timestamp={chat.created_at}
-              />
+              <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
             </View>
             <View style={{ gap: 5 }}>
               <Text style={[{ fontSize: 12 }, TextProps]}>
-                {userSelector.id === chat?.user?.id
-                  ? "You: "
-                  : `${chat?.user?.name}: `}
+                {userSelector.id === chat?.user?.id ? "You: " : `${chat?.user?.name}: `}
               </Text>
 
               <View style={{ flex: 1, marginTop: 5 }}>
@@ -140,14 +125,9 @@ const GlobalSearchChatList = ({
                   justifyContent: "space-between",
                 }}
               >
-                <Text style={{ fontSize: 14, fontWeight: "600" }}>
-                  {chat?.user?.name}
-                </Text>
+                <Text style={{ fontSize: 14, fontWeight: "600" }}>{chat?.user?.name}</Text>
 
-                <ChatTimeStamp
-                  time={chat.created_time}
-                  timestamp={chat.created_at}
-                />
+                <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
               </View>
               <View style={{ flex: 1, marginTop: 5 }}>
                 <RenderHtml

@@ -42,6 +42,7 @@ const EditPersonalPost = ({
   setImagePreview,
   updatePostModalIsOpen,
   toggleUpdatePostModal,
+  requestType,
 }) => {
   const [dateShown, setDateShown] = useState(false);
   const [isAnnouncementSelected, setIsAnnouncementSelected] = useState(false);
@@ -189,13 +190,12 @@ const EditPersonalPost = ({
                     onPress={() => (checkAccess ? postActionScreenSheetRef.current?.show() : null)}
                     borderRadius={15}
                     variant="outline"
-                    children={
-                      <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
-                        {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
-                      </View>
-                    }
-                  />
+                  >
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={[{ fontSize: 10 }, TextProps]}>{formik.values.type}</Text>
+                      {checkAccess ? <MaterialCommunityIcons name="chevron-down" color="#3F434A" /> : null}
+                    </View>
+                  </Button>
                   {formik.values.type === "Public" ? (
                     ""
                   ) : (
@@ -288,26 +288,22 @@ const EditPersonalPost = ({
         <SuccessModal
           isOpen={updatePostModalIsOpen}
           toggle={toggleUpdatePostModal}
-          topElement={
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#CFCFCF", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-              <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-            </View>
-          }
-          bottomElement={
-            <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully updated</Text>
-          }
+          type={requestType}
+          title="Changes saved!"
+          description="Data has successfully updated"
         />
+        {postActionScreenSheetRef && (
+          <PostTypeOptions
+            publicToggleHandler={publicToggleHandler}
+            announcementToggleHandler={announcementToggleHandler}
+            isAnnouncementSelected={isAnnouncementSelected}
+            dateShown={dateShown}
+            endDateAnnouncementHandler={endDateAnnouncementHandler}
+            formik={formik}
+            reference={postActionScreenSheetRef}
+          />
+        )}
       </Modal>
-      <PostTypeOptions
-        publicToggleHandler={publicToggleHandler}
-        announcementToggleHandler={announcementToggleHandler}
-        isAnnouncementSelected={isAnnouncementSelected}
-        dateShown={dateShown}
-        endDateAnnouncementHandler={endDateAnnouncementHandler}
-        formik={formik}
-        reference={postActionScreenSheetRef}
-      />
     </>
   );
 };

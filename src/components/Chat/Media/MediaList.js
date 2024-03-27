@@ -1,4 +1,4 @@
-import { Dimensions, Image, ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import MediaItem from "./MediaItem";

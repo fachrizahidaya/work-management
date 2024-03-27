@@ -8,9 +8,131 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { MimeTypeInfo } from "../../shared/MimeTypeInfo";
 import ChatReplyPreviewMessage from "./ChatReplyPreviewMessage";
 
-const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName }) => {
+const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keyword = "" }) => {
   const [mimeTypeInfo, setMimeTypeInfo] = useState(null);
   const loggedInUser = useSelector((state) => state.auth);
+
+  const boldMatchCharacters = (sentence = "", characters = "") => {
+    const regex = new RegExp(characters, "gi");
+    return sentence.replace(regex, `<strong class='text-primary'>$&</strong>`);
+  };
+
+  const renderDangerouslyInnerHTMLContent = (message = "", alt_message = "") => {
+    for (let i = 0; i < memberName.length; i++) {
+      let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
+      message = message?.replace(placeholder, `@${memberName[i]}`);
+    }
+    if (message) {
+      if (keyword) {
+        return boldMatchCharacters(message, keyword);
+      }
+      return message;
+    }
+    return alt_message;
+  };
+
+  const renderMessage = (attachment_type) => {
+    if (attachment_type === "image") {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            <MaterialCommunityIcons name="image" color="#3F434A" />
+            {renderDangerouslyInnerHTMLContent(messageToReply?.message, "Image")}
+          </Text>
+        </View>
+      );
+    } else if (
+      attachment_type === "document" ||
+      attachment_type?.includes("spreadsheet") ||
+      attachment_type?.includes("presentation") ||
+      attachment_type?.includes("word")
+    ) {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            <MaterialCommunityIcons name="file-outline" color="#3F434A" />
+            {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.file_name)}
+          </Text>
+        </View>
+      );
+    } else {
+      if (messageToReply?.project_id) {
+        return (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#3F434A",
+                width: 200,
+                overflow: "hidden",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              <MaterialCommunityIcons name="lightning-bolt" color="#3F434A" />
+              {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.project_title)}
+            </Text>
+          </View>
+        );
+      } else if (messageToReply?.task_id) {
+        return (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: "#3F434A",
+                width: 200,
+                overflow: "hidden",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#3F434A" />
+              {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.task_title)}
+            </Text>
+          </View>
+        );
+      } else {
+        return (
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "400",
+              color: "#3F434A",
+              width: 200,
+              overflow: "hidden",
+            }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {renderDangerouslyInnerHTMLContent(messageToReply?.message)}
+          </Text>
+        );
+      }
+    }
+  };
 
   useEffect(() => {
     if (messageToReply) {
@@ -41,6 +163,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, type, memberName 
               message={messageToReply}
               myMessage={messageToReply?.from_user_id === loggedInUser?.id}
               memberName={memberName}
+              renderMessage={renderMessage}
             />
           </View>
           {mimeTypeInfo?.file_type === "image" && (

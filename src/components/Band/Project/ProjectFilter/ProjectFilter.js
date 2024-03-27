@@ -34,34 +34,32 @@ const ProjectFilter = ({
 
   return (
     <>
-      <View style={{ paddingTop: 4, paddingHorizontal: 16 }}>
-        <Input
-          value={formik.values.search}
-          onChangeText={(value) => {
-            handleSearch(value);
-            formik.setFieldValue("search", value);
-          }}
-          placeHolder="Search project..."
-          endAdornment={
-            <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
-              {formik.values.search && (
-                <Pressable
-                  onPress={() => {
-                    handleSearch("");
-                    formik.setFieldValue("search", "");
-                  }}
-                >
-                  <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
-                </Pressable>
-              )}
+      <Input
+        value={formik.values.search}
+        onChangeText={(value) => {
+          handleSearch(value);
+          formik.setFieldValue("search", value);
+        }}
+        placeHolder="Search project..."
+        endAdornment={
+          <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}>
+            {formik.values.search && (
+              <Pressable
+                onPress={() => {
+                  handleSearch("");
+                  formik.setFieldValue("search", "");
+                }}
+              >
+                <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
+              </Pressable>
+            )}
 
-              <TouchableOpacity onPress={() => filterSheetRef.current?.show()}>
-                <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
-              </TouchableOpacity>
-            </View>
-          }
-        />
-      </View>
+            <TouchableOpacity onPress={() => filterSheetRef.current?.show()}>
+              <MaterialCommunityIcons name="tune-variant" size={20} color="#3F434A" />
+            </TouchableOpacity>
+          </View>
+        }
+      />
 
       <ProjectFilterSheet
         reference={filterSheetRef}

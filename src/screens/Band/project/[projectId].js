@@ -30,6 +30,7 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import Description from "../../../components/Band/Project/ProjectDetail/Description";
 import Button from "../../../components/shared/Forms/Button";
 import { ErrorToastProps, SuccessToastProps, TextProps } from "../../../components/shared/CustomStylings";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 
 const ProjectDetailScreen = ({ route }) => {
   const userSelector = useSelector((state) => state.auth);
@@ -38,6 +39,7 @@ const ProjectDetailScreen = ({ route }) => {
   const { projectId } = route.params;
   const [tabValue, setTabValue] = useState("comments");
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const { isOpen: isSuccess, toggle: toggleSuccess } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle } = useDisclosure(false);
   const { isOpen: userModalIsOpen, toggle: toggleUserModal } = useDisclosure(false);
   const { isOpen: confirmationModalIsOpen, toggle: toggleConfirmationModal } = useDisclosure(false);
@@ -316,9 +318,22 @@ const ProjectDetailScreen = ({ route }) => {
         color="red.600"
         successMessage="Project deleted"
         hasSuccessFunc={true}
-        onSuccess={() => navigation.navigate("Projects")}
+        onSuccess={() => {
+          setTimeout(() => navigation.navigate("Projects"), 1000);
+        }}
         header="Delete Project"
         description="Are you sure to delete this project?"
+        showSuccessToast={false}
+        otherModal={true}
+        toggleOtherModal={toggleSuccess}
+      />
+
+      <SuccessModal
+        isOpen={isSuccess}
+        toggle={toggleSuccess}
+        title="Changes saved!"
+        description="Data has successfully deleted"
+        type="danger"
       />
     </>
   );

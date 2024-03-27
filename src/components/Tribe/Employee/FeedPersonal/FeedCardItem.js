@@ -9,6 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
+import FeedContentStyle from "../../../shared/FeedContentStyle";
 
 const FeedCardItem = ({
   id,
@@ -30,8 +31,6 @@ const FeedCardItem = ({
   setForceRerenderPersonal,
   toggleFullScreen,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   openSelectedPersonalPost,
   employeeUsername,
   toggleDeleteModal,
@@ -40,6 +39,69 @@ const FeedCardItem = ({
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
+
+  const words = content?.split(" ");
+
+  const renderActionOptions = () => (
+    <View
+      style={{
+        display: "flex",
+        gap: 21,
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        paddingBottom: -20,
+      }}
+    >
+      <View
+        style={{
+          gap: 1,
+          backgroundColor: "#F5F5F5",
+          borderRadius: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={async () => {
+            await SheetManager.hide("form-sheet");
+            toggleEditModal();
+          }}
+          style={{
+            ...styles.containerEdit,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text style={[{ fontSize: 16 }, TextProps]}>Edit</Text>
+          <MaterialCommunityIcons name="file-edit" size={20} color="#176688" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={async () => {
+            await SheetManager.hide("form-sheet");
+            toggleDeleteModal();
+          }}
+          style={{
+            ...styles.containerEdit,
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#FFFFFF",
+          }}
+        >
+          <Text
+            style={[
+              {
+                fontSize: 16,
+                fontWeight: "700",
+                color: "#EB0E29",
+              },
+            ]}
+          >
+            Delete
+          </Text>
+          <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   /**
    * Handle toggle like
@@ -56,72 +118,6 @@ const FeedCardItem = ({
     setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
-  const words = content?.split(" ");
-
-  /**
-   * Handle styled for content
-   */
-  const styledTexts = words?.map((item, index) => {
-    let textStyle = styles.defaultText;
-    let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
-    const hasTag = item.includes("<a");
-    const hasHref = item.includes("href");
-
-    if (item.includes("https")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (hasHref && specificEmployee) {
-      const specificEmployeeId = specificEmployee.id;
-      item = specificEmployee.username;
-      textStyle = styles.highlightedText;
-      return (
-        <Text
-          key={index}
-          style={textStyle}
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: specificEmployeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-            })
-          }
-        >
-          @{item}{" "}
-        </Text>
-      );
-    } else if (hasTag) {
-      item = item.replace(`<a`, "");
-      textStyle = styles.defaultText;
-      return <Text key={index}>{item}</Text>;
-    } else if (item.includes("08") || item.includes("62")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (item.includes("@") && item.includes(".com")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else {
-      textStyle = styles.defaultText;
-      return (
-        <Text key={index} style={textStyle}>
-          {item}{" "}
-        </Text>
-      );
-    }
-  });
-
   useEffect(() => {
     if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
       setLikeAction("dislike");
@@ -131,155 +127,114 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <View style={styles.container}>
-      <Pressable gap={20} style={card.card} onPress={() => navigation.navigate("Post Screen", { id: id })}>
-        <View style={styles.cardHeader}>
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
+    <TouchableOpacity
+      style={{
+        ...card.card,
+        gap: 20,
+        flexDirection: "column",
+        marginVertical: 8,
+        elevation: 1,
+      }}
+      onPress={() => navigation.navigate("Post Screen", { id: id })}
+    >
+      <View style={styles.cardHeader}>
+        <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
 
-          <View style={{ flex: 1, gap: 5 }}>
-            <View style={styles.dockName}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Text style={[{ fontSize: 14 }, TextProps]}>
-                  {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-                </Text>
-                {type === "Announcement" ? (
-                  <View
-                    style={{
-                      borderRadius: 10,
-                      backgroundColor: "#ADD7FF",
-                      padding: 5,
-                    }}
-                  >
-                    <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
-                  </View>
-                ) : null}
-              </View>
-
-              {loggedEmployeeId === employeeId && (
-                <Pressable
-                  style={{ marginRight: 1 }}
-                  onPress={async () => {
-                    await SheetManager.show("form-sheet", {
-                      payload: {
-                        children: (
-                          <View
-                            style={{
-                              display: "flex",
-                              gap: 21,
-                              paddingHorizontal: 20,
-                              paddingVertical: 16,
-                              paddingBottom: -20,
-                            }}
-                          >
-                            <View
-                              style={{
-                                gap: 1,
-                                backgroundColor: "#F5F5F5",
-                                borderRadius: 10,
-                              }}
-                            >
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  toggleEditModal();
-                                }}
-                                style={{
-                                  ...styles.containerEdit,
-                                  justifyContent: "space-between",
-                                  borderBottomWidth: 1,
-                                  borderBottomColor: "#FFFFFF",
-                                }}
-                              >
-                                <Text style={[{ fontSize: 16 }, TextProps]}>Edit</Text>
-                                <MaterialCommunityIcons name="file-edit" size={20} color="#176688" />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={async () => {
-                                  await SheetManager.hide("form-sheet");
-                                  toggleDeleteModal();
-                                }}
-                                style={{
-                                  ...styles.containerEdit,
-                                  justifyContent: "space-between",
-                                  borderBottomWidth: 1,
-                                  borderBottomColor: "#FFFFFF",
-                                }}
-                              >
-                                <Text
-                                  style={[
-                                    {
-                                      fontSize: 16,
-                                      fontWeight: "700",
-                                      color: "#EB0E29",
-                                    },
-                                  ]}
-                                >
-                                  Delete
-                                </Text>
-                                <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ),
-                      },
-                    });
-                    openSelectedPersonalPost(id);
+        <View style={{ flex: 1, gap: 5 }}>
+          <View style={styles.dockName}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <Text style={[{ fontSize: 14 }, TextProps]}>
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+              </Text>
+              {type === "Announcement" ? (
+                <View
+                  style={{
+                    borderRadius: 10,
+                    backgroundColor: "#ADD7FF",
+                    padding: 5,
                   }}
                 >
-                  <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
-                </Pressable>
-              )}
+                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+                </View>
+              ) : null}
             </View>
-            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
-          </View>
-        </View>
 
-        <Text style={[{ fontSize: 14 }, TextProps]}>{styledTexts}</Text>
-
-        {attachment ? (
-          <>
-            <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
-              <Image
-                source={{
-                  uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
+            {loggedEmployeeId === employeeId && (
+              <Pressable
+                style={{ marginRight: 1 }}
+                onPress={async () => {
+                  await SheetManager.show("form-sheet", {
+                    payload: {
+                      children: renderActionOptions(),
+                    },
+                  });
+                  openSelectedPersonalPost(id);
                 }}
-                style={styles.image}
-                alt="Feed Image"
-                resizeMethod="auto"
-                fadeDuration={0}
-              />
-            </TouchableOpacity>
-          </>
-        ) : null}
-
-        <View style={styles.dockAction}>
-          <View style={styles.iconAction}>
-            <Pressable
-              onPress={() => {
-                onCommentToggle(id);
-              }}
-            >
-              <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-            </Pressable>
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
-          </View>
-          <View style={styles.iconAction}>
-            {likeAction === "dislike" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart" size={20} color="#FD7972" />
+              >
+                <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
               </Pressable>
             )}
-            {likeAction === "like" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
-              </Pressable>
-            )}
-
-            <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
           </View>
+          <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
         </View>
-      </Pressable>
-    </View>
+      </View>
+
+      <Text style={[{ fontSize: 14 }, TextProps]}>
+        {
+          <FeedContentStyle
+            words={words}
+            employeeUsername={employeeUsername}
+            navigation={navigation}
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            handleLinkPress={handleLinkPress}
+          />
+        }
+      </Text>
+
+      {attachment ? (
+        <>
+          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+            <Image
+              source={{
+                uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
+              }}
+              style={styles.image}
+              alt="Feed Image"
+              resizeMethod="auto"
+              fadeDuration={0}
+            />
+          </TouchableOpacity>
+        </>
+      ) : null}
+
+      <View style={styles.dockAction}>
+        <View style={styles.iconAction}>
+          <Pressable
+            onPress={() => {
+              onCommentToggle(id);
+            }}
+          >
+            <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
+          </Pressable>
+          <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
+        </View>
+        <View style={styles.iconAction}>
+          {likeAction === "dislike" && (
+            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
+              <MaterialCommunityIcons name="heart" size={20} color="#FD7972" />
+            </Pressable>
+          )}
+          {likeAction === "like" && (
+            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
+              <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
+            </Pressable>
+          )}
+
+          <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -292,12 +247,7 @@ const styles = StyleSheet.create({
   highlightedText: {
     color: "#72acdc",
   },
-  container: {
-    flexDirection: "column",
-    marginVertical: 5,
-    marginVertical: 14,
-    marginBottom: 2,
-  },
+
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",

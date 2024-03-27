@@ -2,8 +2,9 @@ import React from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Linking, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -12,6 +13,10 @@ import PerformanceResultDetailList from "../../../../components/Tribe/Performanc
 import KPIResultDetailItem from "../../../../components/Tribe/Performance/Result/KPIResultDetailItem";
 import AppraisalResultDetailItem from "../../../../components/Tribe/Performance/Result/AppraisalResultDetailItem";
 import ConclusionResultDetailItem from "../../../../components/Tribe/Performance/Result/ConclusionResultDetailItem";
+import axiosInstance from "../../../../config/api";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import Button from "../../../../components/shared/Forms/Button";
+import { useLoading } from "../../../../hooks/useLoading";
 
 const PerformanceResultScreen = () => {
   const navigation = useNavigation();
@@ -20,8 +25,23 @@ const PerformanceResultScreen = () => {
 
   const { id, type } = route.params;
 
+  const { toggle, isLoading } = useLoading(false);
+
   const { data: comment } = useFetch(`/hr/performance-result/personal/${id}`);
   const { data: teamComment } = useFetch(`/hr/performance-result/my-team/${id}`);
+
+  const exportPdfHandler = async (setSubmitting, setStatus) => {
+    toggle();
+    try {
+      const res = await axiosInstance.get(`/hr/performance-result/${id}/download`);
+      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${res.data?.data}`);
+      toggle();
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+      toggle();
+    }
+  };
 
   return (
     <>
@@ -39,6 +59,21 @@ const PerformanceResultScreen = () => {
               navigation.goBack();
             }}
           />
+          <Button height={35} padding={10} onPress={() => exportPdfHandler()} disabled={isLoading}>
+            {!isLoading ? (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: "#FFFFFF",
+                }}
+              >
+                Download as PDF
+              </Text>
+            ) : (
+              <ActivityIndicator />
+            )}
+          </Button>
         </View>
 
         <PerformanceResultDetailList

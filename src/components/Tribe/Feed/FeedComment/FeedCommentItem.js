@@ -7,6 +7,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import { TextProps } from "../../../shared/CustomStylings";
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import FeedCommentReplyItem from "./FeedCommentReplyItem";
+import FeedContentStyle from "../../../shared/FeedContentStyle";
 
 const FeedCommentItem = ({
   postId,
@@ -17,73 +18,18 @@ const FeedCommentItem = ({
   onReply,
   comments,
   handleLinkPress,
-  handleEmailPress,
-  copyToClipboard,
   employeeUsername,
 }) => {
   const [viewReplyToggle, setViewReplyToggle] = useState(false);
   const [hideReplies, setHideReplies] = useState(false);
+
+  const words = comments.split(" ");
 
   const {
     data: commentRepliesData,
     isFetching: commentRepliesDataIsFetching,
     refetch: refetchCommentRepliesData,
   } = useFetch(parentId && `/hr/posts/${postId}/comment/${parentId}/replies`);
-
-  const words = comments.split(" ");
-
-  /**
-   * Handle styled for content
-   */
-  const styledTexts = words?.map((item, index) => {
-    let textStyle = styles.defaultText;
-    let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
-    const hasTag = item.includes("<a");
-    const hasHref = item.includes("href");
-    if (item.includes("https")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (hasHref && specificEmployee) {
-      const specificEmployeeId = specificEmployee.id;
-      item = specificEmployee.username;
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle}>
-          @{item}{" "}
-        </Text>
-      );
-    } else if (hasTag) {
-      item = item.replace(`<a`, "");
-      textStyle = styles.defaultText;
-      return <Text key={index}>{item}</Text>;
-    } else if (item.includes("08") || item.includes("62")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => copyToClipboard(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (item.includes("@") && item.includes(".com")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleEmailPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else {
-      textStyle = styles.defaultText;
-      return (
-        <Text key={index} style={textStyle}>
-          {item}{" "}
-        </Text>
-      );
-    }
-  });
 
   return (
     <View style={{ gap: 3 }}>
@@ -96,7 +42,18 @@ const FeedCommentItem = ({
             <Text style={{ fontSize: 12, fontWeight: "500" }}>
               {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
             </Text>
-            <Text style={[{ fontSize: 12 }, TextProps]}>{styledTexts}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>
+              {
+                <FeedContentStyle
+                  words={words}
+                  employeeUsername={employeeUsername}
+                  navigation={null}
+                  loggedEmployeeId={null}
+                  loggedEmployeeImage={null}
+                  handleLinkPress={handleLinkPress}
+                />
+              }
+            </Text>
 
             <Text onPress={() => onReply(parentId)} style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
               Reply
@@ -156,9 +113,7 @@ const FeedCommentItem = ({
                     totalReplies={item?.total_replies}
                     parentId={parentId}
                     onReply={onReply}
-                    handleEmailPress={handleEmailPress}
                     handleLinkPress={handleLinkPress}
-                    copyToClipboard={copyToClipboard}
                     employeeUsername={employeeUsername}
                   />
                 )}

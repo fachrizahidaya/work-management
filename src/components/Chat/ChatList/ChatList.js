@@ -1,8 +1,8 @@
-import { useCallback, useState, memo, useRef } from "react";
+import { useCallback, memo } from "react";
 import dayjs from "dayjs";
 
 import { FlashList } from "@shopify/flash-list";
-import { ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 import ChatBubble from "../ChatBubble/ChatBubble";
 import ChatMessageTimeStamp from "../ChatMessageTimeStamp/ChatMessageTimeStamp";
@@ -27,11 +27,9 @@ const ChatList = ({
   userSelector,
   navigation,
   filteredSearch,
+  hasBeenScrolled,
+  setHasBeenScrolled,
 }) => {
-  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-
-  const scrollRef = useRef(null)
-
   /**
    * Decide when username should be rendered at
    */
@@ -78,10 +76,10 @@ const ChatList = ({
   );
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "#F8F8F8" }}>
       <FlashList
-      showsVerticalScrollIndicator={false}
-      inverted
+        showsVerticalScrollIndicator={false}
+        inverted
         ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
@@ -127,7 +125,6 @@ const ChatList = ({
               memberName={memberName}
               userSelector={userSelector}
               navigation={navigation}
-              simultaneousHandlers={scrollRef}
             />
           </>
         )}
@@ -150,7 +147,7 @@ const ChatList = ({
           setBandAttachment={setBandAttachment}
         />
       )}
-    </>
+    </View>
   );
 };
 

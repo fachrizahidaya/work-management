@@ -22,10 +22,11 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          borderBottomColor: "#cbcbcb",
-          borderBottomWidth: 1,
           paddingVertical: 8,
           paddingHorizontal: 16,
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          marginTop: 10,
         }}
       >
         <View style={{ display: "flex", gap: 1 }}>

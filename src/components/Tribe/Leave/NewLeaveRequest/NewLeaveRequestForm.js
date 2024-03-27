@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { View, Text, ActivityIndicator } from "react-native";
 
 import Input from "../../../shared/Forms/Input";
@@ -20,9 +18,8 @@ const NewLeaveRequestForm = ({
   inputToShow,
   setInputToShow,
   setSearchInput,
+  startDateMore,
 }) => {
-  const [selectedValue, setSelectedValue] = useState(null);
-
   return (
     <View style={{ gap: 20 }}>
       <SelectWithSearch
@@ -35,8 +32,6 @@ const NewLeaveRequestForm = ({
         fieldName="leave_id"
         onChange={(value) => {
           formik.setFieldValue("leave_id", value);
-          const selectedLeave = leaveType.find((item) => item.value === value);
-          setSelectedValue(selectedLeave ? selectedLeave.value : null);
         }}
         key="leave_id"
         inputToShow={inputToShow}
@@ -86,12 +81,13 @@ const NewLeaveRequestForm = ({
       formik.values.begin_date &&
       formik.values.end_date &&
       !isLoading &&
-      !isError ? (
-        <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit}>
+      !isError &&
+      !startDateMore ? (
+        <FormButton isSubmitting={formik.isSubmitting} disabled={false} onPress={formik.handleSubmit}>
           <Text style={{ color: "#FFFFFF" }}>Submit</Text>
         </FormButton>
       ) : (
-        <FormButton opacity={0.5}>
+        <FormButton opacity={0.5} isSubmitting={null} disabled={true} onPress={null}>
           <Text style={{ color: "#FFFFFF" }}>Submit</Text>
         </FormButton>
       )}

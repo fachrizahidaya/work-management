@@ -31,6 +31,7 @@ const AttendanceScreen = () => {
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
   const [deleteAttendanceAttachment, setDeleteAttendanceAttachment] = useState(false);
+  const [requestType, setRequestType] = useState("");
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
@@ -55,54 +56,32 @@ const AttendanceScreen = () => {
   const {
     data: attachment,
     isFetching: attachmentIsFetching,
-    isLoading: attachmentIsLoading,
     refetch: refetchAttachment,
   } = useFetch(`/hr/timesheets/personal/attachments`, [filter], attendanceFetchParameters);
 
   /**
    * Handle attendance status by day
    */
-  const allGood = {
-    key: "allGood",
-    color: "#EDEDED",
-    name: "All Good",
-    textColor: "#000000",
-  };
-  const reportRequired = {
-    key: "reportRequired",
-    color: "#FDC500",
-    name: "Report Required",
-    textColor: "#FFFFFF",
-  };
-  const submittedReport = {
-    key: "submittedReport",
-    color: "#186688",
-    name: "Submitted Report",
-    textColor: "#FFFFFF",
-  };
-  const dayOff = {
-    key: "dayOff",
-    color: "#3bc14a",
-    name: "Day-off",
-    textColor: "#FFFFFF",
-  };
-  const sick = {
-    key: "sick",
-    color: "#d6293a",
-    name: "Sick",
-    textColor: "#FFFFFF",
-  };
+  const statusTypes = [
+    { key: "allGood", color: "#EDEDED", name: "All Good", textColor: "#000000" },
+    { key: "reportRequired", color: "#FDC500", name: "Report Required", textColor: "#FFFFFF" },
+    { key: "submittedReport", color: "#186688", name: "Submitted Report", textColor: "#FFFFFF" },
+    { key: "dayOff", color: "#3bc14a", name: "Day-off", textColor: "#FFFFFF" },
+    { key: "sick", color: "#d6293a", name: "Sick", textColor: "#FFFFFF" },
+  ];
+  const [allGood, reportRequired, submittedReport, dayOff, sick] = statusTypes;
 
   /**
    * Handle attendance for form report by day
    */
   const isWorkDay = date?.dayType === "Work Day";
+  const attendanceType = date?.attendanceType;
   const hasClockInAndOut =
     isWorkDay &&
     !date?.lateType &&
     !date?.earlyType &&
     date?.timeIn &&
-    (date?.attendanceType !== "Permit" || date?.attendanceType !== "Leave" || date?.attendanceType !== "Alpa");
+    !["Permit", "Leave", "Alpa"].includes(attendanceType);
   const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
   const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
@@ -114,18 +93,9 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    (date?.attendanceType === "Alpa" ||
-      date?.attendanceType === "Permit" ||
-      date?.attendanceType === "Sick" ||
-      date?.attendanceType === "Other") &&
-    date?.attendanceReason &&
-    date?.dayType === "Work Day";
-  const notAttend =
-    date?.attendanceType === "Alpa" &&
-    date?.dayType === "Work Day" &&
-    date?.date !== currentDate &&
-    !date?.attendanceReason;
-  const isLeave = date?.attendanceType === "Work Day" && date?.attendanceType === "Leave";
+    ["Alpa", "Permit", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
+  const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
+  const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 
   /**
    *  Handle switch month on calendar
@@ -138,7 +108,7 @@ const AttendanceScreen = () => {
    * Handle switch month on calendar
    * @param {*} newMonth
    */
-  const handleMonthChange = useCallback((newMonth) => {
+  const monthChangeHandler = useCallback((newMonth) => {
     switchMonthHandler(newMonth);
   }, []);
 
@@ -209,7 +179,7 @@ const AttendanceScreen = () => {
   /**
    * Handle select file for attendance attachment
    */
-  const selectFile = async () => {
+  const selectFileHandler = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: false,
@@ -244,12 +214,11 @@ const AttendanceScreen = () => {
   const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
     try {
       await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
-      // attendanceScreenSheetRef.current?.hide();
       refetchAttendanceData();
       setSubmitting(false);
       setStatus("success");
       toggleAttendanceReportModal();
-      // Toast.show("Report submitted", SuccessToastProps);
+      setRequestType("info");
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -272,7 +241,7 @@ const AttendanceScreen = () => {
       });
       refetchAttachment();
       toggleAttendanceAttachmentModal();
-      // Toast.show("Attachment submitted", SuccessToastProps);
+      setRequestType("info");
       setStatus("success");
       setSubmitting(false);
     } catch (err) {
@@ -288,91 +257,76 @@ const AttendanceScreen = () => {
    */
   const renderCalendarWithMultiDotMarking = () => {
     const markedDates = {};
+
     for (const date in items) {
       if (items.hasOwnProperty(date)) {
         const events = items[date];
-        var customStyles = {};
+        const customStyles = {};
+
         events.forEach((event) => {
           let backgroundColor = "";
           let textColor = "";
+          const {
+            attendanceType,
+            dayType,
+            early,
+            late,
+            confirmation,
+            earlyReason,
+            lateReason,
+            earlyType,
+            lateType,
+            earlyStatus,
+            lateStatus,
+            attendanceReason,
+            timeIn,
+            timeOut,
+          } = event;
 
-          if (
-            (event?.dayType === "Work Day" && event?.attendanceType === "Leave") ||
-            event?.dayType === "Weekend" ||
-            event?.dayType === "Holiday"
-          ) {
+          if (attendanceType === "Leave" || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off") {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
-            (event?.dayType === "Work Day" && event?.early && !event?.earlyReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" && event?.late && !event?.lateReason && !event?.confirmation) ||
-            (event?.dayType === "Work Day" &&
-              event?.attendanceType === "Alpa" &&
-              !event?.attendanceReason &&
-              event?.date !== currentDate)
+            (early && !earlyReason && !confirmation) ||
+            (late && !lateReason && !confirmation) ||
+            (attendanceType === "Alpa" && !attendanceReason && date !== currentDate)
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;
           } else if (
-            (event?.dayType === "Work Day" &&
-              event?.early &&
-              event?.earlyReason &&
-              event?.attendanceType === "Attend" &&
-              !event?.confirmation) ||
-            (event?.dayType === "Work Day" &&
-              event?.late &&
-              event?.lateReason &&
-              event?.attendanceType === "Attend" &&
-              !event?.confirmation) ||
-            (event?.late && event?.lateReason && event?.earlyType && !event?.earlyReason && !event?.earlyStatus) ||
-            (event?.early && event?.earlyReason && event?.lateType && !event?.lateReason && !event?.lateStatus) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Permit" && event?.attendanceReason) ||
-            (event?.dayType === "Work Day" && event?.attendanceType === "Alpa" && event?.attendanceReason) ||
-            (event?.attendanceType === "Other" &&
-              event?.attendanceReason &&
-              !event?.confirmation &&
-              event?.date !== currentDate)
+            (((early && earlyReason) || (late && lateReason)) && !confirmation) ||
+            (late && lateReason && earlyType && !earlyReason && !earlyStatus) ||
+            (early && earlyReason && lateType && !lateReason && !lateStatus) ||
+            (attendanceType === "Permit" && attendanceReason) ||
+            (attendanceType === "Alpa" && attendanceReason) ||
+            (attendanceType === "Other" && attendanceReason && !confirmation && date !== currentDate)
           ) {
             backgroundColor = submittedReport.color;
             textColor = submittedReport.textColor;
-          } else if (event?.dayType === "Work Day" && event?.attendanceType === "Sick" && event?.attendanceReason) {
+          } else if (attendanceType === "Sick" && attendanceReason) {
             backgroundColor = sick.color;
             textColor = sick.textColor;
           } else if (
-            (event?.confirmation && event?.dayType === "Work Day") ||
-            (!event?.confirmation &&
-              event?.dayType === "Work Day" &&
-              event?.attendanceType === "Alpa" &&
-              !event?.timeIn) ||
-            (!event?.confirmation &&
-              event?.dayType === "Work Day" &&
-              event?.attendanceType === "Attend" &&
-              event?.timeIn &&
-              event?.timeOut) ||
-            (!event?.confirmation &&
-              event?.dayType === "Work Day" &&
-              event?.attendanceType === "Attend" &&
-              event?.timeIn &&
-              !event?.timeOut) ||
-            (!event?.confirmation &&
-              event?.dayType === "Work Day" &&
-              event?.attendanceType === "Alpa" &&
-              !event?.timeIn &&
-              !event?.timeOut)
+            confirmation ||
+            dayType === "Work Day" ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Alpa" && !timeIn) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Attend" && timeIn && timeOut) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Attend" && timeIn && !timeOut) ||
+            (!confirmation && dayType === "Work Day" && attendanceType === "Alpa" && !timeIn && !timeOut)
           ) {
             backgroundColor = allGood.color;
             textColor = allGood.textColor;
           }
-          customStyles = {
-            container: {
-              backgroundColor: backgroundColor,
-              borderRadius: 5,
-            },
-            text: {
-              color: textColor,
-            },
+
+          customStyles.container = {
+            backgroundColor: backgroundColor,
+            borderRadius: 5,
+          };
+          customStyles.text = {
+            color: textColor,
           };
         });
+
         markedDates[date] = { customStyles };
       }
     }
@@ -383,9 +337,9 @@ const AttendanceScreen = () => {
           onDayPress={updateAttendanceCheckAccess && toggleDateHandler}
           style={styles.calendar}
           current={currentDate}
-          markingType={"custom"}
+          markingType="custom"
           markedDates={markedDates}
-          onMonthChange={(date) => handleMonthChange(date)}
+          onMonthChange={monthChangeHandler}
           theme={{
             arrowColor: "black",
             "stylesheet.calendar.header": {
@@ -409,8 +363,8 @@ const AttendanceScreen = () => {
             <RefreshControl
               refreshing={attendanceDataIsFetching && attachmentIsFetching}
               onRefresh={() => {
-                refetchAttendanceData;
-                refetchAttachment;
+                refetchAttendanceData();
+                refetchAttachment();
               }}
             />
           }
@@ -446,16 +400,18 @@ const AttendanceScreen = () => {
         reference={attendanceScreenSheetRef}
         attendanceReportModalIsOpen={attendanceReportModalIsOpen}
         toggleAttendanceReportModal={toggleAttendanceReportModal}
+        requestType={requestType}
       />
 
       <AddAttendanceAttachment
-        onSelectFile={selectFile}
+        onSelectFile={selectFileHandler}
         fileAttachment={fileAttachment}
         setFileAttachment={setFileAttachment}
         onSubmit={attachmentSubmitHandler}
         reference={attachmentScreenSheetRef}
         attendanceAttachmentModalIsOpen={attendanceAttachmentModalIsOpen}
         toggleAttendanceAttachmentModal={toggleAttendanceAttachmentModal}
+        requestType={requestType}
       />
 
       <ConfirmationModal
@@ -468,9 +424,9 @@ const AttendanceScreen = () => {
         hasSuccessFunc={true}
         onSuccess={() => {
           setDeleteAttendanceAttachment(true);
+          setRequestType("danger");
           refetchAttachment();
         }}
-        otherModal={true}
         toggleOtherModal={toggleSuccessDeleteModal}
         successStatus={deleteAttendanceAttachment}
         showSuccessToast={false}
@@ -479,17 +435,9 @@ const AttendanceScreen = () => {
       <SuccessModal
         isOpen={successDeleteModalIsOpen}
         toggle={toggleSuccessDeleteModal}
-        onSuccess={setDeleteAttendanceAttachment}
-        multipleModal={true}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Changes </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>saved!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Data has successfully deleted</Text>
-        }
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully deleted"
       />
     </>
   );

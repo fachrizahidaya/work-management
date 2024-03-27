@@ -12,6 +12,7 @@ dayjs.extend(isBetween);
 
 const ChatMessageTimeStamp = ({ timestamp }) => {
   const [currentTimeStamp, setCurrentTimeStamp] = useState(null);
+
   const currentDay = dayjs();
   const startOfWeek = currentDay.clone().subtract(7, "d");
 

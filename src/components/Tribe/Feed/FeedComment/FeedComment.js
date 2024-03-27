@@ -1,16 +1,12 @@
-import { useState, useCallback, memo } from "react";
-import { useFormik } from "formik";
+import { useState, memo } from "react";
 
-import { Clipboard, Linking, StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
-import { replaceMentionValues } from "react-native-controlled-mentions";
-import { FlashList } from "@shopify/flash-list";
 
 import FeedCommentList from "./FeedCommentList";
 import FeedCommentForm from "./FeedCommentForm";
 
 const FeedComment = ({
-  postId,
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
@@ -21,119 +17,15 @@ const FeedComment = ({
   onEndReached,
   commentRefetchHandler,
   parentId,
-  onSubmit,
   onReply,
   employeeUsername,
-  employees,
   reference,
+  onPressLink,
+  onSuggestions,
+  commentContainUsernameHandler,
+  formik,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-
-  /**
-   * Handle show username suggestion option
-   */
-  const employeeData = employees?.map(({ id, username }) => ({
-    id,
-    name: username,
-  }));
-
-  /**
-   * Handle show suggestion username
-   * @param {*} param0
-   * @returns
-   */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
-    if (keyword == null || keyword === "@@" || keyword === "@#") {
-      return null;
-    }
-    const data = employeeData.filter((one) => one.name.toLowerCase().includes(keyword.toLowerCase()));
-
-    return (
-      <ScrollView style={{ maxHeight: 100 }}>
-        <FlashList
-          data={data}
-          onEndReachedThreshold={0.1}
-          keyExtractor={(item, index) => index}
-          estimatedItemSize={200}
-          renderItem={({ item, index }) => (
-            <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "400" }}>{item.name}</Text>
-            </Pressable>
-          )}
-        />
-      </ScrollView>
-    );
-  };
-
-  /**
-   * Handle adjust the content if there is username
-   * @param {*} value
-   */
-  const handleChange = (value) => {
-    formik.handleChange("comments")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue.split(" ").pop();
-    setSuggestions(employees.filter((employee) => employee.name.toLowerCase().includes(lastWord.toLowerCase())));
-  };
-
-  /**
-   * Handle create a new comment
-   */
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      post_id: postId || "",
-      comments: "",
-      parent_id: parentId || "",
-    },
-    // validationSchema: yup.object().shape({
-    //   comments: yup.string().required("Comments is required"),
-    // }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
-      setStatus("processing");
-      const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
-      const modifiedContent = values.comments.replace(mentionRegex, "@$1");
-      values.comments = modifiedContent;
-      onSubmit(values, setSubmitting, setStatus);
-    },
-  });
-
-  /**
-   * Handle press link
-   */
-  const handleLinkPress = useCallback((url) => {
-    Linking.openURL(url);
-  }, []);
-
-  /**
-   * Handle press email
-   */
-  const handleEmailPress = useCallback((email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  /**
-   * Handle copy to clipboard
-   * @param {*} text
-   */
-  const copyToClipboard = (text) => {
-    try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
-      } else {
-        Clipboard.setString(text);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <ActionSheet
@@ -147,6 +39,7 @@ const FeedComment = ({
           <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
         </View>
       </View>
+
       <View
         style={{
           gap: 21,
@@ -165,9 +58,7 @@ const FeedComment = ({
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
           refetchComment={refetchComment}
-          handleLinkPress={handleLinkPress}
-          handleEmailPress={handleEmailPress}
-          copyToClipboard={copyToClipboard}
+          handleLinkPress={onPressLink}
           employeeUsername={employeeUsername}
         />
       </View>
@@ -175,8 +66,8 @@ const FeedComment = ({
         loggedEmployeeImage={loggedEmployeeImage}
         loggedEmployeeName={loggedEmployeeName}
         parentId={parentId}
-        renderSuggestions={renderSuggestions}
-        handleChange={handleChange}
+        renderSuggestions={onSuggestions}
+        handleChange={commentContainUsernameHandler}
         formik={formik}
       />
     </ActionSheet>

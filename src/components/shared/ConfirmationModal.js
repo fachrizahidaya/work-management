@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import Toast from "react-native-root-toast";
 
@@ -23,11 +23,11 @@ const ConfirmationModal = ({
   isDelete = true,
   isPatch = false,
   isGet = false,
-  otherModal,
   toggleOtherModal,
-  successStatus,
   showSuccessToast = true,
 }) => {
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -50,10 +50,9 @@ const ConfirmationModal = ({
       }
       toggle();
       toggleIsDeleting();
+
       if (showSuccessToast) {
         Toast.show(successMessage, SuccessToastProps);
-      } else {
-        null;
       }
 
       // If hasSuccessFunc passed then run the available onSuccess function
@@ -75,11 +74,7 @@ const ConfirmationModal = ({
       hideModalContentWhileAnimating={true}
       useNativeDriver={false}
       onModalHide={() => {
-        if (otherModal && successStatus) {
-          toggleOtherModal();
-        } else {
-          null;
-        }
+        showSuccessModal && toggleOtherModal();
       }}
     >
       <View
@@ -107,7 +102,10 @@ const ConfirmationModal = ({
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
           <Button
             disabled={isDeleting}
-            onPress={!isDeleting && toggle}
+            onPress={() => {
+              !isDeleting && toggle();
+              !isDeleting && setShowSuccessModal(false);
+            }}
             flex={1}
             variant="outline"
             backgroundColor="#FD7972"
@@ -117,7 +115,10 @@ const ConfirmationModal = ({
 
           <Button
             bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
-            onPress={onPressHandler}
+            onPress={() => {
+              onPressHandler();
+              setShowSuccessModal(true);
+            }}
             startIcon={isDeleting && <ActivityIndicator />}
             flex={1}
           >

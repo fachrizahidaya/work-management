@@ -18,7 +18,6 @@ const AppraisalDetailItem = ({
   choice_e,
   handleOpen,
   employeeAppraisalValue,
-  status,
 }) => {
   return (
     <Pressable
@@ -32,11 +31,7 @@ const AppraisalDetailItem = ({
         gap: 10,
       }}
       onPress={() => {
-        if (status === "ongoing") {
-          handleOpen(item, employeeAppraisalValue);
-        } else {
-          null;
-        }
+        handleOpen(item, employeeAppraisalValue);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

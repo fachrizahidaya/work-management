@@ -12,8 +12,8 @@ import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
-import AvatarPlaceholder from "../../../components/shared/AvatarPlaceholder";
+import { TextProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import SelectedUserList from "../../../components/Chat/UserSelection/SelectedUserList";
 
 const AddGroupParticipantScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,13 +100,7 @@ const AddGroupParticipantScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, gap: 5 }}>
-        <View
-          style={{
-            justifyContent: "space-between",
-            paddingHorizontal: 16,
-            paddingVertical: 14,
-          }}
-        >
+        <View style={styles.header}>
           <View>
             <PageHeader title="Add Group Participant" onPress={() => navigation.goBack()} />
             <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>Add participants</Text>
@@ -129,34 +123,10 @@ const AddGroupParticipantScreen = () => {
               setInputToShow("");
             }}
           />
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
+          <View style={styles.selectedList}>
             {selectedUsers?.length > 0 &&
-              selectedUsers?.map((user) => {
-                return (
-                  <View
-                    key={user.id}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      padding: 5,
-                      backgroundColor: "#F5F5F5",
-                      borderRadius: 15,
-                      gap: 5,
-                    }}
-                  >
-                    <AvatarPlaceholder name={user.name} image={user.image} isThumb={false} size="xs" />
-                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                      {user.name.length > 8 ? user.name.slice(0, 8) + "..." : user.name}
-                    </Text>
-                  </View>
-                );
+              selectedUsers?.map((user, index) => {
+                return <SelectedUserList key={index} name={user?.name} id={user?.id} image={user?.image} />;
               })}
           </View>
 
@@ -193,21 +163,7 @@ const AddGroupParticipantScreen = () => {
           />
         </View>
       </View>
-
-      <Pressable
-        style={{
-          position: "absolute",
-          right: 10,
-          bottom: 30,
-          padding: 15,
-          borderRadius: 30,
-          borderWidth: 3,
-          borderColor: "#FFFFFF",
-          backgroundColor: "#176688",
-          shadowOffset: 0,
-        }}
-        onPress={onPressAddHandler}
-      >
+      <Pressable style={styles.addButton} onPress={onPressAddHandler}>
         <MaterialCommunityIcons name="arrow-right" size={25} color="#FFFFFF" />
       </Pressable>
     </SafeAreaView>
@@ -220,5 +176,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  header: {
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  selectedList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 5,
+  },
+  addButton: {
+    position: "absolute",
+    right: 10,
+    bottom: 30,
+    padding: 15,
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    backgroundColor: "#176688",
+    shadowOffset: 0,
   },
 });

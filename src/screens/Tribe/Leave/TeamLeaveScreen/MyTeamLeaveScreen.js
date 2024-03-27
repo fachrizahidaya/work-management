@@ -1,19 +1,20 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import axiosInstance from "../../../../config/api";
-import MyTeamLeaveRequestList from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequestList";
-import { ErrorToastProps, SuccessToastProps } from "../../../../components/shared/CustomStylings";
+import MyTeamLeaveRequest from "../../../../components/Tribe/Leave/TeamLeaveRequest/MyTeamLeaveRequest";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 
 const MyTeamLeaveScreen = () => {
   const [isReady, setIsReady] = useState(false);
+  const [requestType, setRequestType] = useState("");
   const [hasBeenScrolledPending, setHasBeenScrolledPending] = useState(false);
   const [hasBeenScrolledApproved, setHasBeenScrolledApproved] = useState(false);
   const [hasBeenScrolledRejected, setHasBeenScrolledRejected] = useState(false);
@@ -30,8 +31,7 @@ const MyTeamLeaveScreen = () => {
 
   const navigation = useNavigation();
 
-  const { isOpen: approvalModalIsOpen, toggle: toggleApprovalModal } = useDisclosure(false);
-  const { isOpen: rejectionModalIsOpen, toggle: toggleRejectionModal } = useDisclosure(false);
+  const { isOpen: responseModalIsOpen, toggle: toggleResponseModal } = useDisclosure(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
@@ -86,39 +86,30 @@ const MyTeamLeaveScreen = () => {
 
   const { data: teamLeaveRequest, refetch: refetchTeamLeaveRequest } = useFetch("/hr/leave-requests/my-team");
 
-  /**
-   * Handle total of leave status
-   */
-  const pending =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Pending";
-    }) || [];
-  const approved =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Approved";
-    }) || [];
-  const rejected =
-    teamLeaveRequest?.data?.filter((item) => {
-      return item.status === "Rejected";
-    }) || [];
-
   const tabs = useMemo(() => {
     return [
-      { title: `Waiting Approval (${pending?.length})`, value: "Pending" },
-      { title: `Approved (${approved?.length})`, value: "Approved" },
-      { title: `Rejected (${rejected?.length})`, value: "Rejected" },
+      { title: `Waiting Approval`, value: "Pending" },
+      { title: `Approved`, value: "Approved" },
+      { title: `Rejected`, value: "Rejected" },
     ];
-  }, [teamLeaveRequest, pending, approved, rejected]);
+  }, [teamLeaveRequest]);
 
-  const onChangeTab = useCallback((value) => {
+  const onChangeTab = (value) => {
     setTabValue(value);
-    setPendingList([]);
-    setApprovedList([]);
-    setRejectedList([]);
-    setCurrentPagePending(1);
-    setCurrentPageApproved(1);
-    setCurrentPageRejected(1);
-  }, []);
+    if (tabValue === "Pending") {
+      setApprovedList([]);
+      setRejectedList([]);
+      setCurrentPagePending(1);
+    } else if (tabValue === "Approved") {
+      setPendingList([]);
+      setRejectedList([]);
+      setCurrentPageApproved(1);
+    } else {
+      setPendingList([]);
+      setApprovedList([]);
+      setCurrentPageRejected(1);
+    }
+  };
 
   /**
    * Handle fetch more leave by status
@@ -155,12 +146,12 @@ const MyTeamLeaveScreen = () => {
       setStatus("success");
       refetchPendingLeaveRequest();
       refetchTeamLeaveRequest();
+      toggleResponseModal();
       if (data.status === "Approved") {
-        toggleApprovalModal();
+        setRequestType("success");
       } else {
-        toggleRejectionModal();
+        setRequestType("danger");
       }
-      // Toast.show(data.status === "Approved" ? "Request Approved" : "Request Rejected", SuccessToastProps);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -202,7 +193,7 @@ const MyTeamLeaveScreen = () => {
               <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
             </View>
 
-            <MyTeamLeaveRequestList
+            <MyTeamLeaveRequest
               pendingLeaveRequests={pendingList}
               approvedLeaveRequests={approvedList}
               rejectedLeaveRequests={rejectedList}
@@ -234,31 +225,12 @@ const MyTeamLeaveScreen = () => {
         ) : null}
       </SafeAreaView>
       <SuccessModal
-        isOpen={approvalModalIsOpen}
-        toggle={toggleApprovalModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#46D590", fontSize: 16, fontWeight: "500" }}>Approval </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>confirmed!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>Thank you for your prompt action</Text>
-        }
-      />
-      <SuccessModal
-        isOpen={rejectionModalIsOpen}
-        toggle={toggleRejectionModal}
-        topElement={
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ color: "#FF7272", fontSize: 16, fontWeight: "500" }}>Decline </Text>
-            <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>with thanks!</Text>
-          </View>
-        }
-        bottomElement={
-          <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>
-            Requester will be notified of the decline
-          </Text>
+        isOpen={responseModalIsOpen}
+        toggle={toggleResponseModal}
+        type={requestType}
+        title={requestType === "success" ? "Approval confirmed!" : "Decline with thanks!"}
+        description={
+          requestType === "success" ? "Thank you for your prompt action" : "Requester will be notified of the decline"
         }
       />
     </>

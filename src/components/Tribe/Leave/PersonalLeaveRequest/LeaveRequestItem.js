@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -18,26 +18,13 @@ const LeaveRequestItem = ({
   item,
   onSelect,
   approval_by,
+  supervisor_name,
 }) => {
   return (
     <View
       key={id}
       style={{
-        backgroundColor: "#ffffff",
-        paddingVertical: 18,
-        paddingHorizontal: 16,
-        borderRadius: 15,
-        flexDirection: "column",
-        marginVertical: 5,
-        gap: 10,
-        elevation: 3,
-        shadowColor: "rgba(0, 0, 0, 1)",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        marginTop: 4,
-        marginBottom: 4,
-        marginHorizontal: 2,
+        ...styles.container,
       }}
     >
       <View
@@ -98,52 +85,40 @@ const LeaveRequestItem = ({
       </View>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 5,
+          flex: 1,
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
-        </View>
+        <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
       </View>
       <View
         style={{
           flexDirection: "row",
-          alignItems: "flex-end",
+          alignItems: "center",
           justifyContent: "space-between",
+          flex: 1,
         }}
       >
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 5,
-            padding: 5,
-            borderRadius: 10,
-            backgroundColor: "#F8F8F8",
+            ...styles.time,
           }}
         >
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
           <Text
             style={{
-              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontSize: 10,
               fontWeight: "400",
               color: "#595F69",
             }}
           >
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} •
           </Text>
-          <Text style={[{ fontSize: Platform.OS === "android" ? 12 : 10 }, TextProps]}>
-            {days > 1 ? `${days} days` : `${days} day`}
-          </Text>
+          <Text style={[{ fontSize: 10 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
         </View>
         {status === "Pending" ? (
           <Text
             style={{
-              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontSize: 10,
               fontWeight: "400",
               color: "#377893",
               width: "30%",
@@ -157,15 +132,15 @@ const LeaveRequestItem = ({
         ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
           <Text
             style={{
-              fontSize: Platform.OS === "android" ? 12 : 10,
+              fontSize: 10,
               fontWeight: "400",
               color: "#377893",
-              width: "25%",
+              width: "20%",
               textAlign: "right",
             }}
             numberOfLines={2}
           >
-            {status} by {approval_by}
+            {status} by {approval_by || supervisor_name}
           </Text>
         ) : null}
       </View>
@@ -176,7 +151,7 @@ const LeaveRequestItem = ({
 export default LeaveRequestItem;
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -184,5 +159,29 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+  },
+  container: {
+    flexDirection: "column",
+    backgroundColor: "#ffffff",
+    gap: 10,
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginVertical: 8,
+    marginHorizontal: 2,
+    elevation: 4,
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  time: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 5,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: "#F8F8F8",
   },
 });

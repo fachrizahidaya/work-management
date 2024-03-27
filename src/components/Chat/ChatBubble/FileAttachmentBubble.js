@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-
-import { View, Text, Pressable, Image, Linking } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -10,47 +8,19 @@ const ppt = "../../../assets/doc-icons/ppt-format.png";
 const xls = "../../../assets/doc-icons/xls-format.png";
 const txt = "../../../assets/doc-icons/other-format.png";
 
-const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMessage }) => {
-  const [fileImage, setFileImage] = useState("");
-  const fileDict = [
-    { type: "docx", image: doc },
-    { type: "xlsx", image: xls },
-    { type: "pptx", image: ppt },
-    { type: "doc", image: doc },
-    { type: "xls", image: xls },
-    { type: "ppt", image: ppt },
-    { type: "pdf", image: pdf },
-    { type: "txt", image: txt },
-  ];
-
-  const getFileExt = () => {
-    const typeArr = file_type.split("/");
-    return typeArr.pop();
-  };
-
-  let extension = getFileExt();
-
-  const getFileImage = () => {
-    const type = getFileExt();
-    const fileDictObj = fileDict.find((obj) => obj.type == type);
-    if (fileDictObj) return setFileImage(fileDictObj.image);
-  };
-
-  const attachmentDownloadHandler = async (file_path) => {
-    try {
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getFileImage();
-  }, [file_type]);
-
+const FileAttachmentBubble = ({
+  file_type,
+  file_name,
+  file_path,
+  file_size,
+  myMessage,
+  getFileExt,
+  extension,
+  onDownload,
+}) => {
   return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
-      onPress={() => attachmentDownloadHandler(file_path)}
+      onPress={() => onDownload(file_path)}
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -63,16 +33,16 @@ const FileAttachmentBubble = ({ file_type, file_name, file_path, file_size, myMe
     >
       <Image
         source={
-          getFileExt() === "doc" || getFileExt() === "docx" || extension.includes("word")
+          getFileExt() === "doc" || getFileExt() === "docx" || extension?.includes("word")
             ? require(doc)
             : getFileExt() === "pdf"
             ? require(pdf)
-            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension.includes("spreadsheet")
+            : getFileExt() === "xls" || getFileExt() === "xlsx" || extension?.includes("spreadsheet")
             ? require(xls)
             : getFileExt() === "ppt" ||
               getFileExt() === "pptx" ||
-              extension.includes("powerpoint") ||
-              extension.includes("presentation")
+              extension?.includes("powerpoint") ||
+              extension?.includes("presentation")
             ? require(ppt)
             : require(txt)
         }

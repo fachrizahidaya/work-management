@@ -2,18 +2,10 @@ import { View, Text, Pressable } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, navigation }) => {
-  const redirectPage = (id, type) => {
-    if (type === "Project") {
-      return navigation.navigate("Project Detail", { projectId: id });
-    } else {
-      return navigation.navigate("Task Detail", { taskId: id });
-    }
-  };
-
+const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, onRedirect }) => {
   return (
     <Pressable
-      onPress={() => redirectPage(id, type)}
+      onPress={() => onRedirect(id, type)}
       style={{
         flexDirection: "row",
         alignItems: "center",

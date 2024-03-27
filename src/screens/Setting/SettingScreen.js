@@ -57,6 +57,12 @@ const SettingScreen = () => {
     //   title: "iOS guide",
     //   color: "#000000",
     // },
+    {
+      icons: "forum",
+      title: "FAQs",
+      color: "#176688",
+      screen: null,
+    },
   ];
 
   return (
@@ -177,10 +183,19 @@ const SettingScreen = () => {
             <MaterialCommunityIcons name="chevron-right" color="#3F434A" size={20} />
           </TouchableOpacity> */}
 
-          <View style={{ backgroundColor: "#FAFAFA", borderRadius: 9, opacity: 0.5 }}>
+          <View
+            style={{
+              backgroundColor: "#FAFAFA",
+              borderRadius: 9,
+            }}
+          >
             {second.map((item) => {
               return (
-                <TouchableOpacity style={styles.item} key={item.title}>
+                <TouchableOpacity
+                  style={[styles.item, { opacity: item.screen ? 1 : 0.5 }]}
+                  key={item.title}
+                  onPress={() => item.screen && navigation.navigate(item.screen)}
+                >
                   <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <View style={{ backgroundColor: item.color, padding: 1, borderRadius: 4 }}>
                       <MaterialCommunityIcons name={item.icons} size={20} color="white" />

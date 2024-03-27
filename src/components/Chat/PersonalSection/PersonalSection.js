@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { SheetManager } from "react-native-actions-sheet";
+
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import ContactListItem from "../ContactListItem/ContactListItem";
 
@@ -12,7 +13,6 @@ const PersonalSection = ({
   onPinControl,
   navigation,
   userSelector,
-  scrollRef,
 }) => {
   const menuOptions = [
     {
@@ -121,7 +121,6 @@ const PersonalSection = ({
               onPin={onPinControl}
               navigation={navigation}
               userSelector={userSelector}
-              simultaneousHandlers={scrollRef}
             />
           );
         })}
@@ -166,7 +165,6 @@ const PersonalSection = ({
                 searchKeyword={searchKeyword}
                 navigation={navigation}
                 userSelector={userSelector}
-                simultaneousHandlers={scrollRef}
               />
             );
           })}

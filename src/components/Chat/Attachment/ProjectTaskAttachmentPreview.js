@@ -3,11 +3,7 @@ import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
-const ProjectTaskAttachmentPreview = ({
-  bandAttachment,
-  setBandAttachment,
-  bandAttachmentType,
-}) => {
+const ProjectTaskAttachmentPreview = ({ bandAttachment, setBandAttachment, bandAttachmentType }) => {
   return (
     <View
       style={{
@@ -22,9 +18,7 @@ const ProjectTaskAttachmentPreview = ({
           justifyContent: "space-between",
         }}
       >
-        <Text style={[{ fontSize: 12 }, TextProps]}>
-          {bandAttachment?.title}
-        </Text>
+        <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
         <Pressable onPress={() => setBandAttachment(null)}>
           <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
@@ -38,31 +32,15 @@ const ProjectTaskAttachmentPreview = ({
       >
         {bandAttachmentType === "project" ? (
           <>
-            <MaterialCommunityIcons
-              name="lightning-bolt"
-              size={100}
-              color="#595f69"
-            />
-            <Text style={[{ fontSize: 12 }, TextProps]}>
-              {bandAttachment?.title}
-            </Text>
-            <Text style={[{ fontSize: 12 }, TextProps]}>
-              #{bandAttachment?.project_no}
-            </Text>
+            <MaterialCommunityIcons name="lightning-bolt" size={100} color="#595f69" />
+            <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>#{bandAttachment?.project_no}</Text>
           </>
         ) : (
           <>
-            <MaterialCommunityIcons
-              name="checkbox-marked-circle-outline"
-              size={100}
-              color="#595f69"
-            />
-            <Text style={[{ fontSize: 12 }, TextProps]}>
-              {bandAttachment?.title}
-            </Text>
-            <Text style={[{ fontSize: 12 }, TextProps]}>
-              #{bandAttachment?.task_no}
-            </Text>
+            <MaterialCommunityIcons name="checkbox-marked-circle-outline" size={100} color="#595f69" />
+            <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
+            <Text style={[{ fontSize: 12 }, TextProps]}>#{bandAttachment?.task_no}</Text>
           </>
         )}
       </View>

@@ -8,7 +8,7 @@ import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
 
-const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, onDownloadPayslip }) => {
+const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip }) => {
   const [hidePassword, setHidePassword] = useState(true);
 
   /**
@@ -39,7 +39,6 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, setPasswordError, on
       ref={reference}
       onClose={() => {
         formik.resetForm();
-        setPasswordError("");
         reference.current?.hide();
       }}
     >

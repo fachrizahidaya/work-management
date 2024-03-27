@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";

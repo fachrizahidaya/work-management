@@ -108,7 +108,7 @@ const MemberListItem = ({
           <>
             {name !== master && (
               <Pressable
-                style={{ position: "absolute", top: -15, right: -5, borderRadius: 50 }}
+                style={{ position: "absolute", top: -5, right: -5, borderRadius: 50 }}
                 onPress={() =>
                   SheetManager.show("form-sheet", {
                     payload: {
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 16,
+    marginTop: 16,
   },
   menu: {
     display: "flex",

@@ -1,18 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../../../components/shared/PageHeader";
 import { useFetch } from "../../../../hooks/useFetch";
 import Tabs from "../../../../components/shared/Tabs";
-import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
-import OngoingReviewAppraisalListItem from "../../../../components/Tribe/Performance/Review/OngoingReviewAppraisalListItem";
-import OngoingReviewKPIListItem from "../../../../components/Tribe/Performance/Review/OngoingReviewKPIListItem";
-import OngoingCommentListItem from "../../../../components/Tribe/Performance/Review/OngoingCommentListItem";
+import AppraisalReviewList from "../../../../components/Tribe/Performance/Review/AppraisalReviewList";
+import CommentList from "../../../../components/Tribe/Performance/Review/CommentList";
+import KPIReviewList from "../../../../components/Tribe/Performance/Review/KPIReviewList";
 
 const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
@@ -82,13 +79,13 @@ const KPIAppraisalReviewScreen = () => {
 
   const tabs = useMemo(() => {
     return [
-      { title: `KPI (${kpiData?.data?.length || 0})`, value: "KPI" },
+      { title: `KPI`, value: "KPI" },
       {
-        title: `Appraisal (${appraisalData?.data?.length || 0})`,
+        title: `Appraisal`,
         value: "Appraisal",
       },
       {
-        title: `Comment (${commentData?.data?.length || 0})`,
+        title: `Comment`,
         value: "Comment",
       },
     ];
@@ -116,18 +113,22 @@ const KPIAppraisalReviewScreen = () => {
     }
   };
 
-  const onChangeTab = useCallback(
-    (value) => {
-      setTabValue(value);
-      setKpiList([]);
+  const onChangeTab = (value) => {
+    setTabValue(value);
+    if (tabValue === "KPI") {
       setAppraisalList([]);
       setCommentList([]);
       setCurrentPageKPI(1);
+    } else if (tabValue === "Appraisal") {
+      setKpiList([]);
+      setCommentList([]);
       setCurrentPageAppraisal(1);
+    } else {
+      setAppraisalList([]);
+      setCommentList([]);
       setCurrentPageComment(1);
-    },
-    [kpiData, appraisalData, commentData, kpi, appraisal, comment]
-  );
+    }
+  };
 
   useEffect(() => {
     if (kpi?.data?.data.length) {
@@ -150,113 +151,45 @@ const KPIAppraisalReviewScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader width={200} title="Employee Review" backButton={false} />
+        <PageHeader width={200} title="Employee Review" backButton={true} onPress={() => navigation.goBack()} />
       </View>
       <View style={{ paddingHorizontal: 16, backgroundColor: "#FFFFFF" }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={{ backgroundColor: "#f8f8f8", flex: 1, flexDirection: "column" }}>
         {tabValue == "KPI" ? (
-          kpiList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 16 }}>
-              <FlashList
-                data={kpiList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                onScrollBeginDrag={() => setKpiHasBeenScrolled(!kpiHasBeenScrolled)}
-                onEndReached={kpiHasBeenScrolled === true ? fetchMoreKpi : null}
-                renderItem={({ item, index }) => (
-                  <OngoingReviewKPIListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.begin_date}
-                    end_date={item?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    target={item?.performance_kpi?.target_name}
-                    dayjs={dayjs}
-                    target_level={item?.performance_kpi?.target_level}
-                    description={item?.performance_kpi?.review?.description}
-                  />
-                )}
-                refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}
-              />
-            </View>
-          ) : (
-            <ScrollView refreshControl={<RefreshControl refreshing={kpiIsFetching} onRefresh={refetchKpi} />}>
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
+          <KPIReviewList
+            data={kpiList}
+            hasBeenScrolled={kpiHasBeenScrolled}
+            setHasBeenScrolled={setKpiHasBeenScrolled}
+            fetchMore={fetchMoreKpi}
+            isFetching={kpiIsFetching}
+            refetch={refetchKpi}
+            navigation={navigation}
+            dayjs={dayjs}
+          />
         ) : tabValue === "Appraisal" ? (
-          appraisalList?.length > 0 ? (
-            <View style={{ flex: 1, paddingHorizontal: 16 }}>
-              <FlashList
-                data={appraisalList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                onScrollBeginDrag={() => setAppraisalHasBeenScrolled(!appraisalHasBeenScrolled)}
-                onEndReached={appraisalHasBeenScrolled === true ? fetchMoreAppraisal : null}
-                renderItem={({ item, index }) => (
-                  <OngoingReviewAppraisalListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.begin_date}
-                    end_date={item?.end_date}
-                    navigation={navigation}
-                    name={item?.employee?.name}
-                    target={item?.performance_appraisal?.target_name}
-                    dayjs={dayjs}
-                    target_level={item?.performance_appraisal?.target_level}
-                    description={item?.performance_appraisal?.review?.description}
-                  />
-                )}
-                refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
-              />
-            </View>
-          ) : (
-            <ScrollView
-              refreshControl={<RefreshControl refreshing={appraisalIsFetching} onRefresh={refetchAppraisal} />}
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
-        ) : commentList?.length > 0 ? (
-          <View style={{ flex: 1, paddingHorizontal: 16 }}>
-            <FlashList
-              data={commentList}
-              estimatedItemSize={50}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => index}
-              onScrollBeginDrag={() => setCommentHasBeenScrolled(!commentHasBeenScrolled)}
-              onEndReached={commentHasBeenScrolled === true ? fetchMoreComment : null}
-              renderItem={({ item, index }) => (
-                <OngoingCommentListItem
-                  key={index}
-                  id={item?.id}
-                  start_date={item?.begin_date}
-                  end_date={item?.end_date}
-                  navigation={navigation}
-                  name={item?.employee?.name}
-                  target={item?.performance_comment?.target_name}
-                  dayjs={dayjs}
-                  target_level={item?.performance_comment?.target_level}
-                />
-              )}
-              refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchComment} />}
-            />
-          </View>
+          <AppraisalReviewList
+            data={appraisalList}
+            hasBeenScrolled={appraisalHasBeenScrolled}
+            setHasBeenScrolled={setAppraisalHasBeenScrolled}
+            fetchMore={fetchMoreAppraisal}
+            isFetching={appraisalIsFetching}
+            refetch={refetchAppraisal}
+            navigation={navigation}
+            dayjs={dayjs}
+          />
         ) : (
-          <ScrollView refreshControl={<RefreshControl refreshing={commentIsFetching} onRefresh={refetchComment} />}>
-            <View style={styles.content}>
-              <EmptyPlaceholder height={250} width={250} text="No Data" />
-            </View>
-          </ScrollView>
+          <CommentList
+            data={commentList}
+            hasBeenScrolled={commentHasBeenScrolled}
+            setHasBeenScrolled={setCommentHasBeenScrolled}
+            fetchMore={fetchMoreComment}
+            isFetching={commentIsFetching}
+            refetch={refetchComment}
+            navigation={navigation}
+            dayjs={dayjs}
+          />
         )}
       </View>
     </SafeAreaView>

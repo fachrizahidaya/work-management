@@ -87,13 +87,14 @@ const NotesScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={{ display: "flex", gap: 21, flex: 1 }}>
-            <PageHeader backButton={false} title="Notes" />
-            <View style={{ display: "flex", flexDirection: "row" }}>
+          <>
+            <View style={{ gap: 15, paddingVertical: 13, paddingHorizontal: 16, backgroundColor: "#fff" }}>
+              <PageHeader backButton={false} title="Notes" />
+
               <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
             </View>
 
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10 }}>
               {!isLoading ? (
                 <FlatList
                   refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
@@ -116,7 +117,7 @@ const NotesScreen = () => {
                 <Skeleton width="100%" height={270} radius={10} {...SkeletonCommonProps} />
               )}
             </View>
-          </View>
+          </>
         </TouchableWithoutFeedback>
 
         {createCheckAccess && (
@@ -148,9 +149,7 @@ export default NotesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 13,
+    backgroundColor: "#f8f8f8",
     position: "relative",
   },
   hoverButton: {

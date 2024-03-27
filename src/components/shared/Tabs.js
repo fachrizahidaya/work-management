@@ -38,7 +38,7 @@ const Tabs = ({ tabs = [], value, onChange, justify }) => {
                       paddingBottom: 12,
                     }}
                   >
-                    <Text style={[{ textTransform: "uppercase" }, TextProps]}>{tab.title}</Text>
+                    <Text style={[{ textTransform: "capitalize" }, TextProps]}>{tab.title}</Text>
                   </View>
                 </Pressable>
               );

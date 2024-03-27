@@ -13,8 +13,8 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -32,11 +32,11 @@ const NewLeaveRequest = () => {
   const [dateChanges, setDateChanges] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [formError, setFormError] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [inputToShow, setInputToShow] = useState("");
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [filteredType, setFilteredType] = useState([]);
+  const [startDateMore, setStarDateMore] = useState(false);
 
   const navigation = useNavigation();
 
@@ -46,7 +46,7 @@ const NewLeaveRequest = () => {
 
   const selectLeaveTypeScreenSheetRef = useRef(null);
 
-  const { employeeId, isOpen, toggle } = route.params;
+  const { employeeId, toggle, setRequestType } = route.params;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
@@ -60,11 +60,7 @@ const NewLeaveRequest = () => {
     isFetching: leaveHistoryIsFetching,
   } = useFetch(`/hr/employee-leaves/employee/${employeeId}`);
 
-  const {
-    data: leaveType,
-    isFetching: leaveTypeIsFetching,
-    refetch: refetchLeaveType,
-  } = useFetch("/hr/leaves", [searchInput], fetchLeaveTypeParameters);
+  const { data: leaveType } = useFetch("/hr/leaves", [searchInput], fetchLeaveTypeParameters);
 
   if (filteredType.length > 0) {
     var leaveOptionsFiltered = filteredType?.map((item) => ({
@@ -87,7 +83,7 @@ const NewLeaveRequest = () => {
   /**
    * Handle Search leave type
    */
-  const handleSearch = useCallback(
+  const leaveTypeSearchHandler = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
     }, 300),
@@ -144,6 +140,7 @@ const NewLeaveRequest = () => {
       setStatus("success");
       refetchLeaveHistory();
       toggle();
+      setRequestType("info");
       // Toast.show("Request created", SuccessToastProps);
     } catch (err) {
       console.log(err);
@@ -157,7 +154,7 @@ const NewLeaveRequest = () => {
    * Handle calculate leave quota
    * @param {*} action
    */
-  const countLeave = async (action = null) => {
+  const countLeave = async () => {
     try {
       setIsLoading(true);
       const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
@@ -168,9 +165,15 @@ const NewLeaveRequest = () => {
       formik.setFieldValue("days", res.data.days);
       formik.setFieldValue("begin_date", dayjs(res.data.begin_date).format("YYYY-MM-DD"));
       formik.setFieldValue("end_date", dayjs(res.data.end_date).format("YYYY-MM-DD"));
-      setIsLoading(false);
-      setFormError(false);
-      Toast.show("Leave Request available", SuccessToastProps);
+      if (res.data?.begin_date > res.data?.end_date) {
+        setIsLoading(false);
+        setStarDateMore(true);
+        Toast.show("End date can't be less than start date", ErrorToastProps);
+      } else {
+        setIsLoading(false);
+        setStarDateMore(false);
+        Toast.show("Leave Request available", SuccessToastProps);
+      }
     } catch (err) {
       console.log(err);
       setIsLoading(false);
@@ -308,7 +311,6 @@ const NewLeaveRequest = () => {
             </View>
 
             <NewLeaveRequestForm
-              onSubmit={leaveRequestAddHandler}
               formik={formik}
               onChangeStartDate={onChangeStartDate}
               onChangeEndDate={onChangeEndDate}
@@ -316,10 +318,11 @@ const NewLeaveRequest = () => {
               isError={isError}
               leaveType={filteredType.length > 0 ? leaveOptionsFiltered : leaveOptionsUnfiltered}
               reference={selectLeaveTypeScreenSheetRef}
-              handleSearch={handleSearch}
+              handleSearch={leaveTypeSearchHandler}
               inputToShow={inputToShow}
               setInputToShow={setInputToShow}
               setSearchInput={setSearchInput}
+              startDateMore={startDateMore}
             />
           </View>
         ) : null}

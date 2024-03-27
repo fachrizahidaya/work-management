@@ -43,7 +43,7 @@ const ConclusionScreen = () => {
             paddingVertical: 14,
           }}
         >
-          <View style={{}}>
+          <View>
             <View
               style={{
                 flexDirection: "row",
@@ -53,6 +53,7 @@ const ConclusionScreen = () => {
             >
               <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>Employee</Text>
             </View>
+
             {data?.data?.conclusion?.employee?.item.map((item, index) => {
               return (
                 <View
@@ -70,33 +71,33 @@ const ConclusionScreen = () => {
                   <View style={{ gap: 5 }}>
                     <Text style={[TextProps]}>Actual Score: {item?.score?.toFixed(1)}</Text>
                     <Text style={[TextProps]}>Weight: {item?.weight}%</Text>
-                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight?.toFixed(1)}</Text>
                   </View>
                 </View>
               );
             })}
-            <View style={{}}>
-              <View
-                style={{
-                  ...card.card,
-                  marginVertical: 14,
-                  marginBottom: 2,
-                  elevation: 1,
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <View style={{ gap: 5 }}>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Total Score: {data?.data?.conclusion?.employee?.total_score?.toFixed(1)}
-                  </Text>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Grade: {data?.data?.conclusion?.employee?.grade}
-                  </Text>
-                </View>
+
+            <View
+              style={{
+                ...card.card,
+                marginVertical: 14,
+                marginBottom: 2,
+                elevation: 1,
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View style={{ gap: 5 }}>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Total Score: {data?.data?.conclusion?.employee?.total_score?.toFixed(1)}
+                </Text>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Grade: {data?.data?.conclusion?.employee?.grade}
+                </Text>
               </View>
             </View>
           </View>
+
           <View style={{ paddingTop: 8 }}>
             <View
               style={{
@@ -107,6 +108,7 @@ const ConclusionScreen = () => {
             >
               <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>Supervisor</Text>
             </View>
+
             {data?.data?.conclusion?.supervisor?.item.map((item, index) => {
               return (
                 <View
@@ -122,32 +124,31 @@ const ConclusionScreen = () => {
                 >
                   <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>{item?.item}</Text>
                   <View style={{ gap: 5 }}>
-                    <Text style={[TextProps]}>Actual Score: {item?.score.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Actual Score: {item?.score?.toFixed(1)}</Text>
                     <Text style={[TextProps]}>Weight: {item?.weight}%</Text>
-                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight.toFixed(1)}</Text>
+                    <Text style={[TextProps]}>Score x Weight: {item?.score_x_weight?.toFixed(1)}</Text>
                   </View>
                 </View>
               );
             })}
-            <View style={{}}>
-              <View
-                style={{
-                  ...card.card,
-                  marginVertical: 14,
-                  marginBottom: 2,
-                  elevation: 1,
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <View style={{ gap: 5 }}>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Total Score: {data?.data?.conclusion?.supervisor?.total_score?.toFixed(1)}
-                  </Text>
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    Grade: {data?.data?.conclusion?.supervisor?.grade}
-                  </Text>
-                </View>
+
+            <View
+              style={{
+                ...card.card,
+                marginVertical: 14,
+                marginBottom: 2,
+                elevation: 1,
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View style={{ gap: 5 }}>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Total Score: {data?.data?.conclusion?.supervisor?.total_score?.toFixed(1)}
+                </Text>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  Grade: {data?.data?.conclusion?.supervisor?.grade}
+                </Text>
               </View>
             </View>
           </View>

@@ -3,11 +3,10 @@ import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking, Clipboard, ScrollView } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking } from "react-native";
 import Toast from "react-native-root-toast";
-import { replaceMentionValues } from "react-native-controlled-mentions";
 import { FlashList } from "@shopify/flash-list";
-import { RefreshControl } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { useFetch } from "../../../hooks/useFetch";
 import axiosInstance from "../../../config/api";
@@ -17,47 +16,35 @@ import PageHeader from "../../../components/shared/PageHeader";
 import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentPost";
 import FeedCommentFormPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentFormPost";
 import FeedCardItemPost from "../../../components/Tribe/Feed/FeedCard/FeedCardItemPost";
+import ShareImage from "../../../components/Tribe/Feed/ShareImage";
 
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null);
-  const [postId, setPostId] = useState(null);
   const [commentParentId, setCommentParentId] = useState(null);
-  const [latestExpandedReply, setLatestExpandedReply] = useState(null);
-  const [postTotalComment, setPostTotalComment] = useState(0);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [reloadPost, setReloadPost] = useState(false);
   const [reloadComment, setReloadComment] = useState(false);
-  const [forceRerender, setForceRerender] = useState(false);
-  const [currentOffsetPost, setCurrentOffsetPost] = useState(0);
   const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
 
   const route = useRoute();
-
   const navigation = useNavigation();
-
-  const commentScreenSheetRef = useRef(null);
+  const sharePostScreenSheetRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
   const { id } = route.params;
 
+  const { data: post, isFetching: postIsFetching } = useFetch("/hr/posts");
+  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
+  const { data: profile } = useFetch("/hr/my-profile");
+  const { data: employees } = useFetch("/hr/employees");
+
   const commentsFetchParameters = {
     offset: currentOffsetComments,
     limit: 10,
   };
-
-  const {
-    data: post,
-    refetch: refetchPost,
-    isFetching: postIsFetching,
-    isLoading: postIsLoading,
-  } = useFetch("/hr/posts");
-
-  const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
 
   const {
     data: comment,
@@ -70,63 +57,32 @@ const PostScreen = () => {
     commentsFetchParameters
   );
 
-  const { data: profile } = useFetch("/hr/my-profile");
-
-  const { data: employees } = useFetch("/hr/employees");
+  /**
+   * Handle fetch more Comments
+   * After end of scroll reached, it will added other earlier comments
+   */
+  const commentEndReachedHandler = () => {
+    if (comments.length !== comments.length + comment?.data.length) {
+      setCurrentOffsetComments(currentOffsetComments + 10);
+    }
+  };
 
   /**
-   * Handle show username in post
+   * Handle fetch comment from first offset
+   * After create a new comment, it will return to the first offset
    */
-  const employeeUsername = employees?.data?.map((item) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  /**
-   * Handle show username suggestion option
-   */
-  const employeeData = employees?.data.map(({ id, username }) => ({
-    id,
-    name: username,
-  }));
-
-  /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreen = useCallback((post) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(post);
-  }, []);
+  const commentRefetchHandler = () => {
+    setCurrentOffsetComments(0);
+    setReloadComment(!reloadComment);
+  };
 
   /**
    * Handle add comment
    */
   const commentAddHandler = () => {
-    setPostTotalComment((prevState) => {
-      return prevState + 1;
-    });
     const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPostData();
-  };
-
-  /**
-   * Handle like a post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
   };
 
   /**
@@ -153,75 +109,105 @@ const PostScreen = () => {
   };
 
   /**
+   * Handle like a post
+   * @param {*} post_id
+   * @param {*} action
+   */
+  const postLikeToggleHandler = async (post_id, action) => {
+    try {
+      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
+      refetchPostData();
+      console.log("Process success");
+    } catch (err) {
+      console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  /**
    * Handle toggle reply a comment
    * @param {*} comment_parent_id
    */
   const replyHandler = (comment_parent_id) => {
     setCommentParentId(comment_parent_id);
-    setLatestExpandedReply(comment_parent_id);
   };
+
+  /**
+   * Handle show username in post
+   */
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
+
+  /**
+   * Handle toggle fullscreen image
+   */
+  const toggleFullScreenHandler = useCallback((post) => {
+    setIsFullScreen(!isFullScreen);
+    setSelectedPicture(post);
+  }, []);
 
   /**
    * Handle press link
    */
-  const handleLinkPress = useCallback((url) => {
-    Linking.openURL(url);
-  }, []);
-
-  /**
-   * Handle press email
-   */
-  const handleEmailPress = useCallback((email) => {
-    try {
-      const emailUrl = `mailto:${email}`;
-      Linking.openURL(emailUrl);
-    } catch (err) {
-      console.log(err);
+  const linkPressHandler = useCallback((url) => {
+    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
+    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
+    let trimmedPlayStoreUrl;
+    let trimmedAppStoreUrl;
+    if (playStoreUrl) {
+      trimmedPlayStoreUrl = url?.slice(37);
+    } else if (appStoreUrl) {
+      trimmedAppStoreUrl = url?.slice(7);
     }
-  }, []);
 
-  /**
-   * Handle copy to clipboard
-   * @param {*} text
-   */
-  const copyToClipboard = (text) => {
+    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
+    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
+
     try {
-      if (typeof text !== String) {
-        var textToCopy = text.toString();
-        Clipboard.setString(textToCopy);
+      if (playStoreUrl) {
+        Linking.openURL(modifiedPlayStoreUrl);
+      } else if (appStoreUrl) {
+        Linking.openURL(modifiedAppStoreUrl);
       } else {
-        Clipboard.setString(text);
+        Linking.openURL(url);
       }
     } catch (err) {
       console.log(err);
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
-  };
+  }, []);
 
   /**
-   * Handle fetch comment from first offset
-   * After create a new comment, it will return to the first offset
+   * Handle show username suggestion option
    */
-  const commentRefetchHandler = () => {
-    setCurrentOffsetComments(0);
-    setReloadComment(!reloadComment);
-  };
+  const employeeData = employees?.data.map(({ id, username }) => ({
+    id,
+    name: username,
+  }));
 
-  /**
-   * Handle fetch more Comments
-   * After end of scroll reached, it will added other earlier comments
-   */
-  const commentEndReachedHandler = () => {
-    if (comments.length !== comments.length + comment?.data.length) {
-      setCurrentOffsetComments(currentOffsetComments + 10);
+  const sharePostToWhatsappHandler = async (message, url) => {
+    let messageBody = `${message}\n${url}`;
+
+    let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
+
+    try {
+      await Linking.openURL(whatsappUrl);
+    } catch (err) {
+      console.log(err);
     }
   };
 
   /**
    * Handle show suggestion username
-   * @param {*} param0
+   * @param {*} param
    * @returns
    */
-  const renderSuggestions = ({ keyword, onSuggestionPress }) => {
+  const renderSuggestionsHandler = ({ keyword, onSuggestionPress }) => {
     if (keyword == null || keyword === "@@" || keyword === "@#") {
       return null;
     }
@@ -236,7 +222,7 @@ const PostScreen = () => {
           estimatedItemSize={200}
           renderItem={({ item, index }) => (
             <Pressable key={index} onPress={() => onSuggestionPress(item)} style={{ padding: 12 }}>
-              <Text style={[{}, TextProps]}>{item.name}</Text>
+              <Text style={[TextProps]}>{item.name}</Text>
             </Pressable>
           )}
         />
@@ -248,11 +234,8 @@ const PostScreen = () => {
    * Handle adjust the content if there is username
    * @param {*} value
    */
-  const handleChange = (value) => {
+  const commentContainUsernameHandler = (value) => {
     formik.handleChange("comments")(value);
-    const replacedValue = replaceMentionValues(value, ({ name }) => `@${name}`);
-    const lastWord = replacedValue?.split(" ").pop();
-    setSuggestions(employees?.data.filter((employee) => employee?.name.toLowerCase().includes(lastWord.toLowerCase())));
   };
 
   /**
@@ -265,10 +248,7 @@ const PostScreen = () => {
       comments: "",
       parent_id: commentParentId || "",
     },
-    // validationSchema: yup.object().shape({
-    //   comments: yup.string().required("Comments is required"),
-    // }),
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+    onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
       const modifiedContent = values.comments.replace(mentionRegex, "@$1");
@@ -279,13 +259,9 @@ const PostScreen = () => {
 
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
-      if (currentOffsetPost === 0) {
-        setPosts(post?.data);
-      } else {
-        setPosts((prevData) => [...prevData, ...post?.data]);
-      }
+      setPosts((prevData) => [...prevData, ...post?.data]);
     }
-  }, [postIsFetching, reloadPost]);
+  }, [postIsFetching]);
 
   useEffect(() => {
     if (comment?.data && commentIsFetching === false) {
@@ -344,31 +320,19 @@ const PostScreen = () => {
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
                   onToggleLike={postLikeToggleHandler}
-                  forceRerender={forceRerender}
-                  setForceRerender={setForceRerender}
-                  toggleFullScreen={toggleFullScreen}
-                  handleLinkPress={handleLinkPress}
-                  handleEmailPress={handleEmailPress}
-                  copyToClipboard={copyToClipboard}
-                  employeeUsername={employeeUsername}
+                  toggleFullScreen={toggleFullScreenHandler}
+                  handleLinkPress={linkPressHandler}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
+                  reference={sharePostScreenSheetRef}
                 />
                 <FeedCommentPost
-                  postId={postId}
-                  loggedEmployeeName={userSelector?.name}
-                  loggedEmployeeImage={profile?.data?.image}
                   comments={comments}
                   commentIsLoading={commentIsLoading}
                   onEndReached={commentEndReachedHandler}
-                  parentId={commentParentId}
-                  onSubmit={commentSubmitHandler}
                   onReply={replyHandler}
-                  employeeUsername={employeeUsername}
-                  employees={employees?.data}
-                  reference={commentScreenSheetRef}
-                  linkPressHandler={handleLinkPress}
-                  emailPressHandler={handleEmailPress}
-                  copyToClipboardHandler={copyToClipboard}
+                  employeeUsername={objectContainEmployeeUsernameHandler}
+                  linkPressHandler={linkPressHandler}
                 />
               </View>
             </ScrollView>
@@ -376,16 +340,26 @@ const PostScreen = () => {
               loggedEmployeeImage={profile?.data?.image}
               loggedEmployeeName={userSelector?.name}
               parentId={commentParentId}
-              renderSuggestions={renderSuggestions}
-              handleChange={handleChange}
+              renderSuggestions={renderSuggestionsHandler}
+              handleChange={commentContainUsernameHandler}
               formik={formik}
             />
           </SafeAreaView>
         </>
-      ) : (
-        <></>
-      )}
-      <ImageFullScreenModal isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} file_path={selectedPicture} />
+      ) : null}
+      <ShareImage
+        reference={sharePostScreenSheetRef}
+        navigation={navigation}
+        type="Post"
+        sharePost={sharePostToWhatsappHandler}
+      />
+
+      <ImageFullScreenModal
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        file_path={selectedPicture}
+        setSelectedPicture={setSelectedPicture}
+      />
     </>
   );
 };
@@ -406,7 +380,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   image: {
-    // flex: 1,
     width: 500,
     height: 350,
     backgroundColor: "white",

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-
+import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
 import {
@@ -22,6 +22,8 @@ import GlobalSearchItems from "../../components/Tribe/GlobalSearch/GlobalSearchI
 const GlobalSearchTribe = () => {
   const [searchInput, setSearchInput] = useState("");
   const [shownInput, setShownInput] = useState("");
+
+  const navigation = useNavigation();
 
   const { data, isFetching } = useFetch(searchInput && "/hr/global-search", [searchInput], {
     search: searchInput,
@@ -102,7 +104,7 @@ const GlobalSearchTribe = () => {
             {!isFetching ? (
               <>
                 {data?.employee?.length > 0 || data?.post?.length ? (
-                  <GlobalSearchItems data={data} employeeUsername={employeeUsername} />
+                  <GlobalSearchItems data={data} employeeUsername={employeeUsername} navigation={navigation} />
                 ) : (
                   <Text style={styles.text}>No result</Text>
                 )}
