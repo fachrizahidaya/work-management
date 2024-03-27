@@ -1,6 +1,8 @@
-import React from "react";
 import { Pressable, View } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 
 const ArchivedAppraisalFilter = ({ startDate, startDateChangeHandler, endDate, endDateChangeHandler }) => {

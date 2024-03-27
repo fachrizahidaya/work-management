@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../../components/shared/PageHeader";
@@ -25,7 +25,7 @@ const EvaluationScreen = () => {
       <View style={{ paddingHorizontal: 14 }}>
         {options.map((item, index) => {
           return (
-            <Pressable
+            <TouchableOpacity
               key={index}
               onPress={() => navigation.navigate(item.navigate)}
               style={{
@@ -38,10 +38,6 @@ const EvaluationScreen = () => {
                 marginVertical: 8,
                 marginTop: 10,
                 elevation: 1,
-                // shadowColor: "rgba(0, 0, 0, 1)",
-                // shadowOffset: { width: 0, height: 2 },
-                // shadowOpacity: 0.1,
-                // shadowRadius: 5,
               }}
             >
               <View
@@ -57,7 +53,7 @@ const EvaluationScreen = () => {
                   <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
                 </Pressable>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           );
         })}
       </View>

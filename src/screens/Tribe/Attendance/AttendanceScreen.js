@@ -81,7 +81,11 @@ const AttendanceScreen = () => {
     !date?.lateType &&
     !date?.earlyType &&
     date?.timeIn &&
-    !["Permit", "Leave", "Alpa"].includes(attendanceType);
+    ![
+      // "Permit",
+      "Leave",
+      "Alpa",
+    ].includes(attendanceType);
   const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
   const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
@@ -93,7 +97,14 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    ["Alpa", "Permit", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
+    [
+      "Alpa",
+      // "Permit",
+      "Sick",
+      "Other",
+    ].includes(attendanceType) &&
+    date?.attendanceReason &&
+    isWorkDay;
   const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
   const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 

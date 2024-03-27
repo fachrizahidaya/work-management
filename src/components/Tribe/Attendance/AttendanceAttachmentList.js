@@ -1,7 +1,7 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
+
 import AttendanceAttachmentItem from "./AttendanceAttachmentItem";
 
 const AttendanceAttachmentList = ({ data, isFetching, refetch, setAttachmentId }) => {
@@ -21,6 +21,7 @@ const AttendanceAttachmentList = ({ data, isFetching, refetch, setAttachmentId }
             begin_date={item?.begin_date}
             end_date={item?.end_date}
             setAttachmentId={setAttachmentId}
+            id={item?.id}
           />
         )}
       />
