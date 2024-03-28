@@ -4,14 +4,18 @@ import _ from "lodash";
 import dayjs from "dayjs";
 
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import Toast from "react-native-root-toast";
 
 import Button from "../../../../components/shared/Forms/Button";
 import { useFetch } from "../../../../hooks/useFetch";
 import useCheckAccess from "../../../../hooks/useCheckAccess";
-import ConfirmationModal from "../../../../components/shared/ConfirmationModal";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
 import PersonalLeaveRequest from "../../../../components/Tribe/Leave/PersonalLeaveRequest/PersonalLeaveRequest";
 import FilterLeave from "../../../../components/Tribe/Leave/PersonalLeaveRequest/FilterLeave";
+import RemoveConfirmationModal from "../../../../components/shared/RemoveConfirmationModal";
+import axiosInstance from "../../../../config/api";
+import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
+import { useLoading } from "../../../../hooks/useLoading";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -42,6 +46,8 @@ const PersonalLeaveScreen = () => {
   const navigation = useNavigation();
 
   const { isOpen: cancelModalIsOpen, toggle: toggleCancelModal } = useDisclosure(false);
+
+  const { toggle: toggleCancelLeaveReqeuest, isLoading: cancelLeaveRequestIsLoading } = useLoading(false);
 
   const fetchMorePendingParameters = {
     page: currentPagePending,
@@ -189,6 +195,21 @@ const PersonalLeaveScreen = () => {
     }
   };
 
+  const cancelLeaveRequestHandler = async () => {
+    try {
+      toggleCancelLeaveReqeuest();
+      const res = await axiosInstance.patch(`/hr/leave-requests/${selectedData?.id}/cancel`);
+      refetchPendingLeaveRequest();
+      refetchPersonalLeaveRequest();
+      toggleCancelLeaveReqeuest();
+      toggleCancelModal();
+    } catch (err) {
+      console.log(err);
+      toggleCancelLeaveReqeuest();
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data.length >= 0) {
       setPendingList(() => [...pendingLeaveRequest?.data?.data]);
@@ -286,21 +307,12 @@ const PersonalLeaveScreen = () => {
         </>
       </SafeAreaView>
 
-      <ConfirmationModal
+      <RemoveConfirmationModal
         isOpen={cancelModalIsOpen}
         toggle={toggleCancelModal}
-        apiUrl={`/hr/leave-requests/${selectedData?.id}/cancel`}
-        header="Cancel Leave Request"
-        hasSuccessFunc={true}
-        onSuccess={() => {
-          refetchPendingLeaveRequest();
-          refetchPersonalLeaveRequest();
-          cancleScreenSheetRef.current?.hide();
-        }}
         description="Are you sure to cancel this request?"
-        successMessage="Request canceled"
-        isDelete={false}
-        isPatch={true}
+        isLoading={cancelLeaveRequestIsLoading}
+        onPress={() => cancelLeaveRequestHandler()}
       />
     </>
   );

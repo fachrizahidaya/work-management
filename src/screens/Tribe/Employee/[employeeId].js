@@ -12,7 +12,6 @@ import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
@@ -22,6 +21,8 @@ import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
 import { FlashList } from "@shopify/flash-list";
 import { useFormik } from "formik";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import { useLoading } from "../../../hooks/useLoading";
 
 const EmployeeProfileScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
@@ -61,6 +62,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
   const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
   const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
+
+  const { toggle: toggleDeletePost, isLoading: deletePostIsLoading } = useLoading(false);
 
   const userSelector = useSelector((state) => state.auth);
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
@@ -317,6 +320,23 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   };
 
+  const deletePostHandler = async () => {
+    try {
+      toggleDeletePost();
+      const res = await axiosInstance.delete(`/hr/posts/${selectedPost}`);
+      setDeletePostSuccess(true);
+      setPosts([]);
+      toggleDeletePost();
+      setRequestType("danger");
+      toggleDeleteModal();
+      postRefetchHandler();
+    } catch (err) {
+      console.log(err);
+      toggleDeletePost();
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
   /**
    * Handle pick an image
    */
@@ -551,25 +571,13 @@ const EmployeeProfileScreen = ({ route }) => {
         toggleUpdatePostModal={toggleUpdatePostModal}
         requestType={requestType}
       />
-      <ConfirmationModal
-        isOpen={deleteModalIsOpen}
+
+      <RemoveConfirmationModal
         toggle={toggleDeleteModal}
-        apiUrl={`/hr/posts/${selectedPost}`}
-        color="red.800"
-        hasSuccessFunc={true}
-        onSuccess={() => {
-          setDeletePostSuccess(true);
-          setPosts([]);
-          setRequestType("danger");
-          postRefetchHandler();
-        }}
+        isOpen={deleteModalIsOpen}
+        isLoading={deletePostIsLoading}
         description="Are you sure to delete this post?"
-        successMessage={"Post deleted"}
-        isDelete={true}
-        isPatch={false}
-        toggleOtherModal={toggleDeletePostModal}
-        successStatus={deletePostSuccess}
-        showSuccessToast={false}
+        onPress={() => deletePostHandler()}
       />
       <EmployeeTeammates
         teammates={filteredType.length > 0 ? filteredType : teammatesData}
