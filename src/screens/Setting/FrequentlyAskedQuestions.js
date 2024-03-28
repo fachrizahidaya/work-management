@@ -14,8 +14,8 @@ const FrequentlyAskedQuestions = () => {
   const topicArr = [
     { name: "ACCOUNT", image: null, icon: "account-outline", navigate: "FAQ Account" },
     { name: "TRIBE", image: "../../assets/icons/tribe_logo.png", icon: null, navigate: "FAQ Tribe" },
-    { name: "BAND", image: "../../assets/icons/band_logo.png", icon: null, navigate: "FAQ Band" },
-    { name: "COIN", image: null, icon: "bitcoin", navigate: null },
+    // { name: "BAND", image: "../../assets/icons/band_logo.png", icon: null, navigate: null },
+    // { name: "COIN", image: null, icon: "bitcoin", navigate: null },
   ];
 
   return (
