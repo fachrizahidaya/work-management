@@ -77,7 +77,7 @@ const SettingScreen = () => {
             flex: 1,
           }}
         >
-          <PageHeader backButton={false} title="Settings" />
+          <PageHeader backButton={true} title="Settings" onPress={() => navigation.goBack()} />
 
           <View style={{ backgroundColor: "#FAFAFA", borderRadius: 9 }}>
             <TouchableOpacity onPress={() => navigation.navigate("Account Screen", { profile: myProfile })}>
