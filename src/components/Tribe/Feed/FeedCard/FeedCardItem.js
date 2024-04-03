@@ -32,6 +32,12 @@ const FeedCardItem = ({
   handleLinkPress,
   employeeUsername,
   navigation,
+  reference,
+  setPostId,
+  refetchPost,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -49,12 +55,12 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    onToggleLike(post_id, action, refetchPost);
     setForceRerender(!forceRerender);
   };
 
   useEffect(() => {
-    if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
+    if (likedBy && likedBy?.includes("'" + String(loggedEmployeeId) + "'")) {
       setLikeAction("dislike");
     } else {
       setLikeAction("like");
@@ -129,7 +135,10 @@ const FeedCardItem = ({
       </Text>
 
       {attachment ? (
-        <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+        <TouchableOpacity
+          key={id}
+          onPress={() => attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)}
+        >
           <Image
             style={styles.image}
             source={{
@@ -146,7 +155,7 @@ const FeedCardItem = ({
         <View style={styles.iconAction}>
           <Pressable
             onPress={() => {
-              onCommentToggle(id);
+              onCommentToggle(id, reference, setPostId);
             }}
           >
             <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />

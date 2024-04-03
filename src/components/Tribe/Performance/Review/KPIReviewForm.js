@@ -52,7 +52,7 @@ const KPIReviewForm = ({
                   null;
                 } else {
                   formik.handleSubmit();
-                  handleClose();
+                  handleClose(reference);
                 }
               }}
             >

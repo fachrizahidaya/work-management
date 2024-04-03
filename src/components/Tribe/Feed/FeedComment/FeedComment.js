@@ -24,6 +24,12 @@ const FeedComment = ({
   onSuggestions,
   commentContainUsernameHandler,
   formik,
+  reloadComment,
+  setReloadComment,
+  setCurrentOffsetComments,
+  setPostId,
+  setCommentParentId,
+  navigation,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -31,7 +37,7 @@ const FeedComment = ({
     <ActionSheet
       ref={reference}
       onClose={() => {
-        handleClose();
+        handleClose(reference, setPostId, setCommentParentId);
       }}
     >
       <View style={styles.header}>
@@ -60,6 +66,11 @@ const FeedComment = ({
           refetchComment={refetchComment}
           handleLinkPress={onPressLink}
           employeeUsername={employeeUsername}
+          reloadComment={reloadComment}
+          setReloadComment={setReloadComment}
+          setCurrentOffsetComments={setCurrentOffsetComments}
+          setCommentParentId={setCommentParentId}
+          navigation={navigation}
         />
       </View>
       <FeedCommentForm

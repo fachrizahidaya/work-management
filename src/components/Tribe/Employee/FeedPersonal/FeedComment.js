@@ -7,7 +7,6 @@ import FeedCommentList from "../../Feed/FeedComment/FeedCommentList";
 import FeedCommentForm from "../../Feed/FeedComment/FeedCommentForm";
 
 const FeedComment = ({
-  postId,
   loggedEmployeeName,
   loggedEmployeeImage,
   commentIsFetching,
@@ -18,20 +17,23 @@ const FeedComment = ({
   onEndReached,
   commentRefetchHandler,
   parentId,
-  onSubmit,
   onReply,
   employeeUsername,
-  employees,
   reference,
   onPressLink,
   formik,
   onSuggestions,
   commentContainUsernameHandler,
+  reloadComment,
+  setReloadComment,
+  setCurrentOffsetComments,
+  setPostId,
+  setCommentParentId,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   return (
-    <ActionSheet ref={reference} onClose={handleClose}>
+    <ActionSheet ref={reference} onClose={() => handleClose(reference, setPostId, setCommentParentId)}>
       <View style={styles.header}>
         <View style={{ alignItems: "center", marginBottom: 10 }}>
           <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>
@@ -57,6 +59,10 @@ const FeedComment = ({
           refetchComment={refetchComment}
           handleLinkPress={onPressLink}
           employeeUsername={employeeUsername}
+          reloadComment={reloadComment}
+          setReloadComment={setReloadComment}
+          setCurrentOffsetComments={setCurrentOffsetComments}
+          setCommentParentId={setCommentParentId}
         />
       </View>
       <FeedCommentForm

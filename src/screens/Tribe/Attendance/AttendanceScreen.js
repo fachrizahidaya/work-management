@@ -31,7 +31,6 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
-  const [deleteAttendanceAttachment, setDeleteAttendanceAttachment] = useState(false);
   const [requestType, setRequestType] = useState("");
 
   const currentDate = dayjs().format("YYYY-MM-DD");
@@ -81,15 +80,7 @@ const AttendanceScreen = () => {
   const isWorkDay = date?.dayType === "Work Day";
   const attendanceType = date?.attendanceType;
   const hasClockInAndOut =
-    isWorkDay &&
-    !date?.lateType &&
-    !date?.earlyType &&
-    date?.timeIn &&
-    ![
-      // "Permit",
-      "Leave",
-      "Alpa",
-    ].includes(attendanceType);
+    isWorkDay && !date?.lateType && !date?.earlyType && date?.timeIn && !["Leave", "Alpa"].includes(attendanceType);
   const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
   const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
@@ -101,14 +92,7 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    [
-      "Alpa",
-      // "Permit",
-      "Sick",
-      "Other",
-    ].includes(attendanceType) &&
-    date?.attendanceReason &&
-    isWorkDay;
+    ["Alpa", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
   const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
   const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 
@@ -270,7 +254,6 @@ const AttendanceScreen = () => {
     try {
       toggleDeleteAttendanceAttachment();
       const res = await axiosInstance.delete(`/hr/timesheets/personal/attachments/${attachmentId}`);
-      setDeleteAttendanceAttachment(true);
       toggleDeleteAttendanceAttachment();
       setRequestType("danger");
       toggleDeleteAttachment();

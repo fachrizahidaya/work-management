@@ -36,6 +36,12 @@ const FeedCardItem = ({
   toggleDeleteModal,
   toggleEditModal,
   navigation,
+  reference,
+  setPostId,
+  refetchPost,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -114,7 +120,7 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    onToggleLike(post_id, action, refetchPost);
     setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
@@ -194,7 +200,12 @@ const FeedCardItem = ({
 
       {attachment ? (
         <>
-          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+          <TouchableOpacity
+            key={id}
+            onPress={() =>
+              attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+            }
+          >
             <Image
               source={{
                 uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
@@ -212,7 +223,7 @@ const FeedCardItem = ({
         <View style={styles.iconAction}>
           <Pressable
             onPress={() => {
-              onCommentToggle(id);
+              onCommentToggle(id, reference, setPostId);
             }}
           >
             <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />

@@ -29,6 +29,10 @@ const FeedCardItemPost = ({
   employeeUsername,
   navigation,
   reference,
+  refetchPost,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -46,7 +50,7 @@ const FeedCardItemPost = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    onToggleLike(post_id, action, refetchPost);
   };
 
   useEffect(() => {
@@ -124,7 +128,12 @@ const FeedCardItemPost = ({
         </Text>
 
         {attachment ? (
-          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+          <TouchableOpacity
+            key={id}
+            onPress={() =>
+              attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+            }
+          >
             <Image
               style={styles.image}
               source={{

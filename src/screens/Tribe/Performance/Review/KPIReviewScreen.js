@@ -183,7 +183,11 @@ const KPIReviewScreen = () => {
         actualString || 0,
     },
     validationSchema: yup.object().shape({
-      supervisor_actual_achievement: yup.number().required("Value is required").min(0, "Value should not be negative"),
+      supervisor_actual_achievement: yup
+        .number()
+        .required("Value is required")
+        .min(0, "Value should not be negative")
+        .max(kpi?.target, "Value should not exceed target"),
     }),
     onSubmit: (values) => {
       if (formik.isValid) {

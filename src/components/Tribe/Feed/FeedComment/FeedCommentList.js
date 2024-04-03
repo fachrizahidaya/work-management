@@ -18,6 +18,11 @@ const FeedCommentList = ({
   setHasBeenScrolled,
   handleLinkPress,
   employeeUsername,
+  reloadComment,
+  setReloadComment,
+  setCurrentOffsetComments,
+  setCommentParentId,
+  navigation,
 }) => {
   return (
     <GestureHandlerRootView>
@@ -35,7 +40,7 @@ const FeedCommentList = ({
               <RefreshControl
                 refreshing={commentIsFetching}
                 onRefresh={() => {
-                  commentsRefetchHandler();
+                  commentsRefetchHandler(setCurrentOffsetComments, setReloadComment, reloadComment);
                   refetchComment();
                 }}
               />
@@ -52,6 +57,8 @@ const FeedCommentList = ({
                 onReply={onReply}
                 handleLinkPress={handleLinkPress}
                 employeeUsername={employeeUsername}
+                setCommentParentId={setCommentParentId}
+                navigation={navigation}
               />
             )}
           />

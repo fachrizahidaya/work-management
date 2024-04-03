@@ -1,11 +1,7 @@
-NewFeedScreen;
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import { useSelector } from "react-redux";
-import { useRoute } from "@react-navigation/native";
 
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View, ScrollView } from "react-native";
 import Toast from "react-native-root-toast";
@@ -19,6 +15,8 @@ import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import PostOptions from "./PostOptions";
+import { pickImageHandler } from "../../../../components/shared/PickImage";
+import { useLoading } from "../../../../hooks/useLoading";
 
 const NewFeedScreen = () => {
   const [image, setImage] = useState(null);
@@ -29,14 +27,18 @@ const NewFeedScreen = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
+
   const postActionScreenSheetRef = useRef(null);
 
   const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
+
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+
+  const { toggle: toggleProcess, isLoading: processIsLoading } = useLoading(false);
 
   // Handle close keyboard after input
   const dismissKeyboard = () => {
@@ -136,35 +138,6 @@ const NewFeedScreen = () => {
     },
   });
 
-  /**
-   * Handle pick an image attachment
-   */
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
-
-    if (result) {
-      setImage({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
-    }
-  };
-
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       formik.resetForm();
@@ -224,6 +197,8 @@ const NewFeedScreen = () => {
                 setImage={setImage}
                 pickImageHandler={pickImageHandler}
                 employees={employees?.data}
+                isLoading={processIsLoading}
+                setIsLoading={toggleProcess}
               />
               <PostTypeOptions
                 publicToggleHandler={publicToggleHandler}
