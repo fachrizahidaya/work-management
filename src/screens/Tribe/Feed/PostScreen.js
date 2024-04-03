@@ -109,15 +109,15 @@ const PostScreen = () => {
     }
   };
 
-  const sharePostToWhatsappHandler = async (message, url) => {
-    let messageBody = `${message}\n${url}`;
-    let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
-    try {
-      await Linking.openURL(whatsappUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const sharePostToWhatsappHandler = async (message, url) => {
+  //   let messageBody = `${message}\n${url}`;
+  //   let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
+  //   try {
+  //     await Linking.openURL(whatsappUrl);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   /**
    * Handle show username in post

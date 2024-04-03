@@ -14,7 +14,7 @@ import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirm
 import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
-import PostOptions from "./PostOptions";
+import PostOptions from "../../../../components/Tribe/Feed/NewFeed/PostOptions";
 import { pickImageHandler } from "../../../../components/shared/PickImage";
 import { useLoading } from "../../../../hooks/useLoading";
 
@@ -39,11 +39,6 @@ const NewFeedScreen = () => {
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
 
   const { toggle: toggleProcess, isLoading: processIsLoading } = useLoading(false);
-
-  // Handle close keyboard after input
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
 
   const { data: employees } = useFetch("/hr/employees");
 
@@ -153,7 +148,7 @@ const NewFeedScreen = () => {
 
   return (
     <>
-      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         {isReady ? (
           <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#FFFFFF" }}>
             <View style={styles.header}>
@@ -179,18 +174,6 @@ const NewFeedScreen = () => {
                 reference={postActionScreenSheetRef}
                 checkAccess={checkAccess}
               />
-
-              <ReturnConfirmationModal
-                isOpen={returnModalIsOpen}
-                toggle={toggleReturnModal}
-                onPress={() => {
-                  toggleReturnModal();
-                  navigation.goBack();
-                  setImage(null);
-                }}
-                description="Are you sure want to exit? It will be deleted."
-              />
-
               <NewFeedForm
                 formik={formik}
                 image={image}
@@ -208,6 +191,16 @@ const NewFeedScreen = () => {
                 endDateAnnouncementHandler={endDateAnnouncementHandler}
                 formik={formik}
                 reference={postActionScreenSheetRef}
+              />
+              <ReturnConfirmationModal
+                isOpen={returnModalIsOpen}
+                toggle={toggleReturnModal}
+                onPress={() => {
+                  toggleReturnModal();
+                  navigation.goBack();
+                  setImage(null);
+                }}
+                description="Are you sure want to exit? It will be deleted."
               />
             </View>
           </ScrollView>
