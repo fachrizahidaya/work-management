@@ -19,7 +19,8 @@
       "bundleIdentifier": "com.kolabora.kssmobileapp",
       "buildNumber": "18",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["itms-apps"]
+        "LSApplicationQueriesSchemes": ["itms-apps"],
+        "NSLocationWhenInUseUsageDescription": "This app access location to confirm timesheet"
       }
     },
     "android": {

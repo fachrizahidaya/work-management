@@ -12,7 +12,6 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import AttendanceCalendar from "../../../components/Tribe/Attendance/AttendanceCalendar";
 import AttendanceForm from "../../../components/Tribe/Attendance/AttendanceForm";
@@ -20,6 +19,8 @@ import AddAttendanceAttachment from "../../../components/Tribe/Attendance/AddAtt
 import AttendanceAttachment from "../../../components/Tribe/Attendance/AttendanceAttachment";
 import AttendanceColor from "../../../components/Tribe/Attendance/AttendanceColor";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import { useLoading } from "../../../hooks/useLoading";
 
 const AttendanceScreen = () => {
   const [filter, setFilter] = useState({
@@ -30,7 +31,6 @@ const AttendanceScreen = () => {
   const [date, setDate] = useState({});
   const [fileAttachment, setFileAttachment] = useState(null);
   const [attachmentId, setAttachmentId] = useState(null);
-  const [deleteAttendanceAttachment, setDeleteAttendanceAttachment] = useState(false);
   const [requestType, setRequestType] = useState("");
 
   const currentDate = dayjs().format("YYYY-MM-DD");
@@ -44,6 +44,9 @@ const AttendanceScreen = () => {
   const { isOpen: attendanceReportModalIsOpen, toggle: toggleAttendanceReportModal } = useDisclosure(false);
   const { isOpen: attendanceAttachmentModalIsOpen, toggle: toggleAttendanceAttachmentModal } = useDisclosure(false);
   const { isOpen: successDeleteModalIsOpen, toggle: toggleSuccessDeleteModal } = useDisclosure(false);
+
+  const { toggle: toggleDeleteAttendanceAttachment, isLoading: deleteAttendanceAttachmentIsLoading } =
+    useLoading(false);
 
   const attendanceFetchParameters = filter;
 
@@ -77,15 +80,7 @@ const AttendanceScreen = () => {
   const isWorkDay = date?.dayType === "Work Day";
   const attendanceType = date?.attendanceType;
   const hasClockInAndOut =
-    isWorkDay &&
-    !date?.lateType &&
-    !date?.earlyType &&
-    date?.timeIn &&
-    ![
-      // "Permit",
-      "Leave",
-      "Alpa",
-    ].includes(attendanceType);
+    isWorkDay && !date?.lateType && !date?.earlyType && date?.timeIn && !["Leave", "Alpa"].includes(attendanceType);
   const hasLateWithoutReason = date?.lateType && !date?.lateReason && !date?.earlyType;
   const hasEarlyWithoutReason = date?.earlyType && !date?.earlyReason && !date?.lateType;
   const hasLateAndEarlyWithoutReason = date?.lateType && date?.earlyType && !date?.lateReason && !date?.earlyReason;
@@ -97,14 +92,7 @@ const AttendanceScreen = () => {
     date?.earlyType && date?.earlyReason && date?.lateType && !date?.lateReason && !date?.lateStatus;
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
-    [
-      "Alpa",
-      // "Permit",
-      "Sick",
-      "Other",
-    ].includes(attendanceType) &&
-    date?.attendanceReason &&
-    isWorkDay;
+    ["Alpa", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
   const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
   const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 
@@ -259,6 +247,21 @@ const AttendanceScreen = () => {
       Toast.show(err.response.data.message, ErrorToastProps);
       setStatus("error");
       setSubmitting(false);
+    }
+  };
+
+  const deleteAttendanceAttachmentHandler = async () => {
+    try {
+      toggleDeleteAttendanceAttachment();
+      const res = await axiosInstance.delete(`/hr/timesheets/personal/attachments/${attachmentId}`);
+      toggleDeleteAttendanceAttachment();
+      setRequestType("danger");
+      toggleDeleteAttachment();
+      refetchAttachment();
+    } catch (err) {
+      console.log(err);
+      toggleDeleteAttendanceAttachment();
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
 
@@ -425,22 +428,12 @@ const AttendanceScreen = () => {
         requestType={requestType}
       />
 
-      <ConfirmationModal
+      <RemoveConfirmationModal
         isOpen={deleteAttachmentIsOpen}
         toggle={toggleDeleteAttachment}
-        successMessage="Attachment Deleted"
-        isDelete={true}
         description="Are you sure want to delete attachment?"
-        apiUrl={`/hr/timesheets/personal/attachments/${attachmentId}`}
-        hasSuccessFunc={true}
-        onSuccess={() => {
-          setDeleteAttendanceAttachment(true);
-          setRequestType("danger");
-          refetchAttachment();
-        }}
-        toggleOtherModal={toggleSuccessDeleteModal}
-        successStatus={deleteAttendanceAttachment}
-        showSuccessToast={false}
+        onPress={() => deleteAttendanceAttachmentHandler()}
+        isLoading={deleteAttendanceAttachmentIsLoading}
       />
 
       <SuccessModal

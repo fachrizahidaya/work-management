@@ -116,29 +116,27 @@ const GlobalSearchChatList = ({ chat, message, searchKeyword, group, memberName 
             </View>
           </>
         ) : (
-          <>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: 14, fontWeight: "600" }}>{chat?.user?.name}</Text>
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>{chat?.user?.name}</Text>
 
-                <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
-              </View>
-              <View style={{ flex: 1, marginTop: 5 }}>
-                <RenderHtml
-                  contentWidth={width}
-                  source={{
-                    html: renderChat(),
-                  }}
-                />
-              </View>
+              <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
             </View>
-          </>
+            <View style={{ flex: 1, marginTop: 5 }}>
+              <RenderHtml
+                contentWidth={width}
+                source={{
+                  html: renderChat(),
+                }}
+              />
+            </View>
+          </View>
         )}
       </View>
     </TouchableOpacity>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
@@ -17,6 +17,13 @@ import FeedCommentPost from "../../../components/Tribe/Feed/FeedComment/FeedComm
 import FeedCommentFormPost from "../../../components/Tribe/Feed/FeedComment/FeedCommentFormPost";
 import FeedCardItemPost from "../../../components/Tribe/Feed/FeedCard/FeedCardItemPost";
 import ShareImage from "../../../components/Tribe/Feed/ShareImage";
+import {
+  likePostHandler,
+  pressLinkHandler,
+  refetchCommentHandler,
+  replyCommentHandler,
+  toggleFullScreenImageHandler,
+} from "../../../components/Tribe/Feed/shared/functions";
 
 const PostScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -27,6 +34,9 @@ const PostScreen = () => {
   const [reloadComment, setReloadComment] = useState(false);
   const [currentOffsetComments, setCurrentOffsetComments] = useState(0);
   const [isReady, setIsReady] = useState(false);
+  const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
+  const [viewReplyToggle, setViewReplyToggle] = useState(false);
+  const [hideReplies, setHideReplies] = useState(false);
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -68,18 +78,9 @@ const PostScreen = () => {
   };
 
   /**
-   * Handle fetch comment from first offset
-   * After create a new comment, it will return to the first offset
-   */
-  const commentRefetchHandler = () => {
-    setCurrentOffsetComments(0);
-    setReloadComment(!reloadComment);
-  };
-
-  /**
    * Handle add comment
    */
-  const commentAddHandler = () => {
+  const addCommentHandler = () => {
     const referenceIndex = posts.findIndex((post) => post.id === postData?.data?.id);
     posts[referenceIndex]["total_comment"] += 1;
     refetchPostData();
@@ -91,12 +92,12 @@ const PostScreen = () => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
+  const submitCommentHandler = async (data, setSubmitting, setStatus) => {
     try {
       const res = await axiosInstance.post(`/hr/posts/comment`, data);
       refetchPostData();
-      commentRefetchHandler();
-      commentAddHandler(postData?.data?.id);
+      refetchCommentHandler(setCurrentOffsetComments, setReloadComment, reloadComment);
+      addCommentHandler(postData?.data?.id);
       setCommentParentId(null);
       setSubmitting(false);
       setStatus("success");
@@ -108,29 +109,15 @@ const PostScreen = () => {
     }
   };
 
-  /**
-   * Handle like a post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPostData();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle toggle reply a comment
-   * @param {*} comment_parent_id
-   */
-  const replyHandler = (comment_parent_id) => {
-    setCommentParentId(comment_parent_id);
-  };
+  // const sharePostToWhatsappHandler = async (message, url) => {
+  //   let messageBody = `${message}\n${url}`;
+  //   let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
+  //   try {
+  //     await Linking.openURL(whatsappUrl);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   /**
    * Handle show username in post
@@ -144,63 +131,12 @@ const PostScreen = () => {
   });
 
   /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreenHandler = useCallback((post) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(post);
-  }, []);
-
-  /**
-   * Handle press link
-   */
-  const linkPressHandler = useCallback((url) => {
-    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
-    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
-    let trimmedPlayStoreUrl;
-    let trimmedAppStoreUrl;
-    if (playStoreUrl) {
-      trimmedPlayStoreUrl = url?.slice(37);
-    } else if (appStoreUrl) {
-      trimmedAppStoreUrl = url?.slice(7);
-    }
-
-    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
-    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
-
-    try {
-      if (playStoreUrl) {
-        Linking.openURL(modifiedPlayStoreUrl);
-      } else if (appStoreUrl) {
-        Linking.openURL(modifiedAppStoreUrl);
-      } else {
-        Linking.openURL(url);
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  }, []);
-
-  /**
    * Handle show username suggestion option
    */
   const employeeData = employees?.data.map(({ id, username }) => ({
     id,
     name: username,
   }));
-
-  const sharePostToWhatsappHandler = async (message, url) => {
-    let messageBody = `${message}\n${url}`;
-
-    let whatsappUrl = `whatsapp://send?text=${encodeURIComponent(messageBody)}`;
-
-    try {
-      await Linking.openURL(whatsappUrl);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   /**
    * Handle show suggestion username
@@ -253,7 +189,7 @@ const PostScreen = () => {
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
       const modifiedContent = values.comments.replace(mentionRegex, "@$1");
       values.comments = modifiedContent;
-      commentSubmitHandler(values, setSubmitting, setStatus);
+      submitCommentHandler(values, setSubmitting, setStatus);
     },
   });
 
@@ -319,20 +255,32 @@ const PostScreen = () => {
                   type={postData?.data?.type}
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
-                  onToggleLike={postLikeToggleHandler}
-                  toggleFullScreen={toggleFullScreenHandler}
-                  handleLinkPress={linkPressHandler}
+                  onToggleLike={likePostHandler}
+                  toggleFullScreen={toggleFullScreenImageHandler}
+                  handleLinkPress={pressLinkHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                   reference={sharePostScreenSheetRef}
+                  refetchPost={refetchPostData}
+                  isFullScreen={isFullScreen}
+                  setIsFullScreen={setIsFullScreen}
+                  setSelectedPicture={setSelectedPicture}
                 />
                 <FeedCommentPost
                   comments={comments}
                   commentIsLoading={commentIsLoading}
                   onEndReached={commentEndReachedHandler}
-                  onReply={replyHandler}
+                  onReply={replyCommentHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
-                  linkPressHandler={linkPressHandler}
+                  linkPressHandler={pressLinkHandler}
+                  setCommentParentId={setCommentParentId}
+                  navigation={navigation}
+                  hasBeenScrolled={hasBeenScrolled}
+                  setHasBeenScrolled={setHasBeenScrolled}
+                  viewReplyToggle={viewReplyToggle}
+                  setViewReplyToggle={setViewReplyToggle}
+                  hideReplies={hideReplies}
+                  setHideReplies={setHideReplies}
                 />
               </View>
             </ScrollView>
@@ -351,9 +299,8 @@ const PostScreen = () => {
         reference={sharePostScreenSheetRef}
         navigation={navigation}
         type="Post"
-        sharePost={sharePostToWhatsappHandler}
+        // sharePost={sharePostToWhatsappHandler}
       />
-
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
@@ -378,11 +325,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingVertical: 14,
     paddingHorizontal: 16,
-  },
-  image: {
-    width: 500,
-    height: 350,
-    backgroundColor: "white",
-    resizeMode: "cover",
   },
 });

@@ -1,8 +1,17 @@
-import React from "react";
 import { ActivityIndicator, Text } from "react-native";
 import Button from "../../../shared/Forms/Button";
 
-const KPIReviewSaveButton = ({ isLoading, differences, onSubmit }) => {
+const KPIReviewSaveButton = ({
+  isLoading,
+  differences,
+  onSubmit,
+  toggleSubmit,
+  employeeKpiValue,
+  kpiList,
+  toggleSaveModal,
+  setRequestType,
+  refetchKpiList,
+}) => {
   return (
     <Button
       height={35}
@@ -11,7 +20,7 @@ const KPIReviewSaveButton = ({ isLoading, differences, onSubmit }) => {
         if (isLoading || differences.length === 0) {
           null;
         } else {
-          onSubmit();
+          onSubmit(toggleSubmit, employeeKpiValue, kpiList, toggleSaveModal, setRequestType, refetchKpiList);
         }
       }}
       disabled={differences.length === 0 || isLoading}

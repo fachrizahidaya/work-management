@@ -7,7 +7,17 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIReviewDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
+const KPIReviewDetailItem = ({
+  target,
+  achievement,
+  description,
+  handleOpen,
+  item,
+  employeeKpiValue,
+  setKpi,
+  setEmployeeKpi,
+  reference,
+}) => {
   return (
     <Pressable
       style={{
@@ -20,7 +30,7 @@ const KPIReviewDetailItem = ({ target, achievement, description, handleOpen, ite
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item, employeeKpiValue);
+        handleOpen(item, employeeKpiValue, setKpi, setEmployeeKpi, reference);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

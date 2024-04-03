@@ -247,7 +247,7 @@ const EditPersonalPost = ({
                       gap: 3,
                     }}
                   >
-                    <Pressable onPress={pickImageHandler}>
+                    <Pressable onPress={() => pickImageHandler(setImage)}>
                       <MaterialCommunityIcons
                         name="attachment"
                         size={25}

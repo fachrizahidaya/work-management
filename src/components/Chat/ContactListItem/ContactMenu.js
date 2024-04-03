@@ -7,7 +7,7 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 import { TextProps } from "../../shared/CustomStylings";
 
 const ContactMenu = ({
-  chat,
+  contact,
   toggleDeleteModal,
   toggleDeleteGroupModal,
   toggleClearChatMessage,
@@ -39,14 +39,14 @@ const ContactMenu = ({
         await SheetManager.hide("form-sheet");
         navigation.navigate("User Detail", {
           navigation: navigation,
-          name: chat?.pin_group ? chat?.name : chat?.user?.name,
-          image: chat?.pin_group ? chat?.image : chat?.user?.image,
-          position: chat?.pin_group ? null : chat?.user?.user_type,
-          email: chat?.pin_group ? null : chat?.user?.email,
-          type: chat?.pin_personal ? "personal" : "group",
-          roomId: chat?.id,
+          name: contact?.pin_group ? contact?.name : contact?.user?.name,
+          image: contact?.pin_group ? contact?.image : contact?.user?.image,
+          position: contact?.pin_group ? null : contact?.user?.user_type,
+          email: contact?.pin_group ? null : contact?.user?.email,
+          type: contact?.pin_personal ? "personal" : "group",
+          roomId: contact?.id,
           loggedInUser: loggedInUser,
-          active_member: chat?.active_member,
+          active_member: contact?.active_member,
           toggleDeleteModal: toggleDeleteModal,
           toggleExitModal: toggleExitModal,
           toggleDeleteGroupModal: toggleDeleteGroupModal,
@@ -68,7 +68,7 @@ const ContactMenu = ({
       color: "#176688",
       onPress: async () => {
         await SheetManager.hide("form-sheet");
-        toggleClearChatMessage(chat);
+        toggleClearChatMessage(contact);
       },
     },
     // {
@@ -81,11 +81,11 @@ const ContactMenu = ({
     {
       id: 5,
       icon: "trash-can-outline",
-      name: `Delete ${chat?.pin_group ? chat?.name : chat?.user?.name}`,
+      name: `Delete ${contact?.pin_group ? contact?.name : contact?.user?.name}`,
       color: "#EB0E29",
       onPress: async () => {
         await SheetManager.hide("form-sheet");
-        chat?.pin_group ? toggleDeleteGroupModal(chat) : toggleDeleteModal(chat);
+        contact?.pin_group ? toggleDeleteGroupModal(contact) : toggleDeleteModal(contact);
       },
     },
   ];
@@ -102,10 +102,12 @@ const ContactMenu = ({
         >
           <AvatarPlaceholder
             size="md"
-            name={chat?.pin_group ? chat?.name : chat?.user?.name}
-            image={chat?.pin_group ? chat?.image : chat?.user?.image}
+            name={contact?.pin_group ? contact?.name : contact?.user?.name}
+            image={contact?.pin_group ? contact?.image : contact?.user?.image}
           />
-          <Text style={{ fontSize: 16, fontWeight: "700" }}>{chat?.pin_group ? chat?.name : chat?.user?.name}</Text>
+          <Text style={{ fontSize: 16, fontWeight: "700" }}>
+            {contact?.pin_group ? contact?.name : contact?.user?.name}
+          </Text>
         </View>
       </View>
 
@@ -147,7 +149,7 @@ const ContactMenu = ({
             </TouchableOpacity>
           );
         })}
-        {!chat?.active_member
+        {!contact?.active_member
           ? menuOptions.map((option, index) => {
               return (
                 <View key={index} style={styles.container}>

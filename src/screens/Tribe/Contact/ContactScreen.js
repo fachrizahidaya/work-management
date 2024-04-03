@@ -3,15 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import _ from "lodash";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
@@ -81,7 +73,7 @@ const ContactScreen = () => {
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={{ ...styles.container }}>
+        <SafeAreaView style={styles.container}>
           <View style={styles.header}>
             <View style={{ flexDirection: "row", gap: 1 }}>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>

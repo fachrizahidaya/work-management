@@ -52,13 +52,17 @@ const ChatInput = ({
       icon: "file-document-outline",
       name: "Document",
       color: "#1E4AB9",
-      onPress: selectFile,
+      onPress: () => {
+        selectFile(setFileAttachment, true);
+      },
     },
     {
       icon: "image-multiple-outline",
       name: "Photo",
       color: "#39B326",
-      onPress: pickImageHandler,
+      onPress: () => {
+        pickImageHandler(setFileAttachment, true);
+      },
     },
     {
       icon: "circle-slice-2",

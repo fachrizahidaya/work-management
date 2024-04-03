@@ -130,7 +130,7 @@ const KPIListScreen = () => {
                     onEndReachedThreshold={0.1}
                     keyExtractor={(item, index) => index}
                     renderItem={({ item, index }) => (
-                      <OngoingPerformanceListItem
+                      <KPIListItem
                         key={index}
                         id={item?.id}
                         start_date={item?.review?.begin_date}

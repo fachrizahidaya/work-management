@@ -157,6 +157,7 @@ const NewLeaveRequest = () => {
   const countLeave = async () => {
     try {
       setIsLoading(true);
+      setIsError(false);
       const res = await axiosInstance.post(`/hr/leave-requests/count-leave`, {
         leave_id: formik.values.leave_id,
         begin_date: formik.values.begin_date,
@@ -265,23 +266,17 @@ const NewLeaveRequest = () => {
             <PageHeader
               title="New Leave Request"
               onPress={
-                formik.values.leave_id || formik.values.reason || formik.values.begin_date || formik.values.end_date
-                  ? !formik.isSubmitting && formik.status !== "processing" && toggleReturnModal
+                formik.values.leave_id ||
+                formik.values.reason ||
+                formik.values.begin_date ||
+                formik.values.end_date ||
+                (formik.isSubmitting && formik.status == "processing")
+                  ? toggleReturnModal
                   : () => {
                       !formik.isSubmitting && formik.status !== "processing" && formik.resetForm();
                       navigation.goBack();
                     }
               }
-            />
-
-            <ReturnConfirmationModal
-              isOpen={returnModalIsOpen}
-              toggle={toggleReturnModal}
-              onPress={() => {
-                toggleReturnModal();
-                navigation.navigate("Dashboard");
-              }}
-              description="Are you sure want to exit? It will be deleted"
             />
 
             <View style={styles.history}>
@@ -326,6 +321,15 @@ const NewLeaveRequest = () => {
             />
           </View>
         ) : null}
+        <ReturnConfirmationModal
+          isOpen={returnModalIsOpen}
+          toggle={toggleReturnModal}
+          onPress={() => {
+            toggleReturnModal();
+            navigation.navigate("Dashboard");
+          }}
+          description="Are you sure want to exit? It will be deleted"
+        />
       </ScrollView>
     </TouchableWithoutFeedback>
   );

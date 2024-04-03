@@ -1,18 +1,30 @@
-import React from "react";
+import { ActivityIndicator, Text } from "react-native";
+import Button from "../../../shared/Forms/Button";
 
-const SaveButton = ({ isLoading, differences, onSubmit }) => {
+const SaveButton = ({
+  isLoading,
+  differences,
+  onSubmit,
+  differenceTotalAttachments,
+  toggleSubmit,
+  employeeKpiValue,
+  kpiList,
+  toggleSaveModal,
+  setRequestType,
+  refetchKpiList,
+}) => {
   return (
     <Button
       height={35}
       padding={10}
       onPress={() => {
-        if (isLoading || differences.length === 0) {
+        if (isLoading || (differences.length === 0 && differenceTotalAttachments === 0)) {
           null;
         } else {
-          onSubmit();
+          onSubmit(toggleSubmit, employeeKpiValue, kpiList, toggleSaveModal, setRequestType, refetchKpiList);
         }
       }}
-      disabled={differences.length === 0 || isLoading}
+      disabled={(differences.length === 0 && differenceTotalAttachments === 0) || isLoading}
     >
       {isLoading ? (
         <ActivityIndicator />

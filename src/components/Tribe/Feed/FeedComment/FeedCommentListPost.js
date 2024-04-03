@@ -1,5 +1,3 @@
-import React from "react";
-
 import { FlashList } from "@shopify/flash-list";
 import { ActivityIndicator, Text, View } from "react-native";
 
@@ -14,6 +12,12 @@ const FeedCommentListPost = ({
   setHasBeenScrolled,
   handleLinkPress,
   employeeUsername,
+  setCommentParentId,
+  navigation,
+  viewReplyToggle,
+  setViewReplyToggle,
+  hideReplies,
+  setHideReplies,
 }) => {
   return (
     <View>
@@ -45,6 +49,12 @@ const FeedCommentListPost = ({
               onReply={onReply}
               handleLinkPress={handleLinkPress}
               employeeUsername={employeeUsername}
+              setCommentParentId={setCommentParentId}
+              navigation={navigation}
+              viewReplyToggle={viewReplyToggle}
+              setViewReplyToggle={setViewReplyToggle}
+              hideReplies={hideReplies}
+              setHideReplies={setHideReplies}
             />
           );
         }}

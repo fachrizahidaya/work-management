@@ -1,10 +1,8 @@
-FeedCommentReplyItem;
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import { TextProps } from "../../../shared/CustomStylings";
-import { CopyToClipboard } from "../../../shared/CopyToClipboard";
-import { EmailRedirect } from "../../../shared/EmailRedirect";
+import FeedContentStyle from "../../../shared/FeedContentStyle";
 
 const FeedCommentReplyItem = ({
   authorName,
@@ -15,62 +13,10 @@ const FeedCommentReplyItem = ({
   authorImage,
   handleLinkPress,
   employeeUsername,
+  setCommentParentId,
+  navigation,
 }) => {
   const words = comments.split(" ");
-
-  /**
-   * Handle styled for content
-   */
-
-  const commentStyledTextHandler = words?.map((item, index) => {
-    let textStyle = styles.defaultText;
-    let specificEmployee;
-    specificEmployee = employeeUsername?.find((employee) => item?.includes(employee.username));
-    const hasTag = item.includes("<a");
-    const hasHref = item.includes("href");
-    if (item.includes("https")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (hasHref && specificEmployee) {
-      const specificEmployeeId = specificEmployee.id;
-      item = specificEmployee.username;
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle}>
-          @{item}{" "}
-        </Text>
-      );
-    } else if (hasTag) {
-      item = item.replace(`<a`, "");
-      textStyle = styles.defaultText;
-      return <Text key={index}>{item}</Text>;
-    } else if (item.includes("08") || item.includes("62")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => CopyToClipboard(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else if (item.includes("@") && item.includes(".com")) {
-      textStyle = styles.highlightedText;
-      return (
-        <Text key={index} style={textStyle} onPress={() => EmailRedirect(item)}>
-          {item}{" "}
-        </Text>
-      );
-    } else {
-      textStyle = styles.defaultText;
-      return (
-        <Text key={index} style={textStyle}>
-          {item}{" "}
-        </Text>
-      );
-    }
-  });
 
   return (
     <View style={{ marginHorizontal: 40, marginVertical: 10 }}>
@@ -82,10 +28,21 @@ const FeedCommentReplyItem = ({
           <Text style={{ fontSize: 12, fontWeight: "500" }}>
             {authorName.length > 30 ? authorName.split(" ")[0] : authorName}
           </Text>
-          <Text style={[{ fontSize: 12 }, TextProps]}>{commentStyledTextHandler}</Text>
+          <Text style={[{ fontSize: 12 }, TextProps]}>
+            {
+              <FeedContentStyle
+                words={words}
+                employeeUsername={employeeUsername}
+                navigation={navigation}
+                loggedEmployeeId={null}
+                loggedEmployeeImage={null}
+                handleLinkPress={handleLinkPress}
+              />
+            }
+          </Text>
           <Pressable
             onPress={() => {
-              onReply(parentId);
+              onReply(parentId, setCommentParentId);
             }}
           >
             <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Reply</Text>

@@ -1,18 +1,16 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import { useSelector } from "react-redux";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import _ from "lodash";
+import { useFormik } from "formik";
 
-import { Dimensions, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
-import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import FeedCard from "../../../components/Tribe/Employee/FeedPersonal/FeedCard";
 import FeedComment from "../../../components/Tribe/Employee/FeedPersonal/FeedComment";
@@ -21,9 +19,21 @@ import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeamma
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
 import { FlashList } from "@shopify/flash-list";
-import { useFormik } from "formik";
+import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
+import { useLoading } from "../../../hooks/useLoading";
+import {
+  closeCommentHandler,
+  likePostHandler,
+  openCommentHandler,
+  pressLinkHandler,
+  refetchCommentHandler,
+  replyCommentHandler,
+  submitCommentHandler,
+  toggleFullScreenImageHandler,
+} from "../../../components/Tribe/Feed/shared/functions";
+import { pickImageHandler } from "../../../components/shared/PickImage";
 
-const EmployeeProfileScreen = ({ route }) => {
+const EmployeeProfileScreen = () => {
   const [comments, setComments] = useState([]);
   const [posts, setPosts] = useState([]);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
@@ -44,11 +54,11 @@ const EmployeeProfileScreen = ({ route }) => {
   const [filteredType, setFilteredType] = useState([]);
   const [teammatesData, setTeammatesData] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
-  const [deletePostSuccess, setDeletePostSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
   const [selectedPicture, setSelectedPicture] = useState(null);
 
   const navigation = useNavigation();
+  const route = useRoute();
 
   const { height } = Dimensions.get("screen");
 
@@ -61,6 +71,8 @@ const EmployeeProfileScreen = ({ route }) => {
   const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
   const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
   const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
+
+  const { toggle: toggleDeletePost, isLoading: deletePostIsLoading } = useLoading(false);
 
   const userSelector = useSelector((state) => state.auth);
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
@@ -113,136 +125,6 @@ const EmployeeProfileScreen = ({ route }) => {
   };
 
   /**
-   * Handle fetch comment from first offset
-   * After create a new comment, it will return to the first offset
-   */
-  const commentRefetchHandler = () => {
-    setCurrentOffsetComment(0);
-    setReloadComment(!reloadComment);
-  };
-
-  /**
-   * Handle open comment Action sheet
-   */
-  const commentsOpenHandler = (post_id) => {
-    commentsScreenSheetRef.current?.show();
-    setPostId(post_id);
-  };
-
-  /**
-   * Handle close comment Action sheet
-   */
-  const commentsCloseHandler = () => {
-    commentsScreenSheetRef.current?.hide();
-    setPostId(null);
-    setCommentParentId(null);
-  };
-
-  /**
-   * Handle add comment
-   */
-  const commentAddHandler = () => {
-    const referenceIndex = posts.findIndex((post) => post.id === postId);
-    posts[referenceIndex]["total_comment"] += 1;
-    setForceRerender(!forceRerender);
-  };
-
-  /**
-   * Handle Submit a comment
-   * @param {*} data
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/comment`, data);
-      commentRefetchHandler();
-      setCommentParentId(null);
-      commentAddHandler(postId);
-      setSubmitting(false);
-      setStatus("success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-      setSubmitting(false);
-      setStatus("error");
-    }
-  };
-
-  /**
-   * Handle like a Post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      const res = await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPersonalPost();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle toggle reply comment
-   */
-  const replyHandler = (comment_parent_id) => {
-    setCommentParentId(comment_parent_id);
-  };
-
-  /**
-   * Handle show username in post
-   */
-  const objectContainEmployeeUsernameHandler = employees?.data?.map((item, index) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreenHandler = useCallback((image) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(image);
-  }, []);
-
-  /**
-   * Handle press link
-   */
-  const linkPressHandler = useCallback((url) => {
-    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
-    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
-    let trimmedPlayStoreUrl;
-    let trimmedAppStoreUrl;
-    if (playStoreUrl) {
-      trimmedPlayStoreUrl = url?.slice(37);
-    } else if (appStoreUrl) {
-      trimmedAppStoreUrl = url?.slice(7);
-    }
-
-    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
-    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
-
-    try {
-      if (playStoreUrl) {
-        Linking.openURL(modifiedPlayStoreUrl);
-      } else if (appStoreUrl) {
-        Linking.openURL(modifiedAppStoreUrl);
-      } else {
-        Linking.openURL(url);
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  }, []);
-
-  /**
    * Handle Fetch more Posts
    * After end of scroll reached, it will added other earlier posts
    */
@@ -280,7 +162,7 @@ const EmployeeProfileScreen = ({ route }) => {
   /**
    * Handle search teammates
    */
-  const teammatesSearchHandler = useCallback(
+  const searchTeammatesHandler = useCallback(
     _.debounce((value) => {
       setSearchInput(value);
     }, 300),
@@ -293,7 +175,7 @@ const EmployeeProfileScreen = ({ route }) => {
    * @param {*} setSubmitting
    * @param {*} setStatus
    */
-  const postEditHandler = async (form, setSubmitting, setStatus) => {
+  const editPostHandler = async (form, setSubmitting, setStatus) => {
     try {
       setIsLoading(true);
       const res = await axiosInstance.post(`/hr/posts/${selectedPost}`, form, {
@@ -317,34 +199,32 @@ const EmployeeProfileScreen = ({ route }) => {
     }
   };
 
-  /**
-   * Handle pick an image
-   */
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
-
-    if (result) {
-      setImage({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
+  const deletePostHandler = async () => {
+    try {
+      toggleDeletePost();
+      const res = await axiosInstance.delete(`/hr/posts/${selectedPost}`);
+      setPosts([]);
+      postRefetchHandler();
+      toggleDeletePost();
+      setRequestType("danger");
+      toggleDeleteModal();
+    } catch (err) {
+      console.log(err);
+      toggleDeletePost();
+      Toast.show(err.response.data.message, ErrorToastProps);
     }
   };
+
+  /**
+   * Handle show username in post
+   */
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item, index) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
 
   /**
    * Handle show username suggestion option
@@ -400,12 +280,24 @@ const EmployeeProfileScreen = ({ route }) => {
       comments: "",
       parent_id: commentParentId || "",
     },
-    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+    onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
       const modifiedContent = values.comments.replace(mentionRegex, "@$1");
       values.comments = modifiedContent;
-      commentSubmitHandler(values, setSubmitting, setStatus);
+      submitCommentHandler(
+        values,
+        setSubmitting,
+        setStatus,
+        setCommentParentId,
+        setCurrentOffsetComment,
+        setReloadComment,
+        reloadComment,
+        posts,
+        postId,
+        setForceRerender,
+        forceRerender
+      );
     },
   });
 
@@ -436,7 +328,7 @@ const EmployeeProfileScreen = ({ route }) => {
   }, [personalPostIsFetching, reloadPost]);
 
   useEffect(() => {
-    if (!commentsOpenHandler) {
+    if (!openCommentHandler) {
       setCommentParentId(null);
     } else {
       if (comment?.data && commentIsFetching === false) {
@@ -460,72 +352,78 @@ const EmployeeProfileScreen = ({ route }) => {
       <SafeAreaView style={styles.container}>
         {isReady ? (
           <>
-            <>
-              <View style={styles.header}>
-                <PageHeader
-                  title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                />
-              </View>
-              <View style={styles.content} height={height}>
-                {/* Content here */}
-                <FeedCard
-                  posts={posts}
-                  loggedEmployeeId={loggedEmployeeId}
-                  loggedEmployeeImage={loggedEmployeeImage}
-                  postEndReachedHandler={postEndReachedHandler}
-                  personalPostIsFetching={personalPostIsFetching}
-                  refetchPersonalPost={refetchPersonalPost}
-                  employee={employee}
-                  teammates={teammates}
-                  hasBeenScrolled={hasBeenScrolled}
-                  setHasBeenScrolled={setHasBeenScrolled}
-                  onCommentToggle={commentsOpenHandler}
-                  forceRerender={forceRerender}
-                  setForceRerender={setForceRerender}
-                  personalPostIsLoading={personalPostIsLoading}
-                  toggleFullScreen={toggleFullScreenHandler}
-                  openSelectedPersonalPost={openSelectedPersonalPostHandler}
-                  employeeUsername={objectContainEmployeeUsernameHandler}
-                  userSelector={userSelector}
-                  toggleDeleteModal={toggleDeleteModal}
-                  toggleEditModal={toggleEditModal}
-                  reference={teammatesScreenSheetRef}
-                  navigation={navigation}
-                  postRefetchHandler={postRefetchHandler}
-                  onPressLink={linkPressHandler}
-                  onToggleLike={postLikeToggleHandler}
-                />
+            <View style={styles.header}>
+              <PageHeader
+                title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              />
+            </View>
+            <View style={styles.content} height={height}>
+              {/* Content here */}
+              <FeedCard
+                posts={posts}
+                loggedEmployeeId={loggedEmployeeId}
+                loggedEmployeeImage={loggedEmployeeImage}
+                postEndReachedHandler={postEndReachedHandler}
+                personalPostIsFetching={personalPostIsFetching}
+                refetchPersonalPost={refetchPersonalPost}
+                employee={employee}
+                teammates={teammates}
+                hasBeenScrolled={hasBeenScrolled}
+                setHasBeenScrolled={setHasBeenScrolled}
+                onCommentToggle={openCommentHandler}
+                forceRerender={forceRerender}
+                setForceRerender={setForceRerender}
+                personalPostIsLoading={personalPostIsLoading}
+                toggleFullScreen={toggleFullScreenImageHandler}
+                openSelectedPersonalPost={openSelectedPersonalPostHandler}
+                employeeUsername={objectContainEmployeeUsernameHandler}
+                userSelector={userSelector}
+                toggleDeleteModal={toggleDeleteModal}
+                toggleEditModal={toggleEditModal}
+                reference={teammatesScreenSheetRef}
+                navigation={navigation}
+                postRefetchHandler={postRefetchHandler}
+                onPressLink={pressLinkHandler}
+                onToggleLike={likePostHandler}
+                setPostId={setPostId}
+                commentScreenSheetRef={commentsScreenSheetRef}
+                isFullScreen={isFullScreen}
+                setIsFullScreen={setIsFullScreen}
+                setSelectedPicture={setSelectedPicture}
+              />
 
-                <FeedComment
-                  postId={postId}
-                  loggedEmployeeName={userSelector?.name}
-                  loggedEmployeeImage={profile?.data?.image}
-                  comments={comments}
-                  commentIsFetching={commentIsFetching}
-                  commentIsLoading={commentIsLoading}
-                  refetchComment={refetchComment}
-                  handleClose={commentsCloseHandler}
-                  onEndReached={commentEndReachedHandler}
-                  commentRefetchHandler={commentRefetchHandler}
-                  parentId={commentParentId}
-                  onSubmit={commentSubmitHandler}
-                  onReply={replyHandler}
-                  employees={employees?.data}
-                  employeeUsername={objectContainEmployeeUsernameHandler}
-                  reference={commentsScreenSheetRef}
-                  onPressLink={linkPressHandler}
-                  formik={formik}
-                  commentContainUsernameHandler={commentContainUsernameHandler}
-                  onSuggestions={renderSuggestionsHandler}
-                />
-              </View>
-            </>
+              <FeedComment
+                loggedEmployeeName={userSelector?.name}
+                loggedEmployeeImage={profile?.data?.image}
+                comments={comments}
+                commentIsFetching={commentIsFetching}
+                commentIsLoading={commentIsLoading}
+                refetchComment={refetchComment}
+                handleClose={closeCommentHandler}
+                onEndReached={commentEndReachedHandler}
+                commentRefetchHandler={refetchCommentHandler}
+                parentId={commentParentId}
+                onReply={replyCommentHandler}
+                employeeUsername={objectContainEmployeeUsernameHandler}
+                reference={commentsScreenSheetRef}
+                onPressLink={pressLinkHandler}
+                formik={formik}
+                commentContainUsernameHandler={commentContainUsernameHandler}
+                onSuggestions={renderSuggestionsHandler}
+                reloadComment={reloadComment}
+                setReloadComment={setReloadComment}
+                setCurrentOffsetComments={setCurrentOffsetComment}
+                setPostId={setPostId}
+                setCommentParentId={setCommentParentId}
+              />
+            </View>
           </>
         ) : null}
       </SafeAreaView>
+
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
@@ -540,7 +438,7 @@ const EmployeeProfileScreen = ({ route }) => {
         content={singlePost?.data}
         image={image}
         setImage={setImage}
-        postEditHandler={postEditHandler}
+        postEditHandler={editPostHandler}
         pickImageHandler={pickImageHandler}
         isLoading={isLoading}
         setIsLoading={setIsLoading}
@@ -551,30 +449,17 @@ const EmployeeProfileScreen = ({ route }) => {
         toggleUpdatePostModal={toggleUpdatePostModal}
         requestType={requestType}
       />
-      <ConfirmationModal
-        isOpen={deleteModalIsOpen}
+      <RemoveConfirmationModal
         toggle={toggleDeleteModal}
-        apiUrl={`/hr/posts/${selectedPost}`}
-        color="red.800"
-        hasSuccessFunc={true}
-        onSuccess={() => {
-          setDeletePostSuccess(true);
-          setPosts([]);
-          setRequestType("danger");
-          postRefetchHandler();
-        }}
+        isOpen={deleteModalIsOpen}
+        isLoading={deletePostIsLoading}
         description="Are you sure to delete this post?"
-        successMessage={"Post deleted"}
-        isDelete={true}
-        isPatch={false}
-        toggleOtherModal={toggleDeletePostModal}
-        successStatus={deletePostSuccess}
-        showSuccessToast={false}
+        onPress={() => deletePostHandler()}
       />
       <EmployeeTeammates
         teammates={filteredType.length > 0 ? filteredType : teammatesData}
         reference={teammatesScreenSheetRef}
-        handleSearch={teammatesSearchHandler}
+        handleSearch={searchTeammatesHandler}
         inputToShow={inputToShow}
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
@@ -603,16 +488,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: 14,
     paddingHorizontal: 16,
-  },
-  stickyHeader: {
-    backgroundColor: "#FFFFFF",
-    borderBottomColor: "#E8E9EB",
-    borderBottomWidth: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
   },
   content: {
     flex: 1,
