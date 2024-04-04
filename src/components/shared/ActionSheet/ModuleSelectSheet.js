@@ -21,7 +21,9 @@ const ModuleSelectSheet = (props) => {
       <View style={styles.container}>
         {userSelector?.user_module &&
           userSelector.user_module
-            .filter((item) => item.module_name === "BAND" || item.module_name === "TRIBE")
+            .filter(
+              (item) => item.module_name === "BAND" || item.module_name === "TRIBE" || item.module_name === "COIN"
+            )
             .map((item, idx) => {
               return (
                 <TouchableOpacity
