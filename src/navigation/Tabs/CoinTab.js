@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -86,7 +86,7 @@ const CoinTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={null}>
+              <TouchableOpacity {...props} onPress={() => coinAddNewSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),

@@ -3,10 +3,26 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import useCheckAccess from "../../../hooks/useCheckAccess";
+import { TextProps } from "../CustomStylings";
+
 const CoinAddNewSheet = (props) => {
   const navigation = useNavigation();
+  const createCustomerAccess = useCheckAccess("create", "Customer");
+  const createSupplierAccess = useCheckAccess("create", "Suppliers");
 
-  const items = [];
+  const items = [
+    {
+      title: `New Customer ${createCustomerAccess ? "" : "(No access)"}`,
+      screen: createCustomerAccess ? "New Customer" : "Dashboard",
+    },
+    {
+      title: `New Supplier ${createSupplierAccess ? "" : "(No access)"}`,
+      screen: createSupplierAccess ? "New Supplier" : "Dashboard",
+    },
+  ];
 
   return (
     <>
@@ -24,24 +40,15 @@ const CoinAddNewSheet = (props) => {
                   borderColor: "#E8E9EB",
                 }}
                 onPress={() => {
-                  if (item.title === "New Leave Request") {
-                    navigation.navigate("New Leave Request", {
-                      employeeId: profile?.data?.id,
-                      toggle: toggleNewLeaveRequestModal,
-                      setRequestType: setRequestType,
-                    });
-                  } else if (item.title === "New Reimbursement") {
-                    navigation.navigate("New Reimbursement");
-                  }
-
+                  navigation.navigate(item.screen);
                   props.reference.current?.hide();
                 }}
               >
                 <View style={styles.flex}>
                   <View style={styles.item}>
-                    <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                    <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
                   </View>
-                  <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                  <Text key={idx} style={[{ fontSize: 14 }, TextProps]}>
                     {item.title}
                   </Text>
                 </View>

@@ -86,6 +86,8 @@ import DeliveryOrderDetail from "../screens/Coin/Sales/DeliveryOrderDetail";
 import InvoiceDetail from "../screens/Coin/Sales/InvoiceDetail";
 import DownPayment from "../screens/Coin/Sales/DownPayment";
 import Supplier from "../screens/Coin/Purchase/Supplier";
+import NewSupplierScreen from "../screens/Coin/Purchase/NewSupplierScreen";
+import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
 
 const Stack = createStackNavigator();
 
@@ -324,6 +326,10 @@ const HomeStack = () => {
       <Stack.Screen name="Down Payment" component={DownPayment} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Supplier" component={Supplier} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="New Supplier" component={NewSupplierScreen} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="New Customer" component={NewCustomerScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
