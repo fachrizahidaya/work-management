@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Header from "../components/layout/Header";
 import BandTab from "./Tabs/BandTab";
 import TribeTab from "./Tabs/TribeTab";
+import CoinTab from "./Tabs/CoinTab";
 
 // Independent Screens
 import LogoutScreen from "../screens/LogoutScreen";
@@ -53,9 +54,6 @@ import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 import FrequentlyAskedQuestions from "../screens/Setting/FrequentlyAskedQuestions";
-import Tribe from "../screens/Setting/FAQ/Tribe";
-import Band from "../screens/Setting/FAQ/Band";
-import Account from "../screens/Setting/FAQ/Account";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -71,6 +69,23 @@ import ChatProjectTaskScreen from "../screens/Chat/ChatProjectTask/ChatProjectTa
 import ProjectDetail from "../screens/Chat/ProjectDetail/ProjectDetail";
 import TaskDetail from "../screens/Chat/TaskDetail/TaskDetail";
 import ForwardScreen from "../screens/Chat/ForwardScreen/ForwardScreen";
+
+// Coin Screens
+import SalesScreen from "../screens/Coin/Sales/SalesScreen";
+import PurchaseScreen from "../screens/Coin/Purchase/PurchaseScreen";
+import PurchaseOrder from "../screens/Coin/Purchase/PurchaseOrder";
+import ReceiptPurchaseOrder from "../screens/Coin/Purchase/ReceiptPurchaseOrder";
+import SalesOrder from "../screens/Coin/Sales/SalesOrder";
+import DeliveryOrder from "../screens/Coin/Sales/DeliveryOrder";
+import Customer from "../screens/Coin/Sales/Customer";
+import Invoice from "../screens/Coin/Sales/Invoice";
+import PurchaseOrderDetail from "../screens/Coin/Purchase/PurchaseOrderDetail";
+import SalesOrderDetail from "../screens/Coin/Sales/SalesOrderDetail";
+import ReceiptPurchaseOrderDetail from "../screens/Coin/Purchase/ReceiptPurchaseOrderDetail";
+import DeliveryOrderDetail from "../screens/Coin/Sales/DeliveryOrderDetail";
+import InvoiceDetail from "../screens/Coin/Sales/InvoiceDetail";
+import DownPayment from "../screens/Coin/Sales/DownPayment";
+import Supplier from "../screens/Coin/Purchase/Supplier";
 
 const Stack = createStackNavigator();
 
@@ -113,13 +128,13 @@ const HomeStack = () => {
             return <BandTab />;
           } else if (moduleSelector.module_name === "TRIBE") {
             return <TribeTab />;
+          } else if (moduleSelector.module_name === "COIN") {
+            return <CoinTab />;
           }
           // else if (moduleSelector.module_name === "SETTING") {
           //   return <SettingTab />;
           // } else if (moduleSelector.module_name === "PIPE") {
           //   return <PipeTab  />;
-          // } else if (moduleSelector.module_name === "COIN") {
-          //   return <CoinTab  />;
           else {
             // Render a default component or handle unknown cases
             return <BandTab />;
@@ -263,11 +278,52 @@ const HomeStack = () => {
 
       <Stack.Screen name="FAQ" component={FrequentlyAskedQuestions} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="FAQ Tribe" component={Tribe} options={{ header: () => <Header /> }} />
+      {/* Coin Screens */}
+      <Stack.Screen name="Sales" component={SalesScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="FAQ Band" component={Band} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Purchase" component={PurchaseScreen} options={{ header: () => <Header /> }} />
 
-      <Stack.Screen name="FAQ Account" component={Account} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Purchase Order" component={PurchaseOrder} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Purchase Order Detail"
+        component={PurchaseOrderDetail}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen
+        name="Receipt Purchase Order"
+        component={ReceiptPurchaseOrder}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen
+        name="Receipt Purchase Order Detail"
+        component={ReceiptPurchaseOrderDetail}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen name="Sales Order" component={SalesOrder} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Sales Order Detail" component={SalesOrderDetail} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Delivery Order" component={DeliveryOrder} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen
+        name="Delivery Order Detail"
+        component={DeliveryOrderDetail}
+        options={{ header: () => <Header /> }}
+      />
+
+      <Stack.Screen name="Invoice" component={Invoice} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Invoice Detail" component={InvoiceDetail} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Customer" component={Customer} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Down Payment" component={DownPayment} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Supplier" component={Supplier} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
