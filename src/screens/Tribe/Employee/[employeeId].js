@@ -62,7 +62,7 @@ const EmployeeProfileScreen = () => {
 
   const { height } = Dimensions.get("screen");
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchAllPost } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
   const teammatesScreenSheetRef = useRef(null);
@@ -393,6 +393,7 @@ const EmployeeProfileScreen = () => {
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
+                refetchAllPost={refetchAllPost}
               />
 
               <FeedComment

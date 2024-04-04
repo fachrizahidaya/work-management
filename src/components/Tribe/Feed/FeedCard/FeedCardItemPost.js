@@ -1,3 +1,4 @@
+FeedCardItemPost;
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
@@ -33,6 +34,7 @@ const FeedCardItemPost = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
+  refetchAllPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -50,7 +52,7 @@ const FeedCardItemPost = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost);
+    onToggleLike(post_id, action, refetchPost, refetchAllPost);
   };
 
   useEffect(() => {

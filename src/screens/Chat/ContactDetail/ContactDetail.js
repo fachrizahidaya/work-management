@@ -1,3 +1,4 @@
+ContactDetail;
 import { useCallback, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import _ from "lodash";
@@ -61,7 +62,7 @@ const ContactDetail = () => {
   const fetchUserParameters = {
     page: currentPage,
     search: searchInput,
-    limit: 20,
+    limit: 50,
   };
 
   const {
@@ -107,6 +108,8 @@ const ContactDetail = () => {
         group_id: group_id,
         member: new_members,
       });
+      setCumulativeData([]);
+      setFilteredDataArray([]);
       setSelectedUsers([]);
       fetchSelectedGroupMembers();
       refetchUserList();
@@ -147,6 +150,8 @@ const ContactDetail = () => {
     try {
       toggleRemoveMember();
       const res = await axiosInstance.delete(`/chat/group/member/${group_member_id}`);
+      setCumulativeData([]);
+      setFilteredDataArray([]);
       fetchSelectedGroupMembers();
       toggleRemoveMember();
       toggleRemoveMemberAction();

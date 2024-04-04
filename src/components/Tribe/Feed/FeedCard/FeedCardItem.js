@@ -76,7 +76,7 @@ const FeedCardItem = ({
         marginVertical: 8,
         elevation: 1,
       }}
-      onPress={() => navigation.navigate("Post Screen", { id: id })}
+      onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
     >
       <View style={styles.cardHeader}>
         <TouchableOpacity
@@ -85,6 +85,7 @@ const FeedCardItem = ({
               employeeId: employeeId,
               loggedEmployeeId: loggedEmployeeId,
               loggedEmployeeImage: loggedEmployeeImage,
+              refetchAllPost: refetchPost,
             })
           }
         >
@@ -99,6 +100,7 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
+                refetchAllPost: refetchPost,
               })
             }
           >

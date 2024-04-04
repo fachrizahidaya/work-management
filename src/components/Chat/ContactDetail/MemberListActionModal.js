@@ -26,7 +26,10 @@ const MemberListActionModal = ({
   return (
     <Modal
       isVisible={memberListActionIsopen}
-      onBackdropPress={toggleMemberListAction}
+      onBackdropPress={() => {
+        toggleMemberListAction();
+        setShowConfirmationModal(false);
+      }}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
       hideModalContentWhileAnimating={true}
@@ -52,6 +55,7 @@ const MemberListActionModal = ({
             onPress={() => {
               onUpdateAdminStatus(memberId, 1);
               toggleMemberListAction();
+              setShowConfirmationModal(false);
             }}
             variant="outline"
           >

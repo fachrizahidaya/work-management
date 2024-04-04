@@ -30,6 +30,7 @@ const FeedCard = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
+  setPosts,
 }) => {
   return (
     <View style={styles.container}>
@@ -50,6 +51,7 @@ const FeedCard = ({
           <RefreshControl
             refreshing={postIsFetching}
             onRefresh={() => {
+              setPosts([]);
               postRefetchHandler();
               refetchPost();
             }}
