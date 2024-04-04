@@ -36,9 +36,9 @@ const TribeAddNewSheet = (props) => {
   const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } = useDisclosure(false);
 
   const items = [
-    createLeaveRequestCheckAccess && {
+    {
       icons: "clipboard-clock-outline",
-      title: `New Leave Request`,
+      title: `New Leave Request ${createLeaveRequestCheckAccess ? "" : "(No access)"}`,
     },
     // {
     //   icons: "clipboard-minus-outline",
@@ -210,113 +210,59 @@ const TribeAddNewSheet = (props) => {
     <>
       <ActionSheet ref={props.reference}>
         <View style={styles.container}>
-          {createLeaveRequestCheckAccess
-            ? items.slice(0, 2).map((item, idx) => {
-                return item.title !== "Clock in" ? (
-                  <TouchableOpacity
-                    key={idx}
-                    borderColor="#E8E9EB"
-                    borderBottomWidth={1}
-                    style={{
-                      ...styles.wrapper,
-                      borderBottomWidth: 1,
-                      borderColor: "#E8E9EB",
-                    }}
-                    onPress={() => {
-                      if (item.title === "New Leave Request") {
-                        navigation.navigate("New Leave Request", {
-                          employeeId: profile?.data?.id,
-                          toggle: toggleNewLeaveRequestModal,
-                          setRequestType: setRequestType,
-                        });
-                      } else if (item.title === "New Reimbursement") {
-                        navigation.navigate("New Reimbursement");
-                      }
+          {items.map((item, idx) => {
+            return item.title !== "Clock in" ? (
+              <TouchableOpacity
+                key={idx}
+                borderColor="#E8E9EB"
+                borderBottomWidth={1}
+                style={{
+                  ...styles.wrapper,
+                  borderBottomWidth: 1,
+                  borderColor: "#E8E9EB",
+                }}
+                onPress={() => {
+                  if (item.title === "New Leave Request") {
+                    navigation.navigate("New Leave Request", {
+                      employeeId: profile?.data?.id,
+                      toggle: toggleNewLeaveRequestModal,
+                      setRequestType: setRequestType,
+                    });
+                  } else if (item.title === "New Reimbursement") {
+                    navigation.navigate("New Reimbursement");
+                  }
 
-                      props.reference.current?.hide();
-                    }}
-                  >
-                    <View style={styles.flex}>
-                      <View style={styles.item}>
-                        <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
-                      </View>
-                      <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                        {item.title}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
-                  <Pressable
-                    key={idx}
-                    style={{
-                      ...styles.wrapper,
-                      borderBottomWidth: 1,
-                      borderColor: "#E8E9EB",
-                    }}
-                  >
-                    <ClockAttendance
-                      attendance={attendance?.data}
-                      onClock={attendanceCheckHandler}
-                      location={location}
-                      locationOn={locationOn}
-                      modalIsOpen={attendanceModalIsopen}
-                    />
-                  </Pressable>
-                );
-              })
-            : items.slice(1, 2).map((item, idx) => {
-                return item.title !== "Clock in" ? (
-                  <TouchableOpacity
-                    key={idx}
-                    borderColor="#E8E9EB"
-                    borderBottomWidth={1}
-                    style={{
-                      ...styles.wrapper,
-                      borderBottomWidth: 1,
-                      borderColor: "#E8E9EB",
-                    }}
-                    onPress={() => {
-                      if (item.title === "New Leave Request") {
-                        navigation.navigate("New Leave Request", {
-                          employeeId: profile?.data?.id,
-                          isOpen: newLeaveRequestModalIsOpen,
-                          toggle: toggleNewLeaveRequestModal,
-                        });
-                      } else if (item.title === "New Reimbursement") {
-                        navigation.navigate("New Reimbursement");
-                      }
-
-                      props.reference.current?.hide();
-                    }}
-                  >
-                    <View style={styles.flex}>
-                      <View style={styles.item}>
-                        <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
-                      </View>
-                      <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
-                        {item.title}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
-                  <Pressable
-                    key={idx}
-                    style={{
-                      ...styles.wrapper,
-                      borderBottomWidth: 1,
-                      borderColor: "#E8E9EB",
-                    }}
-                  >
-                    <ClockAttendance
-                      attendance={attendance?.data}
-                      onClock={attendanceCheckHandler}
-                      location={location}
-                      locationOn={locationOn}
-                      modalIsOpen={attendanceModalIsopen}
-                    />
-                  </Pressable>
-                );
-              })}
+                  props.reference.current?.hide();
+                }}
+              >
+                <View style={styles.flex}>
+                  <View style={styles.item}>
+                    <MaterialCommunityIcons name={item.icons} size={20} color="#3F434A" />
+                  </View>
+                  <Text key={item.title} style={[{ fontSize: 14 }, TextProps]}>
+                    {item.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
+              <Pressable
+                key={idx}
+                style={{
+                  ...styles.wrapper,
+                  borderBottomWidth: 1,
+                  borderColor: "#E8E9EB",
+                }}
+              >
+                <ClockAttendance
+                  attendance={attendance?.data}
+                  onClock={attendanceCheckHandler}
+                  location={location}
+                  locationOn={locationOn}
+                  modalIsOpen={attendanceModalIsopen}
+                />
+              </Pressable>
+            );
+          })}
         </View>
 
         <ConfirmationModal
