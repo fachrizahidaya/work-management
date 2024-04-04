@@ -1,9 +1,10 @@
-import React from "react";
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
+
 import Select from "../../../shared/Forms/Select";
 import Input from "../../../shared/Forms/Input";
 import { TextProps } from "../../../shared/CustomStylings";
+import { memo } from "react";
 
 const AppraisalForm = ({
   reference,
@@ -130,4 +131,4 @@ const AppraisalForm = ({
   );
 };
 
-export default AppraisalForm;
+export default memo(AppraisalForm);

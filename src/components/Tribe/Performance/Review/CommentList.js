@@ -1,7 +1,9 @@
-import React from "react";
+import { memo } from "react";
+
 import { View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
+
 import CommentListItem from "./CommentListItem";
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
@@ -50,4 +52,4 @@ const CommentList = ({
   );
 };
 
-export default CommentList;
+export default memo(CommentList);

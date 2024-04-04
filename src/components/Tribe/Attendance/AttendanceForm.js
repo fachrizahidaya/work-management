@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 
 import { StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
@@ -336,7 +336,7 @@ const AttendanceForm = ({
   );
 };
 
-export default AttendanceForm;
+export default memo(AttendanceForm);
 
 const styles = StyleSheet.create({
   wrapper: {

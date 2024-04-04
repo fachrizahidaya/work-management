@@ -1,7 +1,9 @@
-import React from "react";
+import { memo } from "react";
+
 import { View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
+
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 import KPIReviewListItem from "./KPIReviewListItem";
 
@@ -50,4 +52,4 @@ const KPIReviewList = ({
   );
 };
 
-export default KPIReviewList;
+export default memo(KPIReviewList);

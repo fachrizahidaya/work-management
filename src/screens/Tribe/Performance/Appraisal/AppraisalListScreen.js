@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";

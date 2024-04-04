@@ -1,8 +1,10 @@
-import React from "react";
-import { FlashList } from "@shopify/flash-list";
-import PerformanceListItem from "./PerformanceListItem";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { memo } from "react";
+
 import { StyleSheet, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
+import PerformanceListItem from "./PerformanceListItem";
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const PerformanceList = ({ data, isFetching, refetch, navigation, dayjs }) => {
@@ -43,7 +45,7 @@ const PerformanceList = ({ data, isFetching, refetch, navigation, dayjs }) => {
   );
 };
 
-export default PerformanceList;
+export default memo(PerformanceList);
 
 const styles = StyleSheet.create({
   content: {
