@@ -220,12 +220,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
   },
-  inputHeader: {
-    flexDirection: "row",
-    gap: 5,
-    marginHorizontal: 2,
-    marginTop: 22,
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",

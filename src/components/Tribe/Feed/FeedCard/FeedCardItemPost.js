@@ -1,4 +1,3 @@
-FeedCardItemPost;
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
@@ -65,16 +64,7 @@ const FeedCardItemPost = ({
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          padding: 16,
-          gap: 20,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          backgroundColor: "#FFFFFF",
-          elevation: 1,
-        }}
-      >
+      <View style={styles.wrapper}>
         <View style={styles.cardHeader}>
           <TouchableOpacity
             onPress={() =>
@@ -191,12 +181,6 @@ const styles = StyleSheet.create({
     marginVertical: 14,
     marginBottom: 0,
   },
-  defaultText: {
-    color: "#000000",
-  },
-  highlightedText: {
-    color: "#72acdc",
-  },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -209,7 +193,6 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   image: {
-    // flex: 1,
     width: "100%",
     height: 250,
     backgroundColor: "white",
@@ -224,5 +207,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
+  },
+  wrapper: {
+    padding: 16,
+    gap: 20,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    backgroundColor: "#FFFFFF",
+    elevation: 1,
   },
 });

@@ -1,5 +1,3 @@
-import React from "react";
-
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 

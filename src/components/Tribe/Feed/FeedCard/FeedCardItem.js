@@ -71,10 +71,7 @@ const FeedCardItem = ({
     <TouchableOpacity
       style={{
         ...card.card,
-        gap: 20,
-        flexDirection: "column",
-        marginVertical: 8,
-        elevation: 1,
+        ...styles.card,
       }}
       onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
     >
@@ -186,12 +183,13 @@ const FeedCardItem = ({
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: "#000000",
+  card: {
+    gap: 20,
+    flexDirection: "column",
+    marginVertical: 8,
+    elevation: 1,
   },
-  highlightedText: {
-    color: "#72acdc",
-  },
+
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
