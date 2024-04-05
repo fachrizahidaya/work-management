@@ -25,7 +25,7 @@ const SalesAndCustomerCard = ({
       progressIcon:
         monthlySalesPercentage < 0 ? "arrow-down-thin" : monthlySalesPercentage == 0 ? "equal" : "arrow-up-thin",
       progressIconColor: monthlySalesPercentage < 0 ? "#FD7972" : monthlySalesPercentage == 0 ? "#8A9099" : "#49C96D",
-      progressPercentage: Math.abs(monthlySalesPercentage) + "%",
+      progressPercentage: Math.abs(monthlySalesPercentage).toFixed(0) + "%",
     },
     {
       title: "Total Customer",
@@ -35,7 +35,7 @@ const SalesAndCustomerCard = ({
         monthlyCustomerPercentage < 0 ? "arrow-down-thin" : monthlyCustomerPercentage == 0 ? "equal" : "arrow-up-thin",
       progressIconColor:
         monthlyCustomerPercentage < 0 ? "#FD7972" : monthlyCustomerPercentage == 0 ? "#8A9099" : "#49C96D",
-      progressPercentage: Math.abs(monthlyCustomerPercentage) + "%",
+      progressPercentage: Math.abs(monthlyCustomerPercentage).toFixed(0) + "%",
     },
   ];
 

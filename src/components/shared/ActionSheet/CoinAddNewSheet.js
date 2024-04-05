@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -7,20 +8,38 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { TextProps } from "../CustomStylings";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import SuccessModal from "../Modal/SuccessModal";
 
 const CoinAddNewSheet = (props) => {
+  const [requestType, setRequestType] = useState("");
+
   const navigation = useNavigation();
+
   const createCustomerAccess = useCheckAccess("create", "Customer");
   const createSupplierAccess = useCheckAccess("create", "Suppliers");
+
+  const { isOpen: newCustomerModalIsOpen, toggle: toggleNewCustomerModal } = useDisclosure(false);
 
   const items = [
     {
       title: `New Customer ${createCustomerAccess ? "" : "(No access)"}`,
-      screen: createCustomerAccess ? "New Customer" : "Dashboard",
+      screen: () => {
+        createCustomerAccess
+          ? navigation.navigate("New Customer", {
+              setRequestType: setRequestType,
+              toggleSuccessModal: toggleNewCustomerModal,
+            })
+          : navigation.navigate("Dashboard");
+        props.reference.current?.hide();
+      },
     },
     {
       title: `New Supplier ${createSupplierAccess ? "" : "(No access)"}`,
-      screen: createSupplierAccess ? "New Supplier" : "Dashboard",
+      screen: () => {
+        createSupplierAccess ? navigation.navigate("New Supplier") : navigation.navigate("Dashboard");
+        props.reference.current?.hide();
+      },
     },
   ];
 
@@ -39,10 +58,7 @@ const CoinAddNewSheet = (props) => {
                   borderBottomWidth: 1,
                   borderColor: "#E8E9EB",
                 }}
-                onPress={() => {
-                  navigation.navigate(item.screen);
-                  props.reference.current?.hide();
-                }}
+                onPress={item.screen}
               >
                 <View style={styles.flex}>
                   <View style={styles.item}>
@@ -57,6 +73,13 @@ const CoinAddNewSheet = (props) => {
           })}
         </View>
       </ActionSheet>
+      <SuccessModal
+        isOpen={newCustomerModalIsOpen}
+        toggle={toggleNewCustomerModal}
+        type={requestType}
+        title="Customer added!"
+        description="Data has successfully added"
+      />
     </>
   );
 };

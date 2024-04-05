@@ -22,7 +22,7 @@ const IncomeCard = ({ total_income, salesIsLoading, currencyConverter, monthlyIn
             size={20}
             color={monthlyIncomePercentage < 0 ? "#FD7972" : monthlyIncomePercentage == 0 ? "#8A9099" : "#49C96D"}
           />
-          <Text style={[TextProps, { color: "#49C96D" }]}>{Math.abs(monthlyIncomePercentage) + "%"}</Text>
+          <Text style={[TextProps, { color: "#49C96D" }]}>{Math.abs(monthlyIncomePercentage).toFixed(0) + "%"}</Text>
         </View>
       </View>
       <View style={{ backgroundColor: "#fff4ee", borderRadius: 20, padding: 10 }}>
