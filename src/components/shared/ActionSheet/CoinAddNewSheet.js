@@ -20,6 +20,7 @@ const CoinAddNewSheet = (props) => {
   const createSupplierAccess = useCheckAccess("create", "Suppliers");
 
   const { isOpen: newCustomerModalIsOpen, toggle: toggleNewCustomerModal } = useDisclosure(false);
+  const { isOpen: newSupplierModalIsOpen, toggle: toggleNewSupplierModal } = useDisclosure(false);
 
   const items = [
     {
@@ -37,7 +38,12 @@ const CoinAddNewSheet = (props) => {
     {
       title: `New Supplier ${createSupplierAccess ? "" : "(No access)"}`,
       screen: () => {
-        createSupplierAccess ? navigation.navigate("New Supplier") : navigation.navigate("Dashboard");
+        createSupplierAccess
+          ? navigation.navigate("New Supplier", {
+              setRequestType: setRequestType,
+              toggleSuccessModal: toggleNewSupplierModal,
+            })
+          : navigation.navigate("Dashboard");
         props.reference.current?.hide();
       },
     },
@@ -78,6 +84,13 @@ const CoinAddNewSheet = (props) => {
         toggle={toggleNewCustomerModal}
         type={requestType}
         title="Customer added!"
+        description="Data has successfully added"
+      />
+      <SuccessModal
+        isOpen={newSupplierModalIsOpen}
+        toggle={toggleNewSupplierModal}
+        type={requestType}
+        title="Supplier added!"
         description="Data has successfully added"
       />
     </>

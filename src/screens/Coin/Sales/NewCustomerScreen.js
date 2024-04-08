@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -145,33 +146,35 @@ const NewCustomerScreen = () => {
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
 
-      <View
-        style={{
-          paddingVertical: 16,
-          paddingHorizontal: 14,
-          gap: 20,
-        }}
-      >
-        {tabValue === "Profile" ? (
-          <>
-            {/* <AvatarSelect
+      <ScrollView>
+        <View
+          style={{
+            paddingVertical: 16,
+            paddingHorizontal: 14,
+            gap: 20,
+          }}
+        >
+          {tabValue === "Profile" ? (
+            <>
+              {/* <AvatarSelect
               imageAttachment={imageAttachment}
               setImageAttachment={setImageAttachment}
               name={null}
               image={null}
             /> */}
-            <NewCustomerProfileForm customerCategory={customerCategory} formik={formik} />
-          </>
-        ) : tabValue === "Address" ? (
-          <>
-            <NewCustomerAddressForm formik={formik} />
-          </>
-        ) : (
-          <>
-            <NewCustomerSubmission formik={formik} />
-          </>
-        )}
-      </View>
+              <NewCustomerProfileForm customerCategory={customerCategory} formik={formik} />
+            </>
+          ) : tabValue === "Address" ? (
+            <>
+              <NewCustomerAddressForm formik={formik} />
+            </>
+          ) : (
+            <>
+              <NewCustomerSubmission formik={formik} />
+            </>
+          )}
+        </View>
+      </ScrollView>
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
