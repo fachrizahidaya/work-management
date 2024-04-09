@@ -19,7 +19,7 @@ import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState(null);
   const [status, setStatus] = useState(null);
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -158,8 +158,9 @@ const TribeAddNewSheet = (props) => {
     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
 
   const holidayCondition =
-    attendance?.data?.att_type === "Holiday" &&
-    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
+    (attendance?.data?.att_type === "Holiday" &&
+      (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off")) ||
+    attendance?.data?.day_type === "Holiday";
 
   const weekend = attendance?.data?.day_type === "Weekend";
 
@@ -214,13 +215,7 @@ const TribeAddNewSheet = (props) => {
             return item.title !== "Clock in" ? (
               <TouchableOpacity
                 key={idx}
-                borderColor="#E8E9EB"
-                borderBottomWidth={1}
-                style={{
-                  ...styles.wrapper,
-                  borderBottomWidth: 1,
-                  borderColor: "#E8E9EB",
-                }}
+                style={styles.wrapper}
                 onPress={() => {
                   if (item.title === "New Leave Request") {
                     navigation.navigate("New Leave Request", {
@@ -231,7 +226,6 @@ const TribeAddNewSheet = (props) => {
                   } else if (item.title === "New Reimbursement") {
                     navigation.navigate("New Reimbursement");
                   }
-
                   props.reference.current?.hide();
                 }}
               >
@@ -245,14 +239,7 @@ const TribeAddNewSheet = (props) => {
                 </View>
               </TouchableOpacity>
             ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
-              <Pressable
-                key={idx}
-                style={{
-                  ...styles.wrapper,
-                  borderBottomWidth: 1,
-                  borderColor: "#E8E9EB",
-                }}
-              >
+              <Pressable key={idx} style={styles.wrapper}>
                 <ClockAttendance
                   attendance={attendance?.data}
                   onClock={attendanceCheckHandler}
@@ -324,6 +311,8 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: "#E8E9EB",
   },
   flex: {
     display: "flex",
@@ -338,9 +327,5 @@ const styles = StyleSheet.create({
     width: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    fontWeight: "800",
-    color: "black",
   },
 });
