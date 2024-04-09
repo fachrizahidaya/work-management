@@ -16,17 +16,7 @@ const ImageAttachment = ({ image, setImage }) => {
         </Pressable>
       </View>
       <View style={{ alignSelf: "center" }}>
-        <Image
-          source={{ uri: image.uri }}
-          style={{
-            flex: 1,
-            width: 350,
-            height: 500,
-            backgroundColor: "white",
-            resizeMode: "contain",
-          }}
-          alt="image selected"
-        />
+        <Image source={{ uri: image.uri }} style={styles.image} alt="image selected" />
       </View>
     </View>
   );
@@ -44,5 +34,12 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
+  },
+  image: {
+    flex: 1,
+    width: 350,
+    height: 500,
+    backgroundColor: "white",
+    resizeMode: "contain",
   },
 });

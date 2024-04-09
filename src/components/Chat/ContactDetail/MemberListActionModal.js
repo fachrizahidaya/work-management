@@ -38,7 +38,7 @@ const MemberListActionModal = ({
         showConfirmationModal && toggleRemoveMemberAction();
       }}
     >
-      <View style={{ ...styles.container }}>
+      <View style={styles.container}>
         <Text style={[{ fontSize: 12 }, TextProps]}>{memberName}</Text>
         {memberAdminStatus ? (
           <Button
@@ -65,7 +65,6 @@ const MemberListActionModal = ({
         <Button
           onPress={() => {
             toggleMemberListAction();
-            // toggleRemoveMemberAction();
             setShowConfirmationModal(true);
           }}
           variant="outline"

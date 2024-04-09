@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,13 +22,8 @@ const FileAttachmentBubble = ({
     <Pressable
       onPress={() => onDownload(file_path)}
       style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        ...styles.container,
         backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
-        borderRadius: 5,
-        gap: 5,
-        padding: 10,
       }}
     >
       <Image
@@ -46,12 +41,7 @@ const FileAttachmentBubble = ({
             ? require(ppt)
             : require(txt)
         }
-        style={{
-          height: 20,
-          width: 20,
-          alignSelf: "center",
-          resizeMode: "cover",
-        }}
+        style={styles.image}
         alt={`${file_type} format`}
       />
 
@@ -95,3 +85,20 @@ const FileAttachmentBubble = ({
 };
 
 export default FileAttachmentBubble;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderRadius: 5,
+    gap: 5,
+    padding: 10,
+  },
+  image: {
+    height: 20,
+    width: 20,
+    alignSelf: "center",
+    resizeMode: "cover",
+  },
+});
