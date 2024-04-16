@@ -18,13 +18,16 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
           ...styles.container,
         }}
       >
-        <TouchableOpacity style={styles.wrapper} onPress={toggleClearChatMessage}>
+        <TouchableOpacity style={{ ...styles.wrapper }} onPress={toggleClearChatMessage}>
           <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Clear Messages</Text>
           <MaterialCommunityIcons name={"close-circle-outline"} size={15} color="#EB0E29" />
         </TouchableOpacity>
 
         {type === "group" && active_member === 1 && (
-          <TouchableOpacity style={styles.wrapper} onPress={toggleExitModal}>
+          <TouchableOpacity
+            style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+            onPress={toggleExitModal}
+          >
             <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
             <MaterialCommunityIcons
               name={type === "personal" ? "not-interested" : "exit-to-app"}
@@ -34,7 +37,10 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
           </TouchableOpacity>
         )}
         {type === "group" && active_member === 0 && (
-          <TouchableOpacity style={styles.wrapper} onPress={toggleDeleteGroupModal}>
+          <TouchableOpacity
+            style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+            onPress={toggleDeleteGroupModal}
+          >
             <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Delete Group</Text>
             <MaterialCommunityIcons
               name={type === "personal" ? "not-interested" : "trash-can-outline"}
@@ -43,16 +49,22 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             />
           </TouchableOpacity>
         )}
-        {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
-        <Text fontSize={14} fontWeight={400}>
-          Block {name.length > 30 ? name.split(" ")[0] : name}
-        </Text>
-      </Pressable> */}
-        {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
-        <Text fontSize={14} fontWeight={400}>
-          Report {name.length > 30 ? name.split(" ")[0] : name}
-        </Text>
-      </Pressable> */}
+        {/* <TouchableOpacity
+          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+          onPress={toggleClearChatMessage}
+        >
+          <Text fontSize={14} fontWeight={400}>
+            Block {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity
+          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+          onPress={toggleClearChatMessage}
+        >
+          <Text fontSize={14} fontWeight={400}>
+            Report {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -74,7 +86,5 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 5,
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ffffff",
   },
 });
