@@ -13,7 +13,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
-import { TextProps, ErrorToastProps, SuccessToastProps } from "../CustomStylings";
+import { TextProps, ErrorToastProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
@@ -217,7 +217,7 @@ const TribeAddNewSheet = (props) => {
                 key={idx}
                 style={styles.wrapper}
                 onPress={() => {
-                  if (item.title === "New Leave Request") {
+                  if (item.title === "New Leave Request ") {
                     navigation.navigate("New Leave Request", {
                       employeeId: profile?.data?.id,
                       toggle: toggleNewLeaveRequestModal,
