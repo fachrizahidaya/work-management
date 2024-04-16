@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
@@ -21,7 +21,7 @@ import { useDisclosure } from "../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
 
 const NewSupplierScreen = () => {
-  const [imageAttachment, setImageAttachment] = useState(null);
+  // const [imageAttachment, setImageAttachment] = useState(null);
   const [tabValue, setTabValue] = useState("Profile");
 
   const navigation = useNavigation();
@@ -30,9 +30,9 @@ const NewSupplierScreen = () => {
   const { setRequestType, toggleSuccessModal } = route.params;
 
   const { data: category } = useFetch(`/acc/supplier-category`);
-  const { data } = useFetch(`/acc/supplier`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: submissionModalIsOpen, toggle: toggleSubmissionModal } = useDisclosure(false);
 
   const supplierCategory = category?.data?.map((item, index) => ({
     label: item?.name,
@@ -43,7 +43,6 @@ const NewSupplierScreen = () => {
     return [
       { title: `Profile`, value: "Profile" },
       { title: `Address`, value: "Address" },
-      { title: `Submission`, value: "Submission" },
     ];
   }, []);
 
@@ -83,7 +82,7 @@ const NewSupplierScreen = () => {
       phone: yup.string().matches(phoneRegExp, "Phone number is invalid").required("Phone Number is required"),
       address: yup.string().required("Address is required"),
       account_name: yup.string().required("Account Name is required"),
-      bank_account: yup.string().required("Account Name is required"),
+      bank_account: yup.string().required("Bank Account is required"),
       account_no: yup.string().required("Account Number is required"),
       zip_code: yup
         .string()
@@ -103,7 +102,7 @@ const NewSupplierScreen = () => {
       setSubmitting(false);
       setStatus("success");
       setRequestType("post");
-      toggleSuccessModal();
+      toggleSubmissionModal();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -132,7 +131,7 @@ const NewSupplierScreen = () => {
     formik.values.account_name &&
     formik.values.bank_account &&
     formik.values.account_no &&
-    formik.values.zip_code;
+    formik.values.zip_code.length === 5;
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -150,12 +149,8 @@ const NewSupplierScreen = () => {
             formValueEmpty ? navigation.goBack() : toggleReturnModal();
           }}
         />
-        <Button height={35} padding={10} disabled={allFormFilled ? false : true} onPress={formik.handleSubmit}>
-          {formik.isSubmitting ? (
-            <ActivityIndicator />
-          ) : (
-            <Text style={[{ color: "#FFFFFF", fontSize: 12, fontWeight: "500" }]}>Submit</Text>
-          )}
+        <Button height={35} padding={10} disabled={allFormFilled ? false : true} onPress={toggleSubmissionModal}>
+          <Text style={[{ color: "#FFFFFF", fontSize: 12, fontWeight: "500" }]}>Submit</Text>
         </Button>
       </View>
       <View style={{ backgroundColor: "#FFFFFF", paddingHorizontal: 14 }}>
@@ -179,17 +174,21 @@ const NewSupplierScreen = () => {
             /> */}
               <NewSupplierProfileForm supplierCategory={supplierCategory} formik={formik} />
             </>
-          ) : tabValue === "Address" ? (
-            <>
-              <NewSupplierAddressForm formik={formik} />
-            </>
           ) : (
             <>
-              <NewSupplierSubmission formik={formik} />
+              <NewSupplierAddressForm formik={formik} />
             </>
           )}
         </View>
       </ScrollView>
+      <NewSupplierSubmission
+        formik={formik}
+        visible={submissionModalIsOpen}
+        backdropPress={toggleSubmissionModal}
+        isSubmitting={formik.isSubmitting}
+        onSubmit={formik.handleSubmit}
+        toggleOtherModal={toggleSuccessModal}
+      />
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
