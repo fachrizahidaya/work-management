@@ -1,7 +1,6 @@
-import React from "react";
 import dayjs from "dayjs";
 
-import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { TextProps } from "../../../shared/CustomStylings";
@@ -22,7 +21,7 @@ const FeedItem = ({
   type,
 }) => {
   return (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("Post Screen", { id: id })}>
+    <Pressable style={styles.item} onPress={() => navigation.navigate("Post Screen", { id: id })}>
       <View style={styles.cardHeader}>
         <AvatarPlaceholder image={employee_image} name={employee_name} size="lg" isThumb={false} />
 
@@ -95,7 +94,7 @@ const FeedItem = ({
           <Text style={[{ fontSize: 14 }, TextProps]}>{total_like}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
