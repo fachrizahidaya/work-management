@@ -1,5 +1,5 @@
-import React from "react";
 import { Image, StyleSheet, View } from "react-native";
+
 import EmployeeContact from "./EmployeeContact";
 import EmployeeProfile from "./EmployeeProfile";
 import EmployeeSelfProfile from "./EmployeeSelfProfile";

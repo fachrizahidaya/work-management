@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -20,6 +18,7 @@ import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import Input from "../../../components/shared/Forms/Input";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { pickImageHandler } from "../../../components/shared/PickImage";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -80,42 +79,6 @@ const MyProfileScreen = ({ route }) => {
       editProfileHandler(values, setSubmitting, setStatus);
     },
   });
-
-  /**
-   * Pick image handler
-   * @returns
-   */
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
-
-    if (fileInfo.size >= 1000000) {
-      Toast.show("File size too large", ErrorToastProps);
-      return;
-    }
-
-    if (result) {
-      setImage({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
-    }
-  };
 
   /**
    * Submit update profile picture handler
@@ -181,7 +144,10 @@ const MyProfileScreen = ({ route }) => {
               }}
               alt="profile picture"
             />
-            <Pressable style={styles.editPicture} onPress={!image ? pickImageHandler : () => setImage(null)}>
+            <Pressable
+              style={styles.editPicture}
+              onPress={!image ? () => pickImageHandler(setImage) : () => setImage(null)}
+            >
               <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} color="#3F434A" />
             </Pressable>
           </View>
@@ -244,7 +210,6 @@ const styles = StyleSheet.create({
     top: -5,
     right: -10,
     zIndex: 2,
-    // shadow="0"
     borderRadius: 50,
     borderWidth: 1,
     borderColor: "#C6C9CC",

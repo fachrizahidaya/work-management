@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AttendanceAttachmentList from "./AttendanceAttachmentList";
+import { memo } from "react";
 
 const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachmentIsFetching, refetchAttachment }) => {
   return (
@@ -35,7 +36,7 @@ const AttendanceAttachment = ({ attachment, setAttachmentId, reference, attachme
   );
 };
 
-export default AttendanceAttachment;
+export default memo(AttendanceAttachment);
 
 const styles = StyleSheet.create({
   header: {

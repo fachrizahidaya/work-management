@@ -1,24 +1,12 @@
-import { TouchableOpacity, View, Text, Pressable } from "react-native";
+import { TouchableOpacity, View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TextProps } from "../../shared/CustomStylings";
 
 const ContactMedia = ({ qty, navigation, media, docs }) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderRadius: 10,
-        backgroundColor: "#FFFFFF",
-        marginHorizontal: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        gap: 5,
-      }}
-    >
-      <Pressable style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 5 }}>
+    <View style={styles.container}>
+      <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <MaterialIcons name="image" size={20} color="#377893" />
         <Text style={[{ fontSize: 14 }, TextProps]}>Media & Docs</Text>
       </Pressable>
@@ -39,3 +27,17 @@ const ContactMedia = ({ qty, navigation, media, docs }) => {
 };
 
 export default ContactMedia;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    gap: 5,
+  },
+});

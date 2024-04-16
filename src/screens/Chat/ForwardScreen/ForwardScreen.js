@@ -154,7 +154,6 @@ const ForwardScreen = () => {
                   type="personal"
                   active_member={0}
                   navigation={navigation}
-                  userSelector={userSelector}
                   message={message}
                   project={project}
                   task={task}

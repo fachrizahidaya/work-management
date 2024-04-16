@@ -1,7 +1,8 @@
-import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+
 import ContactItem from "./ContactItem";
+import { memo } from "react";
 
 const ContactList = ({
   data,
@@ -48,4 +49,4 @@ const ContactList = ({
   );
 };
 
-export default ContactList;
+export default memo(ContactList);

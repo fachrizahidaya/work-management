@@ -20,7 +20,7 @@ import ChatOptionMenu from "../../../components/Chat/ChatBubble/ChatOptionMenu";
 import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMessageDeleteModal";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import { pickImageHandler } from "../../../components/shared/PickImage";
 import { selectFile } from "../../../components/shared/SelectFIle";
 import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";

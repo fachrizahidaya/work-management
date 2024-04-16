@@ -1,9 +1,10 @@
-import { FlashList } from "@shopify/flash-list";
-import React from "react";
+import { memo } from "react";
+
 import { View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
 import AppraisalReviewListItem from "./AppraisalReviewListItem";
-import { RefreshControl } from "react-native-gesture-handler";
-import { ScrollView } from "react-native-actions-sheet";
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const AppraisalReviewList = ({
@@ -51,4 +52,4 @@ const AppraisalReviewList = ({
   );
 };
 
-export default AppraisalReviewList;
+export default memo(AppraisalReviewList);

@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -7,13 +7,8 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, onRedirec
     <Pressable
       onPress={() => onRedirect(id, type)}
       style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
+        ...styles.container,
         backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
-        borderRadius: 5,
-        gap: 5,
-        padding: 10,
       }}
     >
       {type === "Project" && (
@@ -38,3 +33,14 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, onRedirec
 };
 
 export default BandAttachmentBubble;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    borderRadius: 5,
+    gap: 5,
+    padding: 10,
+  },
+});

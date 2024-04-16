@@ -281,6 +281,7 @@ const FeedScreen = () => {
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
+            setPosts={setPosts}
           />
         </View>
         <FeedComment

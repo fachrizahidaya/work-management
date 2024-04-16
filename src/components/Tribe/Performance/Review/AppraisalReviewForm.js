@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
@@ -121,4 +121,4 @@ const AppraisalReviewForm = ({
   );
 };
 
-export default AppraisalReviewForm;
+export default memo(AppraisalReviewForm);

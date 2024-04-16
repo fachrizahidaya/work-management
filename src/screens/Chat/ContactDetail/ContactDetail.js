@@ -61,7 +61,7 @@ const ContactDetail = () => {
   const fetchUserParameters = {
     page: currentPage,
     search: searchInput,
-    limit: 20,
+    limit: 50,
   };
 
   const {
@@ -107,6 +107,8 @@ const ContactDetail = () => {
         group_id: group_id,
         member: new_members,
       });
+      setCumulativeData([]);
+      setFilteredDataArray([]);
       setSelectedUsers([]);
       fetchSelectedGroupMembers();
       refetchUserList();
@@ -147,6 +149,8 @@ const ContactDetail = () => {
     try {
       toggleRemoveMember();
       const res = await axiosInstance.delete(`/chat/group/member/${group_member_id}`);
+      setCumulativeData([]);
+      setFilteredDataArray([]);
       fetchSelectedGroupMembers();
       toggleRemoveMember();
       toggleRemoveMemberAction();

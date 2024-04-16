@@ -80,9 +80,4 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems: "center",
   },
-  contentTeammmates: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
 });

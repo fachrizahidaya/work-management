@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 
 import { Dimensions, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
+import { FlashList } from "@shopify/flash-list";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -18,7 +19,6 @@ import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import EmployeeTeammates from "../../../components/Tribe/Employee/EmployeeTeammates";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import EditPersonalPost from "../../../components/Tribe/Employee/FeedPersonal/EditPersonalPost";
-import { FlashList } from "@shopify/flash-list";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import { useLoading } from "../../../hooks/useLoading";
 import {
@@ -62,7 +62,7 @@ const EmployeeProfileScreen = () => {
 
   const { height } = Dimensions.get("screen");
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchAllPost } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
   const teammatesScreenSheetRef = useRef(null);
@@ -393,6 +393,7 @@ const EmployeeProfileScreen = () => {
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
+                refetchAllPost={refetchAllPost}
               />
 
               <FeedComment

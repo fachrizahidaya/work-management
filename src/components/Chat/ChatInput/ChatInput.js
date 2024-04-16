@@ -449,7 +449,6 @@ const ChatInput = ({
                     : null
                 }
                 opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
-                style={{}}
               >
                 <MaterialIcons name="send" size={25} color="#8A9099" />
               </TouchableOpacity>

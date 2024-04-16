@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Dimensions, Platform } from "react-native";
+import { View, Text, Pressable, Dimensions, Platform, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -110,17 +110,7 @@ const ChatOptionMenu = ({
           <View style={{ backgroundColor: "#FFFFFF", padding: 15, gap: 10, borderRadius: 15 }}>
             {options.map((option, index) => {
               return (
-                <Pressable
-                  key={index}
-                  onPress={option.onPress}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottomColor: "#F6F6F6",
-                  }}
-                >
+                <Pressable key={index} onPress={option.onPress} style={styles.wrapper}>
                   <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                   <MaterialCommunityIcons name={option.icon} size={25} color={option.color} />
                 </Pressable>
@@ -135,13 +125,11 @@ const ChatOptionMenu = ({
 
 export default ChatOptionMenu;
 
-const styles = {
-  left: {
-    marginLeft: 0,
-    marginRight: "auto",
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomColor: "#F6F6F6",
   },
-  right: {
-    marginLeft: "auto",
-    marginRight: 0,
-  },
-};
+});

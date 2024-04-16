@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
@@ -134,7 +134,7 @@ const KPIReviewForm = ({
   );
 };
 
-export default KPIReviewForm;
+export default memo(KPIReviewForm);
 
 const styles = StyleSheet.create({
   attachment: {

@@ -44,7 +44,7 @@ const PostScreen = () => {
 
   const userSelector = useSelector((state) => state.auth);
 
-  const { id } = route.params;
+  const { id, refetchAllPost } = route.params;
 
   const { data: post, isFetching: postIsFetching } = useFetch("/hr/posts");
   const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
@@ -265,6 +265,7 @@ const PostScreen = () => {
                   isFullScreen={isFullScreen}
                   setIsFullScreen={setIsFullScreen}
                   setSelectedPicture={setSelectedPicture}
+                  refetchAllPost={refetchAllPost}
                 />
                 <FeedCommentPost
                   comments={comments}
