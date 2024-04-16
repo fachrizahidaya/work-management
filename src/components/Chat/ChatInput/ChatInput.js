@@ -439,19 +439,25 @@ const ChatInput = ({
                 )}
               </View>
 
-              <TouchableOpacity
-                onPress={
-                  formik.values.message !== "" ||
-                  formik.values.file !== "" ||
-                  formik.values.project_id ||
-                  (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
-                    ? formik.handleSubmit
-                    : null
-                }
-                opacity={formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1}
-              >
-                <MaterialIcons name="send" size={25} color="#8A9099" />
-              </TouchableOpacity>
+              <MaterialIcons
+                onPress={() => {
+                  if (
+                    formik.values.message !== "" ||
+                    formik.values.file !== "" ||
+                    ((formik.values.project_id || formik.values.task_id) &&
+                      !formik.isSubmitting &&
+                      formik.status !== "processing")
+                  ) {
+                    formik.handleSubmit();
+                  }
+                }}
+                style={{
+                  opacity: formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1,
+                }}
+                name="send"
+                size={25}
+                color="#8A9099"
+              />
             </>
           )}
         </View>
