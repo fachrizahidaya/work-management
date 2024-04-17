@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
@@ -130,7 +130,7 @@ const KPIListScreen = () => {
                     onEndReachedThreshold={0.1}
                     keyExtractor={(item, index) => index}
                     renderItem={({ item, index }) => (
-                      <OngoingPerformanceListItem
+                      <KPIListItem
                         key={index}
                         id={item?.id}
                         start_date={item?.review?.begin_date}

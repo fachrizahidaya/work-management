@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { StyleSheet, View, Text, Platform } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
@@ -76,7 +78,7 @@ const EmployeeTeammates = ({ teammates, reference, handleSearch, inputToShow, se
   );
 };
 
-export default EmployeeTeammates;
+export default memo(EmployeeTeammates);
 
 const styles = StyleSheet.create({
   content: {

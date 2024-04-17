@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, FlatList } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
@@ -33,10 +33,16 @@ const FeedCard = ({
   postRefetchHandler,
   onPressLink,
   onToggleLike,
+  setPostId,
+  commentScreenSheetRef,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
+  refetchAllPost,
 }) => {
   return (
     <View style={{ flex: 1 }}>
-      <FlashList
+      <FlatList
         data={posts.length > 0 ? posts : [{ id: "no-posts" }]}
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
@@ -58,6 +64,7 @@ const FeedCard = ({
         ListHeaderComponent={
           <EmployeeData userSelector={userSelector} employee={employee} teammates={teammates} reference={reference} />
         }
+        stickyHeaderIndices={[0]}
         // Employee Posts
         renderItem={({ item, index }) => {
           if (item.id === "no-posts") {
@@ -95,6 +102,13 @@ const FeedCard = ({
                 toggleDeleteModal={toggleDeleteModal}
                 toggleEditModal={toggleEditModal}
                 navigation={navigation}
+                reference={commentScreenSheetRef}
+                setPostId={setPostId}
+                refetchPost={refetchPersonalPost}
+                isFullScreen={isFullScreen}
+                setIsFullScreen={setIsFullScreen}
+                setSelectedPicture={setSelectedPicture}
+                refetchAllPost={refetchAllPost}
               />
             </View>
           );

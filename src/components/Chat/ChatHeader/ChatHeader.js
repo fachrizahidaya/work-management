@@ -18,12 +18,8 @@ const ChatHeader = ({
   toggleDeleteGroupModal,
   loggedInUser,
   toggleDeleteModal,
-  deleteModalIsOpen,
-  deleteChatPersonal,
   roomId,
-  deleteChatMessageIsLoading,
   isLoading,
-  toggleDeleteChatMessage,
   onUpdatePinHandler,
   isPinned,
   navigation,
@@ -45,9 +41,9 @@ const ChatHeader = ({
           //   },
           // },
           {
-            name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
+            name: `${isPinned || isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
             onPress: () => {
-              onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
+              onUpdatePinHandler(type, roomId, isPinned || isPinned?.pin_chat ? "unpin" : "pin", navigation);
               SheetManager.hide("form-sheet");
             },
           },
@@ -99,11 +95,6 @@ const ChatHeader = ({
     roomId: roomId,
     loggedInUser: loggedInUser,
     active_member: active_member,
-    toggleDeleteModal: toggleDeleteModal,
-    deleteModalIsOpen: deleteModalIsOpen,
-    deleteChatPersonal: deleteChatPersonal,
-    deleteChatMessageIsLoading: deleteChatMessageIsLoading,
-    toggleDeleteChatMessage: toggleDeleteChatMessage,
   };
 
   const renderHeaderOptions = () => (

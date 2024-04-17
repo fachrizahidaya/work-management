@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 
@@ -247,7 +247,7 @@ const EditPersonalPost = ({
                       gap: 3,
                     }}
                   >
-                    <Pressable onPress={pickImageHandler}>
+                    <Pressable onPress={() => pickImageHandler(setImage)}>
                       <MaterialCommunityIcons
                         name="attachment"
                         size={25}

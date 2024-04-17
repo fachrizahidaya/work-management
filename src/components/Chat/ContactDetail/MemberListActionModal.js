@@ -26,7 +26,10 @@ const MemberListActionModal = ({
   return (
     <Modal
       isVisible={memberListActionIsopen}
-      onBackdropPress={toggleMemberListAction}
+      onBackdropPress={() => {
+        toggleMemberListAction();
+        setShowConfirmationModal(false);
+      }}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
       hideModalContentWhileAnimating={true}
@@ -35,7 +38,7 @@ const MemberListActionModal = ({
         showConfirmationModal && toggleRemoveMemberAction();
       }}
     >
-      <View style={{ ...styles.container }}>
+      <View style={styles.container}>
         <Text style={[{ fontSize: 12 }, TextProps]}>{memberName}</Text>
         {memberAdminStatus ? (
           <Button
@@ -52,6 +55,7 @@ const MemberListActionModal = ({
             onPress={() => {
               onUpdateAdminStatus(memberId, 1);
               toggleMemberListAction();
+              setShowConfirmationModal(false);
             }}
             variant="outline"
           >
@@ -61,7 +65,6 @@ const MemberListActionModal = ({
         <Button
           onPress={() => {
             toggleMemberListAction();
-            // toggleRemoveMemberAction();
             setShowConfirmationModal(true);
           }}
           variant="outline"

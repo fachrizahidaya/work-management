@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Pressable, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -7,7 +5,17 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { card } from "../../../../styles/Card";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const KPIDetailItem = ({ target, achievement, description, handleOpen, item, employeeKpiValue }) => {
+const KPIDetailItem = ({
+  target,
+  achievement,
+  description,
+  handleOpen,
+  item,
+  employeeKpiValue,
+  setKpi,
+  setEmployeeKpi,
+  reference,
+}) => {
   return (
     <Pressable
       style={{
@@ -20,7 +28,7 @@ const KPIDetailItem = ({ target, achievement, description, handleOpen, item, emp
         gap: 10,
       }}
       onPress={() => {
-        handleOpen(item, employeeKpiValue);
+        handleOpen(item, employeeKpiValue, setKpi, setEmployeeKpi, reference);
       }}
     >
       <Text style={[TextProps]}>{description}</Text>

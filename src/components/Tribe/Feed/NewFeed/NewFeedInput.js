@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 
 import { Pressable, Text, ScrollView, Platform } from "react-native";
 import { MentionInput } from "react-native-controlled-mentions";

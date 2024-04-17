@@ -21,6 +21,12 @@ import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSe
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
+import {
+  clearChatMessageHandler,
+  deleteChatPersonal,
+  groupDeleteHandler,
+  pinChatHandler,
+} from "../../../components/Chat/shared/functions";
 
 const ChatListScreen = () => {
   const [personalChats, setPersonalChats] = useState([]);
@@ -39,12 +45,12 @@ const ChatListScreen = () => {
 
   const { isOpen: deleteGroupModalIsOpen, toggle: toggleDeleteGroupModal } = useDisclosure(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
-  const { isOpen: clearChatMessageIsOpen, toggle: toggleClearChatMessage } = useDisclosure(false);
+  const { isOpen: clearChatMessageModalIsOpen, toggle: toggleClearChatMessageModal } = useDisclosure(false);
   const { isOpen: exitModalIsOpen, toggle: toggleExitModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
-  const { isLoading: chatRoomIsLoading, toggle: toggleChatRoom } = useLoading(false);
-  const { isLoading: clearMessageIsLoading, toggle: toggleClearMessage } = useLoading(false);
+  const { isLoading: deleteGroupIsLoading, toggle: toggleDeleteGroup } = useLoading(false);
+  const { isLoading: clearChatMessageIsLoading, toggle: toggleClearChatMessage } = useLoading(false);
 
   /**
    * Event listener for new chats
@@ -150,7 +156,7 @@ const ChatListScreen = () => {
       payload: {
         children: (
           <ContactMenu
-            chat={contact}
+            contact={contact}
             toggleDeleteModal={openSelectedChatHandler}
             toggleDeleteGroupModal={openSelectedGroupChatHandler}
             toggleClearChatMessage={openSelectedChatToClearHandler}
@@ -162,83 +168,12 @@ const ChatListScreen = () => {
             deleteGroupModalIsOpen={deleteGroupModalIsOpen}
             deleteChatPersonal={deleteChatPersonal}
             deleteChatMessageIsLoading={deleteChatMessageIsLoading}
-            chatRoomIsLoading={chatRoomIsLoading}
+            chatRoomIsLoading={deleteGroupIsLoading}
             navigation={navigation}
           />
         ),
       },
     });
-  };
-
-  /**
-   * Handle Delete chat room personal
-   * @param {*} id
-   */
-  const deleteChatPersonal = async (id) => {
-    try {
-      toggleDeleteChatMessage();
-      await axiosInstance.delete(`/chat/personal/${id}`);
-      toggleDeleteChatMessage();
-      toggleDeleteModal();
-      Toast.show("Chat deleted", SuccessToastProps);
-    } catch (err) {
-      console.log(err);
-      toggleDeleteChatMessage();
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle Delete group after exit group
-   * @param {*} group_id
-   */
-  const deleteGroupHandler = async (group_id) => {
-    try {
-      toggleChatRoom();
-      await axiosInstance.delete(`/chat/group/${group_id}`);
-      toggleChatRoom();
-      toggleDeleteGroupModal();
-      Toast.show("Group deleted", SuccessToastProps);
-    } catch (err) {
-      console.log(err);
-      toggleChatRoom(false);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle clear chat
-   * @param {*} id
-   * @param {*} type
-   * @param {*} itemName
-   */
-  const clearChatMessageHandler = async (id, type, itemName) => {
-    try {
-      toggleClearMessage();
-      await axiosInstance.delete(`/chat/${type}/${id}/message/clear`);
-      toggleClearMessage();
-      toggleClearChatMessage();
-      Toast.show("Chat cleared", SuccessToastProps);
-    } catch (err) {
-      console.log(err);
-      toggleClearMessage();
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle chat pin update event
-   *
-   * @param {*} id - Personal chat id / Group chat id
-   * @param {*} action - either pin/unpin
-   */
-  const pinChatHandler = async (chatType, id, action) => {
-    try {
-      const res = await axiosInstance.patch(`/chat/${chatType}/${id}/${action}`);
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
   };
 
   useEffect(() => {
@@ -320,30 +255,31 @@ const ChatListScreen = () => {
               isLoading={deleteChatMessageIsLoading}
               isOpen={deleteModalIsOpen}
               toggle={closeSelectedChatHandler}
-              onPress={() => deleteChatPersonal(selectedChat?.id)}
+              onPress={() => deleteChatPersonal(selectedChat?.id, toggleDeleteChatMessage, toggleDeleteModal)}
               description="Are you sure want to delete this chat?"
             />
           ) : null}
           {selectedChat?.pin_group ? (
             <RemoveConfirmationModal
-              isLoading={chatRoomIsLoading}
+              isLoading={deleteGroupIsLoading}
               isOpen={deleteGroupModalIsOpen}
               toggle={closeSelectedGroupChatHandler}
-              onPress={() => deleteGroupHandler(selectedChat?.id)}
+              onPress={() => groupDeleteHandler(selectedChat?.id, toggleDeleteGroup, toggleDeleteGroupModal)}
               description="Are you sure want to delete this group?"
             />
           ) : null}
 
           <RemoveConfirmationModal
-            isOpen={clearChatMessageIsOpen}
+            isOpen={clearChatMessageModalIsOpen}
             toggle={closeSelectedChatToClearHandler}
             description="Are you sure want to clear chat?"
-            isLoading={clearMessageIsLoading}
+            isLoading={clearChatMessageIsLoading}
             onPress={() =>
               clearChatMessageHandler(
                 selectedChat?.id,
                 selectedChat?.pin_group ? "group" : "personal",
-                toggleClearMessage
+                toggleClearChatMessage,
+                toggleClearChatMessageModal
               )
             }
           />

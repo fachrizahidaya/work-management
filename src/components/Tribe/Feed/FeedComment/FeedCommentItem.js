@@ -1,5 +1,3 @@
-import { memo, useState } from "react";
-
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
@@ -19,10 +17,13 @@ const FeedCommentItem = ({
   comments,
   handleLinkPress,
   employeeUsername,
+  setCommentParentId,
+  navigation,
+  viewReplyToggle,
+  setViewReplyToggle,
+  hideReplies,
+  setHideReplies,
 }) => {
-  const [viewReplyToggle, setViewReplyToggle] = useState(false);
-  const [hideReplies, setHideReplies] = useState(false);
-
   const words = comments.split(" ");
 
   const {
@@ -33,7 +34,7 @@ const FeedCommentItem = ({
 
   return (
     <View style={{ gap: 3 }}>
-      <Pressable onPress={() => onReply(null)} style={{ marginVertical: 10 }}>
+      <Pressable onPress={() => onReply(null, setCommentParentId)} style={{ marginVertical: 10 }}>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View>
             <AvatarPlaceholder image={authorImage} name={authorName} size="md" isThumb={false} />
@@ -46,8 +47,8 @@ const FeedCommentItem = ({
               {
                 <FeedContentStyle
                   words={words}
+                  navigation={navigation}
                   employeeUsername={employeeUsername}
-                  navigation={null}
                   loggedEmployeeId={null}
                   loggedEmployeeImage={null}
                   handleLinkPress={handleLinkPress}
@@ -55,7 +56,10 @@ const FeedCommentItem = ({
               }
             </Text>
 
-            <Text onPress={() => onReply(parentId)} style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>
+            <Text
+              onPress={() => onReply(parentId, setCommentParentId)}
+              style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}
+            >
               Reply
             </Text>
           </View>
@@ -115,6 +119,8 @@ const FeedCommentItem = ({
                     onReply={onReply}
                     handleLinkPress={handleLinkPress}
                     employeeUsername={employeeUsername}
+                    setCommentParentId={setCommentParentId}
+                    navigation={navigation}
                   />
                 )}
               />
@@ -149,7 +155,7 @@ const FeedCommentItem = ({
   );
 };
 
-export default memo(FeedCommentItem);
+export default FeedCommentItem;
 
 const styles = StyleSheet.create({
   defaultText: {

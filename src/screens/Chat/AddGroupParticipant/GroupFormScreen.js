@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -13,6 +11,7 @@ import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import SelectedUserList from "../../../components/Chat/UserSelection/SelectedUserList";
 import GroupData from "../../../components/Chat/UserSelection/GroupData";
+import { pickImageHandler } from "../../../components/shared/PickImage";
 
 const GroupFormScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -78,42 +77,6 @@ const GroupFormScreen = ({ route }) => {
     },
   });
 
-  /**
-   * Handle pick an image
-   */
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    // Handling for file information
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
-
-    if (fileInfo.size >= 1000000) {
-      Alert.alert("File size too large");
-      return;
-    }
-
-    if (result) {
-      setImage({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, gap: 5 }}>
@@ -144,7 +107,7 @@ const GroupFormScreen = ({ route }) => {
             })}
         </View>
 
-        <GroupData pickImageHandler={pickImageHandler} image={image} formik={formik} />
+        <GroupData pickImageHandler={pickImageHandler} image={image} formik={formik} setImage={setImage} />
       </View>
     </SafeAreaView>
   );

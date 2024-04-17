@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { StyleSheet, View, ActivityIndicator, FlatList } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
@@ -25,10 +25,16 @@ const FeedCard = ({
   navigation,
   onPressLink,
   onToggleLike,
+  reference,
+  setPostId,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
+  setPosts,
 }) => {
   return (
     <View style={styles.container}>
-      <FlashList
+      <FlatList
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
         data={posts}
@@ -45,6 +51,7 @@ const FeedCard = ({
           <RefreshControl
             refreshing={postIsFetching}
             onRefresh={() => {
+              setPosts([]);
               postRefetchHandler();
               refetchPost();
             }}
@@ -75,6 +82,12 @@ const FeedCard = ({
             handleLinkPress={onPressLink}
             employeeUsername={employeeUsername}
             navigation={navigation}
+            reference={reference}
+            setPostId={setPostId}
+            refetchPost={refetchPost}
+            isFullScreen={isFullScreen}
+            setIsFullScreen={setIsFullScreen}
+            setSelectedPicture={setSelectedPicture}
           />
         )}
       />

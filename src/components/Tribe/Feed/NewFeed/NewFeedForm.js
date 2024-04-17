@@ -1,14 +1,10 @@
-import { useState } from "react";
-
-import { StyleSheet, View, Pressable, Image, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Pressable, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
+const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, isLoading, setIsLoading }) => {
   return (
     <View style={styles.container}>
       <View>
@@ -32,7 +28,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
       </View>
       <View style={styles.action}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-          <Pressable onPress={pickImageHandler}>
+          <Pressable onPress={() => pickImageHandler(setImage)}>
             <MaterialCommunityIcons
               name="attachment"
               size={25}
@@ -42,20 +38,20 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
           </Pressable>
         </View>
 
-        <Pressable
+        <TouchableOpacity
           style={{
             ...styles.submit,
-            opacity: formik.values.content === "" ? 0.5 : 1,
+            opacity: formik.values.content === "" || isLoading ? 0.5 : 1,
           }}
           onPress={
             formik.values.content === ""
               ? null
               : () => {
-                  setIsLoading(true);
+                  setIsLoading();
                   formik.handleSubmit();
                 }
           }
-          disabled={formik.values.content === "" ? true : false}
+          disabled={formik.values.content === "" || isLoading ? true : false}
         >
           {isLoading ? (
             <ActivityIndicator />
@@ -67,7 +63,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees }) =
               style={{ transform: [{ rotate: "-45deg" }] }}
             />
           )}
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

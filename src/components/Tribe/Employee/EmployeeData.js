@@ -1,5 +1,5 @@
-import React from "react";
 import { Image, StyleSheet, View } from "react-native";
+
 import EmployeeContact from "./EmployeeContact";
 import EmployeeProfile from "./EmployeeProfile";
 import EmployeeSelfProfile from "./EmployeeSelfProfile";
@@ -15,6 +15,7 @@ const EmployeeData = ({ userSelector, employee, teammates, reference }) => {
             <View style={styles.contact}>
               <EmployeeContact employee={employee} />
             </View>
+
             <EmployeeProfile employee={employee} teammates={teammates} reference={reference} />
           </>
         ) : (
@@ -45,5 +46,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 2,
     gap: 5,
+    top: Platform.OS === "android" ? null : 0,
+    right: Platform.OS === "android" ? null : 5,
+    position: Platform.OS === "android" ? null : "absolute",
+    width: Platform.OS === "android" ? null : "100%",
+    zIndex: Platform.OS === "android" ? null : 6,
   },
 });

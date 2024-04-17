@@ -32,6 +32,12 @@ const FeedCardItem = ({
   handleLinkPress,
   employeeUsername,
   navigation,
+  reference,
+  setPostId,
+  refetchPost,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -49,12 +55,12 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    onToggleLike(post_id, action, refetchPost);
     setForceRerender(!forceRerender);
   };
 
   useEffect(() => {
-    if (likedBy && likedBy.includes("'" + String(loggedEmployeeId) + "'")) {
+    if (likedBy && likedBy?.includes("'" + String(loggedEmployeeId) + "'")) {
       setLikeAction("dislike");
     } else {
       setLikeAction("like");
@@ -65,12 +71,9 @@ const FeedCardItem = ({
     <TouchableOpacity
       style={{
         ...card.card,
-        gap: 20,
-        flexDirection: "column",
-        marginVertical: 8,
-        elevation: 1,
+        ...styles.card,
       }}
-      onPress={() => navigation.navigate("Post Screen", { id: id })}
+      onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
     >
       <View style={styles.cardHeader}>
         <TouchableOpacity
@@ -79,6 +82,7 @@ const FeedCardItem = ({
               employeeId: employeeId,
               loggedEmployeeId: loggedEmployeeId,
               loggedEmployeeImage: loggedEmployeeImage,
+              refetchAllPost: refetchPost,
             })
           }
         >
@@ -93,6 +97,7 @@ const FeedCardItem = ({
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
+                refetchAllPost: refetchPost,
               })
             }
           >
@@ -129,7 +134,10 @@ const FeedCardItem = ({
       </Text>
 
       {attachment ? (
-        <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+        <TouchableOpacity
+          key={id}
+          onPress={() => attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)}
+        >
           <Image
             style={styles.image}
             source={{
@@ -146,7 +154,7 @@ const FeedCardItem = ({
         <View style={styles.iconAction}>
           <Pressable
             onPress={() => {
-              onCommentToggle(id);
+              onCommentToggle(id, reference, setPostId);
             }}
           >
             <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
@@ -175,12 +183,13 @@ const FeedCardItem = ({
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: "#000000",
+  card: {
+    gap: 20,
+    flexDirection: "column",
+    marginVertical: 8,
+    elevation: 1,
   },
-  highlightedText: {
-    color: "#72acdc",
-  },
+
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",

@@ -41,11 +41,4 @@ const styles = StyleSheet.create({
     padding: 10,
     gap: 5,
   },
-  defaultText: {},
-  highlightedText: {
-    textDecorationLine: "underline",
-  },
-  coloredText: {
-    color: "#72acdc",
-  },
 });

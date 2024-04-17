@@ -7,15 +7,7 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const ContactAvatar = ({ navigation, roomId, type, name, image, position, currentUserIsAdmin }) => {
   return (
-    <View
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#FFFFFF",
-        paddingBottom: 5,
-        gap: 10,
-      }}
-    >
+    <View style={styles.container}>
       <View style={{ gap: 10 }}>
         <AvatarPlaceholder size="xl" name={name} image={image} isThumb={false} />
         {type === "group" && currentUserIsAdmin ? (
@@ -51,8 +43,11 @@ export default ContactAvatar;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#FFFFFF",
+    paddingBottom: 5,
+    gap: 10,
   },
   editPicture: {
     backgroundColor: "#FFFFFF",

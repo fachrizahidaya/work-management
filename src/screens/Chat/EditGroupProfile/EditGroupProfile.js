@@ -1,20 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
 import Toast from "react-native-root-toast";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -22,6 +11,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import axiosInstance from "../../../config/api";
 import { SuccessToastProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 import EditGroupProfileForm from "../../../components/Chat/EditGroupProfile/EditGroupProfileForm";
+import { pickImageHandler } from "../../../components/shared/PickImage";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
@@ -58,43 +48,6 @@ const EditGroupProfile = () => {
       setSubmitting(false);
       setStatus("error");
       Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle pick image
-   * @returns
-   */
-  const pickImageHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    // Handling for name
-    var filename = result.assets[0].uri.substring(
-      result.assets[0].uri.lastIndexOf("/") + 1,
-      result.assets[0].uri.length
-    );
-
-    const fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri); // Handling for file information
-
-    if (fileInfo.size >= 1000000) {
-      // toast.show({ description: "Image size is too large" });
-      Alert.alert("Image size is too large");
-      return;
-    }
-
-    if (result) {
-      setImageAttachment({
-        name: filename,
-        size: fileInfo.size,
-        type: `${result.assets[0].type}/jpg`,
-        webkitRelativePath: "",
-        uri: result.assets[0].uri,
-      });
     }
   };
 

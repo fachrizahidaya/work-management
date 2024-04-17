@@ -1,4 +1,3 @@
-import React from "react";
 import { Keyboard, Pressable, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
@@ -7,7 +6,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Select from "../../../shared/Forms/Select";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, handleClose, fileAttachment }) => {
+const AttachmentForm = ({
+  reference,
+  onSelectFile,
+  kpiValues,
+  formik,
+  handleClose,
+  fileAttachment,
+  setFileAttachment,
+}) => {
   const kpi = kpiValues.map((item, index) => {
     return {
       value: item.id,
@@ -64,7 +71,7 @@ const AttachmentForm = ({ reference, onSelectFile, kpiValues, formik, onChange, 
             <View style={{ flexDirection: "row" }}>
               <Text style={[{ fontSize: 14 }, TextProps]}>Attachment</Text>
             </View>
-            <Pressable onPress={onSelectFile} style={styles.attachment}>
+            <Pressable onPress={() => onSelectFile(setFileAttachment)} style={styles.attachment}>
               <Text
                 style={[
                   {

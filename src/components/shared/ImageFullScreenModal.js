@@ -108,16 +108,16 @@ const ImageFullScreenModal = ({
               </View>
             </ReactNativeZoomableView>
             <View style={styles.actionGroup}>
-              {type === "Feed" && (
+              {/* {type === "Feed" && (
                 <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
                   <MaterialCommunityIcons name="share-variant" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
-              )}
-              {type === "Chat" && (
+              )} */}
+              {/* {type === "Chat" && (
                 <TouchableOpacity style={{ padding: 5 }} onPress={() => shareImageScreenSheetRef.current?.show()}>
                   <MaterialCommunityIcons name="share" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
-              )}
+              )} */}
               <TouchableOpacity style={{ padding: 5 }} onPress={() => attachmentDownloadHandler(file_path)}>
                 <MaterialCommunityIcons name="download" size={30} color="#FFFFFF" />
               </TouchableOpacity>

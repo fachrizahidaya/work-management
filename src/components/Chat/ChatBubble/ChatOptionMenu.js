@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Dimensions, Platform } from "react-native";
+import { View, Text, Pressable, Dimensions, Platform, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -32,23 +32,23 @@ const ChatOptionMenu = ({
       },
       color: "#176688",
     },
-    {
-      name: "Forward",
-      icon: "share",
-      onPress: () => {
-        navigation.push("Forward Screen", {
-          message: chat?.message,
-          project: chat?.project,
-          task: chat?.task,
-          file_path: chat?.file_path,
-          file_name: chat?.file_name,
-          file_size: chat?.file_size,
-          mime_type: chat?.mime_type,
-        });
-        onClose();
-      },
-      color: "#176688",
-    },
+    // {
+    //   name: "Forward",
+    //   icon: "share",
+    //   onPress: () => {
+    //     navigation.push("Forward Screen", {
+    //       message: chat?.message,
+    //       project: chat?.project,
+    //       task: chat?.task,
+    //       file_path: chat?.file_path,
+    //       file_name: chat?.file_name,
+    //       file_size: chat?.file_size,
+    //       mime_type: chat?.mime_type,
+    //     });
+    //     onClose();
+    //   },
+    //   color: "#176688",
+    // },
     {
       name: "Copy",
       icon: "content-copy",
@@ -72,7 +72,6 @@ const ChatOptionMenu = ({
           toggleDeleteModal();
           onClose();
         } else {
-          // toggleDeleteModal();
           setDeleteSelected(true);
           onClose();
         }
@@ -110,17 +109,7 @@ const ChatOptionMenu = ({
           <View style={{ backgroundColor: "#FFFFFF", padding: 15, gap: 10, borderRadius: 15 }}>
             {options.map((option, index) => {
               return (
-                <Pressable
-                  key={index}
-                  onPress={option.onPress}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottomColor: "#F6F6F6",
-                  }}
-                >
+                <Pressable key={index} onPress={option.onPress} style={styles.wrapper}>
                   <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                   <MaterialCommunityIcons name={option.icon} size={25} color={option.color} />
                 </Pressable>
@@ -135,13 +124,11 @@ const ChatOptionMenu = ({
 
 export default ChatOptionMenu;
 
-const styles = {
-  left: {
-    marginLeft: 0,
-    marginRight: "auto",
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomColor: "#F6F6F6",
   },
-  right: {
-    marginLeft: "auto",
-    marginRight: 0,
-  },
-};
+});

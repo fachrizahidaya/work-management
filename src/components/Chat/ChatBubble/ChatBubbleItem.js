@@ -1,4 +1,4 @@
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
@@ -49,13 +49,8 @@ const ChatBubbleItem = ({
       <Animated.View style={[rTaskContainerStyle]}>
         <Pressable
           style={{
-            display: "flex",
-            justifyContent: "center",
-            maxWidth: 300,
-            borderRadius: 10,
-            padding: 8,
+            ...styles.wrapper,
             backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
-            gap: 5,
           }}
           onLongPress={() => {
             !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
@@ -69,9 +64,6 @@ const ChatBubbleItem = ({
                 fontWeight: "700",
                 color: !myMessage ? "#176688" : "#FFFFFF",
               }}
-              fontSize={12}
-              fontWeight={700}
-              color={!myMessage ? "#377893" : "#FFFFFF"}
             >
               {name}
             </Text>
@@ -102,13 +94,7 @@ const ChatBubbleItem = ({
                         onPress={() => file_path && toggleFullScreen(file_path)}
                       >
                         <Image
-                          style={{
-                            flex: 1,
-                            width: 280,
-                            height: 350,
-                            resizeMode: "cover",
-                            backgroundColor: "gray",
-                          }}
+                          style={styles.image}
                           source={{
                             uri: isOptimistic ? file_path : `${process.env.EXPO_PUBLIC_API}/image/${file_path}`,
                           }}
@@ -211,3 +197,20 @@ const ChatBubbleItem = ({
 };
 
 export default ChatBubbleItem;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    justifyContent: "center",
+    maxWidth: 300,
+    borderRadius: 10,
+    padding: 8,
+    gap: 5,
+  },
+  image: {
+    flex: 1,
+    width: 280,
+    height: 350,
+    resizeMode: "cover",
+    backgroundColor: "gray",
+  },
+});

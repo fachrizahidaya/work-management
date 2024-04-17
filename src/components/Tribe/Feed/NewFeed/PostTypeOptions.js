@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import ActionSheet from "react-native-actions-sheet";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import ActionSheet from "react-native-actions-sheet";
 
 import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import { TextProps } from "../../../shared/CustomStylings";
@@ -17,34 +18,13 @@ const PostTypeOptions = ({
 }) => {
   return (
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
-      <View
-        style={{
-          display: "flex",
-          gap: 21,
-          paddingHorizontal: 20,
-          paddingVertical: 16,
-          paddingBottom: 40,
-        }}
-      >
+      <View style={styles.wrapper}>
         <View>
-          <Text style={[{ fontSize: 16, fontWeight: "700" }]}>Choose Post Type</Text>
+          <Text style={[{ fontSize: 16 }, TextProps]}>Choose Post Type</Text>
         </View>
         <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
-          <TouchableOpacity
-            onPress={publicToggleHandler}
-            style={{
-              ...styles.container,
-              borderBottomWidth: 1,
-              borderBottomColor: "#FFFFFF",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+          <TouchableOpacity onPress={publicToggleHandler} style={{ ...styles.container, height: 50 }}>
+            <View style={styles.content}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <MaterialIcons name="people" size={15} color="#3F434A" />
                 <Text style={[{ fontSize: 12 }, TextProps]}>Public</Text>
@@ -56,20 +36,9 @@ const PostTypeOptions = ({
             onPress={() => {
               announcementToggleHandler();
             }}
-            style={{
-              ...styles.container,
-              borderBottomWidth: 1,
-              borderBottomColor: "#FFFFFF",
-              height: null,
-            }}
+            style={{ ...styles.container }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <View style={styles.content}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <MaterialCommunityIcons name="bullhorn" size={15} color="#3F434A" />
                 <View>
@@ -133,35 +102,25 @@ const PostTypeOptions = ({
 export default PostTypeOptions;
 
 const styles = StyleSheet.create({
-  title: {
-    flexDirection: "row",
-    width: "100%",
-    height: 30,
-    paddingHorizontal: 4,
-  },
-  publicButton: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  announcementButton: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   wrapper: {
+    gap: 21,
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingBottom: 40,
   },
   container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#F5F5F5",
-    height: 50,
     padding: 10,
     borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#FFFFFF",
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

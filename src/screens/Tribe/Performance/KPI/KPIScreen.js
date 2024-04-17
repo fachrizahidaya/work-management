@@ -1,20 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import * as DocumentPicker from "expo-document-picker";
 
-import { Linking, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-root-toast";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../../hooks/useFetch";
 import { useDisclosure } from "../../../../hooks/useDisclosure";
-import axiosInstance from "../../../../config/api";
 import { useLoading } from "../../../../hooks/useLoading";
-import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import PageHeader from "../../../../components/shared/PageHeader";
 import ReturnConfirmationModal from "../../../../components/shared/ReturnConfirmationModal";
 import KPIDetailItem from "../../../../components/Tribe/Performance/KPI/KPIDetailItem";
@@ -26,6 +22,17 @@ import Tabs from "../../../../components/shared/Tabs";
 import AttachmentForm from "../../../../components/Tribe/Performance/KPI/AttachmentForm";
 import AttachmentItem from "../../../../components/Tribe/Performance/KPI/AttachmentItem";
 import SaveButton from "../../../../components/Tribe/Performance/KPI/SaveButton";
+import { selectFile } from "../../../../components/shared/SelectFIle";
+import {
+  attachmentDownloadHandler,
+  employeeKpiValueUpdateHandler,
+  getEmployeeKpiValue,
+  openSelectedKpi,
+  closeSelectedKpi,
+  sumUpKpiValue,
+  submitHandler,
+  compareActualAchievement,
+} from "../../../../components/Tribe/Performance/shared/functions";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -37,6 +44,7 @@ const KPIScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
   const [attachments, setAttachments] = useState([]);
   const [currentAttachments, setCurrentAttachments] = useState([]);
+  const [differenceTotalAttachments, setDifferenceTotalAttachments] = useState(0);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -55,33 +63,11 @@ const KPIScreen = () => {
 
   const { data: kpiList, refetch: refetchKpiList } = useFetch(`/hr/employee-kpi/${kpiId}`);
 
-  /**
-   * Handle selected KPI item
-   * @param {*} data
-   * @param {*} value
-   */
-  const openSelectedKpi = (data, value) => {
-    setKpi(data);
-    setEmployeeKpi(value);
-    formScreenSheetRef.current?.show();
-  };
-  const closeSelectedKpi = () => {
-    formScreenSheetRef.current?.hide();
-  };
-
   const openSelectedAttachmentKpi = () => {
     formAttachmentScreenSheetRef.current?.show();
   };
   const closeSelectedAttachmentKpi = () => {
     formAttachmentScreenSheetRef.current?.hide();
-  };
-
-  const attachmentDownloadHandler = async (file_path) => {
-    try {
-      Linking.openURL(`${process.env.EXPO_PUBLIC_API}/download/${file_path}`, "_blank");
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   const tabs = useMemo(() => {
@@ -97,40 +83,6 @@ const KPIScreen = () => {
   const onChangeTab = useCallback((value) => {
     setTabValue(value);
   }, []);
-
-  const getEmployeeKpiValue = (employee_kpi_value) => {
-    let employeeKpiValArr = [];
-    employee_kpi_value.map((val) => {
-      employeeKpiValArr = [
-        ...employeeKpiValArr,
-        {
-          ...val?.performance_kpi_value,
-          id: val?.id,
-          performance_kpi_value_id: val?.performance_kpi_value_id,
-          actual_achievement: val?.actual_achievement,
-          attachment: val?.attachment,
-        },
-      ];
-    });
-    return [...employeeKpiValArr];
-  };
-
-  /**
-   * Handle update value of KPI item
-   * @param {*} data
-   */
-  const employeeKpiValueUpdateHandler = (data) => {
-    setEmployeeKpiValue((prevState) => {
-      let currentData = [...prevState];
-      const index = currentData.findIndex((employee_kpi_val) => employee_kpi_val?.id === data?.id);
-      if (index > -1) {
-        currentData[index].actual_achievement = data?.actual_achievement;
-      } else {
-        currentData = [...currentData, data];
-      }
-      return [...currentData];
-    });
-  };
 
   const employeeKpiAttachmentUpdateHandler = (data, setStatus, setSubmitting) => {
     setEmployeeKpiValue((prevState) => {
@@ -160,17 +112,6 @@ const KPIScreen = () => {
         return [...currentData];
       });
     }
-  };
-
-  /**
-   * Handle array of update KPI item
-   */
-  const sumUpKpiValue = () => {
-    setKpiValues(() => {
-      const performanceKpiValue = kpiList?.data?.performance_kpi?.value;
-      const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
-      return [...employeeKpiValue, ...performanceKpiValue];
-    });
   };
 
   const sumAttachments = () => {
@@ -219,29 +160,6 @@ const KPIScreen = () => {
     });
   };
 
-  /**
-   * Handle saved actual achievement value to be can saved or not
-   * @param {*} kpiValues
-   * @param {*} employeeKpiValue
-   * @returns
-   */
-  const compareActualAchievement = (kpiValues, employeeKpiValue) => {
-    let differences = [];
-
-    for (let empKpi of employeeKpiValue) {
-      let kpiValue = kpiValues.find((kpi) => kpi.id === empKpi.id);
-
-      if (kpiValue && kpiValue.actual_achievement !== empKpi.actual_achievement) {
-        differences.push({
-          id: empKpi.id,
-          difference: empKpi.actual_achievement - kpiValue.actual_achievement,
-        });
-      }
-    }
-
-    return differences;
-  };
-
   let differences = compareActualAchievement(kpiValues, employeeKpiValue);
 
   /**
@@ -252,76 +170,6 @@ const KPIScreen = () => {
   } else {
     var actualString = kpi?.actual_achievement.toString();
   }
-
-  /**
-   * Handle save filled or updated KPI
-   */
-  const submitHandler = async () => {
-    try {
-      toggleSubmit();
-      const formData = new FormData();
-      employeeKpiValue.forEach((kpiObj, index) => {
-        Object.keys(kpiObj).forEach((key) => {
-          if (Array.isArray(kpiObj[key])) {
-            kpiObj[key].forEach((att_obj, att_index) => {
-              formData.append(`kpi_value[${index}][${key}][${att_index}]`, att_obj);
-            });
-          } else {
-            formData.append(`kpi_value[${index}][${key}]`, kpiObj[key]);
-          }
-        });
-      });
-      formData.append("_method", "PATCH");
-      const res = await axiosInstance.post(`/hr/employee-kpi/${kpiList?.data?.id}`, formData, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      toggleSaveModal();
-      setRequestType("info");
-      refetchKpiList();
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-      toggleSubmit();
-    } finally {
-      toggleSubmit();
-    }
-  };
-
-  /**
-   * Handle select file for attendance attachment
-   */
-  const selectFileHandler = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        copyToCacheDirectory: false,
-      });
-
-      // Check if there is selected file
-      if (result) {
-        if (result.assets[0].size < 3000001) {
-          setFileAttachment({
-            name: result.assets[0].name,
-            size: result.assets[0].size,
-            type: result.assets[0].mimeType,
-            uri: result.assets[0].uri,
-            webkitRelativePath: "",
-          });
-        } else {
-          Toast.show("Max file size is 3MB", ErrorToastProps);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fileChangeHandler = () => {
-    if (fileAttachment) {
-      formikAttachment.setFieldValue("file", fileAttachment);
-    }
-  };
 
   /**
    * Handle create kpi value
@@ -347,7 +195,7 @@ const KPIScreen = () => {
         } else {
           values.actual_achievement = null;
         }
-        employeeKpiValueUpdateHandler(values);
+        employeeKpiValueUpdateHandler(values, setEmployeeKpiValue);
       }
     },
     enableReinitialize: true,
@@ -365,9 +213,13 @@ const KPIScreen = () => {
     enableReinitialize: true,
   });
 
+  const differenceBetweenCurrentAttachmentsAndLatestAttachments = () => {
+    setDifferenceTotalAttachments(attachments?.length - currentAttachments?.length);
+  };
+
   useEffect(() => {
     if (kpiList?.data) {
-      sumUpKpiValue();
+      sumUpKpiValue(setKpiValues, kpiList);
       setEmployeeKpiValue(() => {
         const employeeKpiValue = getEmployeeKpiValue(kpiList?.data?.employee_kpi_value);
         return [...employeeKpiValue];
@@ -382,6 +234,10 @@ const KPIScreen = () => {
   useEffect(() => {
     sumCurrentAttachments();
   }, [employeeKpiValue]);
+
+  useEffect(() => {
+    differenceBetweenCurrentAttachmentsAndLatestAttachments();
+  }, [currentAttachments, attachments]);
 
   useEffect(() => {
     if (!formikAttachment.isSubmitting && formikAttachment.status === "success") {
@@ -407,7 +263,18 @@ const KPIScreen = () => {
             }}
           />
           {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
-            <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
+            <SaveButton
+              isLoading={submitIsLoading}
+              differences={differences}
+              onSubmit={submitHandler}
+              differenceTotalAttachments={differenceTotalAttachments}
+              toggleSubmit={toggleSubmit}
+              toggleSaveModal={toggleSaveModal}
+              employeeKpiValue={employeeKpiValue}
+              kpiList={kpiList}
+              setRequestType={setRequestType}
+              refetchKpiList={refetchKpiList}
+            />
           )}
         </View>
         <KPIDetailList
@@ -440,6 +307,9 @@ const KPIScreen = () => {
                       item={item}
                       handleOpen={openSelectedKpi}
                       employeeKpiValue={correspondingEmployeeKpi}
+                      setKpi={setKpi}
+                      setEmployeeKpi={setEmployeeKpi}
+                      reference={formScreenSheetRef}
                     />
                   );
                 })
@@ -470,9 +340,6 @@ const KPIScreen = () => {
                       employee_kpi_id={item?.employee_kpi_id}
                       attachment_id={item?.attachment_id}
                       index={item?.index}
-                      confirmed={kpiList?.data?.confirm}
-                      file_path={item?.file_path}
-                      onDownload={attachmentDownloadHandler}
                     />
                   );
                 })
@@ -509,12 +376,12 @@ const KPIScreen = () => {
       />
       <AttachmentForm
         reference={formAttachmentScreenSheetRef}
-        onSelectFile={selectFileHandler}
+        onSelectFile={selectFile}
         kpiValues={employeeKpiValue}
         formik={formikAttachment}
-        onChange={fileChangeHandler}
         handleClose={closeSelectedAttachmentKpi}
         fileAttachment={fileAttachment}
+        setFileAttachment={setFileAttachment}
       />
       <SuccessModal
         isOpen={saveModalIsOpen}

@@ -1,23 +1,31 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking } from "react-native";
-import Toast from "react-native-root-toast";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useFetch } from "../../../hooks/useFetch";
-import axiosInstance from "../../../config/api";
-import { TextProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
+import { TextProps } from "../../../components/shared/CustomStylings";
 import FeedCard from "../../../components/Tribe/Feed/FeedCard/FeedCard";
 import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment";
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
+import {
+  closeCommentHandler,
+  likePostHandler,
+  openCommentHandler,
+  pressLinkHandler,
+  refetchCommentHandler,
+  replyCommentHandler,
+  submitCommentHandler,
+  toggleFullScreenImageHandler,
+} from "../../../components/Tribe/Feed/shared/functions";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -80,136 +88,6 @@ const FeedScreen = () => {
   };
 
   /**
-   * Handle fetch comment from first offset
-   * After create a new comment, it will return to the first offset
-   */
-  const commentRefetchHandler = () => {
-    setCurrentOffsetComments(0);
-    setReloadComment(!reloadComment);
-  };
-
-  /**
-   * Handle open comment Action sheet
-   */
-  const commentsOpenHandler = (post_id) => {
-    commentScreenSheetRef.current?.show();
-    setPostId(post_id);
-  };
-
-  /**
-   * Handle close comment Action sheet
-   */
-  const commentsCloseHandler = () => {
-    commentScreenSheetRef.current?.hide();
-    setPostId(null);
-    setCommentParentId(null);
-  };
-
-  /**
-   * Handle add comment
-   */
-  const commentAddHandler = () => {
-    const referenceIndex = posts.findIndex((post) => post.id === postId);
-    posts[referenceIndex]["total_comment"] += 1;
-    setForceRerender(!forceRerender);
-  };
-
-  /**
-   * Handle Submit a comment
-   * @param {*} data
-   * @param {*} setSubmitting
-   * @param {*} setStatus
-   */
-  const commentSubmitHandler = async (data, setSubmitting, setStatus) => {
-    try {
-      await axiosInstance.post(`/hr/posts/comment`, data);
-      commentRefetchHandler();
-      commentAddHandler(postId);
-      setCommentParentId(null);
-      setSubmitting(false);
-      setStatus("success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-      setSubmitting(false);
-      setStatus("error");
-    }
-  };
-
-  /**
-   * Handle like a Post
-   * @param {*} post_id
-   * @param {*} action
-   */
-  const postLikeToggleHandler = async (post_id, action) => {
-    try {
-      await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-      refetchPost();
-      console.log("Process success");
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle toggle reply comment
-   */
-  const replyHandler = (comment_parent_id) => {
-    setCommentParentId(comment_parent_id);
-  };
-
-  /**
-   * Handle show username in post
-   */
-  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
-    return {
-      username: item.username,
-      id: item.id,
-      name: item.name,
-    };
-  });
-
-  /**
-   * Handle toggle fullscreen image
-   */
-  const toggleFullScreenHandler = useCallback((image) => {
-    setIsFullScreen(!isFullScreen);
-    setSelectedPicture(image);
-  }, []);
-
-  /**
-   * Handle press link
-   */
-  const linkPressHandler = useCallback((url) => {
-    const playStoreUrl = url?.includes("https://play.google.com/store/apps/details?id=");
-    const appStoreUrl = url?.includes("https://apps.apple.com/id/app");
-    let trimmedPlayStoreUrl;
-    let trimmedAppStoreUrl;
-    if (playStoreUrl) {
-      trimmedPlayStoreUrl = url?.slice(37);
-    } else if (appStoreUrl) {
-      trimmedAppStoreUrl = url?.slice(7);
-    }
-
-    let modifiedAppStoreUrl = "itms-apps" + trimmedAppStoreUrl;
-    let modifiedPlayStoreUrl = "market://" + trimmedPlayStoreUrl;
-
-    try {
-      if (playStoreUrl) {
-        Linking.openURL(modifiedPlayStoreUrl);
-      } else if (appStoreUrl) {
-        Linking.openURL(modifiedAppStoreUrl);
-      } else {
-        Linking.openURL(url);
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  }, []);
-
-  /**
    * Handle Fetch more Posts
    * After end of scroll reached, it will added other earlier posts
    */
@@ -237,6 +115,17 @@ const FeedScreen = () => {
     toggleSuccess: togglePostSuccess,
     setRequestType: setRequestType,
   };
+
+  /**
+   * Handle show username in post
+   */
+  const objectContainEmployeeUsernameHandler = employees?.data?.map((item) => {
+    return {
+      username: item.username,
+      id: item.id,
+      name: item.name,
+    };
+  });
 
   /**
    * Handle show username suggestion option
@@ -297,7 +186,19 @@ const FeedScreen = () => {
       const mentionRegex = /@\[([^\]]+)\]\((\d+)\)/g;
       const modifiedContent = values.comments.replace(mentionRegex, "@$1");
       values.comments = modifiedContent;
-      commentSubmitHandler(values, setSubmitting, setStatus);
+      submitCommentHandler(
+        values,
+        setSubmitting,
+        setStatus,
+        setCommentParentId,
+        setCurrentOffsetComments,
+        setReloadComment,
+        reloadComment,
+        posts,
+        postId,
+        setForceRerender,
+        forceRerender
+      );
     },
   });
 
@@ -321,7 +222,7 @@ const FeedScreen = () => {
   }, [postIsFetching, reloadPost]);
 
   useEffect(() => {
-    if (!commentsOpenHandler) {
+    if (!openCommentHandler) {
       setCommentParentId(null);
     } else {
       if (comment?.data && commentIsFetching === false) {
@@ -345,20 +246,16 @@ const FeedScreen = () => {
           <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
         </View>
 
-        <Pressable
+        <TouchableOpacity
           style={styles.createPostIcon}
           onPress={() => {
             navigation.navigate("New Feed", params);
           }}
         >
           <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
-        </Pressable>
+        </TouchableOpacity>
 
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
+        <View style={{ flex: 1 }}>
           {/* Content here */}
           <FeedCard
             posts={posts}
@@ -371,14 +268,20 @@ const FeedScreen = () => {
             refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
-            onCommentToggle={commentsOpenHandler}
+            onCommentToggle={openCommentHandler}
             forceRerender={forceRerender}
             setForceRerender={setForceRerender}
-            toggleFullScreen={toggleFullScreenHandler}
+            toggleFullScreen={toggleFullScreenImageHandler}
             employeeUsername={objectContainEmployeeUsernameHandler}
             navigation={navigation}
-            onPressLink={linkPressHandler}
-            onToggleLike={postLikeToggleHandler}
+            onPressLink={pressLinkHandler}
+            onToggleLike={likePostHandler}
+            reference={commentScreenSheetRef}
+            setPostId={setPostId}
+            isFullScreen={isFullScreen}
+            setIsFullScreen={setIsFullScreen}
+            setSelectedPicture={setSelectedPicture}
+            setPosts={setPosts}
           />
         </View>
         <FeedComment
@@ -388,30 +291,29 @@ const FeedScreen = () => {
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
           refetchComment={refetchComment}
-          handleClose={commentsCloseHandler}
+          handleClose={closeCommentHandler}
           onEndReached={commentEndReachedHandler}
-          commentRefetchHandler={commentRefetchHandler}
+          commentRefetchHandler={refetchCommentHandler}
           parentId={commentParentId}
-          onReply={replyHandler}
+          onReply={replyCommentHandler}
           employeeUsername={objectContainEmployeeUsernameHandler}
           reference={commentScreenSheetRef}
-          onPressLink={linkPressHandler}
+          onPressLink={pressLinkHandler}
           onSuggestions={renderSuggestionsHandler}
           commentContainUsernameHandler={commentContainUsernameHandler}
           formik={formik}
+          reloadComment={reloadComment}
+          setReloadComment={setReloadComment}
+          setCurrentOffsetComments={setCurrentOffsetComments}
+          setCommentParentId={setCommentParentId}
+          setPostId={setPostId}
+          navigation={navigation}
         />
       </SafeAreaView>
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
         file_path={selectedPicture}
-        navigation={navigation}
-        postRefetchHandler={postRefetchHandler}
-        loggedEmployeeId={profile?.data?.id}
-        loggedEmployeeImage={profile?.data?.image}
-        loggedEmployeeName={userSelector?.name}
-        loggedEmployeeDivision={profile?.data?.position_id}
-        toggleSuccess={togglePostSuccess}
         setSelectedPicture={setSelectedPicture}
         type="Feed"
       />

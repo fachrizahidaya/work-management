@@ -1,11 +1,10 @@
-import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AvatarPlaceholder from "../../../../components/shared/AvatarPlaceholder";
-import Button from "../../../../components/shared/Forms/Button";
+import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
+import Button from "../../../shared/Forms/Button";
 import dayjs from "dayjs";
-import { TextProps } from "../../../../components/shared/CustomStylings";
+import { TextProps } from "../../../shared/CustomStylings";
 
 const PostOptions = ({ formik, loggedEmployeeImage, loggedEmployeeName, checkAccess, reference }) => {
   return (

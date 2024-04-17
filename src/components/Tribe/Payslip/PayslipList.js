@@ -1,5 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
-import React from "react";
+import React, { memo } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import PayslipItem from "./PayslipItem";
@@ -50,7 +50,7 @@ const PayslipList = ({
   );
 };
 
-export default PayslipList;
+export default memo(PayslipList);
 
 const styles = StyleSheet.create({
   imageContainer: {

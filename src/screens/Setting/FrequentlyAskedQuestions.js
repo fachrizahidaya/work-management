@@ -1,85 +1,62 @@
-import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  LayoutAnimation,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
 import { TextProps } from "../../components/shared/CustomStylings";
+import { card } from "../../styles/Card";
 
 const FrequentlyAskedQuestions = () => {
-  const [menuIndex, setMenuIndex] = useState(-1);
-
   const navigation = useNavigation();
 
-  const array = [
-    { question: "test question 1", answer: [{ title: "test answer 1" }], icon: "chevron-right" },
-    { question: "test question 2", answer: [{ title: "test answer 2" }], icon: "chevron-right" },
-    { question: "test question 3", answer: [{ title: "test answer 3" }], icon: "chevron-right" },
+  const topicArr = [
+    { name: "ACCOUNT", image: null, icon: "account-outline", navigate: "FAQ Account" },
+    { name: "TRIBE", image: "../../assets/icons/tribe_logo.png", icon: null, navigate: "FAQ Tribe" },
+    // { name: "BAND", image: "../../assets/icons/band_logo.png", icon: null, navigate: null },
+    // { name: "COIN", image: null, icon: "bitcoin", navigate: null },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ gap: 24, display: "flex", marginHorizontal: 16, marginVertical: 13, flex: 1 }}>
         <PageHeader title="FAQs" onPress={() => navigation.goBack()} />
-        <View style={{ display: "flex", gap: 17 }}>
-          {array.map((item, index) => {
+        <View style={{ flex: 1, gap: 10 }}>
+          {topicArr.map((item, index) => {
             return (
               <TouchableOpacity
-                activeOpacity={0.8}
                 key={index}
-                onPress={() => {
-                  LayoutAnimation.configureNext(LayoutAnimation.create(200, "easeInEaseOut", "opacity"));
-                  setMenuIndex(menuIndex === index ? -1 : index);
+                onPress={() => navigation.navigate(item.navigate)}
+                style={{
+                  ...card.card,
+                  elevation: 4,
+                  shadowColor: "rgba(0, 0, 0, 1)",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    padding: 10,
-                    backgroundColor: "#176688",
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}
-                >
-                  <Text style={[TextProps, { color: "#ffffff" }]}>{item.question}</Text>
-                  <MaterialCommunityIcons
-                    name={item.icon}
-                    size={20}
-                    color="#ffffff"
-                    style={{ transform: [{ rotate: menuIndex === index ? "90deg" : "0deg" }] }}
-                  />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                  {item.image ? (
+                    <Image
+                      source={
+                        item.name === "TRIBE"
+                          ? require("../../assets/icons/tribe_logo.png")
+                          : require("../../assets/icons/band_logo.png")
+                      }
+                      alt={item.image}
+                      style={styles.image}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons name={item.icon} size={20} />
+                  )}
+                  <Text style={[TextProps]}>{item.name}</Text>
                 </View>
-                {menuIndex === index && (
-                  <View
-                    style={{
-                      backgroundColor: "#f8f8f8",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                  >
-                    {item.answer.map((subMenu, index) => {
-                      return (
-                        <TouchableNativeFeedback key={index}>
-                          <View style={{ padding: 10 }}>
-                            <Text style={[TextProps]}>{subMenu.title}</Text>
-                          </View>
-                        </TouchableNativeFeedback>
-                      );
-                    })}
-                  </View>
-                )}
+                <MaterialCommunityIcons name="chevron-right" size={20} />
               </TouchableOpacity>
             );
           })}
@@ -95,5 +72,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  image: {
+    height: 30,
+    width: 25,
+    borderRadius: 50,
+    resizeMode: "contain",
   },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
@@ -54,7 +54,7 @@ const KPIForm = ({
                     null;
                   } else {
                     formik.handleSubmit();
-                    handleClose();
+                    handleClose(reference);
                   }
                 }}
               >
@@ -151,7 +151,7 @@ const KPIForm = ({
   );
 };
 
-export default KPIForm;
+export default memo(KPIForm);
 
 const styles = StyleSheet.create({
   attachment: {

@@ -36,6 +36,13 @@ const FeedCardItem = ({
   toggleDeleteModal,
   toggleEditModal,
   navigation,
+  reference,
+  setPostId,
+  refetchPost,
+  isFullScreen,
+  setIsFullScreen,
+  setSelectedPicture,
+  refetchAllPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -43,15 +50,7 @@ const FeedCardItem = ({
   const words = content?.split(" ");
 
   const renderActionOptions = () => (
-    <View
-      style={{
-        display: "flex",
-        gap: 21,
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        paddingBottom: -20,
-      }}
-    >
+    <View style={styles.wrapper}>
       <View
         style={{
           gap: 1,
@@ -64,12 +63,7 @@ const FeedCardItem = ({
             await SheetManager.hide("form-sheet");
             toggleEditModal();
           }}
-          style={{
-            ...styles.containerEdit,
-            justifyContent: "space-between",
-            borderBottomWidth: 1,
-            borderBottomColor: "#FFFFFF",
-          }}
+          style={styles.containerEdit}
         >
           <Text style={[{ fontSize: 16 }, TextProps]}>Edit</Text>
           <MaterialCommunityIcons name="file-edit" size={20} color="#176688" />
@@ -114,7 +108,7 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action);
+    onToggleLike(post_id, action, refetchPost, refetchAllPost);
     setForceRerenderPersonal(!forceRerenderPersonal);
   };
 
@@ -127,7 +121,7 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         ...card.card,
         gap: 20,
@@ -194,7 +188,12 @@ const FeedCardItem = ({
 
       {attachment ? (
         <>
-          <TouchableOpacity key={id} onPress={() => attachment && toggleFullScreen(attachment)}>
+          <TouchableOpacity
+            key={id}
+            onPress={() =>
+              attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+            }
+          >
             <Image
               source={{
                 uri: `${process.env.EXPO_PUBLIC_API}/image/${attachment}`,
@@ -212,7 +211,7 @@ const FeedCardItem = ({
         <View style={styles.iconAction}>
           <Pressable
             onPress={() => {
-              onCommentToggle(id);
+              onCommentToggle(id, reference, setPostId);
             }}
           >
             <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
@@ -234,20 +233,13 @@ const FeedCardItem = ({
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: "#000000",
-  },
-  highlightedText: {
-    color: "#72acdc",
-  },
-
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -284,5 +276,13 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#FFFFFF",
+  },
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
   },
 });

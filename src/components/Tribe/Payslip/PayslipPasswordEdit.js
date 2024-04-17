@@ -76,7 +76,7 @@ const PayslipPasswordEdit = ({
               title="Old Password"
               fieldName="old_password"
               value={formik.values.old_password}
-              placeholder="Enter Old password"
+              placeHolder="Enter Old password"
               secureTextEntry={hideOldPassword}
               endIcon={hideOldPassword ? "eye-outline" : "eye-off-outline"}
               onPressEndIcon={() => setHideOldPassword(!hideOldPassword)}
@@ -89,7 +89,7 @@ const PayslipPasswordEdit = ({
               title="New Password"
               fieldName="new_password"
               value={formik.values.new_password}
-              placeholder="Enter New password"
+              placeHolder="Enter New password"
               secureTextEntry={hideNewPassword}
               endIcon={hideNewPassword ? "eye-outline" : "eye-off-outline"}
               onPressEndIcon={() => setHideNewPassword(!hideNewPassword)}
@@ -102,7 +102,7 @@ const PayslipPasswordEdit = ({
               title="Confirm New Password"
               fieldName="confirm_password"
               value={formik.values.confirm_password}
-              placeholder="Enter Confirm password"
+              placeHolder="Enter Confirm password"
               secureTextEntry={hideConfirmPassword}
               endIcon={hideConfirmPassword ? "eye-outline" : "eye-off-outline"}
               onPressEndIcon={() => setHideConfirmPassword(!hideConfirmPassword)}

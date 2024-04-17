@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -9,52 +9,23 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
     <View
       style={{
         backgroundColor: "#ffffff",
-        borderRadius: 10,
-        marginHorizontal: 10,
-        paddingVertical: 10,
-        gap: 5,
+        ...styles.container,
       }}
     >
       <View
         style={{
           backgroundColor: "#f5f5f5",
-          borderRadius: 10,
-          marginHorizontal: 10,
-          paddingHorizontal: 10,
-          gap: 5,
+          ...styles.container,
         }}
       >
-        <TouchableOpacity
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            paddingHorizontal: 5,
-            paddingVertical: 8,
-            borderBottomWidth: 1,
-            borderBottomColor: "#ffffff",
-          }}
-          onPress={toggleClearChatMessage}
-        >
+        <TouchableOpacity style={{ ...styles.wrapper }} onPress={toggleClearChatMessage}>
           <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Clear Messages</Text>
           <MaterialCommunityIcons name={"close-circle-outline"} size={15} color="#EB0E29" />
         </TouchableOpacity>
 
         {type === "group" && active_member === 1 && (
           <TouchableOpacity
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              paddingHorizontal: 5,
-              paddingVertical: 8,
-              borderBottomWidth: 1,
-              borderBottomColor: "#fafafa",
-              justifyContent: "space-between",
-            }}
+            style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
             onPress={toggleExitModal}
           >
             <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
@@ -67,17 +38,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
         )}
         {type === "group" && active_member === 0 && (
           <TouchableOpacity
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              paddingHorizontal: 5,
-              paddingVertical: 8,
-              gap: 10,
-              borderBottomWidth: 1,
-              borderBottomColor: "#fafafa",
-              justifyContent: "space-between",
-            }}
+            style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
             onPress={toggleDeleteGroupModal}
           >
             <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Delete Group</Text>
@@ -88,19 +49,42 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             />
           </TouchableOpacity>
         )}
-        {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
-        <Text fontSize={14} fontWeight={400}>
-          Block {name.length > 30 ? name.split(" ")[0] : name}
-        </Text>
-      </Pressable> */}
-        {/* <Pressable display="flex" gap={2} flexDirection="row" alignItems="center" onPress={toggleClearChatMessage}>
-        <Text fontSize={14} fontWeight={400}>
-          Report {name.length > 30 ? name.split(" ")[0] : name}
-        </Text>
-      </Pressable> */}
+        {/* <TouchableOpacity
+          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+          onPress={toggleClearChatMessage}
+        >
+          <Text fontSize={14} fontWeight={400}>
+            Block {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity
+          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
+          onPress={toggleClearChatMessage}
+        >
+          <Text fontSize={14} fontWeight={400}>
+            Report {name.length > 30 ? name.split(" ")[0] : name}
+          </Text>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
 };
 
 export default ContactAction;
+
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: 10,
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    gap: 5,
+  },
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+  },
+});
