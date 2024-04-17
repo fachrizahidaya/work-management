@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 
@@ -21,7 +21,7 @@ import axiosInstance from "../../../config/api";
 import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 
 const NewCustomerScreen = () => {
-  const [imageAttachment, setImageAttachment] = useState(null);
+  // const [imageAttachment, setImageAttachment] = useState(null);
   const [tabValue, setTabValue] = useState("Profile");
 
   const navigation = useNavigation();
@@ -32,6 +32,7 @@ const NewCustomerScreen = () => {
   const { data: category } = useFetch(`/acc/customer-category`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: submissionModalIsOpen, toggle: toggleSubmissionModal } = useDisclosure(false);
 
   const customerCategory = category?.data?.map((item, index) => ({
     label: item?.name,
@@ -42,7 +43,6 @@ const NewCustomerScreen = () => {
     return [
       { title: `Profile`, value: "Profile" },
       { title: `Address`, value: "Address" },
-      { title: `Submission`, value: "Submission" },
     ];
   }, []);
 
@@ -92,7 +92,7 @@ const NewCustomerScreen = () => {
       setSubmitting(false);
       setStatus("success");
       setRequestType("post");
-      toggleSuccessModal();
+      toggleSubmissionModal();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -115,7 +115,7 @@ const NewCustomerScreen = () => {
     formik.values.email &&
     formik.values.customer_category_id &&
     formik.values.phone &&
-    formik.values.zip_code;
+    formik.values.zip_code.length === 5;
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
@@ -133,12 +133,8 @@ const NewCustomerScreen = () => {
             formValueEmpty ? navigation.goBack() : toggleReturnModal();
           }}
         />
-        <Button height={35} padding={10} disabled={allFormFilled ? false : true} onPress={formik.handleSubmit}>
-          {formik.isSubmitting ? (
-            <ActivityIndicator />
-          ) : (
-            <Text style={[{ color: "#FFFFFF", fontSize: 12, fontWeight: "500" }]}>Submit</Text>
-          )}
+        <Button height={35} padding={10} disabled={allFormFilled ? false : true} onPress={toggleSubmissionModal}>
+          <Text style={[{ color: "#FFFFFF", fontSize: 12, fontWeight: "500" }]}>Submit</Text>
         </Button>
       </View>
 
@@ -164,17 +160,21 @@ const NewCustomerScreen = () => {
             /> */}
               <NewCustomerProfileForm customerCategory={customerCategory} formik={formik} />
             </>
-          ) : tabValue === "Address" ? (
-            <>
-              <NewCustomerAddressForm formik={formik} />
-            </>
           ) : (
             <>
-              <NewCustomerSubmission formik={formik} />
+              <NewCustomerAddressForm formik={formik} />
             </>
           )}
         </View>
       </ScrollView>
+      <NewCustomerSubmission
+        formik={formik}
+        visible={submissionModalIsOpen}
+        backdropPress={toggleSubmissionModal}
+        isSubmitting={formik.isSubmitting}
+        onSubmit={formik.handleSubmit}
+        toggleOtherModal={toggleSuccessModal}
+      />
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
