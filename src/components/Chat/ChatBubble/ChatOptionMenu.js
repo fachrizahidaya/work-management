@@ -72,7 +72,6 @@ const ChatOptionMenu = ({
           toggleDeleteModal();
           onClose();
         } else {
-          // toggleDeleteModal();
           setDeleteSelected(true);
           onClose();
         }
