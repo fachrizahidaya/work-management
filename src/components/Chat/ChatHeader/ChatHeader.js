@@ -41,9 +41,9 @@ const ChatHeader = ({
           //   },
           // },
           {
-            name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
+            name: `${isPinned || isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
             onPress: () => {
-              onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin", navigation);
+              onUpdatePinHandler(type, roomId, isPinned || isPinned?.pin_chat ? "unpin" : "pin", navigation);
               SheetManager.hide("form-sheet");
             },
           },

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Platform } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -11,11 +11,11 @@ import AvatarPlaceholder from "../../shared/AvatarPlaceholder";
 const EmployeeProfile = ({ employee, teammates, reference }) => {
   return (
     <>
-      <View style={styles.avatar}>
+      <View style={{ ...styles.avatar, bottom: Platform.OS === "android" ? 90 : 50 }}>
         <AvatarPlaceholder size="xl" name={employee?.data?.name} image={employee?.data?.image} isThumb={false} />
       </View>
 
-      <View style={{ marginTop: -80 }}>
+      <View style={{ marginTop: Platform.OS === "android" ? -80 : -40 }}>
         <View style={styles.content}>
           <View>
             <View style={styles.information}>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   avatar: {
     marginBottom: 5,
     position: "relative",
-    bottom: 90,
+
     paddingHorizontal: 8,
   },
   content: {
