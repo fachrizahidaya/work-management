@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 
 import WhatsappButton from "../../shared/WhatsappButton";
 import EmailButton from "../../shared/EmailButton";
@@ -22,10 +22,11 @@ const EmployeeContact = ({ employee }) => {
           width={20}
           email={employee?.data?.email}
           user_id={employee?.data?.user?.id}
-          room_id={employee?.data?.user?.id}
+          room_id={employee?.data?.chat_personal_id}
           user_name={employee?.data?.user?.name}
           user_type={employee?.data?.user?.user_type}
           user_image={employee?.data?.user?.image}
+          isPinned={employee?.data?.pin_chat}
         />
       ),
     },

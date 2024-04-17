@@ -64,6 +64,7 @@ const FeedCard = ({
         ListHeaderComponent={
           <EmployeeData userSelector={userSelector} employee={employee} teammates={teammates} reference={reference} />
         }
+        stickyHeaderIndices={[0]}
         // Employee Posts
         renderItem={({ item, index }) => {
           if (item.id === "no-posts") {
