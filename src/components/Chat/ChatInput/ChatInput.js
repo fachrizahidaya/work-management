@@ -231,7 +231,7 @@ const ChatInput = ({
   }, [fileAttachment]);
 
   useEffect(() => {
-    formik.setFieldValue("file", forwardedAttachment ? forwardedAttachment : "");
+    forwardedMessageFormik.setFieldValue("file", forwardedAttachment ? forwardedAttachment : "");
   }, [forwarded_file_name, forwarded_file_path, forwarded_file_size, forwarded_mime_type]);
 
   /**
@@ -281,14 +281,14 @@ const ChatInput = ({
 
   useEffect(() => {
     if (forwardedBandAttachment) {
-      formik.setFieldValue(`${forwardedBandAttachmentType}_id`, forwardedBandAttachment?.id);
-      formik.setFieldValue(
+      forwardedMessageFormik.setFieldValue(`${forwardedBandAttachmentType}_id`, forwardedBandAttachment?.id);
+      forwardedMessageFormik.setFieldValue(
         `${forwardedBandAttachmentType}_no`,
         forwardedBandAttachmentType === "project"
           ? forwardedBandAttachment?.project_no
           : forwardedBandAttachment?.task_no // if task it will send task_no, if other the will send the opposite
       );
-      formik.setFieldValue(`${forwardedBandAttachmentType}_title`, forwardedBandAttachment?.title);
+      forwardedMessageFormik.setFieldValue(`${forwardedBandAttachmentType}_title`, forwardedBandAttachment?.title);
     }
   }, [forwardedBandAttachment, forwardedBandAttachmentType]);
 
@@ -440,17 +440,14 @@ const ChatInput = ({
               </View>
 
               <MaterialIcons
-                onPress={() => {
-                  if (
-                    formik.values.message !== "" ||
-                    formik.values.file !== "" ||
-                    ((formik.values.project_id || formik.values.task_id) &&
-                      !formik.isSubmitting &&
-                      formik.status !== "processing")
-                  ) {
-                    formik.handleSubmit();
-                  }
-                }}
+                onPress={
+                  formik.values.message !== "" ||
+                  formik.values.file !== "" ||
+                  formik.values.project_id ||
+                  (formik.values.task_id && !formik.isSubmitting && formik.status !== "processing")
+                    ? formik.handleSubmit
+                    : null
+                }
                 style={{
                   opacity: formik.values.message === "" && fileAttachment === null && bandAttachment === null ? 0.5 : 1,
                 }}
