@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
@@ -27,6 +27,11 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip })
     },
   });
 
+  const handleClose = () => {
+    formik.resetForm();
+    reference.current?.hide();
+  };
+
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {
       toggleDownloadDialog();
@@ -35,23 +40,9 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip })
   }, [formik.isSubmitting, formik.status]);
 
   return (
-    <ActionSheet
-      ref={reference}
-      onClose={() => {
-        formik.resetForm();
-        reference.current?.hide();
-      }}
-    >
+    <ActionSheet ref={reference} onClose={handleClose}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            display: "flex",
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
+        <View style={styles.wrapper}>
           <Input
             formik={formik}
             title="Password"
@@ -73,3 +64,12 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip })
 };
 
 export default PayslipDownload;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+});

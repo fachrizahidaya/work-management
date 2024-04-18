@@ -108,9 +108,8 @@ export default UserListModal;
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     gap: 10,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
   },

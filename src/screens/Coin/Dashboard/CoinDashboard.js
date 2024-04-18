@@ -187,7 +187,7 @@ const CoinDashboard = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+        <View style={{ flexDirection: "row", gap: 2 }}>
           <Text style={{ fontSize: 16, fontWeight: 700, color: "#176688" }}>Financial</Text>
         </View>
         <Text style={[{ fontWeight: 700 }, TextProps]}>PT Kolabora Group Indonesia</Text>
@@ -242,11 +242,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
   },
   header: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     paddingVertical: 14,
     paddingHorizontal: 16,
   },

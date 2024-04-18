@@ -6,7 +6,6 @@ const StatusSection = ({ open, onProgress, finish }) => {
     <Pressable
       style={{
         flex: 1,
-        display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",

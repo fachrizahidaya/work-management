@@ -67,7 +67,6 @@ const ProjectList = ({
         <View
           style={{
             flex: 1,
-            display: "flex",
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#FFFFFF",

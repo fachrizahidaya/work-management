@@ -31,7 +31,6 @@ const KPIReviewForm = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
-            display: "flex",
             gap: 21,
             paddingHorizontal: 20,
             paddingVertical: 16,

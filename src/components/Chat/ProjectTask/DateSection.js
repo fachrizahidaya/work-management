@@ -5,7 +5,6 @@ const DateSection = ({ start, end }) => {
   return (
     <Pressable
       style={{
-        display: "flex",
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         borderRadius: 10,

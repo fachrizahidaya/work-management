@@ -47,25 +47,15 @@ const ProjectDetail = () => {
         type="project"
       />
 
-      <View
-        style={{
-          backgroundColor: "#FAFAFA",
-          borderRadius: 10,
-          marginVertical: 10,
-          marginHorizontal: 16,
-        }}
-      >
+      <View style={styles.wrapper}>
         <Description description={project?.data?.description} navigation={navigation} />
       </View>
 
       <View
         style={{
+          ...styles.wrapper,
           flexDirection: "row",
           gap: 5,
-          backgroundColor: "#FAFAFA",
-          borderRadius: 10,
-          marginVertical: 10,
-          marginHorizontal: 16,
         }}
       >
         <DateSection
@@ -81,12 +71,9 @@ const ProjectDetail = () => {
 
       <View
         style={{
+          ...styles.wrapper,
           flexDirection: "row",
-          backgroundColor: "#FAFAFA",
           gap: 5,
-          borderRadius: 10,
-          marginVertical: 10,
-          marginHorizontal: 16,
         }}
       >
         <MemberSection member={project?.data?.member} />
@@ -135,5 +122,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAFAFA",
+  },
+  wrapper: {
+    backgroundColor: "#FAFAFA",
+    borderRadius: 10,
+    marginVertical: 10,
+    marginHorizontal: 16,
   },
 });

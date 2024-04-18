@@ -93,7 +93,6 @@ export default SalesAndCustomerCard;
 const styles = StyleSheet.create({
   container: {
     height: 160,
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 8,

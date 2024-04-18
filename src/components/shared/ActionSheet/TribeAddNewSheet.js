@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
     borderColor: "#E8E9EB",
   },
   flex: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 21,

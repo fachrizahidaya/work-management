@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 250,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     resizeMode: "cover",
   },
   dockAction: {

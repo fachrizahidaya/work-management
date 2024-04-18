@@ -331,7 +331,6 @@ const ChatInput = ({
                       children: (
                         <View
                           style={{
-                            display: "flex",
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
@@ -394,7 +393,7 @@ const ChatInput = ({
                 />
               </TouchableOpacity>
 
-              <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+              <View style={{ flex: 1, justifyContent: "center" }}>
                 {type === "group" ? (
                   <MentionInput
                     value={formik.values.message}
