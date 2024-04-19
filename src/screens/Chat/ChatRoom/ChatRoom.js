@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback, useRef, Fragment } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { Calendar } from "react-native-calendars";
 import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet, Platform } from "react-native";
@@ -59,6 +58,10 @@ const ChatRoom = () => {
   const [filter, setFilter] = useState({
     year: dayjs().format("YYYY"),
   });
+  const [monthChangeFilter, setMonthChangeFilter] = useState({
+    month: dayjs().format("M"),
+    year: dayjs().format("YYYY"),
+  });
 
   window.Pusher = Pusher;
   const { laravelEcho, setLaravelEcho } = useWebsocketContext();
@@ -107,19 +110,32 @@ const ChatRoom = () => {
   const { isLoading: deleteGroupIsLoading, toggle: toggleDeleteGroup } = useLoading(false);
   const { isLoading: chatIsLoading, stop: stopLoadingChat, start: startLoadingChat } = useLoading(false);
 
-  const leaveFetchParameters = filter;
+  const dateFetchParameters = monthChangeFilter;
 
-  const { data: projectDeadlines } = useFetch("/pm/projects/deadline");
-  const { data: holidays } = useFetch("/hr/holidays/calendar");
-  const { data: taskDeadlines } = useFetch("/pm/tasks/deadline");
-  const { data: leaves } = useFetch("/hr/timesheets/personal", [filter], leaveFetchParameters);
+  const { data: projectDeadlines, isLoading: projectDeadlinesIsLoading } = useFetch(
+    "/pm/projects/deadline",
+    [monthChangeFilter],
+    dateFetchParameters
+  );
+  const { data: holidays, isLoading: holidaysIsLoading } = useFetch(
+    "/hr/holidays/calendar",
+    [monthChangeFilter],
+    dateFetchParameters
+  );
+  const { data: taskDeadlines, isLoading: taskDeadlinesIsLoading } = useFetch(
+    "/pm/tasks/deadline",
+    [monthChangeFilter],
+    dateFetchParameters
+  );
+  const { data: leaves, isLoading: leavesIsLoading } = useFetch(
+    "/hr/timesheets/personal",
+    [monthChangeFilter],
+    dateFetchParameters
+  );
 
   const filteredLeave = leaves?.data.filter((item) => item?.att_type === "Leave");
 
-  const formattedProjectDeadlines = {};
-  const formattedTaskDeadlines = {};
-  const formattedHolidays = {};
-  const formattedLeaves = {};
+  const allLoading = projectDeadlinesIsLoading || holidaysIsLoading || taskDeadlinesIsLoading || leavesIsLoading;
 
   const formattedDotColorProjects = {};
   const formattedDotColorTasks = {};
@@ -739,7 +755,17 @@ const ChatRoom = () => {
             onDeleteMessage={messagedeleteHandler}
             setDeleteSelected={setDeleteMessageSelected}
           />
-          <ChatCalendar reference={calendarRef} colorDots={colorDots} />
+          <ChatCalendar
+            reference={calendarRef}
+            colorDots={colorDots}
+            holidays={holidays?.data}
+            leaves={filteredLeave}
+            dayjs={dayjs}
+            projectDeadlines={projectDeadlines?.data}
+            taskDeadlines={taskDeadlines?.data}
+            setFilter={setMonthChangeFilter}
+            allLoading={allLoading}
+          />
         </SafeAreaView>
       ) : null}
     </>
