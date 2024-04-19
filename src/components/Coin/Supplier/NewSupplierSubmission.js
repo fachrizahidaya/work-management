@@ -32,18 +32,6 @@ const NewSupplierSubmission = ({
       title: "Phone Number",
       value: formik.values.phone,
     },
-    {
-      title: "Bank Account",
-      value: formik.values.bank_account,
-    },
-    {
-      title: "Account Number",
-      value: formik.values.account_no,
-    },
-    {
-      title: "Account Name",
-      value: formik.values.account_name,
-    },
   ];
 
   const addressArr = [
@@ -52,12 +40,12 @@ const NewSupplierSubmission = ({
       value: formik.values.city,
     },
     {
-      title: "Region",
-      value: formik.values.region,
+      title: "Province",
+      value: formik.values.province,
     },
     {
-      title: "City",
-      value: formik.values.city,
+      title: "State",
+      value: formik.values.state,
     },
   ];
 
