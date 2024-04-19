@@ -1,5 +1,5 @@
-import React from "react";
 import { Text, View } from "react-native";
+
 import { TextProps } from "../../../shared/CustomStylings";
 
 const KPIReviewDetailList = ({ dayjs, begin_date, end_date, target, name }) => {

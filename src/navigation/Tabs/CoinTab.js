@@ -76,7 +76,7 @@ const CoinTab = () => {
           //   },
           // })}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Add"
           component={EmptyScreen}
           options={{
@@ -91,7 +91,7 @@ const CoinTab = () => {
               </TouchableOpacity>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="Screen List"
           component={EmptyScreen}

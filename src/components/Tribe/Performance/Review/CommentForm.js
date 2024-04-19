@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
@@ -11,7 +9,6 @@ const CommentForm = ({ reference, description, formik, handleClose, comment }) =
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
-            display: "flex",
             gap: 21,
             paddingHorizontal: 20,
             paddingVertical: 16,

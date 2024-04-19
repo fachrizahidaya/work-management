@@ -29,7 +29,6 @@ const Header = ({ navigation, title, deadline, owner_name, owner_image, type }) 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Pressable
             style={{
-              display: "flex",
               flexDirection: "row",
               alignItems: "center",
             }}

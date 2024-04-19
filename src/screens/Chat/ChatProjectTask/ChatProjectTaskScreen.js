@@ -153,18 +153,10 @@ const ChatProjectTaskScreen = () => {
     <SafeAreaView style={styles.container}>
       {isReady ? (
         <>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#FFFFFF",
-              paddingVertical: 14,
-              paddingHorizontal: 16,
-            }}
-          >
+          <View style={styles.wrapper}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
               <Pressable
                 style={{
-                  display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -232,5 +224,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAFAFA",
+  },
+  wrapper: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
 });

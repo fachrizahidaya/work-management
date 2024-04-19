@@ -32,23 +32,23 @@ const ChatOptionMenu = ({
       },
       color: "#176688",
     },
-    // {
-    //   name: "Forward",
-    //   icon: "share",
-    //   onPress: () => {
-    //     navigation.push("Forward Screen", {
-    //       message: chat?.message,
-    //       project: chat?.project,
-    //       task: chat?.task,
-    //       file_path: chat?.file_path,
-    //       file_name: chat?.file_name,
-    //       file_size: chat?.file_size,
-    //       mime_type: chat?.mime_type,
-    //     });
-    //     onClose();
-    //   },
-    //   color: "#176688",
-    // },
+    {
+      name: "Forward",
+      icon: "share",
+      onPress: () => {
+        navigation.push("Forward Screen", {
+          message: chat?.message,
+          project: chat?.project,
+          task: chat?.task,
+          file_path: chat?.file_path,
+          file_name: chat?.file_name,
+          file_size: chat?.file_size,
+          mime_type: chat?.mime_type,
+        });
+        onClose();
+      },
+      color: "#176688",
+    },
     {
       name: "Copy",
       icon: "content-copy",

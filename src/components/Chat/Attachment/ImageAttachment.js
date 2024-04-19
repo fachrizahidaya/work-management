@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 350,
     height: 500,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     resizeMode: "contain",
   },
 });

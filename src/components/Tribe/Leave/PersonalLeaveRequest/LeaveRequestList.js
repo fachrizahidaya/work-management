@@ -1,7 +1,7 @@
-import React from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { FlashList } from "react-native-actions-sheet";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
 import LeaveRequestItem from "./LeaveRequestItem";
 import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 

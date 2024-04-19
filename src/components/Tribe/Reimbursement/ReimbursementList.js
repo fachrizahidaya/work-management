@@ -1,12 +1,6 @@
 import dayjs from "dayjs";
 
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -25,14 +19,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
 
   return (
     <>
-      <Tabs
-        tabs={tabs}
-        value={tabValue}
-        onChange={onChangeTab}
-        justify="space-evenly"
-        flexDir="row"
-        gap={2}
-      />
+      <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} justify="space-evenly" flexDir="row" gap={2} />
       <View style={{ gap: 15 }}>
         <ScrollView style={{ maxHeight: 300 }}>
           <View style={styles.container}>
@@ -54,9 +41,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <Text style={[{ fontSize: 14 }, TextProps]}>
-                        {item.title}
-                      </Text>
+                      <Text style={[{ fontSize: 14 }, TextProps]}>{item.title}</Text>
                       <Pressable
                         style={{ marginRight: 1 }}
                         onPress={() =>
@@ -65,7 +50,6 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                               children: (
                                 <View
                                   style={{
-                                    display: "flex",
                                     gap: 21,
                                     paddingHorizontal: 20,
                                     paddingVertical: 16,
@@ -76,9 +60,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                                       await SheetManager.hide("form-sheet");
                                     }}
                                   >
-                                    <Text style={[{ fontSize: 12 }, TextProps]}>
-                                      Cancel Request
-                                    </Text>
+                                    <Text style={[{ fontSize: 12 }, TextProps]}>Cancel Request</Text>
                                   </TouchableOpacity>
                                 </View>
                               ),
@@ -86,11 +68,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                           })
                         }
                       >
-                        <MaterialCommunityIcons
-                          name="dots-vertical"
-                          size={15}
-                          color="#3F434A"
-                        />
+                        <MaterialCommunityIcons name="dots-vertical" size={15} color="#3F434A" />
                       </Pressable>
                     </View>
                     <View
@@ -101,9 +79,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                       }}
                     >
                       <View>
-                        <Text style={[{ fontSize: 12 }, TextProps]}>
-                          {item.description}
-                        </Text>
+                        <Text style={[{ fontSize: 12 }, TextProps]}>{item.description}</Text>
                       </View>
                     </View>
                     <View
@@ -113,9 +89,7 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {rupiah(item.total)}
-                      </Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>{rupiah(item.total)}</Text>
 
                       <MaterialCommunityIcons
                         name="attachment"
@@ -131,12 +105,8 @@ const ReimbursementList = ({ data, tabs, tabValue, onChangeTab }) => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {dayjs(item.date).format("DD.MM.YYYY")}
-                      </Text>
-                      <Text style={[{ fontSize: 12 }, TextProps]}>
-                        {item.status}
-                      </Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>{dayjs(item.date).format("DD.MM.YYYY")}</Text>
+                      <Text style={[{ fontSize: 12 }, TextProps]}>{item.status}</Text>
                     </View>
                   </View>
                 );

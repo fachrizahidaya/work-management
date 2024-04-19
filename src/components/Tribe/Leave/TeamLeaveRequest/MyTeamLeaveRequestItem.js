@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   approvalOption: {
-    display: "flex",
     gap: 21,
     paddingHorizontal: 20,
     paddingVertical: 16,

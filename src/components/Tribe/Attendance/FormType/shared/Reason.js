@@ -1,5 +1,5 @@
-import React from "react";
 import { View } from "react-native";
+
 import Input from "../../../../shared/Forms/Input";
 
 const Reason = ({ formik, value, fieldName, onChangeText }) => {

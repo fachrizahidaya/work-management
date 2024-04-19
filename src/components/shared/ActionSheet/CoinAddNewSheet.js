@@ -35,18 +35,18 @@ const CoinAddNewSheet = (props) => {
         props.reference.current?.hide();
       },
     },
-    // {
-    //   title: `New Supplier ${createSupplierAccess ? "" : "(No access)"}`,
-    //   screen: () => {
-    //     createSupplierAccess
-    //       ? navigation.navigate("New Supplier", {
-    //           setRequestType: setRequestType,
-    //           toggleSuccessModal: toggleNewSupplierModal,
-    //         })
-    //       : navigation.navigate("Dashboard");
-    //     props.reference.current?.hide();
-    //   },
-    // },
+    {
+      title: `New Supplier ${createSupplierAccess ? "" : "(No access)"}`,
+      screen: () => {
+        createSupplierAccess
+          ? navigation.navigate("New Supplier", {
+              setRequestType: setRequestType,
+              toggleSuccessModal: toggleNewSupplierModal,
+            })
+          : navigation.navigate("Dashboard");
+        props.reference.current?.hide();
+      },
+    },
   ];
 
   return (
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     borderColor: "#E8E9EB",
   },
   flex: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 21,

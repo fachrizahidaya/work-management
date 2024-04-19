@@ -20,6 +20,15 @@ const SupervisorInformation = ({
   const phoneNumber = supervisorPhone;
   const phoneUrl = `tel:0${phoneNumber}`;
 
+  const handleNavigation = () => {
+    navigation.navigate("Employee Profile", {
+      employeeId: supervisorId,
+      returnPage: "My Information",
+      refetch: refetch,
+      loggedEmployeeId: id,
+    });
+  };
+
   return (
     <View style={{ ...card.card, marginTop: 5, gap: 20 }}>
       <View
@@ -30,16 +39,7 @@ const SupervisorInformation = ({
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: supervisorId,
-                returnPage: "My Information",
-                refetch: refetch,
-                loggedEmployeeId: id,
-              })
-            }
-          >
+          <TouchableOpacity onPress={handleNavigation}>
             <AvatarPlaceholder image={supervisorImage} name={supervisorName} size="lg" isThumb={false} />
           </TouchableOpacity>
           <View>

@@ -49,7 +49,6 @@ export default FeedSection;
 
 const styles = StyleSheet.create({
   wrapper: {
-    display: "flex",
     flex: 1,
     backgroundColor: "#ffffff",
     gap: 10,

@@ -11,10 +11,7 @@ const ContactDescription = ({ isLoading, navigation, name, image, email, concate
         <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
       </Pressable>
 
-      <Pressable
-        onPress={() => navigation.navigate("User Detail", params)}
-        style={{ display: "flex", flexDirection: "row", gap: 10 }}
-      >
+      <Pressable onPress={() => navigation.navigate("User Detail", params)} style={{ flexDirection: "row", gap: 10 }}>
         <AvatarPlaceholder name={name} image={image} size="md" isThumb={false} />
 
         <View>

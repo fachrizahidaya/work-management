@@ -68,22 +68,19 @@ const NewSupplierScreen = () => {
       supplier_category_id: "",
       address: "",
       city: "",
-      region: "",
+      province: "",
+      state: "",
       address: "",
       zip_code: "",
-      comment: "",
-      bank_account: "",
-      account_name: "",
-      account_no: "",
     },
     validationSchema: yup.object().shape({
       name: yup.string().required("Name is required"),
       email: yup.string().email().required("Email is required"),
       phone: yup.string().matches(phoneRegExp, "Phone number is invalid").required("Phone Number is required"),
       address: yup.string().required("Address is required"),
-      account_name: yup.string().required("Account Name is required"),
-      bank_account: yup.string().required("Bank Account is required"),
-      account_no: yup.string().required("Account Number is required"),
+      city: yup.string().required("City is required"),
+      province: yup.string().required("Province is required"),
+      state: yup.string().required("State is required"),
       zip_code: yup
         .string()
         .min(5, "ZIP Code consists 5 numbers")
@@ -92,13 +89,21 @@ const NewSupplierScreen = () => {
     }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
-      addSupplierHandler(values, setSubmitting, setStatus);
+      const formData = new FormData();
+      for (let key in values) {
+        formData.append(`supplier[${key}]`, values[key]);
+      }
+      addSupplierHandler(formData, setSubmitting, setStatus);
     },
   });
 
   const addSupplierHandler = async (form, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.post(`/acc/supplier`, form);
+      const res = await axiosInstance.post(`/acc/supplier`, form, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
       setSubmitting(false);
       setStatus("success");
       setRequestType("post");
@@ -117,9 +122,9 @@ const NewSupplierScreen = () => {
     !formik.values.email &&
     !formik.values.supplier_category_id &&
     !formik.values.phone &&
-    !formik.values.account_name &&
-    !formik.values.bank_account &&
-    !formik.values.account_no &&
+    !formik.values.city &&
+    !formik.values.province &&
+    !formik.values.state &&
     !formik.values.zip_code;
 
   const allFormFilled =
@@ -128,10 +133,10 @@ const NewSupplierScreen = () => {
     formik.values.email &&
     formik.values.supplier_category_id &&
     formik.values.phone &&
-    formik.values.account_name &&
-    formik.values.bank_account &&
-    formik.values.account_no &&
-    formik.values.zip_code.length === 5;
+    formik.values.city &&
+    formik.values.province &&
+    formik.values.state &&
+    formik.values.zip_code?.length === 5;
 
   useEffect(() => {
     if (!formik.isSubmitting && formik.status === "success") {

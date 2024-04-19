@@ -115,6 +115,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 500,
     resizeMode: "contain",
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 
@@ -58,7 +58,6 @@ const GlobalSearchTribe = () => {
       <SafeAreaView style={styles.container}>
         <View
           style={{
-            display: "flex",
             gap: 15,
             marginHorizontal: 16,
             marginVertical: 13,
@@ -81,7 +80,6 @@ const GlobalSearchTribe = () => {
             endAdornment={
               <View
                 style={{
-                  display: "flex",
                   flexDirection: "row",
                   gap: 10,
                   alignItems: "center",

@@ -133,7 +133,6 @@ const SlideContactItem = ({
                                 width: 25,
                                 backgroundColor: "#FD7972",
                                 borderRadius: 10,
-                                display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}

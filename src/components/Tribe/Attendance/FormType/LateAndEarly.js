@@ -1,5 +1,5 @@
-import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+
 import Select from "../../../shared/Forms/Select";
 import Tabs from "../../../shared/Tabs";
 import Input from "../../../shared/Forms/Input";

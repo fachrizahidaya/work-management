@@ -1,4 +1,3 @@
-import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";

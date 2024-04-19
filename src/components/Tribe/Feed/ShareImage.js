@@ -10,7 +10,6 @@ const ShareImage = ({ reference, type, sharePost }) => {
     <ActionSheet ref={reference} onClose={() => reference.current?.hide()} size="full">
       <View
         style={{
-          display: "flex",
           gap: 21,
           paddingHorizontal: 20,
           paddingVertical: 16,
