@@ -32,7 +32,6 @@ const DownPaymentList = ({
             renderItem={({ item, index }) => (
               <DownPaymentListItem
                 key={index}
-                id={item?.id}
                 dp_no={item?.dp_no}
                 status={item?.status}
                 dp_date={dayjs(item?.dp_date).format("DD MMM YYYY")}

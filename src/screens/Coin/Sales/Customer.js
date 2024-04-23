@@ -55,6 +55,7 @@ const Customer = () => {
   };
 
   useEffect(() => {
+    setCustomers([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

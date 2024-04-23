@@ -5,16 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextProps } from "../../shared/CustomStylings";
 import { card } from "../../../styles/Card";
 
-const DownPaymentListItem = ({
-  id,
-  dp_no,
-  status,
-  dp_date,
-  so_no,
-  customer_name,
-  payment_amount,
-  currencyConverter,
-}) => {
+const DownPaymentListItem = ({ dp_no, status, dp_date, so_no, customer_name, payment_amount, currencyConverter }) => {
   const dataArr = [
     // { title: "DP Number", value: dp_no },
     { title: "SO Number", value: so_no },
@@ -24,7 +15,7 @@ const DownPaymentListItem = ({
   ];
 
   return (
-    <Pressable
+    <View
       style={{
         ...card.card,
         ...styles.content,
@@ -49,7 +40,7 @@ const DownPaymentListItem = ({
           </View>
         );
       })}
-    </Pressable>
+    </View>
   );
 };
 

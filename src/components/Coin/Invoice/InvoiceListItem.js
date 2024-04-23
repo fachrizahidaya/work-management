@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,7 +14,7 @@ const InvoiceListItem = ({ id, navigation, invoice_no, status, invoice_date, shi
   ];
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         ...card.card,
         ...styles.content,
@@ -45,7 +45,7 @@ const InvoiceListItem = ({ id, navigation, invoice_no, status, invoice_date, shi
           </View>
         );
       })}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

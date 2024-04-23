@@ -51,6 +51,7 @@ const PurchaseOrder = () => {
   };
 
   useEffect(() => {
+    setPurchaseOrder([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

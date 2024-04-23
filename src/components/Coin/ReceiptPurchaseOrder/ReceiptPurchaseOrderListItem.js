@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -8,7 +8,7 @@ import { CopyToClipboard } from "../../shared/CopyToClipboard";
 
 const ReceiptPurchaseOrderListItem = ({ navigation, id, receipt_no, receipt_date }) => {
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         ...card.card,
         ...styles.content,
@@ -23,7 +23,7 @@ const ReceiptPurchaseOrderListItem = ({ navigation, id, receipt_no, receipt_date
         <Text style={[TextProps]}>Receipt Date</Text>
         <Text style={[TextProps, { opacity: 0.5, textAlign: "right", width: "60%" }]}>{receipt_date}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
