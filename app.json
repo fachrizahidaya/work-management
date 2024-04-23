@@ -80,14 +80,16 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      "react-native-permissions",
-      {
-        "iosPermissions": [
-          "LocationAccuracy",
-          "LocationAlways",
-          "LocationWhenInUse"
-        ]
-      }
+      [
+        "react-native-permissions",
+        {
+          "iosPermissions": [
+            "LocationAccuracy",
+            "LocationAlways",
+            "LocationWhenInUse"
+          ]
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "appVersion"
