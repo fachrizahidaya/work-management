@@ -6,13 +6,11 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const AnalyticCard = ({ sumByMonth }) => {
   if (!sumByMonth || typeof sumByMonth !== "object") {
-    console.log("Invalid data");
     return null;
   }
   const labels = Object.keys(sumByMonth);
 
   if (!labels.length) {
-    console.log("No labels found");
     return null;
   }
 
