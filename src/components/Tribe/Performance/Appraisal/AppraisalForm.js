@@ -27,7 +27,7 @@ const AppraisalForm = ({
       ref={reference}
       closeOnPressBack={false}
       closeOnTouchBackdrop={
-        confirmed || (choiceValue == formik.values.choice && noteValue == formik.values.notes) ? true : false
+        confirmed || choiceValue || (null == formik.values.choice && noteValue == formik.values.notes) ? true : false
       }
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

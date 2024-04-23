@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../components/shared/PageHeader";
@@ -32,14 +32,14 @@ const PurchaseScreen = () => {
       <View style={{ paddingHorizontal: 14, paddingVertical: 16, gap: 10 }}>
         {purchaseOptions.map((item, index) => {
           return (
-            <TouchableOpacity
+            <Pressable
               key={index}
               style={{ ...card.card, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
               onPress={() => navigation.navigate(item.navigate)}
             >
               <Text style={[TextProps]}>{item.name}</Text>
               <MaterialCommunityIcons name="chevron-right" size={20} color="#3F434A" />
-            </TouchableOpacity>
+            </Pressable>
           );
         })}
       </View>

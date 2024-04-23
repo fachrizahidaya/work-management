@@ -55,6 +55,7 @@ const SalesOrder = () => {
   };
 
   useEffect(() => {
+    setSalesOrder([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

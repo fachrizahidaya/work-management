@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -16,7 +16,7 @@ const PurchaseOrderListItem = ({ id, po_no, status, po_date, shipping_address, n
   ];
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         ...card.card,
         ...styles.content,
@@ -47,7 +47,7 @@ const PurchaseOrderListItem = ({ id, po_no, status, po_date, shipping_address, n
           </View>
         );
       })}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { card } from "../../../styles/Card";
 import { TextProps } from "../../shared/CustomStylings";
@@ -12,7 +12,7 @@ const CustomerListItem = ({ name, phone, address, email }) => {
   ];
 
   return (
-    <Pressable
+    <View
       style={{
         ...card.card,
         ...styles.content,
@@ -34,7 +34,7 @@ const CustomerListItem = ({ name, phone, address, email }) => {
           })}
         </View>
       </View>
-    </Pressable>
+    </View>
   );
 };
 

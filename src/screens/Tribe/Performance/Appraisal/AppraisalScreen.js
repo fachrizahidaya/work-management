@@ -164,8 +164,8 @@ const AppraisalScreen = () => {
   const formik = useFormik({
     initialValues: {
       performance_appraisal_value_id: appraisal?.performance_appraisal_value_id || appraisal?.id,
-      choice: appraisal?.choice || "",
-      notes: appraisal?.notes || "",
+      choice: appraisal?.choice || null,
+      notes: appraisal?.notes || null,
     },
     onSubmit: (values) => {
       if (formik.isValid) {

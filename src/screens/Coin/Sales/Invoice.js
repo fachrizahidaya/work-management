@@ -55,6 +55,7 @@ const Invoice = () => {
   };
 
   useEffect(() => {
+    setInvoice([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

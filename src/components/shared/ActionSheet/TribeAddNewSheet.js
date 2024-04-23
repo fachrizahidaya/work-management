@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -24,6 +24,7 @@ const TribeAddNewSheet = (props) => {
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
+  const [locationStatus, setLocationStatus] = useState();
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -170,37 +171,58 @@ const TribeAddNewSheet = (props) => {
    * Handle change for the location permission status
    */
   useEffect(() => {
-    const runThis = async () => {
-      try {
-        const isLocationEnabled = await Location.hasServicesEnabledAsync();
-        setLocationOn(isLocationEnabled);
-
-        const { granted } = await Location.getForegroundPermissionsAsync();
-        const currentLocation = await Location.getCurrentPositionAsync({});
-
-        setStatus(granted);
-        setLocation(currentLocation);
-      } catch (err) {
-        console.log(err);
-      }
+    async () => {
+      setLocationStatus(await Location.getForegroundPermissionsAsync());
     };
+    // const runThis = async () => {
+    //   try {
+    //     const isLocationEnabled = await Location.hasServicesEnabledAsync();
+    //     setLocationOn(isLocationEnabled);
+
+    //     const { granted } = await Location.getForegroundPermissionsAsync();
+    //     const currentLocation = await Location.getCurrentPositionAsync({});
+
+    //     setStatus(granted);
+    //     setLocation(currentLocation);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
 
     /**
      * Handle device state change
      * @param {*} nextAppState
      */
-    const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active") {
-        // App has come to the foreground
-        runThis();
-      } else if (nextAppState !== "active") {
-        setLocation(null);
-        setStatus(null);
-      }
-    };
+    // const handleAppStateChange = (nextAppState) => {
+    //   if (nextAppState === "active") {
+    //     // App has come to the foreground
+    //     runThis();
+    //   } else if (nextAppState !== "active") {
+    //     setLocation(null);
+    //     setStatus(null);
+    //   }
+    // };
 
-    AppState.addEventListener("change", handleAppStateChange);
-    runThis(); // Initial run when the component mounts
+    // AppState.addEventListener("change", handleAppStateChange);
+    // runThis(); // Initial run when the component mounts
+  }, []);
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  const handleAppStateChange = async (nextAppState) => {
+    if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+      setLocationStatus(await Location.getForegroundPermissionsAsync());
+    }
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+  };
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   useEffect(() => {

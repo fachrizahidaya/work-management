@@ -104,14 +104,6 @@ const AttendanceScreen = () => {
   }, []);
 
   /**
-   * Handle switch month on calendar
-   * @param {*} newMonth
-   */
-  const monthChangeHandler = useCallback((newMonth) => {
-    switchMonthHandler(newMonth);
-  }, []);
-
-  /**
    * Handle to create appropriate object for react-native-calendar
    */
   useEffect(() => {
@@ -353,7 +345,7 @@ const AttendanceScreen = () => {
           current={currentDate}
           markingType="custom"
           markedDates={markedDates}
-          onMonthChange={monthChangeHandler}
+          onMonthChange={switchMonthHandler}
           theme={{
             arrowColor: "black",
             "stylesheet.calendar.header": {

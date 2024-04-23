@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,7 +14,7 @@ const SalesOrderListItem = ({ id, so_no, navigation, status, so_date, shipping_a
   ];
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         ...card.card,
         ...styles.content,
@@ -45,7 +45,7 @@ const SalesOrderListItem = ({ id, so_no, navigation, status, so_date, shipping_a
           </View>
         );
       })}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
