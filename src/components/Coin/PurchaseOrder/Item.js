@@ -5,7 +5,7 @@ import { TextProps } from "../../shared/CustomStylings";
 const Item = ({ name, qty, unit, total_amount, currencyConverter }) => {
   return (
     <View style={styles.container}>
-      <Text style={[TextProps, { overflow: "hidden", width: "15%" }]} ellipsizeMode="tail" numberOfLines={2}>
+      <Text style={[TextProps, { overflow: "hidden", width: "20%" }]} ellipsizeMode="tail" numberOfLines={2}>
         {name}
       </Text>
       <Text style={[TextProps]}>
