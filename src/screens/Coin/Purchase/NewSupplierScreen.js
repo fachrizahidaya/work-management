@@ -22,6 +22,7 @@ import NewSupplierBankDetailForm from "../../../components/Coin/Supplier/NewSupp
 
 const NewSupplierScreen = () => {
   const [tabValue, setTabValue] = useState("Profile");
+  const [bankList, setBankList] = useState([]);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -29,9 +30,9 @@ const NewSupplierScreen = () => {
   const { setRequestType, toggleSuccessModal } = route.params;
 
   const { data: category } = useFetch(`/acc/supplier-category`);
-  const { data: bank } = useFetch(`/acc/bank`);
   const { data: top } = useFetch(`/acc/terms-payment`);
   const { data: currencies } = useFetch(`/acc/currency`);
+  const { data: bank } = useFetch(`/acc/bank`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: submissionModalIsOpen, toggle: toggleSubmissionModal } = useDisclosure(false);
@@ -89,9 +90,6 @@ const NewSupplierScreen = () => {
       state: "",
       address: "",
       zip_code: "",
-      // bank_id: "",
-      // account_no: "",
-      // account_name: "",
       currency_id: "",
       terms_payment_id: "",
     },
@@ -103,8 +101,6 @@ const NewSupplierScreen = () => {
       city: yup.string().required("City is required"),
       province: yup.string().required("Province is required"),
       state: yup.string().required("State is required"),
-      // account_no: yup.string().matches(phoneRegExp, "Account number is invalid").required("Account Number is required"),
-      // account_name: yup.string().required("Account Name is required"),
       zip_code: yup
         .string()
         .min(5, "ZIP Code consists 5 numbers")
@@ -113,23 +109,31 @@ const NewSupplierScreen = () => {
     }),
     onSubmit: (values, { setSubmitting, setStatus }) => {
       setStatus("processing");
-      const formData = new FormData();
-      for (let key in values) {
-        // if (key === "bank_id" || key === "account_no" || key === "account_name") {
-        //   formData.append(`supplier_bank[${key}]`, values[key]);
-        // }
-        formData.append(`supplier[${key}]`, values[key]);
-      }
-      addSupplierHandler(formData, setSubmitting, setStatus);
+      addSupplierHandler(values, setSubmitting, setStatus);
+    },
+  });
+
+  const bankFormik = useFormik({
+    initialValues: {
+      bank_id: "",
+      account_no: "",
+      account_name: "",
+    },
+    validationSchema: yup.object().shape({
+      account_no: yup.string().matches(phoneRegExp, "Account number is invalid").required("Account Number is required"),
+      account_name: yup.string().required("Account Name is required"),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      setBankList((prevState) => [...prevState, values]);
+      resetForm();
     },
   });
 
   const addSupplierHandler = async (form, setSubmitting, setStatus) => {
     try {
-      const res = await axiosInstance.post(`/acc/supplier`, form, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
+      const res = await axiosInstance.post(`/acc/supplier`, {
+        supplier: form,
+        supplier_bank: bankList,
       });
       setSubmitting(false);
       setStatus("success");
@@ -211,7 +215,7 @@ const NewSupplierScreen = () => {
             </>
           ) : (
             <>
-              <NewSupplierBankDetailForm formik={formik} bank={bankOption} />
+              <NewSupplierBankDetailForm formik={bankFormik} bank={bankOption} />
             </>
           )}
         </View>
@@ -223,6 +227,7 @@ const NewSupplierScreen = () => {
         isSubmitting={formik.isSubmitting}
         onSubmit={formik.handleSubmit}
         toggleOtherModal={toggleSuccessModal}
+        bankFormik={bankFormik}
       />
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}

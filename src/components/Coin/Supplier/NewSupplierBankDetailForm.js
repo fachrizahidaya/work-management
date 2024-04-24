@@ -4,7 +4,7 @@ import Select from "../../shared/Forms/Select";
 const NewSupplierBankDetailForm = ({ formik, bank }) => {
   return (
     <>
-      {/* <Select
+      <Select
         title="Bank"
         placeHolder="Select Bank"
         items={bank}
@@ -12,22 +12,22 @@ const NewSupplierBankDetailForm = ({ formik, bank }) => {
         value={formik.values.bank_id}
         fieldName="bank_id"
         onChange={(value) => formik.setFieldValue("bank_id", value)}
-      /> */}
-      {/* <Input
+      />
+      <Input
         title="Account Number"
         keyboardType="numeric"
         formik={formik}
         fieldName="account_no"
         value={formik.values.account_no}
         placeHolder="Input Account Number"
-      /> */}
-      {/* <Input
+      />
+      <Input
         title="Account Name"
         formik={formik}
         fieldName="account_name"
         value={formik.values.account_name}
         placeHolder="Input Account Name"
-      /> */}
+      />
     </>
   );
 };
