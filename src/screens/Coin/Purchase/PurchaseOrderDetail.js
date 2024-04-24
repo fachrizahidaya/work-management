@@ -56,7 +56,7 @@ const PurchaseOrderDetail = () => {
     { name: "Shipping Address", data: data?.data?.shipping_address },
     { name: "Shipping Date", data: dayjs(data?.data?.shipping_date).format("MM/DD/YYYY") },
     { name: "Courier", data: data?.data?.courier?.name },
-    { name: "FoB", data: data?.data?.fob },
+    { name: "FoB", data: data?.data?.fob?.name },
     { name: "Notes", data: data?.data?.notes },
   ];
 
