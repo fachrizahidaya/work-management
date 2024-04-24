@@ -125,7 +125,7 @@ const InvoiceDetail = () => {
             isLoading={isLoading}
             currencyConverter={currencyConverter}
             discount={currencyConverter.format(data?.data?.discount_amount) || `${data?.data?.discount_percent}%`}
-            tax={currencyConverter.format(data?.data?.tax)}
+            tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
           />

@@ -20,7 +20,7 @@ const ItemList = ({ header, isLoading, data, currencyConverter, sub_total, total
           return <Text key={index}>{item.name}</Text>;
         })}
       </View>
-      <View style={{ height: "40%" }}>
+      <View style={{ height: 300 }}>
         {!isLoading ? (
           data?.length > 0 ? (
             <FlashList
