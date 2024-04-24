@@ -15,13 +15,12 @@ import Button from "../../../components/shared/Forms/Button";
 import Tabs from "../../../components/shared/Tabs";
 import NewSupplierProfileForm from "../../../components/Coin/Supplier/NewSupplierProfileForm";
 import NewSupplierAddressForm from "../../../components/Coin/Supplier/NewSupplierAddressForm";
-import AvatarSelect from "../../../components/shared/AvatarSelect";
 import NewSupplierSubmission from "../../../components/Coin/Supplier/NewSupplierSubmission";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmationModal";
+import NewSupplierBankDetailForm from "../../../components/Coin/Supplier/NewSupplierBankDetailForm";
 
 const NewSupplierScreen = () => {
-  // const [imageAttachment, setImageAttachment] = useState(null);
   const [tabValue, setTabValue] = useState("Profile");
 
   const navigation = useNavigation();
@@ -30,6 +29,9 @@ const NewSupplierScreen = () => {
   const { setRequestType, toggleSuccessModal } = route.params;
 
   const { data: category } = useFetch(`/acc/supplier-category`);
+  const { data: bank } = useFetch(`/acc/bank`);
+  const { data: top } = useFetch(`/acc/terms-payment`);
+  const { data: currencies } = useFetch(`/acc/currency`);
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: submissionModalIsOpen, toggle: toggleSubmissionModal } = useDisclosure(false);
@@ -39,10 +41,26 @@ const NewSupplierScreen = () => {
     value: item?.id,
   }));
 
+  const bankOption = bank?.data.map((item, index) => ({
+    label: item?.name,
+    value: item?.id,
+  }));
+
+  const termOfPayment = top?.data.map((item, index) => ({
+    label: item?.name,
+    value: item?.id,
+  }));
+
+  const currency = currencies?.data.map((item, index) => ({
+    label: item?.name,
+    value: item?.id,
+  }));
+
   const tabs = useMemo(() => {
     return [
       { title: `Profile`, value: "Profile" },
       { title: `Address`, value: "Address" },
+      { title: `Bank Detail`, value: "Bank Detail" },
     ];
   }, []);
 
@@ -51,7 +69,6 @@ const NewSupplierScreen = () => {
   }, []);
 
   const exitNewSupplier = () => {
-    // setImageAttachment(null);
     toggleReturnModal();
     navigation.goBack();
   };
@@ -72,6 +89,11 @@ const NewSupplierScreen = () => {
       state: "",
       address: "",
       zip_code: "",
+      // bank_id: "",
+      // account_no: "",
+      // account_name: "",
+      currency_id: "",
+      terms_payment_id: "",
     },
     validationSchema: yup.object().shape({
       name: yup.string().required("Name is required"),
@@ -81,6 +103,8 @@ const NewSupplierScreen = () => {
       city: yup.string().required("City is required"),
       province: yup.string().required("Province is required"),
       state: yup.string().required("State is required"),
+      // account_no: yup.string().matches(phoneRegExp, "Account number is invalid").required("Account Number is required"),
+      // account_name: yup.string().required("Account Name is required"),
       zip_code: yup
         .string()
         .min(5, "ZIP Code consists 5 numbers")
@@ -91,6 +115,9 @@ const NewSupplierScreen = () => {
       setStatus("processing");
       const formData = new FormData();
       for (let key in values) {
+        // if (key === "bank_id" || key === "account_no" || key === "account_name") {
+        //   formData.append(`supplier_bank[${key}]`, values[key]);
+        // }
         formData.append(`supplier[${key}]`, values[key]);
       }
       addSupplierHandler(formData, setSubmitting, setStatus);
@@ -171,17 +198,20 @@ const NewSupplierScreen = () => {
         >
           {tabValue === "Profile" ? (
             <>
-              {/* <AvatarSelect
-              imageAttachment={imageAttachment}
-              setImageAttachment={setImageAttachment}
-              name={null}
-              image={null}
-            /> */}
-              <NewSupplierProfileForm supplierCategory={supplierCategory} formik={formik} />
+              <NewSupplierProfileForm
+                supplierCategory={supplierCategory}
+                formik={formik}
+                termsOfPayment={termOfPayment}
+                currency={currency}
+              />
+            </>
+          ) : tabValue === "Address" ? (
+            <>
+              <NewSupplierAddressForm formik={formik} />
             </>
           ) : (
             <>
-              <NewSupplierAddressForm formik={formik} />
+              <NewSupplierBankDetailForm formik={formik} bank={bankOption} />
             </>
           )}
         </View>

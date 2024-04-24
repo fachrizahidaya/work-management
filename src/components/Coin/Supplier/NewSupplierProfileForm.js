@@ -1,7 +1,7 @@
 import Input from "../../shared/Forms/Input";
 import Select from "../../shared/Forms/Select";
 
-const NewSupplierProfileForm = ({ supplierCategory, formik }) => {
+const NewSupplierProfileForm = ({ supplierCategory, formik, currency, termsOfPayment }) => {
   return (
     <>
       <Input title="Name" formik={formik} fieldName="name" value={formik.values.name} placeHolder="Input Name" />
@@ -22,6 +22,24 @@ const NewSupplierProfileForm = ({ supplierCategory, formik }) => {
         value={formik.values.supplier_category_id}
         fieldName="supplier_category_id"
         onChange={(value) => formik.setFieldValue("supplier_category_id", value)}
+      />
+      <Select
+        title="Terms of Payment"
+        placeHolder="Select Terms of Payment"
+        items={termsOfPayment}
+        formik={formik}
+        value={formik.values.terms_payment_id}
+        fieldName="terms_payment_id"
+        onChange={(value) => formik.setFieldValue("terms_payment_id", value)}
+      />
+      <Select
+        title="Currency"
+        placeHolder="Select Currency"
+        items={currency}
+        formik={formik}
+        value={formik.values.currency_id}
+        fieldName="currency_id"
+        onChange={(value) => formik.setFieldValue("currency_id", value)}
       />
     </>
   );

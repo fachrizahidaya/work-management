@@ -4,15 +4,9 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CoinDashboard from "../../screens/Coin/Dashboard/CoinDashboard";
-import PurchaseOrder from "../../screens/Coin/Purchase/PurchaseOrder";
-import ReceiptPurchaseOrder from "../../screens/Coin/Purchase/ReceiptPurchaseOrder";
-import SalesOrder from "../../screens/Coin/Sales/SalesOrder";
-import DeliveryOrder from "../../screens/Coin/Sales/DeliveryOrder";
-import Customer from "../../screens/Coin/Sales/Customer";
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
 import CoinScreenSheet from "../../components/shared/ActionSheet/CoinScreenSheet";
 import CoinAddNewSheet from "../../components/shared/ActionSheet/CoinAddNewSheet";
-import Invoice from "../../screens/Coin/Sales/Invoice";
 
 const Tab = createBottomTabNavigator();
 
@@ -123,17 +117,6 @@ const CoinTab = () => {
             ),
           }}
         />
-        {/* <Tab.Screen name="Purchase Order" component={PurchaseOrder} /> */}
-
-        {/* <Tab.Screen name="Receipt Purchase Order" component={ReceiptPurchaseOrder} /> */}
-
-        {/* <Tab.Screen name="Sales Order" component={SalesOrder} /> */}
-
-        {/* <Tab.Screen name="Delivery Order" component={DeliveryOrder} /> */}
-
-        {/* <Tab.Screen name="Customer" component={Customer} /> */}
-
-        {/* <Tab.Screen name="Invoice" component={Invoice} /> */}
       </Tab.Navigator>
 
       {/* Sheets */}
