@@ -5,7 +5,17 @@ import AmountList from "./AmountList";
 import Item from "./Item";
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 
-const ItemList = ({ header, isLoading, data, currencyConverter, sub_total, total_amount, discount, tax }) => {
+const ItemList = ({
+  header,
+  isLoading,
+  data,
+  currencyConverter,
+  sub_total,
+  total_amount,
+  discount,
+  tax,
+  toggleModal,
+}) => {
   return (
     <>
       <AmountList
@@ -31,11 +41,13 @@ const ItemList = ({ header, isLoading, data, currencyConverter, sub_total, total
               renderItem={({ item, index }) => (
                 <Item
                   key={index}
+                  data={item}
                   name={item?.item?.name}
                   qty={item?.qty}
                   unit={item?.unit?.name}
                   total_amount={item?.total_amount}
                   currencyConverter={currencyConverter}
+                  toggleModal={toggleModal}
                 />
               )}
             />

@@ -17,12 +17,16 @@ import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
 import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
 import ItemDetail from "../../../components/Coin/PurchaseOrder/ItemDetail";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const PurchaseOrderDetail = () => {
   const [tabValue, setTabValue] = useState("Order Detail");
+  const [itemDetailData, setItemDetailData] = useState(null);
 
   const routes = useRoute();
   const navigation = useNavigation();
+
+  const { toggle: toggleItemDetail, isOpen: itemDetailIsOpen } = useDisclosure(false);
 
   const { toggle: toggleProcessPO, isLoading: processPOIsLoading } = useLoading(false);
 
@@ -60,6 +64,16 @@ const PurchaseOrderDetail = () => {
     { name: "FoB", data: data?.data?.fob?.name },
     { name: "Notes", data: data?.data?.notes },
   ];
+
+  const openItemDetailModalHandler = (value) => {
+    toggleItemDetail();
+    setItemDetailData(value);
+  };
+
+  const closeItemDetailModalHandler = () => {
+    toggleItemDetail();
+    setItemDetailData(null);
+  };
 
   const downloadPurchaseOrderHandler = async () => {
     try {
@@ -124,10 +138,17 @@ const PurchaseOrderDetail = () => {
             tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
+            toggleModal={openItemDetailModalHandler}
           />
         </View>
       )}
-      {/* <ItemDetail /> */}
+      <ItemDetail
+        visible={itemDetailIsOpen}
+        backdropPress={toggleItemDetail}
+        onClose={closeItemDetailModalHandler}
+        data={itemDetailData}
+        converter={currencyConverter}
+      />
     </SafeAreaView>
   );
 };

@@ -15,14 +15,19 @@ import axiosInstance from "../../../config/api";
 import Tabs from "../../../components/shared/Tabs";
 import DetailList from "../../../components/Coin/Invoice/DetailList";
 import ItemList from "../../../components/Coin/Invoice/ItemList";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import ItemDetail from "../../../components/Coin/Invoice/ItemDetail";
 
 const InvoiceDetail = () => {
   const [tabValue, setTabValue] = useState("Invoice Detail");
+  const [itemDetailData, setItemDetailData] = useState(null);
 
   const routes = useRoute();
   const navigation = useNavigation();
 
   const { toggle: toggleProcessInvoice, isLoading: processInvoiceIsLoading } = useLoading(false);
+
+  const { toggle: toggleItemDetail, isOpen: itemDetailIsOpen } = useDisclosure(false);
 
   const { id } = routes.params;
 
@@ -58,6 +63,16 @@ const InvoiceDetail = () => {
     { name: "FoB", data: data?.data?.fob?.name },
     { name: "Notes", data: data?.data?.notes },
   ];
+
+  const openItemDetailModalHandler = (value) => {
+    toggleItemDetail();
+    setItemDetailData(value);
+  };
+
+  const closeItemDetailModalHandler = () => {
+    toggleItemDetail();
+    setItemDetailData(null);
+  };
 
   const downloadInvoiceHandler = async () => {
     try {
@@ -128,9 +143,17 @@ const InvoiceDetail = () => {
             tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
+            toggleModal={openItemDetailModalHandler}
           />
         </View>
       )}
+      <ItemDetail
+        visible={itemDetailIsOpen}
+        backdropPress={toggleItemDetail}
+        onClose={closeItemDetailModalHandler}
+        data={itemDetailData}
+        converter={currencyConverter}
+      />
     </SafeAreaView>
   );
 };
