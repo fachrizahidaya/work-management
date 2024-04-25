@@ -51,13 +51,22 @@ const ChatCalendar = ({
           {allLoading ? (
             <ActivityIndicator />
           ) : (
-            <>
+            <View style={{ gap: 5 }}>
               {projectDeadlines?.length > 0 || taskDeadlines?.length > 0 ? (
                 <>
-                  <Text>Deadline</Text>
                   {projectDeadlines?.map((item, index) => {
                     return (
-                      <View key={index} style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                      <View
+                        key={index}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
+                          backgroundColor: "#f8f8f8",
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                      >
                         <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
                         <Text>
                           {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD MMM")}:
@@ -68,7 +77,17 @@ const ChatCalendar = ({
                   })}
                   {taskDeadlines?.map((item, index) => {
                     return (
-                      <View key={index} style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                      <View
+                        key={index}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
+                          backgroundColor: "#f8f8f8",
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                      >
                         <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
                         <Text>
                           {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD MMM")}:
@@ -81,10 +100,19 @@ const ChatCalendar = ({
               ) : null}
               {holidays?.length > 0 ? (
                 <>
-                  <Text>Cuti Bersama & Hari Libur</Text>
                   {holidays?.map((item, index) => {
                     return (
-                      <View key={index} style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                      <View
+                        key={index}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
+                          backgroundColor: "#f8f8f8",
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                      >
                         <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
                         <Text>{dayjs(item?.date.split("-").reverse().join("-")).format("DD MMM")}:</Text>
                         <Text>{item?.description}</Text>
@@ -95,10 +123,19 @@ const ChatCalendar = ({
               ) : null}
               {leaves?.length > 0 ? (
                 <>
-                  <Text>Cuti Pribadi</Text>
                   {leaves?.map((item, index) => {
                     return (
-                      <View key={index} style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                      <View
+                        key={index}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
+                          backgroundColor: "#f8f8f8",
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                      >
                         <MaterialCommunityIcons name="square-rounded" color="#4688D5" />
                         <Text>{dayjs(item?.date).format("DD MMM")}:</Text>
                         <Text>{item?.att_reason}</Text>
@@ -107,7 +144,7 @@ const ChatCalendar = ({
                   })}
                 </>
               ) : null}
-            </>
+            </View>
           )}
         </ScrollView>
       </View>
