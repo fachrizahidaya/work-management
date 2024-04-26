@@ -5,8 +5,6 @@ import { Calendar } from "react-native-calendars";
 import { ScrollView } from "react-native-gesture-handler";
 import { TextProps } from "../../shared/CustomStylings";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 const ChatCalendar = ({
   reference,
   colorDots,
@@ -60,10 +58,10 @@ const ChatCalendar = ({
                       <View key={index} style={styles.content}>
                         <View style={{ alignItems: "center", gap: 3 }}>
                           <Text style={[TextProps]}>
-                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}:
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}
                           </Text>
                           <Text style={[TextProps]}>
-                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}:
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}
                           </Text>
                         </View>
                         <View style={styles.wrapper}>
@@ -77,10 +75,10 @@ const ChatCalendar = ({
                       <View key={index} style={styles.content}>
                         <View style={{ alignItems: "center", gap: 3 }}>
                           <Text style={[TextProps]}>
-                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}:
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}
                           </Text>
                           <Text style={[TextProps]}>
-                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}:
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}
                           </Text>
                         </View>
                         <View style={styles.wrapper}>
