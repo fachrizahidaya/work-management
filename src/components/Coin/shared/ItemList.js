@@ -3,7 +3,7 @@ import { FlashList } from "@shopify/flash-list";
 
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 import Item from "./Item";
-import AmountList from "./AmountList";
+import AmountList from "../shared/AmountList";
 
 const ItemList = ({
   header,

@@ -8,7 +8,7 @@ import SalesOrderList from "../../../components/Coin/SalesOrder/SalesOrderList";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
 import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
-import SalesOrderFilter from "../../../components/Coin/SalesOrder/SalesOrderFilter";
+import DataFilter from "../../../components/Coin/shared/DataFilter";
 
 const SalesOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,11 +75,12 @@ const SalesOrder = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader title="Sales Order" onPress={() => navigation.goBack()} />
-        <SalesOrderFilter
+        <DataFilter
           handleSearch={searchSalesOrderHandler}
           inputToShow={inputToShow}
           setInputToShow={setInputToShow}
           setSearchInput={setSearchInput}
+          placeholder="Search SO..."
         />
       </View>
       <SalesOrderList

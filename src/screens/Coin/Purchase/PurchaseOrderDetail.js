@@ -10,13 +10,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
 import { useFetch } from "../../../hooks/useFetch";
-import ItemList from "../../../components/Coin/PurchaseOrder/ItemList";
-import DetailList from "../../../components/Coin/PurchaseOrder/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
 import Button from "../../../components/shared/Forms/Button";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
 import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
-import ItemDetail from "../../../components/Coin/PurchaseOrder/ItemDetail";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const PurchaseOrderDetail = () => {

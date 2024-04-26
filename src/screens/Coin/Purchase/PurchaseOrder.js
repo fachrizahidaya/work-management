@@ -5,7 +5,7 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
-import PurchaseOrderFilter from "../../../components/Coin/PurchaseOrder/PurchaseOrderFilter";
+import DataFilter from "../../../components/Coin/shared/DataFilter";
 import PurchaseOrderList from "../../../components/Coin/PurchaseOrder/PurchaseOrderList";
 import { useFetch } from "../../../hooks/useFetch";
 import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
@@ -72,11 +72,12 @@ const PurchaseOrder = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <PageHeader title="Purchase Order" onPress={() => navigation.goBack()} />
-          <PurchaseOrderFilter
+          <DataFilter
             handleSearch={searchPurchaseOrderHandler}
             inputToShow={inputToShow}
             setInputToShow={setInputToShow}
             setSearchInput={setSearchInput}
+            placeholder="Search PO..."
           />
         </View>
         <PurchaseOrderList

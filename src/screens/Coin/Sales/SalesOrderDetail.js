@@ -9,15 +9,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
-import DetailList from "../../../components/Coin/SalesOrder/DetailList";
-import ItemList from "../../../components/Coin/SalesOrder/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
 import { useFetch } from "../../../hooks/useFetch";
 import { useLoading } from "../../../hooks/useLoading";
 import axiosInstance from "../../../config/api";
 import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
 import Button from "../../../components/shared/Forms/Button";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import ItemDetail from "../../../components/Coin/SalesOrder/ItemDetail";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
 
 const SalesOrderDetail = () => {
   const [tabValue, setTabValue] = useState("Order Detail");

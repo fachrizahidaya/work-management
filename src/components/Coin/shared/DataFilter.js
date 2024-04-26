@@ -4,7 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import Input from "../../shared/Forms/Input";
 
-const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSearchInput }) => {
+const DataFilter = ({ inputToShow, setInputToShow, handleSearch, setSearchInput, placeholder }) => {
   const handlePress = () => {
     setInputToShow("");
     setSearchInput("");
@@ -17,7 +17,7 @@ const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSea
         handleSearch(value);
         setInputToShow(value);
       }}
-      placeHolder="Search PO..."
+      placeHolder={placeholder}
       endAdornment={
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
           {inputToShow && (
@@ -31,4 +31,4 @@ const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSea
   );
 };
 
-export default PurchaseOrderFilter;
+export default DataFilter;

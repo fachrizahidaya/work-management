@@ -13,10 +13,10 @@ import { useFetch } from "../../../hooks/useFetch";
 import { useLoading } from "../../../hooks/useLoading";
 import axiosInstance from "../../../config/api";
 import Tabs from "../../../components/shared/Tabs";
-import DetailList from "../../../components/Coin/Invoice/DetailList";
-import ItemList from "../../../components/Coin/Invoice/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
 import { useDisclosure } from "../../../hooks/useDisclosure";
-import ItemDetail from "../../../components/Coin/Invoice/ItemDetail";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
 
 const InvoiceDetail = () => {
   const [tabValue, setTabValue] = useState("Invoice Detail");
@@ -91,12 +91,7 @@ const InvoiceDetail = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader title="Invoice Detail" onPress={() => navigation.goBack()} />
-        <Button
-          height={35}
-          padding={10}
-          onPress={() => downloadDeliveryOrderHandler()}
-          disabled={processInvoiceIsLoading}
-        >
+        <Button height={35} padding={10} onPress={() => downloadInvoiceHandler()} disabled={processInvoiceIsLoading}>
           {!processInvoiceIsLoading ? (
             <View
               style={{
