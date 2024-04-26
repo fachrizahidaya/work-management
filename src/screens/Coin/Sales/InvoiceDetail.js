@@ -13,16 +13,21 @@ import { useFetch } from "../../../hooks/useFetch";
 import { useLoading } from "../../../hooks/useLoading";
 import axiosInstance from "../../../config/api";
 import Tabs from "../../../components/shared/Tabs";
-import DetailList from "../../../components/Coin/Invoice/DetailList";
-import ItemList from "../../../components/Coin/Invoice/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
 
 const InvoiceDetail = () => {
   const [tabValue, setTabValue] = useState("Invoice Detail");
+  const [itemDetailData, setItemDetailData] = useState(null);
 
   const routes = useRoute();
   const navigation = useNavigation();
 
   const { toggle: toggleProcessInvoice, isLoading: processInvoiceIsLoading } = useLoading(false);
+
+  const { toggle: toggleItemDetail, isOpen: itemDetailIsOpen } = useDisclosure(false);
 
   const { id } = routes.params;
 
@@ -59,6 +64,16 @@ const InvoiceDetail = () => {
     { name: "Notes", data: data?.data?.notes },
   ];
 
+  const openItemDetailModalHandler = (value) => {
+    toggleItemDetail();
+    setItemDetailData(value);
+  };
+
+  const closeItemDetailModalHandler = () => {
+    toggleItemDetail();
+    setItemDetailData(null);
+  };
+
   const downloadInvoiceHandler = async () => {
     try {
       toggleProcessInvoice();
@@ -76,12 +91,7 @@ const InvoiceDetail = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader title="Invoice Detail" onPress={() => navigation.goBack()} />
-        <Button
-          height={35}
-          padding={10}
-          onPress={() => downloadDeliveryOrderHandler()}
-          disabled={processInvoiceIsLoading}
-        >
+        <Button height={35} padding={10} onPress={() => downloadInvoiceHandler()} disabled={processInvoiceIsLoading}>
           {!processInvoiceIsLoading ? (
             <View
               style={{
@@ -125,12 +135,20 @@ const InvoiceDetail = () => {
             isLoading={isLoading}
             currencyConverter={currencyConverter}
             discount={currencyConverter.format(data?.data?.discount_amount) || `${data?.data?.discount_percent}%`}
-            tax={currencyConverter.format(data?.data?.tax)}
+            tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
+            toggleModal={openItemDetailModalHandler}
           />
         </View>
       )}
+      <ItemDetail
+        visible={itemDetailIsOpen}
+        backdropPress={toggleItemDetail}
+        onClose={closeItemDetailModalHandler}
+        data={itemDetailData}
+        converter={currencyConverter}
+      />
     </SafeAreaView>
   );
 };

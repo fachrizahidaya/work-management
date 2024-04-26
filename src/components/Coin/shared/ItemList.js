@@ -3,9 +3,19 @@ import { FlashList } from "@shopify/flash-list";
 
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 import Item from "./Item";
-import AmountList from "./AmountList";
+import AmountList from "../shared/AmountList";
 
-const ItemList = ({ header, isLoading, data, currencyConverter, discount, tax, sub_total, total_amount }) => {
+const ItemList = ({
+  header,
+  isLoading,
+  data,
+  currencyConverter,
+  discount,
+  tax,
+  sub_total,
+  total_amount,
+  toggleModal,
+}) => {
   return (
     <>
       <View style={styles.wrapper}>
@@ -23,7 +33,7 @@ const ItemList = ({ header, isLoading, data, currencyConverter, discount, tax, s
             return <Text key={index}>{item.name}</Text>;
           })}
         </View>
-        <View style={{ height: "40%" }}>
+        <View style={{ height: 300 }}>
           {!isLoading ? (
             data?.length > 0 ? (
               <FlashList
@@ -33,12 +43,14 @@ const ItemList = ({ header, isLoading, data, currencyConverter, discount, tax, s
                 estimatedItemSize={50}
                 renderItem={({ item, index }) => (
                   <Item
+                    data={item}
                     key={index}
                     name={item?.item?.name}
                     qty={item?.qty}
                     unit={item?.unit?.name}
                     total_amount={item?.total_amount}
                     currencyConverter={currencyConverter}
+                    toggleModal={toggleModal}
                   />
                 )}
               />

@@ -10,18 +10,23 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
 import { useFetch } from "../../../hooks/useFetch";
-import ItemList from "../../../components/Coin/PurchaseOrder/ItemList";
-import DetailList from "../../../components/Coin/PurchaseOrder/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
 import Button from "../../../components/shared/Forms/Button";
 import axiosInstance from "../../../config/api";
 import { useLoading } from "../../../hooks/useLoading";
 import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const PurchaseOrderDetail = () => {
   const [tabValue, setTabValue] = useState("Order Detail");
+  const [itemDetailData, setItemDetailData] = useState(null);
 
   const routes = useRoute();
   const navigation = useNavigation();
+
+  const { toggle: toggleItemDetail, isOpen: itemDetailIsOpen } = useDisclosure(false);
 
   const { toggle: toggleProcessPO, isLoading: processPOIsLoading } = useLoading(false);
 
@@ -56,9 +61,19 @@ const PurchaseOrderDetail = () => {
     { name: "Shipping Address", data: data?.data?.shipping_address },
     { name: "Shipping Date", data: dayjs(data?.data?.shipping_date).format("MM/DD/YYYY") },
     { name: "Courier", data: data?.data?.courier?.name },
-    { name: "FoB", data: data?.data?.fob },
+    { name: "FoB", data: data?.data?.fob?.name },
     { name: "Notes", data: data?.data?.notes },
   ];
+
+  const openItemDetailModalHandler = (value) => {
+    toggleItemDetail();
+    setItemDetailData(value);
+  };
+
+  const closeItemDetailModalHandler = () => {
+    toggleItemDetail();
+    setItemDetailData(null);
+  };
 
   const downloadPurchaseOrderHandler = async () => {
     try {
@@ -120,12 +135,20 @@ const PurchaseOrderDetail = () => {
             data={data?.data?.po_item}
             isLoading={isLoading}
             discount={currencyConverter.format(data?.data?.discount_amount) || `${data?.data?.discount_percent}%`}
-            tax={currencyConverter.format(data?.data?.tax)}
+            tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
+            toggleModal={openItemDetailModalHandler}
           />
         </View>
       )}
+      <ItemDetail
+        visible={itemDetailIsOpen}
+        backdropPress={toggleItemDetail}
+        onClose={closeItemDetailModalHandler}
+        data={itemDetailData}
+        converter={currencyConverter}
+      />
     </SafeAreaView>
   );
 };

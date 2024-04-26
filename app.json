@@ -19,8 +19,7 @@
       "bundleIdentifier": "com.kolabora.kssmobileapp",
       "buildNumber": "19",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["itms-apps"],
-        "NSLocationWhenInUseUsageDescription": "This app access location to confirm timesheet"
+        "LSApplicationQueriesSchemes": ["itms-apps"]
       }
     },
     "android": {
@@ -78,16 +77,6 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-        }
-      ],
-      [
-        "react-native-permissions",
-        {
-          "iosPermissions": [
-            "LocationAccuracy",
-            "LocationAlways",
-            "LocationWhenInUse"
-          ]
         }
       ]
     ],

@@ -19,7 +19,7 @@ import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({});
   const [status, setStatus] = useState(null);
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -108,18 +108,11 @@ const TribeAddNewSheet = (props) => {
    */
   const attendanceCheckHandler = async () => {
     try {
-      if (!locationOn) {
-        showAlertToActivateLocation();
-      } else if (!location) {
-        await Location.requestForegroundPermissionsAsync();
+      if (status == false || (status == false && !location)) {
         showAlertToAllowPermission();
-      } else if (location && locationOn) {
+      } else if (locationOn && status && location) {
         if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
           toggleAttendanceModal();
-
-          // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
-        } else {
-          // Toast.show("You already checked out at this time", ErrorToastProps);
         }
       }
     } catch (err) {
@@ -131,23 +124,17 @@ const TribeAddNewSheet = (props) => {
   /**
    * Handle get location based on permission
    */
-  const getLocation = async () => {
+  const checkIsLocationActiveAndGetCurrentLocation = async () => {
     try {
-      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
+      const isLocationEnabled = await Location.hasServicesEnabledAsync();
+      setLocationOn(isLocationEnabled);
+      if (locationOn === false) {
         showAlertToActivateLocation();
         return;
       }
 
-      if (locationOn == true && status == false) {
-        await Location.requestForegroundPermissionsAsync();
-        showAlertToAllowPermission();
-        return;
-      }
-      // const { granted } = await Location.getForegroundPermissionsAsync();
-
       const currentLocation = await Location.getCurrentPositionAsync({});
-      // setStatus(granted)
-      setLocation(currentLocation);
+      setLocation(currentLocation?.coords);
     } catch (err) {
       console.log(err.message);
     }
@@ -170,16 +157,13 @@ const TribeAddNewSheet = (props) => {
    * Handle change for the location permission status
    */
   useEffect(() => {
-    const runThis = async () => {
+    const checkLocationPermissionAndGetCurrentLocation = async () => {
       try {
-        const isLocationEnabled = await Location.hasServicesEnabledAsync();
-        setLocationOn(isLocationEnabled);
-
         const { granted } = await Location.getForegroundPermissionsAsync();
-        const currentLocation = await Location.getCurrentPositionAsync({});
-
         setStatus(granted);
-        setLocation(currentLocation);
+
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation(currentLocation?.coords);
       } catch (err) {
         console.log(err);
       }
@@ -190,22 +174,20 @@ const TribeAddNewSheet = (props) => {
      * @param {*} nextAppState
      */
     const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active") {
-        // App has come to the foreground
-        runThis();
-      } else if (nextAppState !== "active") {
-        setLocation(null);
-        setStatus(null);
+      if (nextAppState == "active") {
+        checkLocationPermissionAndGetCurrentLocation();
+      } else {
+        checkLocationPermissionAndGetCurrentLocation();
       }
     };
 
     AppState.addEventListener("change", handleAppStateChange);
-    runThis(); // Initial run when the component mounts
-  }, []);
+    checkLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
+  }, [locationOn, status, Platform.OS === "android" && location]);
 
   useEffect(() => {
-    getLocation();
-  }, [status, locationOn]);
+    checkIsLocationActiveAndGetCurrentLocation();
+  }, [locationOn, status]);
 
   return (
     <>
@@ -238,7 +220,7 @@ const TribeAddNewSheet = (props) => {
                   </Text>
                 </View>
               </TouchableOpacity>
-            ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
+            ) : !attendance?.data || leaveCondition || holidayCondition || weekend || dayoff ? null : (
               <Pressable key={idx} style={styles.wrapper}>
                 <ClockAttendance
                   attendance={attendance?.data}
@@ -257,8 +239,8 @@ const TribeAddNewSheet = (props) => {
           toggle={toggleAttendanceModal}
           apiUrl={`/hr/timesheets/personal/attendance-check`}
           body={{
-            longitude: location?.coords?.longitude,
-            latitude: location?.coords?.latitude,
+            longitude: location?.longitude,
+            latitude: location?.latitude,
             check_from: "Mobile App",
           }}
           header={`Confirm ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}`}
