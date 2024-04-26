@@ -1,8 +1,9 @@
 import { useCallback } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import { Calendar } from "react-native-calendars";
 import { ScrollView } from "react-native-gesture-handler";
+import { TextProps } from "../../shared/CustomStylings";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -47,52 +48,44 @@ const ChatCalendar = ({
           }}
           onMonthChange={monthChangeHandler}
         />
-        <ScrollView style={{ height: 150 }}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ height: 150 }}>
           {allLoading ? (
             <ActivityIndicator />
           ) : (
-            <View style={{ gap: 5 }}>
+            <View style={styles.container}>
               {projectDeadlines?.length > 0 || taskDeadlines?.length > 0 ? (
                 <>
                   {projectDeadlines?.map((item, index) => {
                     return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                          backgroundColor: "#f8f8f8",
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
-                        <Text>
-                          {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD MMM")}:
-                        </Text>
-                        <Text>{item?.description}</Text>
+                      <View key={index} style={styles.content}>
+                        <View style={{ alignItems: "center", gap: 3 }}>
+                          <Text style={[TextProps]}>
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}:
+                          </Text>
+                          <Text style={[TextProps]}>
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}:
+                          </Text>
+                        </View>
+                        <View style={styles.wrapper}>
+                          <Text style={[TextProps]}>{item?.description}</Text>
+                        </View>
                       </View>
                     );
                   })}
                   {taskDeadlines?.map((item, index) => {
                     return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                          backgroundColor: "#f8f8f8",
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
-                        <Text>
-                          {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD MMM")}:
-                        </Text>
-                        <Text>{item?.description}</Text>
+                      <View key={index} style={styles.content}>
+                        <View style={{ alignItems: "center", gap: 3 }}>
+                          <Text style={[TextProps]}>
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("DD")}:
+                          </Text>
+                          <Text style={[TextProps]}>
+                            {dayjs(`${item?.date.split("-").reverse().join("-").slice(0, 7)}-01`).format("ddd")}:
+                          </Text>
+                        </View>
+                        <View style={styles.wrapper}>
+                          <Text style={[TextProps]}>{item?.description}</Text>
+                        </View>
                       </View>
                     );
                   })}
@@ -102,20 +95,18 @@ const ChatCalendar = ({
                 <>
                   {holidays?.map((item, index) => {
                     return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                          backgroundColor: "#f8f8f8",
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <MaterialCommunityIcons name="square-rounded" color="#3DD04B" />
-                        <Text>{dayjs(item?.date.split("-").reverse().join("-")).format("DD MMM")}:</Text>
-                        <Text>{item?.description}</Text>
+                      <View key={index} style={styles.content}>
+                        <View style={{ alignItems: "center", gap: 3 }}>
+                          <Text style={[TextProps]}>
+                            {dayjs(item?.date.split("-").reverse().join("-")).format("DD")}
+                          </Text>
+                          <Text style={[TextProps]}>
+                            {dayjs(item?.date.split("-").reverse().join("-")).format("ddd")}
+                          </Text>
+                        </View>
+                        <View style={styles.wrapper}>
+                          <Text style={[TextProps]}>{item?.description}</Text>
+                        </View>
                       </View>
                     );
                   })}
@@ -125,20 +116,14 @@ const ChatCalendar = ({
                 <>
                   {leaves?.map((item, index) => {
                     return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                          backgroundColor: "#f8f8f8",
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <MaterialCommunityIcons name="square-rounded" color="#4688D5" />
-                        <Text>{dayjs(item?.date).format("DD MMM")}:</Text>
-                        <Text>{item?.att_reason}</Text>
+                      <View key={index} style={styles.content}>
+                        <View style={{ alignItems: "center", gap: 3 }}>
+                          <Text style={[TextProps]}>{dayjs(item?.date).format("DD")}</Text>
+                          <Text style={[TextProps]}>{dayjs(item?.date).format("ddd")}</Text>
+                        </View>
+                        <View style={styles.wrapper}>
+                          <Text style={[TextProps]}>{item?.att_reason}</Text>
+                        </View>
                       </View>
                     );
                   })}
@@ -153,3 +138,25 @@ const ChatCalendar = ({
 };
 
 export default ChatCalendar;
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 15,
+    padding: 8,
+    borderRadius: 10,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 10,
+  },
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#f8f8f8",
+    padding: 8,
+    borderRadius: 10,
+    flex: 1,
+  },
+});
