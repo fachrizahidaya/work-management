@@ -132,9 +132,6 @@ const TribeAddNewSheet = (props) => {
         showAlertToActivateLocation();
         return;
       }
-
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation?.coords);
     } catch (err) {
       console.log(err.message);
     }
@@ -170,6 +167,11 @@ const TribeAddNewSheet = (props) => {
         console.log(err);
       }
     };
+
+    (async () => {
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation?.coords);
+    })();
 
     /**
      * Handle device state change
