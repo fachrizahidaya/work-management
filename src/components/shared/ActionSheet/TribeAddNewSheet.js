@@ -153,10 +153,12 @@ const TribeAddNewSheet = (props) => {
 
   const dayoff = attendance?.data?.day_type === "Day Off";
 
-  /**
-   * Handle change for the location permission status
-   */
   useEffect(() => {
+    checkIsLocationActiveAndGetCurrentLocation();
+
+    /**
+     * Handle check location permission
+     */
     const checkLocationPermissionAndGetCurrentLocation = async () => {
       try {
         const { granted } = await Location.getForegroundPermissionsAsync();
@@ -183,10 +185,6 @@ const TribeAddNewSheet = (props) => {
 
     AppState.addEventListener("change", handleAppStateChange);
     checkLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
-  }, [locationOn, status, Platform.OS === "android" && location]);
-
-  useEffect(() => {
-    checkIsLocationActiveAndGetCurrentLocation();
   }, [locationOn, status]);
 
   return (
