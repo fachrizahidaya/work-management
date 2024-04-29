@@ -6,7 +6,6 @@ import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
 import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
-import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -20,7 +19,6 @@ import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState({});
-  const [status, setStatus] = useState(null);
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
@@ -103,24 +101,6 @@ const TribeAddNewSheet = (props) => {
     );
   };
 
-  /**
-   * Handle submit attendance clock-in and out
-   */
-  const attendanceCheckHandler = async () => {
-    try {
-      if (status == false || (status == false && !location)) {
-        showAlertToAllowPermission();
-      } else if (locationOn && status && location) {
-        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
-          toggleAttendanceModal();
-        }
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
   const leaveCondition =
     attendance?.data?.att_type === "Leave" &&
     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
@@ -134,32 +114,43 @@ const TribeAddNewSheet = (props) => {
 
   const dayoff = attendance?.data?.day_type === "Day Off";
 
-  useEffect(() => {
-    const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async () => {
-      try {
-        /**
-         * Handle check location is active
-         */
-        const isLocationEnabled = await Location.hasServicesEnabledAsync();
-        setLocationOn(isLocationEnabled);
-        if (!isLocationEnabled) {
-          showAlertToActivateLocation();
-          return;
-        } else {
-          /**
-           * Handle check location permission
-           */
-          const { granted } = await Location.getForegroundPermissionsAsync();
-          setStatus(granted);
+  /**
+   * Handle submit attendance clock-in and out
+   */
+  const attendanceCheckHandler = () => {
+    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(true);
+  };
 
+  const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async (isSlide) => {
+    try {
+      const isLocationEnabled = await Location.hasServicesEnabledAsync();
+      setLocationOn(isLocationEnabled);
+
+      if (!isLocationEnabled) {
+        showAlertToActivateLocation();
+        return;
+      } else {
+        const { granted } = await Location.getForegroundPermissionsAsync();
+
+        if (!granted) {
+          showAlertToAllowPermission();
+        } else {
           const currentLocation = await Location.getCurrentPositionAsync({});
           setLocation(currentLocation?.coords);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
 
+          if (isSlide) {
+            if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
+              toggleAttendanceModal();
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
     /**
      * Handle device state change
      * @param {*} nextAppState
@@ -174,7 +165,7 @@ const TribeAddNewSheet = (props) => {
 
     AppState.addEventListener("change", handleAppStateChange);
     checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
-  }, [locationOn, status]);
+  }, []);
 
   return (
     <>
