@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -24,7 +24,6 @@ const TribeAddNewSheet = (props) => {
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
-  console.log(location);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -143,7 +142,7 @@ const TribeAddNewSheet = (props) => {
          */
         const isLocationEnabled = await Location.hasServicesEnabledAsync();
         setLocationOn(isLocationEnabled);
-        if (locationOn === false) {
+        if (isLocationEnabled === false) {
           showAlertToActivateLocation();
           return;
         }
@@ -154,8 +153,10 @@ const TribeAddNewSheet = (props) => {
         const { granted } = await Location.getForegroundPermissionsAsync();
         setStatus(granted);
 
-        const currentLocation = await Location.getCurrentPositionAsync({});
-        setLocation(currentLocation?.coords);
+        (async () => {
+          const currentLocation = await Location.getCurrentPositionAsync({});
+          setLocation(currentLocation?.coords);
+        })();
       } catch (err) {
         console.log(err);
       }
