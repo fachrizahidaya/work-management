@@ -24,6 +24,7 @@ const TribeAddNewSheet = (props) => {
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
+  console.log(location);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -121,22 +122,6 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
-  /**
-   * Handle get location based on permission
-   */
-  const checkIsLocationActiveAndGetCurrentLocation = async () => {
-    try {
-      const isLocationEnabled = await Location.hasServicesEnabledAsync();
-      setLocationOn(isLocationEnabled);
-      if (locationOn === false) {
-        showAlertToActivateLocation();
-        return;
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   const leaveCondition =
     attendance?.data?.att_type === "Leave" &&
     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
@@ -151,13 +136,21 @@ const TribeAddNewSheet = (props) => {
   const dayoff = attendance?.data?.day_type === "Day Off";
 
   useEffect(() => {
-    checkIsLocationActiveAndGetCurrentLocation();
-
-    /**
-     * Handle check location permission
-     */
-    const checkLocationPermissionAndGetCurrentLocation = async () => {
+    const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async () => {
       try {
+        /**
+         * Handle check location is active
+         */
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        setLocationOn(isLocationEnabled);
+        if (locationOn === false) {
+          showAlertToActivateLocation();
+          return;
+        }
+
+        /**
+         * Handle check location permission
+         */
         const { granted } = await Location.getForegroundPermissionsAsync();
         setStatus(granted);
 
@@ -168,25 +161,20 @@ const TribeAddNewSheet = (props) => {
       }
     };
 
-    (async () => {
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation?.coords);
-    })();
-
     /**
      * Handle device state change
      * @param {*} nextAppState
      */
     const handleAppStateChange = (nextAppState) => {
       if (nextAppState == "active") {
-        checkLocationPermissionAndGetCurrentLocation();
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
       } else {
-        checkLocationPermissionAndGetCurrentLocation();
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
       }
     };
 
     AppState.addEventListener("change", handleAppStateChange);
-    checkLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
+    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
   }, [locationOn, status]);
 
   return (
