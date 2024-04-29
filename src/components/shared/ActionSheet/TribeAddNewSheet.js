@@ -142,21 +142,19 @@ const TribeAddNewSheet = (props) => {
          */
         const isLocationEnabled = await Location.hasServicesEnabledAsync();
         setLocationOn(isLocationEnabled);
-        if (isLocationEnabled === false) {
+        if (!isLocationEnabled) {
           showAlertToActivateLocation();
           return;
-        }
+        } else {
+          /**
+           * Handle check location permission
+           */
+          const { granted } = await Location.getForegroundPermissionsAsync();
+          setStatus(granted);
 
-        /**
-         * Handle check location permission
-         */
-        const { granted } = await Location.getForegroundPermissionsAsync();
-        setStatus(granted);
-
-        (async () => {
           const currentLocation = await Location.getCurrentPositionAsync({});
           setLocation(currentLocation?.coords);
-        })();
+        }
       } catch (err) {
         console.log(err);
       }
