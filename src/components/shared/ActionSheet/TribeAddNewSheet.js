@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
@@ -121,25 +121,6 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
-  /**
-   * Handle get location based on permission
-   */
-  const checkIsLocationActiveAndGetCurrentLocation = async () => {
-    try {
-      const isLocationEnabled = await Location.hasServicesEnabledAsync();
-      setLocationOn(isLocationEnabled);
-      if (locationOn === false) {
-        showAlertToActivateLocation();
-        return;
-      }
-
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation?.coords);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   const leaveCondition =
     attendance?.data?.att_type === "Leave" &&
     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
@@ -154,18 +135,26 @@ const TribeAddNewSheet = (props) => {
   const dayoff = attendance?.data?.day_type === "Day Off";
 
   useEffect(() => {
-    checkIsLocationActiveAndGetCurrentLocation();
-
-    /**
-     * Handle check location permission
-     */
-    const checkLocationPermissionAndGetCurrentLocation = async () => {
+    const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async () => {
       try {
-        const { granted } = await Location.getForegroundPermissionsAsync();
-        setStatus(granted);
+        /**
+         * Handle check location is active
+         */
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        setLocationOn(isLocationEnabled);
+        if (!isLocationEnabled) {
+          showAlertToActivateLocation();
+          return;
+        } else {
+          /**
+           * Handle check location permission
+           */
+          const { granted } = await Location.getForegroundPermissionsAsync();
+          setStatus(granted);
 
-        const currentLocation = await Location.getCurrentPositionAsync({});
-        setLocation(currentLocation?.coords);
+          const currentLocation = await Location.getCurrentPositionAsync({});
+          setLocation(currentLocation?.coords);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -177,14 +166,14 @@ const TribeAddNewSheet = (props) => {
      */
     const handleAppStateChange = (nextAppState) => {
       if (nextAppState == "active") {
-        checkLocationPermissionAndGetCurrentLocation();
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
       } else {
-        checkLocationPermissionAndGetCurrentLocation();
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
       }
     };
 
     AppState.addEventListener("change", handleAppStateChange);
-    checkLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
+    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
   }, [locationOn, status]);
 
   return (
