@@ -22,7 +22,11 @@ const ModuleSelectSheet = (props) => {
         {userSelector?.user_module &&
           userSelector.user_module
             .filter(
-              (item) => item.module_name === "BAND" || item.module_name === "TRIBE" || item.module_name === "COIN"
+              (item) =>
+                item.module_name === "BAND" ||
+                item.module_name === "TRIBE" ||
+                item.module_name === "COIN" ||
+                item.module_name === "PIPE"
             )
             .map((item, idx) => {
               return (
