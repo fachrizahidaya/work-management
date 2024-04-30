@@ -133,7 +133,11 @@ const TribeAddNewSheet = (props) => {
         const { granted } = await Location.getForegroundPermissionsAsync();
 
         if (!granted) {
-          showAlertToAllowPermission();
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            showAlertToAllowPermission();
+            return;
+          }
         } else {
           const currentLocation = await Location.getCurrentPositionAsync({});
           setLocation(currentLocation?.coords);
