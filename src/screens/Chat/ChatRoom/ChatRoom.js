@@ -55,9 +55,6 @@ const ChatRoom = () => {
   const [imageToShare, setImageToShare] = useState(null);
   const [searchChatVisible, setSearchChatVisible] = useState(false);
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
-  const [filter, setFilter] = useState({
-    year: dayjs().format("YYYY"),
-  });
   const [monthChangeFilter, setMonthChangeFilter] = useState({
     month: dayjs().format("M"),
     year: dayjs().format("YYYY"),
