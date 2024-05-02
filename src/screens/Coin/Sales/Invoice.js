@@ -6,7 +6,7 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import { useFetch } from "../../../hooks/useFetch";
 import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
-import InvoiceFilter from "../../../components/Coin/Invoice/InvoiceFilter";
+import DataFilter from "../../../components/Coin/shared/DataFilter";
 import PageHeader from "../../../components/shared/PageHeader";
 import InvoiceList from "../../../components/Coin/Invoice/InvoiceList";
 
@@ -55,6 +55,7 @@ const Invoice = () => {
   };
 
   useEffect(() => {
+    setInvoice([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 
@@ -74,11 +75,12 @@ const Invoice = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader title="Invoice" onPress={() => navigation.goBack()} />
-        <InvoiceFilter
+        <DataFilter
           handleSearch={searchInvoiceHandler}
           inputToShow={inputToShow}
           setInputToShow={setInputToShow}
           setSearchInput={setSearchInput}
+          placeholder="Search Invoice..."
         />
       </View>
       <InvoiceList

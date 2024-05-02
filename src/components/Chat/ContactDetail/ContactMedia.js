@@ -11,7 +11,7 @@ const ContactMedia = ({ qty, navigation, media, docs }) => {
         <Text style={[{ fontSize: 14 }, TextProps]}>Media & Docs</Text>
       </Pressable>
       <TouchableOpacity
-        style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}
+        style={{ flexDirection: "row", alignItems: "center", gap: 1 }}
         onPress={() =>
           navigation.navigate("Media", {
             media: media,

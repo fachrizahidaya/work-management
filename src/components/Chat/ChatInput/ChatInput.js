@@ -160,7 +160,7 @@ const ChatInput = ({
     },
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       const messageToForward = forwardedMessage ? forwardedMessage : forwardedMessageFormik.values.message;
-      const attachmentToForward = forwardedAttachment ? forwardedAttachment : forwardedMessageFormik.values.file;
+      const attachmentToForward = !forwardedAttachment.name ? forwardedMessageFormik.values.file : forwardedAttachment;
       const projectToForward = forwardedProject ? forwardedProject : forwardedMessageFormik.values.project_id;
       const taskToForward = forwardedTask ? forwardedTask : forwardedMessageFormik.values.task_id;
 
@@ -231,28 +231,8 @@ const ChatInput = ({
   }, [fileAttachment]);
 
   useEffect(() => {
-    forwardedMessageFormik.setFieldValue("file", forwardedAttachment ? forwardedAttachment : "");
+    forwardedMessageFormik.setFieldValue("file", !forwardedAttachment.name ? "" : forwardedAttachment);
   }, [forwarded_file_name, forwarded_file_path, forwarded_file_size, forwarded_mime_type]);
-
-  /**
-   * Handle send forwarded message
-   */
-  useEffect(() => {
-    if (forwardedMessage || forwardedProject || forwardedTask) {
-      forwardedMessageFormik.setValues({
-        ...forwardedMessageFormik.values,
-        message: forwardedMessage || "",
-        file: forwardedAttachment || "",
-        project_id: forwardedProject?.id || "",
-        project_no: forwardedProject?.project_no || "",
-        project_title: forwardedProject?.title || "",
-        task_id: forwardedTask?.id || "",
-        task_no: forwardedTask?.task_no || "",
-        task_title: forwardedTask?.title || "",
-      });
-      forwardedMessageFormik.handleSubmit();
-    }
-  }, [forwardedMessage]);
 
   useEffect(() => {
     resetBandAttachment();
@@ -291,6 +271,26 @@ const ChatInput = ({
       forwardedMessageFormik.setFieldValue(`${forwardedBandAttachmentType}_title`, forwardedBandAttachment?.title);
     }
   }, [forwardedBandAttachment, forwardedBandAttachmentType]);
+
+  /**
+   * Handle send forwarded message
+   */
+  useEffect(() => {
+    if (forwardedMessage || forwardedProject || forwardedTask) {
+      forwardedMessageFormik.setValues({
+        ...forwardedMessageFormik.values,
+        message: forwardedMessage || "",
+        file: !forwardedAttachment.name ? "" : forwardedAttachment || "",
+        project_id: forwardedProject?.id || "",
+        project_no: forwardedProject?.project_no || "",
+        project_title: forwardedProject?.title || "",
+        task_id: forwardedTask?.id || "",
+        task_no: forwardedTask?.task_no || "",
+        task_title: forwardedTask?.title || "",
+      });
+      forwardedMessageFormik.handleSubmit();
+    }
+  }, [forwardedMessage, forwardedAttachment]);
 
   return (
     <View>
@@ -331,7 +331,6 @@ const ChatInput = ({
                       children: (
                         <View
                           style={{
-                            display: "flex",
                             gap: 21,
                             paddingHorizontal: 20,
                             paddingVertical: 16,
@@ -394,7 +393,7 @@ const ChatInput = ({
                 />
               </TouchableOpacity>
 
-              <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+              <View style={{ flex: 1, justifyContent: "center" }}>
                 {type === "group" ? (
                   <MentionInput
                     value={formik.values.message}

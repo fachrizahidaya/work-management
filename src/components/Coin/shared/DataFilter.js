@@ -4,7 +4,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import Input from "../../shared/Forms/Input";
 
-const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSearchInput }) => {
+const DataFilter = ({ inputToShow, setInputToShow, handleSearch, setSearchInput, placeholder }) => {
+  const handlePress = () => {
+    setInputToShow("");
+    setSearchInput("");
+  };
+
   return (
     <Input
       value={inputToShow}
@@ -12,16 +17,11 @@ const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSea
         handleSearch(value);
         setInputToShow(value);
       }}
-      placeHolder="Search PO..."
+      placeHolder={placeholder}
       endAdornment={
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
           {inputToShow && (
-            <Pressable
-              onPress={() => {
-                setInputToShow("");
-                setSearchInput("");
-              }}
-            >
+            <Pressable onPress={handlePress}>
               <MaterialCommunityIcons name="close" size={20} color="#3F434A" />
             </Pressable>
           )}
@@ -31,4 +31,4 @@ const PurchaseOrderFilter = ({ handleSearch, inputToShow, setInputToShow, setSea
   );
 };
 
-export default PurchaseOrderFilter;
+export default DataFilter;

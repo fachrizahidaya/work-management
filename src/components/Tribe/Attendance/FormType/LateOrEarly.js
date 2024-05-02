@@ -1,5 +1,5 @@
-import React from "react";
 import { Text, View } from "react-native";
+
 import Clock from "./shared/Clock";
 import Options from "./shared/Options";
 import Reason from "./shared/Reason";

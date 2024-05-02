@@ -18,7 +18,6 @@ export default GlobalSearchItems;
 
 const styles = StyleSheet.create({
   flex: {
-    display: "flex",
     gap: 20,
   },
 });

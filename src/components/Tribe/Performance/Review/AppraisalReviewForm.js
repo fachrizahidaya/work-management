@@ -28,13 +28,12 @@ const AppraisalReviewForm = ({
       ref={reference}
       closeOnPressBack={false}
       closeOnTouchBackdrop={
-        choiceValue == formik.values.supervisor_choice && noteValue == formik.values.notes ? true : false
+        choiceValue || ("" == formik.values.supervisor_choice && noteValue == formik.values.notes) ? true : false
       }
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
-            display: "flex",
             gap: 21,
             paddingHorizontal: 20,
             paddingVertical: 16,

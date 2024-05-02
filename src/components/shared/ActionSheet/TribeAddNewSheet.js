@@ -6,7 +6,6 @@ import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
 
 import ActionSheet from "react-native-actions-sheet";
 import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
-import Toast from "react-native-root-toast";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -19,8 +18,7 @@ import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
 
 const TribeAddNewSheet = (props) => {
-  const [location, setLocation] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [location, setLocation] = useState({});
   const [locationOn, setLocationOn] = useState(null);
   const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
@@ -103,56 +101,6 @@ const TribeAddNewSheet = (props) => {
     );
   };
 
-  /**
-   * Handle submit attendance clock-in and out
-   */
-  const attendanceCheckHandler = async () => {
-    try {
-      if (!locationOn) {
-        showAlertToActivateLocation();
-      } else if (!location) {
-        await Location.requestForegroundPermissionsAsync();
-        showAlertToAllowPermission();
-      } else if (location && locationOn) {
-        if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
-          toggleAttendanceModal();
-
-          // Toast.show(!attendance?.data?.time_in ? "Clock-in Success" : "Clock-out Success", SuccessToastProps);
-        } else {
-          // Toast.show("You already checked out at this time", ErrorToastProps);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
-    }
-  };
-
-  /**
-   * Handle get location based on permission
-   */
-  const getLocation = async () => {
-    try {
-      if ((locationOn == false && status == false) || (locationOn == false && status == true)) {
-        showAlertToActivateLocation();
-        return;
-      }
-
-      if (locationOn == true && status == false) {
-        await Location.requestForegroundPermissionsAsync();
-        showAlertToAllowPermission();
-        return;
-      }
-      // const { granted } = await Location.getForegroundPermissionsAsync();
-
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      // setStatus(granted)
-      setLocation(currentLocation);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   const leaveCondition =
     attendance?.data?.att_type === "Leave" &&
     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
@@ -167,45 +115,61 @@ const TribeAddNewSheet = (props) => {
   const dayoff = attendance?.data?.day_type === "Day Off";
 
   /**
-   * Handle change for the location permission status
+   * Handle submit attendance clock-in and out
    */
-  useEffect(() => {
-    const runThis = async () => {
-      try {
-        const isLocationEnabled = await Location.hasServicesEnabledAsync();
-        setLocationOn(isLocationEnabled);
+  const attendanceCheckHandler = () => {
+    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(true);
+  };
 
+  const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async (isSlide) => {
+    try {
+      const isLocationEnabled = await Location.hasServicesEnabledAsync();
+      setLocationOn(isLocationEnabled);
+
+      if (!isLocationEnabled) {
+        showAlertToActivateLocation();
+        return;
+      } else {
         const { granted } = await Location.getForegroundPermissionsAsync();
-        const currentLocation = await Location.getCurrentPositionAsync({});
 
-        setStatus(granted);
-        setLocation(currentLocation);
-      } catch (err) {
-        console.log(err);
+        if (!granted) {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            showAlertToAllowPermission();
+            return;
+          }
+        } else {
+          const currentLocation = await Location.getCurrentPositionAsync({});
+          setLocation(currentLocation?.coords);
+
+          if (isSlide) {
+            if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
+              toggleAttendanceModal();
+            }
+          }
+        }
       }
-    };
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  useEffect(() => {
     /**
      * Handle device state change
      * @param {*} nextAppState
      */
     const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active") {
-        // App has come to the foreground
-        runThis();
-      } else if (nextAppState !== "active") {
-        setLocation(null);
-        setStatus(null);
+      if (nextAppState == "active") {
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
+      } else {
+        checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation();
       }
     };
 
     AppState.addEventListener("change", handleAppStateChange);
-    runThis(); // Initial run when the component mounts
+    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
   }, []);
-
-  useEffect(() => {
-    getLocation();
-  }, [status, locationOn]);
 
   return (
     <>
@@ -238,7 +202,7 @@ const TribeAddNewSheet = (props) => {
                   </Text>
                 </View>
               </TouchableOpacity>
-            ) : leaveCondition || holidayCondition || weekend || dayoff ? null : (
+            ) : !attendance?.data || leaveCondition || holidayCondition || weekend || dayoff ? null : (
               <Pressable key={idx} style={styles.wrapper}>
                 <ClockAttendance
                   attendance={attendance?.data}
@@ -257,8 +221,8 @@ const TribeAddNewSheet = (props) => {
           toggle={toggleAttendanceModal}
           apiUrl={`/hr/timesheets/personal/attendance-check`}
           body={{
-            longitude: location?.coords?.longitude,
-            latitude: location?.coords?.latitude,
+            longitude: location?.longitude,
+            latitude: location?.latitude,
             check_from: "Mobile App",
           }}
           header={`Confirm ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}`}
@@ -315,7 +279,6 @@ const styles = StyleSheet.create({
     borderColor: "#E8E9EB",
   },
   flex: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 21,

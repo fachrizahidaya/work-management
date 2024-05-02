@@ -51,26 +51,16 @@ const TaskDetail = () => {
         type="task"
       />
 
-      <View
-        style={{
-          backgroundColor: "#FAFAFA",
-          borderRadius: 10,
-          marginVertical: 10,
-          marginHorizontal: 16,
-        }}
-      >
+      <View style={styles.wrapper}>
         <Description description={task?.data?.description} navigation={navigation} />
       </View>
 
       <View
         style={{
+          ...styles.wrapper,
           flex: 1,
           flexDirection: "row",
-          borderRadius: 10,
-          marginVertical: 10,
-          marginHorizontal: 16,
           gap: 5,
-          backgroundColor: "#FAFAFA",
         }}
       >
         <View style={{ gap: 5 }}>
@@ -115,5 +105,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAFAFA",
+  },
+  wrapper: {
+    backgroundColor: "#FAFAFA",
+    borderRadius: 10,
+    marginVertical: 10,
+    marginHorizontal: 16,
   },
 });

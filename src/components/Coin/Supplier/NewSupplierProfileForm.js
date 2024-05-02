@@ -1,7 +1,7 @@
 import Input from "../../shared/Forms/Input";
 import Select from "../../shared/Forms/Select";
 
-const NewSupplierProfileForm = ({ supplierCategory, formik }) => {
+const NewSupplierProfileForm = ({ supplierCategory, formik, currency, termsOfPayment }) => {
   return (
     <>
       <Input title="Name" formik={formik} fieldName="name" value={formik.values.name} placeHolder="Input Name" />
@@ -23,35 +23,23 @@ const NewSupplierProfileForm = ({ supplierCategory, formik }) => {
         fieldName="supplier_category_id"
         onChange={(value) => formik.setFieldValue("supplier_category_id", value)}
       />
-      <Input
-        title="Bank Account"
+      <Select
+        title="Terms of Payment"
+        placeHolder="Select Terms of Payment"
+        items={termsOfPayment}
         formik={formik}
-        fieldName="bank_account"
-        value={formik.values.bank_account}
-        placeHolder="Input Bank Account"
+        value={formik.values.terms_payment_id}
+        fieldName="terms_payment_id"
+        onChange={(value) => formik.setFieldValue("terms_payment_id", value)}
       />
-      <Input
-        title="Account Number"
-        keyboardType="numeric"
+      <Select
+        title="Currency"
+        placeHolder="Select Currency"
+        items={currency}
         formik={formik}
-        fieldName="account_no"
-        value={formik.values.account_no}
-        placeHolder="Input Account Number"
-      />
-      <Input
-        title="Account Name"
-        formik={formik}
-        fieldName="account_name"
-        value={formik.values.account_name}
-        placeHolder="Input Account Name"
-      />
-      <Input
-        title="Comment"
-        multiline={true}
-        formik={formik}
-        fieldName="comment"
-        value={formik.values.comment}
-        placeHolder="Input Comment"
+        value={formik.values.currency_id}
+        fieldName="currency_id"
+        onChange={(value) => formik.setFieldValue("currency_id", value)}
       />
     </>
   );

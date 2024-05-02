@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { SheetManager } from "react-native-actions-sheet";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -16,7 +16,6 @@ const FilterLeave = ({ filterYear, setFilterYear, filterType, setFilterType }) =
               children: (
                 <View
                   style={{
-                    display: "flex",
                     gap: 21,
                     paddingHorizontal: 20,
                     paddingVertical: 16,

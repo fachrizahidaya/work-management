@@ -38,7 +38,6 @@ const PersonalSection = ({
                 children: (
                   <View
                     style={{
-                      display: "flex",
                       gap: 21,
                       paddingHorizontal: 20,
                       paddingVertical: 16,

@@ -7,7 +7,6 @@ const TaskAttachmentSection = () => {
     <View
       style={{
         flex: 1,
-        display: "flex",
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
         padding: 10,

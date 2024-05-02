@@ -32,7 +32,6 @@ export default EmployeeSection;
 
 const styles = StyleSheet.create({
   wrapper: {
-    display: "flex",
     gap: 10,
     maxHeight: 300,
   },
@@ -43,7 +42,6 @@ const styles = StyleSheet.create({
     borderColor: "#E8E9EB",
   },
   item: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,

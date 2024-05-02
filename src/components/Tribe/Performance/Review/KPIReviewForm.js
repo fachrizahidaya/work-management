@@ -26,12 +26,11 @@ const KPIReviewForm = ({
     <ActionSheet
       ref={reference}
       closeOnPressBack={false}
-      closeOnTouchBackdrop={achievementValue == formik.values.supervisor_actual_achievement ? true : false}
+      closeOnTouchBackdrop={achievementValue || 0 == formik.values.supervisor_actual_achievement ? true : false}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
-            display: "flex",
             gap: 21,
             paddingHorizontal: 20,
             paddingVertical: 16,

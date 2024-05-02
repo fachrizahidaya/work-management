@@ -13,12 +13,13 @@ const NewSupplierAddressForm = ({ formik }) => {
       />
       <Input title="City" formik={formik} fieldName="city" value={formik.values.city} placeHolder="Input City" />
       <Input
-        title="Region"
+        title="Province"
         formik={formik}
-        fieldName="region"
-        value={formik.values.region}
-        placeHolder="Input Region"
+        fieldName="province"
+        value={formik.values.province}
+        placeHolder="Input Province"
       />
+      <Input title="State" formik={formik} fieldName="state" value={formik.values.state} placeHolder="Input State" />
       <Input
         title="ZIP Code"
         keyboardType="numeric"

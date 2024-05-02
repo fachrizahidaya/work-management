@@ -61,6 +61,7 @@ const DownPayment = () => {
   });
 
   useEffect(() => {
+    setDownPayment([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

@@ -3,9 +3,11 @@ import Modal from "react-native-modal";
 
 import { TextProps } from "../../shared/CustomStylings";
 import Button from "../../shared/Forms/Button";
+import { useFetch } from "../../../hooks/useFetch";
 
 const NewSupplierSubmission = ({
   formik,
+  bankFormik,
   visible,
   backdropPress,
   isSubmitting,
@@ -13,6 +15,8 @@ const NewSupplierSubmission = ({
   toggleOtherModal,
   color = null,
 }) => {
+  const { data: selectedBank } = useFetch(bankFormik.values.bank_id && `/acc/bank/${bankFormik.values.bank_id}`);
+
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
     Platform.OS === "ios"
@@ -32,18 +36,6 @@ const NewSupplierSubmission = ({
       title: "Phone Number",
       value: formik.values.phone,
     },
-    {
-      title: "Bank Account",
-      value: formik.values.bank_account,
-    },
-    {
-      title: "Account Number",
-      value: formik.values.account_no,
-    },
-    {
-      title: "Account Name",
-      value: formik.values.account_name,
-    },
   ];
 
   const addressArr = [
@@ -52,12 +44,27 @@ const NewSupplierSubmission = ({
       value: formik.values.city,
     },
     {
-      title: "Region",
-      value: formik.values.region,
+      title: "Province",
+      value: formik.values.province,
     },
     {
-      title: "City",
-      value: formik.values.city,
+      title: "State",
+      value: formik.values.state,
+    },
+  ];
+
+  const bankArr = [
+    {
+      title: "Bank",
+      value: selectedBank?.data?.name,
+    },
+    {
+      title: "Account Number",
+      value: bankFormik.values.account_no,
+    },
+    {
+      title: "Account Name",
+      value: bankFormik.values.account_name,
     },
   ];
 
@@ -92,6 +99,18 @@ const NewSupplierSubmission = ({
             <Text style={[TextProps]}>Address Line:</Text>
             <Text style={[TextProps]}>{formik.values.address}</Text>
             {addressArr.map((item, index) => {
+              return (
+                <Text style={[TextProps]} key={index}>
+                  {item.title}: {item.value}
+                </Text>
+              );
+            })}
+          </View>
+        </View>
+        <View style={{ gap: 5 }}>
+          <Text style={[TextProps]}>Bank Details</Text>
+          <View style={{ marginTop: 10, gap: 5 }}>
+            {bankArr.map((item, index) => {
               return (
                 <Text style={[TextProps]} key={index}>
                   {item.title}: {item.value}

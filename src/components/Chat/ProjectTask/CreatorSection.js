@@ -7,7 +7,6 @@ const CreatorSection = ({ name, image }) => {
   return (
     <Pressable
       style={{
-        display: "flex",
         justifyContent: "space-between",
         padding: 5,
         gap: 5,

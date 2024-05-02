@@ -1,13 +1,13 @@
 import { Skeleton } from "moti/skeleton";
-import React from "react";
 import { StyleSheet, View } from "react-native";
+
 import { SkeletonCommonProps } from "../../shared/CustomStylings";
 import { card } from "../../../styles/Card";
 
 const CardSkeleton = () => {
   return (
     <View style={{ ...card.card, ...styles.wrapper }}>
-      <View style={{ display: "flex", gap: 4, width: 200 }}>
+      <View style={{ gap: 4, width: 200 }}>
         <Skeleton height={20} width="100%" radius={10} {...SkeletonCommonProps} />
       </View>
     </View>

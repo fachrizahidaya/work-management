@@ -29,6 +29,7 @@ const ChatHeader = ({
   searchVisible,
   groupName,
   toggleSearch,
+  calendarRef,
 }) => {
   const optionsArr =
     type === "personal"
@@ -130,18 +131,23 @@ const ChatHeader = ({
           concatenatedNames={groupName}
           type={type}
         />
-        <Pressable
-          style={{ marginRight: 1 }}
-          onPress={() =>
-            SheetManager.show("form-sheet", {
-              payload: {
-                children: renderHeaderOptions(),
-              },
-            })
-          }
-        >
-          <MaterialIcons name="more-horiz" size={20} color="#3F434A" />
-        </Pressable>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+          <Pressable style={{ marginRight: 1 }} onPress={() => calendarRef.current?.show()}>
+            <MaterialIcons name="calendar-today" size={20} color="#3F434A" />
+          </Pressable>
+          <Pressable
+            style={{ marginRight: 1 }}
+            onPress={() =>
+              SheetManager.show("form-sheet", {
+                payload: {
+                  children: renderHeaderOptions(),
+                },
+              })
+            }
+          >
+            <MaterialIcons name="more-horiz" size={20} color="#3F434A" />
+          </Pressable>
+        </View>
       </View>
 
       {/* Handle for search message */}

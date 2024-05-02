@@ -55,6 +55,7 @@ const Supplier = () => {
   };
 
   useEffect(() => {
+    setSuppliers([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 

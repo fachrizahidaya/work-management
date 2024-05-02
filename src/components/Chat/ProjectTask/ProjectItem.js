@@ -46,7 +46,6 @@ const ProjectItem = ({
           })
         }
         style={{
-          display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",

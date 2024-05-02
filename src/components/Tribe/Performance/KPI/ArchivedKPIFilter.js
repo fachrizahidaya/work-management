@@ -23,7 +23,6 @@ const ArchivedKPIFilter = ({ startDate, startDateChangeHandler, endDate, endDate
               children: (
                 <View
                   style={{
-                    display: "flex",
                     gap: 21,
                     paddingHorizontal: 20,
                     paddingVertical: 16,

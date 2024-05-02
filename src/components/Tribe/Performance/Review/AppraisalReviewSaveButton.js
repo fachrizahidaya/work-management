@@ -1,4 +1,3 @@
-import React from "react";
 import { ActivityIndicator, Text } from "react-native";
 import Button from "../../../shared/Forms/Button";
 

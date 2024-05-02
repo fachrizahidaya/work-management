@@ -159,9 +159,8 @@ const EditPersonalPost = ({
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
             style={{
-              display: "flex",
               gap: 10,
-              backgroundColor: "white",
+              backgroundColor: "#FFFFFF",
               padding: 20,
               borderRadius: 10,
             }}
@@ -353,6 +352,6 @@ const styles = StyleSheet.create({
     width: 280,
     height: 500,
     resizeMode: "contain",
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
   },
 });

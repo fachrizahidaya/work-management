@@ -9,16 +9,19 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Tabs from "../../../components/shared/Tabs";
-import DetailList from "../../../components/Coin/SalesOrder/DetailList";
-import ItemList from "../../../components/Coin/SalesOrder/ItemList";
+import DetailList from "../../../components/Coin/shared/DetailList";
+import ItemList from "../../../components/Coin/shared/ItemList";
 import { useFetch } from "../../../hooks/useFetch";
 import { useLoading } from "../../../hooks/useLoading";
 import axiosInstance from "../../../config/api";
 import { ErrorToastProps, TextProps } from "../../../components/shared/CustomStylings";
 import Button from "../../../components/shared/Forms/Button";
+import { useDisclosure } from "../../../hooks/useDisclosure";
+import ItemDetail from "../../../components/Coin/shared/ItemDetail";
 
 const SalesOrderDetail = () => {
   const [tabValue, setTabValue] = useState("Order Detail");
+  const [itemDetailData, setItemDetailData] = useState(null);
 
   const routes = useRoute();
   const navigation = useNavigation();
@@ -26,6 +29,8 @@ const SalesOrderDetail = () => {
   const { id } = routes.params;
 
   const { toggle: toggleProcessSO, isLoading: processSOIsLoading } = useLoading(false);
+
+  const { toggle: toggleItemDetail, isOpen: itemDetailIsOpen } = useDisclosure(false);
 
   const { data, isLoading } = useFetch(`/acc/sales-order/${id}`);
 
@@ -60,6 +65,16 @@ const SalesOrderDetail = () => {
     { name: "FoB", data: data?.data?.fob?.name },
     { name: "Notes", data: data?.data?.notes },
   ];
+
+  const openItemDetailModalHandler = (value) => {
+    toggleItemDetail();
+    setItemDetailData(value);
+  };
+
+  const closeItemDetailModalHandler = () => {
+    toggleItemDetail();
+    setItemDetailData(null);
+  };
 
   const downloadSalesOrderHandler = async () => {
     try {
@@ -121,12 +136,20 @@ const SalesOrderDetail = () => {
             data={data?.data?.sales_order_item}
             isLoading={isLoading}
             discount={currencyConverter.format(data?.data?.discount_amount) || `${data?.data?.discount_percent}%`}
-            tax={currencyConverter.format(data?.data?.tax)}
+            tax={currencyConverter.format(data?.data?.tax_amount)}
             sub_total={currencyConverter.format(data?.data?.subtotal_amount)}
             total_amount={currencyConverter.format(data?.data?.total_amount)}
+            toggleModal={openItemDetailModalHandler}
           />
         </View>
       )}
+      <ItemDetail
+        visible={itemDetailIsOpen}
+        backdropPress={toggleItemDetail}
+        onClose={closeItemDetailModalHandler}
+        data={itemDetailData}
+        converter={currencyConverter}
+      />
     </SafeAreaView>
   );
 };

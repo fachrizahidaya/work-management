@@ -106,11 +106,10 @@ const MyProfileScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          backgroundColor: "white",
+          backgroundColor: "#FFFFFF",
           paddingVertical: 14,
           paddingHorizontal: 16,
         }}
@@ -128,7 +127,6 @@ const MyProfileScreen = ({ route }) => {
       >
         <View
           style={{
-            display: "flex",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
@@ -160,7 +158,6 @@ const MyProfileScreen = ({ route }) => {
 
         <View
           style={{
-            display: "flex",
             gap: 20,
             marginVertical: 3,
             paddingHorizontal: 5,

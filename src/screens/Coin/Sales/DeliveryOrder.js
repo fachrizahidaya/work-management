@@ -55,6 +55,7 @@ const DeliveryOrder = () => {
   };
 
   useEffect(() => {
+    setDeliveryOrder([]);
     setFilteredDataArray([]);
   }, [searchInput]);
 
