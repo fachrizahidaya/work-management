@@ -88,6 +88,10 @@ import DownPayment from "../screens/Coin/Sales/DownPayment";
 import Supplier from "../screens/Coin/Purchase/Supplier";
 import NewSupplierScreen from "../screens/Coin/Purchase/NewSupplierScreen";
 import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
+import SiloTab from "./Tabs/SiloTab";
+
+// Silo Screens
+import DataEntryScreen from "../screens/Silo/DataEntry/DataEntryScreen";
 
 const Stack = createStackNavigator();
 
@@ -135,9 +139,10 @@ const HomeStack = () => {
           }
           // else if (moduleSelector.module_name === "SETTING") {
           //   return <SettingTab />;
-          // } else if (moduleSelector.module_name === "PIPE") {
-          //   return <PipeTab  />;
-          else {
+          // }
+          else if (moduleSelector.module_name === "PIPE") {
+            return <SiloTab />;
+          } else {
             // Render a default component or handle unknown cases
             return <BandTab />;
           }
@@ -330,6 +335,9 @@ const HomeStack = () => {
       <Stack.Screen name="New Supplier" component={NewSupplierScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="New Customer" component={NewCustomerScreen} options={{ header: () => <Header /> }} />
+
+      {/* Silo Screens */}
+      <Stack.Screen name="Data Entry" component={DataEntryScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
