@@ -17,7 +17,7 @@ const Tribe = () => {
         <ScrollView>
           <View style={{ gap: 17 }}>
             {tribe.map((item, index) => {
-              return <FAQCard question={item.question} answer={item.answer} index={index} />;
+              return <FAQCard key={index} question={item.question} answer={item.answer} index={index} />;
             })}
           </View>
         </ScrollView>

@@ -224,6 +224,7 @@ const FeedScreen = () => {
   useEffect(() => {
     if (!openCommentHandler) {
       setCommentParentId(null);
+      setComments([]);
     } else {
       if (comment?.data && commentIsFetching === false) {
         if (currentOffsetComments === 0) {

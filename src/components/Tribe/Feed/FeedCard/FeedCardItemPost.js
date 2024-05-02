@@ -29,11 +29,9 @@ const FeedCardItemPost = ({
   employeeUsername,
   navigation,
   reference,
-  refetchPost,
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  refetchAllPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -51,7 +49,7 @@ const FeedCardItemPost = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost, refetchAllPost);
+    onToggleLike(post_id, action);
   };
 
   useEffect(() => {
