@@ -25,7 +25,7 @@ const CompanyScreen = () => {
         <View>
           <Text style={[{ fontWeight: "bold" }, TextProps]}>Address:</Text>
           <Text style={TextProps}>
-            ONE PM Buildiing Level 5, Kav M5 17-18, Boulevard Gading Serpong, Tangerang, Banten, Indonesia, 15810
+            l. Raya Pajajaran No.14 No 62, RT.002/RW.005, Gandasari, Kec. Jatiuwung, Kabupaten Tangerang, Banten 15137
           </Text>
         </View>
         <View>
