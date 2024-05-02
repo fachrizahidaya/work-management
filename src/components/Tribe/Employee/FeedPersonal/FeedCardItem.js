@@ -38,11 +38,9 @@ const FeedCardItem = ({
   navigation,
   reference,
   setPostId,
-  refetchPost,
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  refetchAllPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -108,7 +106,7 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost, refetchAllPost);
+    onToggleLike(post_id, action);
     setForceRerenderPersonal(!forceRerenderPersonal);
   };
 

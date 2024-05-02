@@ -55,7 +55,7 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost);
+    onToggleLike(post_id, action);
     setForceRerender(!forceRerender);
   };
 
@@ -68,30 +68,18 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <TouchableOpacity
+    <View
       style={{
         ...card.card,
         ...styles.card,
       }}
-      onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
     >
-      <View style={styles.cardHeader}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: employeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-              refetchAllPost: refetchPost,
-            })
-          }
-        >
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
-        </TouchableOpacity>
-
-        <View style={{ flex: 1, gap: 5 }}>
+      <Pressable
+        style={styles.card}
+        onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
+      >
+        <View style={styles.cardHeader}>
           <TouchableOpacity
-            style={styles.dockName}
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
@@ -101,37 +89,52 @@ const FeedCardItem = ({
               })
             }
           >
-            <Text style={[{ fontSize: 14 }, TextProps]}>
-              {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-            </Text>
-            {type === "Announcement" ? (
-              <View
-                style={{
-                  borderRadius: 10,
-                  backgroundColor: "#ADD7FF",
-                  padding: 5,
-                }}
-              >
-                <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
-              </View>
-            ) : null}
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </TouchableOpacity>
-          <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
-        </View>
-      </View>
 
-      <Text style={[{ fontSize: 14 }, TextProps]}>
-        {
-          <FeedContentStyle
-            words={words}
-            employeeUsername={employeeUsername}
-            navigation={navigation}
-            loggedEmployeeId={loggedEmployeeId}
-            loggedEmployeeImage={loggedEmployeeImage}
-            handleLinkPress={handleLinkPress}
-          />
-        }
-      </Text>
+          <View style={{ flex: 1, gap: 5 }}>
+            <TouchableOpacity
+              style={styles.dockName}
+              onPress={() =>
+                navigation.navigate("Employee Profile", {
+                  employeeId: employeeId,
+                  loggedEmployeeId: loggedEmployeeId,
+                  loggedEmployeeImage: loggedEmployeeImage,
+                  refetchAllPost: refetchPost,
+                })
+              }
+            >
+              <Text style={[{ fontSize: 14 }, TextProps]}>
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+              </Text>
+              {type === "Announcement" ? (
+                <View
+                  style={{
+                    borderRadius: 10,
+                    backgroundColor: "#ADD7FF",
+                    padding: 5,
+                  }}
+                >
+                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+                </View>
+              ) : null}
+            </TouchableOpacity>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+          </View>
+        </View>
+        <Text style={[{ fontSize: 14 }, TextProps]}>
+          {
+            <FeedContentStyle
+              words={words}
+              employeeUsername={employeeUsername}
+              navigation={navigation}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              handleLinkPress={handleLinkPress}
+            />
+          }
+        </Text>
+      </Pressable>
 
       {attachment ? (
         <TouchableOpacity
@@ -176,7 +179,7 @@ const FeedCardItem = ({
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

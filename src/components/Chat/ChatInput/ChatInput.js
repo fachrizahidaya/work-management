@@ -290,7 +290,7 @@ const ChatInput = ({
       });
       forwardedMessageFormik.handleSubmit();
     }
-  }, [forwardedMessage, forwardedAttachment]);
+  }, []);
 
   return (
     <View>

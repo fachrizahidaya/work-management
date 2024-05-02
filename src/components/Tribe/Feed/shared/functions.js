@@ -78,13 +78,9 @@ export const submitCommentHandler = async (
  * @param {*} post_id
  * @param {*} action
  */
-export const likePostHandler = async (post_id, action, refetchPost, refetchAllPost) => {
+export const likePostHandler = async (post_id, action) => {
   try {
     await axiosInstance.post(`/hr/posts/${post_id}/${action}`);
-    refetchPost();
-    if (refetchAllPost) {
-      refetchAllPost();
-    }
     console.log("Process success");
   } catch (err) {
     console.log(err);
