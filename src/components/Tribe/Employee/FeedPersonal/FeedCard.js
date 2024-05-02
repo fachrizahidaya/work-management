@@ -38,7 +38,6 @@ const FeedCard = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  refetchAllPost,
 }) => {
   return (
     <View style={{ flex: 1 }}>
@@ -104,11 +103,9 @@ const FeedCard = ({
                 navigation={navigation}
                 reference={commentScreenSheetRef}
                 setPostId={setPostId}
-                refetchPost={refetchPersonalPost}
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
-                refetchAllPost={refetchAllPost}
               />
             </View>
           );

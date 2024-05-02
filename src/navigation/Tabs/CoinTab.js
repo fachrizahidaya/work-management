@@ -53,7 +53,7 @@ const CoinTab = () => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Search"
           component={EmptyScreen}
           options={{
@@ -69,7 +69,7 @@ const CoinTab = () => {
           //     navigation.navigate(null);
           //   },
           // })}
-        />
+        /> */}
         {/* <Tab.Screen
           name="Add"
           component={EmptyScreen}

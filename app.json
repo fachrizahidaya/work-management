@@ -76,7 +76,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes."
         }
       ]
     ],
