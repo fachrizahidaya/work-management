@@ -57,12 +57,12 @@ const SettingScreen = () => {
     //   title: "iOS guide",
     //   color: "#000000",
     // },
-    {
-      icons: "forum",
-      title: "FAQs",
-      color: "#176688",
-      screen: "FAQ",
-    },
+    // {
+    //   icons: "forum",
+    //   title: "FAQs",
+    //   color: "#176688",
+    //   screen: "FAQ",
+    // },
   ];
 
   return (
