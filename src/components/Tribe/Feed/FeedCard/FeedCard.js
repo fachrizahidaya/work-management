@@ -81,7 +81,6 @@ const FeedCard = ({
             navigation={navigation}
             reference={reference}
             setPostId={setPostId}
-            refetchPost={refetchPost}
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
