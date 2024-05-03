@@ -271,7 +271,6 @@ const FeedScreen = () => {
             setHasBeenScrolled={setHasBeenScrolled}
             onCommentToggle={openCommentHandler}
             forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreenImageHandler}
             employeeUsername={objectContainEmployeeUsernameHandler}
             navigation={navigation}

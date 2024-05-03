@@ -26,8 +26,6 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  forceRerender,
-  setForceRerender,
   toggleFullScreen,
   handleLinkPress,
   employeeUsername,
@@ -56,7 +54,6 @@ const FeedCardItem = ({
       setTotalLike((prevState) => prevState - 1);
     }
     onToggleLike(post_id, action);
-    setForceRerender(!forceRerender);
   };
 
   useEffect(() => {

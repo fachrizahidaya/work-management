@@ -19,7 +19,6 @@ const FeedCard = ({
   refetchPost,
   onCommentToggle,
   forceRerender,
-  setForceRerender,
   toggleFullScreen,
   employeeUsername,
   navigation,
@@ -76,8 +75,6 @@ const FeedCard = ({
             loggedEmployeeImage={loggedEmployeeImage}
             onToggleLike={onToggleLike}
             onCommentToggle={onCommentToggle}
-            forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreen}
             handleLinkPress={onPressLink}
             employeeUsername={employeeUsername}
