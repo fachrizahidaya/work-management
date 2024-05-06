@@ -72,7 +72,7 @@ const ConfirmationModal = ({
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
       hideModalContentWhileAnimating={true}
-      useNativeDriver={false}
+      useNativeDriver={true}
       onModalHide={() => {
         showSuccessModal && toggleOtherModal();
       }}

@@ -20,7 +20,6 @@ import ConfirmationModal from "../ConfirmationModal";
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState({});
   const [locationOn, setLocationOn] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
@@ -227,7 +226,6 @@ const TribeAddNewSheet = (props) => {
           }}
           hasSuccessFunc={true}
           onSuccess={() => {
-            setSuccess(true);
             setRequestType("clock");
             refetchAttendance();
           }}
