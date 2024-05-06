@@ -64,6 +64,7 @@ const FeedCard = ({
           <EmployeeData userSelector={userSelector} employee={employee} teammates={teammates} reference={reference} />
         }
         stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
         // Employee Posts
         renderItem={({ item, index }) => {
           if (item.id === "no-posts") {

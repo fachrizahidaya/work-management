@@ -49,14 +49,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             />
           </TouchableOpacity>
         )}
-        {/* <TouchableOpacity
-          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
-          onPress={toggleClearChatMessage}
-        >
-          <Text fontSize={14} fontWeight={400}>
-            Block {name.length > 30 ? name.split(" ")[0] : name}
-          </Text>
-        </TouchableOpacity> */}
+
         {/* <TouchableOpacity
           style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
           onPress={toggleClearChatMessage}
