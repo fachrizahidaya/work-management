@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable, TouchableOpacity } from "react-native";
@@ -45,6 +45,7 @@ const FeedScreen = () => {
   const navigation = useNavigation();
   const commentScreenSheetRef = useRef(null);
   const flashListRef = useRef(null);
+  const firstTimeRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -235,6 +236,16 @@ const FeedScreen = () => {
       }
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchPost();
+    }, [refetchPost])
+  );
 
   return (
     <>

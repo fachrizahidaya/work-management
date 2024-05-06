@@ -14,39 +14,48 @@ const PayslipList = ({
   refetch,
   openSelectedPayslip,
 }) => {
-  return data.length > 0 ? (
+  return (
     <View style={{ paddingHorizontal: 14, flex: 1 }}>
-      <FlashList
-        data={data}
-        keyExtractor={(item, index) => index}
-        onScrollBeginDrag={() => setHasBeenScrolled(true)}
-        onEndReachedThreshold={0.1}
-        onEndReached={hasBeenScrolled ? fetchMore : null}
-        estimatedItemSize={50}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-        ListFooterComponent={() => isFetching && <ActivityIndicator />}
-        renderItem={({ item, index }) => (
-          <PayslipItem
-            key={index}
-            id={item?.id}
-            month={item?.pay_month}
-            year={item?.pay_year}
-            openSelectedPayslip={openSelectedPayslip}
-          />
-        )}
-      />
-    </View>
-  ) : (
-    <>
-      <View style={styles.imageContainer}>
-        <Image
-          source={require("../../../assets/vectors/empty.png")}
-          alt="empty"
-          style={{ resizeMode: "contain", height: 300, width: 300 }}
+      {data?.length > 0 ? (
+        <FlashList
+          data={data}
+          keyExtractor={(item, index) => index}
+          onScrollBeginDrag={() => setHasBeenScrolled(true)}
+          onEndReachedThreshold={0.1}
+          onEndReached={hasBeenScrolled ? fetchMore : null}
+          estimatedItemSize={50}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={() => {
+                refetch();
+              }}
+            />
+          }
+          ListFooterComponent={() => isFetching && <ActivityIndicator />}
+          renderItem={({ item, index }) => (
+            <PayslipItem
+              key={index}
+              id={item?.id}
+              month={item?.pay_month}
+              year={item?.pay_year}
+              openSelectedPayslip={openSelectedPayslip}
+            />
+          )}
         />
-        <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
-      </View>
-    </>
+      ) : (
+        <>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("../../../assets/vectors/empty.png")}
+              alt="empty"
+              style={{ resizeMode: "contain", height: 300, width: 300 }}
+            />
+            <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
+          </View>
+        </>
+      )}
+    </View>
   );
 };
 
