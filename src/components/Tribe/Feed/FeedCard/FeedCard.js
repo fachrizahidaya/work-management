@@ -30,6 +30,7 @@ const FeedCard = ({
   setIsFullScreen,
   setSelectedPicture,
   setPosts,
+  toggleModal,
 }) => {
   return (
     <View style={styles.container}>
@@ -86,6 +87,7 @@ const FeedCard = ({
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
+            toggleModal={toggleModal}
           />
         )}
       />
