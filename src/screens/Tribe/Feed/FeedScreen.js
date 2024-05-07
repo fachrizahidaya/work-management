@@ -3,10 +3,9 @@ import { useSelector } from "react-redux";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 
-import { SafeAreaView, StyleSheet, Text, View, Pressable, TouchableOpacity, Platform, Dimensions } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
-import Modal from "react-native-modal";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -28,7 +27,6 @@ import {
   submitCommentHandler,
   toggleFullScreenImageHandler,
 } from "../../../components/Tribe/Feed/shared/functions";
-import Button from "../../../components/shared/Forms/Button";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -53,15 +51,8 @@ const FeedScreen = () => {
 
   const userSelector = useSelector((state) => state.auth);
 
-  const deviceWidth = Dimensions.get("window").width;
-  const deviceHeight =
-    Platform.OS === "ios"
-      ? Dimensions.get("window").height
-      : require("react-native-extra-dimensions-android").get("REAL_WINDOW_HEIGHT");
-
   const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
   const { isOpen: actionModalIsOpen, toggle: toggleActionModal } = useDisclosure(false);
-  const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   const postFetchParameters = {
     offset: currentOffsetPost,
@@ -278,9 +269,6 @@ const FeedScreen = () => {
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
           <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
-          {/* <Button onPress={toggleEula}>
-            <Text>tes</Text>
-          </Button> */}
         </View>
 
         <TouchableOpacity
@@ -367,17 +355,6 @@ const FeedScreen = () => {
         toggle={closeSelectedPostHandler}
         description="Are you sure want to report this post?"
       />
-      <Modal
-        isVisible={eulaIsOpen}
-        onBackdropPress={toggleEula}
-        deviceHeight={deviceHeight}
-        deviceWidth={deviceWidth}
-        useNativeDriver={true}
-      >
-        <View style={{ height: "90%", backgroundColor: "white" }}>
-          <Text>tes</Text>
-        </View>
-      </Modal>
     </>
   );
 };

@@ -25,6 +25,9 @@ import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
 import { ErrorToastProps, TextProps } from "../components/shared/CustomStylings";
+import { useDisclosure } from "../hooks/useDisclosure";
+import EULA from "../components/layout/EULA";
+import Button from "../components/shared/Forms/Button";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -35,6 +38,8 @@ const LoginScreen = () => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
   const appVersion = Constants.expoConfig.version;
+
+  // const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   // This is firebase configurations for iOS
   // const [request, response, promptAsync] = Google.useAuthRequest({
@@ -129,6 +134,10 @@ const LoginScreen = () => {
 
         Toast.show(error.response.data.message, ErrorToastProps);
       });
+  };
+
+  const agreeToTermsHandler = async () => {
+    await SecureStore.setItemAsync("agree_to_terms", true);
   };
 
   // const signInWithGoogle = async (user) => {
@@ -271,6 +280,9 @@ const LoginScreen = () => {
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
             <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
+          {/* <Button onPress={toggleEula}>
+            <Text style={{ color: "#FFFFFF" }}>tes</Text>
+          </Button> */}
 
           {/* <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
@@ -293,6 +305,7 @@ const LoginScreen = () => {
                 <Text fontWeight={400}>Remember Me</Text>
               </Checkbox>
             </View> */}
+      {/* <EULA isOpen={eulaIsOpen} toggle={toggleEula} /> */}
     </KeyboardAvoidingView>
   );
 };

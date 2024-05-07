@@ -5,9 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 import jwt_decode from "jwt-decode";
 
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import EULA from "../../components/layout/EULA";
+import Button from "../../components/shared/Forms/Button";
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
+
+  const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   const loginHandler = async (userData) => {
     try {
@@ -22,25 +27,36 @@ const LaunchScreen = () => {
       let currentDate = new Date();
       const userData = await SecureStore.getItemAsync("user_data");
       const token = await SecureStore.getItemAsync("user_token");
+      const agreeToTerms = await SecureStore.getItemAsync("agree_to_terms");
 
-      if (token) {
-        const decodedToken = jwt_decode(token);
-        const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
+      if (!agreeToTerms) {
+        toggleEula(true);
+      } else {
+        if (token) {
+          const decodedToken = jwt_decode(token);
+          const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
 
-        if (!isExpired) {
-          const parsedUserData = JSON.parse(userData);
+          if (!isExpired) {
+            const parsedUserData = JSON.parse(userData);
 
-          loginHandler(parsedUserData);
+            loginHandler(parsedUserData);
+          } else {
+            navigation.navigate("Login");
+          }
         } else {
           navigation.navigate("Login");
         }
-      } else {
-        navigation.navigate("Login");
       }
     } catch (error) {
       console.log(error);
       navigation.navigate("Login");
     }
+  };
+
+  const agreeToTermsHandler = async () => {
+    await SecureStore.setItemAsync("agree_to_terms", true);
+    toggleEula(false);
+    navigation.navigate("Login");
   };
 
   useEffect(() => {
@@ -52,6 +68,7 @@ const LaunchScreen = () => {
       <View style={styles.loadingContainer}>
         <Image source={require("../../assets/icons/kss_logo.png")} alt="KSS_LOGO" style={styles.logo} />
       </View>
+      <EULA isOpen={eulaIsOpen} toggle={agreeToTermsHandler} />
     </SafeAreaView>
   );
 };
