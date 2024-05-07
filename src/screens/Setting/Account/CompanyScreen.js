@@ -25,7 +25,7 @@ const CompanyScreen = () => {
         <View>
           <Text style={[{ fontWeight: "bold" }, TextProps]}>Address:</Text>
           <Text style={TextProps}>
-            l. Raya Pajajaran No.14 No 62, RT.002/RW.005, Gandasari, Kec. Jatiuwung, Kabupaten Tangerang, Banten 15137
+            Jl. Raya Pajajaran No.14 No 62, RT.002/RW.005, Gandasari, Kec. Jatiuwung, Kabupaten Tangerang, Banten 15137
           </Text>
         </View>
         <View>
