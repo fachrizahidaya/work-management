@@ -278,9 +278,9 @@ const FeedScreen = () => {
             <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
           </View>
           <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
-          <Button onPress={toggleEula}>
+          {/* <Button onPress={toggleEula}>
             <Text>tes</Text>
-          </Button>
+          </Button> */}
         </View>
 
         <TouchableOpacity
