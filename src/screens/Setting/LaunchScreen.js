@@ -5,9 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 import jwt_decode from "jwt-decode";
 
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
+import { useDisclosure } from "../../hooks/useDisclosure";
+import EULA from "../../components/layout/EULA";
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
+
+  const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   const loginHandler = async (userData) => {
     try {
@@ -31,24 +35,43 @@ const LaunchScreen = () => {
           const parsedUserData = JSON.parse(userData);
 
           loginHandler(parsedUserData);
-        } else {
-          navigation.navigate("Login");
         }
-      } else {
-        navigation.navigate("Login");
       }
     } catch (error) {
       console.log(error);
-      navigation.navigate("Login");
     }
+  };
+
+  const agreeToTermsHandler = async () => {
+    await SecureStore.setItemAsync("agree_to_terms", "agreed");
+    toggleEula();
+    navigation.navigate("Login");
   };
 
   useEffect(() => {
     getUserData();
   }, []);
 
+  useEffect(() => {
+    const getAgreeToEulaStatus = async () => {
+      try {
+        const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
+
+        if (!agreeToEula) {
+          toggleEula();
+        } else {
+          navigation.navigate("Login");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getAgreeToEulaStatus();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
+      <EULA isOpen={eulaIsOpen} toggle={agreeToTermsHandler} />
       <View style={styles.loadingContainer}>
         <Image source={require("../../assets/icons/kss_logo.png")} alt="KSS_LOGO" style={styles.logo} />
       </View>

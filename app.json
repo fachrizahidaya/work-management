@@ -76,7 +76,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes."
+          "locationAlwaysAndWhenInUsePermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes.", 
+          "locationAlwaysPermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes.",
+          "locationWhenInUsePermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes."
         }
       ]
     ],

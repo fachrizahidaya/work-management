@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable, TouchableOpacity } from "react-native";
@@ -16,6 +16,7 @@ import FeedComment from "../../../components/Tribe/Feed/FeedComment/FeedComment"
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import {
   closeCommentHandler,
   likePostHandler,
@@ -41,14 +42,17 @@ const FeedScreen = () => {
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [requestType, setRequestType] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const navigation = useNavigation();
   const commentScreenSheetRef = useRef(null);
   const flashListRef = useRef(null);
+  const firstTimeRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
   const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
+  const { isOpen: actionModalIsOpen, toggle: toggleActionModal } = useDisclosure(false);
 
   const postFetchParameters = {
     offset: currentOffsetPost,
@@ -76,6 +80,16 @@ const FeedScreen = () => {
     isLoading: commentIsLoading,
     refetch: refetchComment,
   } = useFetch(`/hr/posts/${postId}/comment`, [reloadComment, currentOffsetComments], commentsFetchParameters);
+
+  const openSelectedPostHandler = useCallback((post) => {
+    setSelectedPost(post);
+    toggleActionModal();
+  }, []);
+
+  const closeSelectedPostHandler = () => {
+    setSelectedPost(null);
+    toggleActionModal();
+  };
 
   /**
    * Handle fetch more Comments
@@ -236,6 +250,16 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchPost();
+    }, [refetchPost])
+  );
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -271,7 +295,6 @@ const FeedScreen = () => {
             setHasBeenScrolled={setHasBeenScrolled}
             onCommentToggle={openCommentHandler}
             forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreenImageHandler}
             employeeUsername={objectContainEmployeeUsernameHandler}
             navigation={navigation}
@@ -283,6 +306,7 @@ const FeedScreen = () => {
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
             setPosts={setPosts}
+            toggleModal={openSelectedPostHandler}
           />
         </View>
         <FeedComment
@@ -325,6 +349,11 @@ const FeedScreen = () => {
         color="#7EB4FF"
         title="Post shared!"
         description="Thank you for contributing to the community"
+      />
+      <ConfirmationModal
+        isOpen={actionModalIsOpen}
+        toggle={closeSelectedPostHandler}
+        description="Are you sure want to report this post?"
       />
     </>
   );

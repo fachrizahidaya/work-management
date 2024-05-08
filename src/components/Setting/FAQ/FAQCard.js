@@ -11,6 +11,7 @@ const FAQCard = ({ question, answer, index }) => {
 
   return (
     <TouchableOpacity
+      style={{ marginVertical: 10 }}
       activeOpacity={0.8}
       key={index}
       onPress={() => {
@@ -35,15 +36,11 @@ const FAQCard = ({ question, answer, index }) => {
             borderBottomLeftRadius: 10,
           }}
         >
-          {answer.map((subMenu, index) => {
-            return (
-              <TouchableNativeFeedback key={index}>
-                <View style={{ padding: 10 }}>
-                  <Text style={[TextProps, { width: "90%" }]}>{subMenu.title}</Text>
-                </View>
-              </TouchableNativeFeedback>
-            );
-          })}
+          <TouchableNativeFeedback key={index}>
+            <View style={{ padding: 10 }}>
+              <Text style={[TextProps, { width: "90%" }]}>{answer}</Text>
+            </View>
+          </TouchableNativeFeedback>
         </View>
       )}
     </TouchableOpacity>

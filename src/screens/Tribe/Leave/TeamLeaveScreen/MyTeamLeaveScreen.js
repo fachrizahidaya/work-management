@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import Toast from "react-native-root-toast";
@@ -30,6 +30,7 @@ const MyTeamLeaveScreen = () => {
   const [currentPageRejected, setCurrentPageRejected] = useState(1);
 
   const navigation = useNavigation();
+  const firstTimeRef = useRef(null);
 
   const { isOpen: responseModalIsOpen, toggle: toggleResponseModal } = useDisclosure(false);
 
@@ -183,6 +184,16 @@ const MyTeamLeaveScreen = () => {
       setRejectedList((prevData) => [...prevData, ...rejectedLeaveRequest?.data?.data]);
     }
   }, [rejectedLeaveRequest?.data?.data?.length]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchTeamLeaveRequest();
+    }, [refetchTeamLeaveRequest])
+  );
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 import { useFormik } from "formik";
@@ -59,6 +59,7 @@ const EmployeeProfileScreen = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
+  const firstTimeRef = useRef(null);
 
   const { height } = Dimensions.get("screen");
 
@@ -347,6 +348,16 @@ const EmployeeProfileScreen = () => {
       setIsReady(true);
     }, 100);
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchPersonalPost();
+    }, [refetchPersonalPost])
+  );
 
   return (
     <>

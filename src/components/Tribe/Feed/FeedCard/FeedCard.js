@@ -19,7 +19,6 @@ const FeedCard = ({
   refetchPost,
   onCommentToggle,
   forceRerender,
-  setForceRerender,
   toggleFullScreen,
   employeeUsername,
   navigation,
@@ -31,6 +30,7 @@ const FeedCard = ({
   setIsFullScreen,
   setSelectedPicture,
   setPosts,
+  toggleModal,
 }) => {
   return (
     <View style={styles.container}>
@@ -40,12 +40,14 @@ const FeedCard = ({
         data={posts}
         extraData={forceRerender} // re-render data handler
         onEndReachedThreshold={0.1}
-        keyExtractor={(item, index) => index}
-        estimatedItemSize={150}
+        keyExtractor={(item, index) => item?.id}
         refreshing={true}
         onScrollBeginDrag={() => {
           setHasBeenScrolled(true); // user has scrolled handler
         }}
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        windowSize={10}
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         refreshControl={
           <RefreshControl
@@ -60,7 +62,7 @@ const FeedCard = ({
         ListFooterComponent={() => postIsLoading && <ActivityIndicator />}
         renderItem={({ item, index }) => (
           <FeedCardItem
-            key={index}
+            key={item?.id}
             id={item?.id}
             employeeId={item?.author_id}
             employeeName={item?.employee_name}
@@ -76,18 +78,16 @@ const FeedCard = ({
             loggedEmployeeImage={loggedEmployeeImage}
             onToggleLike={onToggleLike}
             onCommentToggle={onCommentToggle}
-            forceRerender={forceRerender}
-            setForceRerender={setForceRerender}
             toggleFullScreen={toggleFullScreen}
             handleLinkPress={onPressLink}
             employeeUsername={employeeUsername}
             navigation={navigation}
             reference={reference}
             setPostId={setPostId}
-            refetchPost={refetchPost}
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
+            toggleModal={toggleModal}
           />
         )}
       />

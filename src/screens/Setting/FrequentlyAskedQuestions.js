@@ -1,21 +1,58 @@
 import { useNavigation } from "@react-navigation/native";
 
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../components/shared/PageHeader";
-import { TextProps } from "../../components/shared/CustomStylings";
 import { card } from "../../styles/Card";
+import { TextProps } from "../../components/shared/CustomStylings";
+import { questionAndAnswer } from "../../components/Setting/FAQ/data/questionAndAnswer";
 
 const FrequentlyAskedQuestions = () => {
   const navigation = useNavigation();
 
   const topicArr = [
-    { name: "ACCOUNT", image: null, icon: "account-outline", navigate: "FAQ Account" },
-    { name: "TRIBE", image: "../../assets/icons/tribe_logo.png", icon: null, navigate: "FAQ Tribe" },
-    // { name: "BAND", image: "../../assets/icons/band_logo.png", icon: null, navigate: null },
-    // { name: "COIN", image: null, icon: "bitcoin", navigate: null },
+    {
+      name: questionAndAnswer[0]?.name,
+      data: questionAndAnswer[0]?.data,
+      description: questionAndAnswer[0].description,
+    },
+    {
+      name: questionAndAnswer[1]?.name,
+      data: questionAndAnswer[1]?.data,
+      description: questionAndAnswer[1].description,
+    },
+    {
+      name: questionAndAnswer[2]?.name,
+      data: questionAndAnswer[2]?.data,
+      description: questionAndAnswer[2].description,
+    },
+    {
+      name: questionAndAnswer[3]?.name,
+      data: questionAndAnswer[3]?.data,
+      description: questionAndAnswer[3].description,
+    },
+    {
+      name: questionAndAnswer[4]?.name,
+      data: questionAndAnswer[4]?.data,
+      description: questionAndAnswer[4].description,
+    },
+    {
+      name: questionAndAnswer[5]?.name,
+      data: questionAndAnswer[5]?.data,
+      description: questionAndAnswer[5].description,
+    },
+    {
+      name: questionAndAnswer[6]?.name,
+      data: questionAndAnswer[6]?.data,
+      description: questionAndAnswer[6].description,
+    },
+    {
+      name: questionAndAnswer[7]?.name,
+      data: questionAndAnswer[7]?.data,
+      description: questionAndAnswer[7].description,
+    },
   ];
 
   return (
@@ -27,35 +64,19 @@ const FrequentlyAskedQuestions = () => {
             return (
               <TouchableOpacity
                 key={index}
-                onPress={() => navigation.navigate(item.navigate)}
+                onPress={() =>
+                  navigation.navigate("FAQ Detail", {
+                    data: item?.data,
+                    name: item?.name,
+                    description: item?.description,
+                  })
+                }
                 style={{
                   ...card.card,
-                  elevation: 4,
-                  shadowColor: "rgba(0, 0, 0, 1)",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 5,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  ...styles.wrapper,
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                  {item.image ? (
-                    <Image
-                      source={
-                        item.name === "TRIBE"
-                          ? require("../../assets/icons/tribe_logo.png")
-                          : require("../../assets/icons/band_logo.png")
-                      }
-                      alt={item.image}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <MaterialCommunityIcons name={item.icon} size={20} />
-                  )}
-                  <Text style={[TextProps]}>{item.name}</Text>
-                </View>
+                <Text style={[TextProps]}>{item?.name}</Text>
                 <MaterialCommunityIcons name="chevron-right" size={20} />
               </TouchableOpacity>
             );
@@ -78,5 +99,15 @@ const styles = StyleSheet.create({
     width: 25,
     borderRadius: 50,
     resizeMode: "contain",
+  },
+  wrapper: {
+    elevation: 4,
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
