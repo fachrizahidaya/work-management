@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
@@ -18,16 +18,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image } from "react-native";
 
 import axiosInstance from "../config/api";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
 import { ErrorToastProps, TextProps } from "../components/shared/CustomStylings";
-import { useDisclosure } from "../hooks/useDisclosure";
-import EULA from "../components/layout/EULA";
-import Button from "../components/shared/Forms/Button";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -134,10 +131,6 @@ const LoginScreen = () => {
 
         Toast.show(error.response.data.message, ErrorToastProps);
       });
-  };
-
-  const agreeToTermsHandler = async () => {
-    await SecureStore.setItemAsync("agree_to_terms", true);
   };
 
   // const signInWithGoogle = async (user) => {

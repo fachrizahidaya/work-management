@@ -7,7 +7,6 @@ import jwt_decode from "jwt-decode";
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import EULA from "../../components/layout/EULA";
-import Button from "../../components/shared/Forms/Button";
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
@@ -54,7 +53,7 @@ const LaunchScreen = () => {
   };
 
   const agreeToTermsHandler = async () => {
-    await SecureStore.setItemAsync("agree_to_terms", true);
+    await SecureStore.setItemAsync("agree_to_terms", "agreed");
     toggleEula(false);
     navigation.navigate("Login");
   };
