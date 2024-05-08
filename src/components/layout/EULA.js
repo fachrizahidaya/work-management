@@ -22,16 +22,18 @@ const EULA = ({ isOpen, toggle }) => {
     >
       <View style={{ backgroundColor: "white", padding: 10, borderRadius: 12, gap: 10 }}>
         <ScrollView style={{ height: Platform.OS === "ios" ? "80%" : "90%", padding: 10 }}>
-          <Text style={[TextProps, { textAlign: "center" }]}>{eula.title}</Text>
-          <View style={{ height: 10 }}></View>
-          <Text style={[TextProps]}>Last updated {dayjs(eula.date).format("MMM DD, YYYY")}</Text>
-          <View style={{ height: 10 }}></View>
+          <Text style={[TextProps, { textAlign: "center", fontWeight: "700" }]}>{eula.title}</Text>
+          <View style={{ height: 20 }}></View>
+          <Text style={[TextProps, { fontWeight: "600" }]}>Last updated {dayjs(eula.date).format("MMM DD, YYYY")}</Text>
+          <View style={{ height: 30 }}></View>
           <Text style={[TextProps]}>{eula.description}</Text>
-          <View style={{ height: 10 }}></View>
+          <View style={{ height: 30 }}></View>
+          <Text style={[TextProps, { fontWeight: "700" }]}>TABLE OF CONTENTS</Text>
+          <View style={{ height: 20 }}></View>
           {eula.contents.map((item, index) => {
             return (
               <View key={index} style={{ marginVertical: 3 }}>
-                <Text style={[TextProps]}>{item}</Text>
+                <Text style={[TextProps, { color: "blue" }]}>{item}</Text>
               </View>
             );
           })}
