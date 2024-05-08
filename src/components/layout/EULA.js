@@ -19,7 +19,6 @@ const EULA = ({ isOpen, toggle }) => {
       onBackButtonPress={() => null}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
-      useNativeDriver={true}
     >
       <View style={{ backgroundColor: "white", padding: 10, borderRadius: 12, gap: 10 }}>
         <ScrollView style={{ height: Platform.OS === "ios" ? "80%" : "90%", padding: 10 }}>

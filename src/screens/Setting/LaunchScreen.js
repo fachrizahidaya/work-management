@@ -26,35 +26,25 @@ const LaunchScreen = () => {
       let currentDate = new Date();
       const userData = await SecureStore.getItemAsync("user_data");
       const token = await SecureStore.getItemAsync("user_token");
-      const agreeToTerms = await SecureStore.getItemAsync("agree_to_terms");
 
-      if (!agreeToTerms) {
-        toggleEula(true);
-      } else {
-        if (token) {
-          const decodedToken = jwt_decode(token);
-          const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
 
-          if (!isExpired) {
-            const parsedUserData = JSON.parse(userData);
+        if (!isExpired) {
+          const parsedUserData = JSON.parse(userData);
 
-            loginHandler(parsedUserData);
-          } else {
-            navigation.navigate("Login");
-          }
-        } else {
-          navigation.navigate("Login");
+          loginHandler(parsedUserData);
         }
       }
     } catch (error) {
       console.log(error);
-      navigation.navigate("Login");
     }
   };
 
   const agreeToTermsHandler = async () => {
     await SecureStore.setItemAsync("agree_to_terms", "agreed");
-    toggleEula(false);
+    toggleEula();
     navigation.navigate("Login");
   };
 
@@ -62,12 +52,29 @@ const LaunchScreen = () => {
     getUserData();
   }, []);
 
+  useEffect(() => {
+    const getAgreeToEulaStatus = async () => {
+      try {
+        const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
+
+        if (!agreeToEula) {
+          toggleEula();
+        } else {
+          navigation.navigate("Login");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getAgreeToEulaStatus();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
+      <EULA isOpen={eulaIsOpen} toggle={agreeToTermsHandler} />
       <View style={styles.loadingContainer}>
         <Image source={require("../../assets/icons/kss_logo.png")} alt="KSS_LOGO" style={styles.logo} />
       </View>
-      <EULA isOpen={eulaIsOpen} toggle={agreeToTermsHandler} />
     </SafeAreaView>
   );
 };
