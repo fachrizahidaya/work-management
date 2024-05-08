@@ -107,7 +107,7 @@ export const questionAndAnswer = [
       },
       {
         question: "How to edit task's data?",
-        answer: `1. Tap a task \n\n2. Tap option (three-vertical dots icon) button at the top right \n\n3. Tap Edit \n4. Edit task's data \n\n5. Tap Save`,
+        answer: `1. Tap a task \n\n2. Tap option (three-vertical dots icon) button at the top right \n\n3. Tap Edit \n\n4. Edit task's data \n\n5. Tap Save`,
       },
       {
         question: "How to add checklist's task?",
