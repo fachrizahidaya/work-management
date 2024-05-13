@@ -120,7 +120,7 @@ const MyTeamLeaveRequest = ({
             isLoading={rejectedLeaveRequestIsLoading}
             formik={formik}
             isSubmitting={isSubmitting}
-            responseHandler={responseHandler}
+            handleResponse={responseHandler}
           />
         )}
       </View>

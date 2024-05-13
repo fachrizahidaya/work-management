@@ -16,7 +16,7 @@ const MyTeamLeaveRequestList = ({
   isLoading,
   formik,
   isSubmitting,
-  responseHandler,
+  handleResponse,
 }) => {
   return data.length > 0 ? (
     <View
@@ -55,7 +55,7 @@ const MyTeamLeaveRequestList = ({
             status={item?.status}
             employee_name={item?.employee_name}
             employee_image={item?.employee_image}
-            responseHandler={responseHandler}
+            handleResponse={handleResponse}
             isSubmitting={isSubmitting}
             formik={formik}
           />
