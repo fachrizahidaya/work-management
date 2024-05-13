@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking } from "react-native";
@@ -41,7 +41,6 @@ const PostScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const sharePostScreenSheetRef = useRef(null);
-  const firstTimeRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -215,16 +214,6 @@ const PostScreen = () => {
       setIsReady(true);
     }, 100);
   });
-
-  useFocusEffect(
-    useCallback(() => {
-      if (firstTimeRef.current) {
-        firstTimeRef.current = false;
-        return;
-      }
-      refetchPostData();
-    }, [refetchPostData])
-  );
 
   return (
     <>
