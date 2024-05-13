@@ -30,7 +30,7 @@ const NewFeedScreen = () => {
 
   const postActionScreenSheetRef = useRef(null);
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, handleSuccessModal } = route.params;
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
@@ -57,9 +57,7 @@ const NewFeedScreen = () => {
       });
       setSubmitting(false);
       setStatus("success");
-      postRefetchHandler();
-      toggleSuccess();
-      setRequestType("post");
+      handleSuccessModal();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -178,17 +176,17 @@ const NewFeedScreen = () => {
                 formik={formik}
                 image={image}
                 setImage={setImage}
-                pickImageHandler={pickImageHandler}
+                handlePickImage={pickImageHandler}
                 employees={employees?.data}
                 isLoading={processIsLoading}
                 setIsLoading={toggleProcess}
               />
               <PostTypeOptions
-                publicToggleHandler={publicToggleHandler}
-                announcementToggleHandler={announcementToggleHandler}
+                onTogglePublic={publicToggleHandler}
+                onToggleAnnouncement={announcementToggleHandler}
                 isAnnouncementSelected={isAnnouncementSelected}
                 dateShown={dateShown}
-                endDateAnnouncementHandler={endDateAnnouncementHandler}
+                handleEndDataOfAnnouncement={endDateAnnouncementHandler}
                 formik={formik}
                 reference={postActionScreenSheetRef}
               />

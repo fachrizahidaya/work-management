@@ -256,8 +256,8 @@ const PostScreen = () => {
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
                   onToggleLike={likePostHandler}
-                  toggleFullScreen={toggleFullScreenImageHandler}
-                  handleLinkPress={pressLinkHandler}
+                  onToggleFullScreen={toggleFullScreenImageHandler}
+                  onPressLink={pressLinkHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                   reference={sharePostScreenSheetRef}
@@ -268,10 +268,10 @@ const PostScreen = () => {
                 <FeedCommentPost
                   comments={comments}
                   commentIsLoading={commentIsLoading}
-                  onEndReached={commentEndReachedHandler}
+                  handleWhenScrollReachedEnd={commentEndReachedHandler}
                   onReply={replyCommentHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
-                  linkPressHandler={pressLinkHandler}
+                  onPressLink={pressLinkHandler}
                   setCommentParentId={setCommentParentId}
                   navigation={navigation}
                   hasBeenScrolled={hasBeenScrolled}

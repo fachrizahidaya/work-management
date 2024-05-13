@@ -91,6 +91,22 @@ const FeedScreen = () => {
     toggleActionModal();
   };
 
+  const modalAfterNewPostHandler = () => {
+    togglePostSuccess();
+    setRequestType("post");
+  };
+
+  const refreshPostsHandler = () => {
+    setPosts([]);
+    postRefetchHandler();
+    refetchPost();
+  };
+
+  const refreshCommentsHandler = () => {
+    refetchCommentHandler(setCurrentOffsetComments, setReloadComment, reloadComment);
+    refetchComment();
+  };
+
   /**
    * Handle fetch more Comments
    * After end of scroll reached, it will added other earlier comments
@@ -121,13 +137,11 @@ const FeedScreen = () => {
   };
 
   const params = {
-    postRefetchHandler: postRefetchHandler,
     loggedEmployeeId: profile?.data?.id,
     loggedEmployeeImage: profile?.data?.image,
     loggedEmployeeName: userSelector?.name,
     loggedEmployeeDivision: profile?.data?.position_id,
-    toggleSuccess: togglePostSuccess,
-    setRequestType: setRequestType,
+    handleSuccessModal: modalAfterNewPostHandler,
   };
 
   /**
@@ -225,6 +239,9 @@ const FeedScreen = () => {
     }
   }, [posts]);
 
+  /**
+   * Handle infinite scroll
+   */
   useEffect(() => {
     if (post?.data && postIsFetching === false) {
       if (currentOffsetPost === 0) {
@@ -238,7 +255,7 @@ const FeedScreen = () => {
   useEffect(() => {
     if (!openCommentHandler) {
       setCommentParentId(null);
-      setComments([]);
+      setComments([]); // after close current post's comment, it clear the comments
     } else {
       if (comment?.data && commentIsFetching === false) {
         if (currentOffsetComments === 0) {
@@ -281,21 +298,18 @@ const FeedScreen = () => {
         </TouchableOpacity>
 
         <View style={{ flex: 1 }}>
-          {/* Content here */}
           <FeedCard
             posts={posts}
             loggedEmployeeId={profile?.data?.id}
             loggedEmployeeImage={profile?.data?.image}
-            postRefetchHandler={postRefetchHandler}
-            postEndReachedHandler={postEndReachedHandler}
+            handleWhenScrollReachedEnd={postEndReachedHandler}
             postIsFetching={postIsFetching}
             postIsLoading={postIsLoading}
-            refetchPost={refetchPost}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
             onCommentToggle={openCommentHandler}
             forceRerender={forceRerender}
-            toggleFullScreen={toggleFullScreenImageHandler}
+            onToggleFullScreen={toggleFullScreenImageHandler}
             employeeUsername={objectContainEmployeeUsernameHandler}
             navigation={navigation}
             onPressLink={pressLinkHandler}
@@ -305,8 +319,8 @@ const FeedScreen = () => {
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
-            setPosts={setPosts}
-            toggleModal={openSelectedPostHandler}
+            onToggleReport={openSelectedPostHandler}
+            handleRefreshPosts={refreshPostsHandler}
           />
         </View>
         <FeedComment
@@ -315,26 +329,23 @@ const FeedScreen = () => {
           comments={comments}
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
-          refetchComment={refetchComment}
           handleClose={closeCommentHandler}
-          onEndReached={commentEndReachedHandler}
-          commentRefetchHandler={refetchCommentHandler}
+          handleWhenScrollReachedEnd={commentEndReachedHandler}
           parentId={commentParentId}
           onReply={replyCommentHandler}
           employeeUsername={objectContainEmployeeUsernameHandler}
           reference={commentScreenSheetRef}
           onPressLink={pressLinkHandler}
-          onSuggestions={renderSuggestionsHandler}
-          commentContainUsernameHandler={commentContainUsernameHandler}
+          handleUsernameSuggestions={renderSuggestionsHandler}
+          handleShowUsername={commentContainUsernameHandler}
           formik={formik}
-          reloadComment={reloadComment}
-          setReloadComment={setReloadComment}
-          setCurrentOffsetComments={setCurrentOffsetComments}
           setCommentParentId={setCommentParentId}
           setPostId={setPostId}
           navigation={navigation}
+          handleRefreshComments={refreshCommentsHandler}
         />
       </SafeAreaView>
+
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}

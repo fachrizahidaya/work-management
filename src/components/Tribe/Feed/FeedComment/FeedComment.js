@@ -13,23 +13,19 @@ const FeedComment = ({
   commentIsLoading,
   comments,
   handleClose,
-  refetchComment,
-  onEndReached,
-  commentRefetchHandler,
+  handleWhenScrollReachedEnd,
   parentId,
   onReply,
   employeeUsername,
   reference,
   onPressLink,
-  onSuggestions,
-  commentContainUsernameHandler,
+  handleUsernameSuggestions,
+  handleShowUsername,
   formik,
-  reloadComment,
-  setReloadComment,
-  setCurrentOffsetComments,
   setPostId,
   setCommentParentId,
   navigation,
+  handleRefreshComments,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -59,26 +55,22 @@ const FeedComment = ({
           hasBeenScrolled={hasBeenScrolled}
           setHasBeenScrolled={setHasBeenScrolled}
           onReply={onReply}
-          commentEndReachedHandler={onEndReached}
-          commentsRefetchHandler={commentRefetchHandler}
+          handleWhenScrollReachedEnd={handleWhenScrollReachedEnd}
           commentIsFetching={commentIsFetching}
           commentIsLoading={commentIsLoading}
-          refetchComment={refetchComment}
-          handleLinkPress={onPressLink}
+          onPressLink={onPressLink}
           employeeUsername={employeeUsername}
-          reloadComment={reloadComment}
-          setReloadComment={setReloadComment}
-          setCurrentOffsetComments={setCurrentOffsetComments}
           setCommentParentId={setCommentParentId}
           navigation={navigation}
+          handleRefreshComments={handleRefreshComments}
         />
       </View>
       <FeedCommentForm
         loggedEmployeeImage={loggedEmployeeImage}
         loggedEmployeeName={loggedEmployeeName}
         parentId={parentId}
-        renderSuggestions={onSuggestions}
-        handleChange={commentContainUsernameHandler}
+        renderSuggestions={handleUsernameSuggestions}
+        handleChange={handleShowUsername}
         formik={formik}
       />
     </ActionSheet>

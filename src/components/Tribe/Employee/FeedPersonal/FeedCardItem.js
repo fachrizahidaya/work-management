@@ -179,7 +179,7 @@ const FeedCardItem = ({
             navigation={navigation}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            handleLinkPress={handleLinkPress}
+            onPressLink={handleLinkPress}
           />
         }
       </Text>

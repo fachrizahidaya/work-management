@@ -27,8 +27,8 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  toggleFullScreen,
-  handleLinkPress,
+  onToggleFullScreen,
+  onPressLink,
   employeeUsername,
   navigation,
   reference,
@@ -36,7 +36,7 @@ const FeedCardItem = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  toggleModal,
+  onToggleReport,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -55,7 +55,7 @@ const FeedCardItem = ({
         <TouchableOpacity
           onPress={async () => {
             await SheetManager.hide("form-sheet");
-            toggleModal(id);
+            onToggleReport(id);
           }}
           style={styles.containerReport}
         >
@@ -160,7 +160,7 @@ const FeedCardItem = ({
               navigation={navigation}
               loggedEmployeeId={loggedEmployeeId}
               loggedEmployeeImage={loggedEmployeeImage}
-              handleLinkPress={handleLinkPress}
+              onPressLink={onPressLink}
             />
           }
         </Text>
@@ -169,7 +169,9 @@ const FeedCardItem = ({
       {attachment ? (
         <TouchableOpacity
           key={id}
-          onPress={() => attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)}
+          onPress={() =>
+            attachment && onToggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+          }
         >
           <Image
             style={styles.image}

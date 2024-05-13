@@ -4,7 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, isLoading, setIsLoading }) => {
+const NewFeedForm = ({ formik, image, setImage, handlePickImage, employees, isLoading, setIsLoading }) => {
   return (
     <View style={styles.container}>
       <View>
@@ -28,7 +28,7 @@ const NewFeedForm = ({ formik, image, setImage, pickImageHandler, employees, isL
       </View>
       <View style={styles.action}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-          <Pressable onPress={() => pickImageHandler(setImage)}>
+          <Pressable onPress={() => handlePickImage(setImage)}>
             <MaterialCommunityIcons
               name="attachment"
               size={25}
