@@ -28,7 +28,7 @@ const ChatInput = ({
   active_member,
   groupMember,
   selectFile,
-  pickImageHandler,
+  onAddImage,
   navigation,
   name,
   image,
@@ -60,8 +60,9 @@ const ChatInput = ({
       icon: "image-multiple-outline",
       name: "Photo",
       color: "#39B326",
-      onPress: () => {
-        pickImageHandler(setFileAttachment, true);
+      onPress: async () => {
+        await SheetManager.hide("form-sheet");
+        onAddImage();
       },
     },
     {

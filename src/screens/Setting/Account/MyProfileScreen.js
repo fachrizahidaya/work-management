@@ -18,12 +18,15 @@ import axiosInstance from "../../../config/api";
 import PageHeader from "../../../components/shared/PageHeader";
 import Input from "../../../components/shared/Forms/Input";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
-import { pickImageHandler } from "../../../components/shared/PickImage";
+import PickImage from "../../../components/shared/PickImage";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const MyProfileScreen = ({ route }) => {
   const [image, setImage] = useState(null);
 
   const { profile } = route.params;
+
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -127,7 +130,6 @@ const MyProfileScreen = ({ route }) => {
       >
         <View
           style={{
-            flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
             gap: 4,
@@ -142,10 +144,7 @@ const MyProfileScreen = ({ route }) => {
               }}
               alt="profile picture"
             />
-            <Pressable
-              style={styles.editPicture}
-              onPress={!image ? () => pickImageHandler(setImage) : () => setImage(null)}
-            >
+            <Pressable style={styles.editPicture} onPress={!image ? () => toggleAddImageModal() : () => setImage(null)}>
               <MaterialCommunityIcons name={!image ? "pencil-outline" : "close"} size={20} color="#3F434A" />
             </Pressable>
           </View>
@@ -185,6 +184,7 @@ const MyProfileScreen = ({ route }) => {
         </View>
       </ScrollView>
 
+      <PickImage setImage={setImage} modalIsOpen={addImageModalIsOpen} toggleModal={toggleAddImageModal} />
       <Toast position="bottom" />
     </SafeAreaView>
   );

@@ -9,7 +9,7 @@ const EditGroupProfileForm = ({
   imageAttachment,
   name,
   image,
-  pickImageHandler,
+  onAddImage,
   setImageAttachment,
   formik,
   onEdit,
@@ -43,7 +43,7 @@ const EditGroupProfileForm = ({
           )}
           <Pressable
             style={styles.editPicture}
-            onPress={!imageAttachment ? () => pickImageHandler(setImageAttachment) : () => setImageAttachment(null)}
+            onPress={!imageAttachment ? () => onAddImage() : () => setImageAttachment(null)}
           >
             <MaterialCommunityIcons name={!imageAttachment ? "camera-outline" : "close"} size={20} color="#3F434A" />
           </Pressable>

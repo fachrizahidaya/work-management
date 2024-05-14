@@ -21,7 +21,7 @@ import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMess
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import { ErrorToastProps } from "../../../components/shared/CustomStylings";
-import { pickImageHandler } from "../../../components/shared/PickImage";
+import PickImage from "../../../components/shared/PickImage";
 import { selectFile } from "../../../components/shared/SelectFIle";
 import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";
 import {
@@ -100,6 +100,7 @@ const ChatRoom = () => {
   const { isOpen: deleteChatPersonalModalIsOpen, toggle: toggleDeleteChatPersonalModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: deleteChatPersonalIsLoading, toggle: toggleDeletePersonal } = useLoading(false);
@@ -691,7 +692,7 @@ const ChatRoom = () => {
             groupMember={selectedGroupMembers}
             navigation={navigation}
             selectFile={selectFile}
-            pickImageHandler={pickImageHandler}
+            onAddImage={toggleAddImageModal}
             name={name}
             image={image}
             position={position}
@@ -762,6 +763,12 @@ const ChatRoom = () => {
             taskDeadlines={taskDeadlines?.data}
             setFilter={setMonthChangeFilter}
             allLoading={allLoading}
+          />
+          <PickImage
+            setImage={setFileAttachment}
+            modalIsOpen={addImageModalIsOpen}
+            toggleModal={toggleAddImageModal}
+            sheetManager={true}
           />
         </SafeAreaView>
       ) : null}
