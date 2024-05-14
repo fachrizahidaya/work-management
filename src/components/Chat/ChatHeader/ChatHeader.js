@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { View, Text, Pressable, TouchableOpacity, StyleSheet } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -14,13 +16,13 @@ const ChatHeader = ({
   email,
   type,
   active_member,
-  toggleExitModal,
-  toggleDeleteGroupModal,
+  onToggleExitModal,
+  onToggleDeleteGroupModal,
   loggedInUser,
-  toggleDeleteModal,
+  onToggleDeleteModal,
   roomId,
   isLoading,
-  onUpdatePinHandler,
+  onUpdatePin,
   isPinned,
   navigation,
   searchMessage,
@@ -36,55 +38,34 @@ const ChatHeader = ({
       ? [
           // {
           //   name: "Search",
-          //   onPress: () => {
-          //     toggleSearch();
-          //     SheetManager.hide("form-sheet");
-          //   },
+          //   onPress: () => toggleSearch(),
           // },
           {
-            name: `${isPinned || isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
-            onPress: () => {
-              onUpdatePinHandler(type, roomId, isPinned || isPinned?.pin_chat ? "unpin" : "pin", navigation);
-              SheetManager.hide("form-sheet");
-            },
+            name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
+            onPress: () => onUpdatePin(),
           },
           {
             name: "Delete Chat",
-            onPress: async () => {
-              await SheetManager.hide("form-sheet");
-              toggleDeleteModal();
-            },
+            onPress: () => onToggleDeleteModal(),
           },
         ]
       : [
           // {
           //   name: "Search",
-          //   onPress: () => {
-          //     toggleSearch();
-          //     SheetManager.hide("form-sheet");
-          //   },
+          //   onPress: () => toggleSearch(),
           // },
           {
             name: `${isPinned?.pin_chat ? "Unpin Chat" : "Pin Chat"}`,
-            onPress: () => {
-              onUpdatePinHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin");
-              SheetManager.hide("form-sheet");
-            },
+            onPress: () => onUpdatePin(),
           },
           type === "group" && active_member === 1
             ? {
                 name: "Exit Group",
-                onPress: async () => {
-                  await SheetManager.hide("form-sheet");
-                  toggleExitModal();
-                },
+                onPress: () => onToggleExitModal(),
               }
             : {
                 name: "Delete Group",
-                onPress: async () => {
-                  await SheetManager.hide("form-sheet");
-                  toggleDeleteGroupModal();
-                },
+                onPress: () => onToggleDeleteGroupModal(),
               },
         ];
 
@@ -153,7 +134,7 @@ const ChatHeader = ({
       {/* Handle for search message */}
       {searchVisible && (
         <SearchBox
-          toggleSearch={toggleSearch}
+          onToggleSearch={toggleSearch}
           searchMessage={searchMessage}
           setSearchMessage={setSearchMessage}
           searchFormRef={searchFormRef}
@@ -163,7 +144,7 @@ const ChatHeader = ({
   );
 };
 
-export default ChatHeader;
+export default memo(ChatHeader);
 
 const styles = StyleSheet.create({
   container: {

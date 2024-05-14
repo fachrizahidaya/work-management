@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 import { View, ActivityIndicator, Text } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -67,4 +65,4 @@ const FeedCommentList = ({
   );
 };
 
-export default memo(FeedCommentList);
+export default FeedCommentList;

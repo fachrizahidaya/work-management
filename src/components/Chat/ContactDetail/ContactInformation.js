@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -10,8 +12,8 @@ const ContactInformation = ({
   type,
   selectedGroupMembers,
   loggedInUser,
-  toggleMemberList,
-  toggleMemberListAction,
+  onToggleMemberList,
+  onToggleMemberListAction,
   currentUserIsAdmin,
   setMemberId,
   setMemberName,
@@ -35,7 +37,7 @@ const ContactInformation = ({
                 <TouchableOpacity
                   key={index}
                   onPress={() => {
-                    currentUserIsAdmin && loggedInUser !== member?.user_id && toggleMemberListAction();
+                    currentUserIsAdmin && loggedInUser !== member?.user_id && onToggleMemberListAction();
                     setMemberId(member?.id);
                     setMemberName(member?.user?.name);
                     setMemberAdminStatus(member?.is_admin);
@@ -90,7 +92,7 @@ const ContactInformation = ({
             })}
             {currentUserIsAdmin && (
               <View style={{ borderRadius: 20 }}>
-                <MaterialIcons name="add" size={20} onPress={toggleMemberList} color="#3F434A" />
+                <MaterialIcons name="add" size={20} onPress={onToggleMemberList} color="#3F434A" />
               </View>
             )}
           </View>
@@ -100,7 +102,7 @@ const ContactInformation = ({
   );
 };
 
-export default ContactInformation;
+export default memo(ContactInformation);
 
 const styles = StyleSheet.create({
   personalContainer: {

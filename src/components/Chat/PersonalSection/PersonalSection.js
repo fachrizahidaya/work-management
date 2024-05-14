@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { StyleSheet, TouchableOpacity, View, Text, Pressable } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -9,7 +11,7 @@ const PersonalSection = ({
   personalChats,
   searchKeyword,
   searchResult,
-  clickMoreHandler,
+  handleClickMore,
   onPinControl,
   navigation,
   userSelector,
@@ -116,7 +118,7 @@ const PersonalSection = ({
               isRead={personal.unread}
               isPinned={personal?.pin_personal}
               active_member={0}
-              onClickMore={clickMoreHandler}
+              onClickMore={handleClickMore}
               onPin={onPinControl}
               navigation={navigation}
               userSelector={userSelector}
@@ -159,7 +161,7 @@ const PersonalSection = ({
                 timestamp={personal.latest_message?.created_at}
                 isPinned={personal?.pin_personal}
                 active_member={0}
-                onClickMore={clickMoreHandler}
+                onClickMore={handleClickMore}
                 onPin={onPinControl}
                 searchKeyword={searchKeyword}
                 navigation={navigation}
@@ -173,7 +175,7 @@ const PersonalSection = ({
   );
 };
 
-export default PersonalSection;
+export default memo(PersonalSection);
 
 const styles = StyleSheet.create({
   header: {

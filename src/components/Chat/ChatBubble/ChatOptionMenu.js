@@ -9,7 +9,7 @@ const ChatOptionMenu = ({
   onClose,
   setMessageToReply,
   chat,
-  toggleDeleteModal,
+  onToggleDeleteModal,
   placement,
   setDeleteSelected,
   deleteSelected,
@@ -69,7 +69,7 @@ const ChatOptionMenu = ({
       icon: "trash-can-outline",
       onPress: () => {
         if (Platform.OS === "android") {
-          toggleDeleteModal();
+          onToggleDeleteModal();
           onClose();
         } else {
           setDeleteSelected(true);
@@ -98,7 +98,7 @@ const ChatOptionMenu = ({
             null;
           } else {
             if (deleteSelected) {
-              toggleDeleteModal();
+              onToggleDeleteModal();
             } else {
               null;
             }
