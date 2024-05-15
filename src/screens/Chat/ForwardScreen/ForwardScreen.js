@@ -118,6 +118,7 @@ const ForwardScreen = () => {
               file_name={file_name}
               file_size={file_size}
               mime_type={mime_type}
+              forwardScreen={true}
             />
           ) : tabValue === "Personal" ? (
             <PersonalSection
@@ -130,6 +131,7 @@ const ForwardScreen = () => {
               file_name={file_name}
               file_size={file_size}
               mime_type={mime_type}
+              forwardScreen={true}
             />
           ) : (
             <>
