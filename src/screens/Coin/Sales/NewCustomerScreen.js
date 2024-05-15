@@ -19,9 +19,10 @@ import ReturnConfirmationModal from "../../../components/shared/ReturnConfirmati
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import axiosInstance from "../../../config/api";
 import { ErrorToastProps } from "../../../components/shared/CustomStylings";
+import PickImage from "../../../components/shared/PickImage";
 
 const NewCustomerScreen = () => {
-  // const [imageAttachment, setImageAttachment] = useState(null);
+  const [imageAttachment, setImageAttachment] = useState(null);
   const [tabValue, setTabValue] = useState("Profile");
 
   const navigation = useNavigation();
@@ -33,6 +34,7 @@ const NewCustomerScreen = () => {
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
   const { isOpen: submissionModalIsOpen, toggle: toggleSubmissionModal } = useDisclosure(false);
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const customerCategory = category?.data?.map((item, index) => ({
     label: item?.name,
@@ -51,7 +53,7 @@ const NewCustomerScreen = () => {
   }, []);
 
   const exitNewCustomer = () => {
-    // setImageAttachment(null);
+    setImageAttachment(null);
     toggleReturnModal();
     navigation.goBack();
   };
@@ -153,11 +155,11 @@ const NewCustomerScreen = () => {
           {tabValue === "Profile" ? (
             <>
               {/* <AvatarSelect
-              imageAttachment={imageAttachment}
-              setImageAttachment={setImageAttachment}
-              name={null}
-              image={null}
-            /> */}
+                imageAttachment={imageAttachment}
+                setImageAttachment={setImageAttachment}
+                name={null}
+                image={null}
+              /> */}
               <NewCustomerProfileForm customerCategory={customerCategory} formik={formik} />
             </>
           ) : (
@@ -181,6 +183,7 @@ const NewCustomerScreen = () => {
         onPress={exitNewCustomer}
         description="Are you sure want to return? It will be deleted."
       />
+      <PickImage setImage={setImageAttachment} modalIsOpen={addImageModalIsOpen} toggleModal={toggleAddImageModal} />
     </SafeAreaView>
   );
 };

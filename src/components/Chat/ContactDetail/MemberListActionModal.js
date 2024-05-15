@@ -8,12 +8,12 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const MemberListActionModal = ({
   memberListActionIsopen,
-  toggleMemberListAction,
+  onToggleMemberListAction,
   memberId,
   memberName,
   memberAdminStatus,
   onUpdateAdminStatus = () => {},
-  toggleRemoveMemberAction,
+  onToggleRemoveMemberAction,
 }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
@@ -27,7 +27,7 @@ const MemberListActionModal = ({
     <Modal
       isVisible={memberListActionIsopen}
       onBackdropPress={() => {
-        toggleMemberListAction();
+        onToggleMemberListAction();
         setShowConfirmationModal(false);
       }}
       deviceHeight={deviceHeight}
@@ -35,7 +35,7 @@ const MemberListActionModal = ({
       hideModalContentWhileAnimating={true}
       useNativeDriver={false}
       onModalHide={() => {
-        showConfirmationModal && toggleRemoveMemberAction();
+        showConfirmationModal && onToggleRemoveMemberAction();
       }}
     >
       <View style={styles.container}>
@@ -44,7 +44,7 @@ const MemberListActionModal = ({
           <Button
             onPress={() => {
               onUpdateAdminStatus(memberId, 0);
-              toggleMemberListAction();
+              onToggleMemberListAction();
             }}
             variant="outline"
           >
@@ -54,7 +54,7 @@ const MemberListActionModal = ({
           <Button
             onPress={() => {
               onUpdateAdminStatus(memberId, 1);
-              toggleMemberListAction();
+              onToggleMemberListAction();
               setShowConfirmationModal(false);
             }}
             variant="outline"
@@ -64,7 +64,7 @@ const MemberListActionModal = ({
         )}
         <Button
           onPress={() => {
-            toggleMemberListAction();
+            onToggleMemberListAction();
             setShowConfirmationModal(true);
           }}
           variant="outline"

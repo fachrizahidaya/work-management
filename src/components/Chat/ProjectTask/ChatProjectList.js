@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { View, ActivityIndicator, Platform, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
@@ -158,7 +160,7 @@ const ChatProjectList = ({
   );
 };
 
-export default ChatProjectList;
+export default memo(ChatProjectList);
 
 const styles = StyleSheet.create({
   content: {

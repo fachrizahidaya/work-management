@@ -54,7 +54,7 @@ const FeedItem = ({
             navigation={navigation}
             loggedEmployeeId={null}
             loggedEmployeeImage={null}
-            handleLinkPress={null}
+            onPressLink={null}
           />
         }
       </Text>

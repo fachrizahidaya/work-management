@@ -11,7 +11,8 @@ import axiosInstance from "../../../config/api";
 import { TextProps, ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import SelectedUserList from "../../../components/Chat/UserSelection/SelectedUserList";
 import GroupData from "../../../components/Chat/UserSelection/GroupData";
-import { pickImageHandler } from "../../../components/shared/PickImage";
+import PickImage from "../../../components/shared/PickImage";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const GroupFormScreen = ({ route }) => {
   const [image, setImage] = useState(null);
@@ -19,6 +20,8 @@ const GroupFormScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const { userArray, groupData } = route.params;
+
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const createGroupHandler = async (form, setSubmitting) => {
     try {
@@ -107,8 +110,9 @@ const GroupFormScreen = ({ route }) => {
             })}
         </View>
 
-        <GroupData pickImageHandler={pickImageHandler} image={image} formik={formik} setImage={setImage} />
+        <GroupData onAddImage={toggleAddImageModal} image={image} formik={formik} />
       </View>
+      <PickImage setImage={setImage} modalIsOpen={addImageModalIsOpen} toggleModal={toggleAddImageModal} />
     </SafeAreaView>
   );
 };

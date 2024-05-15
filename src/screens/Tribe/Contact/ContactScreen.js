@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useFocusEffect } from "@react-navigation/core";
 import _ from "lodash";
 
 import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
@@ -20,6 +20,7 @@ const ContactScreen = () => {
   const userSelector = useSelector((state) => state.auth);
 
   const navigation = useNavigation();
+  const firstTimeRef = useRef(null);
 
   const fetchEmployeeContactParameters = {
     page: currentPage,
@@ -70,6 +71,16 @@ const ContactScreen = () => {
     }
   }, [employeeData]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchEmployeeData();
+    }, [refetchEmployeeData])
+  );
+
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -105,7 +116,7 @@ const ContactScreen = () => {
             filteredData={filteredDataArray}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
-            fetchMore={fetchMoreEmployeeContact}
+            handleFetchMoreContact={fetchMoreEmployeeContact}
             isFetching={employeeDataIsFetching}
             navigation={navigation}
             userSelector={userSelector}

@@ -20,7 +20,6 @@ import ConfirmationModal from "../ConfirmationModal";
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState({});
   const [locationOn, setLocationOn] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
@@ -225,10 +224,8 @@ const TribeAddNewSheet = (props) => {
             latitude: location?.latitude,
             check_from: "Mobile App",
           }}
-          header={`Confirm ${attendance?.data?.att_type === "Alpa" ? "Clock-in" : "Clock-out"}`}
           hasSuccessFunc={true}
           onSuccess={() => {
-            setSuccess(true);
             setRequestType("clock");
             refetchAttendance();
           }}
@@ -238,7 +235,6 @@ const TribeAddNewSheet = (props) => {
           isGet={false}
           isPatch={false}
           toggleOtherModal={toggleClockModal}
-          successStatus={success}
           showSuccessToast={false}
         />
 

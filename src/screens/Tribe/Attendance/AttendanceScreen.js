@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, Fragment, useRef } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import dayjs from "dayjs";
 import * as DocumentPicker from "expo-document-picker";
 
@@ -37,6 +38,7 @@ const AttendanceScreen = () => {
 
   const attendanceScreenSheetRef = useRef(null);
   const attachmentScreenSheetRef = useRef(null);
+  const firstTimeRef = useRef(null);
 
   const updateAttendanceCheckAccess = useCheckAccess("update", "Attendance");
 
@@ -357,6 +359,17 @@ const AttendanceScreen = () => {
       </Fragment>
     );
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchAttendanceData();
+      refetchAttachment();
+    }, [refetchAttendanceData, refetchAttachment])
+  );
 
   return (
     <>

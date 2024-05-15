@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
@@ -18,7 +18,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Platform, Text, View, Image } from "react-native";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image } from "react-native";
 
 import axiosInstance from "../config/api";
 import { useLoading } from "../hooks/useLoading";
@@ -35,6 +35,8 @@ const LoginScreen = () => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
   const appVersion = Constants.expoConfig.version;
+
+  // const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   // This is firebase configurations for iOS
   // const [request, response, promptAsync] = Google.useAuthRequest({
@@ -271,6 +273,9 @@ const LoginScreen = () => {
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
             <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
+          {/* <Button onPress={toggleEula}>
+            <Text style={{ color: "#FFFFFF" }}>tes</Text>
+          </Button> */}
 
           {/* <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
@@ -293,6 +298,7 @@ const LoginScreen = () => {
                 <Text fontWeight={400}>Remember Me</Text>
               </Checkbox>
             </View> */}
+      {/* <EULA isOpen={eulaIsOpen} toggle={toggleEula} /> */}
     </KeyboardAvoidingView>
   );
 };

@@ -7,6 +7,7 @@ import Pusher from "pusher-js/react-native";
 
 import { SafeAreaView, StyleSheet, Platform } from "react-native";
 import Toast from "react-native-root-toast";
+import { SheetManager } from "react-native-actions-sheet";
 
 import axiosInstance from "../../../config/api";
 import { useKeyboardChecker } from "../../../hooks/useKeyboardChecker";
@@ -21,7 +22,7 @@ import ChatMessageDeleteModal from "../../../components/Chat/ChatBubble/ChatMess
 import ImageFullScreenModal from "../../../components/shared/ImageFullScreenModal";
 import RemoveConfirmationModal from "../../../components/shared/RemoveConfirmationModal";
 import { ErrorToastProps } from "../../../components/shared/CustomStylings";
-import { pickImageHandler } from "../../../components/shared/PickImage";
+import PickImage from "../../../components/shared/PickImage";
 import { selectFile } from "../../../components/shared/SelectFIle";
 import { CopyToClipboard } from "../../../components/shared/CopyToClipboard";
 import {
@@ -100,6 +101,7 @@ const ChatRoom = () => {
   const { isOpen: deleteChatPersonalModalIsOpen, toggle: toggleDeleteChatPersonalModal } = useDisclosure(false);
   const { isOpen: optionIsOpen, toggle: toggleOption } = useDisclosure(false);
   const { isOpen: deleteModalChatIsOpen, toggle: toggleDeleteModalChat } = useDisclosure(false);
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const { isLoading: deleteChatMessageIsLoading, toggle: toggleDeleteChatMessage } = useLoading(false);
   const { isLoading: deleteChatPersonalIsLoading, toggle: toggleDeletePersonal } = useLoading(false);
@@ -276,6 +278,31 @@ const ChatRoom = () => {
   const openDeleteChatMessageHandler = () => {
     setSelectedChatToDelete(selectedChatBubble);
     toggleDeleteModalChat();
+  };
+
+  const updatePinHandler = () => {
+    pinChatHandler(type, roomId, isPinned?.pin_chat ? "unpin" : "pin", navigation);
+    SheetManager.hide("form-sheet");
+  };
+
+  const deleteChatHandler = async () => {
+    await SheetManager.hide("form-sheet");
+    toggleDeleteChatPersonalModal();
+  };
+
+  const exitGroupHandler = async () => {
+    await SheetManager.hide("form-sheet");
+    toggleExitGroupModal();
+  };
+
+  const deleteGroupHandler = async () => {
+    await SheetManager.hide("form-sheet");
+    toggleDeleteGroupModal();
+  };
+
+  const searchChatHandler = () => {
+    toggleChatSearch();
+    SheetManager.hide("form-sheet");
   };
 
   /**
@@ -633,20 +660,15 @@ const ChatRoom = () => {
             isPinned={isPinned}
             isLoading={isLoading}
             loggedInUser={userSelector?.id}
-            toggleDeleteModal={toggleDeleteChatPersonalModal}
-            toggleDeleteChatMessage={toggleDeletePersonal}
-            selectedGroupMembers={selectedGroupMembers}
-            deleteModalIsOpen={deleteChatPersonalModalIsOpen}
-            deleteChatMessageIsLoading={deleteChatPersonalIsLoading}
-            deleteChatPersonal={deleteChatPersonal}
-            onUpdatePinHandler={pinChatHandler}
+            onToggleDeleteModal={deleteChatHandler}
+            onUpdatePin={updatePinHandler}
             navigation={navigation}
             searchMessage={searchMessage}
             setSearchMessage={setSearchMessage}
             searchFormRef={searchFormRef}
-            toggleExitModal={toggleExitGroupModal}
-            toggleDeleteGroupModal={toggleDeleteGroupModal}
-            toggleSearch={toggleChatSearch}
+            onToggleExitModal={exitGroupHandler}
+            onToggleDeleteGroupModal={deleteGroupHandler}
+            toggleSearch={searchChatHandler}
             searchVisible={searchChatVisible}
             groupName={concatenatedNames}
             calendarRef={calendarRef}
@@ -657,13 +679,13 @@ const ChatRoom = () => {
             chatList={renderChats}
             fileAttachment={fileAttachment}
             setFileAttachment={setFileAttachment}
-            fetchChatMessageHandler={fetchChatMessageHandler}
+            handleFetchChatMessage={fetchChatMessageHandler}
             bandAttachment={bandAttachment}
             setBandAttachment={setBandAttachment}
             bandAttachmentType={bandAttachmentType}
             isLoading={isLoading}
-            openChatBubbleHandler={openChatBubbleHandler}
-            toggleFullScreen={toggleFullScreen}
+            handleOpenChatBubble={openChatBubbleHandler}
+            onToggleFullScreen={toggleFullScreen}
             onSwipeToReply={swipeToReply}
             placement={placement}
             memberName={memberName}
@@ -691,7 +713,7 @@ const ChatRoom = () => {
             groupMember={selectedGroupMembers}
             navigation={navigation}
             selectFile={selectFile}
-            pickImageHandler={pickImageHandler}
+            onAddImage={toggleAddImageModal}
             name={name}
             image={image}
             position={position}
@@ -733,9 +755,8 @@ const ChatRoom = () => {
             onClose={closeChatBubbleHandler}
             setMessageToReply={setMessageToReply}
             chat={selectedChatBubble}
-            toggleDeleteModal={openDeleteChatMessageHandler}
+            onToggleDeleteModal={openDeleteChatMessageHandler}
             placement={placement}
-            toggleDeleteChatModal={toggleDeleteModalChat}
             deleteSelected={deleteMessageSelected}
             setDeleteSelected={setDeleteMessageSelected}
             copyToClipboard={CopyToClipboard}
@@ -746,7 +767,7 @@ const ChatRoom = () => {
             id={selectedChatToDelete?.id}
             isDeleted={selectedChatToDelete?.delete_for_everyone}
             deleteModalChatIsOpen={deleteModalChatIsOpen}
-            toggleDeleteModalChat={toggleDeleteModalChat}
+            onToggleDeleteModalChat={toggleDeleteModalChat}
             myMessage={userSelector?.id === selectedChatToDelete?.from_user_id}
             isLoading={deleteChatMessageIsLoading}
             onDeleteMessage={messagedeleteHandler}
@@ -762,6 +783,12 @@ const ChatRoom = () => {
             taskDeadlines={taskDeadlines?.data}
             setFilter={setMonthChangeFilter}
             allLoading={allLoading}
+          />
+          <PickImage
+            setImage={setFileAttachment}
+            modalIsOpen={addImageModalIsOpen}
+            toggleModal={toggleAddImageModal}
+            sheetManager={true}
           />
         </SafeAreaView>
       ) : null}

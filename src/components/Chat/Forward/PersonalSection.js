@@ -13,12 +13,15 @@ const PersonalSection = ({
   file_name,
   file_size,
   mime_type,
+  forwardScreen,
 }) => {
   return (
-    <>
-      <View style={styles.header}>
-        <Text style={{ fontWeight: "500", opacity: 0.5 }}>PERSONAL</Text>
-      </View>
+    <View style={{ marginTop: 10, flex: 1 }}>
+      {forwardScreen ? null : (
+        <View style={styles.header}>
+          <Text style={{ fontWeight: "500", opacity: 0.5 }}>PERSONAL</Text>
+        </View>
+      )}
 
       <FlashList
         estimatedItemSize={200}
@@ -49,7 +52,7 @@ const PersonalSection = ({
           </View>
         )}
       />
-    </>
+    </View>
   );
 };
 

@@ -13,10 +13,10 @@ import ProjectTaskAttachmentPreview from "../Attachment/ProjectTaskAttachmentPre
 const ChatList = ({
   type,
   chatList,
-  fetchChatMessageHandler,
+  handleFetchChatMessage,
   isLoading,
-  openChatBubbleHandler,
-  toggleFullScreen,
+  handleOpenChatBubble,
+  onToggleFullScreen,
   fileAttachment,
   setFileAttachment,
   bandAttachment,
@@ -83,7 +83,7 @@ const ChatList = ({
         ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
-        onEndReached={() => hasBeenScrolled && fetchChatMessageHandler()}
+        onEndReached={() => hasBeenScrolled && handleFetchChatMessage()}
         onEndReachedThreshold={0.1}
         estimatedItemSize={35}
         data={chatList.length ? chatList : filteredSearch}
@@ -116,10 +116,10 @@ const ChatList = ({
               reply_to={item?.reply_to}
               isDeleted={item?.delete_for_everyone}
               type={type}
-              toggleFullScreen={toggleFullScreen}
+              onToggleFullScreen={onToggleFullScreen}
               name={userNameRenderCheck(chatList[index + 1], item)}
               isGrouped={messageIsGrouped(item, chatList[index - 1])}
-              openChatBubbleHandler={openChatBubbleHandler}
+              handleOpenChatBubble={handleOpenChatBubble}
               onSwipe={onSwipeToReply}
               isOptimistic={item?.isOptimistic}
               memberName={memberName}

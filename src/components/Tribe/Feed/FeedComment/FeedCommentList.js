@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 import { View, ActivityIndicator, Text } from "react-native";
 import { GestureHandlerRootView, RefreshControl } from "react-native-gesture-handler";
 import { FlashList } from "@shopify/flash-list";
@@ -9,20 +7,16 @@ import FeedCommentItem from "./FeedCommentItem";
 const FeedCommentList = ({
   comments,
   onReply,
-  commentEndReachedHandler,
-  commentsRefetchHandler,
+  handleWhenScrollReachedEnd,
   commentIsFetching,
   commentIsLoading,
-  refetchComment,
   hasBeenScrolled,
   setHasBeenScrolled,
-  handleLinkPress,
+  onPressLink,
   employeeUsername,
-  reloadComment,
-  setReloadComment,
-  setCurrentOffsetComments,
   setCommentParentId,
   navigation,
+  handleRefreshComments,
 }) => {
   return (
     <GestureHandlerRootView>
@@ -34,14 +28,13 @@ const FeedCommentList = ({
             onEndReachedThreshold={0.1}
             onScrollBeginDrag={() => setHasBeenScrolled(true)}
             ListFooterComponent={() => commentIsLoading && <ActivityIndicator />}
-            onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
+            onEndReached={hasBeenScrolled ? handleWhenScrollReachedEnd : null}
             estimatedItemSize={80}
             refreshControl={
               <RefreshControl
                 refreshing={commentIsFetching}
                 onRefresh={() => {
-                  commentsRefetchHandler(setCurrentOffsetComments, setReloadComment, reloadComment);
-                  refetchComment();
+                  handleRefreshComments();
                 }}
               />
             }
@@ -55,7 +48,7 @@ const FeedCommentList = ({
                 totalReplies={item?.total_replies}
                 comments={item?.comments}
                 onReply={onReply}
-                handleLinkPress={handleLinkPress}
+                onPressLink={onPressLink}
                 employeeUsername={employeeUsername}
                 setCommentParentId={setCommentParentId}
                 navigation={navigation}
@@ -72,4 +65,4 @@ const FeedCommentList = ({
   );
 };
 
-export default memo(FeedCommentList);
+export default FeedCommentList;

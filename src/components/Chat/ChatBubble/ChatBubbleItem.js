@@ -27,7 +27,7 @@ const ChatBubbleItem = ({
   imgTypes,
   formatMimeType,
   file_type,
-  toggleFullScreen,
+  onToggleFullScreen,
   band_attachment_id,
   band_attachment_title,
   band_attachment_no,
@@ -35,7 +35,7 @@ const ChatBubbleItem = ({
   styledTexts,
   time,
   file_size,
-  openChatBubbleHandler,
+  handleOpenChatBubble,
   mimeTyeInfo,
   setMimeTypeInfo,
   getFileExt,
@@ -53,7 +53,7 @@ const ChatBubbleItem = ({
             backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
           }}
           onLongPress={() => {
-            !isDeleted && openChatBubbleHandler(chat, !myMessage ? "right" : "left");
+            !isDeleted && handleOpenChatBubble(chat, !myMessage ? "right" : "left");
           }}
           delayLongPress={200}
         >
@@ -91,7 +91,7 @@ const ChatBubbleItem = ({
                     <>
                       <TouchableOpacity
                         style={{ borderRadius: 5 }}
-                        onPress={() => file_path && toggleFullScreen(file_path)}
+                        onPress={() => file_path && onToggleFullScreen(file_path)}
                       >
                         <Image
                           style={styles.image}

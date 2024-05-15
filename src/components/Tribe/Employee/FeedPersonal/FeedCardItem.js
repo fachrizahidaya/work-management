@@ -79,13 +79,11 @@ const FeedCardItem = ({
           }}
         >
           <Text
-            style={[
-              {
-                fontSize: 16,
-                fontWeight: "700",
-                color: "#EB0E29",
-              },
-            ]}
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              color: "#EB0E29",
+            }}
           >
             Delete
           </Text>
@@ -152,8 +150,7 @@ const FeedCardItem = ({
             </View>
 
             {loggedEmployeeId === employeeId && (
-              <Pressable
-                style={{ marginRight: 1 }}
+              <MaterialCommunityIcons
                 onPress={async () => {
                   await SheetManager.show("form-sheet", {
                     payload: {
@@ -162,9 +159,12 @@ const FeedCardItem = ({
                   });
                   openSelectedPersonalPost(id);
                 }}
-              >
-                <MaterialCommunityIcons name="dots-vertical" size={20} borderRadius={20} color="#000000" />
-              </Pressable>
+                name="dots-vertical"
+                size={20}
+                borderRadius={20}
+                color="#000000"
+                style={{ marginRight: 1 }}
+              />
             )}
           </View>
           <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
@@ -179,7 +179,7 @@ const FeedCardItem = ({
             navigation={navigation}
             loggedEmployeeId={loggedEmployeeId}
             loggedEmployeeImage={loggedEmployeeImage}
-            handleLinkPress={handleLinkPress}
+            onPressLink={handleLinkPress}
           />
         }
       </Text>
@@ -207,25 +207,32 @@ const FeedCardItem = ({
 
       <View style={styles.dockAction}>
         <View style={styles.iconAction}>
-          <Pressable
+          <MaterialCommunityIcons
             onPress={() => {
               onCommentToggle(id, reference, setPostId);
             }}
-          >
-            <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-          </Pressable>
+            name="comment-text-outline"
+            size={20}
+            color="#3F434A"
+          />
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
         </View>
         <View style={styles.iconAction}>
           {likeAction === "dislike" && (
-            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-              <MaterialCommunityIcons name="heart" size={20} color="#FD7972" />
-            </Pressable>
+            <MaterialCommunityIcons
+              onPress={() => toggleLikeHandler(id, likeAction)}
+              name="heart"
+              size={20}
+              color="#FD7972"
+            />
           )}
           {likeAction === "like" && (
-            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-              <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
-            </Pressable>
+            <MaterialCommunityIcons
+              onPress={() => toggleLikeHandler(id, likeAction)}
+              name="heart-outline"
+              size={20}
+              color="#3F434A"
+            />
           )}
 
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike}</Text>

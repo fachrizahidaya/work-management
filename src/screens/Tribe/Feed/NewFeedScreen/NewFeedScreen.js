@@ -15,7 +15,7 @@ import NewFeedForm from "../../../../components/Tribe/Feed/NewFeed/NewFeedForm";
 import PostTypeOptions from "../../../../components/Tribe/Feed/NewFeed/PostTypeOptions";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import PostOptions from "../../../../components/Tribe/Feed/NewFeed/PostOptions";
-import { pickImageHandler } from "../../../../components/shared/PickImage";
+import PickImage from "../../../../components/shared/PickImage";
 import { useLoading } from "../../../../hooks/useLoading";
 
 const NewFeedScreen = () => {
@@ -37,6 +37,7 @@ const NewFeedScreen = () => {
   const checkAccess = menuSelector[1].sub[2].actions.create_announcement;
 
   const { isOpen: returnModalIsOpen, toggle: toggleReturnModal } = useDisclosure(false);
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const { toggle: toggleProcess, isLoading: processIsLoading } = useLoading(false);
 
@@ -178,10 +179,10 @@ const NewFeedScreen = () => {
                 formik={formik}
                 image={image}
                 setImage={setImage}
-                pickImageHandler={pickImageHandler}
                 employees={employees?.data}
                 isLoading={processIsLoading}
                 setIsLoading={toggleProcess}
+                handleAddImageOption={toggleAddImageModal}
               />
               <PostTypeOptions
                 publicToggleHandler={publicToggleHandler}
@@ -202,6 +203,7 @@ const NewFeedScreen = () => {
                 }}
                 description="Are you sure want to exit? It will be deleted."
               />
+              <PickImage setImage={setImage} modalIsOpen={addImageModalIsOpen} toggleModal={toggleAddImageModal} />
             </View>
           </ScrollView>
         ) : (
