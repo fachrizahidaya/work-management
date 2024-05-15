@@ -84,7 +84,7 @@
       [
         "expo-barcode-scanner",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+          "cameraPermission": "Nest may request access your device camera to scan barcode and will be used for scan barcode and qr code"
         }
       ]
     ],
