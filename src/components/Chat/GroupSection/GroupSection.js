@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -7,7 +9,7 @@ const GroupSection = ({
   groupChats,
   searchKeyword,
   searchResult,
-  clickMoreHandler,
+  handleClickMore,
   onPinControl,
   navigation,
   userSelector,
@@ -44,7 +46,7 @@ const GroupSection = ({
             isPinned={group?.pin_group}
             type="group"
             active_member={group?.active_member}
-            onClickMore={clickMoreHandler}
+            onClickMore={handleClickMore}
             onPin={onPinControl}
             navigation={navigation}
             userSelector={userSelector}
@@ -84,7 +86,7 @@ const GroupSection = ({
                 isPinned={group?.pin_group}
                 type="group"
                 active_member={group?.active_member}
-                onClickMore={clickMoreHandler}
+                onClickMore={handleClickMore}
                 onPin={onPinControl}
                 searchKeyword={searchKeyword}
                 navigation={navigation}
@@ -98,7 +100,7 @@ const GroupSection = ({
   );
 };
 
-export default GroupSection;
+export default memo(GroupSection);
 
 const styles = StyleSheet.create({
   header: {

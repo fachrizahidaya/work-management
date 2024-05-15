@@ -24,8 +24,8 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  toggleFullScreen,
-  handleLinkPress,
+  onToggleFullScreen,
+  onPressLink,
   employeeUsername,
   navigation,
   reference,
@@ -112,7 +112,7 @@ const FeedCardItemPost = ({
               navigation={navigation}
               loggedEmployeeId={loggedEmployeeId}
               loggedEmployeeImage={loggedEmployeeImage}
-              handleLinkPress={handleLinkPress}
+              onPressLink={onPressLink}
             />
           }
         </Text>
@@ -121,7 +121,7 @@ const FeedCardItemPost = ({
           <TouchableOpacity
             key={id}
             onPress={() =>
-              attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+              attachment && onToggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
             }
           >
             <Image

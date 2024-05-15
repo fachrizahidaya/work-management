@@ -6,13 +6,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const ContactSlideAction = ({ translateX, onPin, type, id, isPinned, onClickMore, chat }) => {
+const ContactSlideAction = ({ translateX, onTogglePin, type, id, isPinned, onClickMore, chat }) => {
   return (
     <View style={styles.backgroundAction}>
       <Pressable
         onPress={() => {
           translateX.value = withTiming(0);
-          onPin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
+          onTogglePin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
         }}
         style={{
           alignItems: "center",

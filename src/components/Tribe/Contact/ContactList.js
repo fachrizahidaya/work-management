@@ -9,7 +9,7 @@ const ContactList = ({
   filteredData,
   hasBeenScrolled,
   setHasBeenScrolled,
-  fetchMore,
+  handleFetchMoreContact,
   isFetching,
   navigation,
   userSelector,
@@ -22,7 +22,7 @@ const ContactList = ({
         keyExtractor={(item, index) => index}
         onEndReachedThreshold={0.1}
         estimatedItemSize={60}
-        onEndReached={hasBeenScrolled ? fetchMore : null}
+        onEndReached={hasBeenScrolled ? handleFetchMoreContact : null}
         ListFooterComponent={() => isFetching && hasBeenScrolled && <ActivityIndicator />}
         renderItem={({ item, index }) => (
           <ContactItem

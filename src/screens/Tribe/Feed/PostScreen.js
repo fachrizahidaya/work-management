@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
 
 import { SafeAreaView, StyleSheet, Text, View, Pressable, Linking } from "react-native";
@@ -41,7 +41,6 @@ const PostScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const sharePostScreenSheetRef = useRef(null);
-  const firstTimeRef = useRef(null);
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -216,16 +215,6 @@ const PostScreen = () => {
     }, 100);
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      if (firstTimeRef.current) {
-        firstTimeRef.current = false;
-        return;
-      }
-      refetchPostData();
-    }, [refetchPostData])
-  );
-
   return (
     <>
       {isReady ? (
@@ -267,8 +256,8 @@ const PostScreen = () => {
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
                   onToggleLike={likePostHandler}
-                  toggleFullScreen={toggleFullScreenImageHandler}
-                  handleLinkPress={pressLinkHandler}
+                  onToggleFullScreen={toggleFullScreenImageHandler}
+                  onPressLink={pressLinkHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                   reference={sharePostScreenSheetRef}
@@ -279,10 +268,10 @@ const PostScreen = () => {
                 <FeedCommentPost
                   comments={comments}
                   commentIsLoading={commentIsLoading}
-                  onEndReached={commentEndReachedHandler}
+                  handleWhenScrollReachedEnd={commentEndReachedHandler}
                   onReply={replyCommentHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
-                  linkPressHandler={pressLinkHandler}
+                  onPressLink={pressLinkHandler}
                   setCommentParentId={setCommentParentId}
                   navigation={navigation}
                   hasBeenScrolled={hasBeenScrolled}

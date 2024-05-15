@@ -6,11 +6,11 @@ import FeedCommentItem from "./FeedCommentItem";
 const FeedCommentListPost = ({
   comments,
   onReply,
-  commentEndReachedHandler,
+  handleWhenScrollReachedEnd,
   commentIsLoading,
   hasBeenScrolled,
   setHasBeenScrolled,
-  handleLinkPress,
+  onPressLink,
   employeeUsername,
   setCommentParentId,
   navigation,
@@ -27,7 +27,7 @@ const FeedCommentListPost = ({
         onEndReachedThreshold={0.1}
         onScrollBeginDrag={() => setHasBeenScrolled(true)}
         ListFooterComponent={() => (commentIsLoading ? <ActivityIndicator /> : null)}
-        onEndReached={hasBeenScrolled ? commentEndReachedHandler : null}
+        onEndReached={hasBeenScrolled ? handleWhenScrollReachedEnd : null}
         estimatedItemSize={80}
         renderItem={({ item, index }) => {
           if (comments.length === 0) {
@@ -47,7 +47,7 @@ const FeedCommentListPost = ({
               totalReplies={item?.total_replies}
               comments={item?.comments}
               onReply={onReply}
-              handleLinkPress={handleLinkPress}
+              onPressLink={onPressLink}
               employeeUsername={employeeUsername}
               setCommentParentId={setCommentParentId}
               navigation={navigation}

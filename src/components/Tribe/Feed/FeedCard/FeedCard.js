@@ -10,16 +10,14 @@ const FeedCard = ({
   posts,
   loggedEmployeeId,
   loggedEmployeeImage,
-  postRefetchHandler,
-  postEndReachedHandler,
+  handleWhenScrollReachedEnd,
   hasBeenScrolled,
   setHasBeenScrolled,
   postIsFetching,
   postIsLoading,
-  refetchPost,
   onCommentToggle,
   forceRerender,
-  toggleFullScreen,
+  onToggleFullScreen,
   employeeUsername,
   navigation,
   onPressLink,
@@ -29,8 +27,8 @@ const FeedCard = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  setPosts,
-  toggleModal,
+  onToggleReport,
+  handleRefreshPosts,
 }) => {
   return (
     <View style={styles.container}>
@@ -40,27 +38,25 @@ const FeedCard = ({
         data={posts}
         extraData={forceRerender} // re-render data handler
         onEndReachedThreshold={0.1}
-        keyExtractor={(item, index) => item?.id}
+        keyExtractor={(item) => item?.id}
         refreshing={true}
         onScrollBeginDrag={() => {
-          setHasBeenScrolled(true); // user has scrolled handler
+          setHasBeenScrolled(true); // handle detect user has scrolled or not
         }}
         initialNumToRender={5}
         maxToRenderPerBatch={10}
         windowSize={10}
-        onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
+        onEndReached={hasBeenScrolled ? handleWhenScrollReachedEnd : null}
         refreshControl={
           <RefreshControl
             refreshing={postIsFetching}
             onRefresh={() => {
-              setPosts([]);
-              postRefetchHandler();
-              refetchPost();
+              handleRefreshPosts();
             }}
           />
         }
         ListFooterComponent={() => postIsLoading && <ActivityIndicator />}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <FeedCardItem
             key={item?.id}
             id={item?.id}
@@ -78,8 +74,8 @@ const FeedCard = ({
             loggedEmployeeImage={loggedEmployeeImage}
             onToggleLike={onToggleLike}
             onCommentToggle={onCommentToggle}
-            toggleFullScreen={toggleFullScreen}
-            handleLinkPress={onPressLink}
+            onToggleFullScreen={onToggleFullScreen}
+            onPressLink={onPressLink}
             employeeUsername={employeeUsername}
             navigation={navigation}
             reference={reference}
@@ -87,7 +83,7 @@ const FeedCard = ({
             isFullScreen={isFullScreen}
             setIsFullScreen={setIsFullScreen}
             setSelectedPicture={setSelectedPicture}
-            toggleModal={toggleModal}
+            onToggleReport={onToggleReport}
           />
         )}
       />

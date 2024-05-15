@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import Input from "../../shared/Forms/Input";
 
-const SearchBox = ({ toggleSearch, searchMessage, setSearchMessage, searchFormRef }) => {
+const SearchBox = ({ onToggleSearch, searchMessage, setSearchMessage, searchFormRef }) => {
   const messageSearchHandler = useCallback(
     _.debounce((value) => {
       setSearchMessage(value);
@@ -21,7 +21,7 @@ const SearchBox = ({ toggleSearch, searchMessage, setSearchMessage, searchFormRe
           searchFormRef.current.clear();
           setSearchMessage("");
         } else {
-          toggleSearch();
+          onToggleSearch();
         }
       }}
       onChangeText={(value) => messageSearchHandler(value)}

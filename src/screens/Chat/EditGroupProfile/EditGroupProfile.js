@@ -11,7 +11,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import axiosInstance from "../../../config/api";
 import { SuccessToastProps, ErrorToastProps } from "../../../components/shared/CustomStylings";
 import EditGroupProfileForm from "../../../components/Chat/EditGroupProfile/EditGroupProfileForm";
-import { pickImageHandler } from "../../../components/shared/PickImage";
+import PickImage from "../../../components/shared/PickImage";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const EditGroupProfile = () => {
   const [imageAttachment, setImageAttachment] = useState(null);
@@ -21,6 +22,8 @@ const EditGroupProfile = () => {
   const route = useRoute();
 
   const { name, image, roomId } = route.params;
+
+  const { isOpen: addImageModalIsOpen, toggle: toggleAddImageModal } = useDisclosure(false);
 
   const editGroupNameHandler = () => {
     setEditName(!editName);
@@ -98,9 +101,10 @@ const EditGroupProfile = () => {
           image={image}
           formik={formik}
           onEdit={editGroupNameHandler}
-          pickImageHandler={pickImageHandler}
+          onAddImage={toggleAddImageModal}
           editName={editName}
         />
+        <PickImage setImage={setImageAttachment} modalIsOpen={addImageModalIsOpen} toggleModal={toggleAddImageModal} />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

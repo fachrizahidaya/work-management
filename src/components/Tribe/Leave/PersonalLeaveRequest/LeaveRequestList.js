@@ -7,7 +7,6 @@ import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const LeaveRequestList = ({
   data,
-  teamLeaveRequestData,
   hasBeenScrolled,
   setHasBeenScrolled,
   fetchMore,

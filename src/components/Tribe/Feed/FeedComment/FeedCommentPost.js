@@ -5,10 +5,10 @@ import FeedCommentListPost from "./FeedCommentListPost";
 const FeedCommentPost = ({
   commentIsLoading,
   comments,
-  onEndReached,
+  handleWhenScrollReachedEnd,
   onReply,
   employeeUsername,
-  linkPressHandler,
+  onPressLink,
   setCommentParentId,
   navigation,
   hasBeenScrolled,
@@ -23,12 +23,12 @@ const FeedCommentPost = ({
       <FeedCommentListPost
         comments={comments}
         onReply={onReply}
-        commentEndReachedHandler={onEndReached}
+        commentEndReachedHandler={handleWhenScrollReachedEnd}
         commentIsLoading={commentIsLoading}
         employeeUsername={employeeUsername}
         hasBeenScrolled={hasBeenScrolled}
         setHasBeenScrolled={setHasBeenScrolled}
-        handleLinkPress={linkPressHandler}
+        onPressLink={onPressLink}
         setCommentParentId={setCommentParentId}
         navigation={navigation}
         hideReplies={hideReplies}

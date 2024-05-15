@@ -224,7 +224,7 @@ const ChatListScreen = () => {
                 groupChats={groupChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.group}
-                clickMoreHandler={contactMenuHandler}
+                handleClickMore={contactMenuHandler}
                 onPinControl={pinChatHandler}
                 navigation={navigation}
                 userSelector={userSelector}
@@ -234,7 +234,7 @@ const ChatListScreen = () => {
                 personalChats={personalChats}
                 searchKeyword={globalKeyword}
                 searchResult={searchResult?.personal}
-                clickMoreHandler={contactMenuHandler}
+                handleClickMore={contactMenuHandler}
                 onPinControl={pinChatHandler}
                 navigation={navigation}
                 userSelector={userSelector}

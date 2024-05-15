@@ -116,7 +116,7 @@ const ContactScreen = () => {
             filteredData={filteredDataArray}
             hasBeenScrolled={hasBeenScrolled}
             setHasBeenScrolled={setHasBeenScrolled}
-            fetchMore={fetchMoreEmployeeContact}
+            handleFetchMoreContact={fetchMoreEmployeeContact}
             isFetching={employeeDataIsFetching}
             navigation={navigation}
             userSelector={userSelector}
