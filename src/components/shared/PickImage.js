@@ -5,6 +5,7 @@ import Modal from "react-native-modal";
 import { SheetManager } from "react-native-actions-sheet";
 
 import Button from "./Forms/Button";
+import { TextProps } from "./CustomStylings";
 
 /**
  * Handle pick an image
@@ -100,12 +101,12 @@ const PickImage = ({ setImage, sheetManager, modalIsOpen, toggleModal }) => {
 
   return (
     <Modal isVisible={modalIsOpen} onBackdropPress={toggleModal} deviceWidth={deviceWidth} deviceHeight={deviceHeight}>
-      <View style={{ backgroundColor: "#FFFFFF", padding: 5, borderRadius: 10, gap: 5 }}>
-        <Button onPress={() => pickImageHandler(false, setImage)}>
-          <Text style={{ color: "#FFFFFF" }}>Add from Galery</Text>
+      <View style={{ backgroundColor: "#FFFFFF", padding: 10, borderRadius: 10, gap: 5 }}>
+        <Button variant="outline" onPress={() => pickImageHandler(false, setImage)}>
+          <Text style={[TextProps]}>Add from Galery</Text>
         </Button>
-        <Button onPress={() => pickImageHandler(true, setImage)}>
-          <Text style={{ color: "#FFFFFF" }}>Take an image</Text>
+        <Button variant="outline" onPress={() => pickImageHandler(true, setImage)}>
+          <Text style={[TextProps]}>Take an image</Text>
         </Button>
       </View>
     </Modal>
