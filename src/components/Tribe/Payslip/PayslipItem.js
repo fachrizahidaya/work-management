@@ -1,4 +1,3 @@
-import { memo } from "react";
 import dayjs from "dayjs";
 
 import { View, Text, Pressable } from "react-native";
@@ -48,4 +47,4 @@ const PayslipItem = ({ id, month, year, openSelectedPayslip }) => {
   );
 };
 
-export default memo(PayslipItem);
+export default PayslipItem;

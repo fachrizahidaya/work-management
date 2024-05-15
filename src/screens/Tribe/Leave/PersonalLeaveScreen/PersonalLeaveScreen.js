@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
 import dayjs from "dayjs";
 
@@ -42,6 +42,7 @@ const PersonalLeaveScreen = () => {
   const approvalLeaveRequestCheckAccess = useCheckAccess("approval", "Leave Requests");
 
   const cancleScreenSheetRef = useRef(null);
+  const firstTimeRef = useRef(null);
 
   const navigation = useNavigation();
 
@@ -233,6 +234,16 @@ const PersonalLeaveScreen = () => {
       setCanceledList((prevData) => [...prevData, ...canceledLeaveRequest?.data?.data]);
     }
   }, [canceledLeaveRequest?.data?.data?.length]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchPersonalLeaveRequest();
+    }, [refetchPersonalLeaveRequest])
+  );
 
   return (
     <>

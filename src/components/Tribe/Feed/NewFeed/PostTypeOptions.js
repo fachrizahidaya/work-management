@@ -8,12 +8,12 @@ import CustomDateTimePicker from "../../../shared/CustomDateTimePicker";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const PostTypeOptions = ({
-  publicToggleHandler,
+  onTogglePublic,
   formik,
-  announcementToggleHandler,
+  onToggleAnnouncement,
   isAnnouncementSelected,
   dateShown,
-  endDateAnnouncementHandler,
+  handleEndDataOfAnnouncement,
   reference,
 }) => {
   return (
@@ -23,7 +23,7 @@ const PostTypeOptions = ({
           <Text style={[{ fontSize: 16 }, TextProps]}>Choose Post Type</Text>
         </View>
         <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
-          <TouchableOpacity onPress={publicToggleHandler} style={{ ...styles.container, height: 50 }}>
+          <TouchableOpacity onPress={onTogglePublic} style={{ ...styles.container, height: 50 }}>
             <View style={styles.content}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <MaterialIcons name="people" size={15} color="#3F434A" />
@@ -34,7 +34,7 @@ const PostTypeOptions = ({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              announcementToggleHandler();
+              onToggleAnnouncement();
             }}
             style={{ ...styles.container }}
           >
@@ -55,7 +55,7 @@ const PostTypeOptions = ({
                       {isAnnouncementSelected && dateShown ? (
                         <CustomDateTimePicker
                           defaultValue={formik.values.end_date}
-                          onChange={endDateAnnouncementHandler}
+                          onChange={handleEndDataOfAnnouncement}
                           withText={true}
                           textLabel="Adjust date"
                           fontSize={12}
@@ -73,7 +73,7 @@ const PostTypeOptions = ({
                       {isAnnouncementSelected && dateShown ? (
                         <CustomDateTimePicker
                           defaultValue={formik.values.end_date}
-                          onChange={endDateAnnouncementHandler}
+                          onChange={handleEndDataOfAnnouncement}
                           fontSize={12}
                           marginLeft={-15}
                         />

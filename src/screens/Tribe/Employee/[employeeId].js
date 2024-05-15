@@ -62,7 +62,7 @@ const EmployeeProfileScreen = () => {
 
   const { height } = Dimensions.get("screen");
 
-  const { employeeId, loggedEmployeeImage, loggedEmployeeId, refetchAllPost } = route.params;
+  const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
   const commentsScreenSheetRef = useRef(null);
   const teammatesScreenSheetRef = useRef(null);
@@ -330,6 +330,7 @@ const EmployeeProfileScreen = () => {
   useEffect(() => {
     if (!openCommentHandler) {
       setCommentParentId(null);
+      setComments([]);
     } else {
       if (comment?.data && commentIsFetching === false) {
         if (currentOffsetComment === 0) {
@@ -393,7 +394,6 @@ const EmployeeProfileScreen = () => {
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
-                refetchAllPost={refetchAllPost}
               />
 
               <FeedComment

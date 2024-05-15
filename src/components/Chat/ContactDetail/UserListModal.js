@@ -13,8 +13,8 @@ import { TextProps } from "../../shared/CustomStylings";
 const UserListModal = ({
   roomId,
   memberListIsopen,
-  toggleMemberList,
-  toggleAddMember,
+  onToggleMemberList,
+  onToggleAddMember,
   handleSearch,
   inputToShow,
   setInputToShow,
@@ -42,7 +42,7 @@ const UserListModal = ({
   return (
     <Modal
       isVisible={memberListIsopen}
-      onBackdropPress={toggleMemberList}
+      onBackdropPress={onToggleMemberList}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
     >
@@ -90,7 +90,7 @@ const UserListModal = ({
         <Pressable
           style={styles.addMember}
           onPress={() => {
-            onAddMoreMember(roomId, selectedUsers, toggleAddMember);
+            onAddMoreMember(roomId, selectedUsers, onToggleAddMember);
           }}
         >
           {addMemberIsLoading ? (

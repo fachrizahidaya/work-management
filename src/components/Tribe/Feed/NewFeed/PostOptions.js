@@ -1,9 +1,10 @@
+import dayjs from "dayjs";
+
 import { StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "../../../shared/AvatarPlaceholder";
 import Button from "../../../shared/Forms/Button";
-import dayjs from "dayjs";
 import { TextProps } from "../../../shared/CustomStylings";
 
 const PostOptions = ({ formik, loggedEmployeeImage, loggedEmployeeName, checkAccess, reference }) => {

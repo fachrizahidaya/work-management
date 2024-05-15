@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -26,23 +27,44 @@ const FeedCardItem = ({
   loggedEmployeeImage,
   onToggleLike,
   onCommentToggle,
-  forceRerender,
-  setForceRerender,
-  toggleFullScreen,
-  handleLinkPress,
+  onToggleFullScreen,
+  onPressLink,
   employeeUsername,
   navigation,
   reference,
   setPostId,
-  refetchPost,
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
+  onToggleReport,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
 
   const words = content?.split(" ");
+
+  const renderActionOptions = () => (
+    <View style={styles.wrapper}>
+      <View
+        style={{
+          gap: 1,
+          backgroundColor: "#F5F5F5",
+          borderRadius: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={async () => {
+            await SheetManager.hide("form-sheet");
+            onToggleReport(id);
+          }}
+          style={styles.containerReport}
+        >
+          <Text style={[{ fontSize: 16 }, TextProps]}>Report</Text>
+          <MaterialCommunityIcons name="alert-box" size={20} color="#176688" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   /**
    * Handle toggle like
@@ -55,8 +77,7 @@ const FeedCardItem = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost);
-    setForceRerender(!forceRerender);
+    onToggleLike(post_id, action);
   };
 
   useEffect(() => {
@@ -68,75 +89,89 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <TouchableOpacity
+    <View
       style={{
         ...card.card,
         ...styles.card,
       }}
-      onPress={() => navigation.navigate("Post Screen", { id: id, refetchAllPost: refetchPost })}
     >
-      <View style={styles.cardHeader}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Employee Profile", {
-              employeeId: employeeId,
-              loggedEmployeeId: loggedEmployeeId,
-              loggedEmployeeImage: loggedEmployeeImage,
-              refetchAllPost: refetchPost,
-            })
-          }
-        >
-          <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
-        </TouchableOpacity>
-
-        <View style={{ flex: 1, gap: 5 }}>
+      <Pressable style={styles.card} onPress={() => navigation.navigate("Post Screen", { id: id })}>
+        <View style={styles.cardHeader}>
           <TouchableOpacity
-            style={styles.dockName}
             onPress={() =>
               navigation.navigate("Employee Profile", {
                 employeeId: employeeId,
                 loggedEmployeeId: loggedEmployeeId,
                 loggedEmployeeImage: loggedEmployeeImage,
-                refetchAllPost: refetchPost,
               })
             }
           >
-            <Text style={[{ fontSize: 14 }, TextProps]}>
-              {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-            </Text>
-            {type === "Announcement" ? (
-              <View
-                style={{
-                  borderRadius: 10,
-                  backgroundColor: "#ADD7FF",
-                  padding: 5,
-                }}
-              >
-                <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
-              </View>
-            ) : null}
+            <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </TouchableOpacity>
-          <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
-        </View>
-      </View>
 
-      <Text style={[{ fontSize: 14 }, TextProps]}>
-        {
-          <FeedContentStyle
-            words={words}
-            employeeUsername={employeeUsername}
-            navigation={navigation}
-            loggedEmployeeId={loggedEmployeeId}
-            loggedEmployeeImage={loggedEmployeeImage}
-            handleLinkPress={handleLinkPress}
-          />
-        }
-      </Text>
+          <View style={{ flex: 1, gap: 5 }}>
+            <TouchableOpacity
+              style={styles.dockName}
+              onPress={() =>
+                navigation.navigate("Employee Profile", {
+                  employeeId: employeeId,
+                  loggedEmployeeId: loggedEmployeeId,
+                  loggedEmployeeImage: loggedEmployeeImage,
+                })
+              }
+            >
+              <Text style={[{ fontSize: 14 }, TextProps]}>
+                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+              </Text>
+              {type === "Announcement" ? (
+                <View
+                  style={{
+                    borderRadius: 10,
+                    backgroundColor: "#ADD7FF",
+                    padding: 5,
+                  }}
+                >
+                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+                </View>
+              ) : null}
+            </TouchableOpacity>
+            <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
+          </View>
+          {/* <MaterialCommunityIcons
+            onPress={async () => {
+              await SheetManager.show("form-sheet", {
+                payload: {
+                  children: renderActionOptions(),
+                },
+              });
+            }}
+            name="dots-vertical"
+            size={20}
+            borderRadius={20}
+            color="#000000"
+            style={{ marginRight: 1 }}
+          /> */}
+        </View>
+        <Text style={[{ fontSize: 14 }, TextProps]}>
+          {
+            <FeedContentStyle
+              words={words}
+              employeeUsername={employeeUsername}
+              navigation={navigation}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              onPressLink={onPressLink}
+            />
+          }
+        </Text>
+      </Pressable>
 
       {attachment ? (
         <TouchableOpacity
           key={id}
-          onPress={() => attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)}
+          onPress={() =>
+            attachment && onToggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+          }
         >
           <Image
             style={styles.image}
@@ -152,31 +187,38 @@ const FeedCardItem = ({
 
       <View style={styles.dockAction}>
         <View style={styles.iconAction}>
-          <Pressable
+          <MaterialCommunityIcons
             onPress={() => {
               onCommentToggle(id, reference, setPostId);
             }}
-          >
-            <MaterialCommunityIcons name="comment-text-outline" size={20} color="#3F434A" />
-          </Pressable>
+            name="comment-text-outline"
+            size={20}
+            color="#3F434A"
+          />
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
         </View>
         <View style={styles.iconAction}>
           {likeAction === "dislike" && (
-            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-              <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
-            </Pressable>
+            <MaterialCommunityIcons
+              onPress={() => toggleLikeHandler(id, likeAction)}
+              name="heart"
+              size={20}
+              color="#FF0000"
+            />
           )}
           {likeAction === "like" && (
-            <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-              <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
-            </Pressable>
+            <MaterialCommunityIcons
+              onPress={() => toggleLikeHandler(id, likeAction)}
+              name="heart-outline"
+              size={20}
+              color="#3F434A"
+            />
           )}
 
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -189,10 +231,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     elevation: 1,
   },
-
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: 15,
   },
   dockName: {
@@ -216,5 +258,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
+  },
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
+  },
+  containerReport: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F5F5",
+    height: 50,
+    padding: 10,
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#FFFFFF",
   },
 });

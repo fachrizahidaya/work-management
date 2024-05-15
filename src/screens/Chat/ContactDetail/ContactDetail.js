@@ -290,13 +290,12 @@ const ContactDetail = () => {
               type={type}
               selectedGroupMembers={selectedGroupMembers}
               loggedInUser={loggedInUser}
-              toggleMemberList={toggleMemberList}
+              onToggleMemberList={toggleMemberList}
               currentUserIsAdmin={currentUserIsAdmin}
-              toggleMemberListAction={toggleMemberListAction}
+              onToggleMemberListAction={toggleMemberListAction}
               setMemberId={setMemberId}
               setMemberName={setMemberName}
               setMemberAdminStatus={setMemberAdminStatus}
-              toggleRemoveMemberAction={toggleRemoveMemberAction}
             />
 
             <ContactMedia
@@ -311,9 +310,9 @@ const ContactDetail = () => {
             <ContactAction
               type={type}
               active_member={active_member}
-              toggleClearChatMessage={toggleClearChatMessageModal}
-              toggleExitModal={toggleExitGroupModal}
-              toggleDeleteGroupModal={toggleDeleteGroupModal}
+              onToggleClearChatMessage={toggleClearChatMessageModal}
+              onToggleExitModal={toggleExitGroupModal}
+              onToggleDeleteGroupModal={toggleDeleteGroupModal}
             />
           </View>
 
@@ -353,8 +352,8 @@ const ContactDetail = () => {
           <UserListModal
             roomId={roomId}
             memberListIsopen={memberListIsopen}
-            toggleMemberList={toggleMemberList}
-            toggleAddMember={toggleAddMember}
+            onToggleMemberList={toggleMemberList}
+            onToggleAddMember={toggleAddMember}
             handleSearch={handleSearch}
             inputToShow={inputToShow}
             setInputToShow={setInputToShow}
@@ -372,7 +371,7 @@ const ContactDetail = () => {
           />
           <MemberListActionModal
             memberListActionIsopen={memberListActionIsopen}
-            toggleMemberListAction={toggleMemberListAction}
+            onToggleMemberListAction={toggleMemberListAction}
             memberId={memberId}
             setMemberId={setMemberId}
             memberName={memberName}
@@ -381,7 +380,7 @@ const ContactDetail = () => {
             setMemberAdminStatus={setMemberAdminStatus}
             onUpdateAdminStatus={groupMemberUpdateHandler}
             currentUserIsAdmin={currentUserIsAdmin}
-            toggleRemoveMemberAction={toggleRemoveMemberAction}
+            onToggleRemoveMemberAction={toggleRemoveMemberAction}
           />
         </SafeAreaView>
       ) : null}

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useFormik } from "formik";
@@ -44,7 +44,7 @@ const PostScreen = () => {
 
   const userSelector = useSelector((state) => state.auth);
 
-  const { id, refetchAllPost } = route.params;
+  const { id } = route.params;
 
   const { data: post, isFetching: postIsFetching } = useFetch("/hr/posts");
   const { data: postData, refetch: refetchPostData, isFetching: postDataIsFetching } = useFetch(`/hr/posts/${id}`);
@@ -256,24 +256,22 @@ const PostScreen = () => {
                   loggedEmployeeId={profile?.data?.id}
                   loggedEmployeeImage={profile?.data?.image}
                   onToggleLike={likePostHandler}
-                  toggleFullScreen={toggleFullScreenImageHandler}
-                  handleLinkPress={pressLinkHandler}
+                  onToggleFullScreen={toggleFullScreenImageHandler}
+                  onPressLink={pressLinkHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
                   navigation={navigation}
                   reference={sharePostScreenSheetRef}
-                  refetchPost={refetchPostData}
                   isFullScreen={isFullScreen}
                   setIsFullScreen={setIsFullScreen}
                   setSelectedPicture={setSelectedPicture}
-                  refetchAllPost={refetchAllPost}
                 />
                 <FeedCommentPost
                   comments={comments}
                   commentIsLoading={commentIsLoading}
-                  onEndReached={commentEndReachedHandler}
+                  handleWhenScrollReachedEnd={commentEndReachedHandler}
                   onReply={replyCommentHandler}
                   employeeUsername={objectContainEmployeeUsernameHandler}
-                  linkPressHandler={pressLinkHandler}
+                  onPressLink={pressLinkHandler}
                   setCommentParentId={setCommentParentId}
                   navigation={navigation}
                   hasBeenScrolled={hasBeenScrolled}

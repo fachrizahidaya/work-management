@@ -3,10 +3,10 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TouchableOpacity
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Input from "../../shared/Forms/Input";
 
-const GroupData = ({ pickImageHandler, image, setImage, formik }) => {
+const GroupData = ({ onAddImage, image, formik }) => {
   return (
     <View style={styles.groupData}>
-      <TouchableOpacity style={styles.groupImage} onPress={() => pickImageHandler(setImage)}>
+      <TouchableOpacity style={styles.groupImage} onPress={() => onAddImage()}>
         {image ? (
           <Image style={{ height: 150, width: 150, borderRadius: 80 }} alt="group-image" source={{ uri: image.uri }} />
         ) : (

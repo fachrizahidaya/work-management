@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState, useRef } from "react";
 import { useFormik } from "formik";
 
 import { StyleSheet, View } from "react-native";
@@ -35,6 +35,8 @@ const MyTeamLeaveRequest = ({
   onChangeTab,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
+
+  const firstTimeRef = useRef(null);
 
   /**
    * Aprroval or Rejection handler
@@ -118,7 +120,7 @@ const MyTeamLeaveRequest = ({
             isLoading={rejectedLeaveRequestIsLoading}
             formik={formik}
             isSubmitting={isSubmitting}
-            responseHandler={responseHandler}
+            handleResponse={responseHandler}
           />
         )}
       </View>

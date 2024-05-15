@@ -194,7 +194,7 @@ const ContactListItem = ({
         <ContactSlideAction
           translateX={translateX}
           onClickMore={onClickMore}
-          onPin={onPin}
+          onTogglePin={onPin}
           type={type}
           id={id}
           isPinned={isPinned}

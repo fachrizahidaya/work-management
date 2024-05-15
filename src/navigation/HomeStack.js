@@ -54,6 +54,7 @@ import SubscriptionScreen from "../screens/Setting/Account/SubscriptionScreen";
 import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 import FrequentlyAskedQuestions from "../screens/Setting/FrequentlyAskedQuestions";
+import FAQDetail from "../screens/Setting/FAQ/FAQDetail";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -284,6 +285,8 @@ const HomeStack = () => {
       <Stack.Screen name="Change Password" component={ChangePasswordScreen} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="FAQ" component={FrequentlyAskedQuestions} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="FAQ Detail" component={FAQDetail} options={{ header: () => <Header /> }} />
 
       {/* Coin Screens */}
       <Stack.Screen name="Sales" component={SalesScreen} options={{ header: () => <Header /> }} />

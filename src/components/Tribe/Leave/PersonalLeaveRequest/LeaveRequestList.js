@@ -7,7 +7,6 @@ import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const LeaveRequestList = ({
   data,
-  teamLeaveRequestData,
   hasBeenScrolled,
   setHasBeenScrolled,
   fetchMore,
@@ -20,14 +19,7 @@ const LeaveRequestList = ({
   return data?.length > 0 ? (
     <View
       style={{
-        height:
-          Platform.OS === "ios" && teamLeaveRequestData > 0
-            ? 200
-            : Platform.OS === "ios" && teamLeaveRequestData === 0
-            ? "100%"
-            : Platform.OS === "android" && teamLeaveRequestData === 0
-            ? "100%"
-            : 575,
+        height: "100%",
       }}
     >
       <FlashList

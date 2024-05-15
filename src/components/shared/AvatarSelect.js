@@ -2,9 +2,8 @@ import { Image, Pressable, StyleSheet, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AvatarPlaceholder from "./AvatarPlaceholder";
-import { pickImageHandler } from "./PickImage";
 
-const AvatarSelect = ({ imageAttachment, setImageAttachment, name, image }) => {
+const AvatarSelect = ({ imageAttachment, setImageAttachment, name, image, onAddImage }) => {
   return (
     <View
       style={{
@@ -31,7 +30,7 @@ const AvatarSelect = ({ imageAttachment, setImageAttachment, name, image }) => {
         )}
         <Pressable
           style={styles.editPicture}
-          onPress={!imageAttachment ? () => pickImageHandler(setImageAttachment) : () => setImageAttachment(null)}
+          onPress={!imageAttachment ? () => onAddImage() : () => setImageAttachment(null)}
         >
           <MaterialCommunityIcons name={!imageAttachment ? "camera-outline" : "close"} size={20} color="#3F434A" />
         </Pressable>

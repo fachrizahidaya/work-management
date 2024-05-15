@@ -16,13 +16,13 @@ const MyTeamLeaveRequestItem = ({
   days,
   begin_date,
   end_date,
-  responseHandler,
+  handleResponse,
   item,
   status,
 }) => {
   const approvalHandler = async (response) => {
     await SheetManager.hide("form-sheet");
-    responseHandler(response, item);
+    handleResponse(response, item);
   };
 
   const renderApprovalOptions = () => (

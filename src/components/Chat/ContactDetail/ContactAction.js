@@ -4,7 +4,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { TextProps } from "../../shared/CustomStylings";
 
-const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExitModal, toggleDeleteGroupModal }) => {
+const ContactAction = ({
+  type,
+  active_member,
+  onToggleClearChatMessage,
+  onToggleExitModal,
+  onToggleDeleteGroupModal,
+}) => {
   return (
     <View
       style={{
@@ -18,7 +24,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
           ...styles.container,
         }}
       >
-        <TouchableOpacity style={{ ...styles.wrapper }} onPress={toggleClearChatMessage}>
+        <TouchableOpacity style={{ ...styles.wrapper }} onPress={onToggleClearChatMessage}>
           <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Clear Messages</Text>
           <MaterialCommunityIcons name={"close-circle-outline"} size={15} color="#EB0E29" />
         </TouchableOpacity>
@@ -26,7 +32,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
         {type === "group" && active_member === 1 && (
           <TouchableOpacity
             style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
-            onPress={toggleExitModal}
+            onPress={onToggleExitModal}
           >
             <Text style={[{ fontSize: 14 }, TextProps]}>Exit Group</Text>
             <MaterialCommunityIcons
@@ -39,7 +45,7 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
         {type === "group" && active_member === 0 && (
           <TouchableOpacity
             style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
-            onPress={toggleDeleteGroupModal}
+            onPress={onToggleDeleteGroupModal}
           >
             <Text style={[{ fontSize: 14, fontWeight: "400", color: "#EB0E29" }]}>Delete Group</Text>
             <MaterialCommunityIcons
@@ -49,17 +55,10 @@ const ContactAction = ({ type, active_member, toggleClearChatMessage, toggleExit
             />
           </TouchableOpacity>
         )}
+
         {/* <TouchableOpacity
           style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
-          onPress={toggleClearChatMessage}
-        >
-          <Text fontSize={14} fontWeight={400}>
-            Block {name.length > 30 ? name.split(" ")[0] : name}
-          </Text>
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity
-          style={{ ...styles.wrapper, borderTopWidth: 1, borderTopColor: "#fafafa" }}
-          onPress={toggleClearChatMessage}
+          onPress={null}
         >
           <Text fontSize={14} fontWeight={400}>
             Report {name.length > 30 ? name.split(" ")[0] : name}

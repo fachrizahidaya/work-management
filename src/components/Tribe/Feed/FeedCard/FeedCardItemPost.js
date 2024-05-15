@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-import { StyleSheet, TouchableOpacity, View, Pressable, Text, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -24,16 +24,14 @@ const FeedCardItemPost = ({
   loggedEmployeeId,
   loggedEmployeeImage,
   onToggleLike,
-  toggleFullScreen,
-  handleLinkPress,
+  onToggleFullScreen,
+  onPressLink,
   employeeUsername,
   navigation,
   reference,
-  refetchPost,
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  refetchAllPost,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -51,7 +49,7 @@ const FeedCardItemPost = ({
       setLikeAction("like");
       setTotalLike((prevState) => prevState - 1);
     }
-    onToggleLike(post_id, action, refetchPost, refetchAllPost);
+    onToggleLike(post_id, action);
   };
 
   useEffect(() => {
@@ -114,7 +112,7 @@ const FeedCardItemPost = ({
               navigation={navigation}
               loggedEmployeeId={loggedEmployeeId}
               loggedEmployeeImage={loggedEmployeeImage}
-              handleLinkPress={handleLinkPress}
+              onPressLink={onPressLink}
             />
           }
         </Text>
@@ -123,7 +121,7 @@ const FeedCardItemPost = ({
           <TouchableOpacity
             key={id}
             onPress={() =>
-              attachment && toggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
+              attachment && onToggleFullScreen(attachment, isFullScreen, setIsFullScreen, setSelectedPicture)
             }
           >
             <Image
@@ -148,14 +146,20 @@ const FeedCardItemPost = ({
           </View>
           <View style={styles.iconAction}>
             {likeAction === "dislike" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart" size={20} color="#FF0000" />
-              </Pressable>
+              <MaterialCommunityIcons
+                onPress={() => toggleLikeHandler(id, likeAction)}
+                name="heart"
+                size={20}
+                color="#FF0000"
+              />
             )}
             {likeAction === "like" && (
-              <Pressable onPress={() => toggleLikeHandler(id, likeAction)}>
-                <MaterialCommunityIcons name="heart-outline" size={20} color="#3F434A" />
-              </Pressable>
+              <MaterialCommunityIcons
+                onPress={() => toggleLikeHandler(id, likeAction)}
+                name="heart-outline"
+                size={20}
+                color="#3F434A"
+              />
             )}
 
             <Text style={[{ fontSize: 14 }, TextProps]}>{totalLike || total_like}</Text>

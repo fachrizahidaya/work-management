@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet, View, Text } from "react-native";
@@ -27,6 +28,7 @@ const PayslipScreen = () => {
 
   const payslipDownloadScreenSheetRef = useRef(null);
   const payslipPasswordEditScreenSheetRef = useRef(null);
+  const firstTimeRef = useRef(null);
 
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
@@ -112,6 +114,16 @@ const PayslipScreen = () => {
       setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
     }
   }, [payslip?.data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      refetchPayslip();
+    }, [refetchPayslip])
+  );
 
   return (
     <>

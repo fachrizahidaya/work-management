@@ -11,7 +11,7 @@ const FeedCommentReplyItem = ({
   onReply,
   parentId,
   authorImage,
-  handleLinkPress,
+  onPressLink,
   employeeUsername,
   setCommentParentId,
   navigation,
@@ -36,7 +36,7 @@ const FeedCommentReplyItem = ({
                 navigation={navigation}
                 loggedEmployeeId={null}
                 loggedEmployeeImage={null}
-                handleLinkPress={handleLinkPress}
+                onPressLink={onPressLink}
               />
             }
           </Text>

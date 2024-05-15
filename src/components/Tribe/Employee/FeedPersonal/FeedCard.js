@@ -38,7 +38,6 @@ const FeedCard = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
-  refetchAllPost,
 }) => {
   return (
     <View style={{ flex: 1 }}>
@@ -47,7 +46,6 @@ const FeedCard = ({
         extraData={forceRerender} // re-render data handler
         keyExtractor={(item, index) => index}
         onEndReachedThreshold={0.1}
-        estimatedItemSize={150}
         onScrollBeginDrag={() => setHasBeenScrolled(true)} // user scroll handler
         onEndReached={hasBeenScrolled === true ? postEndReachedHandler : null}
         ListFooterComponent={() => personalPostIsLoading && <ActivityIndicator />}
@@ -65,6 +63,10 @@ const FeedCard = ({
           <EmployeeData userSelector={userSelector} employee={employee} teammates={teammates} reference={reference} />
         }
         stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        windowSize={10}
         // Employee Posts
         renderItem={({ item, index }) => {
           if (item.id === "no-posts") {
@@ -104,11 +106,9 @@ const FeedCard = ({
                 navigation={navigation}
                 reference={commentScreenSheetRef}
                 setPostId={setPostId}
-                refetchPost={refetchPersonalPost}
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
-                refetchAllPost={refetchAllPost}
               />
             </View>
           );

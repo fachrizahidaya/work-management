@@ -9,7 +9,7 @@ const FeedContentStyle = ({
   navigation,
   loggedEmployeeId,
   loggedEmployeeImage,
-  handleLinkPress,
+  onPressLink,
 }) => {
   const contentStyledTextHandler = words?.map((item, index) => {
     let textStyle = styles.defaultText;
@@ -21,7 +21,7 @@ const FeedContentStyle = ({
     if (item.includes("https" || "http")) {
       textStyle = styles.highlightedText;
       return (
-        <Text key={index} style={textStyle} onPress={() => handleLinkPress(item)}>
+        <Text key={index} style={textStyle} onPress={() => onPressLink(item)}>
           {item}{" "}
         </Text>
       );

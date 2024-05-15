@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Linking, StyleSheet, View, Text, Pressable } from "react-native";
 import {
   useAnimatedStyle,
@@ -35,8 +35,8 @@ const ChatBubble = ({
   isDeleted,
   isGrouped,
   reply_to,
-  openChatBubbleHandler,
-  toggleFullScreen,
+  handleOpenChatBubble,
+  onToggleFullScreen,
   onSwipe,
   isOptimistic,
   memberName,
@@ -398,7 +398,7 @@ const ChatBubble = ({
         imgTypes={imgTypes}
         formatMimeType={formatMimeType}
         file_type={file_type}
-        toggleFullScreen={toggleFullScreen}
+        onToggleFullScreen={onToggleFullScreen}
         band_attachment_id={band_attachment_id}
         band_attachment_title={band_attachment_title}
         band_attachment_no={band_attachment_no}
@@ -406,7 +406,7 @@ const ChatBubble = ({
         styledTexts={styledTexts}
         time={time}
         file_size={file_size}
-        openChatBubbleHandler={openChatBubbleHandler}
+        handleOpenChatBubble={handleOpenChatBubble}
         mimeTyeInfo={mimeTypeInfo}
         setMimeTypeInfo={setMimeTypeInfo}
         getFileExt={getFileExt}
@@ -418,7 +418,7 @@ const ChatBubble = ({
     </View>
   );
 };
-export default memo(ChatBubble);
+export default ChatBubble;
 
 const styles = StyleSheet.create({
   container: {
