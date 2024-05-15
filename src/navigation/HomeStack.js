@@ -89,10 +89,10 @@ import DownPayment from "../screens/Coin/Sales/DownPayment";
 import Supplier from "../screens/Coin/Purchase/Supplier";
 import NewSupplierScreen from "../screens/Coin/Purchase/NewSupplierScreen";
 import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
-import SiloTab from "./Tabs/SiloTab";
 
 // Silo Screens
-import DataEntryScreen from "../screens/Silo/DataEntry/DataEntryScreen";
+import DataEntryScreen from "../screens/Pipe/DataEntry/DataEntryScreen";
+import PipeTab from "./Tabs/PipeTab";
 
 const Stack = createStackNavigator();
 
@@ -142,7 +142,7 @@ const HomeStack = () => {
           //   return <SettingTab />;
           // }
           else if (moduleSelector.module_name === "PIPE") {
-            return <SiloTab />;
+            return <PipeTab />;
           } else {
             // Render a default component or handle unknown cases
             return <BandTab />;

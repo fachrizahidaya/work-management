@@ -6,8 +6,8 @@ import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
-import SiloDashboard from "../../screens/Silo/Dashboard/SiloDashboard";
-import SiloScreenSheet from "../../components/shared/ActionSheet/SiloScreenSheet";
+import PipeDashboard from "../../screens/Pipe/Dashboard/PipeDashboard";
+import PipeScreenSheet from "../../components/shared/ActionSheet/PipeScreenSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,8 +15,8 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const SiloTab = () => {
-  const siloScreenSheetRef = useRef(null);
+const PipeTab = () => {
+  const pipeScreenSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
   return (
     <>
@@ -36,7 +36,7 @@ const SiloTab = () => {
       >
         <Tab.Screen
           name="Dashboard"
-          component={SiloDashboard}
+          component={PipeDashboard}
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
@@ -88,7 +88,7 @@ const SiloTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => siloScreenSheetRef.current?.show()}>
+              <TouchableOpacity {...props} onPress={() => pipeScreenSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -100,7 +100,7 @@ const SiloTab = () => {
           component={EmptyScreen}
           options={{
             tabBarIcon: () => (
-              <Image source={require("../../assets/icons/silo_logo.png")} style={styles.moduleImage} alt="silo logo" />
+              <Image source={require("../../assets/icons/pipe_logo.png")} style={styles.moduleImage} alt="pipe logo" />
             ),
             tabBarButton: (props) => (
               <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
@@ -112,14 +112,14 @@ const SiloTab = () => {
       </Tab.Navigator>
 
       {/* Sheets */}
-      <SiloScreenSheet reference={siloScreenSheetRef} />
+      <PipeScreenSheet reference={pipeScreenSheetRef} />
 
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );
 };
 
-export default SiloTab;
+export default PipeTab;
 
 const styles = StyleSheet.create({
   menuIcon: {
