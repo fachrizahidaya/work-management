@@ -80,6 +80,12 @@
           "locationAlwaysPermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes.",
           "locationWhenInUsePermission": "Nest may request access your device location to verify your attendance and will be used for attendance purposes."
         }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Nest may request access your device camera to scan barcode and will be used for scan barcode and qr code"
+        }
       ]
     ],
     "runtimeVersion": {
