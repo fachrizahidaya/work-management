@@ -63,13 +63,21 @@ const AttendanceForm = ({
   /**
    * Handle for Alpa type
    */
-  const alpaType = [
-    { label: "Alpa", value: "Alpa" },
-    { label: "Sick", value: "Sick" },
-    { label: "Permit", value: "Permit" },
-    { label: "Other", value: "Other" },
-  ];
-
+  const alpaType =
+    date?.dayType === "Day Off"
+      ? [
+          { label: "Alpa", value: "Alpa" },
+          { label: "Sick", value: "Sick" },
+          { label: "Permit", value: "Permit" },
+          { label: "Day Off", value: "Day Off" },
+          { label: "Other", value: "Other" },
+        ]
+      : [
+          { label: "Alpa", value: "Alpa" },
+          { label: "Sick", value: "Sick" },
+          { label: "Permit", value: "Permit" },
+          { label: "Other", value: "Other" },
+        ];
   const tabs = useMemo(() => {
     return [
       { title: "late", value: "late" },
