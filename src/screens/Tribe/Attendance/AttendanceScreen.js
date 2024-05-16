@@ -291,7 +291,10 @@ const AttendanceScreen = () => {
             timeOut,
           } = event;
 
-          if (attendanceType === "Leave" || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off") {
+          if (
+            attendanceType === "Leave"
+            // || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off"
+          ) {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
