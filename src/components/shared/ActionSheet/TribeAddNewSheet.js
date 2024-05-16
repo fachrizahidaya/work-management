@@ -20,6 +20,7 @@ import ConfirmationModal from "../ConfirmationModal";
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState({});
   const [locationOn, setLocationOn] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(null);
   const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
@@ -100,27 +101,20 @@ const TribeAddNewSheet = (props) => {
     );
   };
 
-  const leaveCondition =
-    attendance?.data?.att_type === "Leave" &&
-    (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
+  // const leaveCondition =
+  //   attendance?.data?.att_type === "Leave" &&
+  //   (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off");
 
-  const holidayCondition =
-    (attendance?.data?.att_type === "Holiday" &&
-      (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off")) ||
-    attendance?.data?.day_type === "Holiday";
+  // const holidayCondition =
+  //   (attendance?.data?.att_type === "Holiday" &&
+  //     (attendance?.data?.day_type === "Work Day" || attendance?.data?.day_type === "Day Off")) ||
+  //   attendance?.data?.day_type === "Holiday";
 
-  const weekend = attendance?.data?.day_type === "Weekend";
+  // const weekend = attendance?.data?.day_type === "Weekend";
 
-  const dayoff = attendance?.data?.day_type === "Day Off";
+  // const dayoff = attendance?.data?.day_type === "Day Off";
 
-  /**
-   * Handle submit attendance clock-in and out
-   */
-  const attendanceCheckHandler = () => {
-    checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(true);
-  };
-
-  const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async (isSlide) => {
+  const checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation = async () => {
     try {
       const isLocationEnabled = await Location.hasServicesEnabledAsync();
       setLocationOn(isLocationEnabled);
@@ -130,28 +124,46 @@ const TribeAddNewSheet = (props) => {
         return;
       } else {
         const { granted } = await Location.getForegroundPermissionsAsync();
+        setLocationPermission(granted);
 
-        if (!granted) {
-          const { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== "granted") {
-            showAlertToAllowPermission();
-            return;
-          }
-        } else {
-          const currentLocation = await Location.getCurrentPositionAsync({});
-          setLocation(currentLocation?.coords);
-
-          if (isSlide) {
-            if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
-              toggleAttendanceModal();
-            }
-          }
-        }
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation(currentLocation?.coords);
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  /**
+   * Handle submit attendance clock-in and out
+   */
+  const attendanceSubmit = () => {
+    if (!locationOn) {
+      showAlertToActivateLocation();
+      return;
+    }
+    if (!locationPermission) {
+      showAlertToAllowPermission();
+      return;
+    }
+    if (dayjs().format("HH:mm") !== attendance?.data?.time_out || !attendance) {
+      toggleAttendanceModal();
+    }
+  };
+
+  useEffect(() => {
+    const checkPermissionRequest = async () => {
+      if (!locationPermission) {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          showAlertToAllowPermission();
+          return;
+        }
+      }
+    };
+
+    checkPermissionRequest();
+  }, [locationPermission]);
 
   useEffect(() => {
     /**
@@ -168,7 +180,7 @@ const TribeAddNewSheet = (props) => {
 
     AppState.addEventListener("change", handleAppStateChange);
     checkIsLocationActiveAndLocationPermissionAndGetCurrentLocation(); // Initial run when the component mounts
-  }, []);
+  }, [locationOn, locationPermission]);
 
   return (
     <>
@@ -201,11 +213,11 @@ const TribeAddNewSheet = (props) => {
                   </Text>
                 </View>
               </TouchableOpacity>
-            ) : !attendance?.data || leaveCondition || holidayCondition || weekend || dayoff ? null : (
+            ) : !attendance?.data ? null : (
               <Pressable key={idx} style={styles.wrapper}>
                 <ClockAttendance
                   attendance={attendance?.data}
-                  onClock={attendanceCheckHandler}
+                  onClock={attendanceSubmit}
                   location={location}
                   locationOn={locationOn}
                   modalIsOpen={attendanceModalIsopen}
