@@ -95,7 +95,8 @@ const AttendanceScreen = () => {
   const hasSubmittedBothReports = date?.lateReason && date?.earlyReason;
   const hasSubmittedReportAlpa =
     ["Alpa", "Sick", "Other"].includes(attendanceType) && date?.attendanceReason && isWorkDay;
-  const notAttend = attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason;
+  const notAttend =
+    (attendanceType === "Alpa" && isWorkDay && date?.date !== currentDate && !date?.attendanceReason) || !isWorkDay;
   const isLeave = attendanceType === "Leave" || attendanceType === "Permit";
 
   /**
@@ -151,7 +152,11 @@ const AttendanceScreen = () => {
       const dateData = items[selectedDate];
       if (dateData && dateData.length > 0) {
         dateData.map((item) => {
-          if (item?.date && item?.confirmation === 0 && item?.dayType === "Work Day") {
+          if (
+            item?.date &&
+            item?.confirmation === 0
+            // && item?.dayType === "Work Day"
+          ) {
             setDate(item);
             attendanceScreenSheetRef.current?.show();
           }
@@ -291,13 +296,20 @@ const AttendanceScreen = () => {
             timeOut,
           } = event;
 
-          if (attendanceType === "Leave" || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off") {
+          if (
+            attendanceType === "Leave"
+            // || dayType === "Weekend" || dayType === "Holiday" || dayType === "Day Off"
+          ) {
             backgroundColor = dayOff.color;
             textColor = dayOff.textColor;
           } else if (
             (early && !earlyReason && !confirmation) ||
             (late && !lateReason && !confirmation) ||
-            (attendanceType === "Alpa" && !attendanceReason && date !== currentDate)
+            (attendanceType === "Alpa" && !attendanceReason && date !== currentDate) ||
+            attendanceType === "Leave" ||
+            dayType === "Weekend" ||
+            dayType === "Holiday" ||
+            dayType === "Day Off"
           ) {
             backgroundColor = reportRequired.color;
             textColor = reportRequired.textColor;

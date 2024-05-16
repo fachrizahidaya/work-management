@@ -26,16 +26,23 @@ const LaunchScreen = () => {
       let currentDate = new Date();
       const userData = await SecureStore.getItemAsync("user_data");
       const token = await SecureStore.getItemAsync("user_token");
+      const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
 
-      if (token) {
-        const decodedToken = jwt_decode(token);
-        const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
+      if (agreeToEula === "agreed") {
+        if (token) {
+          const decodedToken = jwt_decode(token);
+          const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
 
-        if (!isExpired) {
-          const parsedUserData = JSON.parse(userData);
+          if (!isExpired) {
+            const parsedUserData = JSON.parse(userData);
 
-          loginHandler(parsedUserData);
+            loginHandler(parsedUserData);
+          }
+        } else {
+          navigation.navigate("Login");
         }
+      } else {
+        toggleEula();
       }
     } catch (error) {
       console.log(error);
@@ -44,29 +51,20 @@ const LaunchScreen = () => {
 
   const agreeToTermsHandler = async () => {
     await SecureStore.setItemAsync("agree_to_terms", "agreed");
+    const userData = await SecureStore.getItemAsync("user_data");
+    const parsedUserData = JSON.parse(userData);
+
     toggleEula();
-    navigation.navigate("Login");
+
+    if (!userData) {
+      navigation.navigate("Login");
+    } else {
+      loginHandler(parsedUserData);
+    }
   };
 
   useEffect(() => {
     getUserData();
-  }, []);
-
-  useEffect(() => {
-    const getAgreeToEulaStatus = async () => {
-      try {
-        const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
-
-        if (!agreeToEula) {
-          toggleEula();
-        } else {
-          navigation.navigate("Login");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getAgreeToEulaStatus();
   }, []);
 
   return (
