@@ -3,12 +3,9 @@ import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { StatusBar } from "expo-status-bar";
 
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
-import { card } from "../../../styles/Card";
-import { TextProps } from "../../../components/shared/CustomStylings";
 import Button from "../../../components/shared/Forms/Button";
 
 const DataEntryScreen = () => {
