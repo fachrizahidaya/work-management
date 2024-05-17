@@ -137,7 +137,7 @@ const FeedCardItem = ({
             </TouchableOpacity>
             <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
-          {/* <MaterialCommunityIcons
+          <MaterialCommunityIcons
             onPress={async () => {
               await SheetManager.show("form-sheet", {
                 payload: {
@@ -150,7 +150,7 @@ const FeedCardItem = ({
             borderRadius={20}
             color="#000000"
             style={{ marginRight: 1 }}
-          /> */}
+          />
         </View>
         <Text style={[{ fontSize: 14 }, TextProps]}>
           {

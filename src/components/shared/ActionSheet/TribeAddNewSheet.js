@@ -12,7 +12,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import { useFetch } from "../../../hooks/useFetch";
 import ClockAttendance from "../../Tribe/Clock/ClockAttendance";
-import { TextProps, ErrorToastProps } from "../CustomStylings";
+import { TextProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
@@ -125,8 +125,12 @@ const TribeAddNewSheet = (props) => {
       } else {
         const { granted } = await Location.getForegroundPermissionsAsync();
         setLocationPermission(granted);
-
+        const lastKnownLocation = await Location.getLastKnownPositionAsync();
         const currentLocation = await Location.getCurrentPositionAsync({});
+        if (Platform.OS === "ios") {
+          setLocation(currentLocation ? currentLocation?.coords : lastKnownLocation?.coords);
+        } else {
+        }
         setLocation(currentLocation?.coords);
       }
     } catch (err) {
