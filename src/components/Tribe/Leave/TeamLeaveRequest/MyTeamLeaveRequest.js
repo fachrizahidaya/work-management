@@ -92,7 +92,7 @@ const MyTeamLeaveRequest = ({
             isLoading={pendingLeaveRequestIsLoading}
             formik={formik}
             isSubmitting={isSubmitting}
-            responseHandler={responseHandler}
+            handleResponse={responseHandler}
           />
         ) : tabValue === "Approved" ? (
           <MyTeamLeaveRequestList
@@ -106,7 +106,7 @@ const MyTeamLeaveRequest = ({
             isLoading={approvedLeaveRequestIsLoading}
             formik={formik}
             isSubmitting={isSubmitting}
-            responseHandler={responseHandler}
+            handleResponse={responseHandler}
           />
         ) : (
           <MyTeamLeaveRequestList
