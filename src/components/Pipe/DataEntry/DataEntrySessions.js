@@ -1,27 +1,32 @@
-import { Pressable, Text, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { StyleSheet, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import DataEntryItem from "./DataEntryItem";
 
-import { card } from "../../../styles/Card";
-
-const DataEntrySessions = ({ date, shift, pic }) => {
+const DataEntrySessions = ({ navigation, data, dayjs }) => {
   return (
-    <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 8,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <View style={{ gap: 20 }}>
-        <Text>{date}</Text>
-        <Text>{shift}</Text>
-        <Text>{pic}</Text>
-      </View>
-      <MaterialCommunityIcons name="chevron-right" size={20} />
-    </Pressable>
+    <View style={styles.container}>
+      <FlashList
+        data={data}
+        estimatedItemSize={50}
+        renderItem={({ item }) => (
+          <DataEntryItem
+            date={item?.date}
+            shift={item?.shift}
+            pic={item?.person_in_charge}
+            navigation={navigation}
+            dayjs={dayjs}
+          />
+        )}
+      />
+    </View>
   );
 };
 
 export default DataEntrySessions;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 14,
+  },
+});
