@@ -185,11 +185,11 @@ const NewFeedScreen = () => {
                 handleAddImageOption={toggleAddImageModal}
               />
               <PostTypeOptions
-                publicToggleHandler={publicToggleHandler}
-                announcementToggleHandler={announcementToggleHandler}
+                onTogglePublic={publicToggleHandler}
+                onToggleAnnouncement={announcementToggleHandler}
                 isAnnouncementSelected={isAnnouncementSelected}
                 dateShown={dateShown}
-                endDateAnnouncementHandler={endDateAnnouncementHandler}
+                handleEndDataOfAnnouncement={endDateAnnouncementHandler}
                 formik={formik}
                 reference={postActionScreenSheetRef}
               />
