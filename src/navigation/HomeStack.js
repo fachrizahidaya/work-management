@@ -93,6 +93,7 @@ import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
 // Silo Screens
 import DataEntryScreen from "../screens/Pipe/DataEntry/DataEntryScreen";
 import PipeTab from "./Tabs/PipeTab";
+import DataEntrySession from "../screens/Pipe/DataEntry/DataEntrySession";
 
 const Stack = createStackNavigator();
 
@@ -341,6 +342,7 @@ const HomeStack = () => {
 
       {/* Silo Screens */}
       <Stack.Screen name="Data Entry" component={DataEntryScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Entry Session" component={DataEntrySession} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
