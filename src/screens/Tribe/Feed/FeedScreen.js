@@ -365,6 +365,15 @@ const FeedScreen = () => {
         isOpen={actionModalIsOpen}
         toggle={closeSelectedPostHandler}
         description="Are you sure want to report this post?"
+        apiUrl={`/hr/post-report`}
+        body={{
+          post_id: selectedPost,
+          notes: "Inappropriate Post",
+        }}
+        isDelete={false}
+        successMessage="Post Reported"
+        hasSuccessFunc={true}
+        onSuccess={() => refetchPost()}
       />
     </>
   );
