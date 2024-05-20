@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import PageHeader from "../../../components/shared/PageHeader";
 import Button from "../../../components/shared/Forms/Button";
 
@@ -12,16 +12,20 @@ const DataEntrySession = () => {
   const [data, setData] = useState(null);
   const [courierImage, setCourierImage] = useState(null);
   const [courierName, setCourierName] = useState(null);
+  const [couriers, setCouriers] = useState([
+    { name: "Shopee Xpress", image_source: require("../../../assets/vectors/spx.png"), courier_code: "SPX", qty: 0 },
+    { name: "JNE", image_source: require("../../../assets/vectors/jne.png"), courier_code: "TLJ", qty: 0 },
+    { name: "SiCepat", image_source: require("../../../assets/vectors/sicepat.png"), courier_code: "004", qty: 0 },
+    {
+      name: "J&T Express",
+      image_source: require("../../../assets/vectors/jt-express.png"),
+      courier_code: "JP",
+      qty: 0,
+    },
+    { name: "J&T Cargo", image_source: require("../../../assets/vectors/jt-cargo.png"), courier_code: "200", qty: 0 },
+  ]);
 
   const navigation = useNavigation();
-
-  const couriers = [
-    { name: "Shopee Xpress", image_source: require("../../../assets/vectors/spx.png"), courier_code: "SPX" },
-    { name: "JNE", image_source: require("../../../assets/vectors/jne.png"), courier_code: "TLJR" },
-    { name: "SiCepat", image_source: require("../../../assets/vectors/sicepat.png"), courier_code: "004" },
-    { name: "J&T Express", image_source: require("../../../assets/vectors/jt-express.png"), courier_code: "JP" },
-    { name: "J&T Cargo", image_source: require("../../../assets/vectors/jt-cargo.png"), courier_code: "200" },
-  ];
 
   const handleBarcodeScanned = ({ type, data }) => {
     setScanned(true);
@@ -37,14 +41,23 @@ const DataEntrySession = () => {
   };
 
   const handleCheckCourier = (awb) => {
-    const courier = couriers.find((courier) => awb.includes(courier.courier_code));
-    if (courier) {
-      setCourierName(courier.name);
-      setCourierImage(courier.image_source);
-    } else {
-      setCourierName(null);
-      setCourierImage("not-found");
-    }
+    const awbPrefix = awb?.slice(0, 3);
+    setCouriers((prevCouriers) => {
+      const updatedCouriers = prevCouriers?.map((courier) => {
+        if (awbPrefix.includes(courier.courier_code)) {
+          setCourierName(courier.name);
+          setCourierImage(courier.image_source);
+          return { ...courier, qty: courier.qty + 1 };
+        }
+        return courier;
+      });
+      const foundCourier = updatedCouriers.find((courier) => awbPrefix.includes(courier.courier_code));
+      if (!foundCourier) {
+        setCourierName(null);
+        setCourierImage("not-found");
+      }
+      return updatedCouriers;
+    });
   };
 
   useEffect(() => {
@@ -56,13 +69,6 @@ const DataEntrySession = () => {
     getBarcodeScannerPermissions();
   }, []);
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>Access denied</Text>;
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -70,21 +76,40 @@ const DataEntrySession = () => {
       </View>
 
       <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
-        {courierImage &&
-          (courierImage !== "not-found" ? (
-            <Image source={courierImage} alt="courier" style={styles.image} />
-          ) : (
-            <Text>Not Found</Text>
-          ))}
+        {courierImage === "not-found" && <Text>Not Found</Text>}
 
         <Text>{courierName ? `${courierName}` : ""}</Text>
-        <Text>{data ? `AWB: ${data}` : ""}</Text>
-        <BarCodeScanner style={styles.scanner} onBarCodeScanned={scanned ? undefined : handleBarcodeScanned} />
+        <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : ""}</Text>
+        {hasPermission === false ? (
+          <Text>Access denied</Text>
+        ) : hasPermission === null ? (
+          <Text>Please grant camera access</Text>
+        ) : (
+          <BarCodeScanner style={styles.scanner} onBarCodeScanned={scanned ? undefined : handleBarcodeScanned} />
+        )}
         {scanned && (
           <Button padding={10} onPress={() => handleScanBarcodeAgain()}>
             <Text style={{ color: "#FFFFFF" }}>Tap to Scan again</Text>
           </Button>
         )}
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            margin: 5,
+          }}
+        >
+          {couriers.map((item, index) => {
+            return (
+              <View key={index} style={{ alignItems: "center", gap: 10, padding: 5 }}>
+                <Text>{item.name}</Text>
+                <Text>{item.qty}</Text>
+              </View>
+            );
+          })}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -111,10 +136,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    height: 100,
+    height: 90,
     width: 250,
     resizeMode: "cover",
     alignSelf: "center",
     borderWidth: 1,
   },
+  tableContainer: { flex: 1, padding: 16, paddingTop: 30 },
+  tableHead: { height: 40, backgroundColor: "#f1f8ff" },
+  text: { margin: 6 },
 });
