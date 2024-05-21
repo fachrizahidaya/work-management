@@ -109,7 +109,7 @@ const FeedCardItem = ({
           </View>
 
           {/* Toggle report a post */}
-          {loggedEmployeeId !== employeeId && (
+          {/* {loggedEmployeeId !== employeeId && (
             <MaterialCommunityIcons
               onPress={async () => {
                 await SheetManager.show("form-sheet", {
@@ -124,7 +124,7 @@ const FeedCardItem = ({
               color="#000000"
               style={{ marginRight: 1 }}
             />
-          )}
+          )} */}
         </View>
         <Text style={[{ fontSize: 14 }, TextProps]}>
           {
