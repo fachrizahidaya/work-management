@@ -9,12 +9,7 @@ import { TextProps } from "../../../shared/CustomStylings";
 
 const PostOptions = ({ formik, loggedEmployeeImage, loggedEmployeeName, checkAccess, reference }) => {
   return (
-    <View
-      style={{
-        ...styles.inputHeader,
-        alignItems: formik.values.type === "Public" ? "center" : "center",
-      }}
-    >
+    <View style={[styles.inputHeader, { alignItems: formik.values.type === "Public" ? "center" : "center" }]}>
       <AvatarPlaceholder image={loggedEmployeeImage} name={loggedEmployeeName} size="lg" isThumb={false} />
       <View style={{ gap: 5 }}>
         <Button
@@ -34,13 +29,7 @@ const PostOptions = ({ formik, loggedEmployeeImage, loggedEmployeeName, checkAcc
         {formik.values.type === "Public" ? (
           ""
         ) : (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
             <MaterialCommunityIcons name="clock-time-three-outline" color="#3F434A" />
             <Text style={[{ fontSize: 12 }, TextProps]}>
               {!formik.values.end_date ? "Please select" : dayjs(formik.values.end_date).format("YYYY-MM-DD")}

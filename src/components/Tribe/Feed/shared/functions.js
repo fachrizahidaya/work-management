@@ -24,10 +24,11 @@ export const openCommentHandler = (post_id, reference, setPostId) => {
 /**
  * Handle close comment Action sheet
  */
-export const closeCommentHandler = (reference, setPostId, setCommentParentId) => {
+export const closeCommentHandler = (reference, setPostId, setCommentParentId, setComments) => {
   reference.current?.hide();
   setPostId(null);
   setCommentParentId(null);
+  setComments([]);
 };
 
 /**

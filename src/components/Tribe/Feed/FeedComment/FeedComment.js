@@ -26,6 +26,7 @@ const FeedComment = ({
   setCommentParentId,
   navigation,
   handleRefreshComments,
+  setComments,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
@@ -33,7 +34,7 @@ const FeedComment = ({
     <ActionSheet
       ref={reference}
       onClose={() => {
-        handleClose(reference, setPostId, setCommentParentId);
+        handleClose(reference, setPostId, setCommentParentId, setComments);
       }}
     >
       <View style={styles.header}>
@@ -42,14 +43,7 @@ const FeedComment = ({
         </View>
       </View>
 
-      <View
-        style={{
-          gap: 21,
-          paddingHorizontal: 20,
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
+      <View style={{ gap: 21, paddingHorizontal: 20, justifyContent: "center" }}>
         <FeedCommentList
           comments={comments}
           hasBeenScrolled={hasBeenScrolled}
@@ -88,4 +82,5 @@ const styles = StyleSheet.create({
     borderBottomColor: "#DBDBDB",
     marginTop: 15,
   },
+  wrapper: {},
 });
