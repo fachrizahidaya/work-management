@@ -43,26 +43,24 @@ const FeedCardItem = ({
 
   const words = content?.split(" ");
 
+  const params = {
+    employeeId: employeeId,
+    loggedEmployeeId: loggedEmployeeId,
+    loggedEmployeeImage: loggedEmployeeImage,
+  };
+
   const renderActionOptions = () => (
-    <View style={styles.wrapper}>
-      <View
-        style={{
-          gap: 1,
-          backgroundColor: "#F5F5F5",
-          borderRadius: 10,
+    <View style={styles.screenSheet}>
+      <TouchableOpacity
+        onPress={async () => {
+          await SheetManager.hide("form-sheet");
+          onToggleReport(id);
         }}
+        style={styles.screenSheetItem}
       >
-        <TouchableOpacity
-          onPress={async () => {
-            await SheetManager.hide("form-sheet");
-            onToggleReport(id);
-          }}
-          style={styles.containerReport}
-        >
-          <Text style={[{ fontSize: 16 }, TextProps]}>Report</Text>
-          <MaterialCommunityIcons name="alert-box" size={20} color="#176688" />
-        </TouchableOpacity>
-      </View>
+        <Text style={[{ fontSize: 16 }, TextProps]}>Report</Text>
+        <MaterialCommunityIcons name="alert-box" size={20} color="#176688" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -89,55 +87,29 @@ const FeedCardItem = ({
   }, [likedBy, loggedEmployeeId]);
 
   return (
-    <View
-      style={{
-        ...card.card,
-        ...styles.card,
-      }}
-    >
-      <Pressable style={styles.card} onPress={() => navigation.navigate("Post Screen", { id: id })}>
+    <View style={[card.card, { gap: 20, marginVertical: 8 }]}>
+      <Pressable style={{ gap: 20, marginVertical: 8 }} onPress={() => navigation.navigate("Post Screen", { id: id })}>
         <View style={styles.cardHeader}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: employeeId,
-                loggedEmployeeId: loggedEmployeeId,
-                loggedEmployeeImage: loggedEmployeeImage,
-              })
-            }
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Employee Profile", params)}>
             <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </TouchableOpacity>
 
           <View style={{ flex: 1, gap: 5 }}>
-            <TouchableOpacity
-              style={styles.dockName}
-              onPress={() =>
-                navigation.navigate("Employee Profile", {
-                  employeeId: employeeId,
-                  loggedEmployeeId: loggedEmployeeId,
-                  loggedEmployeeImage: loggedEmployeeImage,
-                })
-              }
-            >
+            <TouchableOpacity style={styles.dockName} onPress={() => navigation.navigate("Employee Profile", params)}>
               <Text style={[{ fontSize: 14 }, TextProps]}>
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
-              {type === "Announcement" ? (
-                <View
-                  style={{
-                    borderRadius: 10,
-                    backgroundColor: "#ADD7FF",
-                    padding: 5,
-                  }}
-                >
+              {type === "Announcement" && (
+                <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
                   <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
-              ) : null}
+              )}
             </TouchableOpacity>
             <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
-          {loggedEmployeeId !== employeeId && (
+
+          {/* Toggle report a post */}
+          {/* {loggedEmployeeId !== employeeId && (
             <MaterialCommunityIcons
               onPress={async () => {
                 await SheetManager.show("form-sheet", {
@@ -152,7 +124,7 @@ const FeedCardItem = ({
               color="#000000"
               style={{ marginRight: 1 }}
             />
-          )}
+          )} */}
         </View>
         <Text style={[{ fontSize: 14 }, TextProps]}>
           {
@@ -168,7 +140,7 @@ const FeedCardItem = ({
         </Text>
       </Pressable>
 
-      {attachment ? (
+      {attachment && (
         <TouchableOpacity
           key={id}
           onPress={() =>
@@ -185,9 +157,10 @@ const FeedCardItem = ({
             fadeDuration={0}
           />
         </TouchableOpacity>
-      ) : null}
+      )}
 
       <View style={styles.dockAction}>
+        {/* comment a post */}
         <View style={styles.iconAction}>
           <MaterialCommunityIcons
             onPress={() => {
@@ -199,6 +172,8 @@ const FeedCardItem = ({
           />
           <Text style={[{ fontSize: 14 }, TextProps]}>{totalComment}</Text>
         </View>
+
+        {/* like or dislike a post */}
         <View style={styles.iconAction}>
           {likeAction === "dislike" && (
             <MaterialCommunityIcons
@@ -227,12 +202,6 @@ const FeedCardItem = ({
 export default FeedCardItem;
 
 const styles = StyleSheet.create({
-  card: {
-    gap: 20,
-    flexDirection: "column",
-    marginVertical: 8,
-    elevation: 1,
-  },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -261,13 +230,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
   },
-  wrapper: {
+  screenSheet: {
     gap: 21,
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingBottom: -20,
   },
-  containerReport: {
+  screenSheetItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

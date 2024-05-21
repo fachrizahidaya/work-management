@@ -342,6 +342,7 @@ const FeedScreen = () => {
           formik={formik}
           setCommentParentId={setCommentParentId}
           setPostId={setPostId}
+          setComments={setComments}
           navigation={navigation}
           handleRefreshComments={refreshCommentsHandler}
         />

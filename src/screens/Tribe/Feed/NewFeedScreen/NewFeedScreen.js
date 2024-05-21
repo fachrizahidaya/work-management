@@ -98,6 +98,11 @@ const NewFeedScreen = () => {
     formik.setFieldValue("end_date", value);
   };
 
+  const submitNewPost = () => {
+    toggleProcess();
+    formik.handleSubmit();
+  };
+
   /**
    * Handle create new post
    */
@@ -183,6 +188,7 @@ const NewFeedScreen = () => {
                 isLoading={processIsLoading}
                 setIsLoading={toggleProcess}
                 handleAddImageOption={toggleAddImageModal}
+                onSubmit={submitNewPost}
               />
               <PostTypeOptions
                 onTogglePublic={publicToggleHandler}
