@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
@@ -19,11 +21,10 @@ const FeedCommentItem = ({
   employeeUsername,
   setCommentParentId,
   navigation,
-  viewReplyToggle,
-  setViewReplyToggle,
-  hideReplies,
-  setHideReplies,
 }) => {
+  const [hideReplies, setHideReplies] = useState(false);
+  const [viewReplyToggle, setViewReplyToggle] = useState(false);
+
   const words = comments.split(" ");
 
   const {
@@ -69,10 +70,7 @@ const FeedCommentItem = ({
           ""
         ) : (
           <Pressable
-            style={{
-              marginHorizontal: 40,
-              marginVertical: 10,
-            }}
+            style={{ marginHorizontal: 40, marginVertical: 10 }}
             onPress={() => {
               refetchCommentRepliesData();
               setHideReplies(false);
@@ -80,14 +78,7 @@ const FeedCommentItem = ({
             }}
           >
             {viewReplyToggle === false ? (
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  color: "#8A7373",
-                  marginLeft: 10,
-                }}
-              >
+              <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373", marginLeft: 10 }}>
                 View{totalReplies ? ` ${totalReplies}` : ""} {totalReplies > 1 ? "Replies" : "Reply"}
               </Text>
             ) : (
@@ -117,7 +108,7 @@ const FeedCommentItem = ({
                     totalReplies={item?.total_replies}
                     parentId={parentId}
                     onReply={onReply}
-                    handleLinkPress={handleLinkPress}
+                    onPressLink={onPressLink}
                     employeeUsername={employeeUsername}
                     setCommentParentId={setCommentParentId}
                     navigation={navigation}
@@ -136,15 +127,7 @@ const FeedCommentItem = ({
                     setHideReplies(true);
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#8A7373",
-                    }}
-                  >
-                    Hide Reply
-                  </Text>
+                  <Text style={{ fontSize: 12, fontWeight: "500", color: "#8A7373" }}>Hide Reply</Text>
                 </Pressable>
               </View>
             )}
@@ -156,12 +139,3 @@ const FeedCommentItem = ({
 };
 
 export default FeedCommentItem;
-
-const styles = StyleSheet.create({
-  defaultText: {
-    color: "black",
-  },
-  highlightedText: {
-    color: "#72acdc",
-  },
-});

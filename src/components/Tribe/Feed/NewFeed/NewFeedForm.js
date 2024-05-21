@@ -4,7 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import NewFeedInput from "./NewFeedInput";
 
-const NewFeedForm = ({ formik, image, setImage, employees, isLoading, setIsLoading, handleAddImageOption }) => {
+const NewFeedForm = ({ formik, image, setImage, employees, isLoading, handleAddImageOption, onSubmit }) => {
   return (
     <View style={styles.container}>
       <View>
@@ -14,12 +14,7 @@ const NewFeedForm = ({ formik, image, setImage, employees, isLoading, setIsLoadi
           {image ? (
             <View style={{ alignSelf: "center" }}>
               <Image source={{ uri: image?.uri }} style={styles.image} alt="image selected" />
-              <Pressable
-                style={styles.close}
-                onPress={() => {
-                  setImage(null);
-                }}
-              >
+              <Pressable style={styles.close} onPress={() => setImage(null)}>
                 <MaterialCommunityIcons name="close" size={20} color="#FFFFFF" />
               </Pressable>
             </View>
@@ -39,18 +34,8 @@ const NewFeedForm = ({ formik, image, setImage, employees, isLoading, setIsLoadi
         </View>
 
         <TouchableOpacity
-          style={{
-            ...styles.submit,
-            opacity: formik.values.content === "" || isLoading ? 0.5 : 1,
-          }}
-          onPress={
-            formik.values.content === ""
-              ? null
-              : () => {
-                  setIsLoading();
-                  formik.handleSubmit();
-                }
-          }
+          style={[styles.submit, { opacity: formik.values.content === "" || isLoading ? 0.5 : 1 }]}
+          onPress={formik.values.content === "" ? null : onSubmit}
           disabled={formik.values.content === "" || isLoading ? true : false}
         >
           {isLoading ? (
