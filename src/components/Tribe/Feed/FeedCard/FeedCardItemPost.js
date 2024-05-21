@@ -38,6 +38,12 @@ const FeedCardItemPost = ({
 
   const words = content?.split(" ");
 
+  const params = {
+    employeeId: employeeId,
+    loggedEmployeeId: loggedEmployeeId,
+    loggedEmployeeImage: loggedEmployeeImage,
+  };
+
   /**
    * Handle toggle like post
    */
@@ -64,38 +70,15 @@ const FeedCardItemPost = ({
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.cardHeader}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Employee Profile", {
-                employeeId: employeeId,
-                loggedEmployeeId: loggedEmployeeId,
-                loggedEmployeeImage: loggedEmployeeImage,
-              })
-            }
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Employee Profile", params)}>
             <AvatarPlaceholder image={employeeImage} name={employeeName} size="lg" isThumb={false} />
           </TouchableOpacity>
 
           <View style={{ flex: 1, gap: 5 }}>
-            <TouchableOpacity
-              style={styles.dockName}
-              onPress={() =>
-                navigation.navigate("Employee Profile", {
-                  employeeId: employeeId,
-                  loggedEmployeeId: loggedEmployeeId,
-                  loggedEmployeeImage: loggedEmployeeImage,
-                })
-              }
-            >
+            <TouchableOpacity style={styles.dockName} onPress={() => navigation.navigate("Employee Profile", params)}>
               <Text style={[TextProps]}>{employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}</Text>
               {type === "Announcement" ? (
-                <View
-                  style={{
-                    borderRadius: 10,
-                    backgroundColor: "#ADD7FF",
-                    padding: 5,
-                  }}
-                >
+                <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
                   <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
               ) : null}
