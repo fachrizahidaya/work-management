@@ -419,6 +419,7 @@ const EmployeeProfileScreen = () => {
                 setCurrentOffsetComments={setCurrentOffsetComment}
                 setPostId={setPostId}
                 setCommentParentId={setCommentParentId}
+                setComments={setComments}
               />
             </View>
           </>
