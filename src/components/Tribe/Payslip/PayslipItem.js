@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -8,23 +8,7 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const PayslipItem = ({ id, month, year, openSelectedPayslip }) => {
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        backgroundColor: "#ffffff",
-        gap: 10,
-        borderRadius: 10,
-        paddingVertical: 16,
-        paddingHorizontal: 14,
-        marginVertical: 8,
-        marginTop: 10,
-        elevation: 4,
-        shadowColor: "rgba(0, 0, 0, 1)",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-      }}
-    >
+    <View style={styles.container}>
       <View
         style={{
           flexDirection: "row",
@@ -48,3 +32,17 @@ const PayslipItem = ({ id, month, year, openSelectedPayslip }) => {
 };
 
 export default PayslipItem;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    backgroundColor: "#ffffff",
+    gap: 10,
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginVertical: 8,
+    marginTop: 10,
+    elevation: 2,
+  },
+});

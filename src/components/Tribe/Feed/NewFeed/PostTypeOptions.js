@@ -44,13 +44,7 @@ const PostTypeOptions = ({
                 <View>
                   <Text style={[{ fontSize: 12 }, TextProps]}>Announcement</Text>
                   {Platform.OS === "android" ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                       <Text style={[{ fontSize: 12 }, TextProps]}>End Date must be provided</Text>
                       {isAnnouncementSelected && dateShown ? (
                         <CustomDateTimePicker

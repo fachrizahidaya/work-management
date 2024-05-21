@@ -161,7 +161,6 @@ const PayslipScreen = () => {
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
-        downloadPayslipCheckAccess={downloadPayslipCheckAccess}
         onDownloadPayslip={payslipDownloadHandler}
       />
     </>

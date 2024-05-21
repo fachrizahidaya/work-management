@@ -61,12 +61,3 @@ const FeedCommentReplyItem = ({
 };
 
 export default FeedCommentReplyItem;
-
-const styles = StyleSheet.create({
-  defaultText: {
-    color: "black",
-  },
-  highlightedText: {
-    color: "#72acdc",
-  },
-});

@@ -53,6 +53,7 @@ const FeedScreen = () => {
 
   const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
   const { isOpen: actionModalIsOpen, toggle: toggleActionModal } = useDisclosure(false);
+  const { isOpen: reportPostSuccessIsOpen, toggle: toggleReportPostSuccess } = useDisclosure(false);
 
   const postFetchParameters = {
     offset: currentOffsetPost,
@@ -341,6 +342,7 @@ const FeedScreen = () => {
           formik={formik}
           setCommentParentId={setCommentParentId}
           setPostId={setPostId}
+          setComments={setComments}
           navigation={navigation}
           handleRefreshComments={refreshCommentsHandler}
         />
@@ -361,6 +363,13 @@ const FeedScreen = () => {
         title="Post shared!"
         description="Thank you for contributing to the community"
       />
+      <SuccessModal
+        isOpen={reportPostSuccessIsOpen}
+        toggle={toggleReportPostSuccess}
+        type={requestType}
+        title="Report Submitted!"
+        description="Your report is logged"
+      />
       <ConfirmationModal
         isOpen={actionModalIsOpen}
         toggle={closeSelectedPostHandler}
@@ -371,9 +380,13 @@ const FeedScreen = () => {
           notes: "Inappropriate Post",
         }}
         isDelete={false}
-        successMessage="Post Reported"
+        showSuccessToast={false}
         hasSuccessFunc={true}
-        onSuccess={() => refetchPost()}
+        onSuccess={() => {
+          setRequestType("info");
+          refetchPost();
+        }}
+        toggleOtherModal={toggleReportPostSuccess}
       />
     </>
   );
