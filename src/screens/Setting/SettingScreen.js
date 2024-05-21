@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import Constants from "expo-constants";
 
@@ -22,7 +21,7 @@ const SettingScreen = () => {
   const { data: team, isLoading: teamIsLoading } = useFetch("/hr/my-team");
   const { data: myProfile } = useFetch("/hr/my-profile"); // for other user data, use myProfile
 
-  const moreTeamMember = team.data.length - 17;
+  const moreTeamMember = team?.data.length - 17;
   const first = [
     {
       icons: "lock-outline",
@@ -119,7 +118,7 @@ const SettingScreen = () => {
                 {team?.data?.length > 0 &&
                   (!teamIsLoading ? (
                     <>
-                      {team.data.slice(0, 17).map((item, index) => (
+                      {team?.data.slice(0, 17).map((item, index) => (
                         <AvatarPlaceholder
                           key={item.id}
                           image={item.image}
@@ -130,7 +129,7 @@ const SettingScreen = () => {
                           size="xs"
                         />
                       ))}
-                      {team.data.length > 17 && (
+                      {team?.data.length > 17 && (
                         <AvatarPlaceholder
                           key="more"
                           name={`+${moreTeamMember.toString()}`}
@@ -248,6 +247,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 42,
     padding: 8,
-    // opacity: 0.5,
   },
 });
