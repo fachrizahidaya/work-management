@@ -52,6 +52,17 @@ const ChatListScreen = () => {
   const { isLoading: deleteGroupIsLoading, toggle: toggleDeleteGroup } = useLoading(false);
   const { isLoading: clearChatMessageIsLoading, toggle: toggleClearChatMessage } = useLoading(false);
 
+  const personalChatOptions = [
+    {
+      id: 1,
+      name: "New Chat",
+      onPress: () => {
+        navigation.navigate("New Chat");
+        SheetManager.hide("form-sheet");
+      },
+    },
+  ];
+
   /**
    * Event listener for new chats
    */
@@ -238,6 +249,7 @@ const ChatListScreen = () => {
                 onPinControl={pinChatHandler}
                 navigation={navigation}
                 userSelector={userSelector}
+                menuOptions={personalChatOptions}
               />
 
               {searchResult?.message?.length > 0 && (

@@ -35,17 +35,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
     if (attachment_type === "image") {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#3F434A",
-              width: 200,
-              overflow: "hidden",
-            }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
+          <Text style={styles.textStyle} numberOfLines={1} ellipsizeMode="tail">
             <MaterialCommunityIcons name="image" color="#3F434A" />
             {renderDangerouslyInnerHTMLContent(messageToReply?.message, "Image")}
           </Text>
@@ -59,17 +49,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
     ) {
       return (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#3F434A",
-              width: 200,
-              overflow: "hidden",
-            }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
+          <Text style={styles.textStyle} numberOfLines={1} ellipsizeMode="tail">
             <MaterialCommunityIcons name="file-outline" color="#3F434A" />
             {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.file_name)}
           </Text>
@@ -79,17 +59,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
       if (messageToReply?.project_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "400",
-                color: "#3F434A",
-                width: 200,
-                overflow: "hidden",
-              }}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
+            <Text style={styles.textStyle} numberOfLines={1} ellipsizeMode="tail">
               <MaterialCommunityIcons name="lightning-bolt" color="#3F434A" />
               {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.project_title)}
             </Text>
@@ -98,17 +68,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
       } else if (messageToReply?.task_id) {
         return (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "400",
-                color: "#3F434A",
-                width: 200,
-                overflow: "hidden",
-              }}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
+            <Text style={styles.textStyle} numberOfLines={1} ellipsizeMode="tail">
               <MaterialCommunityIcons name="checkbox-marked-circle-outline" color="#3F434A" />
               {renderDangerouslyInnerHTMLContent(messageToReply?.message, messageToReply?.task_title)}
             </Text>
@@ -116,17 +76,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
         );
       } else {
         return (
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "400",
-              color: "#3F434A",
-              width: 200,
-              overflow: "hidden",
-            }}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
+          <Text style={styles.textStyle} numberOfLines={2} ellipsizeMode="tail">
             {renderDangerouslyInnerHTMLContent(messageToReply?.message)}
           </Text>
         );
@@ -144,16 +94,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
 
   return (
     messageToReply && (
-      <View
-        style={{
-          paddingVertical: 5,
-          paddingHorizontal: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 10,
-        }}
-      >
+      <View style={styles.wrapper}>
         <View style={styles.container}>
           <View style={{ width: mimeTypeInfo?.file_type === "image" ? 200 : 200 }}>
             <Text style={{ fontSize: 12, fontWeight: "700", color: "#176688" }}>
@@ -170,11 +111,7 @@ const ChatReplyPreview = ({ messageToReply, setMessageToReply, memberName, keywo
             <Image
               source={{ uri: `${process.env.EXPO_PUBLIC_API}/image/${messageToReply?.file_path}` }}
               alt="Attachment Preview"
-              style={{
-                width: 50,
-                height: 50,
-                resizeMode: "cover",
-              }}
+              style={{ width: 50, height: 50, resizeMode: "cover" }}
             />
           )}
         </View>
@@ -200,5 +137,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 10,
+  },
+  textStyle: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#3F434A",
+    width: 200,
+    overflow: "hidden",
+  },
+  wrapper: {
+    paddingVertical: 5,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
   },
 });

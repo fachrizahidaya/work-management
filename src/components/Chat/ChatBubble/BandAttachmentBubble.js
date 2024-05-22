@@ -6,10 +6,7 @@ const BandAttachmentBubble = ({ id, type, number_id, title, myMessage, onRedirec
   return (
     <Pressable
       onPress={() => onRedirect(id, type)}
-      style={{
-        ...styles.container,
-        backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
-      }}
+      style={[styles.container, { backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }]}
     >
       {type === "Project" && (
         <MaterialCommunityIcons name="lightning-bolt" size={20} color={!myMessage ? "#3F434A" : "#FFFFFF"} />

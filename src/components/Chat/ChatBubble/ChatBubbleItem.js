@@ -48,25 +48,14 @@ const ChatBubbleItem = ({
     <PanGestureHandler failOffsetY={[-5, 5]} activeOffsetX={[-5, 5]} onGestureEvent={!isDeleted && panGesture}>
       <Animated.View style={[rTaskContainerStyle]}>
         <Pressable
-          style={{
-            ...styles.wrapper,
-            backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893",
-          }}
+          style={[styles.wrapper, { backgroundColor: isOptimistic ? "#9E9E9E" : !myMessage ? "#FFFFFF" : "#377893" }]}
           onLongPress={() => {
             !isDeleted && handleOpenChatBubble(chat, !myMessage ? "right" : "left");
           }}
           delayLongPress={200}
         >
           {type === "group" && name && !myMessage && (
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "700",
-                color: !myMessage ? "#176688" : "#FFFFFF",
-              }}
-            >
-              {name}
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "700", color: !myMessage ? "#176688" : "#FFFFFF" }}>{name}</Text>
           )}
           {!isDeleted ? (
             <>
@@ -130,63 +119,29 @@ const ChatBubbleItem = ({
               )}
             </>
           ) : null}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 5,
-            }}
-          >
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
             {!isDeleted ? (
               <Text
-                style={{
-                  flexShrink: 1,
-                  fontSize: 14,
-                  fontWeight: "400",
-                  color: !myMessage ? "#3F434A" : "#FFFFFF",
-                }}
+                style={{ flexShrink: 1, fontSize: 14, fontWeight: "400", color: !myMessage ? "#3F434A" : "#FFFFFF" }}
               >
                 {styledTexts}
               </Text>
             ) : myMessage && isDeleted ? (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
                 <MaterialIcons name="block-flipped" size={15} color="#E8E9EB" style={{ opacity: 0.5 }} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "400",
-                    fontStyle: "italic",
-                    color: "#F1F1F1",
-                    opacity: 0.5,
-                  }}
-                >
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#F1F1F1", opacity: 0.5 }}>
                   You deleted this message
                 </Text>
               </View>
             ) : !myMessage && isDeleted ? (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
                 <MaterialIcons name="block-flipped" size={15} color="#3F434A" style={{ opacity: 0.5 }} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "400",
-                    fontStyle: "italic",
-                    color: "#3F434A",
-                    opacity: 0.5,
-                  }}
-                >
+                <Text style={{ fontSize: 14, fontWeight: "400", fontStyle: "italic", color: "#3F434A", opacity: 0.5 }}>
                   This message was deleted
                 </Text>
               </View>
             ) : null}
-            <Text
-              style={{
-                fontSize: 8,
-                color: !myMessage ? "#8A9099" : "#FFFFFF",
-                alignSelf: "flex-end",
-              }}
-            >
+            <Text style={{ fontSize: 8, color: !myMessage ? "#8A9099" : "#FFFFFF", alignSelf: "flex-end" }}>
               {time}
             </Text>
           </View>

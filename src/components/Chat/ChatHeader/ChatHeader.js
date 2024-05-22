@@ -81,13 +81,7 @@ const ChatHeader = ({
 
   const renderHeaderOptions = () => (
     <View style={styles.wrapper}>
-      <View
-        style={{
-          gap: 1,
-          backgroundColor: "#F5F5F5",
-          borderRadius: 10,
-        }}
-      >
+      <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
         {optionsArr.map((item, index) => {
           return (
             <TouchableOpacity key={index} style={styles.content} onPress={item.onPress}>

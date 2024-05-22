@@ -155,13 +155,7 @@ const ChatProjectTaskScreen = () => {
         <>
           <View style={styles.wrapper}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-              <Pressable
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                onPress={() => navigation.goBack()}
-              >
+              <Pressable style={{ flexDirection: "row", alignItems: "center" }} onPress={() => navigation.goBack()}>
                 <MaterialIcons name="chevron-left" size={20} color="#3F434A" />
               </Pressable>
               <MateriaCommunitylIcons name="circle-slice-2" size={20} color="#3F434A" />

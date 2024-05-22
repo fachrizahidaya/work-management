@@ -12,6 +12,25 @@ const GlobalSearchChatList = ({ chat, message, searchKeyword, group, memberName 
   const { width } = Dimensions.get("screen");
   const userSelector = useSelector((state) => state.auth);
 
+  let params;
+  if (chat.group) {
+    params = {
+      name: chat.group.name,
+      userId: chat.group.id,
+      image: chat.group.image,
+      type: "group",
+      forwardedMessage: null,
+    };
+  } else {
+    params = {
+      name: chat.user.name,
+      userId: chat.user.id,
+      image: chat.user.image,
+      type: "personal",
+      forwardedMessage: null,
+    };
+  }
+
   for (let i = 0; i < memberName?.length; i++) {
     let placeholder = new RegExp(`\\@\\[${memberName[i]}\\]\\(\\d+\\)`, "g");
     message = message?.replace(placeholder, `@${memberName[i]}`);
@@ -58,44 +77,11 @@ const GlobalSearchChatList = ({ chat, message, searchKeyword, group, memberName 
   };
 
   return (
-    <TouchableOpacity
-      onPress={() => {
-        if (chat.group) {
-          navigation.navigate("Chat Room", {
-            name: chat.group.name,
-            userId: chat.group.id,
-            image: chat.group.image,
-            type: "group",
-            forwardedMessage: null,
-          });
-        } else {
-          navigation.navigate("Chat Room", {
-            name: chat.user.name,
-            userId: chat.user.id,
-            image: chat.user.image,
-            type: "personal",
-            forwardedMessage: null,
-          });
-        }
-      }}
-    >
-      <View
-        style={{
-          paddingVertical: 14,
-          paddingHorizontal: 16,
-          borderColor: "#E8E9EB",
-          borderBottomWidth: 1,
-        }}
-      >
+    <TouchableOpacity onPress={() => navigation.navigate("Chat Room", params)}>
+      <View style={{ paddingVertical: 14, paddingHorizontal: 16, borderColor: "#E8E9EB", borderBottomWidth: 1 }}>
         {group ? (
           <>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text style={{ fontSize: 14, fontWeight: "600" }}>{group.name}</Text>
 
               <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
@@ -106,35 +92,19 @@ const GlobalSearchChatList = ({ chat, message, searchKeyword, group, memberName 
               </Text>
 
               <View style={{ flex: 1, marginTop: 5 }}>
-                <RenderHtml
-                  contentWidth={width}
-                  source={{
-                    html: renderChat(),
-                  }}
-                />
+                <RenderHtml contentWidth={width} source={{ html: renderChat() }} />
               </View>
             </View>
           </>
         ) : (
           <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text style={{ fontSize: 14, fontWeight: "600" }}>{chat?.user?.name}</Text>
 
               <ChatTimeStamp time={chat.created_time} timestamp={chat.created_at} />
             </View>
             <View style={{ flex: 1, marginTop: 5 }}>
-              <RenderHtml
-                contentWidth={width}
-                source={{
-                  html: renderChat(),
-                }}
-              />
+              <RenderHtml contentWidth={width} source={{ html: renderChat() }} />
             </View>
           </View>
         )}

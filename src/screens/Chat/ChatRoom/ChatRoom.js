@@ -760,7 +760,6 @@ const ChatRoom = () => {
             deleteSelected={deleteMessageSelected}
             setDeleteSelected={setDeleteMessageSelected}
             copyToClipboard={CopyToClipboard}
-            navigation={navigation}
           />
 
           <ChatMessageDeleteModal
