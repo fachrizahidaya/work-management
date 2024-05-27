@@ -6,8 +6,8 @@ import { TouchableOpacity, StyleSheet, View, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import ModuleSelectSheet from "../../components/shared/ActionSheet/ModuleSelectSheet";
-import PipeDashboard from "../../screens/Pipe/Dashboard/PipeDashboard";
-import PipeScreenSheet from "../../components/shared/ActionSheet/PipeScreenSheet";
+import SiloDashboard from "../../screens/Silo/Dashboard/SiloDashboard";
+import SiloScreenSheet from "../../components/shared/ActionSheet/SiloScreenSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,8 +15,8 @@ function EmptyScreen() {
   return null; // Empty component
 }
 
-const PipeTab = () => {
-  const pipeScreenSheetRef = useRef(null);
+const SiloTab = () => {
+  const siloScreenSheetRef = useRef(null);
   const moduleSelectSheetRef = useRef(null);
 
   return (
@@ -37,7 +37,7 @@ const PipeTab = () => {
       >
         <Tab.Screen
           name="Dashboard"
-          component={PipeDashboard}
+          component={SiloDashboard}
           options={{
             tabBarIcon: ({ size, color }) => (
               <View style={styles.menuIcon}>
@@ -47,38 +47,38 @@ const PipeTab = () => {
           }}
         />
         {/* <Tab.Screen
-          name="Search"
-          component={EmptyScreen}
-          options={{
-            tabBarIcon: ({ size, color }) => (
-              <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
-              </View>
-            ),
-          }}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              e.preventDefault();
-              navigation.navigate("Global Search Silo");
-            },
-          })}
-        /> */}
+      name="Search"
+      component={EmptyScreen}
+      options={{
+        tabBarIcon: ({ size, color }) => (
+          <View style={styles.menuIcon}>
+            <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
+          </View>
+        ),
+      }}
+      listeners={({ navigation }) => ({
+        tabPress: (e) => {
+          e.preventDefault();
+          navigation.navigate("Global Search Silo");
+        },
+      })}
+    /> */}
         {/* <Tab.Screen
-          name="Add"
-          component={EmptyScreen}
-          options={{
-            tabBarIcon: ({ size, color }) => (
-              <View style={styles.menuIcon}>
-                <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
-              </View>
-            ),
-            tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => tribeAddNewSheetRef.current?.show()}>
-                {props.children}
-              </TouchableOpacity>
-            ),
-          }}
-        /> */}
+      name="Add"
+      component={EmptyScreen}
+      options={{
+        tabBarIcon: ({ size, color }) => (
+          <View style={styles.menuIcon}>
+            <MaterialCommunityIcons name="plus" size={20} color="#3F434A" />
+          </View>
+        ),
+        tabBarButton: (props) => (
+          <TouchableOpacity {...props} onPress={() => tribeAddNewSheetRef.current?.show()}>
+            {props.children}
+          </TouchableOpacity>
+        ),
+      }}
+    /> */}
         <Tab.Screen
           name="Screen List"
           component={EmptyScreen}
@@ -89,7 +89,7 @@ const PipeTab = () => {
               </View>
             ),
             tabBarButton: (props) => (
-              <TouchableOpacity {...props} onPress={() => pipeScreenSheetRef.current?.show()}>
+              <TouchableOpacity {...props} onPress={() => siloScreenSheetRef.current?.show()}>
                 {props.children}
               </TouchableOpacity>
             ),
@@ -101,7 +101,7 @@ const PipeTab = () => {
           component={EmptyScreen}
           options={{
             tabBarIcon: () => (
-              <Image source={require("../../assets/icons/pipe_logo.png")} style={styles.moduleImage} alt="pipe logo" />
+              <Image source={require("../../assets/icons/silo_logo.png")} style={styles.moduleImage} alt="silo logo" />
             ),
             tabBarButton: (props) => (
               <TouchableOpacity {...props} onPress={() => moduleSelectSheetRef.current?.show()}>
@@ -113,14 +113,14 @@ const PipeTab = () => {
       </Tab.Navigator>
 
       {/* Sheets */}
-      <PipeScreenSheet reference={pipeScreenSheetRef} />
+      <SiloScreenSheet reference={siloScreenSheetRef} />
 
       <ModuleSelectSheet reference={moduleSelectSheetRef} />
     </>
   );
 };
 
-export default PipeTab;
+export default SiloTab;
 
 const styles = StyleSheet.create({
   menuIcon: {

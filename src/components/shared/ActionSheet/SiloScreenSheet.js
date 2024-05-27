@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useGetSubMenu } from "../../../hooks/useGetSubMenu";
 import { TextProps } from "../CustomStylings";
 
-const PipeScreenSheet = (props) => {
+const SiloScreenSheet = (props) => {
   const navigation = useNavigation();
   const menuSelector = useSelector((state) => state.user_menu);
 
@@ -83,7 +83,7 @@ const PipeScreenSheet = (props) => {
   );
 };
 
-export default PipeScreenSheet;
+export default SiloScreenSheet;
 
 const styles = StyleSheet.create({
   wrapper: {
