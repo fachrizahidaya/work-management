@@ -58,7 +58,11 @@ const CourierPickupScan = () => {
       const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", {
         awb_no: awb,
       });
-      Toast.show("AWB Scanned succesfully", SuccessToastProps);
+      if (res.data.message.includes("already")) {
+        Toast.show(res.data.message, ErrorToastProps);
+      } else {
+        Toast.show(res.data.message, SuccessToastProps);
+      }
     } catch (err) {
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
