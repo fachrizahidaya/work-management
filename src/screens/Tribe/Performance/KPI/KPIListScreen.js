@@ -116,34 +116,32 @@ const KPIListScreen = () => {
             )
           ) : (
             <View style={{ marginTop: 5, flex: 1 }}>
+              <ArchivedKPIFilter
+                startDate={startDate}
+                startDateChangeHandler={startDateChangeHandler}
+                endDate={endDate}
+                endDateChangeHandler={endDateChangeHandler}
+              />
               {archived?.data?.length > 0 ? (
-                <>
-                  <ArchivedKPIFilter
-                    startDate={startDate}
-                    startDateChangeHandler={startDateChangeHandler}
-                    endDate={endDate}
-                    endDateChangeHandler={endDateChangeHandler}
-                  />
-                  <FlashList
-                    data={archived?.data}
-                    estimatedItemSize={50}
-                    onEndReachedThreshold={0.1}
-                    keyExtractor={(item, index) => index}
-                    renderItem={({ item, index }) => (
-                      <KPIListItem
-                        key={index}
-                        id={item?.id}
-                        start_date={item?.review?.begin_date}
-                        end_date={item?.review?.end_date}
-                        navigation={navigation}
-                        name={item?.review?.description}
-                        target={item?.target_name}
-                        isExpired={true}
-                        status="archived"
-                      />
-                    )}
-                  />
-                </>
+                <FlashList
+                  data={archived?.data}
+                  estimatedItemSize={50}
+                  onEndReachedThreshold={0.1}
+                  keyExtractor={(item, index) => index}
+                  renderItem={({ item, index }) => (
+                    <KPIListItem
+                      key={index}
+                      id={item?.id}
+                      start_date={item?.review?.begin_date}
+                      end_date={item?.review?.end_date}
+                      navigation={navigation}
+                      name={item?.review?.description}
+                      target={item?.target_name}
+                      isExpired={true}
+                      status="archived"
+                    />
+                  )}
+                />
               ) : (
                 <ScrollView
                   refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}

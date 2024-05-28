@@ -119,33 +119,31 @@ const AppraisalListScreen = () => {
             )
           ) : (
             <View style={{ marginTop: 5, flex: 1 }}>
+              <ArchivedAppraisalFilter
+                startDate={startDate}
+                endDate={endDate}
+                startDateChangeHandler={startDateChangeHandler}
+                endDateChangeHandler={endDateChangeHandler}
+              />
               {archived?.data?.length > 0 ? (
-                <>
-                  <ArchivedAppraisalFilter
-                    startDate={startDate}
-                    endDate={endDate}
-                    startDateChangeHandler={startDateChangeHandler}
-                    endDateChangeHandler={endDateChangeHandler}
-                  />
-                  <FlashList
-                    data={archived?.data}
-                    estimatedItemSize={50}
-                    onEndReachedThreshold={0.1}
-                    keyExtractor={(item, index) => index}
-                    renderItem={({ item, index }) => (
-                      <AppraisalListItem
-                        key={index}
-                        id={item?.id}
-                        start_date={item?.review?.begin_date}
-                        end_date={item?.review?.end_date}
-                        navigation={navigation}
-                        name={item?.review?.description}
-                        target={item?.target_name}
-                        isExpired={true}
-                      />
-                    )}
-                  />
-                </>
+                <FlashList
+                  data={archived?.data}
+                  estimatedItemSize={50}
+                  onEndReachedThreshold={0.1}
+                  keyExtractor={(item, index) => index}
+                  renderItem={({ item, index }) => (
+                    <AppraisalListItem
+                      key={index}
+                      id={item?.id}
+                      start_date={item?.review?.begin_date}
+                      end_date={item?.review?.end_date}
+                      navigation={navigation}
+                      name={item?.review?.description}
+                      target={item?.target_name}
+                      isExpired={true}
+                    />
+                  )}
+                />
               ) : (
                 <ScrollView
                   refreshControl={
