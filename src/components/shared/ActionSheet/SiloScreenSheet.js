@@ -31,7 +31,7 @@ const SiloScreenSheet = (props) => {
             // paddingBottom: 40
           }}
         >
-          {/* {filteredMenu?.map((item, idx) => {
+          {filteredMenu?.map((item, idx) => {
             return (
               <TouchableOpacity
                 key={idx}
@@ -57,26 +57,7 @@ const SiloScreenSheet = (props) => {
                 </View>
               </TouchableOpacity>
             );
-          })} */}
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Data Entry");
-              props.reference.current?.hide();
-            }}
-            style={{
-              ...styles.wrapper,
-              borderBottomWidth: 1,
-              borderColor: "#E8E9EB",
-            }}
-          >
-            <View style={styles.flex}>
-              <View style={styles.item}>
-                <MaterialCommunityIcons size={20} name="file-check-outline" color="#3F434A" />
-              </View>
-              <Text style={[{ fontSize: 14 }, TextProps]}>Data Entry</Text>
-            </View>
-          </TouchableOpacity>
+          })}
         </ScrollView>
       </View>
     </ActionSheet>

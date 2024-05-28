@@ -91,9 +91,10 @@ import NewSupplierScreen from "../screens/Coin/Purchase/NewSupplierScreen";
 import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
 
 // Silo Screens
-import DataEntryScreen from "../screens/Silo/DataEntry/DataEntryScreen";
+import CourierPickupScreen from "../screens/Silo/CourierPickup/CourierPickupScreen";
 import SiloTab from "./Tabs/SiloTab";
-import DataEntrySession from "../screens/Silo/DataEntry/DataEntrySession";
+import CourierScreen from "../screens/Silo/Courier/CourierScreen";
+import CourierPickupScan from "../screens/Silo/CourierPickup/CourierPickupScan";
 
 const Stack = createStackNavigator();
 
@@ -341,8 +342,9 @@ const HomeStack = () => {
       <Stack.Screen name="New Customer" component={NewCustomerScreen} options={{ header: () => <Header /> }} />
 
       {/* Silo Screens */}
-      <Stack.Screen name="Data Entry" component={DataEntryScreen} options={{ header: () => <Header /> }} />
-      <Stack.Screen name="Entry Session" component={DataEntrySession} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Courier Pickup" component={CourierPickupScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Entry Session" component={CourierPickupScan} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Courier" component={CourierScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };
