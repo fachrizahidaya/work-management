@@ -51,13 +51,7 @@ const ProjectDetail = () => {
         <Description description={project?.data?.description} navigation={navigation} />
       </View>
 
-      <View
-        style={{
-          ...styles.wrapper,
-          flexDirection: "row",
-          gap: 5,
-        }}
-      >
+      <View style={[styles.wrapper, { flexDirection: "row", gap: 5 }]}>
         <DateSection
           start={dayjs(project?.data?.created_at).format("MMM DD, YYYY")}
           end={dayjs(project?.data?.deadline).format("MMM DD, YYYY")}
@@ -69,13 +63,7 @@ const ProjectDetail = () => {
         />
       </View>
 
-      <View
-        style={{
-          ...styles.wrapper,
-          flexDirection: "row",
-          gap: 5,
-        }}
-      >
+      <View style={[styles.wrapper, { flexDirection: "row", gap: 5 }]}>
         <MemberSection member={project?.data?.member} />
         <AttachmentSection />
       </View>

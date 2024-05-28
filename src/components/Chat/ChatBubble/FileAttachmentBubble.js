@@ -21,10 +21,7 @@ const FileAttachmentBubble = ({
   return getFileExt() === "jpg" || getFileExt() === "jpeg" || getFileExt() === "png" ? null : (
     <Pressable
       onPress={() => onDownload(file_path)}
-      style={{
-        ...styles.container,
-        backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b",
-      }}
+      style={[styles.container, { backgroundColor: !myMessage ? "#f1f1f1" : "#1b536b" }]}
     >
       <Image
         source={
@@ -47,26 +44,14 @@ const FileAttachmentBubble = ({
 
       <View>
         <Text
-          style={{
-            fontSize: 12,
-            fontWeight: "400",
-            color: !myMessage ? "#3F434A" : "#FFFFFF",
-            width: 160,
-            overflow: "hidden",
-          }}
+          style={[styles.textStyle, { color: !myMessage ? "#3F434A" : "#FFFFFF" }]}
           numberOfLines={2}
           ellipsizeMode="tail"
         >
           {file_name}
         </Text>
         <Text
-          style={{
-            fontSize: 10,
-            fontWeight: "400",
-            width: 150,
-            color: !myMessage ? "#3F434A" : "#FFFFFF",
-            overflow: "hidden",
-          }}
+          style={[styles.textStyle, { color: !myMessage ? "#3F434A" : "#FFFFFF" }]}
           numberOfLines={2}
           ellipsizeMode="tail"
         >
@@ -100,5 +85,11 @@ const styles = StyleSheet.create({
     width: 20,
     alignSelf: "center",
     resizeMode: "cover",
+  },
+  textStyle: {
+    fontSize: 12,
+    fontWeight: "400",
+    width: 160,
+    overflow: "hidden",
   },
 });

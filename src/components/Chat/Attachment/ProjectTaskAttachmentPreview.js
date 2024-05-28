@@ -5,31 +5,14 @@ import { TextProps } from "../../shared/CustomStylings";
 
 const ProjectTaskAttachmentPreview = ({ bandAttachment, setBandAttachment, bandAttachmentType }) => {
   return (
-    <View
-      style={{
-        ...styles.container,
-        paddingTop: Platform.OS === "ios" ? 60 : null,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+    <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? 60 : null }]}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={[{ fontSize: 12 }, TextProps]}>{bandAttachment?.title}</Text>
         <Pressable onPress={() => setBandAttachment(null)}>
           <MaterialCommunityIcons name="close" size={20} />
         </Pressable>
       </View>
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 100,
-        }}
-      >
+      <View style={{ alignItems: "center", justifyContent: "center", marginTop: 100 }}>
         {bandAttachmentType === "project" ? (
           <>
             <MaterialCommunityIcons name="lightning-bolt" size={100} color="#595f69" />

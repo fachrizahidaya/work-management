@@ -86,6 +86,12 @@
         {
           "cameraPermission": "Nest may request access your device camera to scan barcode and will be used for scan barcode and qr code"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Nest may request access your device camera to scan barcode and will be used for scan barcode and qr code"
+        }
       ]
     ],
     "runtimeVersion": {

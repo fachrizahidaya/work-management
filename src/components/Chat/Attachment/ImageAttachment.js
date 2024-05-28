@@ -4,12 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 const ImageAttachment = ({ image, setImage }) => {
   return (
-    <View
-      style={{
-        ...styles.container,
-        paddingTop: Platform.OS === "ios" ? 60 : null,
-      }}
-    >
+    <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? 60 : null }]}>
       <View style={{ flexDirection: "row-reverse" }}>
         <Pressable onPress={() => setImage(null)}>
           <MaterialCommunityIcons name="close" size={20} />
