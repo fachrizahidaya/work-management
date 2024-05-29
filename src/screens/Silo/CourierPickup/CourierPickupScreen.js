@@ -7,7 +7,7 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import PageHeader from "../../../components/shared/PageHeader";
-import DataEntrySessions from "../../../components/Silo/DataEntry/DataEntrySessions";
+import CourierPickupList from "../../../components/Silo/DataEntry/CourierPickupList";
 import { useFetch } from "../../../hooks/useFetch";
 import CourierPickupFilter from "../../../components/Silo/DataEntry/CourierPickupFilter";
 import { TextProps } from "../../../components/shared/CustomStylings";
@@ -66,7 +66,7 @@ const CourierPickupScreen = () => {
         </View>
         {startDate && endDate ? (
           data?.data?.length > 0 ? (
-            <DataEntrySessions data={data?.data} />
+            <CourierPickupList data={data?.data} />
           ) : (
             <ScrollView
             // refreshControl={<RefreshControl />}

@@ -1,20 +1,20 @@
 import { StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import DataEntryItem from "./DataEntryItem";
+import CourierPickupItem from "./CourierPickupItem";
 
-const DataEntrySessions = ({ data }) => {
+const CourierPickupList = ({ data }) => {
   return (
     <View style={styles.container}>
       <FlashList
         data={data}
         estimatedItemSize={50}
-        renderItem={({ item }) => <DataEntryItem awb={item?.awb_no} courier={item?.courier?.name} />}
+        renderItem={({ item }) => <CourierPickupItem awb={item?.awb_no} courier={item?.courier?.name} />}
       />
     </View>
   );
 };
 
-export default DataEntrySessions;
+export default CourierPickupList;
 
 const styles = StyleSheet.create({
   container: {
