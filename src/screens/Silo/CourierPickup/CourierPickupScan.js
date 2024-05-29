@@ -1,30 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
-import { SafeAreaView, StyleSheet, Text, View, Image } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+
 import PageHeader from "../../../components/shared/PageHeader";
 import Button from "../../../components/shared/Forms/Button";
 import { useFetch } from "../../../hooks/useFetch";
 import Toast from "react-native-root-toast";
 import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
+import AWBScannedList from "../../../components/Silo/DataEntry/AWBScannedList";
 
-const DataEntrySession = () => {
+const CourierPickupScan = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [data, setData] = useState(null);
   const [courierImage, setCourierImage] = useState(null);
   const [courierName, setCourierName] = useState(null);
+  const [dataScanned, setDataScanned] = useState([]);
 
   const navigation = useNavigation();
 
+  const listScreenSheetRef = useRef(null);
+
   const { data: courierData } = useFetch(`/wm/courier`);
 
-  const handleBarcodeScanned = ({ type, data }) => {
+  const handleBarcodeScanned = ({ data }) => {
     setScanned(true);
     setData(data);
-    handleCheckCourier(data);
     handleAddCourierPickup(data);
   };
 
@@ -37,6 +42,7 @@ const DataEntrySession = () => {
 
   const handleCheckCourier = (awb) => {
     const awbPrefix = awb?.slice(0, 3);
+
     const searchCouriers = courierData?.data?.map((courier) => {
       if (awbPrefix?.includes(courier?.prefix_code_awb)) {
         setCourierName(courier?.name);
@@ -55,10 +61,13 @@ const DataEntrySession = () => {
 
   const handleAddCourierPickup = async (awb) => {
     try {
-      const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", {
-        awb_no: awb,
-      });
-      Toast.show("AWB Scanned succesfully", SuccessToastProps);
+      const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", { awb_no: awb });
+      if (res.data.message.includes("already")) {
+        Toast.show(res.data.message, ErrorToastProps);
+      } else {
+        handleCheckCourier(awb);
+        setDataScanned((prevData) => [...prevData, awb]);
+      }
     } catch (err) {
       console.log(err);
       Toast.show(err.response.data.message, ErrorToastProps);
@@ -80,50 +89,54 @@ const DataEntrySession = () => {
         <PageHeader title="Data Scan" onPress={() => navigation.goBack()} />
       </View>
 
-      <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
-        {courierImage === "not-found" ? (
-          <Text>Not Found</Text>
-        ) : (
-          <Image
-            style={styles.image}
-            source={{
-              uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
-            }}
-            alt="Courier Image"
-            resizeMethod="auto"
-            fadeDuration={0}
-          />
-        )}
-
-        <Text>{courierName ? `${courierName}` : ""}</Text>
-        <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : ""}</Text>
+      <View style={styles.wrapper}>
         {hasPermission === false ? (
           <Text>Access denied</Text>
         ) : hasPermission === null ? (
           <Text>Please grant camera access</Text>
         ) : (
-          <BarCodeScanner style={styles.scanner} onBarCodeScanned={scanned ? undefined : handleBarcodeScanned} />
-        )}
-        {scanned && (
-          <Button padding={10} onPress={() => handleScanBarcodeAgain()}>
-            <Text style={{ color: "#FFFFFF" }}>Tap to Scan again</Text>
-          </Button>
-        )}
+          <>
+            <BarCodeScanner
+              style={StyleSheet.absoluteFillObject}
+              onBarCodeScanned={scanned ? undefined : handleBarcodeScanned}
+            />
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            margin: 5,
-          }}
-        ></View>
+            {!scanned ? (
+              <View style={{ borderWidth: 2, width: "85%", height: "20%" }}></View>
+            ) : (
+              <>
+                <Button padding={10} onPress={() => handleScanBarcodeAgain()}>
+                  <Text style={{ color: "#FFFFFF" }}>Tap to Scan again</Text>
+                </Button>
+                <View style={styles.content}>
+                  {courierImage === "not-found" ? (
+                    <Text>Not Found</Text>
+                  ) : !courierImage ? null : (
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
+                      }}
+                      alt="Courier Image"
+                      resizeMethod="auto"
+                      fadeDuration={0}
+                    />
+                  )}
+                  <Text>{courierName ? `${courierName}` : ""}</Text>
+                  <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : ""}</Text>
+                </View>
+              </>
+            )}
+            <StatusBar style="auto" />
+          </>
+        )}
       </View>
+      <AWBScannedList reference={listScreenSheetRef} items={dataScanned} />
     </SafeAreaView>
   );
 };
 
-export default DataEntrySession;
+export default CourierPickupScan;
 
 const styles = StyleSheet.create({
   container: {
@@ -143,12 +156,26 @@ const styles = StyleSheet.create({
     height: "65%",
     width: "100%",
   },
+  scannerContainer: {
+    aspectRatio: 1,
+    width: "80%",
+  },
   image: {
     height: 100,
-    width: 100,
-    resizeMode: "cover",
+    width: 200,
+    resizeMode: "contain",
   },
-  tableContainer: { flex: 1, padding: 16, paddingTop: 30 },
-  tableHead: { height: 40, backgroundColor: "#f1f8ff" },
-  text: { margin: 6 },
+  wrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  },
+  content: {
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    gap: 5,
+    padding: 5,
+    borderRadius: 10,
+  },
 });

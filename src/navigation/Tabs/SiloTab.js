@@ -46,23 +46,7 @@ const SiloTab = () => {
             ),
           }}
         />
-        {/* <Tab.Screen
-      name="Search"
-      component={EmptyScreen}
-      options={{
-        tabBarIcon: ({ size, color }) => (
-          <View style={styles.menuIcon}>
-            <MaterialCommunityIcons name="magnify" size={20} color="#3F434A" />
-          </View>
-        ),
-      }}
-      listeners={({ navigation }) => ({
-        tabPress: (e) => {
-          e.preventDefault();
-          navigation.navigate("Global Search Silo");
-        },
-      })}
-    /> */}
+
         {/* <Tab.Screen
       name="Add"
       component={EmptyScreen}
