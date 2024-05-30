@@ -14,6 +14,7 @@ const ChatOptionMenu = ({
   setDeleteSelected,
   deleteSelected,
   copyToClipboard,
+  navigation,
 }) => {
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
