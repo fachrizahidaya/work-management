@@ -2,6 +2,7 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { TextProps } from "../../../components/shared/CustomStylings";
+import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
 
 const SiloDashboard = () => {
   return (
@@ -18,7 +19,9 @@ const SiloDashboard = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl />}
       >
-        <View style={styles.wrapper}></View>
+        <View style={styles.wrapper}>
+          <EmptyPlaceholder text="No Data" height={250} width={250} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
