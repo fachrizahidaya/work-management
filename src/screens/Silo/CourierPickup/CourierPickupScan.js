@@ -180,6 +180,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 16,
   },
+  scanner: {
+    height: "65%",
+    width: "100%",
+  },
+  scannerContainer: {
+    aspectRatio: 1,
+    width: "80%",
+  },
   scannerBox: {
     borderWidth: 2,
     width: "85%",
@@ -190,6 +198,12 @@ const styles = StyleSheet.create({
     height: 100,
     width: 300,
     resizeMode: "contain",
+  },
+  wrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
   },
   content: {
     backgroundColor: "#FFFFFF",
