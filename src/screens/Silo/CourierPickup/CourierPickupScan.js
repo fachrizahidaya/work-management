@@ -3,13 +3,12 @@ import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
 import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import Button from "../../../components/shared/Forms/Button";
 import { useFetch } from "../../../hooks/useFetch";
 import Toast from "react-native-root-toast";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 import AWBScannedList from "../../../components/Silo/DataEntry/AWBScannedList";
 
@@ -102,7 +101,7 @@ const CourierPickupScan = () => {
             />
 
             {!scanned ? (
-              <View style={{ borderWidth: 2, width: "85%", height: "20%" }}></View>
+              <View style={styles.scannerBox}></View>
             ) : (
               <>
                 <Button padding={10} onPress={() => handleScanBarcodeAgain()}>
@@ -111,19 +110,21 @@ const CourierPickupScan = () => {
                 <View style={styles.content}>
                   {courierImage === "not-found" ? (
                     <Text>Not Found</Text>
-                  ) : !courierImage ? null : (
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
-                      }}
-                      alt="Courier Image"
-                      resizeMethod="auto"
-                      fadeDuration={0}
-                    />
+                  ) : (
+                    courierImage && (
+                      <Image
+                        style={styles.image}
+                        source={{
+                          uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
+                        }}
+                        alt="Courier Image"
+                        resizeMethod="auto"
+                        fadeDuration={0}
+                      />
+                    )
                   )}
-                  <Text>{courierName ? `${courierName}` : ""}</Text>
-                  <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : ""}</Text>
+                  <Text>{courierName && `${courierName}`}</Text>
+                  <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : null}</Text>
                 </View>
               </>
             )}
@@ -159,6 +160,12 @@ const styles = StyleSheet.create({
   scannerContainer: {
     aspectRatio: 1,
     width: "80%",
+  },
+  scannerBox: {
+    borderWidth: 2,
+    width: "85%",
+    height: "20%",
+    borderColor: "#E8E9EB",
   },
   image: {
     height: 100,

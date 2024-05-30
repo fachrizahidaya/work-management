@@ -21,7 +21,7 @@ const AWBScannedList = ({ reference, items }) => {
         }}
         containerStyle={{ height: 550 }}
       >
-        <View style={{ paddingHorizontal: 20, paddingVertical: 16, gap: 21, paddingBottom: 40, flex: 1 }}>
+        <View style={styles.content}>
           {/* <Input
               value={inputToShow}
               fieldName={fieldNameSearch}
@@ -38,25 +38,18 @@ const AWBScannedList = ({ reference, items }) => {
               placeHolder="Search..."
               height={40}
             /> */}
+
           <FlashList
             data={items}
             estimatedItemSize={50}
             onEndReachedThreshold={0.1}
             keyExtractor={(item, index) => index}
             renderItem={({ item, index }) => (
-              <TouchableOpacity key={index}>
+              <TouchableOpacity key={index} style={{ marginVertical: 5 }}>
                 <Text style={[TextProps]}>{item}</Text>
               </TouchableOpacity>
             )}
           />
-
-          {/* {items.map((item, index) => {
-            return (
-              <TouchableOpacity key={index}>
-                <Text style={[TextProps]}>{item}</Text>
-              </TouchableOpacity>
-            );
-          })} */}
         </View>
       </ActionSheet>
     </TouchableOpacity>
@@ -80,5 +73,12 @@ const styles = StyleSheet.create({
     shadowOffset: 0,
     borderWidth: 3,
     borderColor: "#FFFFFF",
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 21,
+    paddingBottom: 40,
+    flex: 1,
   },
 });
