@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { BarCodeScanner } from "expo-barcode-scanner";
+// import { BarCodeScanner } from "expo-barcode-scanner";
 
 import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -74,14 +74,14 @@ const CourierPickupScan = () => {
     }
   };
 
-  useEffect(() => {
-    const getBarcodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
+  // useEffect(() => {
+  //   const getBarcodeScannerPermissions = async () => {
+  //     const { status } = await BarCodeScanner.requestPermissionsAsync();
+  //     setHasPermission(status === "granted");
+  //   };
 
-    getBarcodeScannerPermissions();
-  }, []);
+  //   getBarcodeScannerPermissions();
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -96,10 +96,10 @@ const CourierPickupScan = () => {
           <Text>Please grant camera access</Text>
         ) : (
           <>
-            <BarCodeScanner
+            {/* <BarCodeScanner
               style={StyleSheet.absoluteFillObject}
               onBarCodeScanned={scanned ? undefined : handleBarcodeScanned}
-            />
+            /> */}
 
             {!scanned ? (
               <View style={{ borderWidth: 2, width: "85%", height: "20%" }}></View>
