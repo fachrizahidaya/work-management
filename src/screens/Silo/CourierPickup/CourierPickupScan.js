@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import _ from "lodash";
 
 import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
 
@@ -19,6 +20,8 @@ const CourierPickupScan = () => {
   const [courierName, setCourierName] = useState(null);
   const [dataScanned, setDataScanned] = useState([]);
   const [requestType, setRequestType] = useState("");
+  const [filteredData, setFilteredData] = useState(dataScanned);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigation = useNavigation();
 
@@ -64,15 +67,25 @@ const CourierPickupScan = () => {
     return searchCouriers;
   };
 
+  const handleSearchAWB = (event) => {
+    const query = event?.target?.value;
+    setSearchQuery(query);
+
+    const filtered = dataScanned.filter((item) => item?.toLowerCase()?.includes(query?.toLowerCase()));
+    setFilteredData(filtered);
+  };
+
   const handleAddCourierPickup = async (awb) => {
     try {
       const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", { awb_no: awb });
       if (res.data.message.includes("already")) {
+        handleCheckCourier(awb);
+        setDataScanned((prevData) => [...prevData, awb]);
         setRequestType("warning");
         toggleScanExistedModal();
       } else {
-        handleCheckCourier(awb);
-        setDataScanned((prevData) => [...prevData, awb]);
+        // handleCheckCourier(awb);
+        // setDataScanned((prevData) => [...prevData, awb]);
         setRequestType("info");
         toggleScanSuccessModal();
       }
@@ -138,7 +151,14 @@ const CourierPickupScan = () => {
           </>
         )}
       </View>
-      <AWBScannedList reference={listScreenSheetRef} items={dataScanned} />
+      <AWBScannedList
+        reference={listScreenSheetRef}
+        items={dataScanned}
+        filteredData={filteredData}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearchAWB}
+      />
       <SuccessModal
         isOpen={scanSuccessModalIsOpen}
         toggle={toggleScanSuccessModal}
