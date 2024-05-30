@@ -3,15 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
 import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 
 import PageHeader from "../../../components/shared/PageHeader";
-import Button from "../../../components/shared/Forms/Button";
 import { useFetch } from "../../../hooks/useFetch";
-import Toast from "react-native-root-toast";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
 import axiosInstance from "../../../config/api";
 import AWBScannedList from "../../../components/Silo/DataEntry/AWBScannedList";
+import SuccessModal from "../../../components/shared/Modal/SuccessModal";
+import { useDisclosure } from "../../../hooks/useDisclosure";
 
 const CourierPickupScan = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -20,10 +18,15 @@ const CourierPickupScan = () => {
   const [courierImage, setCourierImage] = useState(null);
   const [courierName, setCourierName] = useState(null);
   const [dataScanned, setDataScanned] = useState([]);
+  const [requestType, setRequestType] = useState("");
 
   const navigation = useNavigation();
 
   const listScreenSheetRef = useRef(null);
+
+  const { toggle: toggleScanSuccessModal, isOpen: scanSuccessModalIsOpen } = useDisclosure(false);
+  const { toggle: toggleScanErrorModal, isOpen: scanErrorModalIsOpen } = useDisclosure(false);
+  const { toggle: toggleScanExistedModal, isOpen: scanExistedModalIsOpen } = useDisclosure(false);
 
   const { data: courierData } = useFetch(`/wm/courier`);
 
@@ -34,10 +37,12 @@ const CourierPickupScan = () => {
   };
 
   const handleScanBarcodeAgain = () => {
-    setScanned(false);
-    setData(null);
-    setCourierName(null);
-    setCourierImage(null);
+    setTimeout(() => {
+      setScanned(false);
+      setData(null);
+      setCourierName(null);
+      setCourierImage(null);
+    }, 2000);
   };
 
   const handleCheckCourier = (awb) => {
@@ -63,14 +68,20 @@ const CourierPickupScan = () => {
     try {
       const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", { awb_no: awb });
       if (res.data.message.includes("already")) {
-        Toast.show(res.data.message, ErrorToastProps);
+        setRequestType("warning");
+        toggleScanExistedModal();
       } else {
         handleCheckCourier(awb);
         setDataScanned((prevData) => [...prevData, awb]);
+        setRequestType("info");
+        toggleScanSuccessModal();
       }
+      handleScanBarcodeAgain();
     } catch (err) {
       console.log(err);
-      Toast.show(err.response.data.message, ErrorToastProps);
+      setRequestType("danger");
+      toggleScanErrorModal();
+      handleScanBarcodeAgain();
     }
   };
 
@@ -101,17 +112,12 @@ const CourierPickupScan = () => {
               onBarCodeScanned={scanned ? undefined : handleBarcodeScanned}
             />
 
-            {!scanned ? (
-              <View style={{ borderWidth: 2, width: "85%", height: "20%" }}></View>
-            ) : (
-              <>
-                <Button padding={10} onPress={() => handleScanBarcodeAgain()}>
-                  <Text style={{ color: "#FFFFFF" }}>Tap to Scan again</Text>
-                </Button>
-                <View style={styles.content}>
-                  {courierImage === "not-found" ? (
-                    <Text>Not Found</Text>
-                  ) : !courierImage ? null : (
+            {scanned && (
+              <View style={styles.content}>
+                {courierImage === "not-found" ? (
+                  <Text>Not Found</Text>
+                ) : (
+                  courierImage && (
                     <Image
                       style={styles.image}
                       source={{
@@ -121,17 +127,39 @@ const CourierPickupScan = () => {
                       resizeMethod="auto"
                       fadeDuration={0}
                     />
-                  )}
-                  <Text>{courierName ? `${courierName}` : ""}</Text>
-                  <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : ""}</Text>
-                </View>
-              </>
+                  )
+                )}
+                <Text>{courierName && `${courierName}`}</Text>
+                <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : null}</Text>
+              </View>
             )}
+            {!scanned && <View style={styles.scannerBox}></View>}
             <StatusBar style="auto" />
           </>
         )}
       </View>
       <AWBScannedList reference={listScreenSheetRef} items={dataScanned} />
+      <SuccessModal
+        isOpen={scanSuccessModalIsOpen}
+        toggle={toggleScanSuccessModal}
+        type={requestType}
+        title="AWB saved!"
+        description="Data has successfully updated"
+      />
+      <SuccessModal
+        isOpen={scanErrorModalIsOpen}
+        toggle={toggleScanErrorModal}
+        type={requestType}
+        title="Courier not found!"
+        description="We cannot add the data"
+      />
+      <SuccessModal
+        isOpen={scanExistedModalIsOpen}
+        toggle={toggleScanExistedModal}
+        type={requestType}
+        title="AWB already scanned!"
+        description="We cannot add the data"
+      />
     </SafeAreaView>
   );
 };
@@ -152,30 +180,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 16,
   },
-  scanner: {
-    height: "65%",
-    width: "100%",
-  },
-  scannerContainer: {
-    aspectRatio: 1,
-    width: "80%",
+  scannerBox: {
+    borderWidth: 2,
+    width: "85%",
+    height: "20%",
+    borderColor: "#E8E9EB",
   },
   image: {
     height: 100,
-    width: 200,
+    width: 300,
     resizeMode: "contain",
-  },
-  wrapper: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
   },
   content: {
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     gap: 5,
-    padding: 5,
+    padding: 10,
     borderRadius: 10,
   },
 });
