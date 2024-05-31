@@ -53,6 +53,11 @@ const FrequentlyAskedQuestions = () => {
       data: questionAndAnswer[7]?.data,
       description: questionAndAnswer[7].description,
     },
+    {
+      name: questionAndAnswer[8]?.name,
+      data: questionAndAnswer[8]?.data,
+      description: questionAndAnswer[8].description,
+    },
   ];
 
   return (

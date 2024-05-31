@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import { card } from "../../../styles/Card";
 import { TextProps } from "../../shared/CustomStylings";
 
-const CourierItem = ({ name }) => {
+const CourierItem = ({ name, prefix }) => {
   return (
     <View
       style={[
@@ -16,7 +16,9 @@ const CourierItem = ({ name }) => {
         },
       ]}
     >
-      <Text style={[TextProps]}>{name}</Text>
+      <Text style={[TextProps]}>
+        {name} - {prefix}
+      </Text>
     </View>
   );
 };

@@ -56,7 +56,6 @@ const NewFeedScreen = () => {
           "content-type": "multipart/form-data",
         },
       });
-      console.log("r", res.data);
       setSubmitting(false);
       setStatus("success");
       handleAfterNewPost();
