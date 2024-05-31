@@ -126,4 +126,15 @@ export const questionAndAnswer = [
       },
     ],
   },
+  {
+    name: "Scan Courier Pickup",
+    description: "At Silo module, You can add and AWB Courier through barcode scanner",
+    data: [
+      {
+        question: "How to add AWB Courier?",
+        answer:
+          "1. Tap option menu (three-vertical lines icon) button at Bottom Tab \n\n2. Tap Courier Pickup \n\n3. Tap Scanner button \n\n4. Place the barcode in the scanner area \n\n5. You can see the scanned AWB by pressing AWB list button located at the bottom-right of the scanner",
+      },
+    ],
+  },
 ];

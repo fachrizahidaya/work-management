@@ -8,7 +8,7 @@ const CourierList = ({ data }) => {
       <FlashList
         data={data}
         estimatedItemSize={50}
-        renderItem={({ item, index }) => <CourierItem key={index} name={item?.name} />}
+        renderItem={({ item, index }) => <CourierItem key={index} name={item?.name} prefix={item?.prefix_code_awb} />}
       />
     </View>
   );

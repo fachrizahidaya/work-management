@@ -7,7 +7,7 @@ import Input from "../../shared/Forms/Input";
 import { TextProps } from "../../shared/CustomStylings";
 import { FlashList } from "@shopify/flash-list";
 
-const AWBScannedList = ({ reference, items }) => {
+const AWBScannedList = ({ reference, items, handleSearch, filteredData, searchQuery, setSearchQuery }) => {
   return (
     <TouchableOpacity style={styles.wrapper} onPress={() => reference.current?.show()}>
       <MaterialCommunityIcons name="format-list-bulleted" size={30} color="#FFFFFF" />
@@ -16,40 +16,45 @@ const AWBScannedList = ({ reference, items }) => {
         ref={reference}
         onClose={() => {
           reference.current?.hide();
-          // setSearchInput("");
-          // setInputToShow("");
+          setSearchQuery("");
         }}
         containerStyle={{ height: 550 }}
       >
         <View style={styles.content}>
           {/* <Input
-              value={inputToShow}
-              fieldName={fieldNameSearch}
-              startIcon="magnify"
-              endIcon={inputToShow && "close-circle-outline"}
-              onPressEndIcon={() => {
-                setInputToShow("");
-                setSearchInput("");
-              }}
-              onChangeText={(value) => {
-                handleSearch(value);
-                setInputToShow(value);
-              }}
-              placeHolder="Search..."
-              height={40}
-            /> */}
-
-          <FlashList
-            data={items}
-            estimatedItemSize={50}
-            onEndReachedThreshold={0.1}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity key={index} style={{ marginVertical: 5 }}>
-                <Text style={[TextProps]}>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
+            value={searchQuery}
+            fieldName="search"
+            startIcon="magnify"
+            endIcon={searchQuery && "close-circle-outline"}
+            onPressEndIcon={() => {
+              setSearchQuery("");
+            }}
+            onChangeText={() => {
+              handleSearch();
+            }}
+            placeHolder="Search..."
+            height={40}
+          /> */}
+          {searchQuery ? (
+            filteredData?.map((awb, index) => {
+              return <Text key={index}>{awb}</Text>;
+            })
+          ) : (
+            <FlashList
+              data={items}
+              estimatedItemSize={50}
+              onEndReachedThreshold={0.1}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity key={index} style={{ marginVertical: 5 }}>
+                  <Text style={[TextProps]}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+          {filteredData?.map((awb, index) => {
+            return <Text key={index}>{awb}</Text>;
+          })}
         </View>
       </ActionSheet>
     </TouchableOpacity>
