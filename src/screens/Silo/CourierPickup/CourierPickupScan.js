@@ -84,8 +84,6 @@ const CourierPickupScan = () => {
         setRequestType("warning");
         toggleScanExistedModal();
       } else {
-        // handleCheckCourier(awb);
-        // setDataScanned((prevData) => [...prevData, awb]);
         setRequestType("info");
         toggleScanSuccessModal();
       }
@@ -199,14 +197,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 14,
     paddingVertical: 16,
-  },
-  scanner: {
-    height: "65%",
-    width: "100%",
-  },
-  scannerContainer: {
-    aspectRatio: 1,
-    width: "80%",
   },
   scannerBox: {
     borderWidth: 2,
