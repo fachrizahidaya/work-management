@@ -1,39 +1,27 @@
 import { useNavigation } from "@react-navigation/native";
-import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 
+import CourierList from "../../../components/Silo/Courier/CourierList";
 import PageHeader from "../../../components/shared/PageHeader";
-import DataEntrySessions from "../../../components/Pipe/DataEntry/DataEntrySessions";
+import { useFetch } from "../../../hooks/useFetch";
 
-const DataEntryScreen = () => {
-  const sessions = [
-    { date: "2024-05-17", shift: 1, person_in_charge: "Riza" },
-    { date: "2024-05-18", shift: 2, person_in_charge: "Huda" },
-  ];
-
+const CourierScreen = () => {
   const navigation = useNavigation();
+
+  const { data } = useFetch(`/wm/courier`);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader title="Data Entry" onPress={() => navigation.goBack()} />
+        <PageHeader title="Courier" onPress={() => navigation.goBack()} />
       </View>
-      <TouchableOpacity
-        style={styles.addIcon}
-        onPress={() => {
-          null;
-        }}
-      >
-        <MaterialCommunityIcons name="plus" size={30} color="#FFFFFF" />
-      </TouchableOpacity>
-      <DataEntrySessions data={sessions} navigation={navigation} dayjs={dayjs} />
+      <CourierList data={data?.data} />
     </SafeAreaView>
   );
 };
 
-export default DataEntryScreen;
+export default CourierScreen;
 
 const styles = StyleSheet.create({
   container: {

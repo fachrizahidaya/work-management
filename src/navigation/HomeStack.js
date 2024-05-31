@@ -91,9 +91,10 @@ import NewSupplierScreen from "../screens/Coin/Purchase/NewSupplierScreen";
 import NewCustomerScreen from "../screens/Coin/Sales/NewCustomerScreen";
 
 // Silo Screens
-import DataEntryScreen from "../screens/Pipe/DataEntry/DataEntryScreen";
-import PipeTab from "./Tabs/PipeTab";
-import DataEntrySession from "../screens/Pipe/DataEntry/DataEntrySession";
+import CourierPickupScreen from "../screens/Silo/CourierPickup/CourierPickupScreen";
+import SiloTab from "./Tabs/SiloTab";
+import CourierScreen from "../screens/Silo/Courier/CourierScreen";
+import CourierPickupScan from "../screens/Silo/CourierPickup/CourierPickupScan";
 
 const Stack = createStackNavigator();
 
@@ -142,8 +143,8 @@ const HomeStack = () => {
           // else if (moduleSelector.module_name === "SETTING") {
           //   return <SettingTab />;
           // }
-          else if (moduleSelector.module_name === "PIPE") {
-            return <PipeTab />;
+          else if (moduleSelector.module_name === "SILO") {
+            return <SiloTab />;
           } else {
             // Render a default component or handle unknown cases
             return <BandTab />;
@@ -341,8 +342,9 @@ const HomeStack = () => {
       <Stack.Screen name="New Customer" component={NewCustomerScreen} options={{ header: () => <Header /> }} />
 
       {/* Silo Screens */}
-      <Stack.Screen name="Data Entry" component={DataEntryScreen} options={{ header: () => <Header /> }} />
-      <Stack.Screen name="Entry Session" component={DataEntrySession} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Courier Pickup" component={CourierPickupScreen} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Entry Session" component={CourierPickupScan} options={{ header: () => <Header /> }} />
+      <Stack.Screen name="Courier" component={CourierScreen} options={{ header: () => <Header /> }} />
     </Stack.Navigator>
   );
 };

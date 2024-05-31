@@ -26,19 +26,8 @@ const FileAttachment = ({ file, setFile }) => {
   };
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        paddingTop: Platform.OS === "ios" ? 60 : null,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? 60 : null }]}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text
           style={[{ fontSize: 12, width: 300, overflow: "hidden" }, TextProps]}
           numberOfLines={1}

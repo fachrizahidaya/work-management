@@ -14,19 +14,10 @@ const ContactSlideAction = ({ translateX, onTogglePin, type, id, isPinned, onCli
           translateX.value = withTiming(0);
           onTogglePin(type, id, isPinned?.pin_chat ? "unpin" : "pin");
         }}
-        style={{
-          alignItems: "center",
-          paddingLeft: isPinned?.pin_chat ? 5 : 10,
-        }}
+        style={{ alignItems: "center", paddingLeft: isPinned?.pin_chat ? 5 : 10 }}
       >
         <AnimatedIcon name="pin" color="#ffffff" size={20} />
-        <AnimatedText
-          style={{
-            color: "#FFFFFF",
-          }}
-        >
-          {isPinned?.pin_chat ? "Unpin" : "Pin"}
-        </AnimatedText>
+        <AnimatedText style={{ color: "#FFFFFF" }}>{isPinned?.pin_chat ? "Unpin" : "Pin"}</AnimatedText>
       </Pressable>
 
       <Pressable

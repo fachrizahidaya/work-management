@@ -29,11 +29,12 @@ const FeedComment = ({
   setCurrentOffsetComments,
   setPostId,
   setCommentParentId,
+  setComments,
 }) => {
   const [hasBeenScrolled, setHasBeenScrolled] = useState(false);
 
   return (
-    <ActionSheet ref={reference} onClose={() => handleClose(reference, setPostId, setCommentParentId)}>
+    <ActionSheet ref={reference} onClose={() => handleClose(reference, setPostId, setCommentParentId, setComments)}>
       <View style={styles.header}>
         <View style={{ alignItems: "center", marginBottom: 10 }}>
           <Text style={{ fontSize: 15, fontWeight: "500" }}>Comments</Text>

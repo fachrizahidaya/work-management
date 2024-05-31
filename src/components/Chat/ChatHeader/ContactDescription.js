@@ -22,14 +22,7 @@ const ContactDescription = ({ isLoading, navigation, name, image, email, concate
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={{ flexDirection: "row" }}>
                 <Text
-                  style={[
-                    {
-                      fontSize: 10,
-                      width: 200,
-                      overflow: "hidden",
-                    },
-                    TextProps,
-                  ]}
+                  style={[{ fontSize: 10, width: 200, overflow: "hidden" }, TextProps]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >

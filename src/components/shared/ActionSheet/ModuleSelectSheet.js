@@ -25,6 +25,7 @@ const ModuleSelectSheet = (props) => {
               (item) => item.module_name === "BAND" || item.module_name === "TRIBE"
               // || item.module_name === "PIPE"
               // || item.module_name === "COIN"
+              // || item.module_name === "SILO"
             )
             .map((item, idx) => {
               return (
