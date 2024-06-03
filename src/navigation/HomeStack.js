@@ -95,6 +95,7 @@ import CourierPickupScreen from "../screens/Silo/CourierPickup/CourierPickupScre
 import SiloTab from "./Tabs/SiloTab";
 import CourierScreen from "../screens/Silo/Courier/CourierScreen";
 import CourierPickupScan from "../screens/Silo/CourierPickup/CourierPickupScan";
+import PrivacyPolicy from "../screens/Setting/PrivacyAndTerms/PrivacyPolicy";
 
 const Stack = createStackNavigator();
 
@@ -289,6 +290,8 @@ const HomeStack = () => {
       <Stack.Screen name="FAQ" component={FrequentlyAskedQuestions} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="FAQ Detail" component={FAQDetail} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Privacy Policy" component={PrivacyPolicy} options={{ header: () => <Header /> }} />
 
       {/* Coin Screens */}
       <Stack.Screen name="Sales" component={SalesScreen} options={{ header: () => <Header /> }} />
