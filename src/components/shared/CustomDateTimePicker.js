@@ -33,6 +33,7 @@ const CustomDateTimePicker = ({
   unlimitStartDate,
   title,
   marginLeft,
+  mode = "date",
 }) => {
   const inputRef = useRef(null);
   // State for the selected date and the displayed value
@@ -77,11 +78,20 @@ const CustomDateTimePicker = ({
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
 
     month = month < 10 ? `0${month}` : month;
     day = day < 10 ? `0${day}` : day;
 
-    return `${year}-${month}-${day}`;
+    if (mode === date) {
+      return `${year}-${month}-${day}`;
+    } else {
+      return `${year}-${month}-${day} ${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute}:${
+        second < 10 ? "0" + second : second
+      }`;
+    }
   };
 
   /**
@@ -137,7 +147,7 @@ const CustomDateTimePicker = ({
 
       {calendarIsOpen && (
         <DateTimePicker
-          mode="date"
+          mode={mode}
           value={date}
           display="spinner"
           onChange={onChangeDate}
