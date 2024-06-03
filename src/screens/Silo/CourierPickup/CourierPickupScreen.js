@@ -12,6 +12,7 @@ import { useFetch } from "../../../hooks/useFetch";
 import CourierPickupFilter from "../../../components/Silo/DataEntry/CourierPickupFilter";
 import { TextProps } from "../../../components/shared/CustomStylings";
 import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+import CourierPickupCountList from "../../../components/Silo/DataEntry/CourierPickupCountList";
 
 const CourierPickupScreen = () => {
   const [startDate, setStartDate] = useState(null);
@@ -24,7 +25,7 @@ const CourierPickupScreen = () => {
     end_date: endDate,
   };
 
-  const { data, isFetching } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
+  const { data, isFetching, refetch } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
 
   /**
    * Handle start and end date archived
@@ -52,11 +53,7 @@ const CourierPickupScreen = () => {
             justifyContent: startDate && endDate ? "space-between" : "flex-end",
           }}
         >
-          {startDate && endDate && (
-            <View>
-              <Text>Total AWB: {data?.data?.length}</Text>
-            </View>
-          )}
+          {startDate && endDate && <CourierPickupCountList totalData={data?.total_data} />}
           <CourierPickupFilter
             startDate={startDate}
             endDate={endDate}
@@ -70,22 +67,18 @@ const CourierPickupScreen = () => {
           ) : data?.data?.length > 0 ? (
             <CourierPickupList data={data?.data} />
           ) : (
-            <ScrollView
-            // refreshControl={<RefreshControl />}
-            >
+            <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
               <View style={styles.content}>
                 <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             </ScrollView>
           )
         ) : (
-          <ScrollView
-          // refreshControl={<RefreshControl />}
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
             <View style={styles.content}>
               <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, gap: 10 }}>
                 <Image
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
+                  style={styles.image}
                   source={require("../../../assets/vectors/items.jpg")}
                   alt="empty"
                   resizeMode="contain"
@@ -113,7 +106,6 @@ export default CourierPickupScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     position: "relative",
   },
   header: {
@@ -152,5 +144,10 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    height: 250,
+    width: 250,
+    resizeMode: "contain",
   },
 });
