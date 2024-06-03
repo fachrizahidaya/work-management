@@ -83,11 +83,11 @@ const CourierPickupScan = () => {
       toggleProcess();
       const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", { awb_no: awb });
       if (res.data.message.includes("already")) {
-        handleCheckCourier(awb);
-        setDataScanned((prevData) => [...prevData, awb]);
         setRequestType("warning");
         toggleScanExistedModal();
       } else {
+        handleCheckCourier(awb);
+        setDataScanned((prevData) => [...prevData, awb]);
         setRequestType("info");
         toggleScanSuccessModal();
       }
