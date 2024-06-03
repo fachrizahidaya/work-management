@@ -2,8 +2,9 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { TextProps } from "../../../components/shared/CustomStylings";
+import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
 
-const PipeDashboard = () => {
+const SiloDashboard = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -18,13 +19,15 @@ const PipeDashboard = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl />}
       >
-        <View style={styles.wrapper}></View>
+        <View style={styles.wrapper}>
+          <EmptyPlaceholder text="No Data" height={250} width={250} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default PipeDashboard;
+export default SiloDashboard;
 
 const styles = StyleSheet.create({
   container: {

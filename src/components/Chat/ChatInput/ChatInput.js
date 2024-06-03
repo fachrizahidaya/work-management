@@ -297,27 +297,8 @@ const ChatInput = ({
     <View>
       <ChatReplyPreview messageToReply={messageToReply} setMessageToReply={setMessageToReply} memberName={memberName} />
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#FFFFFF",
-          paddingVertical: 10,
-          paddingHorizontal: 16,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#F8F8F8",
-            paddingHorizontal: 5,
-            gap: 5,
-            borderRadius: 10,
-          }}
-        >
+      <View style={styles.content}>
+        <View style={styles.wrapper}>
           {type === "group" && !active_member ? (
             <Text style={[{ fontSize: 12, textAlign: "center", padding: 10 }, TextProps]}>
               You can't send message to this group because you're no longer a participant
@@ -330,32 +311,21 @@ const ChatInput = ({
                   SheetManager.show("form-sheet", {
                     payload: {
                       children: (
-                        <View
-                          style={{
-                            gap: 21,
-                            paddingHorizontal: 20,
-                            paddingVertical: 16,
-                            paddingBottom: -20,
-                          }}
-                        >
-                          <View
-                            style={{
-                              gap: 1,
-                              backgroundColor: "#F5F5F5",
-                              borderRadius: 10,
-                            }}
-                          >
+                        <View style={{ gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: -20 }}>
+                          <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
                             {attachmentOptions.map((option, index) => {
                               return (
                                 <TouchableOpacity
                                   key={index}
                                   onPress={option.onPress}
-                                  style={{
-                                    ...styles.container,
-                                    justifyContent: "space-between",
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: "#FFFFFF",
-                                  }}
+                                  style={[
+                                    styles.container,
+                                    {
+                                      justifyContent: "space-between",
+                                      borderBottomWidth: 1,
+                                      borderBottomColor: "#FFFFFF",
+                                    },
+                                  ]}
                                 >
                                   <Text style={[{ fontSize: 16 }, TextProps]}>{option.name}</Text>
                                   <MaterialCommunityIcons name={option.icon} color={option.color} size={20} />
@@ -364,21 +334,10 @@ const ChatInput = ({
                             })}
                           </View>
                           <TouchableOpacity
-                            style={{
-                              justifyContent: "center",
-                              ...styles.container,
-                            }}
+                            style={[styles.container, { justifyContent: "center" }]}
                             onPress={() => SheetManager.hide("form-sheet")}
                           >
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontWeight: "400",
-                                color: "#176688",
-                              }}
-                            >
-                              Cancel
-                            </Text>
+                            <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
                           </TouchableOpacity>
                         </View>
                       ),
@@ -407,34 +366,20 @@ const ChatInput = ({
                       {
                         trigger: "@",
                         renderSuggestions: renderSuggestions,
-                        textStyle: {
-                          fontWeight: "400",
-                          color: "#377893",
-                        },
+                        textStyle: { fontWeight: "400", color: "#377893" },
                       },
                     ]}
                     placeholder="Type a message..."
-                    style={{
-                      padding: 12,
-                      paddingTop: Platform.OS === "ios" ? 12 : null,
-                      alignItems: "center",
-                    }}
+                    style={{ padding: 12, paddingTop: Platform.OS === "ios" ? 12 : null, alignItems: "center" }}
                   />
                 ) : (
                   <MentionInput
-                    containerStyle={{
-                      maxHeight: 100,
-                      paddingVertical: Platform.OS === "ios" ? 3 : null,
-                    }}
+                    containerStyle={{ maxHeight: 100, paddingVertical: Platform.OS === "ios" ? 3 : null }}
                     value={formik.values.message}
                     onChange={(value) => formik.setFieldValue("message", value)}
                     partTypes={[]}
                     placeholder="Type a message..."
-                    style={{
-                      padding: 12,
-                      paddingTop: Platform.OS === "ios" ? 12 : null,
-                      alignItems: "center",
-                    }}
+                    style={{ padding: 12, paddingTop: Platform.OS === "ios" ? 12 : null, alignItems: "center" }}
                   />
                 )}
               </View>
@@ -472,6 +417,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     height: 50,
     padding: 10,
+    borderRadius: 10,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F8F8F8",
+    paddingHorizontal: 5,
+    gap: 5,
     borderRadius: 10,
   },
 });

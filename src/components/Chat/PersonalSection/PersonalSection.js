@@ -15,55 +15,30 @@ const PersonalSection = ({
   onPinControl,
   navigation,
   userSelector,
+  menuOptions,
 }) => {
-  const menuOptions = [
-    {
-      id: 1,
-      name: "New Chat",
-      onPress: () => {
-        navigation.navigate("New Chat");
-        SheetManager.hide("form-sheet");
-      },
-    },
-  ];
-
   return !searchKeyword ? (
     <>
       <View style={styles.header}>
         <Text style={{ fontWeight: "500", opacity: 0.5 }}>PEOPLE</Text>
 
         <Pressable
-          style={{ ...styles.addButton, marginRight: 1 }}
+          style={[styles.addButton]}
           onPress={() =>
             SheetManager.show("form-sheet", {
               payload: {
                 children: (
-                  <View
-                    style={{
-                      gap: 21,
-                      paddingHorizontal: 20,
-                      paddingVertical: 16,
-                      paddingBottom: -20,
-                    }}
-                  >
-                    <View
-                      style={{
-                        gap: 1,
-                        backgroundColor: "#F5F5F5",
-                        borderRadius: 10,
-                      }}
-                    >
+                  <View style={styles.wrapper}>
+                    <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
                       {menuOptions.map((option, index) => {
                         return (
                           <TouchableOpacity
                             key={index}
                             onPress={option.onPress}
-                            style={{
-                              ...styles.container,
-                              justifyContent: "space-between",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "#FFFFFF",
-                            }}
+                            style={[
+                              styles.container,
+                              { justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#FFFFFF" },
+                            ]}
                           >
                             <Text style={{ fontSize: 16, fontWeight: "400" }}>{option.name}</Text>
                           </TouchableOpacity>
@@ -71,18 +46,10 @@ const PersonalSection = ({
                       })}
                     </View>
                     <TouchableOpacity
-                      style={{ justifyContent: "center", ...styles.container }}
+                      style={[{ justifyContent: "center" }, styles.container]}
                       onPress={() => SheetManager.hide("form-sheet")}
                     >
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "400",
-                          color: "#176688",
-                        }}
-                      >
-                        Cancel
-                      </Text>
+                      <Text style={{ fontSize: 16, fontWeight: "400", color: "#176688" }}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
                 ),
@@ -199,5 +166,11 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 10,
+  },
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: -20,
   },
 });

@@ -104,27 +104,26 @@ const FeedCardItem = ({
                   <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
               )}
+              {/* Toggle report a post */}
+              {loggedEmployeeId !== employeeId && (
+                <MaterialCommunityIcons
+                  onPress={async () => {
+                    await SheetManager.show("form-sheet", {
+                      payload: {
+                        children: renderActionOptions(),
+                      },
+                    });
+                  }}
+                  name="dots-vertical"
+                  size={20}
+                  borderRadius={20}
+                  color="#000000"
+                  style={{ marginRight: 1 }}
+                />
+              )}
             </TouchableOpacity>
             <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
           </View>
-
-          {/* Toggle report a post */}
-          {/* {loggedEmployeeId !== employeeId && (
-            <MaterialCommunityIcons
-              onPress={async () => {
-                await SheetManager.show("form-sheet", {
-                  payload: {
-                    children: renderActionOptions(),
-                  },
-                });
-              }}
-              name="dots-vertical"
-              size={20}
-              borderRadius={20}
-              color="#000000"
-              style={{ marginRight: 1 }}
-            />
-          )} */}
         </View>
         <Text style={[{ fontSize: 14 }, TextProps]}>
           {

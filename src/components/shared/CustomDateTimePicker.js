@@ -144,6 +144,7 @@ const CustomDateTimePicker = ({
           style={{ ...styles.datePicker, marginLeft: marginLeft }}
           minimumDate={unlimitStartDate ? unlimitMinimumDate : new Date(dayjs().format("YYYY-MM-DD"))}
           maximumDate={maximumDate && new Date(maximumDate)}
+          themeVariant="light"
         />
       )}
 

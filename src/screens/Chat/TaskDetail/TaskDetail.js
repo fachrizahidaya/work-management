@@ -55,14 +55,7 @@ const TaskDetail = () => {
         <Description description={task?.data?.description} navigation={navigation} />
       </View>
 
-      <View
-        style={{
-          ...styles.wrapper,
-          flex: 1,
-          flexDirection: "row",
-          gap: 5,
-        }}
-      >
+      <View style={[styles.wrapper, { flex: 1, flexDirection: "row", gap: 5 }]}>
         <View style={{ gap: 5 }}>
           <DateSection
             start={dayjs(task?.data?.created_at).format("MMM DD, YYYY")}

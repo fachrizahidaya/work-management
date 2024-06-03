@@ -30,7 +30,7 @@ const NewFeedScreen = () => {
 
   const postActionScreenSheetRef = useRef(null);
 
-  const { loggedEmployeeImage, loggedEmployeeName, postRefetchHandler, toggleSuccess, setRequestType } = route.params;
+  const { loggedEmployeeImage, loggedEmployeeName, handleAfterNewPost } = route.params;
 
   const menuSelector = useSelector((state) => state.user_menu.user_menu.menu);
 
@@ -58,9 +58,7 @@ const NewFeedScreen = () => {
       });
       setSubmitting(false);
       setStatus("success");
-      postRefetchHandler();
-      toggleSuccess();
-      setRequestType("post");
+      handleAfterNewPost();
     } catch (err) {
       console.log(err);
       setSubmitting(false);
