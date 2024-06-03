@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import _ from "lodash";
 
-import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Image, StatusBar, ActivityIndicator } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
@@ -11,6 +11,7 @@ import axiosInstance from "../../../config/api";
 import AWBScannedList from "../../../components/Silo/DataEntry/AWBScannedList";
 import SuccessModal from "../../../components/shared/Modal/SuccessModal";
 import { useDisclosure } from "../../../hooks/useDisclosure";
+import { useLoading } from "../../../hooks/useLoading";
 
 const CourierPickupScan = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -30,6 +31,8 @@ const CourierPickupScan = () => {
   const { toggle: toggleScanSuccessModal, isOpen: scanSuccessModalIsOpen } = useDisclosure(false);
   const { toggle: toggleScanErrorModal, isOpen: scanErrorModalIsOpen } = useDisclosure(false);
   const { toggle: toggleScanExistedModal, isOpen: scanExistedModalIsOpen } = useDisclosure(false);
+
+  const { isLoading: processIsLoading, toggle: toggleProcess } = useLoading(false);
 
   const { data: courierData } = useFetch(`/wm/courier`);
 
@@ -77,6 +80,7 @@ const CourierPickupScan = () => {
 
   const handleAddCourierPickup = async (awb) => {
     try {
+      toggleProcess();
       const res = await axiosInstance.post("/wm/courier-pickup/scan-awb", { awb_no: awb });
       if (res.data.message.includes("already")) {
         handleCheckCourier(awb);
@@ -87,11 +91,13 @@ const CourierPickupScan = () => {
         setRequestType("info");
         toggleScanSuccessModal();
       }
+      toggleProcess();
       handleScanBarcodeAgain();
     } catch (err) {
       console.log(err);
       setRequestType("danger");
       toggleScanErrorModal();
+      toggleProcess();
       handleScanBarcodeAgain();
     }
   };
@@ -123,27 +129,30 @@ const CourierPickupScan = () => {
               onBarCodeScanned={scanned ? undefined : handleBarcodeScanned}
             />
 
-            {scanned && (
-              <View style={styles.content}>
-                {courierImage === "not-found" ? (
-                  <Text>Not Found</Text>
-                ) : (
-                  courierImage && (
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
-                      }}
-                      alt="Courier Image"
-                      resizeMethod="auto"
-                      fadeDuration={0}
-                    />
-                  )
-                )}
-                <Text>{courierName && `${courierName}`}</Text>
-                <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : null}</Text>
-              </View>
-            )}
+            {scanned &&
+              (processIsLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <View style={styles.content}>
+                  {courierImage === "not-found" ? (
+                    <Text>Not Found</Text>
+                  ) : (
+                    courierImage && (
+                      <Image
+                        style={styles.image}
+                        source={{
+                          uri: `${process.env.EXPO_PUBLIC_API}/image/${courierImage}`,
+                        }}
+                        alt="Courier Image"
+                        resizeMethod="auto"
+                        fadeDuration={0}
+                      />
+                    )
+                  )}
+                  <Text>{courierName && `${courierName}`}</Text>
+                  <Text>{data && courierImage !== "not-found" ? `AWB: ${data}` : null}</Text>
+                </View>
+              ))}
             {!scanned && <View style={styles.scannerBox}></View>}
             <StatusBar style="auto" />
           </>

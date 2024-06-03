@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -24,7 +24,7 @@ const CourierPickupScreen = () => {
     end_date: endDate,
   };
 
-  const { data } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
+  const { data, isFetching } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
 
   /**
    * Handle start and end date archived
@@ -65,7 +65,9 @@ const CourierPickupScreen = () => {
           />
         </View>
         {startDate && endDate ? (
-          data?.data?.length > 0 ? (
+          isFetching ? (
+            <ActivityIndicator />
+          ) : data?.data?.length > 0 ? (
             <CourierPickupList data={data?.data} />
           ) : (
             <ScrollView
