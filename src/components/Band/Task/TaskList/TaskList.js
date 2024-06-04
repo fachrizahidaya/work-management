@@ -23,7 +23,7 @@ const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, ref
 
   const renderFlashList = (data = []) => {
     return (
-      <View style={{ display: "flex", gap: 10, flex: 1, marginHorizontal: 16, marginTop: 10 }}>
+      <View style={{ display: "flex", gap: 10, flex: 1 }}>
         {!isLoading ? (
           data.length > 0 ? (
             <FlashList

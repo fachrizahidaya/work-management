@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 16,
     paddingHorizontal: 14,
-    marginVertical: 8,
-    marginHorizontal: 2,
+    marginVertical: 4,
+    marginHorizontal: 14,
   },
   containerApproval: {
     flexDirection: "row",
