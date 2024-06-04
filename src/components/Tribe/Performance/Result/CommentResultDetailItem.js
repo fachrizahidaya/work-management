@@ -8,15 +8,17 @@ import { TextProps } from "../../../shared/CustomStylings";
 const CommentResultDetailItem = ({ id, type, total_comment, navigation }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        elevation: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
+      style={[
+        card.card,
+        {
+          marginVertical: 4,
+          marginHorizontal: 14,
+          marginBottom: 2,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+      ]}
       onPress={() => {
         navigation.navigate("Comment Employee", {
           id: id,

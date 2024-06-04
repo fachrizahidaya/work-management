@@ -41,12 +41,22 @@ const SalesScreen = () => {
       <View style={styles.header}>
         <PageHeader title="Sales" onPress={() => navigation.goBack()} />
       </View>
-      <View style={{ paddingHorizontal: 14, paddingVertical: 16, gap: 10 }}>
+      <View style={{ paddingHorizontal: 14 }}>
         {purchaseOptions.map((item, index) => {
           return (
             <Pressable
               key={index}
-              style={{ ...card.card, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
+              style={[
+                card.card,
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingVertical: 16,
+                  paddingHorizontal: 14,
+                  marginVertical: 4,
+                },
+              ]}
               onPress={() => navigation.navigate(item.navigate)}
             >
               <Text style={[TextProps]}>{item.name}</Text>

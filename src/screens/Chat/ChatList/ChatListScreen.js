@@ -19,7 +19,7 @@ import GroupSection from "../../../components/Chat/GroupSection/GroupSection";
 import PersonalSection from "../../../components/Chat/PersonalSection/PersonalSection";
 import GlobalSearchChatSection from "../../../components/Chat/GlobalSearchChatSection/GlobalSearchChatSection";
 import ContactMenu from "../../../components/Chat/ContactListItem/ContactMenu";
-import { ErrorToastProps, SuccessToastProps } from "../../../components/shared/CustomStylings";
+import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import PageHeader from "../../../components/shared/PageHeader";
 import {
   clearChatMessageHandler,

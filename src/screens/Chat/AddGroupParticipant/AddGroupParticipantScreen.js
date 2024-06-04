@@ -107,30 +107,33 @@ const AddGroupParticipantScreen = () => {
           </View>
         </View>
 
-        <View style={{ flex: 1, gap: 15, paddingHorizontal: 16 }}>
-          <Input
-            fieldName="search"
-            value={inputToShow}
-            placeHolder="Search..."
-            onChangeText={(value) => {
-              searchHandler(value);
-              setInputToShow(value);
-            }}
-            startIcon="magnify"
-            endIcon={inputToShow && "close"}
-            onPressEndIcon={() => {
-              setSearchKeyword("");
-              setInputToShow("");
-            }}
-          />
-          <View style={styles.selectedList}>
-            {selectedUsers?.length > 0 &&
-              selectedUsers?.map((user, index) => {
-                return <SelectedUserList key={index} name={user?.name} id={user?.id} image={user?.image} />;
-              })}
+        <View style={{ flex: 1, gap: 15 }}>
+          <View style={{ paddingHorizontal: 15 }}>
+            <Input
+              fieldName="search"
+              value={inputToShow}
+              placeHolder="Search..."
+              onChangeText={(value) => {
+                searchHandler(value);
+                setInputToShow(value);
+              }}
+              startIcon="magnify"
+              endIcon={inputToShow && "close"}
+              onPressEndIcon={() => {
+                setSearchKeyword("");
+                setInputToShow("");
+              }}
+            />
           </View>
-
-          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
+          <View style={{ paddingHorizontal: 15 }}>
+            <View style={styles.selectedList}>
+              {selectedUsers?.length > 0 &&
+                selectedUsers?.map((user, index) => {
+                  return <SelectedUserList key={index} name={user?.name} id={user?.id} image={user?.image} />;
+                })}
+            </View>
+            <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
+          </View>
 
           <FlashList
             extraData={forceRerender}

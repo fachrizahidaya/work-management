@@ -18,20 +18,8 @@ const AppraisalReviewListItem = ({
 }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 4,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() =>
-        navigation.navigate("Review Appraisal Detail", {
-          id: id,
-        })
-      }
+      style={[card.card, { marginHorizontal: 14, marginVertical: 4, marginBottom: 4, gap: 10 }]}
+      onPress={() => navigation.navigate("Review Appraisal Detail", { id: id })}
     >
       <Text style={[TextProps]}>{description}</Text>
       {target_level === "Employee" ? null : <Text style={[TextProps]}>{name}</Text>}

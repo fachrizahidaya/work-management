@@ -15,7 +15,7 @@ const PayslipList = ({
   openSelectedPayslip,
 }) => {
   return (
-    <View style={{ paddingHorizontal: 14, flex: 1 }}>
+    <View style={{ flex: 1 }}>
       {data?.length > 0 ? (
         <FlashList
           data={data}

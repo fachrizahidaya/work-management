@@ -44,7 +44,6 @@ const KPIResultScreen = () => {
                     ...card.card,
                     marginVertical: 14,
                     marginBottom: 2,
-                    elevation: 1,
                     flexDirection: "column",
                     gap: 5,
                   }}

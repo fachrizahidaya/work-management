@@ -14,13 +14,7 @@ const InvoiceListItem = ({ id, navigation, invoice_no, status, invoice_date, shi
   ];
 
   return (
-    <Pressable
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
-      onPress={() => navigation.navigate("Invoice Detail", { id: id })}
-    >
+    <Pressable style={[card.card, styles.content]} onPress={() => navigation.navigate("Invoice Detail", { id: id })}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Text style={[TextProps]}>{invoice_no}</Text>
@@ -53,7 +47,7 @@ export default InvoiceListItem;
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginVertical: 4,
     justifyContent: "space-between",
     gap: 8,
   },

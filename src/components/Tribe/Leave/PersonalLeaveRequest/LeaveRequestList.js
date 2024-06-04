@@ -1,4 +1,4 @@
-import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform, View } from "react-native";
 import { FlashList } from "react-native-actions-sheet";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -17,11 +17,7 @@ const LeaveRequestList = ({
   onSelect,
 }) => {
   return data?.length > 0 ? (
-    <View
-      style={{
-        height: "100%",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <FlashList
         data={data}
         onEndReachedThreshold={0.1}
@@ -44,7 +40,6 @@ const LeaveRequestList = ({
           <LeaveRequestItem
             item={item}
             key={index}
-            id={item?.id}
             leave_name={item?.leave_name}
             reason={item?.reason}
             days={item?.days}
@@ -71,7 +66,7 @@ const LeaveRequestList = ({
         />
       }
     >
-      <View style={styles.content}>
+      <View style={{ marginTop: 20 }}>
         <EmptyPlaceholder height={250} width={250} text="No Data" />
       </View>
     </ScrollView>
@@ -79,12 +74,3 @@ const LeaveRequestList = ({
 };
 
 export default LeaveRequestList;
-
-const styles = StyleSheet.create({
-  content: {
-    marginTop: 20,
-    gap: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

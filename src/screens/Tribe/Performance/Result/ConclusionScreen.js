@@ -60,7 +60,6 @@ const ConclusionScreen = () => {
                     ...card.card,
                     marginVertical: 14,
                     marginBottom: 2,
-                    elevation: 1,
                     flexDirection: "column",
                     gap: 10,
                   }}
@@ -81,7 +80,6 @@ const ConclusionScreen = () => {
                 ...card.card,
                 marginVertical: 14,
                 marginBottom: 2,
-                elevation: 1,
                 flexDirection: "column",
                 gap: 10,
               }}
@@ -115,7 +113,6 @@ const ConclusionScreen = () => {
                     ...card.card,
                     marginVertical: 14,
                     marginBottom: 2,
-                    elevation: 1,
                     flexDirection: "column",
                     gap: 10,
                   }}
@@ -136,7 +133,6 @@ const ConclusionScreen = () => {
                 ...card.card,
                 marginVertical: 14,
                 marginBottom: 2,
-                elevation: 1,
                 flexDirection: "column",
                 gap: 10,
               }}

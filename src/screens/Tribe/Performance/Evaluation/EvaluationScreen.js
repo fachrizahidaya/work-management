@@ -34,18 +34,10 @@ const EvaluationScreen = () => {
                 borderRadius: 10,
                 paddingVertical: 16,
                 paddingHorizontal: 14,
-                marginVertical: 8,
-                marginTop: 10,
-                elevation: 1,
+                marginVertical: 4,
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <Text style={[{ fontSize: 14, color: "#3F434A" }, TextProps]}>{item.name}</Text>
 
                 <Pressable>

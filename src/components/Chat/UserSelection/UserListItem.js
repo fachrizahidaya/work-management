@@ -25,6 +25,7 @@ const UserListItem = ({
   return (
     userSelector.id !== id && (
       <TouchableOpacity
+        style={{ marginHorizontal: 14 }}
         onPress={() => {
           if (multiSelect) {
             // If user already inside array, remove onpress

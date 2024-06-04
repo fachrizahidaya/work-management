@@ -6,7 +6,7 @@ import AttendanceAttachmentItem from "./AttendanceAttachmentItem";
 
 const AttendanceAttachmentList = ({ data, isFetching, refetch, setAttachmentId }) => {
   return (
-    <View style={{ height: "100%" }}>
+    <View style={{ flex: 1 }}>
       <FlashList
         data={data}
         keyExtractor={(item, index) => index}

@@ -15,7 +15,7 @@ const ContactList = ({
   userSelector,
 }) => {
   return (
-    <View style={{ flex: 1, paddingHorizontal: 14 }}>
+    <View style={{ flex: 1 }}>
       <FlashList
         data={data.length ? data : filteredData}
         onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}

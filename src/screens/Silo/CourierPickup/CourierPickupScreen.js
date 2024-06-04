@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from "dayjs";
 
-import { ActivityIndicator, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -10,37 +11,95 @@ import PageHeader from "../../../components/shared/PageHeader";
 import CourierPickupList from "../../../components/Silo/DataEntry/CourierPickupList";
 import { useFetch } from "../../../hooks/useFetch";
 import CourierPickupFilter from "../../../components/Silo/DataEntry/CourierPickupFilter";
-import { TextProps } from "../../../components/shared/CustomStylings";
 import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+import CourierPickupCountList from "../../../components/Silo/DataEntry/CourierPickupCountList";
 
 const CourierPickupScreen = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [startTime, setStartTime] = useState("00:00:01");
+  const [endTime, setEndTime] = useState("23:59:59");
+  const [fullDateStart, setFullDateStart] = useState("");
+  const [fullDateEnd, setFullDateEnd] = useState("");
 
   const navigation = useNavigation();
 
-  const fetchDataParameters = {
-    begin_date: startDate,
-    end_date: endDate,
+  const fetchDataParameters =
+    Platform.OS === "ios"
+      ? {
+          begin_date: startDate || dayjs().format("YYYY-MM-DD 00:00:01"),
+          end_date: endDate || dayjs().format("YYYY-MM-DD 23:59:00"),
+        }
+      : {
+          begin_date: fullDateStart || dayjs().format("YYYY-MM-DD 00:00:01"),
+          end_date: fullDateEnd || dayjs().format("YYYY-MM-DD 23:59:00"),
+        };
+
+  const { data, isFetching, refetch } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
+
+  const updateFullDateStart = (date, time) => {
+    if (date && time) {
+      setFullDateStart(`${date} ${time}`);
+    }
   };
 
-  const { data, isFetching } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
+  const updateFullDateEnd = (date, time) => {
+    if (date && time) {
+      setFullDateEnd(`${date} ${time}`);
+    }
+  };
 
-  /**
-   * Handle start and end date archived
-   * @param {*} date
-   */
   const startDateChangeHandler = (date) => {
     setStartDate(date);
-  };
-  const endDateChangeHandler = (date) => {
-    setEndDate(date);
+    if (Platform.OS === "android") {
+      updateFullDateStart(date, startTime);
+    }
   };
 
+  const endDateChangeHandler = (date) => {
+    setEndDate(date);
+    if (Platform.OS === "android") {
+      updateFullDateEnd(date, endTime);
+    }
+  };
+
+  const startTimeChangeHandler = (time) => {
+    setStartTime(time);
+    if (Platform.OS === "android") {
+      updateFullDateStart(startDate, time);
+    }
+  };
+
+  const endTimeChangeHandler = (time) => {
+    setEndTime(time);
+    if (Platform.OS === "android") {
+      updateFullDateEnd(endDate, time);
+    }
+  };
+
+  useEffect(() => {
+    if (startDate && startTime) {
+      updateFullDateStart(startDate, startTime);
+    }
+    if (endDate && endTime) {
+      updateFullDateEnd(endDate, endTime);
+    }
+  }, [startDate, startTime, endDate, endTime]);
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: startDate && endDate ? "#f8f8f8" : "#FFFFFF" }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#f8f8f8" }]}>
       <View style={styles.header}>
         <PageHeader title="Courier Pickup" onPress={() => navigation.goBack()} />
+        <CourierPickupFilter
+          startDate={startDate}
+          endDate={endDate}
+          startDateChangeHandler={startDateChangeHandler}
+          endDateChangeHandler={endDateChangeHandler}
+          startTime={startTime}
+          endTime={endTime}
+          startTimeChangeHandler={startTimeChangeHandler}
+          endTimeChangeHandler={endTimeChangeHandler}
+        />
       </View>
       <View style={{ flex: 1 }}>
         <View
@@ -49,49 +108,19 @@ const CourierPickupScreen = () => {
             paddingHorizontal: 16,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: startDate && endDate ? "space-between" : "flex-end",
+            justifyContent: "space-between",
           }}
         >
-          {startDate && endDate && (
-            <View>
-              <Text>Total AWB: {data?.data?.length}</Text>
-            </View>
-          )}
-          <CourierPickupFilter
-            startDate={startDate}
-            endDate={endDate}
-            startDateChangeHandler={startDateChangeHandler}
-            endDateChangeHandler={endDateChangeHandler}
-          />
+          <CourierPickupCountList totalData={data?.total_data} />
         </View>
-        {startDate && endDate ? (
-          isFetching ? (
-            <ActivityIndicator />
-          ) : data?.data?.length > 0 ? (
-            <CourierPickupList data={data?.data} />
-          ) : (
-            <ScrollView
-            // refreshControl={<RefreshControl />}
-            >
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            </ScrollView>
-          )
+        {isFetching ? (
+          <ActivityIndicator />
+        ) : data?.data?.length > 0 ? (
+          <CourierPickupList data={data?.data} />
         ) : (
-          <ScrollView
-          // refreshControl={<RefreshControl />}
-          >
+          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
             <View style={styles.content}>
-              <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, gap: 10 }}>
-                <Image
-                  style={{ height: 250, width: 250, resizeMode: "contain" }}
-                  source={require("../../../assets/vectors/items.jpg")}
-                  alt="empty"
-                  resizeMode="contain"
-                />
-                <Text style={[TextProps]}>Please adjust filter to get the data</Text>
-              </View>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           </ScrollView>
         )}
@@ -113,7 +142,6 @@ export default CourierPickupScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     position: "relative",
   },
   header: {
@@ -152,5 +180,10 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    height: 250,
+    width: 250,
+    resizeMode: "contain",
   },
 });

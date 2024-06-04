@@ -43,6 +43,7 @@ const FeedScreen = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [requestType, setRequestType] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
+  const [hideCreateIcon, setHideCreateIcon] = useState(false);
 
   const navigation = useNavigation();
   const commentScreenSheetRef = useRef(null);
@@ -268,16 +269,6 @@ const FeedScreen = () => {
     }
   }, [commentIsFetching, reloadComment, commentParentId]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (firstTimeRef.current) {
-  //       firstTimeRef.current = false;
-  //       return;
-  //     }
-  //     refetchPost();
-  //   }, [refetchPost])
-  // );
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -289,14 +280,16 @@ const FeedScreen = () => {
           <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.createPostIcon}
-          onPress={() => {
-            navigation.navigate("New Feed", params);
-          }}
-        >
-          <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
-        </TouchableOpacity>
+        {hideCreateIcon ? null : (
+          <TouchableOpacity
+            style={styles.createPostIcon}
+            onPress={() => {
+              navigation.navigate("New Feed", params);
+            }}
+          >
+            <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
 
         <View style={{ flex: 1 }}>
           <FeedCard
@@ -322,6 +315,7 @@ const FeedScreen = () => {
             setSelectedPicture={setSelectedPicture}
             onToggleReport={openSelectedPostHandler}
             handleRefreshPosts={refreshPostsHandler}
+            setHideIcon={setHideCreateIcon}
           />
         </View>
         <FeedComment

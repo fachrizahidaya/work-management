@@ -39,14 +39,7 @@ const ChatProjectList = ({
   taskIsFetching,
 }) => {
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#FAFAFA",
-        borderRadius: 10,
-        paddingHorizontal: 16,
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
       {tabValue === "project" ? (
         projects?.length > 0 || filteredDataArray?.length > 0 ? (
           <FlashList

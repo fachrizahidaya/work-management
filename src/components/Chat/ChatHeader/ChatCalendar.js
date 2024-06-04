@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
+    justifyContent: "space-between",
     gap: 10,
   },
   wrapper: {

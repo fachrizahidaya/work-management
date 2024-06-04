@@ -78,13 +78,21 @@ const AppraisalListScreen = () => {
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
         <PageHeader width={200} title="Employee Appraisal" backButton={true} onPress={() => navigation.goBack()} />
+        {tabValue === "Archived" && (
+          <ArchivedAppraisalFilter
+            startDate={startDate}
+            endDate={endDate}
+            startDateChangeHandler={startDateChangeHandler}
+            endDateChangeHandler={endDateChangeHandler}
+          />
+        )}
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 15 }}>
+        <View style={{ flex: 1 }}>
           {tabValue === "Ongoing" ? (
             ongoingList?.length > 0 ? (
               <FlashList
@@ -118,13 +126,7 @@ const AppraisalListScreen = () => {
               </ScrollView>
             )
           ) : (
-            <View style={{ marginTop: 5, flex: 1 }}>
-              <ArchivedAppraisalFilter
-                startDate={startDate}
-                endDate={endDate}
-                startDateChangeHandler={startDateChangeHandler}
-                endDateChangeHandler={endDateChangeHandler}
-              />
+            <View style={{ flex: 1 }}>
               {archived?.data?.length > 0 ? (
                 <FlashList
                   data={archived?.data}

@@ -216,7 +216,7 @@ const AppraisalScreen = () => {
         />
 
         <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          <ScrollView style={{ flex: 1 }}>
             {appraisalValues && appraisalValues.length > 0 ? (
               appraisalValues.map((item, index) => {
                 const correspondingEmployeeAppraisal = employeeAppraisalValue.find(

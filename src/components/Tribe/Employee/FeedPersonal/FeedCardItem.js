@@ -118,13 +118,7 @@ const FeedCardItem = ({
 
   return (
     <Pressable
-      style={{
-        ...card.card,
-        gap: 20,
-        flexDirection: "column",
-        marginVertical: 8,
-        elevation: 1,
-      }}
+      style={[card.card, { gap: 20, marginVertical: 4 }]}
       onPress={() => navigation.navigate("Post Screen", { id: id })}
     >
       <View style={styles.cardHeader}>
@@ -137,13 +131,7 @@ const FeedCardItem = ({
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
               {type === "Announcement" ? (
-                <View
-                  style={{
-                    borderRadius: 10,
-                    backgroundColor: "#ADD7FF",
-                    padding: 5,
-                  }}
-                >
+                <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
                   <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
               ) : null}

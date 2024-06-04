@@ -19,11 +19,7 @@ const MyTeamLeaveRequestList = ({
   handleResponse,
 }) => {
   return data.length > 0 ? (
-    <View
-      style={{
-        height: "100%",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <FlashList
         data={data}
         onEndReachedThreshold={0.1}
