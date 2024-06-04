@@ -149,7 +149,7 @@ const MyTeamScreen = ({ route }) => {
         )}
       </View>
 
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10 }}>
+      <View style={{ flex: 1 }}>
         {selectedTeamId ? (
           !membersIsLoading ? (
             <FlashList

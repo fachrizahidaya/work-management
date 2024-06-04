@@ -94,7 +94,7 @@ const NotesScreen = () => {
               <NoteFilter data={notes?.data} setFilteredData={setFilteredData} />
             </View>
 
-            <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10 }}>
+            <View style={{ flex: 1 }}>
               {!isLoading ? (
                 <FlatList
                   refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
