@@ -21,6 +21,7 @@ const CourierPickupScreen = () => {
   const [endTime, setEndTime] = useState("23:59:59");
   const [fullDateStart, setFullDateStart] = useState("");
   const [fullDateEnd, setFullDateEnd] = useState("");
+  const [hideScanIcon, setHideScanIcon] = useState(false);
 
   const navigation = useNavigation();
 
@@ -116,7 +117,7 @@ const CourierPickupScreen = () => {
         {isFetching ? (
           <ActivityIndicator />
         ) : data?.data?.length > 0 ? (
-          <CourierPickupList data={data?.data} />
+          <CourierPickupList data={data?.data} setHideIcon={setHideScanIcon} />
         ) : (
           <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
             <View style={styles.content}>
@@ -125,14 +126,16 @@ const CourierPickupScreen = () => {
           </ScrollView>
         )}
       </View>
-      <TouchableOpacity
-        style={styles.addIcon}
-        onPress={() => {
-          navigation.navigate("Entry Session");
-        }}
-      >
-        <MaterialCommunityIcons name="barcode-scan" size={30} color="#FFFFFF" />
-      </TouchableOpacity>
+      {hideScanIcon ? null : (
+        <TouchableOpacity
+          style={styles.addIcon}
+          onPress={() => {
+            navigation.navigate("Entry Session");
+          }}
+        >
+          <MaterialCommunityIcons name="barcode-scan" size={30} color="#FFFFFF" />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };

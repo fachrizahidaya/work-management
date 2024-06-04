@@ -24,6 +24,7 @@ const NotesScreen = () => {
   const firstTimeRef = useRef(true);
   const [noteToDelete, setNoteToDelete] = useState({});
   const [filteredData, setFilteredData] = useState([]);
+  const [hideIcon, setHideIcon] = useState(false);
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const createCheckAccess = useCheckAccess("create", "Notes");
   const { data: notes, isLoading, refetch } = useFetch("/pm/notes");
@@ -100,6 +101,8 @@ const NotesScreen = () => {
                   refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
                   data={renderList}
                   keyExtractor={(item) => item.id}
+                  onScrollBeginDrag={() => setHideIcon(true)}
+                  onScrollEndDrag={() => setHideIcon(false)}
                   renderItem={({ item }) => (
                     <NoteItem
                       note={item}
@@ -120,14 +123,18 @@ const NotesScreen = () => {
           </>
         </TouchableWithoutFeedback>
 
-        {createCheckAccess && (
-          <Pressable
-            style={styles.hoverButton}
-            onPress={() => navigation.navigate("Note Form", { noteData: null, refresh: refetch, refreshFunc: true })}
-          >
-            <MaterialCommunityIcons name="plus" size={30} color="white" />
-          </Pressable>
-        )}
+        {hideIcon
+          ? null
+          : createCheckAccess && (
+              <Pressable
+                style={styles.hoverButton}
+                onPress={() =>
+                  navigation.navigate("Note Form", { noteData: null, refresh: refetch, refreshFunc: true })
+                }
+              >
+                <MaterialCommunityIcons name="plus" size={30} color="white" />
+              </Pressable>
+            )}
       </SafeAreaView>
 
       <ConfirmationModal
