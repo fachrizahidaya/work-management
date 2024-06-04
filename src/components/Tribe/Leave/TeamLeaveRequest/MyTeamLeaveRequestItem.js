@@ -136,11 +136,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginVertical: 8,
     marginHorizontal: 2,
-    elevation: 4,
-    shadowColor: "rgba(0, 0, 0, 1)",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
   },
   containerApproval: {
     flexDirection: "row",

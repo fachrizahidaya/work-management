@@ -12,7 +12,6 @@ const CommentDetailItem = ({ description, handleOpen, item, employeeCommentValue
         ...card.card,
         marginVertical: 14,
         marginBottom: 2,
-        elevation: 1,
         flexDirection: "column",
         alignItems: "flex-start",
         gap: 10,
