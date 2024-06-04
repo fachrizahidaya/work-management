@@ -12,12 +12,7 @@ const CustomerListItem = ({ name, phone, address, email }) => {
   ];
 
   return (
-    <View
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
-    >
+    <View style={[card.card, styles.content]}>
       <View style={{ gap: 15 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <AvatarPlaceholder name={name} isThumb={false} size="lg" />
@@ -42,6 +37,6 @@ export default CustomerListItem;
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginVertical: 4,
   },
 });

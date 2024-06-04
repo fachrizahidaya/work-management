@@ -31,7 +31,7 @@ export default ReceiptPurchaseOrderListItem;
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginVertical: 4,
     justifyContent: "space-between",
     gap: 8,
   },

@@ -120,7 +120,7 @@ const PerformanceListScreen = () => {
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <View style={{ flex: 1 }}>
           {tabValue === "My Team" ? (
             <PerformanceList
               data={teamList}

@@ -8,20 +8,19 @@ import { TextProps } from "../../../shared/CustomStylings";
 const ConclusionResultDetailItem = ({ id, type, navigation, employee_grade, supervisor_grade }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        elevation: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
+      style={[
+        card.card,
+        {
+          marginVertical: 4,
+          marginHorizontal: 14,
+          marginBottom: 2,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+      ]}
       onPress={() => {
-        navigation.navigate("Conclusion Screen", {
-          id: id,
-          type: type,
-        });
+        navigation.navigate("Conclusion Screen", { id: id, type: type });
       }}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>

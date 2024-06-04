@@ -8,12 +8,7 @@ const CourierItem = ({ name, prefix }) => {
     <View
       style={[
         card.card,
-        {
-          marginVertical: 8,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        },
+        { marginVertical: 4, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
       ]}
     >
       <Text style={[TextProps]}>

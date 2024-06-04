@@ -78,13 +78,21 @@ const KPIListScreen = () => {
     <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
       <View style={styles.header}>
         <PageHeader width={200} title="Employee KPI" backButton={true} onPress={() => navigation.goBack()} />
+        {tabValue === "Archived" && (
+          <ArchivedKPIFilter
+            startDate={startDate}
+            startDateChangeHandler={startDateChangeHandler}
+            endDate={endDate}
+            endDateChangeHandler={endDateChangeHandler}
+          />
+        )}
       </View>
 
       <View style={{ paddingHorizontal: 16 }}>
         <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
       </View>
       <View style={styles.container}>
-        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <View style={{ flex: 1 }}>
           {tabValue === "Ongoing" ? (
             ongoingList?.length > 0 ? (
               <FlashList
@@ -115,13 +123,7 @@ const KPIListScreen = () => {
               </ScrollView>
             )
           ) : (
-            <View style={{ marginTop: 5, flex: 1 }}>
-              <ArchivedKPIFilter
-                startDate={startDate}
-                startDateChangeHandler={startDateChangeHandler}
-                endDate={endDate}
-                endDateChangeHandler={endDateChangeHandler}
-              />
+            <View style={{ flex: 1 }}>
               {archived?.data?.length > 0 ? (
                 <FlashList
                   data={archived?.data}

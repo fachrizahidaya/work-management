@@ -8,7 +8,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextProps } from "../../../shared/CustomStylings";
 
 const LeaveRequestItem = ({
-  id,
   leave_name,
   reason,
   days,
@@ -21,14 +20,8 @@ const LeaveRequestItem = ({
   supervisor_name,
 }) => {
   return (
-    <View key={id} style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+    <View style={styles.container}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 14, fontWeight: "500", color: "#3F434A" }}>{leave_name}</Text>
         {status === "Pending" ? (
           <Pressable
@@ -45,17 +38,7 @@ const LeaveRequestItem = ({
                         }}
                         style={styles.content}
                       >
-                        <Text
-                          style={[
-                            {
-                              fontSize: 16,
-                              fontWeight: "700",
-                              color: "#D64B4B",
-                            },
-                          ]}
-                        >
-                          Cancel Request
-                        </Text>
+                        <Text style={{ fontSize: 16, fontWeight: "700", color: "#D64B4B" }}>Cancel Request</Text>
                         <MaterialCommunityIcons name={"close-circle-outline"} size={20} color="#EB0E29" />
                       </TouchableOpacity>
                     </View>
@@ -75,27 +58,10 @@ const LeaveRequestItem = ({
       >
         <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flex: 1,
-        }}
-      >
-        <View
-          style={{
-            ...styles.time,
-          }}
-        >
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+        <View style={styles.time}>
           <MaterialCommunityIcons name="calendar-month" size={20} color="#3F434A" />
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: "400",
-              color: "#595F69",
-            }}
-          >
+          <Text style={{ fontSize: 10, fontWeight: "400", color: "#595F69" }}>
             {dayjs(begin_date).format("DD MMM YYYY")} - {dayjs(end_date).format("DD MMM YYYY")} •
           </Text>
           <Text style={[{ fontSize: 10 }, TextProps]}>{days > 1 ? `${days} days` : `${days} day`}</Text>
@@ -124,6 +90,7 @@ const LeaveRequestItem = ({
               textAlign: "right",
             }}
             numberOfLines={2}
+            ellipsizeMode="tail"
           >
             {status} by {approval_by || supervisor_name}
           </Text>
@@ -152,13 +119,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 16,
     paddingHorizontal: 14,
-    marginVertical: 8,
-    marginHorizontal: 2,
-    elevation: 4,
-    shadowColor: "rgba(0, 0, 0, 1)",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    marginVertical: 4,
+    marginHorizontal: 14,
   },
   time: {
     flexDirection: "row",

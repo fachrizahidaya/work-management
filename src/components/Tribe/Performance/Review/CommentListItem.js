@@ -8,20 +8,8 @@ import { TextProps } from "../../../shared/CustomStylings";
 const CommentListItem = ({ id, start_date, end_date, navigation, name, dayjs, description }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 4,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() =>
-        navigation.navigate("Comment Detail", {
-          id: id,
-        })
-      }
+      style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 4, gap: 10 }]}
+      onPress={() => navigation.navigate("Comment Detail", { id: id })}
     >
       <Text style={[TextProps]}>{name}</Text>
       <View>

@@ -19,15 +19,7 @@ const AppraisalDetailItem = ({
 }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
+      style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 2, gap: 10 }]}
       onPress={() => {
         handleOpen(item, employeeAppraisalValue);
       }}

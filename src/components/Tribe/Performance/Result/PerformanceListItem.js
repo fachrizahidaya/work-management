@@ -8,21 +8,8 @@ import { TextProps } from "../../../shared/CustomStylings";
 const PerformanceListItem = ({ id, start_date, end_date, navigation, name, dayjs, description, type }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 4,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() =>
-        navigation.navigate("Confirmed Comment Detail", {
-          id: id,
-          type: type,
-        })
-      }
+      style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 4, gap: 10 }]}
+      onPress={() => navigation.navigate("Confirmed Comment Detail", { id: id, type: type })}
     >
       {type === "personal" ? null : <Text style={[TextProps]}>{name}</Text>}
       <View>

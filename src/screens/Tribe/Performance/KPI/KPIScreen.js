@@ -291,7 +291,7 @@ const KPIScreen = () => {
 
         <View style={styles.container}>
           {tabValue === "KPI" ? (
-            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+            <ScrollView style={{ flex: 1 }}>
               {kpiValues && kpiValues.length > 0 ? (
                 kpiValues.map((item, index) => {
                   const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
@@ -320,16 +320,18 @@ const KPIScreen = () => {
               )}
             </ScrollView>
           ) : (
-            <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-              {!kpiList?.data?.confirm && (
-                <TouchableOpacity
-                  onPress={() => openSelectedAttachmentKpi()}
-                  style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
-                >
-                  <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
-                  <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
-                </TouchableOpacity>
-              )}
+            <ScrollView style={{ flex: 1 }}>
+              <View style={{ paddingHorizontal: 16 }}>
+                {!kpiList?.data?.confirm && (
+                  <TouchableOpacity
+                    onPress={() => openSelectedAttachmentKpi()}
+                    style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
+                  >
+                    <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
+                    <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
               {attachments && attachments.length > 0 ? (
                 attachments.map((item, index) => {
                   return (

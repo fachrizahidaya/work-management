@@ -92,7 +92,7 @@ const PerformanceResultScreen = () => {
         />
 
         <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          <ScrollView style={{ flex: 1 }}>
             <KPIResultDetailItem
               employeeKPI={
                 type === "personal"

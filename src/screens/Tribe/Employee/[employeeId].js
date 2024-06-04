@@ -361,7 +361,7 @@ const EmployeeProfileScreen = () => {
                 }}
               />
             </View>
-            <View style={styles.content} height={height}>
+            <View style={styles.content}>
               {/* Content here */}
               <FeedCard
                 posts={posts}
