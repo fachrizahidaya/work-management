@@ -9,7 +9,15 @@ import TaskSkeleton from "./TaskSkeleton";
 import { RefreshControl } from "react-native-gesture-handler";
 import { TextProps } from "../../../shared/CustomStylings";
 
-const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, refetch, setSelectedStatus }) => {
+const TaskList = ({
+  tasks,
+  isLoading,
+  openCloseTaskConfirmation,
+  isFetching,
+  refetch,
+  setSelectedStatus,
+  setHideIcon,
+}) => {
   const todoTasks = tasks?.filter((task) => {
     return task.status === "Open";
   });
@@ -32,6 +40,8 @@ const TaskList = ({ tasks, isLoading, openCloseTaskConfirmation, isFetching, ref
               keyExtractor={(item) => item.id}
               estimatedItemSize={97}
               onEndReachedThreshold={0.1}
+              onScrollBeginDrag={() => setHideIcon(true)}
+              onScrollEndDrag={() => setHideIcon(false)}
               renderItem={({ item }) => (
                 <TaskListItem
                   id={item.id}

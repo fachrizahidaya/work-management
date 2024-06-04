@@ -2,7 +2,7 @@ import { FlashList } from "@shopify/flash-list";
 import { View } from "react-native";
 import CourierPickupCountItem from "./CourierPickupCountItem";
 
-const CourierPickupCountList = ({ totalData }) => {
+const CourierPickupCountList = ({ totalData, setHideIcon }) => {
   return (
     <View style={{ flexDirection: "row", height: 60 }}>
       <FlashList
