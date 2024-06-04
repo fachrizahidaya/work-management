@@ -8,7 +8,9 @@ const CourierPickupList = ({ data }) => {
       <FlashList
         data={data}
         estimatedItemSize={50}
-        renderItem={({ item }) => <CourierPickupItem awb={item?.awb_no} courier={item?.courier?.name} />}
+        renderItem={({ item }) => (
+          <CourierPickupItem awb={item?.awb_no} courier={item?.courier?.name} image={item?.courier?.image} />
+        )}
       />
     </View>
   );

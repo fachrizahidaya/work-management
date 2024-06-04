@@ -15,12 +15,7 @@ const DownPaymentListItem = ({ dp_no, status, dp_date, so_no, customer_name, pay
   ];
 
   return (
-    <View
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
-    >
+    <View style={[card.card, styles.content]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Text style={[TextProps]}>{dp_no}</Text>
@@ -48,7 +43,7 @@ export default DownPaymentListItem;
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginVertical: 4,
     justifyContent: "space-between",
     gap: 8,
   },

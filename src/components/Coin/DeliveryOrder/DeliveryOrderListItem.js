@@ -15,10 +15,7 @@ const DeliveryOrderListItem = ({ id, navigation, do_no, status, do_date, shippin
 
   return (
     <Pressable
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
+      style={[card.card, styles.content]}
       onPress={() => navigation.navigate("Delivery Order Detail", { id: id })}
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -53,7 +50,7 @@ export default DeliveryOrderListItem;
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginVertical: 4,
     justifyContent: "space-between",
     gap: 8,
   },

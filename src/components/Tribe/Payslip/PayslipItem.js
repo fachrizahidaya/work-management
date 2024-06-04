@@ -9,13 +9,7 @@ import { TextProps } from "../../shared/CustomStylings";
 const PayslipItem = ({ id, month, year, openSelectedPayslip }) => {
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={[{ fontSize: 14, color: "#3F434A" }, TextProps]}>
           {dayjs()
             .month(month - 1)
@@ -41,8 +35,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 16,
     paddingHorizontal: 14,
-    marginVertical: 8,
-    marginTop: 10,
-    elevation: 2,
+    marginHorizontal: 14,
+    marginVertical: 4,
   },
 });

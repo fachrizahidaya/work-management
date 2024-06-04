@@ -78,7 +78,7 @@ const ChatList = ({
   return (
     <View style={{ flex: 1, backgroundColor: "#F8F8F8" }}>
       <FlashList
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         inverted
         ListFooterComponent={() => isLoading && <ActivityIndicator />}
         keyExtractor={(item, index) => index}

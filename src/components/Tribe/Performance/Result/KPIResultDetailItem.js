@@ -13,15 +13,17 @@ const KPIResultDetailItem = ({
 }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        elevation: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
+      style={[
+        card.card,
+        {
+          marginVertical: 4,
+          marginHorizontal: 14,
+          marginBottom: 2,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+      ]}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[{ fontSize: 16, fontWeight: "700" }, TextProps]}>

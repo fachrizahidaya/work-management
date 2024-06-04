@@ -37,13 +37,7 @@ const ContactItem = ({
   return (
     <TouchableOpacity
       onPress={() => navigateToNestHandler()}
-      style={{
-        ...card.card,
-        flexDirection: "column",
-        marginVertical: 5,
-        gap: 20,
-        elevation: 1,
-      }}
+      style={[card.card, { marginVertical: 4, gap: 20, marginHorizontal: 14 }]}
     >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>

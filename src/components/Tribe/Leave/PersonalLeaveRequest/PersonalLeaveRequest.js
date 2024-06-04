@@ -109,6 +109,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
     flex: 1,
     flexDirection: "column",
-    paddingHorizontal: 14,
   },
 });

@@ -18,20 +18,8 @@ const KPIReviewListItem = ({
 }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 4,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() =>
-        navigation.navigate("Review KPI Detail", {
-          id: id,
-        })
-      }
+      style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 4, gap: 10 }]}
+      onPress={() => navigation.navigate("Review KPI Detail", { id: id })}
     >
       <Text style={[TextProps]}>{description}</Text>
       <Text style={[TextProps]}>{name}</Text>

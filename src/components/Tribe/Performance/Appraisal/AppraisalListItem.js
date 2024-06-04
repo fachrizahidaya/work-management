@@ -9,21 +9,8 @@ import { TextProps } from "../../../shared/CustomStylings";
 const AppraisalListItem = ({ id, start_date, end_date, navigation, target, isExpired, target_level, name }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 4,
-        elevation: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() =>
-        navigation.navigate("Appraisal Detail", {
-          id: id,
-          isExpired: isExpired,
-        })
-      }
+      style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 4, gap: 10 }]}
+      onPress={() => navigation.navigate("Appraisal Detail", { id: id, isExpired: isExpired })}
     >
       <Text style={[TextProps]}>{name}</Text>
 

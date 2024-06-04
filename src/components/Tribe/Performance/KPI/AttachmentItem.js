@@ -7,16 +7,18 @@ import { TextProps } from "../../../shared/CustomStylings";
 const AttachmentItem = ({ description, file_name, onDelete, employee_kpi_id, attachment_id, index }) => {
   return (
     <View
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        elevation: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 10,
-      }}
+      style={[
+        card.card,
+        {
+          marginVertical: 4,
+          marginHorizontal: 14,
+          marginBottom: 2,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+        },
+      ]}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[TextProps]}>{description}</Text>

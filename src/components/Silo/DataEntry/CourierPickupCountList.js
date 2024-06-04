@@ -4,7 +4,7 @@ import CourierPickupCountItem from "./CourierPickupCountItem";
 
 const CourierPickupCountList = ({ totalData }) => {
   return (
-    <View style={{ flexDirection: "row" }}>
+    <View style={{ flexDirection: "row", height: 60 }}>
       <FlashList
         data={totalData}
         estimatedItemSize={50}
