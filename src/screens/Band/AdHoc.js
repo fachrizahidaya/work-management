@@ -24,6 +24,7 @@ const AdHocScreen = () => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
+  const [hideCreateIcon, setHideCreateIcon] = useState(false);
   const { isOpen: closeConfirmationIsOpen, toggle: toggleCloseConfirmation } = useDisclosure(false);
   const { isLoading: isInitialized, toggle: toggleInitialize } = useLoading();
   const createActionCheck = useCheckAccess("create", "Tasks");
@@ -119,21 +120,24 @@ const AdHocScreen = () => {
           isFetching={taskIsFetching}
           refetch={refetchTasks}
           setSelectedStatus={setSelectedStatus}
+          setHideIcon={setHideCreateIcon}
         />
 
-        {createActionCheck && (
-          <Pressable
-            style={styles.hoverButton}
-            onPress={() =>
-              navigation.navigate("Task Form", {
-                selectedStatus: selectedStatus,
-                refetch: refetchTasks,
-              })
-            }
-          >
-            <MaterialCommunityIcons name="plus" size={30} color="white" />
-          </Pressable>
-        )}
+        {hideCreateIcon
+          ? null
+          : createActionCheck && (
+              <Pressable
+                style={styles.hoverButton}
+                onPress={() =>
+                  navigation.navigate("Task Form", {
+                    selectedStatus: selectedStatus,
+                    refetch: refetchTasks,
+                  })
+                }
+              >
+                <MaterialCommunityIcons name="plus" size={30} color="white" />
+              </Pressable>
+            )}
       </View>
 
       <ConfirmationModal
