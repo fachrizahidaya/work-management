@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import jwt_decode from "jwt-decode";
 
-import { Image, SafeAreaView, StyleSheet, View } from "react-native";
+import { Image, Platform, SafeAreaView, StyleSheet, View } from "react-native";
 import { useDisclosure } from "../../hooks/useDisclosure";
 import EULA from "../../components/layout/EULA";
 
@@ -43,7 +43,9 @@ const LaunchScreen = () => {
         }
       } else {
         toggleEula();
-        navigation.navigate("Login");
+        if (Platform.OS === "android") {
+          navigation.navigate("Login");
+        }
       }
     } catch (error) {
       console.log(error);
