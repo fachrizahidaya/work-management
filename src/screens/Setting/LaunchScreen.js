@@ -43,9 +43,6 @@ const LaunchScreen = () => {
         }
       } else {
         toggleEula();
-        if (Platform.OS === "android") {
-          navigation.navigate("Login");
-        }
       }
     } catch (error) {
       console.log(error);
