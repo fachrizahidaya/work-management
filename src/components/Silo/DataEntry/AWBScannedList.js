@@ -21,7 +21,7 @@ const AWBScannedList = ({ reference, items, handleSearch, filteredData, searchQu
         containerStyle={{ height: 550 }}
       >
         <View style={styles.content}>
-          {/* <Input
+          <Input
             value={searchQuery}
             fieldName="search"
             startIcon="magnify"
@@ -29,12 +29,12 @@ const AWBScannedList = ({ reference, items, handleSearch, filteredData, searchQu
             onPressEndIcon={() => {
               setSearchQuery("");
             }}
-            onChangeText={() => {
-              handleSearch();
+            onChangeText={(value) => {
+              handleSearch(value);
             }}
             placeHolder="Search..."
             height={40}
-          /> */}
+          />
           {searchQuery ? (
             filteredData?.map((awb, index) => {
               return <Text key={index}>{awb}</Text>;
@@ -52,9 +52,9 @@ const AWBScannedList = ({ reference, items, handleSearch, filteredData, searchQu
               )}
             />
           )}
-          {filteredData?.map((awb, index) => {
+          {/* {filteredData?.map((awb, index) => {
             return <Text key={index}>{awb}</Text>;
-          })}
+          })} */}
         </View>
       </ActionSheet>
     </TouchableOpacity>
