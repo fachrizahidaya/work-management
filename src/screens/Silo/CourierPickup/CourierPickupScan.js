@@ -52,7 +52,7 @@ const CourierPickupScan = () => {
   };
 
   const handleCheckCourier = (awb) => {
-    const awbPrefix = awb?.slice(0, 3);
+    const awbPrefix = awb?.slice(0, 6);
 
     const searchCouriers = courierData?.data?.map((courier) => {
       if (awbPrefix?.includes(courier?.prefix_code_awb)) {
@@ -71,7 +71,7 @@ const CourierPickupScan = () => {
   };
 
   const handleSearchAWB = (event) => {
-    const query = event?.target?.value;
+    const query = event;
     setSearchQuery(query);
 
     const filtered = dataScanned.filter((item) => item?.toLowerCase()?.includes(query?.toLowerCase()));
@@ -114,7 +114,7 @@ const CourierPickupScan = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <PageHeader title="Data Scan" onPress={() => navigation.goBack()} />
+        <PageHeader title="Courier AWB Scan" onPress={() => navigation.goBack()} />
       </View>
 
       <View style={styles.wrapper}>
