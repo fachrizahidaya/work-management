@@ -43,6 +43,7 @@ const LaunchScreen = () => {
         }
       } else {
         toggleEula();
+        navigation.navigate("Login");
       }
     } catch (error) {
       console.log(error);
