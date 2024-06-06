@@ -55,6 +55,8 @@ import PaymentScreen from "../screens/Setting/Account/PaymentScreen";
 import ChangePasswordScreen from "../screens/Setting/ChangePasswordScreen";
 import FrequentlyAskedQuestions from "../screens/Setting/FrequentlyAskedQuestions";
 import FAQDetail from "../screens/Setting/FAQ/FAQDetail";
+import PrivacyPolicy from "../screens/Setting/PrivacyAndTerms/PrivacyPolicy";
+import TermsAndConditions from "../screens/Setting/PrivacyAndTerms/TermsAndConditions";
 
 // Nest Screens
 import ChatRoom from "../screens/Chat/ChatRoom/ChatRoom";
@@ -95,7 +97,6 @@ import CourierPickupScreen from "../screens/Silo/CourierPickup/CourierPickupScre
 import SiloTab from "./Tabs/SiloTab";
 import CourierScreen from "../screens/Silo/Courier/CourierScreen";
 import CourierPickupScan from "../screens/Silo/CourierPickup/CourierPickupScan";
-import PrivacyPolicy from "../screens/Setting/PrivacyAndTerms/PrivacyPolicy";
 
 const Stack = createStackNavigator();
 
@@ -292,6 +293,8 @@ const HomeStack = () => {
       <Stack.Screen name="FAQ Detail" component={FAQDetail} options={{ header: () => <Header /> }} />
 
       <Stack.Screen name="Privacy Policy" component={PrivacyPolicy} options={{ header: () => <Header /> }} />
+
+      <Stack.Screen name="Terms Conditions" component={TermsAndConditions} options={{ header: () => <Header /> }} />
 
       {/* Coin Screens */}
       <Stack.Screen name="Sales" component={SalesScreen} options={{ header: () => <Header /> }} />

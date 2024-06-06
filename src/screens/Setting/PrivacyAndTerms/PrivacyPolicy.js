@@ -14,15 +14,7 @@ const PrivacyPolicy = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator>
-        <View
-          style={{
-            display: "flex",
-            gap: 15,
-            marginHorizontal: 16,
-            marginVertical: 13,
-            flex: 1,
-          }}
-        >
+        <View style={styles.wrapper}>
           <PageHeader backButton={true} title="Privacy and Policy" onPress={() => navigation.goBack()} />
 
           <Text style={[TextProps, { fontSize: 16, fontWeight: "700" }]}>{privacy.title}</Text>
@@ -34,9 +26,7 @@ const PrivacyPolicy = () => {
           <View style={{ height: 20 }}></View>
           <Text style={[TextProps, { fontWeight: "700" }]}>SUMMARY OF KEY POINTS</Text>
           <Text style={[TextProps]}>{privacy.summary}</Text>
-          {/* <View style={{ height: 30 }}></View> */}
           <Text style={[TextProps, { fontWeight: "700" }]}>TABLE OF CONTENTS</Text>
-          {/* <View style={{ height: 20 }}></View> */}
           {privacy.contents.map((item, index) => {
             return (
               <View key={index} style={{ marginVertical: 3 }}>
@@ -44,7 +34,6 @@ const PrivacyPolicy = () => {
               </View>
             );
           })}
-          {/* <View style={{ height: 10 }}></View> */}
           {privacy.data.map((item, index) => {
             return (
               <View key={index} style={{ gap: 5, marginVertical: 10 }}>
@@ -73,5 +62,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 42,
     padding: 8,
+  },
+  wrapper: {
+    gap: 15,
+    marginHorizontal: 16,
+    marginVertical: 13,
+    flex: 1,
   },
 });
