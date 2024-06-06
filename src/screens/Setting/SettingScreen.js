@@ -69,12 +69,12 @@ const SettingScreen = () => {
       color: null,
       screen: "Privacy Policy",
     },
-    // {
-    //   icons: null,
-    //   title: "Terms and Conditions",
-    //   color: null,
-    //   screen: "Terms Conditions",
-    // },
+    {
+      icons: null,
+      title: "Terms and Conditions",
+      color: null,
+      screen: "Terms Conditions",
+    },
   ];
 
   return (

@@ -26,24 +26,27 @@ const LaunchScreen = () => {
       let currentDate = new Date();
       const userData = await SecureStore.getItemAsync("user_data");
       const token = await SecureStore.getItemAsync("user_token");
-      const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
+      // const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
 
-      if (agreeToEula === "agreed") {
-        if (token) {
-          const decodedToken = jwt_decode(token);
-          const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
+      // if (agreeToEula === "agreed") {
+      // console.log("not trigger");
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
 
-          if (!isExpired) {
-            const parsedUserData = JSON.parse(userData);
+        if (!isExpired) {
+          const parsedUserData = JSON.parse(userData);
 
-            loginHandler(parsedUserData);
-          }
-        } else {
-          navigation.navigate("Login");
+          loginHandler(parsedUserData);
         }
       } else {
-        toggleEula();
+        navigation.navigate("Login");
       }
+      // }
+      // else {
+      //   console.log("trigger else");
+      //   toggleEula();
+      // }
     } catch (error) {
       console.log(error);
     }
