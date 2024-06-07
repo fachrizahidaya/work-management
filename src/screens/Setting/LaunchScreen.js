@@ -36,7 +36,6 @@ const LaunchScreen = () => {
 
           if (!isExpired) {
             const parsedUserData = JSON.parse(userData);
-            console.log("p", parsedUserData);
 
             loginHandler(parsedUserData);
           }
