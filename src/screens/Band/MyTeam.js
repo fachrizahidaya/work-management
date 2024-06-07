@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
@@ -36,6 +36,8 @@ const MyTeamScreen = ({ route }) => {
   const [team, setTeam] = useState({});
   const [memberToRemove, setMemberToRemove] = useState({});
   const [hideIcon, setHideIcon] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState(null);
+
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const { isOpen: newTeamFormIsOpen, toggle: toggleNewTeamForm } = useDisclosure(false);
   const { isOpen: editTeamFormIsOpen, toggle: toggleEditTeamForm } = useDisclosure(false);
@@ -45,6 +47,8 @@ const MyTeamScreen = ({ route }) => {
   const editCheckAccess = useCheckAccess("update", "My Team");
   const deleteCheckAccess = useCheckAccess("delete", "My Team");
   const createProjectCheckAccess = useCheckAccess("create", "Projects");
+  const scrollOffsetY = useRef(0);
+  const SCROLL_THRESHOLD = 20;
 
   const openNewTeamFormHandler = () => {
     toggleNewTeamForm();
@@ -106,6 +110,29 @@ const MyTeamScreen = ({ route }) => {
     }
   };
 
+  const scrollHandler = (event) => {
+    const currentOffsetY = event.nativeEvent.contentOffset.y;
+    const offsetDifference = currentOffsetY - scrollOffsetY.current;
+
+    if (Math.abs(offsetDifference) < SCROLL_THRESHOLD) {
+      return; // Ignore minor scrolls
+    }
+
+    if (currentOffsetY > scrollOffsetY.current) {
+      if (scrollDirection !== "down") {
+        setHideIcon(true); // Scrolling down
+        setScrollDirection("down");
+      }
+    } else {
+      if (scrollDirection !== "up") {
+        setHideIcon(false); // Scrolling up
+        setScrollDirection("up");
+      }
+    }
+
+    scrollOffsetY.current = currentOffsetY;
+  };
+
   useEffect(() => {
     if (teams?.data?.length > 0) {
       setSelectedTeamId(teams?.data[0]?.id);
@@ -157,8 +184,7 @@ const MyTeamScreen = ({ route }) => {
               data={members?.data}
               keyExtractor={(item) => item.id}
               estimatedItemSize={200}
-              onScrollBeginDrag={() => setHideIcon(true)}
-              onScrollEndDrag={() => setHideIcon(false)}
+              onScroll={scrollHandler}
               renderItem={({ item }) => (
                 <MemberListItem
                   member={item}

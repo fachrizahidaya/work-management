@@ -32,6 +32,7 @@ const ProjectTaskScreen = ({ route }) => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [deadlineSort, setDeadlineSort] = useState("asc");
   const [selectedTask, setSelectedTask] = useState(null);
+  const [hideCreateIcon, setHideCreateIcon] = useState(false);
   const createCheckAccess = useCheckAccess("create", "Tasks");
 
   const fetchTaskParameters = {
@@ -111,22 +112,25 @@ const ProjectTaskScreen = ({ route }) => {
           isFetching={taskIsFetching}
           refetch={refetchTasks}
           setSelectedStatus={setSelectedStatus}
+          setHideIcon={setHideCreateIcon}
         />
 
-        {createCheckAccess && (
-          <Pressable
-            style={styles.hoverButton}
-            onPress={() =>
-              navigation.navigate("Task Form", {
-                selectedStatus: selectedStatus,
-                refetch: refetchTasks,
-                projectId: projectId,
-              })
-            }
-          >
-            <MaterialCommunityIcons name="plus" size={30} color="white" />
-          </Pressable>
-        )}
+        {hideCreateIcon
+          ? null
+          : createCheckAccess && (
+              <Pressable
+                style={styles.hoverButton}
+                onPress={() =>
+                  navigation.navigate("Task Form", {
+                    selectedStatus: selectedStatus,
+                    refetch: refetchTasks,
+                    projectId: projectId,
+                  })
+                }
+              >
+                <MaterialCommunityIcons name="plus" size={30} color="white" />
+              </Pressable>
+            )}
       </SafeAreaView>
 
       {closeConfirmationIsOpen && (
