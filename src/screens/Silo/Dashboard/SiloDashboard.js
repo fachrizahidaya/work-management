@@ -14,11 +14,7 @@ const SiloDashboard = () => {
         <Text style={[{ fontWeight: 700 }, TextProps]}>PT Kolabora Group Indonesia</Text>
       </View>
 
-      <ScrollView
-        style={{ paddingHorizontal: 14 }}
-        showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl />}
-      >
+      <ScrollView style={{ paddingHorizontal: 14 }} showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>
           <EmptyPlaceholder text="No Data" height={250} width={250} />
         </View>

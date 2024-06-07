@@ -56,15 +56,7 @@ const GlobalSearchTribe = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={styles.container}>
-        <View
-          style={{
-            gap: 15,
-            marginHorizontal: 16,
-            marginVertical: 13,
-            justifyContent: "center",
-            gap: 20,
-          }}
-        >
+        <View style={{ gap: 15, marginHorizontal: 16, marginVertical: 13, justifyContent: "center", gap: 20 }}>
           <Input
             value={shownInput}
             placeHolder="Search..."
@@ -78,13 +70,7 @@ const GlobalSearchTribe = () => {
               setShownInput(value);
             }}
             endAdornment={
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  alignItems: "center",
-                }}
-              >
+              <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
                 {shownInput && (
                   <TouchableOpacity
                     onPress={() => {

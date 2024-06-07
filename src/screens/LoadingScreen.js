@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useDispatch } from "react-redux";
 
@@ -96,6 +97,25 @@ const LoadingScreen = ({ route }) => {
     }
   };
 
+  const handleSetUserData = async () => {
+    try {
+      // Store user data in SecureStore
+      await AsyncStorage.setItem("user_data", JSON.stringify(userData.userData));
+
+      // Store user token in SecureStore
+      await AsyncStorage.setItem("user_token", userData.userData.access_token);
+
+      // Dispatch band module to firstly be rendered
+      dispatch(setModule("TRIBE"));
+
+      // Dispatch a login action with the provided user data
+      dispatch(login(userData.userData));
+    } catch (error) {
+      // Handle any errors that occur during the process
+      throw new Error("Failed to set user data: " + error.message);
+    }
+  };
+
   useEffect(() => {
     // Effect to update loadingValue at regular intervals
     const interval = setInterval(() => {
@@ -115,7 +135,11 @@ const LoadingScreen = ({ route }) => {
     // Effect to trigger user data update when loadingValue reaches maxValue
     if (loadingValue === maxValue) {
       const timeout = setTimeout(() => {
+        // if (Platform.OS === "ios") {
         setUserData();
+        // } else {
+        //   handleSetUserData();
+        // }
       }, 0);
 
       return () => {

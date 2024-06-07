@@ -11,6 +11,7 @@ import AnalyticCard from "../../../components/Coin/Dashboard/AnalyticCard";
 import StatisticCard from "../../../components/Coin/Dashboard/StatisticCard";
 import SalesCard from "../../../components/Coin/Dashboard/SalesCard";
 import OrderCard from "../../../components/Coin/Dashboard/OrderCard";
+import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
 
 const CoinDashboard = () => {
   const {
@@ -203,7 +204,7 @@ const CoinDashboard = () => {
           />
         }
       >
-        <View style={styles.wrapper}>
+        {/* <View style={styles.wrapper}>
           <IncomeCard
             total_income={sumOfSales || 0}
             salesIsLoading={salesDataIsLoading}
@@ -228,6 +229,9 @@ const CoinDashboard = () => {
             previousYearSales={totalPreviousYearSales}
           />
           <OrderCard salesData={salesData} />
+        </View> */}
+        <View style={styles.wrapper}>
+          <EmptyPlaceholder text="No Data" height={250} width={250} />
         </View>
       </ScrollView>
     </SafeAreaView>

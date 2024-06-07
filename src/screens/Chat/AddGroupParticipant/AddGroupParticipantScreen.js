@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import _ from "lodash";
 import { useSelector } from "react-redux";
@@ -23,9 +23,13 @@ const AddGroupParticipantScreen = () => {
   const [filteredDataArray, setFilteredDataArray] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [forceRerender, setForceRerender] = useState(false);
+  const [hideCreateIcon, setHideCreateIcon] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState(null);
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
+  const scrollOffsetY = useRef(0);
+  const SCROLL_THRESHOLD = 20;
 
   const userFetchParameters = {
     page: currentPage,
@@ -79,6 +83,29 @@ const AddGroupParticipantScreen = () => {
         userArray: selectedUsers,
       });
     }
+  };
+
+  const scrollHandler = (event) => {
+    const currentOffsetY = event.nativeEvent.contentOffset.y;
+    const offsetDifference = currentOffsetY - scrollOffsetY.current;
+
+    if (Math.abs(offsetDifference) < SCROLL_THRESHOLD) {
+      return; // Ignore minor scrolls
+    }
+
+    if (currentOffsetY > scrollOffsetY.current) {
+      if (scrollDirection !== "down") {
+        setHideCreateIcon(true); // Scrolling down
+        setScrollDirection("down");
+      }
+    } else {
+      if (scrollDirection !== "up") {
+        setHideCreateIcon(false); // Scrolling up
+        setScrollDirection("up");
+      }
+    }
+
+    scrollOffsetY.current = currentOffsetY;
   };
 
   useEffect(() => {
@@ -143,6 +170,7 @@ const AddGroupParticipantScreen = () => {
             keyExtractor={(item, index) => index}
             onEndReachedThreshold={0.1}
             onEndReached={fetchMoreData}
+            onScroll={scrollHandler}
             renderItem={({ item }) => (
               <View style={{ marginBottom: 10 }}>
                 <UserListItem
@@ -166,9 +194,11 @@ const AddGroupParticipantScreen = () => {
           />
         </View>
       </View>
-      <Pressable style={styles.addButton} onPress={onPressAddHandler}>
-        <MaterialCommunityIcons name="arrow-right" size={25} color="#FFFFFF" />
-      </Pressable>
+      {hideCreateIcon ? null : (
+        <Pressable style={styles.addButton} onPress={onPressAddHandler}>
+          <MaterialCommunityIcons name="arrow-right" size={25} color="#FFFFFF" />
+        </Pressable>
+      )}
     </SafeAreaView>
   );
 };
@@ -190,6 +220,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     gap: 5,
+    marginBottom: 16,
   },
   addButton: {
     position: "absolute",

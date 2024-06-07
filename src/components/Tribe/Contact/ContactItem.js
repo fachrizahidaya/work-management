@@ -42,7 +42,7 @@ const ContactItem = ({
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <View>
-            <AvatarPlaceholder image={image} name={name} size="lg" isThumb={false} />
+            <AvatarPlaceholder image={image} name={name} size="md" isThumb={false} />
             {leave_status ? (
               <View style={styles.editPicture}>
                 <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />

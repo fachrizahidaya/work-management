@@ -31,13 +31,7 @@ const FeedItem = ({
               {employee_name?.length > 30 ? employee_name?.split(" ")[0] : employee_name}
             </Text>
             {type === "Announcement" ? (
-              <View
-                style={{
-                  borderRadius: 10,
-                  backgroundColor: "#ADD7FF",
-                  padding: 5,
-                }}
-              >
+              <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
                 <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
               </View>
             ) : null}
@@ -107,9 +101,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    marginVertical: 8,
-    marginBottom: 4,
-    elevation: 1,
+    marginVertical: 4,
+    elevation: 2,
+    borderBottomWidth: 1,
+    borderColor: "#E9E9EB",
   },
   cardHeader: {
     flexDirection: "row",

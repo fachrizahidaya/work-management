@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
@@ -22,8 +22,11 @@ const CourierPickupScreen = () => {
   const [fullDateStart, setFullDateStart] = useState("");
   const [fullDateEnd, setFullDateEnd] = useState("");
   const [hideScanIcon, setHideScanIcon] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState(null);
 
   const navigation = useNavigation();
+  const scrollOffsetY = useRef(0);
+  const SCROLL_THRESHOLD = 20;
 
   const fetchDataParameters =
     Platform.OS === "ios"
@@ -78,6 +81,29 @@ const CourierPickupScreen = () => {
     }
   };
 
+  const scrollHandler = (event) => {
+    const currentOffsetY = event.nativeEvent.contentOffset.y;
+    const offsetDifference = currentOffsetY - scrollOffsetY.current;
+
+    if (Math.abs(offsetDifference) < SCROLL_THRESHOLD) {
+      return; // Ignore minor scrolls
+    }
+
+    if (currentOffsetY > scrollOffsetY.current) {
+      if (scrollDirection !== "down") {
+        setHideScanIcon(true); // Scrolling down
+        setScrollDirection("down");
+      }
+    } else {
+      if (scrollDirection !== "up") {
+        setHideScanIcon(false); // Scrolling up
+        setScrollDirection("up");
+      }
+    }
+
+    scrollOffsetY.current = currentOffsetY;
+  };
+
   useEffect(() => {
     if (startDate && startTime) {
       updateFullDateStart(startDate, startTime);
@@ -117,7 +143,7 @@ const CourierPickupScreen = () => {
         {isFetching ? (
           <ActivityIndicator />
         ) : data?.data?.length > 0 ? (
-          <CourierPickupList data={data?.data} setHideIcon={setHideScanIcon} />
+          <CourierPickupList data={data?.data} handleScroll={scrollHandler} />
         ) : (
           <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
             <View style={styles.content}>
@@ -179,7 +205,6 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
   content: {
-    marginTop: 20,
     gap: 5,
     alignItems: "center",
     justifyContent: "center",

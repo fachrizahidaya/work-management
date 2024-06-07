@@ -44,10 +44,13 @@ const FeedScreen = () => {
   const [requestType, setRequestType] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
   const [hideCreateIcon, setHideCreateIcon] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState(null);
 
   const navigation = useNavigation();
   const commentScreenSheetRef = useRef(null);
   const flashListRef = useRef(null);
+  const scrollOffsetY = useRef(0);
+  const SCROLL_THRESHOLD = 20;
 
   const userSelector = useSelector((state) => state.auth);
 
@@ -201,6 +204,29 @@ const FeedScreen = () => {
     formik.handleChange("comments")(value);
   };
 
+  const scrollHandler = (event) => {
+    const currentOffsetY = event.nativeEvent.contentOffset.y;
+    const offsetDifference = currentOffsetY - scrollOffsetY.current;
+
+    if (Math.abs(offsetDifference) < SCROLL_THRESHOLD) {
+      return; // Ignore minor scrolls
+    }
+
+    if (currentOffsetY > scrollOffsetY.current) {
+      if (scrollDirection !== "down") {
+        setHideCreateIcon(true); // Scrolling down
+        setScrollDirection("down");
+      }
+    } else {
+      if (scrollDirection !== "up") {
+        setHideCreateIcon(false); // Scrolling up
+        setScrollDirection("up");
+      }
+    }
+
+    scrollOffsetY.current = currentOffsetY;
+  };
+
   /**
    * Handle create a new comment
    */
@@ -315,7 +341,7 @@ const FeedScreen = () => {
             setSelectedPicture={setSelectedPicture}
             onToggleReport={openSelectedPostHandler}
             handleRefreshPosts={refreshPostsHandler}
-            setHideIcon={setHideCreateIcon}
+            handleIconWhenScrolling={scrollHandler}
           />
         </View>
         <FeedComment

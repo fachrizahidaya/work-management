@@ -20,7 +20,17 @@ const AnimatedText = Animated.createAnimatedComponent(Text);
 const ClockAttendance = ({ attendance, onClock, location, locationOn, modalIsOpen }) => {
   const translateX = useSharedValue(0);
   const screenWidth = Dimensions.get("screen");
-  const minimumTranslation = Platform.OS === "ios" ? 270 : 280;
+
+  let minimumTranslation = 0;
+
+  if (Platform.OS === "ios") {
+    minimumTranslation = 270;
+  } else if (Platform.OS === "android") {
+    minimumTranslation = 280;
+  } else {
+    minimumTranslation = screenWidth.width;
+  }
+
   const MIN_TRANSLATE_X = screenWidth.width - minimumTranslation;
 
   /**
@@ -98,60 +108,26 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, modalIsOpe
     <>
       <View style={{ gap: 20 }}>
         <View style={styles.container}>
-          <View
-            style={{
-              ...styles.clockData,
-              backgroundColor: attendance?.late ? "#feedaf" : "#daecfc",
-            }}
-          >
+          <View style={[styles.clockData, { backgroundColor: attendance?.late ? "#feedaf" : "#daecfc" }]}>
             <Text style={{ color: attendance?.late ? "#fdc500" : "#377893" }}>Clock-in</Text>
-            <Text
-              style={{
-                fontWeight: "500",
-                color: attendance?.late ? "#fdc500" : "#377893",
-                textAlign: "center",
-              }}
-            >
+            <Text style={{ fontWeight: "500", color: attendance?.late ? "#fdc500" : "#377893", textAlign: "center" }}>
               {attendance?.time_in ? dayjs(attendance?.time_in).format("HH:mm") || attendance?.time_in : "-:-"}
             </Text>
           </View>
-          <View
-            style={{
-              ...styles.clockData,
-              backgroundColor: attendance?.early ? "#feedaf" : "#daecfc",
-            }}
-          >
+          <View style={[styles.clockData, { backgroundColor: attendance?.early ? "#feedaf" : "#daecfc" }]}>
             <Text style={{ color: attendance?.early ? "#fdc500" : "#377893" }}>Clock-out</Text>
-            <Text
-              style={{
-                fontWeight: "500",
-                color: attendance?.early ? "#fdc500" : "#377893",
-                textAlign: "center",
-              }}
-            >
+            <Text style={{ fontWeight: "500", color: attendance?.early ? "#fdc500" : "#377893", textAlign: "center" }}>
               {attendance?.time_out ? dayjs(attendance?.time_out).format("HH:mm") || attendance?.time_out : "-:-"}
             </Text>
           </View>
         </View>
 
         <Animated.View
-          style={[
-            {
-              ...styles.slideTrack,
-              backgroundColor: modalIsOpen ? "#186688" : "#87878721",
-            },
-            rContainerStyle,
-          ]}
+          style={[styles.slideTrack, { backgroundColor: modalIsOpen ? "#186688" : "#87878721" }, rContainerStyle]}
         >
           <PanGestureHandler onGestureEvent={panGesture}>
             <Animated.View
-              style={[
-                rTaskContainerStyle,
-                {
-                  ...styles.slideArrow,
-                  backgroundColor: modalIsOpen ? "#FFFFFF" : "#186688",
-                },
-              ]}
+              style={[rTaskContainerStyle, styles.slideArrow, { backgroundColor: modalIsOpen ? "#FFFFFF" : "#186688" }]}
             >
               <AnimatedIcon name="chevron-right" size={50} color={modalIsOpen ? "#186688" : "#FFFFFF"} />
             </Animated.View>
@@ -159,14 +135,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, modalIsOpe
 
           <View style={styles.slideWording}>
             {modalIsOpen ? (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                }}
-              >
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
                 <ActivityIndicator color="#FFFFFF" />
                 <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>Processing</Text>
               </View>
@@ -174,11 +143,7 @@ const ClockAttendance = ({ attendance, onClock, location, locationOn, modalIsOpe
               <AnimatedText
                 style={[
                   textContainerStyle,
-                  {
-                    fontSize: 16,
-                    fontWeight: "500",
-                    color: !modalIsOpen ? "#FFFFFF" : "#186688",
-                  },
+                  { fontSize: 16, fontWeight: "500", color: !modalIsOpen ? "#FFFFFF" : "#186688" },
                 ]}
               >
                 {(modalIsOpen && !location) || (modalIsOpen && !locationOn)

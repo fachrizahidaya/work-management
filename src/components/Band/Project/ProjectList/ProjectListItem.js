@@ -24,9 +24,10 @@ const ProjectListItem = ({ id, title, status, deadline, isArchive, image, ownerN
           alignItems: "center",
           paddingVertical: 8,
           paddingHorizontal: 16,
+          marginHorizontal: 14,
           backgroundColor: "#fff",
           borderRadius: 10,
-          marginTop: 10,
+          marginVertical: 4,
         }}
       >
         <View style={{ display: "flex", gap: 1 }}>

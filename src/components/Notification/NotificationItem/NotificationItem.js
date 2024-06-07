@@ -25,11 +25,12 @@ const NotificationItem = ({ name, modul, content, itemId, time, isRead }) => {
           flexDirection: "row",
           gap: 12,
           alignItems: "center",
-          marginBottom: 25,
           backgroundColor: !isRead ? (modul === "Task" ? "#FF965D33" : "#49C96D33") : "white",
           borderRadius: 8,
           paddingVertical: 8,
           paddingHorizontal: 4,
+          marginHorizontal: 16,
+          marginVertical: 4,
         }}
       >
         <Text style={[{ width: 42 }, TextProps]}>{time.split(" ")[1]}</Text>

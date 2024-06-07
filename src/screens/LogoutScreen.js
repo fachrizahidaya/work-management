@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Google authentication and firebase
 // import { signOut } from "firebase/auth";
@@ -9,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { QueryCache } from "react-query";
 
 import { Bar } from "react-native-progress";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Platform } from "react-native";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 
 import axiosInstance from "../config/api";
@@ -98,6 +99,33 @@ const LogoutScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      // Send a POST request to the logout endpoint
+      const fbtoken = await AsyncStorage.getItem("firebase_token");
+      await axiosInstance.post("/auth/logout", {
+        firebase_token: fbtoken,
+      });
+
+      // Delete user data and tokens from SecureStore
+      await AsyncStorage.removeItem("user_data");
+      await AsyncStorage.removeItem("user_token");
+      await AsyncStorage.removeItem("firebase_token");
+      // await signOut(auth);
+
+      // Clear react query caches
+      queryCache.clear();
+      // Dispatch user menu back to empty object
+      dispatch(remove());
+      // Dispatch module to empty string again
+      dispatch(resetModule());
+      // Dispatch a logout action
+      dispatch(logout());
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     // Effect to update loadingValue at regular intervals
     const interval = setInterval(() => {
@@ -119,7 +147,11 @@ const LogoutScreen = () => {
     if (loadingValue === 130) {
       // Delay the logout process using setTimeout
       const timeout = setTimeout(() => {
+        // if (Platform.OS === "ios") {
         logoutHandler();
+        // } else {
+        //   handleLogout();
+        // }
       }, 0);
 
       // Clean up the timeout when the component unmounts or the dependencies change

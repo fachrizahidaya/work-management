@@ -25,6 +25,11 @@ const NotesScreen = () => {
   const [noteToDelete, setNoteToDelete] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [hideIcon, setHideIcon] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState(null);
+
+  const scrollOffsetY = useRef(0);
+  const SCROLL_THRESHOLD = 20;
+
   const { isOpen: deleteModalIsOpen, toggle: toggleDeleteModal } = useDisclosure(false);
   const createCheckAccess = useCheckAccess("create", "Notes");
   const { data: notes, isLoading, refetch } = useFetch("/pm/notes");
@@ -36,6 +41,29 @@ const NotesScreen = () => {
 
   const openEditFormHandler = (note) => {
     navigation.navigate("Note Form", { noteData: note, refresh: refetch, refreshFunc: true });
+  };
+
+  const scrollHandler = (event) => {
+    const currentOffsetY = event.nativeEvent.contentOffset.y;
+    const offsetDifference = currentOffsetY - scrollOffsetY.current;
+
+    if (Math.abs(offsetDifference) < SCROLL_THRESHOLD) {
+      return; // Ignore minor scrolls
+    }
+
+    if (currentOffsetY > scrollOffsetY.current) {
+      if (scrollDirection !== "down") {
+        setHideIcon(true); // Scrolling down
+        setScrollDirection("down");
+      }
+    } else {
+      if (scrollDirection !== "up") {
+        setHideIcon(false); // Scrolling up
+        setScrollDirection("up");
+      }
+    }
+
+    scrollOffsetY.current = currentOffsetY;
   };
 
   const {
@@ -101,8 +129,7 @@ const NotesScreen = () => {
                   refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
                   data={renderList}
                   keyExtractor={(item) => item.id}
-                  onScrollBeginDrag={() => setHideIcon(true)}
-                  onScrollEndDrag={() => setHideIcon(false)}
+                  onScroll={scrollHandler}
                   renderItem={({ item }) => (
                     <NoteItem
                       note={item}
