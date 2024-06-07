@@ -8,14 +8,7 @@ const FeedSection = ({ feed, employeeUsername, navigation }) => {
     <View style={styles.wrapper}>
       <Text style={{ fontWeight: "500", opacity: 0.5 }}>POSTS</Text>
 
-      <View
-        style={{
-          paddingHorizontal: 14,
-          backgroundColor: "#f8f8f8",
-          borderRadius: 10,
-          paddingBottom: 14,
-        }}
-      >
+      <View style={{ borderRadius: 10, paddingBottom: 14 }}>
         <FlashList
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}

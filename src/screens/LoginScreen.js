@@ -3,6 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -18,7 +19,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image } from "react-native";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image, Platform } from "react-native";
 
 import axiosInstance from "../config/api";
 import { useLoading } from "../hooks/useLoading";
@@ -35,8 +36,6 @@ const LoginScreen = () => {
   const [hidePassword, setHidePassword] = useState(true);
   const { isLoading, toggle: toggleLoading } = useLoading(false);
   const appVersion = Constants.expoConfig.version;
-
-  // const { isOpen: eulaIsOpen, toggle: toggleEula } = useDisclosure(false);
 
   // This is firebase configurations for iOS
   // const [request, response, promptAsync] = Google.useAuthRequest({
@@ -117,7 +116,11 @@ const LoginScreen = () => {
               }
             )
             .then(async () => {
+              // if (Platform.OS === "ios") {
               await SecureStore.setItemAsync("firebase_token", fbtoken);
+              // } else {
+              //   await AsyncStorage.setItem("firebase_token", fbtoken);
+              // }
               navigation.navigate("Loading", { userData });
             });
         }

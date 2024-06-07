@@ -31,7 +31,7 @@ const TaskList = ({
 
   const renderFlashList = (data = []) => {
     return (
-      <View style={{ display: "flex", gap: 10, flex: 1 }}>
+      <View style={{ display: "flex", gap: 10, flex: 1, backgroundColor: "#f8f8f8" }}>
         {!isLoading ? (
           data.length > 0 ? (
             <FlashList

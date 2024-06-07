@@ -70,17 +70,16 @@ const NotificationScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{ marginHorizontal: 14, marginVertical: 13 }}>
+        <PageHeader backButton={true} title="Notifications" onPress={() => navigation.goBack()} />
+      </View>
       <View
         style={{
           flex: 1,
           display: "flex",
           gap: 24,
-          marginHorizontal: 16,
-          marginVertical: 13,
         }}
       >
-        <PageHeader backButton={true} title="Notifications" onPress={() => navigation.goBack()} />
-
         <FlatList
           refreshControl={<RefreshControl refreshing={notifIsFetching} onRefresh={fetchAllNotifications} />}
           data={cumulativeNotifs}

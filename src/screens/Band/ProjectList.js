@@ -53,7 +53,7 @@ const ProjectList = () => {
     return !isLoading ? (
       data?.data?.data?.length > 0 ? (
         <>
-          <View style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: "#f8f8f8" }}>
+          <View style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
             <FlashList
               refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
               data={data?.data.data}

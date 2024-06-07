@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useRef, useState } from "react";
 
 import { ActivityIndicator, FlatList } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -29,7 +29,7 @@ const FeedCard = ({
   setSelectedPicture,
   onToggleReport,
   handleRefreshPosts,
-  setHideIcon,
+  handleIconWhenScrolling,
 }) => {
   return (
     <FlatList
@@ -42,9 +42,8 @@ const FeedCard = ({
       refreshing={true}
       onScrollBeginDrag={() => {
         setHasBeenScrolled(true); // handle detect user has scrolled or not
-        setHideIcon(true);
       }}
-      onScrollEndDrag={() => setHideIcon(false)}
+      onScroll={handleIconWhenScrolling}
       initialNumToRender={5}
       maxToRenderPerBatch={10}
       windowSize={10}
