@@ -384,33 +384,32 @@ const AttendanceScreen = () => {
   );
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <PageHeader width={200} title="My Attendance" backButton={false} />
-        </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={attendanceDataIsFetching && attachmentIsFetching}
-              onRefresh={() => {
-                refetchAttendanceData();
-                refetchAttachment();
-              }}
-            />
-          }
-        >
-          <AttendanceCalendar renderCalendar={renderCalendarWithMultiDotMarking} />
-          <AttendanceColor />
-          <AttendanceAttachment
-            attachment={attachment}
-            reference={attachmentScreenSheetRef}
-            setAttachmentId={openDeleteAttachmentModalHandler}
-            attachmentIsFetching={attachmentIsFetching}
-            refetchAttachment={refetchAttachment}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <PageHeader width={200} title="My Attendance" backButton={false} />
+      </View>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={attendanceDataIsFetching && attachmentIsFetching}
+            onRefresh={() => {
+              refetchAttendanceData();
+              refetchAttachment();
+            }}
           />
-        </ScrollView>
-      </SafeAreaView>
+        }
+      >
+        <AttendanceCalendar renderCalendar={renderCalendarWithMultiDotMarking} />
+        <AttendanceColor />
+        <AttendanceAttachment
+          attachment={attachment}
+          reference={attachmentScreenSheetRef}
+          setAttachmentId={openDeleteAttachmentModalHandler}
+          attachmentIsFetching={attachmentIsFetching}
+          refetchAttachment={refetchAttachment}
+        />
+      </ScrollView>
+
       <AttendanceForm
         toggleReport={attendanceScreenSheetRef}
         date={date}
@@ -460,7 +459,7 @@ const AttendanceScreen = () => {
         title="Changes saved!"
         description="Data has successfully deleted"
       />
-    </>
+    </SafeAreaView>
   );
 };
 

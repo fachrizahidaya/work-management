@@ -25,30 +25,14 @@ const AppraisalResultScreen = () => {
     <>
       <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
         <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="Appraisal"
-            backButton={true}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
+          <PageHeader width={200} title="Appraisal" backButton={true} onPress={() => navigation.goBack()} />
         </View>
 
         <View style={styles.container}>
           <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
             {data?.data?.employee_appraisal?.employee_appraisal_value.map((item, index) => {
               return (
-                <View
-                  style={{
-                    ...card.card,
-                    marginVertical: 14,
-                    marginBottom: 2,
-                    flexDirection: "column",
-                    gap: 10,
-                  }}
-                  key={index}
-                >
+                <View style={[card.card, { marginVertical: 14, marginBottom: 2, gap: 10 }]} key={index}>
                   <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>{item?.description}</Text>
                   <View style={{ gap: 5 }}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>

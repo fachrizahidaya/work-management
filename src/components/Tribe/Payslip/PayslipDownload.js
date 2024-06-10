@@ -7,8 +7,16 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "reac
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
 import ActionSheet from "react-native-actions-sheet";
+import SuccessModal from "../../shared/Modal/SuccessModal";
 
-const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip }) => {
+const PayslipDownload = ({
+  reference,
+  toggleDownloadDialog,
+  onDownloadPayslip,
+  errorModalIsOpen,
+  toggleErrorModal,
+  requestType,
+}) => {
   const [hidePassword, setHidePassword] = useState(true);
 
   /**
@@ -59,6 +67,14 @@ const PayslipDownload = ({ reference, toggleDownloadDialog, onDownloadPayslip })
           </FormButton>
         </View>
       </TouchableWithoutFeedback>
+
+      <SuccessModal
+        isOpen={errorModalIsOpen}
+        toggle={toggleErrorModal}
+        type={requestType}
+        title="Wrong Password!"
+        description="Please try again"
+      />
     </ActionSheet>
   );
 };

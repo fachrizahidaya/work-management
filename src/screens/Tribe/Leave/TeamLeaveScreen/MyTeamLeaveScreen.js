@@ -196,45 +196,44 @@ const MyTeamLeaveScreen = () => {
   );
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        {isReady ? (
-          <>
-            <View style={styles.header}>
-              <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
-            </View>
+    <SafeAreaView style={styles.container}>
+      {isReady ? (
+        <>
+          <View style={styles.header}>
+            <PageHeader title="My Team Leave Request" onPress={() => navigation.goBack()} />
+          </View>
 
-            <MyTeamLeaveRequest
-              pendingLeaveRequests={pendingList}
-              approvedLeaveRequests={approvedList}
-              rejectedLeaveRequests={rejectedList}
-              pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
-              approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
-              rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
-              refetchPendingLeaveRequest={refetchPendingLeaveRequest}
-              refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
-              refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-              hasBeenScrolled={hasBeenScrolledRejected}
-              setHasBeenScrolled={setHasBeenScrolledRejected}
-              hasBeenScrolledPending={hasBeenScrolledPending}
-              setHasBeenScrolledPending={setHasBeenScrolledPending}
-              hasBeenScrolledApproved={hasBeenScrolledApproved}
-              setHasBeenScrolledApproved={setHasBeenScrolledApproved}
-              fetchMorePending={fetchMorePending}
-              fetchMoreApproved={fetchMoreApproved}
-              fetchMoreRejected={fetchMoreRejected}
-              pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
-              approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
-              rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
-              onApproval={approvalResponseHandler}
-              tabValue={tabValue}
-              tabs={tabs}
-              onChangeTab={onChangeTab}
-              refetchTeamLeaveRequest={refetchTeamLeaveRequest}
-            />
-          </>
-        ) : null}
-      </SafeAreaView>
+          <MyTeamLeaveRequest
+            pendingLeaveRequests={pendingList}
+            approvedLeaveRequests={approvedList}
+            rejectedLeaveRequests={rejectedList}
+            pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
+            approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
+            rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+            refetchPendingLeaveRequest={refetchPendingLeaveRequest}
+            refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
+            refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
+            hasBeenScrolled={hasBeenScrolledRejected}
+            setHasBeenScrolled={setHasBeenScrolledRejected}
+            hasBeenScrolledPending={hasBeenScrolledPending}
+            setHasBeenScrolledPending={setHasBeenScrolledPending}
+            hasBeenScrolledApproved={hasBeenScrolledApproved}
+            setHasBeenScrolledApproved={setHasBeenScrolledApproved}
+            fetchMorePending={fetchMorePending}
+            fetchMoreApproved={fetchMoreApproved}
+            fetchMoreRejected={fetchMoreRejected}
+            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
+            rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
+            onApproval={approvalResponseHandler}
+            tabValue={tabValue}
+            tabs={tabs}
+            onChangeTab={onChangeTab}
+            refetchTeamLeaveRequest={refetchTeamLeaveRequest}
+          />
+        </>
+      ) : null}
+
       <SuccessModal
         isOpen={responseModalIsOpen}
         toggle={toggleResponseModal}
@@ -244,7 +243,7 @@ const MyTeamLeaveScreen = () => {
           requestType === "success" ? "Thank you for your prompt action" : "Requester will be notified of the decline"
         }
       />
-    </>
+    </SafeAreaView>
   );
 };
 

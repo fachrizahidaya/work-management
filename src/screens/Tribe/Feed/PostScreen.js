@@ -215,85 +215,80 @@ const PostScreen = () => {
     }, 100);
   });
 
-  return (
-    <>
-      {isReady ? (
-        <>
-          <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-              <PageHeader
-                title="Post"
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              />
-            </View>
-            <ScrollView
-              style={{ backgroundColor: "#F8F8F8" }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={postDataIsFetching && commentIsFetching}
-                  onRefresh={() => {
-                    refetchPostData();
-                    refetchComment();
-                  }}
-                />
-              }
-            >
-              <View style={{ paddingHorizontal: 14 }}>
-                <FeedCardItemPost
-                  id={postData?.data?.id}
-                  employeeId={postData?.data?.author_id}
-                  employeeName={postData?.data?.employee_name}
-                  createdAt={postData?.data?.updated_at}
-                  employeeImage={postData?.data?.employee_image}
-                  content={postData?.data?.content}
-                  total_like={postData?.data?.total_like}
-                  totalComment={postData?.data?.total_comment}
-                  likedBy={postData?.data?.liked_by}
-                  attachment={postData?.data?.file_path}
-                  type={postData?.data?.type}
-                  loggedEmployeeId={profile?.data?.id}
-                  loggedEmployeeImage={profile?.data?.image}
-                  onToggleLike={likePostHandler}
-                  onToggleFullScreen={toggleFullScreenImageHandler}
-                  onPressLink={pressLinkHandler}
-                  employeeUsername={objectContainEmployeeUsernameHandler}
-                  navigation={navigation}
-                  reference={sharePostScreenSheetRef}
-                  isFullScreen={isFullScreen}
-                  setIsFullScreen={setIsFullScreen}
-                  setSelectedPicture={setSelectedPicture}
-                />
-                <FeedCommentPost
-                  comments={comments}
-                  commentIsLoading={commentIsLoading}
-                  handleWhenScrollReachedEnd={commentEndReachedHandler}
-                  onReply={replyCommentHandler}
-                  employeeUsername={objectContainEmployeeUsernameHandler}
-                  onPressLink={pressLinkHandler}
-                  setCommentParentId={setCommentParentId}
-                  navigation={navigation}
-                  hasBeenScrolled={hasBeenScrolled}
-                  setHasBeenScrolled={setHasBeenScrolled}
-                  viewReplyToggle={viewReplyToggle}
-                  setViewReplyToggle={setViewReplyToggle}
-                  hideReplies={hideReplies}
-                  setHideReplies={setHideReplies}
-                />
-              </View>
-            </ScrollView>
-            <FeedCommentFormPost
-              loggedEmployeeImage={profile?.data?.image}
-              loggedEmployeeName={userSelector?.name}
-              parentId={commentParentId}
-              renderSuggestions={renderSuggestionsHandler}
-              handleChange={commentContainUsernameHandler}
-              formik={formik}
-            />
-          </SafeAreaView>
-        </>
-      ) : null}
+  return isReady ? (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <PageHeader
+          title="Post"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      </View>
+      <ScrollView
+        style={{ backgroundColor: "#F8F8F8" }}
+        refreshControl={
+          <RefreshControl
+            refreshing={postDataIsFetching && commentIsFetching}
+            onRefresh={() => {
+              refetchPostData();
+              refetchComment();
+            }}
+          />
+        }
+      >
+        <View style={{ paddingHorizontal: 14 }}>
+          <FeedCardItemPost
+            id={postData?.data?.id}
+            employeeId={postData?.data?.author_id}
+            employeeName={postData?.data?.employee_name}
+            createdAt={postData?.data?.updated_at}
+            employeeImage={postData?.data?.employee_image}
+            content={postData?.data?.content}
+            total_like={postData?.data?.total_like}
+            totalComment={postData?.data?.total_comment}
+            likedBy={postData?.data?.liked_by}
+            attachment={postData?.data?.file_path}
+            type={postData?.data?.type}
+            loggedEmployeeId={profile?.data?.id}
+            loggedEmployeeImage={profile?.data?.image}
+            onToggleLike={likePostHandler}
+            onToggleFullScreen={toggleFullScreenImageHandler}
+            onPressLink={pressLinkHandler}
+            employeeUsername={objectContainEmployeeUsernameHandler}
+            navigation={navigation}
+            reference={sharePostScreenSheetRef}
+            isFullScreen={isFullScreen}
+            setIsFullScreen={setIsFullScreen}
+            setSelectedPicture={setSelectedPicture}
+          />
+          <FeedCommentPost
+            comments={comments}
+            commentIsLoading={commentIsLoading}
+            handleWhenScrollReachedEnd={commentEndReachedHandler}
+            onReply={replyCommentHandler}
+            employeeUsername={objectContainEmployeeUsernameHandler}
+            onPressLink={pressLinkHandler}
+            setCommentParentId={setCommentParentId}
+            navigation={navigation}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            viewReplyToggle={viewReplyToggle}
+            setViewReplyToggle={setViewReplyToggle}
+            hideReplies={hideReplies}
+            setHideReplies={setHideReplies}
+          />
+        </View>
+      </ScrollView>
+      <FeedCommentFormPost
+        loggedEmployeeImage={profile?.data?.image}
+        loggedEmployeeName={userSelector?.name}
+        parentId={commentParentId}
+        renderSuggestions={renderSuggestionsHandler}
+        handleChange={commentContainUsernameHandler}
+        formik={formik}
+      />
+
       <ShareImage
         reference={sharePostScreenSheetRef}
         navigation={navigation}
@@ -306,8 +301,8 @@ const PostScreen = () => {
         file_path={selectedPicture}
         setSelectedPicture={setSelectedPicture}
       />
-    </>
-  );
+    </SafeAreaView>
+  ) : null;
 };
 
 export default PostScreen;

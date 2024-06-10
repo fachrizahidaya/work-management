@@ -247,113 +247,111 @@ const KPIScreen = () => {
   }, [formikAttachment.isSubmitting, formikAttachment.status]);
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title={kpiList?.data?.performance_kpi?.review?.description}
-            backButton={true}
-            onPress={() => {
-              if (differences.length === 0 && attachments.length === currentAttachments.length) {
-                navigation.goBack();
-              } else {
-                toggleReturnModal();
-              }
-            }}
-          />
-          {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
-            <SaveButton
-              isLoading={submitIsLoading}
-              differences={differences}
-              onSubmit={submitHandler}
-              differenceTotalAttachments={differenceTotalAttachments}
-              toggleSubmit={toggleSubmit}
-              toggleSaveModal={toggleSaveModal}
-              employeeKpiValue={employeeKpiValue}
-              kpiList={kpiList}
-              setRequestType={setRequestType}
-              refetchKpiList={refetchKpiList}
-            />
-          )}
-        </View>
-        <KPIDetailList
-          dayjs={dayjs}
-          begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
-          end_date={kpiList?.data?.performance_kpi?.review?.end_date}
-          target={kpiList?.data?.performance_kpi?.target_name}
-          target_level={kpiList?.data?.performance_kpi?.target_level}
+    <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader
+          width={200}
+          title={kpiList?.data?.performance_kpi?.review?.description}
+          backButton={true}
+          onPress={() => {
+            if (differences.length === 0 && attachments.length === currentAttachments.length) {
+              navigation.goBack();
+            } else {
+              toggleReturnModal();
+            }
+          }}
         />
+        {kpiList?.data?.confirm || kpiValues?.length === 0 ? null : (
+          <SaveButton
+            isLoading={submitIsLoading}
+            differences={differences}
+            onSubmit={submitHandler}
+            differenceTotalAttachments={differenceTotalAttachments}
+            toggleSubmit={toggleSubmit}
+            toggleSaveModal={toggleSaveModal}
+            employeeKpiValue={employeeKpiValue}
+            kpiList={kpiList}
+            setRequestType={setRequestType}
+            refetchKpiList={refetchKpiList}
+          />
+        )}
+      </View>
+      <KPIDetailList
+        dayjs={dayjs}
+        begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
+        end_date={kpiList?.data?.performance_kpi?.review?.end_date}
+        target={kpiList?.data?.performance_kpi?.target_name}
+        target_level={kpiList?.data?.performance_kpi?.target_level}
+      />
 
-        <View style={{ paddingTop: 12, paddingHorizontal: 16 }}>
-          <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
-        </View>
+      <View style={{ paddingTop: 12, paddingHorizontal: 16 }}>
+        <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+      </View>
 
-        <View style={styles.container}>
-          {tabValue === "KPI" ? (
-            <ScrollView style={{ flex: 1 }}>
-              {kpiValues && kpiValues.length > 0 ? (
-                kpiValues.map((item, index) => {
-                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                  return (
-                    <KPIDetailItem
-                      key={index}
-                      description={item?.description}
-                      target={item?.target}
-                      weight={item?.weight}
-                      threshold={item?.threshold}
-                      measurement={item?.measurement}
-                      achievement={item?.actual_achievement}
-                      item={item}
-                      handleOpen={openSelectedKpi}
-                      employeeKpiValue={correspondingEmployeeKpi}
-                      setKpi={setKpi}
-                      setEmployeeKpi={setEmployeeKpi}
-                      reference={formScreenSheetRef}
-                    />
-                  );
-                })
-              ) : (
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              )}
-            </ScrollView>
-          ) : (
-            <ScrollView style={{ flex: 1 }}>
-              <View style={{ paddingHorizontal: 16 }}>
-                {!kpiList?.data?.confirm && (
-                  <TouchableOpacity
-                    onPress={() => openSelectedAttachmentKpi()}
-                    style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
-                  >
-                    <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
-                    <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
-                  </TouchableOpacity>
-                )}
+      <View style={styles.container}>
+        {tabValue === "KPI" ? (
+          <ScrollView style={{ flex: 1 }}>
+            {kpiValues && kpiValues.length > 0 ? (
+              kpiValues.map((item, index) => {
+                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                return (
+                  <KPIDetailItem
+                    key={index}
+                    description={item?.description}
+                    target={item?.target}
+                    weight={item?.weight}
+                    threshold={item?.threshold}
+                    measurement={item?.measurement}
+                    achievement={item?.actual_achievement}
+                    item={item}
+                    handleOpen={openSelectedKpi}
+                    employeeKpiValue={correspondingEmployeeKpi}
+                    setKpi={setKpi}
+                    setEmployeeKpi={setEmployeeKpi}
+                    reference={formScreenSheetRef}
+                  />
+                );
+              })
+            ) : (
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
-              {attachments && attachments.length > 0 ? (
-                attachments.map((item, index) => {
-                  return (
-                    <AttachmentItem
-                      description={item?.description}
-                      file_name={item?.attachment ? item?.attachment?.name : item?.file_name}
-                      onDelete={employeeKpiAttachmentDeleteHandler}
-                      employee_kpi_id={item?.employee_kpi_id}
-                      attachment_id={item?.attachment_id}
-                      index={item?.index}
-                    />
-                  );
-                })
-              ) : (
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
+            )}
+          </ScrollView>
+        ) : (
+          <ScrollView style={{ flex: 1 }}>
+            <View style={{ paddingHorizontal: 16 }}>
+              {!kpiList?.data?.confirm && (
+                <TouchableOpacity
+                  onPress={() => openSelectedAttachmentKpi()}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 14 }}
+                >
+                  <MaterialCommunityIcons name="plus" size={20} color="#304FFD" />
+                  <Text style={[{ color: "#304FFD", fontWeight: "500" }]}>Add Attachment</Text>
+                </TouchableOpacity>
               )}
-            </ScrollView>
-          )}
-        </View>
-      </SafeAreaView>
+            </View>
+            {attachments && attachments.length > 0 ? (
+              attachments.map((item, index) => {
+                return (
+                  <AttachmentItem
+                    description={item?.description}
+                    file_name={item?.attachment ? item?.attachment?.name : item?.file_name}
+                    onDelete={employeeKpiAttachmentDeleteHandler}
+                    employee_kpi_id={item?.employee_kpi_id}
+                    attachment_id={item?.attachment_id}
+                    index={item?.index}
+                  />
+                );
+              })
+            ) : (
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
+              </View>
+            )}
+          </ScrollView>
+        )}
+      </View>
 
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
@@ -392,7 +390,7 @@ const KPIScreen = () => {
         title="Changes saved!"
         description="Data has successfully updated"
       />
-    </>
+    </SafeAreaView>
   );
 };
 

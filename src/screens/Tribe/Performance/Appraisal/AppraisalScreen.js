@@ -186,68 +186,66 @@ const AppraisalScreen = () => {
   }, [appraisalList?.data]);
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title={appraisalList?.data?.performance_appraisal?.review?.description}
-            backButton={true}
-            onPress={() => {
-              if (differences.length === 0) {
-                navigation.goBack();
-              } else {
-                toggleReturnModal();
-              }
-            }}
-          />
-          {appraisalList?.data?.confirm || !appraisalValues ? null : (
-            <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
-          )}
-        </View>
-
-        <AppraisalDetailList
-          dayjs={dayjs}
-          begin_date={appraisalList?.data?.begin_date}
-          end_date={appraisalList?.data?.end_date}
-          name={appraisalList?.data?.description}
-          target={appraisalList?.data?.performance_appraisal?.target_name}
-          target_level={appraisalList?.data?.performance_appraisal?.target_level}
+    <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader
+          width={200}
+          title={appraisalList?.data?.performance_appraisal?.review?.description}
+          backButton={true}
+          onPress={() => {
+            if (differences.length === 0) {
+              navigation.goBack();
+            } else {
+              toggleReturnModal();
+            }
+          }}
         />
+        {appraisalList?.data?.confirm || !appraisalValues ? null : (
+          <SaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
+        )}
+      </View>
 
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1 }}>
-            {appraisalValues && appraisalValues.length > 0 ? (
-              appraisalValues.map((item, index) => {
-                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
-                  (empAppraisal) => empAppraisal.id === item.id
-                );
-                return (
-                  <AppraisalDetailItem
-                    key={index}
-                    id={item?.performance_appraisal_value_id || item?.id}
-                    description={item?.description}
-                    item={item}
-                    choice={item?.choice}
-                    onChange={employeeAppraisalValueUpdateHandler}
-                    choice_a={item?.choice_a}
-                    choice_b={item?.choice_b}
-                    choice_c={item?.choice_c}
-                    choice_d={item?.choice_d}
-                    choice_e={item?.choice_e}
-                    handleOpen={openSelectedAppraisal}
-                    employeeAppraisalValue={correspondingEmployeeAppraisal}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )}
-          </ScrollView>
-        </View>
-      </SafeAreaView>
+      <AppraisalDetailList
+        dayjs={dayjs}
+        begin_date={appraisalList?.data?.begin_date}
+        end_date={appraisalList?.data?.end_date}
+        name={appraisalList?.data?.description}
+        target={appraisalList?.data?.performance_appraisal?.target_name}
+        target_level={appraisalList?.data?.performance_appraisal?.target_level}
+      />
+
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1 }}>
+          {appraisalValues && appraisalValues.length > 0 ? (
+            appraisalValues.map((item, index) => {
+              const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+                (empAppraisal) => empAppraisal.id === item.id
+              );
+              return (
+                <AppraisalDetailItem
+                  key={index}
+                  id={item?.performance_appraisal_value_id || item?.id}
+                  description={item?.description}
+                  item={item}
+                  choice={item?.choice}
+                  onChange={employeeAppraisalValueUpdateHandler}
+                  choice_a={item?.choice_a}
+                  choice_b={item?.choice_b}
+                  choice_c={item?.choice_c}
+                  choice_d={item?.choice_d}
+                  choice_e={item?.choice_e}
+                  handleOpen={openSelectedAppraisal}
+                  employeeAppraisalValue={correspondingEmployeeAppraisal}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          )}
+        </ScrollView>
+      </View>
 
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
@@ -278,7 +276,7 @@ const AppraisalScreen = () => {
         title="Changes saved!"
         description="Data has successfully updated"
       />
-    </>
+    </SafeAreaView>
   );
 };
 

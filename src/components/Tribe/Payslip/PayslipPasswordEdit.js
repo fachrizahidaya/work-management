@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, TouchableWithoutFeedback, Keyboard, StyleSheet } from "react-native";
 
 import FormButton from "../../shared/FormButton";
 import Input from "../../shared/Forms/Input";
@@ -18,9 +18,11 @@ const PayslipPasswordEdit = ({
   setHideConfirmPassword,
   onUpdatePassword,
   reference,
-  isOpen,
-  toggle,
+  successModalIsOpen,
+  toggleSuccessModal,
   requestType,
+  errorModalIsOpen,
+  toggleErrorModal,
 }) => {
   /**
    * Handle change password
@@ -61,14 +63,7 @@ const PayslipPasswordEdit = ({
       }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
+        <View style={styles.wrapper}>
           <View style={{ gap: 5 }}>
             <Input
               formik={formik}
@@ -119,8 +114,15 @@ const PayslipPasswordEdit = ({
         </View>
       </TouchableWithoutFeedback>
       <SuccessModal
-        isOpen={isOpen}
-        toggle={toggle}
+        isOpen={successModalIsOpen}
+        toggle={toggleSuccessModal}
+        type={requestType}
+        title="Changes saved!"
+        description="Data has successfully updated"
+      />
+      <SuccessModal
+        isOpen={errorModalIsOpen}
+        toggle={toggleErrorModal}
         type={requestType}
         title="Changes saved!"
         description="Data has successfully updated"
@@ -130,3 +132,12 @@ const PayslipPasswordEdit = ({
 };
 
 export default PayslipPasswordEdit;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+});
