@@ -188,72 +188,70 @@ const AppraisalReviewScreen = () => {
   }, [appraisalList?.data]);
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="Appraisal Review"
-            backButton={true}
-            onPress={() => {
-              if (differences.length === 0) {
-                navigation.goBack();
-              } else {
-                toggleReturnModal();
-              }
-            }}
-          />
-          {appraisalValues.length === 0 || appraisalList?.data?.confirm ? null : (
-            <AppraisalReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
-          )}
-        </View>
-
-        <AppraisalReviewDetailList
-          dayjs={dayjs}
-          begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
-          end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
-          target={appraisalList?.data?.performance_appraisal?.target_name}
-          name={appraisalList?.data?.employee?.name}
+    <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader
+          width={200}
+          title="Appraisal Review"
+          backButton={true}
+          onPress={() => {
+            if (differences.length === 0) {
+              navigation.goBack();
+            } else {
+              toggleReturnModal();
+            }
+          }}
         />
+        {appraisalValues.length === 0 || appraisalList?.data?.confirm ? null : (
+          <AppraisalReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
+        )}
+      </View>
 
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {appraisalValues && appraisalValues.length > 0 ? (
-              appraisalValues.map((item, index) => {
-                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
-                  (empAppraisal) => empAppraisal.id === item.id
-                );
-                return (
-                  <AppraisalReviewDetailItem
-                    key={index}
-                    item={item}
-                    id={item?.id}
-                    description={item?.description}
-                    onChange={employeeAppraisalValueUpdateHandler}
-                    handleOpen={openSelectedAppraisal}
-                    choice_a={item?.choice_a}
-                    choice_b={item?.choice_b}
-                    choice_c={item?.choice_c}
-                    choice_d={item?.choice_d}
-                    choice_e={item?.choice_e}
-                    choice={item?.supervisor_choice}
-                    employeeAppraisalValue={correspondingEmployeeAppraisal}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )}
-          </ScrollView>
-        </View>
-        {appraisalValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-      </SafeAreaView>
+      <AppraisalReviewDetailList
+        dayjs={dayjs}
+        begin_date={appraisalList?.data?.performance_appraisal?.review?.begin_date}
+        end_date={appraisalList?.data?.performance_appraisal?.review?.end_date}
+        target={appraisalList?.data?.performance_appraisal?.target_name}
+        name={appraisalList?.data?.employee?.name}
+      />
+
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {appraisalValues && appraisalValues.length > 0 ? (
+            appraisalValues.map((item, index) => {
+              const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+                (empAppraisal) => empAppraisal.id === item.id
+              );
+              return (
+                <AppraisalReviewDetailItem
+                  key={index}
+                  item={item}
+                  id={item?.id}
+                  description={item?.description}
+                  onChange={employeeAppraisalValueUpdateHandler}
+                  handleOpen={openSelectedAppraisal}
+                  choice_a={item?.choice_a}
+                  choice_b={item?.choice_b}
+                  choice_c={item?.choice_c}
+                  choice_d={item?.choice_d}
+                  choice_e={item?.choice_e}
+                  choice={item?.supervisor_choice}
+                  employeeAppraisalValue={correspondingEmployeeAppraisal}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          )}
+        </ScrollView>
+      </View>
+      {appraisalValues.length > 0 ? (
+        <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+          <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+        </Pressable>
+      ) : null}
 
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
@@ -307,7 +305,7 @@ const AppraisalReviewScreen = () => {
         title="Report submitted!"
         description="Your report is logged"
       />
-    </>
+    </SafeAreaView>
   );
 };
 

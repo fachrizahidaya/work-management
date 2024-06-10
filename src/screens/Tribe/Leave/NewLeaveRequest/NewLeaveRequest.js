@@ -262,7 +262,7 @@ const NewLeaveRequest = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {isReady ? (
-          <View style={{ ...styles.container, width: width, height: height }}>
+          <View style={[styles.container, { width: width, height: height }]}>
             <PageHeader
               title="New Leave Request"
               onPress={
@@ -289,14 +289,7 @@ const NewLeaveRequest = () => {
               ) : (
                 availableLeaves?.map((item, index) => {
                   return (
-                    <View
-                      key={index}
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 10,
-                      }}
-                    >
+                    <View key={index} style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
                       <Text style={{ fontSize: 20, fontWeight: "500" }}>{item.quota}</Text>
                       <Text style={styles.name}>{item.leave_name}</Text>
                     </View>

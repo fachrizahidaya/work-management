@@ -1,4 +1,4 @@
-import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 
 import Input from "../../../shared/Forms/Input";
@@ -7,21 +7,8 @@ const CommentForm = ({ reference, description, formik, handleClose, comment }) =
   return (
     <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <View style={styles.wrapper}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Comment</Text>
             <TouchableOpacity
               onPress={() => {
@@ -56,3 +43,12 @@ const CommentForm = ({ reference, description, formik, handleClose, comment }) =
 };
 
 export default CommentForm;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    gap: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+});

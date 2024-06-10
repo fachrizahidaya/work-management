@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import _ from "lodash";
 import { useFormik } from "formik";
 
-import { Dimensions, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { FlashList } from "@shopify/flash-list";
 
@@ -59,8 +59,6 @@ const EmployeeProfileScreen = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-
-  const { height } = Dimensions.get("screen");
 
   const { employeeId, loggedEmployeeImage, loggedEmployeeId } = route.params;
 
@@ -178,7 +176,7 @@ const EmployeeProfileScreen = () => {
   const editPostHandler = async (form, setSubmitting, setStatus) => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.post(`/hr/posts/${selectedPost}`, form, {
+      await axiosInstance.post(`/hr/posts/${selectedPost}`, form, {
         headers: {
           "content-type": "multipart/form-data",
         },
@@ -202,7 +200,7 @@ const EmployeeProfileScreen = () => {
   const deletePostHandler = async () => {
     try {
       toggleDeletePost();
-      const res = await axiosInstance.delete(`/hr/posts/${selectedPost}`);
+      await axiosInstance.delete(`/hr/posts/${selectedPost}`);
       setPosts([]);
       postRefetchHandler();
       toggleDeletePost();
@@ -349,83 +347,80 @@ const EmployeeProfileScreen = () => {
   });
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        {isReady ? (
-          <>
-            <View style={styles.header}>
-              <PageHeader
-                title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              />
-            </View>
-            <View style={styles.content}>
-              {/* Content here */}
-              <FeedCard
-                posts={posts}
-                loggedEmployeeId={loggedEmployeeId}
-                loggedEmployeeImage={loggedEmployeeImage}
-                postEndReachedHandler={postEndReachedHandler}
-                personalPostIsFetching={personalPostIsFetching}
-                refetchPersonalPost={refetchPersonalPost}
-                employee={employee}
-                teammates={teammates}
-                hasBeenScrolled={hasBeenScrolled}
-                setHasBeenScrolled={setHasBeenScrolled}
-                onCommentToggle={openCommentHandler}
-                forceRerender={forceRerender}
-                setForceRerender={setForceRerender}
-                personalPostIsLoading={personalPostIsLoading}
-                toggleFullScreen={toggleFullScreenImageHandler}
-                openSelectedPersonalPost={openSelectedPersonalPostHandler}
-                employeeUsername={objectContainEmployeeUsernameHandler}
-                userSelector={userSelector}
-                toggleDeleteModal={toggleDeleteModal}
-                toggleEditModal={toggleEditModal}
-                reference={teammatesScreenSheetRef}
-                navigation={navigation}
-                postRefetchHandler={postRefetchHandler}
-                onPressLink={pressLinkHandler}
-                onToggleLike={likePostHandler}
-                setPostId={setPostId}
-                commentScreenSheetRef={commentsScreenSheetRef}
-                isFullScreen={isFullScreen}
-                setIsFullScreen={setIsFullScreen}
-                setSelectedPicture={setSelectedPicture}
-              />
+    <SafeAreaView style={styles.container}>
+      {isReady ? (
+        <>
+          <View style={styles.header}>
+            <PageHeader
+              title={employee?.data?.name.length > 30 ? employee?.data?.name.split(" ")[0] : employee?.data?.name}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          </View>
+          <View style={styles.content}>
+            {/* Content here */}
+            <FeedCard
+              posts={posts}
+              loggedEmployeeId={loggedEmployeeId}
+              loggedEmployeeImage={loggedEmployeeImage}
+              postEndReachedHandler={postEndReachedHandler}
+              personalPostIsFetching={personalPostIsFetching}
+              refetchPersonalPost={refetchPersonalPost}
+              employee={employee}
+              teammates={teammates}
+              hasBeenScrolled={hasBeenScrolled}
+              setHasBeenScrolled={setHasBeenScrolled}
+              onCommentToggle={openCommentHandler}
+              forceRerender={forceRerender}
+              setForceRerender={setForceRerender}
+              personalPostIsLoading={personalPostIsLoading}
+              toggleFullScreen={toggleFullScreenImageHandler}
+              openSelectedPersonalPost={openSelectedPersonalPostHandler}
+              employeeUsername={objectContainEmployeeUsernameHandler}
+              userSelector={userSelector}
+              toggleDeleteModal={toggleDeleteModal}
+              toggleEditModal={toggleEditModal}
+              reference={teammatesScreenSheetRef}
+              navigation={navigation}
+              postRefetchHandler={postRefetchHandler}
+              onPressLink={pressLinkHandler}
+              onToggleLike={likePostHandler}
+              setPostId={setPostId}
+              commentScreenSheetRef={commentsScreenSheetRef}
+              isFullScreen={isFullScreen}
+              setIsFullScreen={setIsFullScreen}
+              setSelectedPicture={setSelectedPicture}
+            />
 
-              <FeedComment
-                loggedEmployeeName={userSelector?.name}
-                loggedEmployeeImage={profile?.data?.image}
-                comments={comments}
-                commentIsFetching={commentIsFetching}
-                commentIsLoading={commentIsLoading}
-                refetchComment={refetchComment}
-                handleClose={closeCommentHandler}
-                onEndReached={commentEndReachedHandler}
-                commentRefetchHandler={refetchCommentHandler}
-                parentId={commentParentId}
-                onReply={replyCommentHandler}
-                employeeUsername={objectContainEmployeeUsernameHandler}
-                reference={commentsScreenSheetRef}
-                onPressLink={pressLinkHandler}
-                formik={formik}
-                commentContainUsernameHandler={commentContainUsernameHandler}
-                onSuggestions={renderSuggestionsHandler}
-                reloadComment={reloadComment}
-                setReloadComment={setReloadComment}
-                setCurrentOffsetComments={setCurrentOffsetComment}
-                setPostId={setPostId}
-                setCommentParentId={setCommentParentId}
-                setComments={setComments}
-              />
-            </View>
-          </>
-        ) : null}
-      </SafeAreaView>
-
+            <FeedComment
+              loggedEmployeeName={userSelector?.name}
+              loggedEmployeeImage={profile?.data?.image}
+              comments={comments}
+              commentIsFetching={commentIsFetching}
+              commentIsLoading={commentIsLoading}
+              refetchComment={refetchComment}
+              handleClose={closeCommentHandler}
+              onEndReached={commentEndReachedHandler}
+              commentRefetchHandler={refetchCommentHandler}
+              parentId={commentParentId}
+              onReply={replyCommentHandler}
+              employeeUsername={objectContainEmployeeUsernameHandler}
+              reference={commentsScreenSheetRef}
+              onPressLink={pressLinkHandler}
+              formik={formik}
+              commentContainUsernameHandler={commentContainUsernameHandler}
+              onSuggestions={renderSuggestionsHandler}
+              reloadComment={reloadComment}
+              setReloadComment={setReloadComment}
+              setCurrentOffsetComments={setCurrentOffsetComment}
+              setPostId={setPostId}
+              setCommentParentId={setCommentParentId}
+              setComments={setComments}
+            />
+          </View>
+        </>
+      ) : null}
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
@@ -473,7 +468,7 @@ const EmployeeProfileScreen = () => {
         title="Changes saved!"
         description="Data has successfully deleted"
       />
-    </>
+    </SafeAreaView>
   );
 };
 

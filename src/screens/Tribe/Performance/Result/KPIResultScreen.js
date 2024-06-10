@@ -22,42 +22,24 @@ const KPIResultScreen = () => {
   }
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="KPI Result"
-            backButton={true}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        </View>
+    <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader width={200} title="KPI Result" backButton={true} onPress={() => navigation.goBack()} />
+      </View>
 
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {data?.data?.employee_appraisal?.employee_appraisal_value.map((item, index) => {
-              return (
-                <View
-                  style={{
-                    ...card.card,
-                    marginVertical: 14,
-                    marginBottom: 2,
-                    flexDirection: "column",
-                    gap: 5,
-                  }}
-                  key={index}
-                >
-                  <Text style={[TextProps]}>{item?.description}</Text>
-                  <Text style={[TextProps]}>{item?.choice_text}</Text>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    </>
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {data?.data?.employee_appraisal?.employee_appraisal_value.map((item, index) => {
+            return (
+              <View style={[card.card, { marginVertical: 14, marginBottom: 2, gap: 5 }]} key={index}>
+                <Text style={[TextProps]}>{item?.description}</Text>
+                <Text style={[TextProps]}>{item?.choice_text}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 

@@ -3,7 +3,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash";
 
 import { Linking, SafeAreaView, StyleSheet, View, Text } from "react-native";
-import Toast from "react-native-root-toast";
 
 import { useFetch } from "../../../hooks/useFetch";
 import { useDisclosure } from "../../../hooks/useDisclosure";
@@ -13,7 +12,6 @@ import axiosInstance from "../../../config/api";
 import useCheckAccess from "../../../hooks/useCheckAccess";
 import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
-import { ErrorToastProps } from "../../../components/shared/CustomStylings";
 import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
 
 const PayslipScreen = () => {
@@ -33,6 +31,8 @@ const PayslipScreen = () => {
   const downloadPayslipCheckAccess = useCheckAccess("download", "Payslip");
 
   const { isOpen: pinUpdateModalIsOpen, toggle: togglePinUpdateModal } = useDisclosure(false);
+  const { isOpen: errorUpdateModalIsOpen, toggle: toggleErrorUpdateModal } = useDisclosure(false);
+  const { isOpen: errorDownloadModalIsOpen, toggle: toggleErrorDownloadModal } = useDisclosure(false);
 
   const fetchPayslipParameters = {
     page: currentPage,
@@ -83,7 +83,8 @@ const PayslipScreen = () => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show(err.response.data.message, ErrorToastProps);
+      toggleErrorUpdateModal();
+      setRequestType("danger");
     }
   };
 
@@ -105,7 +106,8 @@ const PayslipScreen = () => {
       console.log(err);
       setSubmitting(false);
       setStatus("error");
-      Toast.show(err.response.data.message, ErrorToastProps);
+      toggleErrorDownloadModal();
+      setRequestType("danger");
     }
   };
 
@@ -126,44 +128,47 @@ const PayslipScreen = () => {
   );
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <PageHeader title="My Payslip" backButton={false} />
-          <Button height={35} padding={5} onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}>
-            <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>
-          </Button>
-          <PayslipPasswordEdit
-            reference={payslipPasswordEditScreenSheetRef}
-            hideNewPassword={hideNewPassword}
-            setHideNewPassword={setHideNewPassword}
-            hideOldPassword={hideOldPassword}
-            setHideOldPassword={setHideOldPassword}
-            hideConfirmPassword={hideConfirmPassword}
-            setHideConfirmPassword={setHideConfirmPassword}
-            onUpdatePassword={payslipPasswordUpdateHandler}
-            isOpen={pinUpdateModalIsOpen}
-            toggle={togglePinUpdateModal}
-            requestType={requestType}
-          />
-        </View>
-
-        <PayslipList
-          data={payslips}
-          openSelectedPayslip={openSelectedPayslip}
-          hasBeenScrolled={hasBeenScrolled}
-          setHasBeenScrolled={setHasBeenScrolled}
-          fetchMore={fetchMorePayslip}
-          isFetching={payslipIsFetching}
-          refetch={refetchPayslip}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <PageHeader title="My Payslip" backButton={false} />
+        <Button height={35} padding={5} onPress={() => payslipPasswordEditScreenSheetRef.current?.show()}>
+          <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Change PIN</Text>
+        </Button>
+        <PayslipPasswordEdit
+          reference={payslipPasswordEditScreenSheetRef}
+          hideNewPassword={hideNewPassword}
+          setHideNewPassword={setHideNewPassword}
+          hideOldPassword={hideOldPassword}
+          setHideOldPassword={setHideOldPassword}
+          hideConfirmPassword={hideConfirmPassword}
+          setHideConfirmPassword={setHideConfirmPassword}
+          onUpdatePassword={payslipPasswordUpdateHandler}
+          successModalIsOpen={pinUpdateModalIsOpen}
+          toggleSuccessModal={togglePinUpdateModal}
+          requestType={requestType}
+          errorModalIsOpen={errorUpdateModalIsOpen}
+          toggleErrorModal={toggleErrorUpdateModal}
         />
-      </SafeAreaView>
+      </View>
+
+      <PayslipList
+        data={payslips}
+        openSelectedPayslip={openSelectedPayslip}
+        hasBeenScrolled={hasBeenScrolled}
+        setHasBeenScrolled={setHasBeenScrolled}
+        fetchMore={fetchMorePayslip}
+        isFetching={payslipIsFetching}
+        refetch={refetchPayslip}
+      />
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}
         toggleDownloadDialog={closeSelectedPayslip}
         onDownloadPayslip={payslipDownloadHandler}
+        errorModalIsOpen={errorDownloadModalIsOpen}
+        toggleErrorModal={toggleErrorDownloadModal}
+        requestType={requestType}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

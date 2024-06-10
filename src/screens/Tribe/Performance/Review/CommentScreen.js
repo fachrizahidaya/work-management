@@ -178,65 +178,62 @@ const CommentScreen = () => {
   }, [commentList?.data]);
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title={<Text>{commentList?.data?.performance_review?.description}</Text>}
-            backButton={true}
-            onPress={() => {
-              if (differences.length === 0) {
-                navigation.goBack();
-              } else {
-                toggleReturnModal();
-              }
-            }}
-          />
-          {commentValues.length > 0 ? (
-            <CommentSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
-          ) : null}
-        </View>
-
-        <CommentDetailList
-          dayjs={dayjs}
-          begin_date={commentList?.data?.performance_review?.begin_date}
-          end_date={commentList?.data?.performance_review?.end_date}
-          name={commentList?.data?.employee?.name}
-          title={commentList?.data?.performance_review?.description}
+    <SafeAreaView style={{ backgroundColor: "#ffffff", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader
+          width={200}
+          title={<Text>{commentList?.data?.performance_review?.description}</Text>}
+          backButton={true}
+          onPress={() => {
+            if (differences.length === 0) {
+              navigation.goBack();
+            } else {
+              toggleReturnModal();
+            }
+          }}
         />
-
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {commentValues && commentValues.length > 0 ? (
-              commentValues.map((item, index) => {
-                const correspondingEmployeeComment = employeeCommentValue.find(
-                  (empComment) => empComment.id === item.id
-                );
-                return (
-                  <CommentDetailItem
-                    key={index}
-                    item={item}
-                    description={item?.description}
-                    handleOpen={openSelectedComment}
-                    employeeCommentValue={correspondingEmployeeComment}
-                    comment={item?.comment}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )}
-          </ScrollView>
-        </View>
         {commentValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
+          <CommentSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
         ) : null}
-      </SafeAreaView>
+      </View>
+
+      <CommentDetailList
+        dayjs={dayjs}
+        begin_date={commentList?.data?.performance_review?.begin_date}
+        end_date={commentList?.data?.performance_review?.end_date}
+        name={commentList?.data?.employee?.name}
+        title={commentList?.data?.performance_review?.description}
+      />
+
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {commentValues && commentValues.length > 0 ? (
+            commentValues.map((item, index) => {
+              const correspondingEmployeeComment = employeeCommentValue.find((empComment) => empComment.id === item.id);
+              return (
+                <CommentDetailItem
+                  key={index}
+                  item={item}
+                  description={item?.description}
+                  handleOpen={openSelectedComment}
+                  employeeCommentValue={correspondingEmployeeComment}
+                  comment={item?.comment}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          )}
+        </ScrollView>
+      </View>
+      {commentValues.length > 0 ? (
+        <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+          <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+        </Pressable>
+      ) : null}
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
@@ -281,7 +278,7 @@ const CommentScreen = () => {
         description="Your report is logged"
         type={requestType}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

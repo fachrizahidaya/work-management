@@ -67,13 +67,7 @@ const MyInformationScreen = () => {
           <View style={styles.content}>
             {/* Content here */}
             {!profile?.data ? (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 5,
-                }}
-              >
+              <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
                 <Image
                   source={require("../../../assets/vectors/empty.png")}
                   style={{ width: 300, height: 300, resizeMode: "contain" }}
@@ -93,13 +87,7 @@ const MyInformationScreen = () => {
                   image={profile?.data?.image}
                   navigation={navigation}
                 />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "500",
-                    paddingHorizontal: 10,
-                  }}
-                >
+                <Text style={[TextProps, { fontSize: 16, fontWeight: "500", paddingHorizontal: 10 }]}>
                   My Supervisor
                 </Text>
                 <SupervisorInformation

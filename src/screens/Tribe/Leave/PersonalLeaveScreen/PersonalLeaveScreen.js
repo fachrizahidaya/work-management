@@ -246,77 +246,75 @@ const PersonalLeaveScreen = () => {
   );
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
-          </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={{ flexDirection: "row", gap: 1 }}>
+          <Text style={{ fontSize: 16, fontWeight: "500" }}>My Leave Request</Text>
+        </View>
 
-          {/* <FilterLeave
+        {/* <FilterLeave
             filterType={filterType}
             filterYear={filterYear}
             setFilterType={setFilterType}
             setFilterYear={setFilterYear}
           /> */}
 
-          {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
-            <Button height={35} onPress={() => navigation.navigate("Team Leave Request")} padding={5}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  color: "#FFFFFF",
-                }}
-              >
-                My Team
-              </Text>
-            </Button>
-          )}
-        </View>
+        {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
+          <Button height={35} onPress={() => navigation.navigate("Team Leave Request")} padding={5}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "500",
+                color: "#FFFFFF",
+              }}
+            >
+              My Team
+            </Text>
+          </Button>
+        )}
+      </View>
 
-        <>
-          {/* Content here */}
-          <PersonalLeaveRequest
-            onSelect={openSelectedLeaveHandler}
-            onDeselect={closeSelectedLeaveHandler}
-            pendingList={pendingList}
-            approvedList={approvedList}
-            rejectedList={rejectedList}
-            canceledList={canceledList}
-            pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
-            approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
-            rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
-            canceledLeaveRequestIsFetching={canceledLeaveRequestIsFetching}
-            pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
-            approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
-            rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
-            canceledLeaveRequestIsLoading={canceledLeaveRequestIsLoading}
-            refetchPendingLeaveRequest={refetchPendingLeaveRequest}
-            refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
-            refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-            refetchCanceledLeaveRequest={refetchCanceledLeaveRequest}
-            hasBeenScrolled={hasBeenScrolledRejected}
-            setHasBeenScrolled={setHasBeenScrolledRejected}
-            hasBeenScrolledPending={hasBeenScrolledPending}
-            setHasBeenScrolledPending={setHasBeenScrolledPending}
-            hasBeenScrolledApproved={hasBeenScrolledApproved}
-            setHasBeenScrolledApproved={setHasBeenScrolledApproved}
-            hasBeenScrolledCanceled={hasBeenScrolledCanceled}
-            setHasBeenScrolledCanceled={setHasBeenScrolledCanceled}
-            fetchMorePending={fetchMorePending}
-            fetchMoreApproved={fetchMoreApproved}
-            fetchMoreRejected={fetchMoreRejected}
-            fetchMoreCanceled={fetchMoreCanceled}
-            tabValue={tabValue}
-            setTabValue={setTabValue}
-            tabs={tabs}
-            onChangeTab={onChangeTab}
-            refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
-            teamLeaveRequestData={teamLeaveRequestData?.data.length}
-          />
-        </>
-      </SafeAreaView>
+      <>
+        {/* Content here */}
+        <PersonalLeaveRequest
+          onSelect={openSelectedLeaveHandler}
+          onDeselect={closeSelectedLeaveHandler}
+          pendingList={pendingList}
+          approvedList={approvedList}
+          rejectedList={rejectedList}
+          canceledList={canceledList}
+          pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
+          approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
+          rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+          canceledLeaveRequestIsFetching={canceledLeaveRequestIsFetching}
+          pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+          approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
+          rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
+          canceledLeaveRequestIsLoading={canceledLeaveRequestIsLoading}
+          refetchPendingLeaveRequest={refetchPendingLeaveRequest}
+          refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
+          refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
+          refetchCanceledLeaveRequest={refetchCanceledLeaveRequest}
+          hasBeenScrolled={hasBeenScrolledRejected}
+          setHasBeenScrolled={setHasBeenScrolledRejected}
+          hasBeenScrolledPending={hasBeenScrolledPending}
+          setHasBeenScrolledPending={setHasBeenScrolledPending}
+          hasBeenScrolledApproved={hasBeenScrolledApproved}
+          setHasBeenScrolledApproved={setHasBeenScrolledApproved}
+          hasBeenScrolledCanceled={hasBeenScrolledCanceled}
+          setHasBeenScrolledCanceled={setHasBeenScrolledCanceled}
+          fetchMorePending={fetchMorePending}
+          fetchMoreApproved={fetchMoreApproved}
+          fetchMoreRejected={fetchMoreRejected}
+          fetchMoreCanceled={fetchMoreCanceled}
+          tabValue={tabValue}
+          setTabValue={setTabValue}
+          tabs={tabs}
+          onChangeTab={onChangeTab}
+          refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
+          teamLeaveRequestData={teamLeaveRequestData?.data.length}
+        />
+      </>
 
       <RemoveConfirmationModal
         isOpen={cancelModalIsOpen}
@@ -325,7 +323,7 @@ const PersonalLeaveScreen = () => {
         isLoading={cancelLeaveRequestIsLoading}
         onPress={() => cancelLeaveRequestHandler()}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

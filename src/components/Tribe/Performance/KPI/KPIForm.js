@@ -30,21 +30,8 @@ const KPIForm = ({
       closeOnTouchBackdrop={confirmed || achievementValue || 0 == formik.values.actual_achievement ? true : false}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <View style={styles.content}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             {!confirmed && (
               <TouchableOpacity
@@ -88,15 +75,7 @@ const KPIForm = ({
             <View style={{ gap: 3 }}>
               <Text>Actual Achievement</Text>
 
-              <View
-                style={{
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "#E2E2E2",
-                  padding: 10,
-                  opacity: 0.5,
-                }}
-              >
+              <View style={{ borderRadius: 10, borderWidth: 1, borderColor: "#E2E2E2", padding: 10, opacity: 0.5 }}>
                 <Text style={[TextProps]}>{formik.values.actual_achievement}</Text>
               </View>
             </View>
@@ -163,6 +142,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   wrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+  content: {
+    gap: 21,
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingBottom: 40,
