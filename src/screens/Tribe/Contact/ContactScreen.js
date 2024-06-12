@@ -31,7 +31,6 @@ const ContactScreen = () => {
   const {
     data: employeeData,
     isFetching: employeeDataIsFetching,
-    isLoading: employeeDataIsLoading,
     refetch: refetchEmployeeData,
   } = useFetch("/hr/employees", [currentPage, searchInput], fetchEmployeeContactParameters);
 
@@ -82,48 +81,46 @@ const ContactScreen = () => {
   );
 
   return (
-    <>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.header}>
-            <View style={{ flexDirection: "row", gap: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
-            </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: "row", gap: 1 }}>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Contact</Text>
           </View>
+        </View>
 
-          <View style={styles.search} backgroundColor="#FFFFFF">
-            <Input
-              value={inputToShow}
-              fieldName="search"
-              startIcon="magnify"
-              endIcon={inputToShow && "close-circle-outline"}
-              onPressEndIcon={() => {
-                setInputToShow("");
-                setSearchInput("");
-              }}
-              onChangeText={(value) => {
-                searchContactHandler(value);
-                setInputToShow(value);
-              }}
-              placeHolder="Search contact"
-              height={40}
-            />
-          </View>
-
-          {/* Content here */}
-          <ContactList
-            data={contacts}
-            filteredData={filteredDataArray}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
-            handleFetchMoreContact={fetchMoreEmployeeContact}
-            isFetching={employeeDataIsFetching}
-            navigation={navigation}
-            userSelector={userSelector}
+        <View style={styles.search} backgroundColor="#FFFFFF">
+          <Input
+            value={inputToShow}
+            fieldName="search"
+            startIcon="magnify"
+            endIcon={inputToShow && "close-circle-outline"}
+            onPressEndIcon={() => {
+              setInputToShow("");
+              setSearchInput("");
+            }}
+            onChangeText={(value) => {
+              searchContactHandler(value);
+              setInputToShow(value);
+            }}
+            placeHolder="Search contact"
+            height={40}
           />
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </>
+        </View>
+
+        {/* Content here */}
+        <ContactList
+          data={contacts}
+          filteredData={filteredDataArray}
+          hasBeenScrolled={hasBeenScrolled}
+          setHasBeenScrolled={setHasBeenScrolled}
+          handleFetchMoreContact={fetchMoreEmployeeContact}
+          isFetching={employeeDataIsFetching}
+          navigation={navigation}
+          userSelector={userSelector}
+        />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

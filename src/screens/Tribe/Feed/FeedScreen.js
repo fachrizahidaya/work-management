@@ -55,7 +55,7 @@ const FeedScreen = () => {
   const userSelector = useSelector((state) => state.auth);
 
   const { isOpen: postSuccessIsOpen, toggle: togglePostSuccess } = useDisclosure(false);
-  const { isOpen: actionModalIsOpen, toggle: toggleActionModal } = useDisclosure(false);
+  const { isOpen: postActionModalIsOpen, toggle: togglePostActionModal } = useDisclosure(false);
   const { isOpen: reportPostSuccessIsOpen, toggle: toggleReportPostSuccess } = useDisclosure(false);
 
   const postFetchParameters = {
@@ -87,12 +87,12 @@ const FeedScreen = () => {
 
   const openSelectedPostHandler = useCallback((post) => {
     setSelectedPost(post);
-    toggleActionModal();
+    togglePostActionModal();
   }, []);
 
   const closeSelectedPostHandler = () => {
     setSelectedPost(null);
-    toggleActionModal();
+    togglePostActionModal();
   };
 
   const modalAfterNewPostHandler = () => {
@@ -296,77 +296,70 @@ const FeedScreen = () => {
   }, [commentIsFetching, reloadComment, commentParentId]);
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <View style={{ flexDirection: "row", gap: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
-            <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
-          </View>
-          <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={{ flexDirection: "row", gap: 1 }}>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: "#377893" }}>News</Text>
+          <Text style={[{ fontSize: 16 }, TextProps]}> & Feed</Text>
         </View>
+        <Text style={[{ fontWeight: "700" }, TextProps]}>{userSelector?.company}</Text>
+      </View>
 
-        {hideCreateIcon ? null : (
-          <TouchableOpacity
-            style={styles.createPostIcon}
-            onPress={() => {
-              navigation.navigate("New Feed", params);
-            }}
-          >
-            <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
-          </TouchableOpacity>
-        )}
+      {hideCreateIcon ? null : (
+        <TouchableOpacity style={styles.createPostIcon} onPress={() => navigation.navigate("New Feed", params)}>
+          <MaterialCommunityIcons name="pencil" size={30} color="#FFFFFF" />
+        </TouchableOpacity>
+      )}
 
-        <View style={{ flex: 1 }}>
-          <FeedCard
-            posts={posts}
-            loggedEmployeeId={profile?.data?.id}
-            loggedEmployeeImage={profile?.data?.image}
-            handleWhenScrollReachedEnd={postEndReachedHandler}
-            postIsFetching={postIsFetching}
-            postIsLoading={postIsLoading}
-            hasBeenScrolled={hasBeenScrolled}
-            setHasBeenScrolled={setHasBeenScrolled}
-            onCommentToggle={openCommentHandler}
-            forceRerender={forceRerender}
-            onToggleFullScreen={toggleFullScreenImageHandler}
-            employeeUsername={objectContainEmployeeUsernameHandler}
-            navigation={navigation}
-            onPressLink={pressLinkHandler}
-            onToggleLike={likePostHandler}
-            reference={commentScreenSheetRef}
-            setPostId={setPostId}
-            isFullScreen={isFullScreen}
-            setIsFullScreen={setIsFullScreen}
-            setSelectedPicture={setSelectedPicture}
-            onToggleReport={openSelectedPostHandler}
-            handleRefreshPosts={refreshPostsHandler}
-            handleIconWhenScrolling={scrollHandler}
-          />
-        </View>
-        <FeedComment
-          loggedEmployeeName={userSelector?.name}
+      <View style={{ flex: 1 }}>
+        <FeedCard
+          posts={posts}
+          loggedEmployeeId={profile?.data?.id}
           loggedEmployeeImage={profile?.data?.image}
-          comments={comments}
-          commentIsFetching={commentIsFetching}
-          commentIsLoading={commentIsLoading}
-          handleClose={closeCommentHandler}
-          handleWhenScrollReachedEnd={commentEndReachedHandler}
-          parentId={commentParentId}
-          onReply={replyCommentHandler}
+          handleWhenScrollReachedEnd={postEndReachedHandler}
+          postIsFetching={postIsFetching}
+          postIsLoading={postIsLoading}
+          hasBeenScrolled={hasBeenScrolled}
+          setHasBeenScrolled={setHasBeenScrolled}
+          onCommentToggle={openCommentHandler}
+          forceRerender={forceRerender}
+          onToggleFullScreen={toggleFullScreenImageHandler}
           employeeUsername={objectContainEmployeeUsernameHandler}
-          reference={commentScreenSheetRef}
-          onPressLink={pressLinkHandler}
-          handleUsernameSuggestions={renderSuggestionsHandler}
-          handleShowUsername={commentContainUsernameHandler}
-          formik={formik}
-          setCommentParentId={setCommentParentId}
-          setPostId={setPostId}
-          setComments={setComments}
           navigation={navigation}
-          handleRefreshComments={refreshCommentsHandler}
+          onPressLink={pressLinkHandler}
+          onToggleLike={likePostHandler}
+          reference={commentScreenSheetRef}
+          setPostId={setPostId}
+          isFullScreen={isFullScreen}
+          setIsFullScreen={setIsFullScreen}
+          setSelectedPicture={setSelectedPicture}
+          onToggleReport={openSelectedPostHandler}
+          handleRefreshPosts={refreshPostsHandler}
+          handleIconWhenScrolling={scrollHandler}
         />
-      </SafeAreaView>
+      </View>
+      <FeedComment
+        loggedEmployeeName={userSelector?.name}
+        loggedEmployeeImage={profile?.data?.image}
+        comments={comments}
+        commentIsFetching={commentIsFetching}
+        commentIsLoading={commentIsLoading}
+        handleClose={closeCommentHandler}
+        handleWhenScrollReachedEnd={commentEndReachedHandler}
+        parentId={commentParentId}
+        onReply={replyCommentHandler}
+        employeeUsername={objectContainEmployeeUsernameHandler}
+        reference={commentScreenSheetRef}
+        onPressLink={pressLinkHandler}
+        handleUsernameSuggestions={renderSuggestionsHandler}
+        handleShowUsername={commentContainUsernameHandler}
+        formik={formik}
+        setCommentParentId={setCommentParentId}
+        setPostId={setPostId}
+        setComments={setComments}
+        navigation={navigation}
+        handleRefreshComments={refreshCommentsHandler}
+      />
 
       <ImageFullScreenModal
         isFullScreen={isFullScreen}
@@ -391,7 +384,7 @@ const FeedScreen = () => {
         description="Your report is logged"
       />
       <ConfirmationModal
-        isOpen={actionModalIsOpen}
+        isOpen={postActionModalIsOpen}
         toggle={closeSelectedPostHandler}
         description="Are you sure want to report this post?"
         apiUrl={`/hr/post-report`}
@@ -408,7 +401,7 @@ const FeedScreen = () => {
         }}
         toggleOtherModal={toggleReportPostSuccess}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

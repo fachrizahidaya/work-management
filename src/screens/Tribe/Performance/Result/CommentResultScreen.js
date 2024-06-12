@@ -22,44 +22,26 @@ const CommentResultScreen = () => {
   }
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="Comment "
-            backButton={true}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        </View>
+    <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader width={200} title="Comment " backButton={true} onPress={() => navigation.goBack()} />
+      </View>
 
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {data?.data?.comment?.employee_review_comment_value.map((item, index) => {
-              return (
-                <View
-                  style={{
-                    ...card.card,
-                    marginVertical: 14,
-                    marginBottom: 2,
-                    flexDirection: "column",
-                    gap: 5,
-                  }}
-                  key={index}
-                >
-                  <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
-                    {item?.performance_review_comment?.description}
-                  </Text>
-                  <Text style={[TextProps]}>{item?.comment}</Text>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    </>
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {data?.data?.comment?.employee_review_comment_value.map((item, index) => {
+            return (
+              <View style={[card.card, { marginVertical: 14, marginBottom: 2, gap: 5 }]} key={index}>
+                <Text style={[{ fontSize: 14, fontWeight: "700" }, TextProps]}>
+                  {item?.performance_review_comment?.description}
+                </Text>
+                <Text style={[TextProps]}>{item?.comment}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 

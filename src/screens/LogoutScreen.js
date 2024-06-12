@@ -17,6 +17,7 @@ import axiosInstance from "../config/api";
 import { logout } from "../redux/reducer/auth";
 import { resetModule } from "../redux/reducer/module";
 import { remove } from "../redux/reducer/user_menu";
+import { deleteFirebase, deleteUser, fetchFirebase } from "../config/db";
 
 const LogoutScreen = () => {
   const queryCache = new QueryCache();
@@ -74,15 +75,21 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
-      const fbtoken = await SecureStore.getItemAsync("firebase_token");
+      // const fbtoken = await SecureStore.getItemAsync("firebase_token");
+      const storedFirebase = await fetchFirebase();
+      const firebaseData = storedFirebase[0]?.token;
       await axiosInstance.post("/auth/logout", {
-        firebase_token: fbtoken,
+        firebase_token:
+          // fbtoken,
+          firebaseData,
       });
 
       // Delete user data and tokens from SecureStore
-      await SecureStore.deleteItemAsync("user_data");
-      await SecureStore.deleteItemAsync("user_token");
-      await SecureStore.deleteItemAsync("firebase_token");
+      // await SecureStore.deleteItemAsync("user_data");
+      // await SecureStore.deleteItemAsync("user_token");
+      // await SecureStore.deleteItemAsync("firebase_token");
+      await deleteUser();
+      await deleteFirebase();
       // await signOut(auth);
 
       // Clear react query caches
@@ -96,33 +103,6 @@ const LogoutScreen = () => {
     } catch (error) {
       // Log any errors that occur during the logout process
       console.log(error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      // Send a POST request to the logout endpoint
-      const fbtoken = await AsyncStorage.getItem("firebase_token");
-      await axiosInstance.post("/auth/logout", {
-        firebase_token: fbtoken,
-      });
-
-      // Delete user data and tokens from SecureStore
-      await AsyncStorage.removeItem("user_data");
-      await AsyncStorage.removeItem("user_token");
-      await AsyncStorage.removeItem("firebase_token");
-      // await signOut(auth);
-
-      // Clear react query caches
-      queryCache.clear();
-      // Dispatch user menu back to empty object
-      dispatch(remove());
-      // Dispatch module to empty string again
-      dispatch(resetModule());
-      // Dispatch a logout action
-      dispatch(logout());
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -147,11 +127,7 @@ const LogoutScreen = () => {
     if (loadingValue === 130) {
       // Delay the logout process using setTimeout
       const timeout = setTimeout(() => {
-        // if (Platform.OS === "ios") {
         logoutHandler();
-        // } else {
-        //   handleLogout();
-        // }
       }, 0);
 
       // Clean up the timeout when the component unmounts or the dependencies change
@@ -160,6 +136,7 @@ const LogoutScreen = () => {
       };
     }
   }, [loadingValue]);
+
   return (
     <SafeAreaView style={styles.container}>
       {loadingValue < 100 && (

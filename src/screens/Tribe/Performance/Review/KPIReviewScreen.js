@@ -213,70 +213,69 @@ const KPIReviewScreen = () => {
   }, [kpiList?.data]);
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
-        <View style={styles.header}>
-          <PageHeader
-            width={200}
-            title="KPI Review"
-            backButton={true}
-            onPress={() => {
-              if (differences.length === 0) {
-                navigation.goBack();
-              } else {
-                toggleReturnModal();
-              }
-            }}
-          />
-          {kpiValues.length === 0 || kpiList?.data?.confirm ? null : (
-            <KPIReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
-          )}
-        </View>
-
-        <KPIReviewDetailList
-          dayjs={dayjs}
-          begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
-          end_date={kpiList?.data?.performance_kpi?.review?.end_date}
-          target={kpiList?.data?.performance_kpi?.target_name}
-          name={kpiList?.data?.employee?.name}
+    <SafeAreaView style={{ backgroundColor: "#f8f8f8", flex: 1 }}>
+      <View style={styles.header}>
+        <PageHeader
+          width={200}
+          title="KPI Review"
+          backButton={true}
+          onPress={() => {
+            if (differences.length === 0) {
+              navigation.goBack();
+            } else {
+              toggleReturnModal();
+            }
+          }}
         />
+        {kpiValues.length === 0 || kpiList?.data?.confirm ? null : (
+          <KPIReviewSaveButton isLoading={submitIsLoading} differences={differences} onSubmit={submitHandler} />
+        )}
+      </View>
 
-        <View style={styles.container}>
-          <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-            {kpiValues && kpiValues.length > 0 ? (
-              kpiValues.map((item, index) => {
-                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                return (
-                  <KPIReviewDetailItem
-                    key={index}
-                    item={item}
-                    id={item?.id}
-                    description={item?.description}
-                    target={item?.target}
-                    weight={item?.weight}
-                    threshold={item?.threshold}
-                    measurement={item?.measurement}
-                    achievement={item?.supervisor_actual_achievement}
-                    handleOpen={openSelectedKpi}
-                    employeeKpiValue={correspondingEmployeeKpi}
-                    attachment={item?.attachment}
-                    onDownload={attachmentDownloadHandler}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )}
-          </ScrollView>
-        </View>
-        {kpiValues.length > 0 ? (
-          <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
-            <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-      </SafeAreaView>
+      <KPIReviewDetailList
+        dayjs={dayjs}
+        begin_date={kpiList?.data?.performance_kpi?.review?.begin_date}
+        end_date={kpiList?.data?.performance_kpi?.review?.end_date}
+        target={kpiList?.data?.performance_kpi?.target_name}
+        name={kpiList?.data?.employee?.name}
+      />
+
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {kpiValues && kpiValues.length > 0 ? (
+            kpiValues.map((item, index) => {
+              const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+              return (
+                <KPIReviewDetailItem
+                  key={index}
+                  item={item}
+                  id={item?.id}
+                  description={item?.description}
+                  target={item?.target}
+                  weight={item?.weight}
+                  threshold={item?.threshold}
+                  measurement={item?.measurement}
+                  achievement={item?.supervisor_actual_achievement}
+                  handleOpen={openSelectedKpi}
+                  employeeKpiValue={correspondingEmployeeKpi}
+                  attachment={item?.attachment}
+                  onDownload={attachmentDownloadHandler}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          )}
+        </ScrollView>
+      </View>
+      {kpiValues.length > 0 ? (
+        <Pressable style={styles.confirmIcon} onPress={toggleConfirmationModal}>
+          <MaterialCommunityIcons name="check" size={30} color="#FFFFFF" />
+        </Pressable>
+      ) : null}
+
       <ReturnConfirmationModal
         isOpen={returnModalIsOpen}
         toggle={toggleReturnModal}
@@ -328,7 +327,7 @@ const KPIReviewScreen = () => {
         title="Report submitted!"
         description="Your report is logged"
       />
-    </>
+    </SafeAreaView>
   );
 };
 
