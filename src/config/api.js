@@ -1,5 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchUser } from "./db";
 
 const axiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API,
@@ -7,8 +9,10 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const userToken = await SecureStore.getItemAsync("user_token");
-    const finalSlicedUserToken = userToken?.replace(/"/g, "");
+    // const userToken = await SecureStore.getItemAsync("user_token");
+    const storedUser = await fetchUser();
+    const token = storedUser[0]?.token;
+    const finalSlicedUserToken = token?.replace(/"/g, "");
     if (finalSlicedUserToken) {
       config.headers.authorization = `Bearer ${finalSlicedUserToken}` || "";
     }

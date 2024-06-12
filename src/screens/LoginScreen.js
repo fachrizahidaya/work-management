@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
 import Constants from "expo-constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // For iOS
 // import * as Google from "expo-auth-session/providers/google";
@@ -19,13 +19,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import Toast from "react-native-root-toast";
 
-import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image, Platform } from "react-native";
+import { StyleSheet, Dimensions, KeyboardAvoidingView, Text, View, Image } from "react-native";
 
 import axiosInstance from "../config/api";
 import { useLoading } from "../hooks/useLoading";
 import Input from "../components/shared/Forms/Input";
 import FormButton from "../components/shared/FormButton";
 import { ErrorToastProps, TextProps } from "../components/shared/CustomStylings";
+import { insertFirebase } from "../config/db";
 
 // For iOS
 // WebBrowser.maybeCompleteAuthSession();
@@ -94,7 +95,6 @@ const LoginScreen = () => {
       .then(async (res) => {
         // Extract user data from the response
         const userData = res.data.data;
-
         const userToken = userData.access_token.replace(/"/g, "");
 
         // Get firebase messaging token for push notification
@@ -116,11 +116,8 @@ const LoginScreen = () => {
               }
             )
             .then(async () => {
-              // if (Platform.OS === "ios") {
-              await SecureStore.setItemAsync("firebase_token", fbtoken);
-              // } else {
-              //   await AsyncStorage.setItem("firebase_token", fbtoken);
-              // }
+              // await SecureStore.setItemAsync("firebase_token", fbtoken);
+              await insertFirebase(fbtoken);
               navigation.navigate("Loading", { userData });
             });
         }
@@ -276,9 +273,6 @@ const LoginScreen = () => {
           <FormButton isSubmitting={formik.isSubmitting} onPress={formik.handleSubmit} fontColor="white">
             <Text style={{ color: "white" }}>Log In</Text>
           </FormButton>
-          {/* <Button onPress={toggleEula}>
-            <Text style={{ color: "#FFFFFF" }}>tes</Text>
-          </Button> */}
 
           {/* <View
             style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
@@ -301,7 +295,6 @@ const LoginScreen = () => {
                 <Text fontWeight={400}>Remember Me</Text>
               </Checkbox>
             </View> */}
-      {/* <EULA isOpen={eulaIsOpen} toggle={toggleEula} /> */}
     </KeyboardAvoidingView>
   );
 };
