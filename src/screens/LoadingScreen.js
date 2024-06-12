@@ -10,6 +10,7 @@ import { Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import { login } from "../redux/reducer/auth";
 import { setModule } from "../redux/reducer/module";
+import { insertUser } from "../config/db";
 
 const LoadingScreen = ({ route }) => {
   const maxValue = Platform.OS === "android" ? 150 : 180;
@@ -81,29 +82,12 @@ const LoadingScreen = ({ route }) => {
   const setUserData = async () => {
     try {
       // Store user data in SecureStore
-      await SecureStore.setItemAsync("user_data", JSON.stringify(userData.userData));
+      // await SecureStore.setItemAsync("user_data", JSON.stringify(userData.userData));
 
       // Store user token in SecureStore
-      await SecureStore.setItemAsync("user_token", userData.userData.access_token);
+      // await SecureStore.setItemAsync("user_token", userData.userData.access_token);
 
-      // Dispatch band module to firstly be rendered
-      dispatch(setModule("TRIBE"));
-
-      // Dispatch a login action with the provided user data
-      dispatch(login(userData.userData));
-    } catch (error) {
-      // Handle any errors that occur during the process
-      throw new Error("Failed to set user data: " + error.message);
-    }
-  };
-
-  const handleSetUserData = async () => {
-    try {
-      // Store user data in SecureStore
-      await AsyncStorage.setItem("user_data", JSON.stringify(userData.userData));
-
-      // Store user token in SecureStore
-      await AsyncStorage.setItem("user_token", userData.userData.access_token);
+      await insertUser(JSON.stringify(userData.userData), userData.userData.access_token);
 
       // Dispatch band module to firstly be rendered
       dispatch(setModule("TRIBE"));
@@ -135,11 +119,7 @@ const LoadingScreen = ({ route }) => {
     // Effect to trigger user data update when loadingValue reaches maxValue
     if (loadingValue === maxValue) {
       const timeout = setTimeout(() => {
-        // if (Platform.OS === "ios") {
         setUserData();
-        // } else {
-        //   handleSetUserData();
-        // }
       }, 0);
 
       return () => {
@@ -183,7 +163,7 @@ const LoadingScreen = ({ route }) => {
             <View style={{ display: "flex", alignItems: "center" }} alignItems="center">
               <Text style={{ color: "#979797" }}>Welcome,</Text>
               <Text style={{ fontSize: 16, color: "#176688", textAlign: "center" }}>
-                {userData.userData.name.length > 30 ? userData.userData.name.split(" ")[0] : userData.userData.name}
+                {userData.userData.name?.length > 30 ? userData.userData.name.split(" ")[0] : userData.userData.name}
               </Text>
             </View>
           </View>
