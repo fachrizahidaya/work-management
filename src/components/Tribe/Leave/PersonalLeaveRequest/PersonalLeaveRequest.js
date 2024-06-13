@@ -40,6 +40,7 @@ const PersonalLeaveRequest = ({
   setHasBeenScrolledCanceled,
   refetchPersonalLeaveRequest,
   teamLeaveRequestData,
+  renderSkeletons,
 }) => {
   return (
     <>
@@ -59,6 +60,7 @@ const PersonalLeaveRequest = ({
             refetchPersonal={refetchPersonalLeaveRequest}
             isLoading={pendingLeaveRequestIsLoading}
             onSelect={onSelect}
+            renderSkeletons={renderSkeletons}
           />
         ) : tabValue === "Approved" ? (
           <LeaveRequestList
@@ -71,6 +73,7 @@ const PersonalLeaveRequest = ({
             refetch={refetchApprovedLeaveRequest}
             refetchPersonal={refetchPersonalLeaveRequest}
             isLoading={approvedLeaveRequestIsLoading}
+            renderSkeletons={renderSkeletons}
           />
         ) : tabValue === "Canceled" ? (
           <LeaveRequestList
@@ -83,6 +86,7 @@ const PersonalLeaveRequest = ({
             refetch={refetchCanceledLeaveRequest}
             refetchPersonal={refetchPersonalLeaveRequest}
             isLoading={canceledLeaveRequestIsLoading}
+            renderSkeletons={renderSkeletons}
           />
         ) : (
           <LeaveRequestList
@@ -95,6 +99,7 @@ const PersonalLeaveRequest = ({
             refetch={refetchRejectedLeaveRequest}
             refetchPersonal={refetchPersonalLeaveRequest}
             isLoading={rejectedLeaveRequestIsLoading}
+            renderSkeletons={renderSkeletons}
           />
         )}
       </View>

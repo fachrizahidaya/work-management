@@ -26,7 +26,7 @@ const DownPayment = () => {
     limit: 20,
   };
 
-  const { data, isFetching, isLoading } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/sales-down-payment`,
     [currentPage, searchInput],
     fetchDownPaymentParameters

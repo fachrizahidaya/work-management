@@ -1,8 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { TextProps } from "../../../components/shared/CustomStylings";
 import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+
+const height = Dimensions.get("screen").height - 300;
 
 const SiloDashboard = () => {
   return (
@@ -14,9 +16,9 @@ const SiloDashboard = () => {
         <Text style={[{ fontWeight: 700 }, TextProps]}>PT Kolabora Group Indonesia</Text>
       </View>
 
-      <ScrollView style={{ paddingHorizontal: 14 }} showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>
-          <EmptyPlaceholder text="No Data" height={250} width={250} />
+          <EmptyPlaceholder text="No Data" height={250} width={250} padding={150} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -39,8 +41,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   wrapper: {
-    flex: 1,
-    gap: 14,
-    marginVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    height: height,
   },
 });

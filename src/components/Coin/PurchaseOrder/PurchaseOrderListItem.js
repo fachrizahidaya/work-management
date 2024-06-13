@@ -17,10 +17,7 @@ const PurchaseOrderListItem = ({ id, po_no, status, po_date, shipping_address, n
 
   return (
     <Pressable
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
+      style={[card.card, styles.content]}
       onPress={() => navigation.navigate("Purchase Order Detail", { id: id })}
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -56,6 +53,7 @@ export default PurchaseOrderListItem;
 const styles = StyleSheet.create({
   content: {
     marginVertical: 4,
+    marginHorizontal: 14,
     justifyContent: "space-between",
     gap: 8,
   },

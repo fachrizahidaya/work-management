@@ -9,10 +9,7 @@ import { CopyToClipboard } from "../../shared/CopyToClipboard";
 const ReceiptPurchaseOrderListItem = ({ navigation, id, receipt_no, receipt_date }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        ...styles.content,
-      }}
+      style={[card.card, styles.content]}
       onPress={() => navigation.navigate("Receipt Purchase Order Detail", { id: id })}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -32,6 +29,7 @@ export default ReceiptPurchaseOrderListItem;
 const styles = StyleSheet.create({
   content: {
     marginVertical: 4,
+    marginHorizontal: 14,
     justifyContent: "space-between",
     gap: 8,
   },

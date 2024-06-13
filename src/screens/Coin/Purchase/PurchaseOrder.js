@@ -26,7 +26,11 @@ const PurchaseOrder = () => {
     limit: 20,
   };
 
-  const { data, isFetching, isLoading } = useFetch(`/acc/po`, [currentPage, searchInput], fetchPurchaseOrderParameters);
+  const { data, isFetching, isLoading, refetch } = useFetch(
+    `/acc/po`,
+    [currentPage, searchInput],
+    fetchPurchaseOrderParameters
+  );
 
   const fetchMorePurchaseOrder = () => {
     if (currentPage < data?.data?.last_page) {
@@ -84,6 +88,7 @@ const PurchaseOrder = () => {
           data={purchaseOrder}
           isLoading={isLoading}
           isFetching={isFetching}
+          refetch={refetch}
           renderSkeletons={renderSkeletons}
           fetchMore={fetchMorePurchaseOrder}
           filteredData={filteredDataArray}

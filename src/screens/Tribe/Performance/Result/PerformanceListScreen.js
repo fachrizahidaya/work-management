@@ -8,6 +8,7 @@ import { useFetch } from "../../../../hooks/useFetch";
 import PageHeader from "../../../../components/shared/PageHeader";
 import Tabs from "../../../../components/shared/Tabs";
 import PerformanceList from "../../../../components/Tribe/Performance/Result/PerformanceList";
+import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const PerformanceListScreen = () => {
   const [personalList, setPersonalList] = useState([]);
@@ -82,6 +83,14 @@ const PerformanceListScreen = () => {
     } else {
       setTeamList([]);
     }
+  };
+
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
   };
 
   // const fetchMorePersonal = () => {

@@ -1,15 +1,19 @@
 import dayjs from "dayjs";
 
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 import SalesOrderListItem from "./SalesOrderListItem";
+
+const height = Dimensions.get("screen").height - 300;
 
 const SalesOrderList = ({
   data,
   isLoading,
   isFetching,
+  refetch,
   renderSkeletons,
   fetchMore,
   filteredData,
@@ -18,7 +22,7 @@ const SalesOrderList = ({
   navigation,
 }) => {
   return (
-    <View style={styles.content}>
+    <View style={styles.wrapper}>
       {!isLoading ? (
         data.length > 0 || filteredData?.length ? (
           <FlashList
@@ -28,6 +32,8 @@ const SalesOrderList = ({
             onEndReachedThreshold={0.1}
             onEndReached={hasBeenScrolled ? fetchMore : null}
             ListFooterComponent={() => isFetching && <ActivityIndicator />}
+            refreshing={true}
+            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
             estimatedItemSize={70}
             renderItem={({ item, index }) => (
               <SalesOrderListItem
@@ -42,7 +48,11 @@ const SalesOrderList = ({
             )}
           />
         ) : (
-          <EmptyPlaceholder height={200} width={240} text="No data" />
+          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+            <View style={styles.content}>
+              <EmptyPlaceholder height={200} width={240} text="No data" />
+            </View>
+          </ScrollView>
         )
       ) : (
         <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
@@ -54,9 +64,8 @@ const SalesOrderList = ({
 export default SalesOrderList;
 
 const styles = StyleSheet.create({
-  content: {
+  wrapper: {
     flex: 1,
-    paddingHorizontal: 14,
     backgroundColor: "#f8f8f8",
   },
   tableHeader: {
@@ -67,5 +76,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#E8E9EB",
+  },
+  content: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: height,
   },
 });

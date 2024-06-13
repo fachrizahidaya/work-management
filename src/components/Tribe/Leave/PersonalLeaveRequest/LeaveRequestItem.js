@@ -51,11 +51,7 @@ const LeaveRequestItem = ({
           </Pressable>
         ) : null}
       </View>
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 14, fontWeight: "400", color: "#595F69" }}>{reason}</Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
@@ -68,13 +64,7 @@ const LeaveRequestItem = ({
         </View>
         {status === "Pending" ? (
           <Text
-            style={{
-              fontSize: 10,
-              fontWeight: "400",
-              color: "#377893",
-              width: "30%",
-              textAlign: "right",
-            }}
+            style={{ fontSize: 10, fontWeight: "400", color: "#377893", width: "30%", textAlign: "right" }}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
@@ -82,13 +72,7 @@ const LeaveRequestItem = ({
           </Text>
         ) : (status === "Approved" || "Rejected") && status !== "Canceled" ? (
           <Text
-            style={{
-              fontSize: 10,
-              fontWeight: "400",
-              color: "#377893",
-              width: "20%",
-              textAlign: "right",
-            }}
+            style={{ fontSize: 10, fontWeight: "400", color: "#377893", width: "20%", textAlign: "right" }}
             numberOfLines={2}
             ellipsizeMode="tail"
           >

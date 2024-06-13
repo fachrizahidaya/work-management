@@ -26,7 +26,7 @@ const Invoice = () => {
     limit: 20,
   };
 
-  const { data, isLoading, isFetching } = useFetch(
+  const { data, isLoading, isFetching, refetch } = useFetch(
     `/acc/sales-invoice`,
     [currentPage, searchInput],
     fetchInvoiceParameters
@@ -91,6 +91,7 @@ const Invoice = () => {
         setHasBeenScrolled={setHasBeenScrolled}
         fetchMore={fetchMoreInvoice}
         isFetching={isFetching}
+        refetch={refetch}
         renderSkeletons={renderSkeletons}
         navigation={navigation}
       />

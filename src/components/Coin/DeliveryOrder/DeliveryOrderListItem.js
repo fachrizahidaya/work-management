@@ -51,6 +51,7 @@ export default DeliveryOrderListItem;
 const styles = StyleSheet.create({
   content: {
     marginVertical: 4,
+    marginHorizontal: 14,
     justifyContent: "space-between",
     gap: 8,
   },
