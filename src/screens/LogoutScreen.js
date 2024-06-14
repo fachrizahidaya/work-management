@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Google authentication and firebase
 // import { signOut } from "firebase/auth";
@@ -75,19 +74,13 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
-      // const fbtoken = await SecureStore.getItemAsync("firebase_token");
       const storedFirebase = await fetchFirebase();
       const firebaseData = storedFirebase[0]?.token;
       await axiosInstance.post("/auth/logout", {
-        firebase_token:
-          // fbtoken,
-          firebaseData,
+        firebase_token: firebaseData,
       });
 
-      // Delete user data and tokens from SecureStore
-      // await SecureStore.deleteItemAsync("user_data");
-      // await SecureStore.deleteItemAsync("user_token");
-      // await SecureStore.deleteItemAsync("firebase_token");
+      // Delete user data and tokens from SQLite
       await deleteUser();
       await deleteFirebase();
       // await signOut(auth);

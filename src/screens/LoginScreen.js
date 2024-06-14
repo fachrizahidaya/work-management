@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
 import Constants from "expo-constants";
@@ -116,7 +114,6 @@ const LoginScreen = () => {
               }
             )
             .then(async () => {
-              // await SecureStore.setItemAsync("firebase_token", fbtoken);
               await insertFirebase(fbtoken);
               navigation.navigate("Loading", { userData });
             });

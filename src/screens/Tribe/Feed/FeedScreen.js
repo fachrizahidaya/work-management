@@ -311,33 +311,32 @@ const FeedScreen = () => {
         </TouchableOpacity>
       )}
 
-      <View style={{ flex: 1 }}>
-        <FeedCard
-          posts={posts}
-          loggedEmployeeId={profile?.data?.id}
-          loggedEmployeeImage={profile?.data?.image}
-          handleWhenScrollReachedEnd={postEndReachedHandler}
-          postIsFetching={postIsFetching}
-          postIsLoading={postIsLoading}
-          hasBeenScrolled={hasBeenScrolled}
-          setHasBeenScrolled={setHasBeenScrolled}
-          onCommentToggle={openCommentHandler}
-          forceRerender={forceRerender}
-          onToggleFullScreen={toggleFullScreenImageHandler}
-          employeeUsername={objectContainEmployeeUsernameHandler}
-          navigation={navigation}
-          onPressLink={pressLinkHandler}
-          onToggleLike={likePostHandler}
-          reference={commentScreenSheetRef}
-          setPostId={setPostId}
-          isFullScreen={isFullScreen}
-          setIsFullScreen={setIsFullScreen}
-          setSelectedPicture={setSelectedPicture}
-          onToggleReport={openSelectedPostHandler}
-          handleRefreshPosts={refreshPostsHandler}
-          handleIconWhenScrolling={scrollHandler}
-        />
-      </View>
+      <FeedCard
+        posts={posts}
+        loggedEmployeeId={profile?.data?.id}
+        loggedEmployeeImage={profile?.data?.image}
+        handleWhenScrollReachedEnd={postEndReachedHandler}
+        postIsFetching={postIsFetching}
+        postIsLoading={postIsLoading}
+        hasBeenScrolled={hasBeenScrolled}
+        setHasBeenScrolled={setHasBeenScrolled}
+        onCommentToggle={openCommentHandler}
+        forceRerender={forceRerender}
+        onToggleFullScreen={toggleFullScreenImageHandler}
+        employeeUsername={objectContainEmployeeUsernameHandler}
+        navigation={navigation}
+        onPressLink={pressLinkHandler}
+        onToggleLike={likePostHandler}
+        reference={commentScreenSheetRef}
+        setPostId={setPostId}
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        setSelectedPicture={setSelectedPicture}
+        onToggleReport={openSelectedPostHandler}
+        handleRefreshPosts={refreshPostsHandler}
+        handleIconWhenScrolling={scrollHandler}
+      />
+
       <FeedComment
         loggedEmployeeName={userSelector?.name}
         loggedEmployeeImage={profile?.data?.image}

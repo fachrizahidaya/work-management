@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useDispatch } from "react-redux";
 
@@ -81,12 +79,7 @@ const LoadingScreen = ({ route }) => {
    */
   const setUserData = async () => {
     try {
-      // Store user data in SecureStore
-      // await SecureStore.setItemAsync("user_data", JSON.stringify(userData.userData));
-
-      // Store user token in SecureStore
-      // await SecureStore.setItemAsync("user_token", userData.userData.access_token);
-
+      // Store user data and token in SQLite
       await insertUser(JSON.stringify(userData.userData), userData.userData.access_token);
 
       // Dispatch band module to firstly be rendered
