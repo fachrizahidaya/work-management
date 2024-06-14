@@ -53,7 +53,7 @@ const PurchaseOrderList = ({
           </ScrollView>
         )
       ) : (
-        <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+        <View style={{ paddingHorizontal: 14, paddingVertical: 16, gap: 2 }}>{renderSkeletons()}</View>
       )}
     </View>
   );
