@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { QueryCache } from "react-query";
 
 import { Bar } from "react-native-progress";
-import { SafeAreaView, StyleSheet, View, Text, Platform } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Platform, ActivityIndicator } from "react-native";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 
 import axiosInstance from "../config/api";
@@ -132,7 +132,8 @@ const LogoutScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loadingValue < 100 && (
+      {loadingValue < 130 && <ActivityIndicator />}
+      {/* {loadingValue < 100 && (
         <Animated.View style={[styles.loadingContainer, tStyle]}>
           <Animated.Image
             resizeMode="contain"
@@ -150,9 +151,9 @@ const LogoutScreen = () => {
 
           <Bar progress={loadingValue / 100} width={300} color="#176688" borderColor="white" />
         </Animated.View>
-      )}
+      )} */}
 
-      {loadingValue >= 100 && (
+      {/* {loadingValue >= 100 && (
         <Animated.View style={[styles.profileBox, yStyle]}>
           <View style={styles.profileBox}>
             <Animated.Image
@@ -169,7 +170,7 @@ const LogoutScreen = () => {
             </View>
           </View>
         </Animated.View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

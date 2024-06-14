@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
     "splash": {
-      "image": "./assets/kss-splash-screen.png",
+      "image": "./assets/kss-new-splash-screen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

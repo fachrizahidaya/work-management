@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { Bar } from "react-native-progress";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
-import { Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import { login } from "../redux/reducer/auth";
 import { setModule } from "../redux/reducer/module";
@@ -123,7 +123,8 @@ const LoadingScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loadingValue < 100 && (
+      {loadingValue < 130 && <ActivityIndicator />}
+      {/* {loadingValue < 100 && (
         <Animated.View style={[styles.loadingContainer, tStyle]}>
           <Animated.Image
             resizeMode="contain"
@@ -142,9 +143,9 @@ const LoadingScreen = ({ route }) => {
 
           <Bar progress={loadingValue / 100} width={300} color="#176688" borderColor="white" />
         </Animated.View>
-      )}
+      )} */}
 
-      {loadingValue >= 100 && (
+      {/* {loadingValue >= 100 && (
         <Animated.View style={[styles.profileBox, yStyle]}>
           <View style={styles.profileBox}>
             <Animated.Image
@@ -161,7 +162,7 @@ const LoadingScreen = ({ route }) => {
             </View>
           </View>
         </Animated.View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };
