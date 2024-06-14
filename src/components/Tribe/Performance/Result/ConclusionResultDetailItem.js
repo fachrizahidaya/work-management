@@ -19,9 +19,7 @@ const ConclusionResultDetailItem = ({ id, type, navigation, employee_grade, supe
           justifyContent: "space-between",
         },
       ]}
-      onPress={() => {
-        navigation.navigate("Conclusion Screen", { id: id, type: type });
-      }}
+      onPress={() => navigation.navigate("Conclusion Screen", { id: id, type: type })}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[{ fontSize: 16, fontWeight: "700" }, TextProps]}>Conclusion</Text>

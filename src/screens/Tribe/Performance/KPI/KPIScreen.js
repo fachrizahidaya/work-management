@@ -33,7 +33,6 @@ import {
   submitHandler,
   compareActualAchievement,
 } from "../../../../components/Tribe/Performance/shared/functions";
-import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const KPIScreen = () => {
   const [kpiValues, setKpiValues] = useState([]);
@@ -218,14 +217,6 @@ const KPIScreen = () => {
     setDifferenceTotalAttachments(attachments?.length - currentAttachments?.length);
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (kpiList?.data) {
       sumUpKpiValue(setKpiValues, kpiList);
@@ -300,36 +291,30 @@ const KPIScreen = () => {
       <View style={styles.container}>
         {tabValue === "KPI" ? (
           <ScrollView style={{ flex: 1 }}>
-            {!kpiListIsLoading ? (
-              kpiValues && kpiValues.length > 0 ? (
-                kpiValues.map((item, index) => {
-                  const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
-                  return (
-                    <KPIDetailItem
-                      key={index}
-                      description={item?.description}
-                      target={item?.target}
-                      weight={item?.weight}
-                      threshold={item?.threshold}
-                      measurement={item?.measurement}
-                      achievement={item?.actual_achievement}
-                      item={item}
-                      handleOpen={openSelectedKpi}
-                      employeeKpiValue={correspondingEmployeeKpi}
-                      setKpi={setKpi}
-                      setEmployeeKpi={setEmployeeKpi}
-                      reference={formScreenSheetRef}
-                    />
-                  );
-                })
-              ) : (
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              )
+            {kpiValues && kpiValues.length > 0 ? (
+              kpiValues.map((item, index) => {
+                const correspondingEmployeeKpi = employeeKpiValue.find((empKpi) => empKpi.id === item.id);
+                return (
+                  <KPIDetailItem
+                    key={index}
+                    description={item?.description}
+                    target={item?.target}
+                    weight={item?.weight}
+                    threshold={item?.threshold}
+                    measurement={item?.measurement}
+                    achievement={item?.actual_achievement}
+                    item={item}
+                    handleOpen={openSelectedKpi}
+                    employeeKpiValue={correspondingEmployeeKpi}
+                    setKpi={setKpi}
+                    setEmployeeKpi={setEmployeeKpi}
+                    reference={formScreenSheetRef}
+                  />
+                );
+              })
             ) : (
-              <View style={{ paddingHorizontal: 14, paddingVertical: 16 }}>
-                <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+              <View style={styles.content}>
+                <EmptyPlaceholder height={250} width={250} text="No Data" />
               </View>
             )}
           </ScrollView>

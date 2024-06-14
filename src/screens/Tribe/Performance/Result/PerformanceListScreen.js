@@ -36,6 +36,7 @@ const PerformanceListScreen = () => {
     data: personalCommentList,
     refetch: refetchPersonalCommentList,
     isFetching: personalCommentListIsFetching,
+    isLoading: personalCommentListIsLoading,
   } = useFetch(
     "/hr/performance-result/personal"
     // [currentPagePersonal, reloadPersonal],
@@ -46,6 +47,7 @@ const PerformanceListScreen = () => {
     data: teamCommentList,
     refetch: refetchTeamCommentList,
     isFetching: teamCommentListIsFetching,
+    isLoading: teamCommentListIsLoading,
   } = useFetch(
     "/hr/performance-result/my-team"
     // [currentPageMyTeam, reloadMyTeam],
@@ -83,14 +85,6 @@ const PerformanceListScreen = () => {
     } else {
       setTeamList([]);
     }
-  };
-
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
   };
 
   // const fetchMorePersonal = () => {
@@ -134,6 +128,7 @@ const PerformanceListScreen = () => {
             <PerformanceList
               data={teamList}
               isFetching={teamCommentListIsFetching}
+              isLoading={teamCommentListIsLoading}
               refetch={refetchTeamCommentList}
               navigation={navigation}
               dayjs={dayjs}
@@ -142,6 +137,7 @@ const PerformanceListScreen = () => {
             <PerformanceList
               data={personalList}
               isFetching={personalCommentListIsFetching}
+              isLoading={personalCommentListIsLoading}
               refetch={refetchPersonalCommentList}
               navigation={navigation}
               dayjs={dayjs}

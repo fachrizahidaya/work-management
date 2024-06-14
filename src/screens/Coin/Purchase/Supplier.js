@@ -6,7 +6,6 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import SupplierList from "../../../components/Coin/Supplier/SupplierList";
 import SupplierListFilter from "../../../components/Coin/Supplier/SupplierListFilter";
 
@@ -26,7 +25,7 @@ const Supplier = () => {
     limit: 20,
   };
 
-  const { data, isLoading, isFetching, refetch } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/supplier`,
     [currentPage, searchInput],
     fetchSuppliersParameters
@@ -45,14 +44,6 @@ const Supplier = () => {
     }, 300),
     []
   );
-
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
 
   useEffect(() => {
     setSuppliers([]);
@@ -84,10 +75,9 @@ const Supplier = () => {
       </View>
       <SupplierList
         data={suppliers}
-        isLoading={isLoading}
         isFetching={isFetching}
+        isLoading={isLoading}
         refetch={refetch}
-        renderSkeletons={renderSkeletons}
         fetchMore={fetchMoreSuppliers}
         filteredData={filteredDataArray}
         hasBeenScrolled={hasBeenScrolled}

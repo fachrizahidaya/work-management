@@ -32,21 +32,8 @@ const AppraisalReviewForm = ({
       }
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <View style={{ gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Actual Achievement</Text>
             <TouchableOpacity
               onPress={() => {

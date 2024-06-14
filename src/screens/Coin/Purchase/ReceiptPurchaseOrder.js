@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import ReceiptPurchaseOrderList from "../../../components/Coin/ReceiptPurchaseOrder/ReceiptPurchaseOrderList";
 import ReceiptPurchaseOrderFilter from "../../../components/Coin/ReceiptPurchaseOrder/ReceiptPurchaseOrderFilter";
 import PageHeader from "../../../components/shared/PageHeader";
@@ -26,7 +25,7 @@ const ReceiptPurchaseOrder = () => {
     limit: 20,
   };
 
-  const { data, isLoading, isFetching, refetch } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/po-receipt`,
     [currentPage, searchInput],
     fetchReceiptPurchaseOrderParameters
@@ -45,14 +44,6 @@ const ReceiptPurchaseOrder = () => {
     }, 300),
     []
   );
-
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
 
   useEffect(() => {
     setFilteredDataArray([]);
@@ -83,10 +74,9 @@ const ReceiptPurchaseOrder = () => {
       </View>
       <ReceiptPurchaseOrderList
         data={receiptPurchaseOrder}
-        isLoading={isLoading}
         isFetching={isFetching}
+        isLoading={isLoading}
         refetch={refetch}
-        renderSkeletons={renderSkeletons}
         fetchMore={fetchMoreReceiptPurchaseOrder}
         filteredData={filteredDataArray}
         hasBeenScrolled={hasBeenScrolled}

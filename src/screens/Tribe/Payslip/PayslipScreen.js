@@ -13,7 +13,6 @@ import useCheckAccess from "../../../hooks/useCheckAccess";
 import PayslipPasswordEdit from "../../../components/Tribe/Payslip/PayslipPasswordEdit";
 import PayslipDownload from "../../../components/Tribe/Payslip/PayslipDownload";
 import PayslipList from "../../../components/Tribe/Payslip/PayslipList";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const PayslipScreen = () => {
   const [hideNewPassword, setHideNewPassword] = useState(true);
@@ -44,6 +43,7 @@ const PayslipScreen = () => {
     data: payslip,
     refetch: refetchPayslip,
     isFetching: payslipIsFetching,
+    isLoading: payslipIsLoading,
   } = useFetch("/hr/payslip", [currentPage], fetchPayslipParameters);
 
   const fetchMorePayslip = () => {
@@ -112,14 +112,6 @@ const PayslipScreen = () => {
     }
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (payslip?.data?.data.length) {
       setPayslips((prevData) => [...prevData, ...payslip?.data?.data]);
@@ -167,8 +159,8 @@ const PayslipScreen = () => {
         setHasBeenScrolled={setHasBeenScrolled}
         fetchMore={fetchMorePayslip}
         isFetching={payslipIsFetching}
+        isLoading={payslipIsLoading}
         refetch={refetchPayslip}
-        renderSkeletons={renderSkeletons}
       />
       <PayslipDownload
         reference={payslipDownloadScreenSheetRef}

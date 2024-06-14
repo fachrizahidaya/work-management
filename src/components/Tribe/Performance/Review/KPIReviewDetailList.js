@@ -15,7 +15,7 @@ const KPIReviewDetailList = ({ dayjs, begin_date, end_date, target, name }) => {
     >
       <View style={{ gap: 10 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={[{}, TextProps]}>{name}</Text>
+          <Text style={[TextProps]}>{name}</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={[{ opacity: 0.5 }, TextProps]}>
               {begin_date ? dayjs(begin_date).format("DD MMM YYYY") : "-"} to

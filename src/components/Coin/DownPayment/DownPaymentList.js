@@ -14,7 +14,6 @@ const DownPaymentList = ({
   isLoading,
   isFetching,
   refetch,
-  renderSkeletons,
   fetchMore,
   filteredData,
   hasBeenScrolled,
@@ -23,41 +22,37 @@ const DownPaymentList = ({
 }) => {
   return (
     <View style={styles.wrapper}>
-      {!isLoading ? (
-        data.length > 0 || filteredData?.length ? (
-          <FlashList
-            data={data.length ? data : filteredData}
-            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            keyExtractor={(item, index) => index}
-            onEndReachedThreshold={0.1}
-            onEndReached={hasBeenScrolled ? fetchMore : null}
-            ListFooterComponent={() => isFetching && <ActivityIndicator />}
-            refreshing={true}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-            estimatedItemSize={70}
-            renderItem={({ item, index }) => (
-              <DownPaymentListItem
-                key={index}
-                dp_no={item?.dp_no}
-                status={item?.status}
-                dp_date={dayjs(item?.dp_date).format("DD MMM YYYY")}
-                shipping_address={item?.shipping_address}
-                so_no={item?.sales_order_for_all?.so_no}
-                customer_name={item?.customer_for_all?.name}
-                payment_amount={item?.payment_amount}
-                currencyConverter={currencyConverter}
-              />
-            )}
-          />
-        ) : (
-          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-            <View style={styles.content}>
-              <EmptyPlaceholder height={200} width={240} text="No data" />
-            </View>
-          </ScrollView>
-        )
+      {data.length > 0 || filteredData?.length ? (
+        <FlashList
+          data={data.length ? data : filteredData}
+          onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+          keyExtractor={(item, index) => index}
+          onEndReachedThreshold={0.1}
+          onEndReached={hasBeenScrolled ? fetchMore : null}
+          ListFooterComponent={() => isLoading && <ActivityIndicator />}
+          refreshing={true}
+          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+          estimatedItemSize={70}
+          renderItem={({ item, index }) => (
+            <DownPaymentListItem
+              key={index}
+              dp_no={item?.dp_no}
+              status={item?.status}
+              dp_date={dayjs(item?.dp_date).format("DD MMM YYYY")}
+              shipping_address={item?.shipping_address}
+              so_no={item?.sales_order_for_all?.so_no}
+              customer_name={item?.customer_for_all?.name}
+              payment_amount={item?.payment_amount}
+              currencyConverter={currencyConverter}
+            />
+          )}
+        />
       ) : (
-        <View style={{ paddingHorizontal: 14, paddingVertical: 16, gap: 2 }}>{renderSkeletons()}</View>
+        <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+          <View style={styles.content}>
+            <EmptyPlaceholder height={200} width={240} text="No data" />
+          </View>
+        </ScrollView>
       )}
     </View>
   );

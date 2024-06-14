@@ -14,12 +14,7 @@ const PerformanceResultDetailList = ({ dayjs, begin_date, end_date, name, type }
       }}
     >
       <View style={{ gap: type === "personal" ? null : 10 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={[{ width: "45%", overflow: "hidden" }, TextProps]} numberOfLines={1} ellipsizeMode="tail">
             {type === "personal" ? "" : name}
           </Text>

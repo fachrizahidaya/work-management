@@ -17,67 +17,60 @@ const LeaveRequestList = ({
   refetchPersonal,
   isLoading,
   onSelect,
-  renderSkeletons,
 }) => {
   return (
     <View style={{ flex: 1 }}>
-      {!isLoading ? (
-        data?.length > 0 ? (
-          <FlashList
-            data={data}
-            onEndReachedThreshold={0.1}
-            onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
-            onEndReached={hasBeenScrolled === true ? fetchMore : null}
-            keyExtractor={(item, index) => index}
-            estimatedItemSize={70}
-            refreshing={true}
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={() => {
-                  refetch();
-                  refetchPersonal();
-                }}
-              />
-            }
-            ListFooterComponent={() => isLoading && <ActivityIndicator />}
-            renderItem={({ item, index }) => (
-              <LeaveRequestItem
-                item={item}
-                key={index}
-                leave_name={item?.leave_name}
-                reason={item?.reason}
-                days={item?.days}
-                begin_date={item?.begin_date}
-                end_date={item?.end_date}
-                status={item?.status}
-                approval_by={item?.approval_by}
-                onSelect={onSelect}
-                supervisor_name={item?.supervisor_name}
-              />
-            )}
-          />
-        ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={() => {
-                  refetch;
-                  refetchPersonal();
-                }}
-              />
-            }
-          >
-            <View style={{ alignItems: "center", justifyContent: "center", height: height }}>
-              <EmptyPlaceholder height={250} width={250} text="No Data" />
-            </View>
-          </ScrollView>
-        )
+      {data?.length > 0 ? (
+        <FlashList
+          data={data}
+          onEndReachedThreshold={0.1}
+          onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
+          onEndReached={hasBeenScrolled === true ? fetchMore : null}
+          keyExtractor={(item, index) => index}
+          estimatedItemSize={70}
+          refreshing={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={() => {
+                refetch();
+                refetchPersonal();
+              }}
+            />
+          }
+          ListFooterComponent={() => isLoading && <ActivityIndicator />}
+          renderItem={({ item, index }) => (
+            <LeaveRequestItem
+              item={item}
+              key={index}
+              leave_name={item?.leave_name}
+              reason={item?.reason}
+              days={item?.days}
+              begin_date={item?.begin_date}
+              end_date={item?.end_date}
+              status={item?.status}
+              approval_by={item?.approval_by}
+              onSelect={onSelect}
+              supervisor_name={item?.supervisor_name}
+            />
+          )}
+        />
       ) : (
-        <View style={{ padding: 14 }}>
-          <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
-        </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={() => {
+                refetch();
+                refetchPersonal();
+              }}
+            />
+          }
+        >
+          <View style={{ alignItems: "center", justifyContent: "center", height: height }}>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </View>
+        </ScrollView>
       )}
     </View>
   );

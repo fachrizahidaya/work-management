@@ -18,17 +18,11 @@ const KPIReviewDetailItem = ({
 }) => {
   return (
     <Pressable
-      style={{
-        ...card.card,
-        marginVertical: 14,
-        marginBottom: 2,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
-      }}
-      onPress={() => {
-        handleOpen(item, employeeKpiValue, setKpi, setEmployeeKpi, reference);
-      }}
+      style={[
+        card.card,
+        { marginVertical: 14, marginBottom: 2, flexDirection: "column", alignItems: "flex-start", gap: 10 },
+      ]}
+      onPress={() => handleOpen(item, employeeKpiValue, setKpi, setEmployeeKpi, reference)}
     >
       <Text style={[TextProps]}>{description}</Text>
 

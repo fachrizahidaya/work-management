@@ -3,22 +3,9 @@ import { TextProps } from "../../../shared/CustomStylings";
 
 const AppraisalDetailList = ({ dayjs, begin_date, end_date, target, target_level }) => {
   return (
-    <View
-      style={{
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        borderWidth: 1,
-        borderColor: "#E2E2E2",
-      }}
-    >
+    <View style={{ paddingVertical: 14, paddingHorizontal: 16, borderWidth: 1, borderColor: "#E2E2E2" }}>
       <View style={{ gap: 10 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View>
             <Text style={[{ opacity: 0.5 }, TextProps]}>{target_level}</Text>
             <Text style={[TextProps]}>{target}</Text>
