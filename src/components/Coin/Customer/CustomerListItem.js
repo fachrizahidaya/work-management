@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 
 import { card } from "../../../styles/Card";
 import { TextProps } from "../../shared/CustomStylings";
@@ -11,12 +11,14 @@ const CustomerListItem = ({ name, phone, address, email }) => {
     { title: "Address", value: address },
   ];
 
+  const width = Dimensions.get("window").width - 100;
+
   return (
     <View style={[card.card, styles.content]}>
       <View style={{ gap: 15 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <AvatarPlaceholder name={name} isThumb={false} size="lg" />
-          <Text style={[TextProps]}>{name}</Text>
+          <Text style={[TextProps, { maxWidth: width }]}>{name}</Text>
         </View>
         <View style={{ gap: 5 }}>
           {dataArr.map((item, index) => {
@@ -38,5 +40,6 @@ export default CustomerListItem;
 const styles = StyleSheet.create({
   content: {
     marginVertical: 4,
+    marginHorizontal: 14,
   },
 });

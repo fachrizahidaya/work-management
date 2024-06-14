@@ -1,13 +1,17 @@
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { StyleSheet, View, ActivityIndicator, Dimensions } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import PurchaseOrderListItem from "./PurchaseOrderListItem";
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
+
+const height = Dimensions.get("screen").height - 300;
 
 const PurchaseOrderList = ({
   data,
   isLoading,
   isFetching,
+  refetch,
   renderSkeletons,
   fetchMore,
   filteredData,
@@ -16,7 +20,7 @@ const PurchaseOrderList = ({
   navigation,
 }) => {
   return (
-    <View style={styles.content}>
+    <View style={styles.wrapper}>
       {!isLoading ? (
         data.length > 0 || filteredData?.length ? (
           <FlashList
@@ -27,6 +31,8 @@ const PurchaseOrderList = ({
             onEndReached={hasBeenScrolled ? fetchMore : null}
             ListFooterComponent={() => isFetching && <ActivityIndicator />}
             estimatedItemSize={70}
+            refreshing={true}
+            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
             renderItem={({ item, index }) => (
               <PurchaseOrderListItem
                 key={index}
@@ -40,10 +46,14 @@ const PurchaseOrderList = ({
             )}
           />
         ) : (
-          <EmptyPlaceholder height={200} width={240} text="No data" />
+          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+            <View style={styles.content}>
+              <EmptyPlaceholder height={200} width={240} text="No data" />
+            </View>
+          </ScrollView>
         )
       ) : (
-        <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+        <View style={{ paddingHorizontal: 14, paddingVertical: 16, gap: 2 }}>{renderSkeletons()}</View>
       )}
     </View>
   );
@@ -52,9 +62,8 @@ const PurchaseOrderList = ({
 export default PurchaseOrderList;
 
 const styles = StyleSheet.create({
-  content: {
+  wrapper: {
     flex: 1,
-    paddingHorizontal: 14,
     backgroundColor: "#f8f8f8",
   },
   tableHeader: {
@@ -65,5 +74,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#E8E9EB",
+  },
+  content: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: height,
   },
 });

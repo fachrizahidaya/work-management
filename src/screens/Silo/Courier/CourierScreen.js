@@ -5,18 +5,33 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 import CourierList from "../../../components/Silo/Courier/CourierList";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
+import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const CourierScreen = () => {
   const navigation = useNavigation();
 
-  const { data } = useFetch(`/wm/courier`);
+  const { data, isFetching, isLoading, refetch } = useFetch(`/wm/courier`);
+
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <PageHeader title="Courier" onPress={() => navigation.goBack()} />
       </View>
-      <CourierList data={data?.data} />
+      <CourierList
+        data={data?.data}
+        isFetching={isFetching}
+        refetch={refetch}
+        isLoading={isLoading}
+        renderSkeletons={renderSkeletons}
+      />
     </SafeAreaView>
   );
 };
