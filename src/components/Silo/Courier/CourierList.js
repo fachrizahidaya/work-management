@@ -1,6 +1,7 @@
 import { Dimensions, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
 import CourierItem from "./CourierItem";
 import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
 
