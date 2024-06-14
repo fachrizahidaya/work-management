@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RefreshControl } from "react-native-gesture-handler";
 
@@ -11,6 +11,9 @@ import PageHeader from "../../../../components/shared/PageHeader";
 import KPIListItem from "../../../../components/Tribe/Performance/KPI/KPIListItem";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import ArchivedKPIFilter from "../../../../components/Tribe/Performance/KPI/ArchivedKPIFilter";
+import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
+
+const height = Dimensions.get("screen").height - 300;
 
 const KPIListScreen = () => {
   const [tabValue, setTabValue] = useState("Ongoing");
@@ -29,9 +32,10 @@ const KPIListScreen = () => {
     data: kpiList,
     refetch: refetchKpiList,
     isFetching: kpiListIsFetching,
+    isLoading: kpiListIsLoading,
   } = useFetch(tabValue === "Ongoing" && "/hr/employee-kpi/ongoing");
 
-  const { data: archived } = useFetch(
+  const { data: archived, isLoading: archivedIsLoading } = useFetch(
     tabValue === "Archived" && "/hr/employee-kpi/ongoing",
     [startDate, endDate],
     fetchArchivedParameters
@@ -68,6 +72,14 @@ const KPIListScreen = () => {
     setEndDate(date);
   };
 
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
+  };
+
   useEffect(() => {
     if (kpiList?.data?.length) {
       setOngoingList((prevData) => [...prevData, ...kpiList?.data]);
@@ -94,41 +106,14 @@ const KPIListScreen = () => {
       <View style={styles.container}>
         <View style={{ flex: 1 }}>
           {tabValue === "Ongoing" ? (
-            ongoingList?.length > 0 ? (
-              <FlashList
-                data={ongoingList}
-                estimatedItemSize={50}
-                onEndReachedThreshold={0.1}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item, index }) => (
-                  <KPIListItem
-                    key={index}
-                    id={item?.id}
-                    start_date={item?.review?.begin_date}
-                    end_date={item?.review?.end_date}
-                    navigation={navigation}
-                    name={item?.review?.description}
-                    target={item?.target_name}
-                    isExpired={false}
-                    target_level={item?.target_level}
-                    status="ongoing"
-                  />
-                )}
-              />
-            ) : (
-              <ScrollView refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}>
-                <View style={styles.content}>
-                  <EmptyPlaceholder height={250} width={250} text="No Data" />
-                </View>
-              </ScrollView>
-            )
-          ) : (
-            <View style={{ flex: 1 }}>
-              {archived?.data?.length > 0 ? (
+            !kpiListIsLoading ? (
+              ongoingList?.length > 0 ? (
                 <FlashList
-                  data={archived?.data}
+                  data={ongoingList}
                   estimatedItemSize={50}
                   onEndReachedThreshold={0.1}
+                  refreshing={true}
+                  refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}
                   keyExtractor={(item, index) => index}
                   renderItem={({ item, index }) => (
                     <KPIListItem
@@ -139,8 +124,9 @@ const KPIListScreen = () => {
                       navigation={navigation}
                       name={item?.review?.description}
                       target={item?.target_name}
-                      isExpired={true}
-                      status="archived"
+                      isExpired={false}
+                      target_level={item?.target_level}
+                      status="ongoing"
                     />
                   )}
                 />
@@ -152,6 +138,48 @@ const KPIListScreen = () => {
                     <EmptyPlaceholder height={250} width={250} text="No Data" />
                   </View>
                 </ScrollView>
+              )
+            ) : (
+              <View style={{ paddingHorizontal: 14, paddingVertical: 16 }}>
+                <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+              </View>
+            )
+          ) : (
+            <View style={{ flex: 1 }}>
+              {!archivedIsLoading ? (
+                archived?.data?.length > 0 ? (
+                  <FlashList
+                    data={archived?.data}
+                    estimatedItemSize={50}
+                    onEndReachedThreshold={0.1}
+                    keyExtractor={(item, index) => index}
+                    renderItem={({ item, index }) => (
+                      <KPIListItem
+                        key={index}
+                        id={item?.id}
+                        start_date={item?.review?.begin_date}
+                        end_date={item?.review?.end_date}
+                        navigation={navigation}
+                        name={item?.review?.description}
+                        target={item?.target_name}
+                        isExpired={true}
+                        status="archived"
+                      />
+                    )}
+                  />
+                ) : (
+                  <ScrollView
+                    refreshControl={<RefreshControl refreshing={kpiListIsFetching} onRefresh={refetchKpiList} />}
+                  >
+                    <View style={styles.content}>
+                      <EmptyPlaceholder height={250} width={250} text="No Data" />
+                    </View>
+                  </ScrollView>
+                )
+              ) : (
+                <View style={{ paddingHorizontal: 14, paddingVertical: 16 }}>
+                  <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+                </View>
               )}
             </View>
           )}
@@ -178,9 +206,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   content: {
-    marginTop: 20,
-    gap: 5,
     alignItems: "center",
     justifyContent: "center",
+    height: height,
   },
 });

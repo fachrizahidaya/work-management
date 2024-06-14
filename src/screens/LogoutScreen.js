@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Google authentication and firebase
 // import { signOut } from "firebase/auth";
@@ -10,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { QueryCache } from "react-query";
 
 import { Bar } from "react-native-progress";
-import { SafeAreaView, StyleSheet, View, Text, Platform } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Platform, ActivityIndicator } from "react-native";
 import Animated, { useAnimatedStyle, withSpring, withTiming } from "react-native-reanimated";
 
 import axiosInstance from "../config/api";
@@ -75,19 +74,13 @@ const LogoutScreen = () => {
   const logoutHandler = async () => {
     try {
       // Send a POST request to the logout endpoint
-      // const fbtoken = await SecureStore.getItemAsync("firebase_token");
       const storedFirebase = await fetchFirebase();
       const firebaseData = storedFirebase[0]?.token;
       await axiosInstance.post("/auth/logout", {
-        firebase_token:
-          // fbtoken,
-          firebaseData,
+        firebase_token: firebaseData,
       });
 
-      // Delete user data and tokens from SecureStore
-      // await SecureStore.deleteItemAsync("user_data");
-      // await SecureStore.deleteItemAsync("user_token");
-      // await SecureStore.deleteItemAsync("firebase_token");
+      // Delete user data and tokens from SQLite
       await deleteUser();
       await deleteFirebase();
       // await signOut(auth);
@@ -139,7 +132,8 @@ const LogoutScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loadingValue < 100 && (
+      {loadingValue < 130 && <ActivityIndicator />}
+      {/* {loadingValue < 100 && (
         <Animated.View style={[styles.loadingContainer, tStyle]}>
           <Animated.Image
             resizeMode="contain"
@@ -157,9 +151,9 @@ const LogoutScreen = () => {
 
           <Bar progress={loadingValue / 100} width={300} color="#176688" borderColor="white" />
         </Animated.View>
-      )}
+      )} */}
 
-      {loadingValue >= 100 && (
+      {/* {loadingValue >= 100 && (
         <Animated.View style={[styles.profileBox, yStyle]}>
           <View style={styles.profileBox}>
             <Animated.Image
@@ -176,7 +170,7 @@ const LogoutScreen = () => {
             </View>
           </View>
         </Animated.View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

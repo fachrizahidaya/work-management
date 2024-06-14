@@ -10,6 +10,7 @@ import Tabs from "../../../../components/shared/Tabs";
 import AppraisalReviewList from "../../../../components/Tribe/Performance/Review/AppraisalReviewList";
 import CommentList from "../../../../components/Tribe/Performance/Review/CommentList";
 import KPIReviewList from "../../../../components/Tribe/Performance/Review/KPIReviewList";
+import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
@@ -47,6 +48,7 @@ const KPIAppraisalReviewScreen = () => {
     data: kpi,
     refetch: refetchKpi,
     isFetching: kpiIsFetching,
+    isLoading: kpiIsLoading,
   } = useFetch(
     tabValue == "KPI" && "/hr/employee-review/kpi",
     [currentPageKPI, reloadKpi, tabValue],
@@ -57,6 +59,7 @@ const KPIAppraisalReviewScreen = () => {
     data: appraisal,
     refetch: refetchAppraisal,
     isFetching: appraisalIsFetching,
+    isLoading: appraisalIsLoading,
   } = useFetch(
     tabValue == "Appraisal" && "/hr/employee-review/appraisal",
     [tabValue, currentPageAppraisal, reloadAppraisal],
@@ -67,6 +70,7 @@ const KPIAppraisalReviewScreen = () => {
     data: comment,
     refetch: refetchComment,
     isFetching: commentIsFetching,
+    isLoading: commentIsLoading,
   } = useFetch(
     tabValue == "Comment" && "/hr/employee-review/comment",
     [tabValue, currentPageComment, reloadComment],
@@ -130,6 +134,14 @@ const KPIAppraisalReviewScreen = () => {
     }
   };
 
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
+  };
+
   useEffect(() => {
     if (kpi?.data?.data.length) {
       setKpiList((prevData) => [...prevData, ...kpi?.data?.data]);
@@ -164,9 +176,11 @@ const KPIAppraisalReviewScreen = () => {
             setHasBeenScrolled={setKpiHasBeenScrolled}
             fetchMore={fetchMoreKpi}
             isFetching={kpiIsFetching}
+            isLoading={kpiIsLoading}
             refetch={refetchKpi}
             navigation={navigation}
             dayjs={dayjs}
+            renderSkeletons={renderSkeletons}
           />
         ) : tabValue === "Appraisal" ? (
           <AppraisalReviewList
@@ -175,9 +189,11 @@ const KPIAppraisalReviewScreen = () => {
             setHasBeenScrolled={setAppraisalHasBeenScrolled}
             fetchMore={fetchMoreAppraisal}
             isFetching={appraisalIsFetching}
+            isLoading={appraisalIsLoading}
             refetch={refetchAppraisal}
             navigation={navigation}
             dayjs={dayjs}
+            renderSkeletons={renderSkeletons}
           />
         ) : (
           <CommentList
@@ -186,9 +202,11 @@ const KPIAppraisalReviewScreen = () => {
             setHasBeenScrolled={setCommentHasBeenScrolled}
             fetchMore={fetchMoreComment}
             isFetching={commentIsFetching}
+            isLoading={commentIsLoading}
             refetch={refetchComment}
             navigation={navigation}
             dayjs={dayjs}
+            renderSkeletons={renderSkeletons}
           />
         )}
       </View>

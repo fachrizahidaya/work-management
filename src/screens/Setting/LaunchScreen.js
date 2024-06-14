@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import jwt_decode from "jwt-decode";
@@ -26,9 +24,6 @@ const LaunchScreen = () => {
   const getUserData = async () => {
     try {
       let currentDate = new Date();
-      // const userData = await SecureStore.getItemAsync("user_data");
-      // const token = await SecureStore.getItemAsync("user_token");
-      // const agreeToEula = await SecureStore.getItemAsync("agree_to_terms");
 
       const storedAgreement = await fetchAgreement();
       const storedUser = await fetchUser();
@@ -36,25 +31,13 @@ const LaunchScreen = () => {
       const dataUser = storedUser[0]?.data;
       const dataToken = storedUser[0]?.token;
 
-      if (
-        // agreeToEula === "agreed"
-        userAgreement === "agreed"
-      ) {
-        if (
-          // token
-          dataToken
-        ) {
-          const decodedToken = jwt_decode(
-            // token
-            dataToken
-          );
+      if (userAgreement === "agreed") {
+        if (dataToken) {
+          const decodedToken = jwt_decode(dataToken);
           const isExpired = decodedToken.exp * 1000 < currentDate.getTime();
 
           if (!isExpired) {
-            const parsedUserData = JSON.parse(
-              // userData
-              dataUser
-            );
+            const parsedUserData = JSON.parse(dataUser);
 
             loginHandler(parsedUserData);
           }
@@ -71,25 +54,15 @@ const LaunchScreen = () => {
 
   const agreeToTermsHandler = async () => {
     try {
-      // await SecureStore.setItemAsync("agree_to_terms", "agreed");
       await insertAgreement("agreed");
-      // const userData = await SecureStore.getItemAsync("user_data");
       const storedUser = await fetchUser();
       const dataUser = storedUser[0]?.data;
 
-      const parsedUserData =
-        dataUser &&
-        JSON.parse(
-          // userData
-          dataUser
-        );
+      const parsedUserData = dataUser && JSON.parse(dataUser);
 
       toggleEula();
 
-      if (
-        // !userData
-        !dataUser
-      ) {
+      if (!dataUser) {
         navigation.navigate("Login");
       } else {
         loginHandler(parsedUserData);
@@ -128,7 +101,7 @@ const styles = StyleSheet.create({
     gap: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
   },
   loadingContainer: {
     display: "flex",

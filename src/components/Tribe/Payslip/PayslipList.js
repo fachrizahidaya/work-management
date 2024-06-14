@@ -1,9 +1,13 @@
-import { FlashList } from "@shopify/flash-list";
 import { memo } from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
+
+import { FlashList } from "@shopify/flash-list";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+
 import PayslipItem from "./PayslipItem";
-import { TextProps } from "../../shared/CustomStylings";
+import EmptyPlaceholder from "../../shared/EmptyPlaceholder";
+
+const height = Dimensions.get("screen").height - 300;
 
 const PayslipList = ({
   data,
@@ -11,49 +15,53 @@ const PayslipList = ({
   setHasBeenScrolled,
   fetchMore,
   isFetching,
+  isLoading,
   refetch,
   openSelectedPayslip,
+  renderSkeletons,
 }) => {
   return (
     <View style={{ flex: 1 }}>
-      {data?.length > 0 ? (
-        <FlashList
-          data={data}
-          keyExtractor={(item, index) => index}
-          onScrollBeginDrag={() => setHasBeenScrolled(true)}
-          onEndReachedThreshold={0.1}
-          onEndReached={hasBeenScrolled ? fetchMore : null}
-          estimatedItemSize={50}
-          refreshControl={
-            <RefreshControl
-              refreshing={isFetching}
-              onRefresh={() => {
-                refetch();
-              }}
-            />
-          }
-          ListFooterComponent={() => isFetching && <ActivityIndicator />}
-          renderItem={({ item, index }) => (
-            <PayslipItem
-              key={index}
-              id={item?.id}
-              month={item?.pay_month}
-              year={item?.pay_year}
-              openSelectedPayslip={openSelectedPayslip}
-            />
-          )}
-        />
+      {!isLoading ? (
+        data?.length > 0 ? (
+          <FlashList
+            data={data}
+            keyExtractor={(item, index) => index}
+            onScrollBeginDrag={() => setHasBeenScrolled(true)}
+            onEndReachedThreshold={0.1}
+            onEndReached={hasBeenScrolled ? fetchMore : null}
+            estimatedItemSize={50}
+            refreshing={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() => {
+                  refetch();
+                }}
+              />
+            }
+            ListFooterComponent={() => isFetching && <ActivityIndicator />}
+            renderItem={({ item, index }) => (
+              <PayslipItem
+                key={index}
+                id={item?.id}
+                month={item?.pay_month}
+                year={item?.pay_year}
+                openSelectedPayslip={openSelectedPayslip}
+              />
+            )}
+          />
+        ) : (
+          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+            <View style={styles.wrapper}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
+            </View>
+          </ScrollView>
+        )
       ) : (
-        <>
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/vectors/empty.png")}
-              alt="empty"
-              style={{ resizeMode: "contain", height: 300, width: 300 }}
-            />
-            <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
-          </View>
-        </>
+        <View style={{ paddingHorizontal: 14 }}>
+          <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+        </View>
       )}
     </View>
   );
@@ -67,5 +75,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
+  },
+  wrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: height,
   },
 });

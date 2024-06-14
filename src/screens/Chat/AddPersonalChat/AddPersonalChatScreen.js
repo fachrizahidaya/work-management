@@ -79,25 +79,26 @@ const AddPersonalChatScreen = () => {
           <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>{data?.data?.total} users</Text>
         </View>
 
-        <View style={{ flex: 1, gap: 15, paddingHorizontal: 16 }}>
-          <Input
-            fieldName="search"
-            value={inputToShow}
-            placeHolder="Search..."
-            onChangeText={(value) => {
-              searchHandler(value);
-              setInputToShow(value);
-            }}
-            startIcon="magnify"
-            endIcon={inputToShow && "close"}
-            onPressEndIcon={() => {
-              setSearchKeyword("");
-              setInputToShow("");
-            }}
-          />
+        <View style={{ flex: 1, gap: 15 }}>
+          <View style={{ gap: 15, paddingHorizontal: 16 }}>
+            <Input
+              fieldName="search"
+              value={inputToShow}
+              placeHolder="Search..."
+              onChangeText={(value) => {
+                searchHandler(value);
+                setInputToShow(value);
+              }}
+              startIcon="magnify"
+              endIcon={inputToShow && "close"}
+              onPressEndIcon={() => {
+                setSearchKeyword("");
+                setInputToShow("");
+              }}
+            />
 
-          <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
-
+            <Text style={{ color: "#9E9E9E" }}>CONTACT</Text>
+          </View>
           <FlashList
             ListFooterComponent={isLoading && <ActivityIndicator />}
             estimatedItemSize={200}

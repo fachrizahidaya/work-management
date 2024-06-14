@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import { TextProps } from "../../../components/shared/CustomStylings";
@@ -12,6 +12,8 @@ import StatisticCard from "../../../components/Coin/Dashboard/StatisticCard";
 import SalesCard from "../../../components/Coin/Dashboard/SalesCard";
 import OrderCard from "../../../components/Coin/Dashboard/OrderCard";
 import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
+
+const height = Dimensions.get("screen").height - 300;
 
 const CoinDashboard = () => {
   const {
@@ -195,7 +197,6 @@ const CoinDashboard = () => {
       </View>
 
       <ScrollView
-        style={{ paddingHorizontal: 14 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -231,7 +232,7 @@ const CoinDashboard = () => {
           <OrderCard salesData={salesData} />
         </View> */}
         <View style={styles.wrapper}>
-          <EmptyPlaceholder text="No Data" height={250} width={250} />
+          <EmptyPlaceholder text="No Data" height={250} width={250} padding={150} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -254,8 +255,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   wrapper: {
-    flex: 1,
-    gap: 14,
-    marginVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    height: height,
   },
 });

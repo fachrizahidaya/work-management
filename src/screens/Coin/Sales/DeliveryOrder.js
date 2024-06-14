@@ -26,7 +26,7 @@ const DeliveryOrder = () => {
     limit: 20,
   };
 
-  const { data, isFetching, isLoading } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/delivery-order`,
     [currentPage, searchInput],
     fetchDeliveryOrderParameters
@@ -90,6 +90,7 @@ const DeliveryOrder = () => {
         setHasBeenScrolled={setHasBeenScrolled}
         fetchMore={fetchMoreDeliveryOrder}
         isFetching={isFetching}
+        refetch={refetch}
         renderSkeletons={renderSkeletons}
         navigation={navigation}
       />

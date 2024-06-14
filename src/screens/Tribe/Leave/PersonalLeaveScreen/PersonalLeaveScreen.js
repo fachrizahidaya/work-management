@@ -16,6 +16,7 @@ import RemoveConfirmationModal from "../../../../components/shared/RemoveConfirm
 import axiosInstance from "../../../../config/api";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import { useLoading } from "../../../../hooks/useLoading";
+import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -211,6 +212,14 @@ const PersonalLeaveScreen = () => {
     }
   };
 
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 2; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
+  };
+
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data.length >= 0) {
       setPendingList(() => [...pendingLeaveRequest?.data?.data]);
@@ -261,60 +270,51 @@ const PersonalLeaveScreen = () => {
 
         {teamLeaveRequestData?.data.length > 0 && approvalLeaveRequestCheckAccess && (
           <Button height={35} onPress={() => navigation.navigate("Team Leave Request")} padding={5}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "500",
-                color: "#FFFFFF",
-              }}
-            >
-              My Team
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>My Team</Text>
           </Button>
         )}
       </View>
 
-      <>
-        {/* Content here */}
-        <PersonalLeaveRequest
-          onSelect={openSelectedLeaveHandler}
-          onDeselect={closeSelectedLeaveHandler}
-          pendingList={pendingList}
-          approvedList={approvedList}
-          rejectedList={rejectedList}
-          canceledList={canceledList}
-          pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
-          approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
-          rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
-          canceledLeaveRequestIsFetching={canceledLeaveRequestIsFetching}
-          pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
-          approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
-          rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
-          canceledLeaveRequestIsLoading={canceledLeaveRequestIsLoading}
-          refetchPendingLeaveRequest={refetchPendingLeaveRequest}
-          refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
-          refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
-          refetchCanceledLeaveRequest={refetchCanceledLeaveRequest}
-          hasBeenScrolled={hasBeenScrolledRejected}
-          setHasBeenScrolled={setHasBeenScrolledRejected}
-          hasBeenScrolledPending={hasBeenScrolledPending}
-          setHasBeenScrolledPending={setHasBeenScrolledPending}
-          hasBeenScrolledApproved={hasBeenScrolledApproved}
-          setHasBeenScrolledApproved={setHasBeenScrolledApproved}
-          hasBeenScrolledCanceled={hasBeenScrolledCanceled}
-          setHasBeenScrolledCanceled={setHasBeenScrolledCanceled}
-          fetchMorePending={fetchMorePending}
-          fetchMoreApproved={fetchMoreApproved}
-          fetchMoreRejected={fetchMoreRejected}
-          fetchMoreCanceled={fetchMoreCanceled}
-          tabValue={tabValue}
-          setTabValue={setTabValue}
-          tabs={tabs}
-          onChangeTab={onChangeTab}
-          refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
-          teamLeaveRequestData={teamLeaveRequestData?.data.length}
-        />
-      </>
+      {/* Content here */}
+      <PersonalLeaveRequest
+        onSelect={openSelectedLeaveHandler}
+        onDeselect={closeSelectedLeaveHandler}
+        pendingList={pendingList}
+        approvedList={approvedList}
+        rejectedList={rejectedList}
+        canceledList={canceledList}
+        pendingLeaveRequestIsFetching={pendingLeaveRequestIsFetching}
+        approvedLeaveRequestIsFetching={approvedLeaveRequestIsFetching}
+        rejectedLeaveRequestIsFetching={rejectedLeaveRequestIsFetching}
+        canceledLeaveRequestIsFetching={canceledLeaveRequestIsFetching}
+        pendingLeaveRequestIsLoading={pendingLeaveRequestIsLoading}
+        approvedLeaveRequestIsLoading={approvedLeaveRequestIsLoading}
+        rejectedLeaveRequestIsLoading={rejectedLeaveRequestIsLoading}
+        canceledLeaveRequestIsLoading={canceledLeaveRequestIsLoading}
+        refetchPendingLeaveRequest={refetchPendingLeaveRequest}
+        refetchApprovedLeaveRequest={refetchApprovedLeaveRequest}
+        refetchRejectedLeaveRequest={refetchRejectedLeaveRequest}
+        refetchCanceledLeaveRequest={refetchCanceledLeaveRequest}
+        hasBeenScrolled={hasBeenScrolledRejected}
+        setHasBeenScrolled={setHasBeenScrolledRejected}
+        hasBeenScrolledPending={hasBeenScrolledPending}
+        setHasBeenScrolledPending={setHasBeenScrolledPending}
+        hasBeenScrolledApproved={hasBeenScrolledApproved}
+        setHasBeenScrolledApproved={setHasBeenScrolledApproved}
+        hasBeenScrolledCanceled={hasBeenScrolledCanceled}
+        setHasBeenScrolledCanceled={setHasBeenScrolledCanceled}
+        fetchMorePending={fetchMorePending}
+        fetchMoreApproved={fetchMoreApproved}
+        fetchMoreRejected={fetchMoreRejected}
+        fetchMoreCanceled={fetchMoreCanceled}
+        tabValue={tabValue}
+        setTabValue={setTabValue}
+        tabs={tabs}
+        onChangeTab={onChangeTab}
+        refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
+        teamLeaveRequestData={teamLeaveRequestData?.data.length}
+        renderSkeletons={renderSkeletons}
+      />
 
       <RemoveConfirmationModal
         isOpen={cancelModalIsOpen}

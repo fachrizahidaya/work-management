@@ -4,7 +4,7 @@ import { card } from "../../../styles/Card";
 
 const CourierPickupItem = ({ awb, courier, image }) => {
   return (
-    <View style={[card.card, { marginVertical: 4, gap: 2 }]}>
+    <View style={[card.card, styles.content]}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
         <Image
           style={styles.image}
@@ -25,6 +25,7 @@ const CourierPickupItem = ({ awb, courier, image }) => {
 export default CourierPickupItem;
 
 const styles = StyleSheet.create({
+  content: { marginVertical: 4, marginHorizontal: 14, gap: 2 },
   image: {
     height: 50,
     width: 50,

@@ -27,6 +27,7 @@ import {
   submitCommentHandler,
   toggleFullScreenImageHandler,
 } from "../../../components/Tribe/Feed/shared/functions";
+import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -227,6 +228,14 @@ const FeedScreen = () => {
     scrollOffsetY.current = currentOffsetY;
   };
 
+  const renderSkeletons = () => {
+    const skeletons = [];
+    for (let i = 0; i < 5; i++) {
+      skeletons.push(<CardSkeleton key={i} />);
+    }
+    return skeletons;
+  };
+
   /**
    * Handle create a new comment
    */
@@ -311,33 +320,33 @@ const FeedScreen = () => {
         </TouchableOpacity>
       )}
 
-      <View style={{ flex: 1 }}>
-        <FeedCard
-          posts={posts}
-          loggedEmployeeId={profile?.data?.id}
-          loggedEmployeeImage={profile?.data?.image}
-          handleWhenScrollReachedEnd={postEndReachedHandler}
-          postIsFetching={postIsFetching}
-          postIsLoading={postIsLoading}
-          hasBeenScrolled={hasBeenScrolled}
-          setHasBeenScrolled={setHasBeenScrolled}
-          onCommentToggle={openCommentHandler}
-          forceRerender={forceRerender}
-          onToggleFullScreen={toggleFullScreenImageHandler}
-          employeeUsername={objectContainEmployeeUsernameHandler}
-          navigation={navigation}
-          onPressLink={pressLinkHandler}
-          onToggleLike={likePostHandler}
-          reference={commentScreenSheetRef}
-          setPostId={setPostId}
-          isFullScreen={isFullScreen}
-          setIsFullScreen={setIsFullScreen}
-          setSelectedPicture={setSelectedPicture}
-          onToggleReport={openSelectedPostHandler}
-          handleRefreshPosts={refreshPostsHandler}
-          handleIconWhenScrolling={scrollHandler}
-        />
-      </View>
+      <FeedCard
+        posts={posts}
+        loggedEmployeeId={profile?.data?.id}
+        loggedEmployeeImage={profile?.data?.image}
+        handleWhenScrollReachedEnd={postEndReachedHandler}
+        postIsFetching={postIsFetching}
+        postIsLoading={postIsLoading}
+        hasBeenScrolled={hasBeenScrolled}
+        setHasBeenScrolled={setHasBeenScrolled}
+        onCommentToggle={openCommentHandler}
+        forceRerender={forceRerender}
+        onToggleFullScreen={toggleFullScreenImageHandler}
+        employeeUsername={objectContainEmployeeUsernameHandler}
+        navigation={navigation}
+        onPressLink={pressLinkHandler}
+        onToggleLike={likePostHandler}
+        reference={commentScreenSheetRef}
+        setPostId={setPostId}
+        isFullScreen={isFullScreen}
+        setIsFullScreen={setIsFullScreen}
+        setSelectedPicture={setSelectedPicture}
+        onToggleReport={openSelectedPostHandler}
+        handleRefreshPosts={refreshPostsHandler}
+        handleIconWhenScrolling={scrollHandler}
+        renderSkeletons={renderSkeletons}
+      />
+
       <FeedComment
         loggedEmployeeName={userSelector?.name}
         loggedEmployeeImage={profile?.data?.image}

@@ -26,7 +26,7 @@ const SalesOrder = () => {
     limit: 20,
   };
 
-  const { data, isFetching, isLoading } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/sales-order`,
     [currentPage, searchInput],
     fetchSalesOrderParameters
@@ -87,6 +87,7 @@ const SalesOrder = () => {
         data={salesOrder}
         isLoading={isLoading}
         isFetching={isFetching}
+        refetch={refetch}
         renderSkeletons={renderSkeletons}
         fetchMore={fetchMoreSalesOrder}
         filteredData={filteredDataArray}

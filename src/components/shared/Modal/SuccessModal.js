@@ -48,29 +48,17 @@ const SuccessModal = ({ isOpen, toggle, title = "", description = "", type, colo
         backdropOpacity={1}
         hideModalContentWhileAnimating={true}
         useNativeDriver={false}
-        style={{
-          justifyContent: "flex-start",
-          alignItems: "center",
-          padding: 10,
-          gap: 10,
-          flex: 0.2,
-        }}
+        style={{ justifyContent: "flex-start", alignItems: "center", padding: 10, gap: 10, flex: 0.2 }}
       >
-        <View
-          style={{
-            alignItems: "center",
-            gap: 5,
-            paddingTop: Platform.OS === "ios" ? 30 : null,
-          }}
-        >
+        <View style={{ alignItems: "center", gap: 5, paddingTop: Platform.OS === "ios" ? 30 : null }}>
           <View style={{ flexDirection: "row" }}>
             <Text style={{ color: renderColor(), fontSize: 16, fontWeight: "500" }}>{words[0]}</Text>
             <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "500" }}>{" " + words.slice(1).join(" ")}</Text>
           </View>
 
           <Text style={{ color: "#FFFFFF", fontSize: 14, fontWeight: "400" }}>{description}</Text>
+          <MaterialCommunityIcons onPress={() => toggle()} name="chevron-up" color="#FFFFFF" size={20} />
         </View>
-        <MaterialCommunityIcons onPress={() => toggle()} name="chevron-up" color="#FFFFFF" size={20} />
       </Modal>
     </>
   );

@@ -26,7 +26,7 @@ const Supplier = () => {
     limit: 20,
   };
 
-  const { data, isLoading, isFetching } = useFetch(
+  const { data, isLoading, isFetching, refetch } = useFetch(
     `/acc/supplier`,
     [currentPage, searchInput],
     fetchSuppliersParameters
@@ -86,6 +86,7 @@ const Supplier = () => {
         data={suppliers}
         isLoading={isLoading}
         isFetching={isFetching}
+        refetch={refetch}
         renderSkeletons={renderSkeletons}
         fetchMore={fetchMoreSuppliers}
         filteredData={filteredDataArray}
