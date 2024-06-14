@@ -10,7 +10,6 @@ import Tabs from "../../../../components/shared/Tabs";
 import AppraisalReviewList from "../../../../components/Tribe/Performance/Review/AppraisalReviewList";
 import CommentList from "../../../../components/Tribe/Performance/Review/CommentList";
 import KPIReviewList from "../../../../components/Tribe/Performance/Review/KPIReviewList";
-import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const KPIAppraisalReviewScreen = () => {
   const [tabValue, setTabValue] = useState("KPI");
@@ -134,14 +133,6 @@ const KPIAppraisalReviewScreen = () => {
     }
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (kpi?.data?.data.length) {
       setKpiList((prevData) => [...prevData, ...kpi?.data?.data]);
@@ -180,7 +171,6 @@ const KPIAppraisalReviewScreen = () => {
             refetch={refetchKpi}
             navigation={navigation}
             dayjs={dayjs}
-            renderSkeletons={renderSkeletons}
           />
         ) : tabValue === "Appraisal" ? (
           <AppraisalReviewList
@@ -193,7 +183,6 @@ const KPIAppraisalReviewScreen = () => {
             refetch={refetchAppraisal}
             navigation={navigation}
             dayjs={dayjs}
-            renderSkeletons={renderSkeletons}
           />
         ) : (
           <CommentList
@@ -206,7 +195,6 @@ const KPIAppraisalReviewScreen = () => {
             refetch={refetchComment}
             navigation={navigation}
             dayjs={dayjs}
-            renderSkeletons={renderSkeletons}
           />
         )}
       </View>

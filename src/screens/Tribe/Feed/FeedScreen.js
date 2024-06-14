@@ -27,7 +27,6 @@ import {
   submitCommentHandler,
   toggleFullScreenImageHandler,
 } from "../../../components/Tribe/Feed/shared/functions";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const FeedScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -61,7 +60,7 @@ const FeedScreen = () => {
 
   const postFetchParameters = {
     offset: currentOffsetPost,
-    limit: 10,
+    limit: 20,
   };
 
   const {
@@ -228,14 +227,6 @@ const FeedScreen = () => {
     scrollOffsetY.current = currentOffsetY;
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 5; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   /**
    * Handle create a new comment
    */
@@ -344,7 +335,6 @@ const FeedScreen = () => {
         onToggleReport={openSelectedPostHandler}
         handleRefreshPosts={refreshPostsHandler}
         handleIconWhenScrolling={scrollHandler}
-        renderSkeletons={renderSkeletons}
       />
 
       <FeedComment

@@ -20,7 +20,6 @@ import AppraisalForm from "../../../../components/Tribe/Performance/Appraisal/Ap
 import SuccessModal from "../../../../components/shared/Modal/SuccessModal";
 import EmptyPlaceholder from "../../../../components/shared/EmptyPlaceholder";
 import SaveButton from "../../../../components/Tribe/Performance/Appraisal/SaveButton";
-import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const AppraisalScreen = () => {
   const [appraisalValues, setAppraisalValues] = useState([]);
@@ -180,14 +179,6 @@ const AppraisalScreen = () => {
     enableReinitialize: true,
   });
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (appraisalList?.data) {
       sumUpAppraisalValue();
@@ -229,38 +220,32 @@ const AppraisalScreen = () => {
 
       <View style={styles.container}>
         <ScrollView style={{ flex: 1 }}>
-          {!appraisalListIsLoading ? (
-            appraisalValues && appraisalValues.length > 0 ? (
-              appraisalValues.map((item, index) => {
-                const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
-                  (empAppraisal) => empAppraisal.id === item.id
-                );
-                return (
-                  <AppraisalDetailItem
-                    key={index}
-                    id={item?.performance_appraisal_value_id || item?.id}
-                    description={item?.description}
-                    item={item}
-                    choice={item?.choice}
-                    onChange={employeeAppraisalValueUpdateHandler}
-                    choice_a={item?.choice_a}
-                    choice_b={item?.choice_b}
-                    choice_c={item?.choice_c}
-                    choice_d={item?.choice_d}
-                    choice_e={item?.choice_e}
-                    handleOpen={openSelectedAppraisal}
-                    employeeAppraisalValue={correspondingEmployeeAppraisal}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.content}>
-                <EmptyPlaceholder height={250} width={250} text="No Data" />
-              </View>
-            )
+          {appraisalValues && appraisalValues.length > 0 ? (
+            appraisalValues.map((item, index) => {
+              const correspondingEmployeeAppraisal = employeeAppraisalValue.find(
+                (empAppraisal) => empAppraisal.id === item.id
+              );
+              return (
+                <AppraisalDetailItem
+                  key={index}
+                  id={item?.performance_appraisal_value_id || item?.id}
+                  description={item?.description}
+                  item={item}
+                  choice={item?.choice}
+                  onChange={employeeAppraisalValueUpdateHandler}
+                  choice_a={item?.choice_a}
+                  choice_b={item?.choice_b}
+                  choice_c={item?.choice_c}
+                  choice_d={item?.choice_d}
+                  choice_e={item?.choice_e}
+                  handleOpen={openSelectedAppraisal}
+                  employeeAppraisalValue={correspondingEmployeeAppraisal}
+                />
+              );
+            })
           ) : (
-            <View style={{ paddingHorizontal: 14, paddingVertical: 16 }}>
-              <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
+            <View style={styles.content}>
+              <EmptyPlaceholder height={250} width={250} text="No Data" />
             </View>
           )}
         </ScrollView>

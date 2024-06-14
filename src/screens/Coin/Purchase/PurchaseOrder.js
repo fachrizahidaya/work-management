@@ -8,7 +8,6 @@ import PageHeader from "../../../components/shared/PageHeader";
 import DataFilter from "../../../components/Coin/shared/DataFilter";
 import PurchaseOrderList from "../../../components/Coin/PurchaseOrder/PurchaseOrderList";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const PurchaseOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,14 +45,6 @@ const PurchaseOrder = () => {
     []
   );
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     setPurchaseOrder([]);
     setFilteredDataArray([]);
@@ -86,10 +77,9 @@ const PurchaseOrder = () => {
         </View>
         <PurchaseOrderList
           data={purchaseOrder}
-          isLoading={isLoading}
           isFetching={isFetching}
+          isLoading={isLoading}
           refetch={refetch}
-          renderSkeletons={renderSkeletons}
           fetchMore={fetchMorePurchaseOrder}
           filteredData={filteredDataArray}
           hasBeenScrolled={hasBeenScrolled}

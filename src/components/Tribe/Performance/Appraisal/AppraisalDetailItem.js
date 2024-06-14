@@ -20,9 +20,7 @@ const AppraisalDetailItem = ({
   return (
     <Pressable
       style={[card.card, { marginVertical: 4, marginHorizontal: 14, marginBottom: 2, gap: 10 }]}
-      onPress={() => {
-        handleOpen(item, employeeAppraisalValue);
-      }}
+      onPress={() => handleOpen(item, employeeAppraisalValue)}
     >
       <Text style={[TextProps]}>{description}</Text>
 

@@ -8,7 +8,6 @@ import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboar
 import { useFetch } from "../../../hooks/useFetch";
 import Input from "../../../components/shared/Forms/Input";
 import ContactList from "../../../components/Tribe/Contact/ContactList";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const ContactScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,14 +54,6 @@ const ContactScreen = () => {
     }, 300),
     []
   );
-
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
 
   useEffect(() => {
     setFilteredDataArray([]);
@@ -130,7 +121,6 @@ const ContactScreen = () => {
           isLoading={employeeDataIsLoading}
           navigation={navigation}
           userSelector={userSelector}
-          renderSkeletons={renderSkeletons}
         />
       </SafeAreaView>
     </TouchableWithoutFeedback>

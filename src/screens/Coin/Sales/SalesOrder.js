@@ -7,7 +7,6 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 import SalesOrderList from "../../../components/Coin/SalesOrder/SalesOrderList";
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import DataFilter from "../../../components/Coin/shared/DataFilter";
 
 const SalesOrder = () => {
@@ -46,14 +45,6 @@ const SalesOrder = () => {
     []
   );
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     setSalesOrder([]);
     setFilteredDataArray([]);
@@ -85,10 +76,9 @@ const SalesOrder = () => {
       </View>
       <SalesOrderList
         data={salesOrder}
-        isLoading={isLoading}
         isFetching={isFetching}
+        isLoading={isLoading}
         refetch={refetch}
-        renderSkeletons={renderSkeletons}
         fetchMore={fetchMoreSalesOrder}
         filteredData={filteredDataArray}
         hasBeenScrolled={hasBeenScrolled}

@@ -18,50 +18,36 @@ const PayslipList = ({
   isLoading,
   refetch,
   openSelectedPayslip,
-  renderSkeletons,
 }) => {
   return (
     <View style={{ flex: 1 }}>
-      {!isLoading ? (
-        data?.length > 0 ? (
-          <FlashList
-            data={data}
-            keyExtractor={(item, index) => index}
-            onScrollBeginDrag={() => setHasBeenScrolled(true)}
-            onEndReachedThreshold={0.1}
-            onEndReached={hasBeenScrolled ? fetchMore : null}
-            estimatedItemSize={50}
-            refreshing={true}
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching}
-                onRefresh={() => {
-                  refetch();
-                }}
-              />
-            }
-            ListFooterComponent={() => isFetching && <ActivityIndicator />}
-            renderItem={({ item, index }) => (
-              <PayslipItem
-                key={index}
-                id={item?.id}
-                month={item?.pay_month}
-                year={item?.pay_year}
-                openSelectedPayslip={openSelectedPayslip}
-              />
-            )}
-          />
-        ) : (
-          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-            <View style={styles.wrapper}>
-              <EmptyPlaceholder height={250} width={250} text="No Data" />
-            </View>
-          </ScrollView>
-        )
+      {data?.length > 0 ? (
+        <FlashList
+          data={data}
+          keyExtractor={(item, index) => index}
+          onScrollBeginDrag={() => setHasBeenScrolled(true)}
+          onEndReachedThreshold={0.1}
+          onEndReached={hasBeenScrolled ? fetchMore : null}
+          estimatedItemSize={50}
+          refreshing={true}
+          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+          ListFooterComponent={() => isLoading && <ActivityIndicator />}
+          renderItem={({ item, index }) => (
+            <PayslipItem
+              key={index}
+              id={item?.id}
+              month={item?.pay_month}
+              year={item?.pay_year}
+              openSelectedPayslip={openSelectedPayslip}
+            />
+          )}
+        />
       ) : (
-        <View style={{ paddingHorizontal: 14 }}>
-          <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
-        </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+          <View style={styles.wrapper}>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </View>
+        </ScrollView>
       )}
     </View>
   );

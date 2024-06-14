@@ -19,12 +19,7 @@ const CommentResultDetailItem = ({ id, type, total_comment, navigation }) => {
           justifyContent: "space-between",
         },
       ]}
-      onPress={() => {
-        navigation.navigate("Comment Employee", {
-          id: id,
-          type: type,
-        });
-      }}
+      onPress={() => navigation.navigate("Comment Employee", { id: id, type: type })}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[{ fontSize: 16, fontWeight: "700" }, TextProps]}>Comment</Text>

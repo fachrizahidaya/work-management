@@ -44,7 +44,7 @@ const ContactItem = ({
           <View>
             <AvatarPlaceholder image={image} name={name} size="md" isThumb={false} />
             {leave_status ? (
-              <View style={styles.editPicture}>
+              <View style={styles.leaveStatus}>
                 <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
               </View>
             ) : null}
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 3,
   },
-  editPicture: {
+  leaveStatus: {
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",

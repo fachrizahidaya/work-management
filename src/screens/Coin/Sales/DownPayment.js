@@ -6,7 +6,6 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import DownPaymentFilter from "../../../components/Coin/DownPayment/DownPaymentFilter";
 import DownPaymentList from "../../../components/Coin/DownPayment/DownPaymentList";
 
@@ -46,14 +45,6 @@ const DownPayment = () => {
     []
   );
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   const currencyConverter = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -92,7 +83,7 @@ const DownPayment = () => {
         data={downPayment}
         isLoading={isLoading}
         isFetching={isFetching}
-        renderSkeletons={renderSkeletons}
+        refetch={refetch}
         fetchMore={fetchMoreDownPayment}
         filteredData={filteredDataArray}
         hasBeenScrolled={hasBeenScrolled}

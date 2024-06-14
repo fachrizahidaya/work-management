@@ -8,7 +8,6 @@ import PageHeader from "../../../components/shared/PageHeader";
 import CustomerList from "../../../components/Coin/Customer/CustomerList";
 import CustomerListFilter from "../../../components/Coin/Customer/CustomerListFilter";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const Customer = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,7 +25,7 @@ const Customer = () => {
     limit: 20,
   };
 
-  const { data, isLoading, isFetching } = useFetch(
+  const { data, isFetching, isLoading, refetch } = useFetch(
     `/acc/customer`,
     [currentPage, searchInput],
     fetchCustomersParameters
@@ -45,14 +44,6 @@ const Customer = () => {
     }, 300),
     []
   );
-
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
 
   useEffect(() => {
     setCustomers([]);
@@ -84,9 +75,9 @@ const Customer = () => {
       </View>
       <CustomerList
         data={customers}
-        isLoading={isLoading}
         isFetching={isFetching}
-        renderSkeletons={renderSkeletons}
+        isLoading={isLoading}
+        refetch={refetch}
         fetchMore={fetchMoreCustomers}
         filteredData={filteredDataArray}
         hasBeenScrolled={hasBeenScrolled}

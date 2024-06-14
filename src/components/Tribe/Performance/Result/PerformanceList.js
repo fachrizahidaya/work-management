@@ -9,50 +9,45 @@ import EmptyPlaceholder from "../../../shared/EmptyPlaceholder";
 
 const height = Dimensions.get("screen").height - 300;
 
-const PerformanceList = ({ data, isFetching, isLoading, refetch, navigation, dayjs, renderSkeletons }) => {
+const PerformanceList = ({ data, isFetching, isLoading, refetch, navigation, dayjs }) => {
   return (
     <View style={{ flex: 1 }}>
-      {!isLoading ? (
-        data?.length > 0 ? (
-          <FlashList
-            data={data}
-            estimatedItemSize={50}
-            onEndReachedThreshold={0.1}
-            keyExtractor={(item, index) => index}
-            refreshing={true}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-            // onScrollBeginDrag={() =>
-            //   setPersonalHasBeenScrolled(!personalHasBeenScrolled)
-            // }
-            // onEndReached={
-            //   personalHasBeenScrolled === true ? fetchMorePersonal : null
-            // }
-            renderItem={({ item, index }) => (
-              <PerformanceListItem
-                key={index}
-                id={item?.id}
-                start_date={item?.performance_review?.begin_date}
-                end_date={item?.performance_review?.end_date}
-                navigation={navigation}
-                name={item?.employee?.name}
-                target={null}
-                dayjs={dayjs}
-                description={item?.performance_review?.description}
-                type="my-team"
-              />
-            )}
-          />
-        ) : (
-          <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-            <View style={styles.content}>
-              <EmptyPlaceholder height={250} width={250} text="No Data" />
-            </View>
-          </ScrollView>
-        )
+      {data?.length > 0 ? (
+        <FlashList
+          data={data}
+          estimatedItemSize={50}
+          onEndReachedThreshold={0.1}
+          keyExtractor={(item, index) => index}
+          refreshing={true}
+          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+          ListFooterComponent={() => isLoading && <ActivityIndicator />}
+          // onScrollBeginDrag={() =>
+          //   setPersonalHasBeenScrolled(!personalHasBeenScrolled)
+          // }
+          // onEndReached={
+          //   personalHasBeenScrolled === true ? fetchMorePersonal : null
+          // }
+          renderItem={({ item, index }) => (
+            <PerformanceListItem
+              key={index}
+              id={item?.id}
+              start_date={item?.performance_review?.begin_date}
+              end_date={item?.performance_review?.end_date}
+              navigation={navigation}
+              name={item?.employee?.name}
+              target={null}
+              dayjs={dayjs}
+              description={item?.performance_review?.description}
+              type="my-team"
+            />
+          )}
+        />
       ) : (
-        <View style={{ paddingHorizontal: 14, paddingVertical: 16 }}>
-          <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
-        </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+          <View style={styles.content}>
+            <EmptyPlaceholder height={250} width={250} text="No Data" />
+          </View>
+        </ScrollView>
       )}
     </View>
   );
