@@ -25,21 +25,8 @@ const AttachmentForm = ({
   return (
     <ActionSheet ref={reference}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            gap: 21,
-            paddingHorizontal: 20,
-            paddingVertical: 16,
-            paddingBottom: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <View style={{ gap: 21, paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 40 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>Attachment</Text>
             <TouchableOpacity
               onPress={() => {
@@ -47,13 +34,7 @@ const AttachmentForm = ({
                 handleClose();
               }}
             >
-              <Text
-                style={{
-                  opacity: formik.values.id && formik.values.file ? 1 : 0.5,
-                }}
-              >
-                Save
-              </Text>
+              <Text style={{ opacity: formik.values.id && formik.values.file ? 1 : 0.5 }}>Save</Text>
             </TouchableOpacity>
           </View>
           <Select
@@ -72,15 +53,7 @@ const AttachmentForm = ({
             </View>
             <Pressable onPress={() => onSelectFile(setFileAttachment)} style={styles.attachment}>
               <Text
-                style={[
-                  {
-                    fontSize: 12,
-                    opacity: 0.5,
-                    overflow: "hidden",
-                    width: "80%",
-                  },
-                  TextProps,
-                ]}
+                style={[TextProps, { fontSize: 12, opacity: 0.5, overflow: "hidden", width: "80%" }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >

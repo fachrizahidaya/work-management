@@ -5,7 +5,6 @@ import _ from "lodash";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import DataFilter from "../../../components/Coin/shared/DataFilter";
 import PageHeader from "../../../components/shared/PageHeader";
 import InvoiceList from "../../../components/Coin/Invoice/InvoiceList";
@@ -46,14 +45,6 @@ const Invoice = () => {
     []
   );
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     setInvoice([]);
     setFilteredDataArray([]);
@@ -92,7 +83,6 @@ const Invoice = () => {
         fetchMore={fetchMoreInvoice}
         isFetching={isFetching}
         refetch={refetch}
-        renderSkeletons={renderSkeletons}
         navigation={navigation}
       />
     </SafeAreaView>

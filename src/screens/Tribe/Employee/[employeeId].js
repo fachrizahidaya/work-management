@@ -32,6 +32,7 @@ import {
   toggleFullScreenImageHandler,
 } from "../../../components/Tribe/Feed/shared/functions";
 import { pickImageHandler } from "../../../components/shared/PickImage";
+import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 
 const EmployeeProfileScreen = () => {
   const [comments, setComments] = useState([]);
@@ -56,6 +57,7 @@ const EmployeeProfileScreen = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [requestType, setRequestType] = useState("");
   const [selectedPicture, setSelectedPicture] = useState(null);
+  const [selectedPostToReport, setSelectedPostToReport] = useState(null);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -69,6 +71,8 @@ const EmployeeProfileScreen = () => {
   const { isOpen: editModalIsOpen, toggle: toggleEditModal } = useDisclosure(false);
   const { isOpen: updatePostModalIsOpen, toggle: toggleUpdatePostModal } = useDisclosure(false);
   const { isOpen: deletePostModalIsOpen, toggle: toggleDeletePostModal } = useDisclosure(false);
+  const { isOpen: reportPostModalIsOpen, toggle: toggleReportPostModal } = useDisclosure(false);
+  const { isOpen: reportPostSuccessModalIsOpen, toggle: toggleReportPostSuccessModal } = useDisclosure(false);
 
   const { toggle: toggleDeletePost, isLoading: deletePostIsLoading } = useLoading(false);
 
@@ -155,6 +159,15 @@ const EmployeeProfileScreen = () => {
     setSelectedPost(null);
     setImagePreview(null);
     toggleEditModal();
+  };
+
+  const openSelectedPersonalPostToReportHandler = useCallback((post) => {
+    setSelectedPost(post);
+  }, []);
+
+  const closeSelectedPersonalPostToReportHandler = () => {
+    setSelectedPost(null);
+    toggleReportPostModal();
   };
 
   /**
@@ -358,67 +371,68 @@ const EmployeeProfileScreen = () => {
               }}
             />
           </View>
-          <View style={styles.content}>
-            {/* Content here */}
-            <FeedCard
-              posts={posts}
-              loggedEmployeeId={loggedEmployeeId}
-              loggedEmployeeImage={loggedEmployeeImage}
-              postEndReachedHandler={postEndReachedHandler}
-              personalPostIsFetching={personalPostIsFetching}
-              refetchPersonalPost={refetchPersonalPost}
-              employee={employee}
-              teammates={teammates}
-              hasBeenScrolled={hasBeenScrolled}
-              setHasBeenScrolled={setHasBeenScrolled}
-              onCommentToggle={openCommentHandler}
-              forceRerender={forceRerender}
-              setForceRerender={setForceRerender}
-              personalPostIsLoading={personalPostIsLoading}
-              toggleFullScreen={toggleFullScreenImageHandler}
-              openSelectedPersonalPost={openSelectedPersonalPostHandler}
-              employeeUsername={objectContainEmployeeUsernameHandler}
-              userSelector={userSelector}
-              toggleDeleteModal={toggleDeleteModal}
-              toggleEditModal={toggleEditModal}
-              reference={teammatesScreenSheetRef}
-              navigation={navigation}
-              postRefetchHandler={postRefetchHandler}
-              onPressLink={pressLinkHandler}
-              onToggleLike={likePostHandler}
-              setPostId={setPostId}
-              commentScreenSheetRef={commentsScreenSheetRef}
-              isFullScreen={isFullScreen}
-              setIsFullScreen={setIsFullScreen}
-              setSelectedPicture={setSelectedPicture}
-            />
 
-            <FeedComment
-              loggedEmployeeName={userSelector?.name}
-              loggedEmployeeImage={profile?.data?.image}
-              comments={comments}
-              commentIsFetching={commentIsFetching}
-              commentIsLoading={commentIsLoading}
-              refetchComment={refetchComment}
-              handleClose={closeCommentHandler}
-              onEndReached={commentEndReachedHandler}
-              commentRefetchHandler={refetchCommentHandler}
-              parentId={commentParentId}
-              onReply={replyCommentHandler}
-              employeeUsername={objectContainEmployeeUsernameHandler}
-              reference={commentsScreenSheetRef}
-              onPressLink={pressLinkHandler}
-              formik={formik}
-              commentContainUsernameHandler={commentContainUsernameHandler}
-              onSuggestions={renderSuggestionsHandler}
-              reloadComment={reloadComment}
-              setReloadComment={setReloadComment}
-              setCurrentOffsetComments={setCurrentOffsetComment}
-              setPostId={setPostId}
-              setCommentParentId={setCommentParentId}
-              setComments={setComments}
-            />
-          </View>
+          {/* Content here */}
+          <FeedCard
+            posts={posts}
+            loggedEmployeeId={loggedEmployeeId}
+            loggedEmployeeImage={loggedEmployeeImage}
+            postEndReachedHandler={postEndReachedHandler}
+            personalPostIsFetching={personalPostIsFetching}
+            refetchPersonalPost={refetchPersonalPost}
+            employee={employee}
+            teammates={teammates}
+            hasBeenScrolled={hasBeenScrolled}
+            setHasBeenScrolled={setHasBeenScrolled}
+            onCommentToggle={openCommentHandler}
+            forceRerender={forceRerender}
+            setForceRerender={setForceRerender}
+            personalPostIsLoading={personalPostIsLoading}
+            toggleFullScreen={toggleFullScreenImageHandler}
+            openSelectedPersonalPost={openSelectedPersonalPostHandler}
+            employeeUsername={objectContainEmployeeUsernameHandler}
+            userSelector={userSelector}
+            toggleDeleteModal={toggleDeleteModal}
+            toggleEditModal={toggleEditModal}
+            toggleReportModal={toggleReportPostModal}
+            reference={teammatesScreenSheetRef}
+            navigation={navigation}
+            postRefetchHandler={postRefetchHandler}
+            onPressLink={pressLinkHandler}
+            onToggleLike={likePostHandler}
+            setPostId={setPostId}
+            commentScreenSheetRef={commentsScreenSheetRef}
+            isFullScreen={isFullScreen}
+            setIsFullScreen={setIsFullScreen}
+            setSelectedPicture={setSelectedPicture}
+            onToggleReport={openSelectedPersonalPostToReportHandler}
+          />
+
+          <FeedComment
+            loggedEmployeeName={userSelector?.name}
+            loggedEmployeeImage={profile?.data?.image}
+            comments={comments}
+            commentIsFetching={commentIsFetching}
+            commentIsLoading={commentIsLoading}
+            refetchComment={refetchComment}
+            handleClose={closeCommentHandler}
+            onEndReached={commentEndReachedHandler}
+            commentRefetchHandler={refetchCommentHandler}
+            parentId={commentParentId}
+            onReply={replyCommentHandler}
+            employeeUsername={objectContainEmployeeUsernameHandler}
+            reference={commentsScreenSheetRef}
+            onPressLink={pressLinkHandler}
+            formik={formik}
+            commentContainUsernameHandler={commentContainUsernameHandler}
+            onSuggestions={renderSuggestionsHandler}
+            reloadComment={reloadComment}
+            setReloadComment={setReloadComment}
+            setCurrentOffsetComments={setCurrentOffsetComment}
+            setPostId={setPostId}
+            setCommentParentId={setCommentParentId}
+            setComments={setComments}
+          />
         </>
       ) : null}
       <ImageFullScreenModal
@@ -461,12 +475,37 @@ const EmployeeProfileScreen = () => {
         setInputToShow={setInputToShow}
         setSearchInput={setSearchInput}
       />
+      <ConfirmationModal
+        isOpen={reportPostModalIsOpen}
+        toggle={closeSelectedPersonalPostToReportHandler}
+        description="Are you sure want to report this post?"
+        apiUrl={`/hr/post-report`}
+        body={{
+          post_id: selectedPost,
+          notes: "Inappropriate Post",
+        }}
+        isDelete={false}
+        showSuccessToast={false}
+        hasSuccessFunc={true}
+        onSuccess={() => {
+          setRequestType("info");
+          refetchPersonalPost();
+        }}
+        toggleOtherModal={toggleReportPostSuccessModal}
+      />
       <SuccessModal
         isOpen={deletePostModalIsOpen}
         toggle={toggleDeletePostModal}
         type={requestType}
         title="Changes saved!"
         description="Data has successfully deleted"
+      />
+      <SuccessModal
+        isOpen={reportPostSuccessModalIsOpen}
+        toggle={toggleReportPostSuccessModal}
+        type={requestType}
+        title="Report Submitted!"
+        description="Your report is logged"
       />
     </SafeAreaView>
   );

@@ -28,6 +28,7 @@ const FeedCard = ({
   userSelector,
   toggleDeleteModal,
   toggleEditModal,
+  toggleReportModal,
   reference,
   navigation,
   postRefetchHandler,
@@ -38,6 +39,7 @@ const FeedCard = ({
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
+  onToggleReport,
 }) => {
   return (
     <View style={{ flex: 1 }}>
@@ -109,6 +111,8 @@ const FeedCard = ({
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
                 setSelectedPicture={setSelectedPicture}
+                onToggleReport={onToggleReport}
+                toggleReportModal={toggleReportModal}
               />
             </View>
           );

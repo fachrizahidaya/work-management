@@ -16,7 +16,6 @@ import RemoveConfirmationModal from "../../../../components/shared/RemoveConfirm
 import axiosInstance from "../../../../config/api";
 import { ErrorToastProps } from "../../../../components/shared/CustomStylings";
 import { useLoading } from "../../../../hooks/useLoading";
-import CardSkeleton from "../../../../components/Coin/shared/CardSkeleton";
 
 const PersonalLeaveScreen = () => {
   const [selectedData, setSelectedData] = useState(null);
@@ -212,14 +211,6 @@ const PersonalLeaveScreen = () => {
     }
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (pendingLeaveRequest?.data?.data.length >= 0) {
       setPendingList(() => [...pendingLeaveRequest?.data?.data]);
@@ -313,7 +304,6 @@ const PersonalLeaveScreen = () => {
         onChangeTab={onChangeTab}
         refetchPersonalLeaveRequest={refetchPersonalLeaveRequest}
         teamLeaveRequestData={teamLeaveRequestData?.data.length}
-        renderSkeletons={renderSkeletons}
       />
 
       <RemoveConfirmationModal

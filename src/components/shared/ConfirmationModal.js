@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 
 import Toast from "react-native-root-toast";
 
-import { ActivityIndicator, Dimensions, Image, Platform, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Image, Platform, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 
 import axiosInstance from "../../config/api";
@@ -24,9 +24,12 @@ const ConfirmationModal = ({
   isPatch = false,
   isGet = false,
   toggleOtherModal = null,
+  toggleAttendanceReason = null,
   showSuccessToast = true,
+  hasLate,
 }) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showAttendanceReason, setShowAttendanceReason] = useState(false);
 
   const deviceWidth = Dimensions.get("window").width;
   const deviceHeight =
@@ -74,37 +77,27 @@ const ConfirmationModal = ({
       hideModalContentWhileAnimating={true}
       useNativeDriver={true}
       onModalHide={() => {
-        showSuccessModal && toggleOtherModal();
+        if (showSuccessModal) {
+          toggleOtherModal();
+        }
+        // if (Platform.OS === "ios" && showAttendanceReason) {
+        //   toggleAttendanceReason();
+        // }
       }}
     >
-      <View
-        style={{
-          display: "flex",
-          gap: 10,
-          backgroundColor: "white",
-          padding: 20,
-          borderRadius: 10,
-        }}
-      >
-        <View style={{ display: "flex", alignItems: "center" }}>
-          <Image
-            source={require("../../assets/vectors/confirmation.jpg")}
-            alt="confirmation"
-            style={{
-              height: 150,
-              width: 150,
-              resizeMode: "contain",
-            }}
-          />
+      <View style={styles.container}>
+        <View style={{ alignItems: "center" }}>
+          {/* <Image source={require("../../assets/vectors/confirmation.jpg")} alt="confirmation" style={styles.image} /> */}
           <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
         </View>
 
-        <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+        <View style={{ flexDirection: "row", gap: 5 }}>
           <Button
             disabled={isDeleting}
             onPress={() => {
               !isDeleting && toggle();
               !isDeleting && setShowSuccessModal(false);
+              // !isDeleting && setShowAttendanceReason(false);
             }}
             flex={1}
             variant="outline"
@@ -117,7 +110,12 @@ const ConfirmationModal = ({
             bgColor={isDeleting ? "coolGray.500" : color ? color : "red.600"}
             onPress={() => {
               onPressHandler();
-              toggleOtherModal && setShowSuccessModal(true);
+              if (toggleOtherModal) {
+                setShowSuccessModal(true);
+              }
+              // if (Platform.OS === "ios" && hasLate) {
+              //   setShowAttendanceReason(true);
+              // }
             }}
             startIcon={isDeleting && <ActivityIndicator />}
             flex={1}
@@ -131,3 +129,17 @@ const ConfirmationModal = ({
 };
 
 export default memo(ConfirmationModal);
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 10,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+  image: {
+    height: 150,
+    width: 150,
+    resizeMode: "contain",
+  },
+});

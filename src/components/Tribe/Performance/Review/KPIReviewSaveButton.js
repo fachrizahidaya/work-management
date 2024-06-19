@@ -28,15 +28,7 @@ const KPIReviewSaveButton = ({
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: "500",
-            color: "#FFFFFF",
-          }}
-        >
-          Save
-        </Text>
+        <Text style={{ fontSize: 12, fontWeight: "500", color: "#FFFFFF" }}>Save</Text>
       )}
     </Button>
   );

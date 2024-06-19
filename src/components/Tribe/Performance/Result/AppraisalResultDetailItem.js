@@ -29,12 +29,7 @@ const AppraisalResultDetailItem = ({
           justifyContent: "space-between",
         },
       ]}
-      onPress={() => {
-        navigation.navigate("Appraisal Employee", {
-          id: id,
-          type: type,
-        });
-      }}
+      onPress={() => navigation.navigate("Appraisal Employee", { id: id, type: type })}
     >
       <View style={{ flexDirection: "column", gap: 10 }}>
         <Text style={[{ fontSize: 16, fontWeight: "700" }, TextProps]}>

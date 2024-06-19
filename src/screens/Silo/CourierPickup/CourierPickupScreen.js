@@ -2,15 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 
-import {
-  ActivityIndicator,
-  Dimensions,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, Platform, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -21,7 +13,6 @@ import { useFetch } from "../../../hooks/useFetch";
 import CourierPickupFilter from "../../../components/Silo/DataEntry/CourierPickupFilter";
 import EmptyPlaceholder from "../../../components/shared/EmptyPlaceholder";
 import CourierPickupCountList from "../../../components/Silo/DataEntry/CourierPickupCountList";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 
 const height = Dimensions.get("screen").height - 450;
 
@@ -50,11 +41,7 @@ const CourierPickupScreen = () => {
           end_date: fullDateEnd || dayjs().format("YYYY-MM-DD 23:59:00"),
         };
 
-  const { data, isFetching, isLoading, refetch } = useFetch(
-    `/wm/courier-pickup`,
-    [startDate, endDate],
-    fetchDataParameters
-  );
+  const { data, isFetching, refetch } = useFetch(`/wm/courier-pickup`, [startDate, endDate], fetchDataParameters);
 
   const updateFullDateStart = (date, time) => {
     if (date && time) {
@@ -119,14 +106,6 @@ const CourierPickupScreen = () => {
     scrollOffsetY.current = currentOffsetY;
   };
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     if (startDate && startTime) {
       updateFullDateStart(startDate, startTime);
@@ -163,9 +142,7 @@ const CourierPickupScreen = () => {
         >
           <CourierPickupCountList totalData={data?.total_data} />
         </View>
-        {isLoading ? (
-          <View style={{ paddingHorizontal: 2, gap: 2 }}>{renderSkeletons()}</View>
-        ) : data?.data?.length > 0 ? (
+        {data?.data?.length > 0 ? (
           <CourierPickupList data={data?.data} handleScroll={scrollHandler} />
         ) : (
           <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>

@@ -6,7 +6,6 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import PageHeader from "../../../components/shared/PageHeader";
 import { useFetch } from "../../../hooks/useFetch";
-import CardSkeleton from "../../../components/Coin/shared/CardSkeleton";
 import DeliveryOrderList from "../../../components/Coin/DeliveryOrder/DeliveryOrderList";
 import DeliveryOrderFilter from "../../../components/Coin/DeliveryOrder/DeliveryOrderFilter";
 
@@ -46,14 +45,6 @@ const DeliveryOrder = () => {
     []
   );
 
-  const renderSkeletons = () => {
-    const skeletons = [];
-    for (let i = 0; i < 2; i++) {
-      skeletons.push(<CardSkeleton key={i} />);
-    }
-    return skeletons;
-  };
-
   useEffect(() => {
     setDeliveryOrder([]);
     setFilteredDataArray([]);
@@ -91,7 +82,6 @@ const DeliveryOrder = () => {
         fetchMore={fetchMoreDeliveryOrder}
         isFetching={isFetching}
         refetch={refetch}
-        renderSkeletons={renderSkeletons}
         navigation={navigation}
       />
     </SafeAreaView>
