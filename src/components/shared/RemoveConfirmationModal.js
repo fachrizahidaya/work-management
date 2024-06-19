@@ -1,4 +1,4 @@
-import { Dimensions, Image, Platform, Text, View, ActivityIndicator } from "react-native";
+import { Dimensions, Image, Platform, Text, View, ActivityIndicator, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
 
 import Button from "./Forms/Button";
@@ -13,13 +13,9 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
 
   return (
     <Modal isVisible={isOpen} onBackdropPress={toggle} deviceWidth={deviceWidth} deviceHeight={deviceHeight}>
-      <View style={{ display: "flex", gap: 10, backgroundColor: "white", padding: 20, borderRadius: 10 }}>
+      <View style={styles.container}>
         <View style={{ display: "flex", alignItems: "center" }}>
-          <Image
-            source={require("../../assets/vectors/confirmation.jpg")}
-            alt="confirmation"
-            style={{ height: 150, width: 150, resizeMode: "contain" }}
-          />
+          {/* <Image source={require("../../assets/vectors/confirmation.jpg")} alt="confirmation" style={styles.image} /> */}
           <Text style={[{ textAlign: "center" }, TextProps]}>{description}</Text>
         </View>
 
@@ -37,3 +33,17 @@ const RemoveConfirmationModal = ({ isOpen, toggle, onPress, description, isLoadi
 };
 
 export default RemoveConfirmationModal;
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 10,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+  image: {
+    height: 150,
+    width: 150,
+    resizeMode: "contain",
+  },
+});

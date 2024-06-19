@@ -96,14 +96,16 @@ const FeedCardItem = ({
 
           <View style={{ flex: 1, gap: 5 }}>
             <TouchableOpacity style={styles.dockName} onPress={() => navigation.navigate("Employee Profile", params)}>
-              <Text style={[{ fontSize: 14 }, TextProps]}>
-                {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
-              </Text>
-              {type === "Announcement" && (
-                <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
-                  <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
-                </View>
-              )}
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={[{ fontSize: 14 }, TextProps]}>
+                  {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
+                </Text>
+                {type === "Announcement" && (
+                  <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
+                    <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
+                  </View>
+                )}
+              </View>
               {/* Toggle report a post */}
               {loggedEmployeeId !== employeeId && (
                 <MaterialCommunityIcons

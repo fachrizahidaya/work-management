@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
+import { useFormik } from "formik";
 
 import ActionSheet from "react-native-actions-sheet";
 import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View, AppState, Platform, Linking } from "react-native";
@@ -16,12 +17,15 @@ import { TextProps } from "../CustomStylings";
 import { useDisclosure } from "../../../hooks/useDisclosure";
 import SuccessModal from "../Modal/SuccessModal";
 import ConfirmationModal from "../ConfirmationModal";
+import ReasonModal from "../../Tribe/Clock/ReasonModal";
+import axiosInstance from "../../../config/api";
 
 const TribeAddNewSheet = (props) => {
   const [location, setLocation] = useState({});
   const [locationOn, setLocationOn] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
   const [requestType, setRequestType] = useState("");
+  const [hasLate, setHasLate] = useState(false);
 
   const navigation = useNavigation();
   const createLeaveRequestCheckAccess = useCheckAccess("create", "Leave Requests");
@@ -32,6 +36,8 @@ const TribeAddNewSheet = (props) => {
   const { toggle: toggleClockModal, isOpen: clockModalIsOpen } = useDisclosure(false);
   const { toggle: toggleNewLeaveRequestModal, isOpen: newLeaveRequestModalIsOpen } = useDisclosure(false);
   const { isOpen: attendanceModalIsopen, toggle: toggleAttendanceModal } = useDisclosure(false);
+  const { isOpen: attendanceReasonModalIsOpen, toggle: toggleAttendanceReasonModal } = useDisclosure(false);
+  const { isOpen: attendanceReasonSuccessIsOpen, toggle: toggleAttendanceReasonSuccess } = useDisclosure(false);
 
   const items = [
     {
@@ -46,6 +52,31 @@ const TribeAddNewSheet = (props) => {
       icons: "clock-outline",
       title: `Clock in`,
     },
+  ];
+
+  /**
+   * Handle for Late type
+   */
+  const lateType = attendance?.data?.available_day_off
+    ? [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+        { label: "Day Off", value: "Day Off" },
+      ]
+    : [
+        { label: "Late", value: "Late" },
+        { label: "Permit", value: "Permit" },
+        { label: "Other", value: "Other" },
+      ];
+
+  /**
+   * Handle for Early type
+   */
+  const earlyType = [
+    { label: "Went Home Early", value: "Went Home Early" },
+    { label: "Permit", value: "Permit" },
+    { label: "Other", value: "Other" },
   ];
 
   /**
@@ -139,6 +170,25 @@ const TribeAddNewSheet = (props) => {
   };
 
   /**
+   * Handle create attendance report
+   */
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      late_type: attendance?.data?.late_type || "",
+      late_reason: attendance?.data?.late_reason || "",
+      early_type: attendance?.data?.early_type || "",
+      early_reason: attendance?.data?.early_reason || "",
+      att_type: attendance?.data?.attendance_type || "",
+      att_reason: attendance?.data?.attendance_reason || "",
+    },
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      setStatus("processing");
+      attendanceReportSubmitHandler(attendance?.data?.id, values, setSubmitting, setStatus);
+    },
+  });
+
+  /**
    * Handle submit attendance clock-in and out
    */
   const attendanceSubmit = () => {
@@ -154,6 +204,39 @@ const TribeAddNewSheet = (props) => {
       toggleAttendanceModal();
     }
   };
+
+  /**
+   * Handle submit attendance report
+   * @param {*} attendance_id
+   * @param {*} data
+   * @param {*} setSubmitting
+   * @param {*} setStatus
+   */
+  const attendanceReportSubmitHandler = async (attendance_id, data, setSubmitting, setStatus) => {
+    try {
+      await axiosInstance.patch(`/hr/timesheets/personal/${attendance_id}`, data);
+      setSubmitting(false);
+      setStatus("success");
+      toggleAttendanceReasonSuccess();
+      setRequestType("info");
+      toggleAttendanceReasonModal();
+      // setHasLate(false);
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      setStatus("error");
+      Toast.show(err.response.data.message, ErrorToastProps);
+    }
+  };
+
+  useEffect(() => {
+    if (attendance?.data?.time_in && attendance?.data?.late && !attendance?.data?.late_reason) {
+      // if (Platform.OS === "ios") {
+      //   setHasLate(true);
+      // }
+      toggleAttendanceReasonModal();
+    }
+  }, [attendance?.data]);
 
   useEffect(() => {
     const checkPermissionRequest = async () => {
@@ -251,6 +334,8 @@ const TribeAddNewSheet = (props) => {
           isGet={false}
           isPatch={false}
           toggleOtherModal={toggleClockModal}
+          hasLate={hasLate}
+          toggleAttendanceReason={toggleAttendanceReasonModal}
           showSuccessToast={false}
         />
 
@@ -266,6 +351,24 @@ const TribeAddNewSheet = (props) => {
           color={attendance?.data?.time_in ? "#FCFF58" : "#92C4FF"}
         />
       </ActionSheet>
+
+      <ReasonModal
+        isOpen={attendanceReasonModalIsOpen}
+        toggle={toggleAttendanceReasonModal}
+        formik={formik}
+        types={lateType}
+        timeIn={dayjs(attendance?.data?.time_in).format("HH:mm")}
+        late={attendance?.data?.late}
+        timeDuty={attendance?.data?.on_duty}
+      />
+
+      <SuccessModal
+        isOpen={attendanceReasonSuccessIsOpen}
+        toggle={toggleAttendanceReasonSuccess}
+        type={requestType}
+        title="Report submitted!"
+        description="Your report is logged"
+      />
 
       <SuccessModal
         isOpen={newLeaveRequestModalIsOpen}
