@@ -159,11 +159,11 @@ const MyTeamScreen = ({ route }) => {
             ) : (
               createCheckAccess && (
                 <View style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <Image
+                  {/* <Image
                     style={{ height: 230, width: 300, resizeMode: "contain" }}
                     source={require("../../assets/vectors/team.jpg")}
                     alt="team"
-                  />
+                  /> */}
                   <Text style={[{ fontSize: 22 }, TextProps]}>You don't have teams yet...</Text>
                   <Button onPress={toggleNewTeamForm}>
                     <Text style={{ color: "white" }}>Create here</Text>

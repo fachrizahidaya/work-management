@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
@@ -12,6 +12,7 @@ import Input from "../../../components/shared/Forms/Input";
 import PageHeader from "../../../components/shared/PageHeader";
 import UserListItem from "../../../components/Chat/UserSelection/UserListItem";
 import { TextProps } from "../../../components/shared/CustomStylings";
+import Tabs from "../../../components/shared/Tabs";
 
 const AddPersonalChatScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +20,7 @@ const AddPersonalChatScreen = () => {
   const [inputToShow, setInputToShow] = useState("");
   const [cumulativeData, setCumulativeData] = useState([]);
   const [filteredDataArray, setFilteredDataArray] = useState([]);
+  const [tabValue, setTabValue] = useState("All");
 
   const userSelector = useSelector((state) => state.auth);
   const navigation = useNavigation();
@@ -49,6 +51,27 @@ const AddPersonalChatScreen = () => {
     []
   );
 
+  const tabs = useMemo(() => {
+    return [
+      { title: `All`, value: "All", color: "#FFFFFF" },
+      { title: `Unattend`, value: "Unattend", color: "#EDEDED" },
+      { title: `Present`, value: "Present", color: "#3bc14a" },
+      { title: `Alpa`, value: "Alpa", color: "#FDC500" },
+    ];
+  });
+
+  const onChangeTab = (value) => {
+    setTabValue(value);
+    if (tabValue === "All") {
+    } else if (tabValue === "Unattend") {
+      // setCumulativeData([]);
+    } else if (tabValue === "Present") {
+      // setCumulativeData([]);
+    } else {
+      // setCumulativeData([]);
+    }
+  };
+
   useEffect(() => {
     setFilteredDataArray([]);
   }, [searchKeyword]);
@@ -68,19 +91,14 @@ const AddPersonalChatScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, gap: 5 }}>
-        <View
-          style={{
-            justifyContent: "space-between",
-            paddingVertical: 14,
-            paddingHorizontal: 16,
-          }}
-        >
+        <View style={{ justifyContent: "space-between", paddingVertical: 14, paddingHorizontal: 16 }}>
           <PageHeader title="New Chat" onPress={() => navigation.goBack()} />
           <Text style={[{ fontSize: 12, marginLeft: 25 }, TextProps]}>{data?.data?.total} users</Text>
         </View>
 
         <View style={{ flex: 1, gap: 15 }}>
           <View style={{ gap: 15, paddingHorizontal: 16 }}>
+            {/* <Tabs tabs={tabs} value={tabValue} onChange={onChangeTab} withIcon={true} /> */}
             <Input
               fieldName="search"
               value={inputToShow}

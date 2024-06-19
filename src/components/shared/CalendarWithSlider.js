@@ -58,7 +58,7 @@ const CalendarWithSlider = ({ items, colorDots }) => {
           return (
             <>
               <View style={styles.container}>
-                <Image source={require("../../assets/vectors/items.jpg")} alt="empty" style={styles.image} />
+                {/* <Image source={require("../../assets/vectors/items.jpg")} alt="empty" style={styles.image} /> */}
                 <Text style={TextProps}>You have no agenda</Text>
               </View>
             </>

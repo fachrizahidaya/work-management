@@ -68,11 +68,11 @@ const MyInformationScreen = () => {
             {/* Content here */}
             {!profile?.data ? (
               <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
-                <Image
+                {/* <Image
                   source={require("../../../assets/vectors/empty.png")}
                   style={{ width: 300, height: 300, resizeMode: "contain" }}
                   alt="empty"
-                />
+                /> */}
                 <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
               </View>
             ) : (

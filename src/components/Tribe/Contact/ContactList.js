@@ -29,7 +29,7 @@ const ContactList = ({
           onScrollBeginDrag={() => setHasBeenScrolled(!hasBeenScrolled)}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0.1}
-          estimatedItemSize={60}
+          estimatedItemSize={200}
           onEndReached={hasBeenScrolled ? handleFetchMoreContact : null}
           refreshing={true}
           refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}

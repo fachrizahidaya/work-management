@@ -76,7 +76,7 @@ const ProjectList = ({
           }}
         >
           <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
-            <Image
+            {/* <Image
               source={require("../../../assets/vectors/empty.png")}
               alt="task"
               style={{
@@ -84,7 +84,7 @@ const ProjectList = ({
                 height: 150,
                 resizeMode: "cover",
               }}
-            />
+            /> */}
             <Text style={[{ fontSize: 12 }, TextProps]}>No Task</Text>
           </View>
         </View>

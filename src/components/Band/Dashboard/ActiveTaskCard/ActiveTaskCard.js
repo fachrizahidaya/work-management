@@ -113,11 +113,11 @@ const ActiveTaskCard = () => {
                   justifyContent: "center",
                 }}
               >
-                <Image
+                {/* <Image
                   source={require("../../../../assets/vectors/items.jpg")}
                   alt="empty"
                   style={{ height: 200, width: 200, resizeMode: "contain" }}
-                />
+                /> */}
                 <Text style={TextProps}>You have no tasks.</Text>
               </View>
             )

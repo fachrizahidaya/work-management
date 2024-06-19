@@ -15,7 +15,7 @@ const AttachmentSection = () => {
     >
       <Text style={[TextProps]}>Attachment</Text>
       <View style={{ alignItems: "center", justifyContent: "center", gap: 10 }}>
-        <Image
+        {/* <Image
           source={require("../../../assets/vectors/empty.png")}
           alt="attachment"
           style={{
@@ -23,7 +23,7 @@ const AttachmentSection = () => {
             width: 180,
             resizeMode: "cover",
           }}
-        />
+        /> */}
         <View>
           <Text style={[{ fontSize: 12 }, TextProps]}>No Data</Text>
         </View>

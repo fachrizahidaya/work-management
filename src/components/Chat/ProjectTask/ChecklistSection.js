@@ -20,7 +20,7 @@ const ChecklistSection = ({ percentage, checklist }) => {
       </Text>
       {checklist?.length === 0 ? (
         <View style={{ alignItems: "center", justifyContent: "center", gap: 5 }}>
-          <Image
+          {/* <Image
             source={require("../../../assets/vectors/empty.png")}
             alt="attachment"
             style={{
@@ -28,7 +28,7 @@ const ChecklistSection = ({ percentage, checklist }) => {
               width: 180,
               resizeMode: "cover",
             }}
-          />
+          /> */}
           <Text style={[{ fontSize: 12 }, TextProps]}>No Task</Text>
         </View>
       ) : (

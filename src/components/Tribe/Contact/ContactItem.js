@@ -41,8 +41,9 @@ const ContactItem = ({
     >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <View>
+          <View style={{ position: "relative" }}>
             <AvatarPlaceholder image={image} name={name} size="md" isThumb={false} />
+            {/* <View style={[styles.attendanceStatus, { backgroundColor: "#EDEDED" }]}></View> */}
             {leave_status ? (
               <View style={styles.leaveStatus}>
                 <MaterialCommunityIcons name="airplane" size={15} color="#3F434A" />
@@ -120,6 +121,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
+    zIndex: 2,
+    shadowOffset: 0,
+  },
+  attendanceStatus: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    width: 15,
+    height: 15,
+    position: "absolute",
+    top: -2,
+    right: -2,
     zIndex: 2,
     shadowOffset: 0,
   },

@@ -167,11 +167,11 @@ const FileSection = ({ projectId, isAllowed }) => {
             />
           ) : (
             <View style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Image
+              {/* <Image
                 alt="no-attachment"
                 source={require("../../../../assets/vectors/no-file.jpg")}
                 style={{ height: 100, width: 140, resizeMode: "contain" }}
-              />
+              /> */}
               <Text style={TextProps}>This project has no attachment</Text>
             </View>
           )}
