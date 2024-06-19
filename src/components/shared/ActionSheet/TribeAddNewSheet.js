@@ -229,14 +229,14 @@ const TribeAddNewSheet = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (attendance?.data?.time_in && attendance?.data?.late && !attendance?.data?.late_reason) {
-      // if (Platform.OS === "ios") {
-      //   setHasLate(true);
-      // }
-      toggleAttendanceReasonModal();
-    }
-  }, [attendance?.data]);
+  // useEffect(() => {
+  //   if (attendance?.data?.time_in && attendance?.data?.late && !attendance?.data?.late_reason) {
+  //     if (Platform.OS === "ios") {
+  //       setHasLate(true);
+  //     }
+  //     toggleAttendanceReasonModal();
+  //   }
+  // }, [attendance?.data]);
 
   useEffect(() => {
     const checkPermissionRequest = async () => {
