@@ -35,12 +35,14 @@ const FeedCardItem = ({
   employeeUsername,
   toggleDeleteModal,
   toggleEditModal,
+  toggleReportModal,
   navigation,
   reference,
   setPostId,
   isFullScreen,
   setIsFullScreen,
   setSelectedPicture,
+  onToggleReport,
 }) => {
   const [totalLike, setTotalLike] = useState(total_like);
   const [likeAction, setLikeAction] = useState("dislike");
@@ -49,13 +51,7 @@ const FeedCardItem = ({
 
   const renderActionOptions = () => (
     <View style={styles.wrapper}>
-      <View
-        style={{
-          gap: 1,
-          backgroundColor: "#F5F5F5",
-          borderRadius: 10,
-        }}
-      >
+      <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
         <TouchableOpacity
           onPress={async () => {
             await SheetManager.hide("form-sheet");
@@ -71,27 +67,31 @@ const FeedCardItem = ({
             await SheetManager.hide("form-sheet");
             toggleDeleteModal();
           }}
-          style={{
-            ...styles.containerEdit,
-            justifyContent: "space-between",
-            borderBottomWidth: 1,
-            borderBottomColor: "#FFFFFF",
-          }}
+          style={styles.containerEdit}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "700",
-              color: "#EB0E29",
-            }}
-          >
-            Delete
-          </Text>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: "#EB0E29" }}>Delete</Text>
           <MaterialCommunityIcons name="trash-can-outline" color="#EB0E29" size={20} />
         </TouchableOpacity>
       </View>
     </View>
   );
+
+  const renderActionReport = () => {
+    <View style={styles.wrapper}>
+      <View style={{ gap: 1, backgroundColor: "#F5F5F5", borderRadius: 10 }}>
+        <TouchableOpacity
+          onPress={async () => {
+            await SheetManager.hide("form-sheet");
+            toggleReportModal();
+          }}
+          style={styles.containerEdit}
+        >
+          <Text style={[{ fontSize: 16 }, TextProps]}>Report</Text>
+          <MaterialCommunityIcons name="alert-box" size={20} color="#176688" />
+        </TouchableOpacity>
+      </View>
+    </View>;
+  };
 
   /**
    * Handle toggle like
@@ -130,11 +130,11 @@ const FeedCardItem = ({
               <Text style={[{ fontSize: 14 }, TextProps]}>
                 {employeeName?.length > 30 ? employeeName?.split(" ")[0] : employeeName}
               </Text>
-              {type === "Announcement" ? (
+              {type === "Announcement" && (
                 <View style={{ borderRadius: 10, backgroundColor: "#ADD7FF", padding: 5 }}>
                   <Text style={[{ fontSize: 10 }, TextProps]}>Announcement</Text>
                 </View>
-              ) : null}
+              )}
             </View>
 
             {loggedEmployeeId === employeeId && (
@@ -154,6 +154,23 @@ const FeedCardItem = ({
                 style={{ marginRight: 1 }}
               />
             )}
+            {/* {loggedEmployeeId !== employeeId && (
+              <MaterialCommunityIcons
+                onPress={async () => {
+                  await SheetManager.show("form-sheet", {
+                    payload: {
+                      children: renderActionReport(),
+                    },
+                  });
+                  onToggleReport(id);
+                }}
+                name="dots-vertical"
+                size={20}
+                borderRadius={20}
+                color="#000000"
+                style={{ marginRight: 1 }}
+              />
+            )} */}
           </View>
           <Text style={[{ fontSize: 12, opacity: 0.5 }, TextProps]}>{dayjs(createdAt).format("MMM DD, YYYY")}</Text>
         </View>
